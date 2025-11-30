@@ -25,18 +25,21 @@ namespace ProjectHero.Demos
 
             Debug.Log("--- Starting Combat Demo ---");
 
+            // Define a "Charge" action
+            // Name: Charge, Time: 1.0s, BaseMomentum: 600, Damage: 50, Type: Blunt, Stamina: 20
+            var chargeAction = new CombatAction("Heavy Charge", 1.0f, 600f, 50f, WeaponType.Blunt, 20f);
+
             // Scenario: Player charges Enemy
             Timeline.ScheduleEvent(0.5f, "Player Charge Start", () => 
             {
                 Debug.Log("Player starts charging...");
-                Player.Velocity = new Vector3(5, 0, 0); // 5 m/s
+                // Visual movement would happen here
             });
 
             Timeline.ScheduleEvent(1.5f, "Impact Moment", () => 
             {
-                // Calculate momentum
-                float p = Player.Mass * Player.Velocity.magnitude;
-                PhysicsEngine.ResolveCollision(Player, Enemy, PhysicsEngine.WeaponType.Blunt, p);
+                // Resolve collision using the Action
+                PhysicsEngine.ResolveCollision(Player, Enemy, chargeAction);
             });
 
             // Enemy tries to block just before impact
@@ -72,8 +75,13 @@ namespace ProjectHero.Demos
 
             // 3. Add our combat logic component
             var unit = go.AddComponent<CombatUnit>();
-            unit.Mass = mass;
+            // Set attributes to derive stats
+            unit.Strength = 15;
+            unit.Constitution = 15;
             unit.Dexterity = dex;
+            unit.ArmorWeight = mass - 50 - (15*2) - (15*2); // Reverse engineer mass for demo
+            if (unit.ArmorWeight < 0) unit.ArmorWeight = 0;
+            
             return unit;
         }
     }

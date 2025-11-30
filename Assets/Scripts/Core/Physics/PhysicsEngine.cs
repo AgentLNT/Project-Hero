@@ -3,42 +3,67 @@ using ProjectHero.Core.Entities;
 
 namespace ProjectHero.Core.Physics
 {
+    public enum WeaponType { Blunt, Slash, Pierce }
+
     public static class PhysicsEngine
     {
-        public enum WeaponType { Blunt, Slash, Pierce }
-
-        public static void ResolveCollision(CombatUnit attacker, CombatUnit target, WeaponType weapon, float baseMomentum)
+        public static void ResolveCollision(CombatUnit attacker, CombatUnit target, CombatAction action)
         {
-            float transferCoefficient = GetTransferCoefficient(weapon);
+            float Kw = GetTransferCoefficient(action.WeaponType);
             
-            // P_delivered = P_base * (M_attacker / 100) * K_w
-            float deliveredMomentum = baseMomentum * (attacker.Mass / 100f) * transferCoefficient;
+            // Formula: P_delivered = P_base * (M_attacker / 100) * Kw
+            float deliveredMomentum = action.BaseMomentum * (attacker.TotalMass / 100f) * Kw;
             
-            // v_impact = P / M_target
-            float impactVelocity = deliveredMomentum / target.Mass;
-            
-            // Thresholds (relative to target's swiftness/stability)
-            // Simplified: using a base stability value or target's velocity if moving
-            float stabilityThreshold = 5.0f; // Base stability
-            
-            Debug.Log($"Collision: P={deliveredMomentum}, V_impact={impactVelocity}");
+            // Formula: v_impact = P / M_target
+            float impactVelocity = deliveredMomentum / target.TotalMass;
 
-            if (impactVelocity >= stabilityThreshold * 2.0f)
+            // --- Damage Calculation (Design Section V.A) ---
+            
+            // 1. Physical Damage: D_phys = D_base * (1 - Armor / (Armor + 100))
+            float armorReduction = target.ArmorDefense / (target.ArmorDefense + 100f);
+            float physicalDamage = action.BaseDamage * (1.0f - armorReduction);
+
+            // 2. Impact Damage: D_impact = P_delivered * 0.1
+            float impactDamage = deliveredMomentum * 0.1f;
+
+            float totalDamage = physicalDamage + impactDamage;
+            
+            Debug.Log($"[Physics] {attacker.name} uses {action.Name} on {target.name}");
+            Debug.Log($"[Calc] P_base={action.BaseMomentum}, M_atk={attacker.TotalMass}, Kw={Kw} => P_delivered={deliveredMomentum:F2}");
+            Debug.Log($"[Calc] M_target={target.TotalMass} => v_impact={impactVelocity:F2}");
+            Debug.Log($"[Calc] D_base={action.BaseDamage}, Armor={target.ArmorDefense} => D_phys={physicalDamage:F2}");
+            Debug.Log($"[Calc] D_impact={impactDamage:F2} (P*0.1) => Total={totalDamage:F2}");
+
+            // Thresholds (Design Section IV.B)
+            // Thresholds are relative to target's Swiftness (v_Target)
+            float v_target = target.Swiftness;
+
+            // Displacement (Design Section IV.B)
+            // D_hexes = floor(v_impact / (v_target * mu))
+            float friction = 1.0f; // Default friction mu
+            int displacementHexes = Mathf.FloorToInt(impactVelocity / (v_target * friction));
+
+            if (impactVelocity >= v_target * 2.0f)
             {
                 target.IsKnockedDown = true;
-                target.OnImpact(impactVelocity, 10); // Bonus damage
-                Debug.Log($"{target.name} KNOCKED DOWN!");
+                target.OnImpact(impactVelocity, totalDamage); 
+                Debug.Log($"[Result] {target.name} KNOCKED DOWN! (v_impact {impactVelocity:F2} >= 2.0 * {v_target:F2})");
             }
-            else if (impactVelocity >= stabilityThreshold * 1.5f)
+            else if (impactVelocity >= v_target * 1.5f)
             {
                 target.IsStaggered = true;
-                target.OnImpact(impactVelocity, 0);
-                Debug.Log($"{target.name} STAGGERED!");
+                target.OnImpact(impactVelocity, totalDamage);
+                Debug.Log($"[Result] {target.name} STAGGERED! (v_impact {impactVelocity:F2} >= 1.5 * {v_target:F2})");
+            }
+            else if (impactVelocity > v_target * 1.0f)
+            {
+                 Debug.Log($"[Result] {target.name} Pushed Back {displacementHexes} Hexes! (v_impact {impactVelocity:F2} > {v_target:F2})");
+                 target.OnImpact(impactVelocity, totalDamage);
             }
             else
             {
-                // Just displacement or minor hit
-                target.OnImpact(impactVelocity, 0);
+                Debug.Log($"[Result] {target.name} withstood the blow. Damage: {totalDamage:F2}");
+                target.OnImpact(impactVelocity, totalDamage);
             }
         }
 
