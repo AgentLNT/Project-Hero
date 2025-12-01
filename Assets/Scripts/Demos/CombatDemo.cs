@@ -26,10 +26,8 @@ namespace ProjectHero.Demos
             Debug.Log("--- Starting Combat Demo ---");
 
             // Define a "Charge" action
-            // Name: Charge, Time: 1.0s, BaseMomentum: 600, Damage: 50, Type: Blunt, Stamina: 20
-            var chargeAction = new CombatAction("Heavy Charge", 1.0f, 600f, 50f, WeaponType.Blunt, 20f);
-
-            // Scenario: Player charges Enemy
+            // Name: Charge, Time: 1.0s, Damage: 50, Type: Blunt, Stamina: 20, ForceMult: 1.5 (Heavy Impact)
+            var chargeAction = new CombatAction("Heavy Charge", 1.0f, 50f, ImpactType.Blunt, 20f, 1.5f);            // Scenario: Player charges Enemy
             Timeline.ScheduleEvent(0.5f, "Player Charge Start", () => 
             {
                 Debug.Log("Player starts charging...");

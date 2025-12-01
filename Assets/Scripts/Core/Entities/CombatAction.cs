@@ -7,19 +7,19 @@ namespace ProjectHero.Core.Entities
     {
         public string Name;
         public float BaseTime;      // T_action
-        public float BaseMomentum;  // P_base
         public float BaseDamage;    // D_base
-        public WeaponType WeaponType;
+        public ImpactType ImpactType; // Changed from WeaponType
         public float StaminaCost;
+        public float ForceMultiplier = 1.0f; // New "Knob" for designers
 
-        public CombatAction(string name, float time, float momentum, float damage, WeaponType type, float stamina)
+        public CombatAction(string name, float time, float damage, ImpactType type, float stamina, float forceMult = 1.0f)
         {
             Name = name;
             BaseTime = time;
-            BaseMomentum = momentum;
             BaseDamage = damage;
-            WeaponType = type;
+            ImpactType = type;
             StaminaCost = stamina;
+            ForceMultiplier = forceMult;
         }
     }
 }

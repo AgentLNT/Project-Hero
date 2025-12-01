@@ -3,16 +3,18 @@ using ProjectHero.Core.Entities;
 
 namespace ProjectHero.Core.Physics
 {
-    public enum WeaponType { Blunt, Slash, Pierce }
+    // Renamed from WeaponType to ImpactType to reflect the Action's nature, not the tool
+    public enum ImpactType { Blunt, Slash, Pierce }
 
     public static class PhysicsEngine
     {
         public static void ResolveCollision(CombatUnit attacker, CombatUnit target, CombatAction action)
         {
-            float Kw = GetTransferCoefficient(action.WeaponType);
+            float Kw = GetTransferCoefficient(action.ImpactType);
             
-            // Formula: P_delivered = P_base * (M_attacker / 100) * Kw
-            float deliveredMomentum = action.BaseMomentum * (attacker.TotalMass / 100f) * Kw;
+            // Formula: P_delivered = M_attacker * v_attacker * Kw * ForceMultiplier
+            // v_attacker is Swiftness
+            float deliveredMomentum = attacker.TotalMass * attacker.Swiftness * Kw * action.ForceMultiplier;
             
             // Formula: v_impact = P / M_target
             float impactVelocity = deliveredMomentum / target.TotalMass;
@@ -29,7 +31,7 @@ namespace ProjectHero.Core.Physics
             float totalDamage = physicalDamage + impactDamage;
             
             Debug.Log($"[Physics] {attacker.name} uses {action.Name} on {target.name}");
-            Debug.Log($"[Calc] P_base={action.BaseMomentum}, M_atk={attacker.TotalMass}, Kw={Kw} => P_delivered={deliveredMomentum:F2}");
+            Debug.Log($"[Calc] M_atk={attacker.TotalMass}, v_atk={attacker.Swiftness}, Kw={Kw}, Mult={action.ForceMultiplier} => P_delivered={deliveredMomentum:F2}");
             Debug.Log($"[Calc] M_target={target.TotalMass} => v_impact={impactVelocity:F2}");
             Debug.Log($"[Calc] D_base={action.BaseDamage}, Armor={target.ArmorDefense} => D_phys={physicalDamage:F2}");
             Debug.Log($"[Calc] D_impact={impactDamage:F2} (P*0.1) => Total={totalDamage:F2}");
@@ -67,13 +69,13 @@ namespace ProjectHero.Core.Physics
             }
         }
 
-        private static float GetTransferCoefficient(WeaponType weapon)
+        private static float GetTransferCoefficient(ImpactType impact)
         {
-            switch (weapon)
+            switch (impact)
             {
-                case WeaponType.Blunt: return 1.0f;
-                case WeaponType.Slash: return 0.6f;
-                case WeaponType.Pierce: return 0.3f;
+                case ImpactType.Blunt: return 1.0f;
+                case ImpactType.Slash: return 0.6f;
+                case ImpactType.Pierce: return 0.3f;
                 default: return 1.0f;
             }
         }

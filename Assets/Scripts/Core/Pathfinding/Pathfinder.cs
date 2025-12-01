@@ -17,7 +17,8 @@ namespace ProjectHero.Core.Pathfinding
             public override int GetHashCode() => (X, Y).GetHashCode();
         }
 
-        public List<GridPoint> FindPath(GridPoint start, GridPoint goal)
+        // Added obstacles parameter to support dynamic pathfinding around blocked tiles
+        public List<GridPoint> FindPath(GridPoint start, GridPoint goal, HashSet<GridPoint> obstacles = null)
         {
             var openSet = new List<GridPoint> { start };
             var cameFrom = new Dictionary<GridPoint, GridPoint>();
@@ -49,6 +50,10 @@ namespace ProjectHero.Core.Pathfinding
 
                 foreach (var neighbor in GetNeighbors(current))
                 {
+                    // If the neighbor is an obstacle, skip it
+                    if (obstacles != null && obstacles.Contains(neighbor))
+                        continue;
+
                     // Assume cost is 1 for now
                     float tentativeG = gScore[current] + 1;
 

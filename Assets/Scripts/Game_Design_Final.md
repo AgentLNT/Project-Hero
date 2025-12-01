@@ -118,15 +118,20 @@
 
 ### A. 动量交付与武器传递 (Momentum Delivery & Transfer)
 
-动量 ($P$) 交付完全基于物理属性，不同武器具有固定的**动量传递系数 ($K_w$)**。
+动量 ($P$) 交付不再依赖技能的基础数值，而是完全基于攻击者的物理属性（质量与速度）。不同武器具有固定的**动量传递系数 ($K_w$)**。为了体现不同招式的发力程度，引入**动作倍率 ($Mult_{action}$)**。
 
-$$P_{\text{delivered}} = P_{\text{base, Action}} \times \frac{M_{\text{total, Attacker}}}{100 \text{kg}} \times K_w$$
+$$P_{\text{delivered}} = (M_{\text{total, Attacker}} \times v_{\text{attacker}}) \times K_w \times Mult_{action}$$
 
-| 武器类型 | $K_w$ (传递系数) | 特性描述 |
+*   **$M_{\text{total, Attacker}}$**: 单位的总质量 (基础 + 属性 + 装备)。
+*   **$v_{\text{attacker}}$**: 攻击速度，对应单位的 **迅捷值 (Swiftness)**。
+*   **$K_w$**: 动量传递效率 (基于动作的**冲击类型 Impact Type**，而非武器本身)。
+*   **$Mult_{action}$**: 动作发力倍率 (普通攻击=1.0, 蓄力重击=1.5, 快速轻击=0.5)。
+
+| 冲击类型 (Impact Type) | $K_w$ (传递系数) | 特性描述 |
 | :---- | :---- | :---- |
-| **钝器 (Blunt)** | 1.0 | 100% 动量传递，最易造成击退/倒地。 |
-| **劈砍 (Slash)** | 0.6 | 动量部分转化为切割伤害，击退效果中等。 |
-| **穿刺 (Pierce)** | 0.3 | 动量主要用于穿透护甲，极难造成击退。 |
+| **钝击 (Blunt)** | 1.0 | 100% 动量传递，最易造成击退/倒地。 (如：盾击、锤击、剑柄敲击) |
+| **劈砍 (Slash)** | 0.6 | 动量部分转化为切割伤害，击退效果中等。 (如：挥剑、横扫) |
+| **穿刺 (Pierce)** | 0.3 | 动量主要用于穿透护甲，极难造成击退。 (如：突刺、射击) |
 
 ### B. 控制阈值与地面摩擦 (Control Thresholds & Friction)
 
