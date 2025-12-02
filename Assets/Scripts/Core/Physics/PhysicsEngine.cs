@@ -1,5 +1,6 @@
 using UnityEngine;
 using ProjectHero.Core.Entities;
+using ProjectHero.Core.Actions;
 
 namespace ProjectHero.Core.Physics
 {

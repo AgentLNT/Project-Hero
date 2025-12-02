@@ -2,6 +2,7 @@ using UnityEngine;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Physics;
 using ProjectHero.Core.Timeline;
+using ProjectHero.Core.Actions;
 
 namespace ProjectHero.Demos
 {
@@ -32,20 +33,32 @@ namespace ProjectHero.Demos
             {
                 Debug.Log("Player starts charging...");
                 // Visual movement would happen here
-            });
+            }, Player);
 
             Timeline.ScheduleEvent(1.5f, "Impact Moment", () => 
             {
                 // Resolve collision using the Action
                 PhysicsEngine.ResolveCollision(Player, Enemy, chargeAction);
-            });
+                
+                // Check for interruption
+                if (Enemy.IsStaggered || Enemy.IsKnockedDown)
+                {
+                    Timeline.CancelEvents(Enemy);
+                }
+            }, Player);
 
             // Enemy tries to block just before impact
             Timeline.InsertReaction(1.4f, "Enemy Block Attempt", () => 
             {
                 Debug.Log("Enemy raises shield!");
                 // Logic to reduce damage or increase stability would go here
-            });
+            }, Enemy);
+            
+            // Enemy tries to counter-attack AFTER impact (should be cancelled if staggered)
+            Timeline.ScheduleEvent(2.0f, "Enemy Counter Attack", () => 
+            {
+                Debug.Log("Enemy swings back!");
+            }, Enemy);
         }
 
         void Update()

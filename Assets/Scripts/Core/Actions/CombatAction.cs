@@ -1,6 +1,6 @@
 using ProjectHero.Core.Physics;
 
-namespace ProjectHero.Core.Entities
+namespace ProjectHero.Core.Actions
 {
     [System.Serializable]
     public class CombatAction
