@@ -65,6 +65,7 @@ namespace ProjectHero.Core.Timeline
             nextEvent.Action?.Invoke();
         }
 
+        [ContextMenu("Preview Next Event")]
         public void PeekNext()
         {
             if (_events.Count > 0)

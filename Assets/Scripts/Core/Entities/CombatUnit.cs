@@ -1,9 +1,15 @@
 using UnityEngine;
+using ProjectHero.Core.Pathfinding;
 
 namespace ProjectHero.Core.Entities
 {
     public class CombatUnit : MonoBehaviour
     {
+        [Header("Grid State")]
+        // The logical position on the grid. 
+        // Updates ONLY when a move step is fully completed.
+        public Pathfinder.GridPoint GridPosition { get; private set; }
+
         [Header("Base Attributes")]
         public float Strength = 10f;
         public float Dexterity = 10f;
@@ -27,6 +33,13 @@ namespace ProjectHero.Core.Entities
         
         public bool IsStaggered;
         public bool IsKnockedDown;
+
+        // --- Grid Logic ---
+
+        public void SetGridPosition(Pathfinder.GridPoint point)
+        {
+            GridPosition = point;
+        }
 
         private void Start()
         {
