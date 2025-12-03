@@ -10,6 +10,9 @@ namespace ProjectHero.Core.Grid
         [Header("Grid Settings")]
         public float HexSize = 1.0f; // Radius of the hex
 
+        [Header("Ground Layer")]
+        public LayerMask groundLayer;
+
         private void Awake()
         {
             if (Instance == null) Instance = this;
@@ -56,6 +59,15 @@ namespace ProjectHero.Core.Grid
             }
 
             return new Pathfinder.GridPoint(x, y);
+        }
+
+        internal static Vector3 GetGroundPosition(Vector3 pos)
+        {
+            if (UnityEngine.Physics.Raycast(new Vector3(pos.x, 100f, pos.z), Vector3.down, out RaycastHit hit, 200f, Instance.groundLayer))
+            {
+                pos.y = hit.point.y;
+            }
+            return pos;
         }
     }
 }

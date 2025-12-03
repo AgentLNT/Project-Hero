@@ -9,7 +9,7 @@ namespace ProjectHero.Core.Physics
 
     public static class PhysicsEngine
     {
-        public static void ResolveCollision(CombatUnit attacker, CombatUnit target, CombatAction action)
+        public static void ResolveCollision(CombatUnit attacker, CombatUnit target, Action action)
         {
             float Kw = GetTransferCoefficient(action.ImpactType);
             

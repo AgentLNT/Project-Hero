@@ -1,11 +1,15 @@
 using UnityEngine;
 using ProjectHero.Core.Pathfinding;
+using ProjectHero.Core.Grid;
+using ProjectHero.Core.Visuals;
 
 namespace ProjectHero.Core.Entities
 {
     public class CombatUnit : MonoBehaviour
     {
         [Header("Grid State")]
+        public Pathfinder.GridPoint InitialGridPosition;
+
         // The logical position on the grid. 
         // Updates ONLY when a move step is fully completed.
         public Pathfinder.GridPoint GridPosition { get; private set; }
@@ -43,6 +47,16 @@ namespace ProjectHero.Core.Entities
 
         private void Start()
         {
+            // Initialize logical position
+            GridPosition = InitialGridPosition;
+
+            // Snap visual position to grid
+            if (GridManager.Instance != null)
+            {
+                Vector3 position = GridManager.Instance.GridToWorld(GridPosition);
+                transform.position = GridManager.GetGroundPosition(position);
+            }
+
             // Initialize stamina to max on start
             CurrentStamina = MaxStamina;
             // Focus and Adrenaline usually start at 0 or specific values

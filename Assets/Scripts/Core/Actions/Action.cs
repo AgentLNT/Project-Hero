@@ -3,7 +3,7 @@ using ProjectHero.Core.Physics;
 namespace ProjectHero.Core.Actions
 {
     [System.Serializable]
-    public class CombatAction
+    public class Action
     {
         public string Name;
         public float BaseTime;      // T_action
@@ -12,7 +12,7 @@ namespace ProjectHero.Core.Actions
         public float StaminaCost;
         public float ForceMultiplier = 1.0f; // New "Knob" for designers
 
-        public CombatAction(string name, float time, float damage, ImpactType type, float stamina, float forceMult = 1.0f)
+        public Action(string name, float time, float damage, ImpactType type, float stamina, float forceMult = 1.0f)
         {
             Name = name;
             BaseTime = time;

@@ -70,16 +70,19 @@ namespace ProjectHero.Core.Timeline
             _events = _events.OrderBy(e => e.Time).ThenByDescending(e => e.Priority).ToList();
         }
 
-        public void AdvanceTime()
+        public void AdvanceTime(float timer)
         {
-            if (_events.Count == 0) return;
+            CurrentTime = timer; // Update internal time so new events are scheduled correctly relative to now
 
-            var nextEvent = _events[0];
-            _events.RemoveAt(0);
+            while (_events.Count > 0 && _events[0].Time <= CurrentTime)
+            {
+                var nextEvent = _events[0];
+                _events.RemoveAt(0);
 
-            CurrentTime = nextEvent.Time;
-            Debug.Log($"[T={CurrentTime:F2}] Executing: {nextEvent.Description}");
-            nextEvent.Action?.Invoke();
+                Debug.Log($"[T={nextEvent.Time:F2}] Executing: {nextEvent.Description}");
+                nextEvent.Action?.Invoke();
+
+            }
         }
 
         [ContextMenu("Preview Next Event")]

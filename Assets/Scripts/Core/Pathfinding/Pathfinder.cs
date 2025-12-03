@@ -6,6 +6,7 @@ namespace ProjectHero.Core.Pathfinding
     public class Pathfinder
     {
         // Represents a coordinate on the triangular grid
+        [System.Serializable]
         public struct GridPoint
         {
             public int X;
