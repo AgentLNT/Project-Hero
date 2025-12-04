@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Visuals;
@@ -13,6 +14,25 @@ namespace ProjectHero.Core.Entities
         // The logical position on the grid. 
         // Updates ONLY when a move step is fully completed.
         public Pathfinder.GridPoint GridPosition { get; private set; }
+
+        [Header("Volume")]
+        public UnitVolume UnitVolumeDefinition;
+        public GridDirection FacingDirection = GridDirection.East;
+
+        public List<TrianglePoint> GetOccupiedTriangles()
+        {
+            if (UnitVolumeDefinition == null) return new List<TrianglePoint>();
+
+            var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(FacingDirection);
+            var occupied = new List<TrianglePoint>();
+
+            foreach (var rel in relativeTriangles)
+            {
+                occupied.Add(new TrianglePoint(GridPosition.X + rel.X, GridPosition.Y + rel.Y, rel.T));
+            }
+
+            return occupied;
+        }
 
         [Header("Base Attributes")]
         public float Strength = 10f;
@@ -82,6 +102,38 @@ namespace ProjectHero.Core.Entities
                 }
                 return baseVal;
             }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (GridManager.Instance == null) return;
+
+            // Draw Logical Volume
+            Gizmos.color = new Color(0, 1, 0, 0.4f); // Semi-transparent green
+            var occupied = GetOccupiedTriangles();
+            foreach (var tri in occupied)
+            {
+                var corners = GridManager.Instance.GetTriangleCorners(tri);
+                if (corners.Length == 3)
+                {
+                    Gizmos.DrawLine(corners[0], corners[1]);
+                    Gizmos.DrawLine(corners[1], corners[2]);
+                    Gizmos.DrawLine(corners[2], corners[0]);
+                    
+                    // Fill hint (just lines for now, or small sphere at center)
+                    var center = GridManager.Instance.GetTriangleCenter(tri);
+                    Gizmos.DrawSphere(GridManager.GetGroundPosition(center), 0.1f);
+                }
+            }
+
+            // Draw Facing Direction
+            Gizmos.color = Color.blue;
+            Vector3 pos = GridManager.Instance.GridToWorld(GridPosition);
+            pos = GridManager.GetGroundPosition(pos);
+            
+            // Simple arrow approximation based on FacingDirection
+            // (Ideally we'd have a helper to convert GridDirection to Vector3)
+            Gizmos.DrawRay(pos, Vector3.up * 2f); 
         }
 
         // Reaction (Window Width) = WIS

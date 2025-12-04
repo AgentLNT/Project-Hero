@@ -578,9 +578,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a81fcbe8872b1e4f89c5be627e2dafc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroundLayer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!1 &1433528171
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,9 +730,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a81fcbe8872b1e4f89c5be627e2dafc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroundLayer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!1 &1510844936
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,6 +850,7 @@ GameObject:
   - component: {fileID: 1572899355}
   - component: {fileID: 1572899354}
   - component: {fileID: 1572899356}
+  - component: {fileID: 1572899357}
   m_Layer: 0
   m_Name: CombatManager
   m_TagString: Untagged
@@ -906,6 +901,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a882c992b3d461940a83cbedf7c7073c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1572899357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572899353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2887d546179b04c87a3f4bdebee38c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HexSize: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
