@@ -12,4 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72c1b722215097e42819e4e1e5ed94a5, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  Volumes: []
+  Volumes:
+  - Direction: 0
+    RelativeTriangles:
+    - X: 1
+      Y: 0
+      T: 1
+    - X: 1
+      Y: 0
+      T: -1
+    - X: 0
+      Y: 1
+      T: -1
+    - X: 0
+      Y: -1
+      T: 1
+    - X: -1
+      Y: 0
+      T: 1
+    - X: -1
+      Y: 0
+      T: -1
