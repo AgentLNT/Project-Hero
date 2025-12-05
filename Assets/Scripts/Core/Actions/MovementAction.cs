@@ -76,6 +76,7 @@ namespace ProjectHero.Core.Actions
             for (int i = 1; i < path.Count; i++)
             {
                 var targetPoint = path[i];
+                var previousPoint = path[i-1];
                 
                 // Calculate duration for this step (same logic as single move)
                 float distance = 1.0f; 
@@ -89,9 +90,27 @@ namespace ProjectHero.Core.Actions
                    
                 Vector3 targetWorldPos = GridManager.Instance.GridToWorld(targetPoint);
 
-                // 1. Visual Event (Starts at beginning of step)
-                System.Action visualAction = () => 
+                // 1. Start of Step (Visuals + Pre-check)
+                System.Action startStepAction = () => 
                 {
+                    // --- Dynamic Obstacle Check ---
+                    // Before starting the move, check if the target space is still free.
+                    var dir = GridMath.GetDirection(previousPoint, targetPoint);
+                    var projectedVolume = unit.GetProjectedOccupancy(targetPoint, dir);
+                    
+                    if (GridManager.Instance.IsSpaceOccupied(projectedVolume, unit))
+                    {
+                        Debug.LogWarning($"[Movement] Path blocked for {unit.name} at step {i} ({targetPoint})! Cancelling path.");
+                        
+                        // CRITICAL FIX: Immediately cancel all future events for this unit.
+                        // This stops the unit dead in its tracks at the previous valid position.
+                        timeline.CancelEvents(unit);
+                        
+                        // Optional: Trigger "Bump" animation or Stagger here
+                        return;
+                    }
+                    // ------------------------------
+
                     var mover = unit.GetComponent<Visuals.UnitMovement>();
                     if (mover != null)
                     {
@@ -99,16 +118,45 @@ namespace ProjectHero.Core.Actions
                         mover.MoveVisuals(targetWorldPos, stepDuration, null);
                     }
                 };
-                timeline.ScheduleEvent(startDelay, $"Visual Move Step {i}", visualAction, unit);
+                timeline.ScheduleEvent(startDelay, $"Start Move Step {i}", startStepAction, unit);
 
-                // 2. Logic Event (Happens exactly at end of step)
-                System.Action logicAction = () => 
+                // 2. End of Step (Logic Commit)
+                System.Action endStepAction = () => 
                 {
-                    unit.SetGridPosition(targetPoint);
-                    Debug.Log($"[Logic] {unit.name} arrived at {targetPoint}");
+                    // --- Double Check (Race Condition Handling) ---
+                    // Check if the target space was occupied DURING the movement animation.
+                    var dir = GridMath.GetDirection(previousPoint, targetPoint);
+                    var projectedVolume = unit.GetProjectedOccupancy(targetPoint, dir);
+
+                    if (GridManager.Instance.IsSpaceOccupied(projectedVolume, unit))
+                    {
+                        Debug.LogWarning($"[Collision] {unit.name} crashed into something at {targetPoint} during movement!");
+                        
+                        // Visual Correction: Snap back to the previous valid position
+                        // Since we haven't updated GridPosition yet, the unit is logically still at 'previousPoint'.
+                        // We just need to reset the visual transform.
+                        Vector3 prevWorldPos = GridManager.Instance.GridToWorld(previousPoint);
+                        var mover = unit.GetComponent<Visuals.UnitMovement>();
+                        if (mover != null)
+                        {
+                            // Force stop any tweens and snap
+                            mover.transform.position = GridManager.GetGroundPosition(prevWorldPos);
+                        }
+
+                        // Cancel all future steps
+                        timeline.CancelEvents(unit);
+                        return;
+                    }
+                    // ----------------------------------------------
+
+                    // Update Position and Facing Atomically
+                    // This ensures the Occupancy Map is updated with the correct rotation
+                    unit.SetGridPositionAndFacing(targetPoint, dir);
+
+                    Debug.Log($"[Logic] {unit.name} arrived at {targetPoint} facing {dir}");
                 };
                 // Use High Priority for Movement Logic to ensure position updates BEFORE attacks
-                timeline.ScheduleEvent(endDelay, $"Logic Arrive Step {i}", logicAction, unit, TimelinePriority.Movement);
+                timeline.ScheduleEvent(endDelay, $"End Move Step {i}", endStepAction, unit, TimelinePriority.Movement);
 
                 // Add this step's duration to the delay for the NEXT step
                 accumulatedDelay += stepDuration;

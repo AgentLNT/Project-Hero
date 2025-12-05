@@ -35,20 +35,8 @@ namespace ProjectHero.Core.Actions
                     var attackArea = action.Pattern.GetAffectedTriangles(attacker.GridPosition, attacker.FacingDirection);
                     var targetArea = target.GetOccupiedTriangles();
                     
-                    hit = false;
-                    // Simple O(N*M) intersection check
-                    foreach (var t1 in attackArea)
-                    {
-                        foreach (var t2 in targetArea)
-                        {
-                            if (t1 == t2) 
-                            {
-                                hit = true;
-                                break;
-                            }
-                        }
-                        if (hit) break;
-                    }
+                    // Use the centralized Physics Engine for intersection check
+                    hit = PhysicsEngine.CheckIntersection(attackArea, targetArea);
                 }
 
                 if (hit)

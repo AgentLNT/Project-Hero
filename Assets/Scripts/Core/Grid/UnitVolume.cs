@@ -22,11 +22,33 @@ namespace ProjectHero.Core.Grid
             if (vol != null && vol.RelativeTriangles.Count > 0) 
                 return vol.RelativeTriangles;
 
-            // 2. If not found, try to find "East" (Default) and rotate it
-            var baseVol = Volumes.Find(v => v.Direction == GridDirection.East);
+            // 2. Procedural Generation
+            // Determine if we are in an Even (Vertex-Aligned) or Odd (Face-Aligned) direction
+            int dirInt = (int)direction;
+            bool isOdd = (dirInt % 2 != 0);
+
+            // Base direction to look for: East (0) for Even, EastNorth (1) for Odd
+            GridDirection baseDirection = isOdd ? GridDirection.EastNorth : GridDirection.East;
+            
+            var baseVol = Volumes.Find(v => v.Direction == baseDirection);
+            
+            // Fallback: If Odd base is missing, maybe use Even base? 
+            // (Physics Warning: This might look weird, but better than nothing)
+            if (baseVol == null && isOdd)
+            {
+                baseVol = Volumes.Find(v => v.Direction == GridDirection.East);
+                Debug.LogWarning($"UnitVolume '{name}': Missing Odd base volume for direction {direction}. Falling back to Even base volume.");
+            }
+
             if (baseVol != null)
             {
-                int steps = (int)direction; // East=0, NE=1, etc.
+                // Calculate rotation steps relative to the base
+                // Note: GridMath.Rotate assumes 60-degree steps (Vertex-to-Vertex).
+                // If we are rotating from Odd to Odd (e.g. 30 -> 90), that is a 60 degree step.
+                // Steps = (Target - Base) / 2
+                
+                int steps = (dirInt - (int)baseVol.Direction) / 2;
+                
                 List<TrianglePoint> rotated = new List<TrianglePoint>();
                 foreach (var p in baseVol.RelativeTriangles)
                 {

@@ -1,6 +1,8 @@
 using UnityEngine;
+using System.Collections.Generic;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Actions;
+using ProjectHero.Core.Grid;
 
 namespace ProjectHero.Core.Physics
 {
@@ -9,6 +11,27 @@ namespace ProjectHero.Core.Physics
 
     public static class PhysicsEngine
     {
+        /// <summary>
+        /// Checks if two sets of triangles have any overlap.
+        /// This is the core collision detection method for the entire game.
+        /// </summary>
+        public static bool CheckIntersection(List<TrianglePoint> volumeA, List<TrianglePoint> volumeB)
+        {
+            if (volumeA == null || volumeB == null) return false;
+
+            // Optimization: Use a HashSet for O(1) lookups if volumes are large.
+            // For small volumes (e.g. < 10 triangles), nested loops are fine and generate less garbage.
+            
+            foreach (var triA in volumeA)
+            {
+                foreach (var triB in volumeB)
+                {
+                    if (triA == triB) return true;
+                }
+            }
+            return false;
+        }
+
         public static void ResolveCollision(CombatUnit attacker, CombatUnit target, Action action)
         {
             float Kw = GetTransferCoefficient(action.ImpactType);

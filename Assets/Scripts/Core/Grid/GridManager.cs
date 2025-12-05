@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using ProjectHero.Core.Pathfinding;
+using ProjectHero.Core.Entities;
 
 namespace ProjectHero.Core.Grid
 {
@@ -13,6 +14,79 @@ namespace ProjectHero.Core.Grid
 
         [Header("Ground Layer")]
         public LayerMask groundLayer;
+
+        // --- Occupancy System ---
+        // Maps every occupied TrianglePoint to the Unit that occupies it.
+        // If value is null, it means it's occupied by a static obstacle (terrain).
+        private Dictionary<TrianglePoint, CombatUnit> OccupancyMap = new Dictionary<TrianglePoint, CombatUnit>();
+
+        public void RegisterOccupancy(CombatUnit owner, List<TrianglePoint> volume)
+        {
+            if (volume == null) return;
+            foreach (var point in volume)
+            {
+                if (OccupancyMap.ContainsKey(point))
+                {
+                    // Debug.LogWarning($"Grid Collision: {point} is already occupied by {OccupancyMap[point]?.name ?? "Static Obstacle"}!");
+                    // In a robust system, we might handle this (e.g. push logic), but for now we overwrite or ignore.
+                    OccupancyMap[point] = owner;
+                }
+                else
+                {
+                    OccupancyMap.Add(point, owner);
+                }
+            }
+        }
+
+        public void UnregisterOccupancy(List<TrianglePoint> volume)
+        {
+            if (volume == null) return;
+            foreach (var point in volume)
+            {
+                if (OccupancyMap.ContainsKey(point))
+                {
+                    OccupancyMap.Remove(point);
+                }
+            }
+        }
+
+        public bool IsOccupied(TrianglePoint point, CombatUnit ignoreUnit = null)
+        {
+            if (OccupancyMap.TryGetValue(point, out CombatUnit owner))
+            {
+                // If owner is the unit asking (ignoreUnit), then it's NOT considered blocked (Self-Overlap)
+                if (owner == ignoreUnit) return false;
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsSpaceOccupied(List<TrianglePoint> space, CombatUnit ignoreUnit = null)
+        {
+            if (space == null) return false;
+            foreach (var point in space)
+            {
+                if (IsOccupied(point, ignoreUnit)) return true;
+            }
+            return false;
+        }
+
+        public HashSet<TrianglePoint> GetGlobalObstacles(CombatUnit ignoreUnit = null)
+        {
+            // This is expensive to generate every frame. 
+            // Ideally, Pathfinder should call IsOccupied() directly.
+            // But for compatibility with current Pathfinder signature:
+            var set = new HashSet<TrianglePoint>();
+            foreach (var kvp in OccupancyMap)
+            {
+                if (kvp.Value != ignoreUnit)
+                {
+                    set.Add(kvp.Key);
+                }
+            }
+            return set;
+        }
+        // ------------------------
 
         private void Awake()
         {
@@ -108,24 +182,48 @@ namespace ProjectHero.Core.Grid
             return pos;
         }
 
-        public List<TrianglePoint> GetTrianglesAroundVertex(Pathfinder.GridPoint vertex)
+        private void OnDrawGizmos()
         {
-            if ((vertex.X + vertex.Y) % 2 != 0)
+            if (OccupancyMap == null) return;
+
+            foreach (var kvp in OccupancyMap)
             {
-                Debug.LogError($"GridPoint {vertex.X},{vertex.Y} is not a valid Vertex (Parity must be Even).");
-                return new List<TrianglePoint>();
+                TrianglePoint tri = kvp.Key;
+                CombatUnit unit = kvp.Value;
+
+                Gizmos.color = unit != null ? new Color(1, 0, 0, 0.5f) : new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                
+                Vector3[] corners = GetTriangleCorners(tri);
+                if (corners.Length == 3)
+                {
+                    Gizmos.DrawLine(corners[0], corners[1]);
+                    Gizmos.DrawLine(corners[1], corners[2]);
+                    Gizmos.DrawLine(corners[2], corners[0]);
+                    
+                    // Fill (Optional, using mesh or just lines)
+                    // Gizmos.DrawMesh...
+                }
             }
-
-            List<TrianglePoint> triangles = new List<TrianglePoint>();
-
-            triangles.Add(new TrianglePoint(vertex.X + 1, vertex.Y, 1));
-            triangles.Add(new TrianglePoint(vertex.X + 1, vertex.Y, -1));
-            triangles.Add(new TrianglePoint(vertex.X - 1, vertex.Y, 1));
-            triangles.Add(new TrianglePoint(vertex.X - 1, vertex.Y, -1));
-            triangles.Add(new TrianglePoint(vertex.X, vertex.Y + 1, -1));
-            triangles.Add(new TrianglePoint(vertex.X, vertex.Y - 1, 1));
-
-            return triangles;
         }
+
+        //public List<TrianglePoint> GetTrianglesAroundVertex(Pathfinder.GridPoint vertex)
+        //{
+        //    if ((vertex.X + vertex.Y) % 2 != 0)
+        //    {
+        //        Debug.LogError($"GridPoint {vertex.X},{vertex.Y} is not a valid Vertex (Parity must be Even).");
+        //        return new List<TrianglePoint>();
+        //    }
+
+        //    List<TrianglePoint> triangles = new List<TrianglePoint>();
+
+        //    triangles.Add(new TrianglePoint(vertex.X + 1, vertex.Y, 1));
+        //    triangles.Add(new TrianglePoint(vertex.X + 1, vertex.Y, -1));
+        //    triangles.Add(new TrianglePoint(vertex.X - 1, vertex.Y, 1));
+        //    triangles.Add(new TrianglePoint(vertex.X - 1, vertex.Y, -1));
+        //    triangles.Add(new TrianglePoint(vertex.X, vertex.Y + 1, -1));
+        //    triangles.Add(new TrianglePoint(vertex.X, vertex.Y - 1, 1));
+
+        //    return triangles;
+        //}
     }
 }

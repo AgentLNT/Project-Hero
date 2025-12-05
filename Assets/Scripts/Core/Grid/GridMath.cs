@@ -1,9 +1,46 @@
 using UnityEngine;
+using ProjectHero.Core.Pathfinding;
 
 namespace ProjectHero.Core.Grid
 {
     public static class GridMath
     {
+        public static GridDirection GetDirection(Pathfinder.GridPoint from, Pathfinder.GridPoint to)
+        {
+            int dx = to.X - from.X;
+            int dy = to.Y - from.Y;
+
+            // --- Primary Directions (Even) ---
+            if (dy == 0)
+            {
+                if (dx > 0) return GridDirection.East;      // (+2, 0)
+                if (dx < 0) return GridDirection.West;      // (-2, 0)
+            }
+            if (Mathf.Abs(dx) == 1 && Mathf.Abs(dy) == 1)
+            {
+                if (dx > 0 && dy > 0) return GridDirection.NorthEast; // (+1, +1)
+                if (dx < 0 && dy > 0) return GridDirection.NorthWest; // (-1, +1)
+                if (dx < 0 && dy < 0) return GridDirection.SouthWest; // (-1, -1)
+                if (dx > 0 && dy < 0) return GridDirection.SouthEast; // (+1, -1)
+            }
+
+            // --- Secondary Directions (Odd) ---
+            if (dx == 0)
+            {
+                if (dy > 0) return GridDirection.North;     // (0, +2)
+                if (dy < 0) return GridDirection.South;     // (0, -2)
+            }
+            if (Mathf.Abs(dx) == 3 && Mathf.Abs(dy) == 1)
+            {
+                if (dx > 0 && dy > 0) return GridDirection.EastNorth; // (+3, +1)
+                if (dx < 0 && dy > 0) return GridDirection.WestNorth; // (-3, +1)
+                if (dx < 0 && dy < 0) return GridDirection.WestSouth; // (-3, -1)
+                if (dx > 0 && dy < 0) return GridDirection.EastSouth; // (+3, -1)
+            }
+
+            return GridDirection.East; // Default / Fallback
+        }
+
         // Rotates a TrianglePoint by (steps * 60) degrees Counter-Clockwise around (0,0)
         // Optimized using Center-of-Mass Rotation and Parity Conservation.
         public static TrianglePoint Rotate(TrianglePoint point, int steps)
@@ -55,82 +92,82 @@ namespace ProjectHero.Core.Grid
         }
 
         // Legacy method kept for reference, but Rotate() now uses the optimized path.
-        public static TrianglePoint Rotate60(TrianglePoint point)
-        {
-            return Rotate(point, 1);
-        }
+        //public static TrianglePoint Rotate60(TrianglePoint point)
+        //{
+        //    return Rotate(point, 1);
+        //}
 
         // --- Helpers (Legacy / Verification) ---
 
-        private static Vector2Int GetVertex(TrianglePoint t, int index)
-        {
-            // T=1 (Up): (X-1, Y), (X+1, Y), (X, Y+1)
-            // T=-1 (Down): (X-1, Y), (X+1, Y), (X, Y-1)
+        //private static Vector2Int GetVertex(TrianglePoint t, int index)
+        //{
+        //    // T=1 (Up): (X-1, Y), (X+1, Y), (X, Y+1)
+        //    // T=-1 (Down): (X-1, Y), (X+1, Y), (X, Y-1)
             
-            if (t.T == 1)
-            {
-                if (index == 1) return new Vector2Int(t.X - 1, t.Y);
-                if (index == 2) return new Vector2Int(t.X + 1, t.Y);
-                return new Vector2Int(t.X, t.Y + 1);
-            }
-            else
-            {
-                if (index == 1) return new Vector2Int(t.X - 1, t.Y);
-                if (index == 2) return new Vector2Int(t.X + 1, t.Y);
-                return new Vector2Int(t.X, t.Y - 1);
-            }
-        }
+        //    if (t.T == 1)
+        //    {
+        //        if (index == 1) return new Vector2Int(t.X - 1, t.Y);
+        //        if (index == 2) return new Vector2Int(t.X + 1, t.Y);
+        //        return new Vector2Int(t.X, t.Y + 1);
+        //    }
+        //    else
+        //    {
+        //        if (index == 1) return new Vector2Int(t.X - 1, t.Y);
+        //        if (index == 2) return new Vector2Int(t.X + 1, t.Y);
+        //        return new Vector2Int(t.X, t.Y - 1);
+        //    }
+        //}
 
-        private static Vector2Int RotateVertex60(Vector2Int v)
-        {
-            // Convert Doubled (x, y) to Cube (q, r, s)
-            // q = (x - y) / 2
-            // r = y
-            // s = -q - r
+        //private static Vector2Int RotateVertex60(Vector2Int v)
+        //{
+        //    // Convert Doubled (x, y) to Cube (q, r, s)
+        //    // q = (x - y) / 2
+        //    // r = y
+        //    // s = -q - r
             
-            int q = (v.x - v.y) / 2;
-            int r = v.y;
-            int s = -q - r;
+        //    int q = (v.x - v.y) / 2;
+        //    int r = v.y;
+        //    int s = -q - r;
 
-            // Rotate CCW: (q, r, s) -> (-r, -s, -q)
-            int q_new = -r;
-            int r_new = -s;
-            // int s_new = -q; // Not needed for conversion back
+        //    // Rotate CCW: (q, r, s) -> (-r, -s, -q)
+        //    int q_new = -r;
+        //    int r_new = -s;
+        //    // int s_new = -q; // Not needed for conversion back
 
-            // Convert back to Doubled
-            // y = r
-            // x = 2q + y
+        //    // Convert back to Doubled
+        //    // y = r
+        //    // x = 2q + y
             
-            int y_final = r_new;
-            int x_final = 2 * q_new + y_final;
+        //    int y_final = r_new;
+        //    int x_final = 2 * q_new + y_final;
 
-            return new Vector2Int(x_final, y_final);
-        }
+        //    return new Vector2Int(x_final, y_final);
+        //}
 
-        private static TrianglePoint FromVertices(Vector2Int v1, Vector2Int v2, Vector2Int v3)
-        {
-            // Find the two vertices with the same Y (Horizontal Edge)
-            Vector2Int p1, p2, p3;
+        //private static TrianglePoint FromVertices(Vector2Int v1, Vector2Int v2, Vector2Int v3)
+        //{
+        //    // Find the two vertices with the same Y (Horizontal Edge)
+        //    Vector2Int p1, p2, p3;
 
-            if (v1.y == v2.y) { p1 = v1; p2 = v2; p3 = v3; }
-            else if (v1.y == v3.y) { p1 = v1; p2 = v3; p3 = v2; }
-            else { p1 = v2; p2 = v3; p3 = v1; } // v2.y == v3.y
+        //    if (v1.y == v2.y) { p1 = v1; p2 = v2; p3 = v3; }
+        //    else if (v1.y == v3.y) { p1 = v1; p2 = v3; p3 = v2; }
+        //    else { p1 = v2; p2 = v3; p3 = v1; } // v2.y == v3.y
 
-            // Midpoint of p1 and p2 is the Triangle Center (X, Y)
-            // Since p1 and p2 are vertices, their X sum is even?
-            // Wait, midpoint X = (x1 + x2) / 2.
-            // In doubled coords, vertices are always even parity? No.
-            // Vertices are (X+Y)%2 == 0.
-            // Example: (0,0) and (2,0). Midpoint (1,0).
+        //    // Midpoint of p1 and p2 is the Triangle Center (X, Y)
+        //    // Since p1 and p2 are vertices, their X sum is even?
+        //    // Wait, midpoint X = (x1 + x2) / 2.
+        //    // In doubled coords, vertices are always even parity? No.
+        //    // Vertices are (X+Y)%2 == 0.
+        //    // Example: (0,0) and (2,0). Midpoint (1,0).
             
-            int centerX = (p1.x + p2.x) / 2;
-            int centerY = p1.y; // Same Y
+        //    int centerX = (p1.x + p2.x) / 2;
+        //    int centerY = p1.y; // Same Y
 
-            // Determine T based on p3
-            // If p3.y > centerY, T=1. Else T=-1.
-            int t = (p3.y > centerY) ? 1 : -1;
+        //    // Determine T based on p3
+        //    // If p3.y > centerY, T=1. Else T=-1.
+        //    int t = (p3.y > centerY) ? 1 : -1;
 
-            return new TrianglePoint(centerX, centerY, t);
-        }
+        //    return new TrianglePoint(centerX, centerY, t);
+        //}
     }
 }

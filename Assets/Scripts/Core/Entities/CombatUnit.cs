@@ -34,6 +34,21 @@ namespace ProjectHero.Core.Entities
             return occupied;
         }
 
+        public List<TrianglePoint> GetProjectedOccupancy(Pathfinder.GridPoint targetPos, GridDirection targetFacing)
+        {
+            if (UnitVolumeDefinition == null) return new List<TrianglePoint>();
+
+            var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(targetFacing);
+            var occupied = new List<TrianglePoint>();
+
+            foreach (var rel in relativeTriangles)
+            {
+                occupied.Add(new TrianglePoint(targetPos.X + rel.X, targetPos.Y + rel.Y, rel.T));
+            }
+
+            return occupied;
+        }
+
         [Header("Base Attributes")]
         public float Strength = 10f;
         public float Dexterity = 10f;
@@ -62,13 +77,54 @@ namespace ProjectHero.Core.Entities
 
         public void SetGridPosition(Pathfinder.GridPoint point)
         {
+            // 1. Unregister Old Volume
+            if (GridManager.Instance != null)
+            {
+                var oldVolume = GetOccupiedTriangles();
+                GridManager.Instance.UnregisterOccupancy(oldVolume);
+            }
+
+            // 2. Update State
             GridPosition = point;
+
+            // 3. Register New Volume
+            if (GridManager.Instance != null)
+            {
+                var newVolume = GetOccupiedTriangles();
+                GridManager.Instance.RegisterOccupancy(this, newVolume);
+            }
+        }
+
+        // Overload to update both Position and Facing atomically
+        public void SetGridPositionAndFacing(Pathfinder.GridPoint point, GridDirection facing)
+        {
+            if (GridManager.Instance != null)
+            {
+                var oldVolume = GetOccupiedTriangles();
+                GridManager.Instance.UnregisterOccupancy(oldVolume);
+            }
+
+            GridPosition = point;
+            FacingDirection = facing;
+
+            if (GridManager.Instance != null)
+            {
+                var newVolume = GetOccupiedTriangles();
+                GridManager.Instance.RegisterOccupancy(this, newVolume);
+            }
         }
 
         private void Start()
         {
             // Initialize logical position
             GridPosition = InitialGridPosition;
+
+            // Register Initial Volume
+            if (GridManager.Instance != null)
+            {
+                var vol = GetOccupiedTriangles();
+                GridManager.Instance.RegisterOccupancy(this, vol);
+            }
 
             // Snap visual position to grid
             if (GridManager.Instance != null)
@@ -80,6 +136,15 @@ namespace ProjectHero.Core.Entities
             // Initialize stamina to max on start
             CurrentStamina = MaxStamina;
             // Focus and Adrenaline usually start at 0 or specific values
+        }
+
+        private void OnDestroy()
+        {
+            if (GridManager.Instance != null)
+            {
+                var vol = GetOccupiedTriangles();
+                GridManager.Instance.UnregisterOccupancy(vol);
+            }
         }
 
         // --- Derived Stats (Design Section III) ---
@@ -104,7 +169,7 @@ namespace ProjectHero.Core.Entities
             }
         }
 
-        private void OnDrawGizmosSelected()
+        private void OnDrawGizmos()
         {
             if (GridManager.Instance == null) return;
 
