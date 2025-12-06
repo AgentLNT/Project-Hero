@@ -19,12 +19,12 @@ namespace ProjectHero.Demos
         {
             // Position them for the demo using Grid Coordinates
             // Player at roughly -5 world x -> -10 grid x
-            if (Player != null)
-                Player.InitialGridPosition = new Pathfinder.GridPoint(-10, 0);
+            //if (Player != null)
+            //    Player.InitialGridPosition = new Pathfinder.GridPoint(-10, 0);
             
-            // Enemy at roughly 5 world x -> 10 grid x
-            if (Enemy != null)
-                Enemy.InitialGridPosition = new Pathfinder.GridPoint(10, 0);
+            //// Enemy at roughly 5 world x -> 10 grid x
+            //if (Enemy != null)
+            //    Enemy.InitialGridPosition = new Pathfinder.GridPoint(10, 0);
 
             // We don't need to set transform.position manually anymore, CombatUnit.Start() will handle it.
             // But since CombatUnit might have already Started if it was in the scene, we force update if needed.
