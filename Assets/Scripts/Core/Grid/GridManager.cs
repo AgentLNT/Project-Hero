@@ -71,6 +71,25 @@ namespace ProjectHero.Core.Grid
             return false;
         }
 
+        // New: Get all units within a specific area (for AoE attacks)
+        public HashSet<CombatUnit> GetUnitsInArea(List<TrianglePoint> area, CombatUnit ignoreUnit = null)
+        {
+            var units = new HashSet<CombatUnit>();
+            if (area == null) return units;
+
+            foreach (var point in area)
+            {
+                if (OccupancyMap.TryGetValue(point, out CombatUnit owner))
+                {
+                    if (owner != null && owner != ignoreUnit)
+                    {
+                        units.Add(owner);
+                    }
+                }
+            }
+            return units;
+        }
+
         public HashSet<TrianglePoint> GetGlobalObstacles(CombatUnit ignoreUnit = null)
         {
             // This is expensive to generate every frame. 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Visuals;
+using ProjectHero.Core.Actions;
 
 namespace ProjectHero.Core.Entities
 {
@@ -18,6 +19,9 @@ namespace ProjectHero.Core.Entities
         [Header("Volume")]
         public UnitVolume UnitVolumeDefinition;
         public GridDirection FacingDirection = GridDirection.East;
+
+        [Header("Actions")]
+        public ActionLibrarySO ActionLibrary; // The unit's specific set of moves
 
         public List<TrianglePoint> GetOccupiedTriangles()
         {

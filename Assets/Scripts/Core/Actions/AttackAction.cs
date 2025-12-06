@@ -12,7 +12,8 @@ namespace ProjectHero.Core.Actions
     /// </summary>
     public static class AttackAction
     {
-        public static void ScheduleAttack(BattleTimeline timeline, CombatUnit attacker, CombatUnit target, Action action, float startTime)
+        // Updated: Removed 'target' parameter. Attacks are now directional/positional AoE.
+        public static void ScheduleAttack(BattleTimeline timeline, CombatUnit attacker, Action action, float startTime)
         {
             // 1. Schedule the "Start" (Windup)
             timeline.ScheduleEvent(startTime, $"{attacker.name} starts {action.Name}", () => 
@@ -28,33 +29,41 @@ namespace ProjectHero.Core.Actions
             // Use Attack Priority (Low) so it happens AFTER movement updates
             timeline.ScheduleEvent(impactTime, $"{attacker.name} hits with {action.Name}", () => 
             {
-                // Check Pattern Intersection if pattern exists
-                bool hit = true;
-                if (action.Pattern != null)
+                // 1. Determine Attack Area
+                // Uses the attacker's CURRENT position and facing at the moment of impact.
+                // This means if the attacker turns during windup (if allowed), the attack turns too.
+                if (action.Pattern == null)
                 {
-                    var attackArea = action.Pattern.GetAffectedTriangles(attacker.GridPosition, attacker.FacingDirection);
-                    var targetArea = target.GetOccupiedTriangles();
-                    
-                    // Use the centralized Physics Engine for intersection check
-                    hit = PhysicsEngine.CheckIntersection(attackArea, targetArea);
+                    Debug.LogWarning($"[Combat] Action {action.Name} has no AttackPattern!");
+                    return;
                 }
 
-                if (hit)
-                {
-                    // Perform the physics calculation
-                    PhysicsEngine.ResolveCollision(attacker, target, action);
+                var attackArea = action.Pattern.GetAffectedTriangles(attacker.GridPosition, attacker.FacingDirection);
 
-                    // Automatic Interruption Logic
-                    // If the attack successfully staggered or knocked down the target, cancel their pending actions.
-                    if (target.IsStaggered || target.IsKnockedDown)
+                // 2. Find Targets in Area
+                // Query GridManager for all units standing in the blast zone.
+                var targets = GridManager.Instance.GetUnitsInArea(attackArea, attacker);
+
+                if (targets.Count > 0)
+                {
+                    Debug.Log($"[Combat] {attacker.name} hit {targets.Count} targets!");
+
+                    foreach (var target in targets)
                     {
-                        Debug.Log($"[Tactics] {target.name} was interrupted! Cancelling pending events.");
-                        timeline.CancelEvents(target);
+                        // 3. Apply Effects to EACH target
+                        PhysicsEngine.ResolveCollision(attacker, target, action);
+
+                        // Automatic Interruption Logic
+                        if (target.IsStaggered || target.IsKnockedDown)
+                        {
+                            Debug.Log($"[Tactics] {target.name} was interrupted! Cancelling pending events.");
+                            timeline.CancelEvents(target);
+                        }
                     }
                 }
                 else
                 {
-                    Debug.Log($"[Combat] {attacker.name} missed {target.name} (Target moved out of pattern)");
+                    Debug.Log($"[Combat] {attacker.name} missed (No targets in area)");
                 }
 
             }, attacker, TimelinePriority.Attack);

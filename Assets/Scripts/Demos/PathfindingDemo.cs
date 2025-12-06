@@ -34,8 +34,30 @@ namespace ProjectHero.Demos
                 RunPathfinding();
             }
 
+            // --- Real-time Obstacle Control ---
+            // If we move the Blocker's transform in the Scene View, update its Grid Logic.
+            SyncUnitLogic(Blocker);
+            SyncUnitLogic(Mover); // Also allow dragging the Mover
+            // ----------------------------------
+
             // Simple timer for demo
             Timeline.AdvanceTime(Time.time);
+        }
+
+        void SyncUnitLogic(CombatUnit unit)
+        {
+            if (unit != null && GridManager.Instance != null)
+            {
+                var currentGridPos = GridManager.Instance.WorldToGrid(unit.transform.position);
+                
+                // If the transform has moved to a new tile
+                if (!currentGridPos.Equals(unit.GridPosition))
+                {
+                    // Update Logic to match Visuals
+                    unit.SetGridPosition(currentGridPos);
+                    // Debug.Log($"[Demo] Updated {unit.name} position to {currentGridPos}");
+                }
+            }
         }
 
         void RunPathfinding()

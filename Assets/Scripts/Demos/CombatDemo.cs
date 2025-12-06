@@ -38,13 +38,22 @@ namespace ProjectHero.Demos
             
             Debug.Log("--- Starting Combat Demo ---");
 
-            // 1. Get an action from the library
-            var chargeAction = ActionLibrary.HeavyCharge;
+            // 1. Get an action from the unit's library
+            // Assuming Player has an ActionLibrary assigned with an action ID "HeavyCharge"
+            if (Player.ActionLibrary == null)
+            {
+                Debug.LogError("Player has no ActionLibrary assigned!");
+                return;
+            }
+
+            var chargeAction = Player.ActionLibrary.GetAction("HeavyCharge");
+            if (chargeAction == null) return;
 
             // 2. Schedule the attack using the helper
             // This automatically schedules the "Start" and "Impact" events based on the action's BaseTime.
             // We start at T=0.5s
-            AttackAction.ScheduleAttack(Timeline, Player, Enemy, chargeAction, 0.5f);
+            // Note: We no longer pass 'Enemy' as a target. The attack will hit whatever is in front of Player.
+            AttackAction.ScheduleAttack(Timeline, Player, chargeAction, 0.5f);
 
             // 3. Enemy tries to block just before impact (Impact is at 0.5 + 1.0 = 1.5s)
             Timeline.InsertReaction(1.4f, "Enemy Block Attempt", () => 

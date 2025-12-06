@@ -23,6 +23,10 @@ namespace ProjectHero.Core.Pathfinding
         // Updated to support Volume-based Collision
         public List<GridPoint> FindPath(GridPoint start, GridPoint goal, UnitVolume unitVolume = null, HashSet<TrianglePoint> volumeObstacles = null)
         {
+            // Safety: Max iterations to prevent infinite loops in open space
+            int maxIterations = 1000;
+            int iterations = 0;
+
             var openSet = new List<GridPoint> { start };
             var cameFrom = new Dictionary<GridPoint, GridPoint>();
             var gScore = new Dictionary<GridPoint, float> { [start] = 0 };
@@ -30,6 +34,13 @@ namespace ProjectHero.Core.Pathfinding
 
             while (openSet.Count > 0)
             {
+                iterations++;
+                if (iterations > maxIterations)
+                {
+                    Debug.LogWarning("Pathfinder hit max iterations! Returning null.");
+                    return null;
+                }
+
                 // Get node with lowest fScore
                 GridPoint current = openSet[0];
                 float lowestF = fScore.ContainsKey(current) ? fScore[current] : float.MaxValue;
@@ -53,6 +64,12 @@ namespace ProjectHero.Core.Pathfinding
 
                 foreach (var neighbor in GetNeighbors(current))
                 {
+                    // --- Safety: Distance Check ---
+                    // Prevent searching too far from start/goal (e.g. 50 units)
+                    if (Mathf.Abs(neighbor.X - start.X) > 100 || Mathf.Abs(neighbor.Y - start.Y) > 100)
+                        continue;
+                    // ------------------------------
+
                     // --- Volume Collision Check ---
                     if (volumeObstacles != null && unitVolume != null)
                     {
