@@ -69,6 +69,30 @@ namespace ProjectHero.Core.Entities
         public float CurrentStamina = 100f;
         public float CurrentFocus = 0f; // Focus Points
         public float CurrentAdrenaline = 0f; // Adrenaline
+
+        // --- Derived Stats (Design Section III) ---
+
+        // Total Mass (M_total) = STR + CON + Armor
+        // Formula approximation: Base(50) + STR*2 + CON*2 + Armor
+        public float TotalMass => 50f + (Strength * 2f) + (Constitution * 2f) + ArmorWeight;
+
+        // Swiftness (v) = DEX + STR
+        // Formula approximation: DEX*1.5 + STR*0.5
+        // Penalty: If Stamina < 50%, Swiftness drops.
+        public float Swiftness 
+        {
+            get 
+            {
+                float baseVal = (Dexterity * 1.5f) + (Strength * 0.5f);
+                if (CurrentStamina < MaxStamina * 0.5f) 
+                {
+                    return baseVal * 0.7f; // Exhaustion penalty
+                }
+                return baseVal;
+            }
+        }
+        // Reaction (Window Width) = WIS
+        public float ReactionWindow => Wisdom * 0.1f; 
         
         // Max Stamina derived from Constitution (Design Section III)
         // Formula: CON * 10 (Example: 10 CON = 100 Stamina)
@@ -123,6 +147,12 @@ namespace ProjectHero.Core.Entities
             // Initialize logical position
             GridPosition = InitialGridPosition;
 
+            // Register Unit with GridManager
+            if (GridManager.Instance != null)
+            {
+                GridManager.Instance.RegisterUnit(this);
+            }
+
             // Register Initial Volume
             if (GridManager.Instance != null)
             {
@@ -146,67 +176,44 @@ namespace ProjectHero.Core.Entities
         {
             if (GridManager.Instance != null)
             {
-                var vol = GetOccupiedTriangles();
-                GridManager.Instance.UnregisterOccupancy(vol);
+                GridManager.Instance.UnregisterOccupancy(GetOccupiedTriangles());
+                GridManager.Instance.UnregisterUnit(this);
             }
         }
 
-        // --- Derived Stats (Design Section III) ---
 
-        // Total Mass (M_total) = STR + CON + Armor
-        // Formula approximation: Base(50) + STR*2 + CON*2 + Armor
-        public float TotalMass => 50f + (Strength * 2f) + (Constitution * 2f) + ArmorWeight;
+        //private void OnDrawGizmos()
+        //{
+        //    if (GridManager.Instance == null) return;
 
-        // Swiftness (v) = DEX + STR
-        // Formula approximation: DEX*1.5 + STR*0.5
-        // Penalty: If Stamina < 50%, Swiftness drops.
-        public float Swiftness 
-        {
-            get 
-            {
-                float baseVal = (Dexterity * 1.5f) + (Strength * 0.5f);
-                if (CurrentStamina < MaxStamina * 0.5f) 
-                {
-                    return baseVal * 0.7f; // Exhaustion penalty
-                }
-                return baseVal;
-            }
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (GridManager.Instance == null) return;
-
-            // Draw Logical Volume
-            Gizmos.color = new Color(0, 1, 0, 0.4f); // Semi-transparent green
-            var occupied = GetOccupiedTriangles();
-            foreach (var tri in occupied)
-            {
-                var corners = GridManager.Instance.GetTriangleCorners(tri);
-                if (corners.Length == 3)
-                {
-                    Gizmos.DrawLine(corners[0], corners[1]);
-                    Gizmos.DrawLine(corners[1], corners[2]);
-                    Gizmos.DrawLine(corners[2], corners[0]);
+        //    // Draw Logical Volume
+        //    Gizmos.color = new Color(0, 1, 0, 0.4f); // Semi-transparent green
+        //    var occupied = GetOccupiedTriangles();
+        //    foreach (var tri in occupied)
+        //    {
+        //        var corners = GridManager.Instance.GetTriangleCorners(tri);
+        //        if (corners.Length == 3)
+        //        {
+        //            Gizmos.DrawLine(corners[0], corners[1]);
+        //            Gizmos.DrawLine(corners[1], corners[2]);
+        //            Gizmos.DrawLine(corners[2], corners[0]);
                     
-                    // Fill hint (just lines for now, or small sphere at center)
-                    var center = GridManager.Instance.GetTriangleCenter(tri);
-                    Gizmos.DrawSphere(GridManager.GetGroundPosition(center), 0.1f);
-                }
-            }
+        //            // Fill hint (just lines for now, or small sphere at center)
+        //            var center = GridManager.Instance.GetTriangleCenter(tri);
+        //            Gizmos.DrawSphere(GridManager.GetGroundPosition(center), 0.1f);
+        //        }
+        //    }
 
-            // Draw Facing Direction
-            Gizmos.color = Color.blue;
-            Vector3 pos = GridManager.Instance.GridToWorld(GridPosition);
-            pos = GridManager.GetGroundPosition(pos);
+        //    // Draw Facing Direction
+        //    Gizmos.color = Color.blue;
+        //    Vector3 pos = GridManager.Instance.GridToWorld(GridPosition);
+        //    pos = GridManager.GetGroundPosition(pos);
             
-            // Simple arrow approximation based on FacingDirection
-            // (Ideally we'd have a helper to convert GridDirection to Vector3)
-            Gizmos.DrawRay(pos, Vector3.up * 2f); 
-        }
+        //    // Simple arrow approximation based on FacingDirection
+        //    // (Ideally we'd have a helper to convert GridDirection to Vector3)
+        //    Gizmos.DrawRay(pos, Vector3.up * 2f); 
+        //}
 
-        // Reaction (Window Width) = WIS
-        public float ReactionWindow => Wisdom * 0.1f; 
 
         public void OnImpact(float impactVelocity, float damage)
         {

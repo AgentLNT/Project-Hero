@@ -19,6 +19,24 @@ namespace ProjectHero.Core.Grid
         // Maps every occupied TrianglePoint to the Unit that occupies it.
         // If value is null, it means it's occupied by a static obstacle (terrain).
         private Dictionary<TrianglePoint, CombatUnit> OccupancyMap = new Dictionary<TrianglePoint, CombatUnit>();
+        
+        // Track all active units for global systems (like visualization)
+        private HashSet<CombatUnit> _activeUnits = new HashSet<CombatUnit>();
+
+        public void RegisterUnit(CombatUnit unit)
+        {
+            if (unit != null) _activeUnits.Add(unit);
+        }
+
+        public void UnregisterUnit(CombatUnit unit)
+        {
+            if (unit != null) _activeUnits.Remove(unit);
+        }
+
+        public HashSet<CombatUnit> GetAllUnits()
+        {
+            return _activeUnits;
+        }
 
         public void RegisterOccupancy(CombatUnit owner, List<TrianglePoint> volume)
         {
