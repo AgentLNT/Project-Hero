@@ -10,9 +10,11 @@ namespace ProjectHero.Core.Input
     {
         public static InputManager Instance { get; private set; }
 
-        public event Action<TrianglePoint> OnTileHover;
-        public event Action<TrianglePoint> OnTileClick;
+        // Changed: Now returns raw world position so Controller can decide (Triangle vs Vertex)
+        public event Action<Vector3> OnGroundHover;
+        public event Action<Vector3> OnGroundClick;
         public event Action<CombatUnit> OnUnitClick;
+        public event Action OnCancel; // Right Click
 
         [Header("Settings")]
         public LayerMask groundLayer;
@@ -22,9 +24,10 @@ namespace ProjectHero.Core.Input
         public InputActionAsset inputActions; // Assign in Inspector
         private InputAction _pointAction;
         private InputAction _clickAction;
+        private InputAction _cancelAction;
 
-        private Camera _mainCamera;
-        private TrianglePoint _lastHoveredTile;
+        public Camera _mainCamera;
+        private Vector3 _lastHoveredPoint;
 
         private void Awake()
         {
@@ -40,14 +43,15 @@ namespace ProjectHero.Core.Input
             if (inputActions == null)
             {
                 // Fallback or create default actions via code if asset is missing
-                // For simplicity, let's assume we create a simple map in code if not provided
                 var map = new InputActionMap("Gameplay");
                 // Important: Set type to Value for position to ensure correct reading
                 _pointAction = map.AddAction("Point", type: InputActionType.Value, binding: "<Mouse>/position");
                 _clickAction = map.AddAction("Click", type: InputActionType.Button, binding: "<Mouse>/leftButton");
+                _cancelAction = map.AddAction("Cancel", type: InputActionType.Button, binding: "<Mouse>/rightButton");
                 
                 _pointAction.Enable();
                 _clickAction.Enable();
+                _cancelAction.Enable();
             }
             else
             {
@@ -57,6 +61,7 @@ namespace ProjectHero.Core.Input
                 {
                     _pointAction = map.FindAction("Point");
                     _clickAction = map.FindAction("Click"); // Or "Fire"
+                    _cancelAction = map.FindAction("Cancel");
                 }
             }
 
@@ -64,18 +69,24 @@ namespace ProjectHero.Core.Input
             {
                 _clickAction.performed += OnClickPerformed;
             }
+            if (_cancelAction != null)
+            {
+                _cancelAction.performed += OnCancelPerformed;
+            }
         }
 
         private void OnEnable()
         {
             _pointAction?.Enable();
             _clickAction?.Enable();
+            _cancelAction?.Enable();
         }
 
         private void OnDisable()
         {
             _pointAction?.Disable();
             _clickAction?.Disable();
+            _cancelAction?.Disable();
         }
 
         private void Update()
@@ -93,65 +104,44 @@ namespace ProjectHero.Core.Input
 
             if (UnityEngine.Physics.Raycast(ray, out RaycastHit groundHit, 100f, groundLayer))
             {
-                TrianglePoint hoveredTile = WorldToTriangle(groundHit.point);
-                
-                if (!hoveredTile.Equals(_lastHoveredTile))
-                {
-                    _lastHoveredTile = hoveredTile;
-                    OnTileHover?.Invoke(hoveredTile);
-                }
+                // Pass the raw world point. The Controller decides if it's a Triangle or Vertex.
+                OnGroundHover?.Invoke(groundHit.point);
             }
         }
 
         private void OnClickPerformed(InputAction.CallbackContext context)
         {
-            if (_mainCamera == null) return;
+            if (_mainCamera == null) _mainCamera = Camera.main;
+            if (_mainCamera == null || _pointAction == null) return;
 
             Vector2 mousePos = _pointAction.ReadValue<Vector2>();
             Ray ray = _mainCamera.ScreenPointToRay(mousePos);
-            
-            // Debug: Visualize the click ray
-            Debug.DrawRay(ray.origin, ray.direction * 100f, Color.yellow, 1.0f);
 
             // Ensure layers are not Nothing (0) if they haven't been set
             if (unitLayer.value == 0) unitLayer = LayerMask.GetMask("Default");
             if (groundLayer.value == 0) groundLayer = LayerMask.GetMask("Default");
 
-            // 1. Check for Unit Click
+            // 1. Check for Unit Click (Higher Priority)
             if (UnityEngine.Physics.Raycast(ray, out RaycastHit unitHit, 100f, unitLayer))
             {
-                CombatUnit unit = unitHit.collider.GetComponentInParent<CombatUnit>();
+                var unit = unitHit.collider.GetComponentInParent<CombatUnit>();
                 if (unit != null)
                 {
-                    Debug.Log($"[Input] Clicked Unit: {unit.name}");
                     OnUnitClick?.Invoke(unit);
-                    return; 
+                    return; // Stop propagation if unit clicked
                 }
             }
 
             // 2. Check for Ground Click
             if (UnityEngine.Physics.Raycast(ray, out RaycastHit groundHit, 100f, groundLayer))
             {
-                TrianglePoint clickedTile = WorldToTriangle(groundHit.point);
-                Debug.Log($"[Input] Clicked Tile: {clickedTile}");
-                OnTileClick?.Invoke(clickedTile);
+                OnGroundClick?.Invoke(groundHit.point);
             }
         }
 
-        // Helper to convert World Position to the specific Triangle (X, Y, T)
-        private TrianglePoint WorldToTriangle(Vector3 worldPos)
+        private void OnCancelPerformed(InputAction.CallbackContext context)
         {
-            if (GridManager.Instance == null) return new TrianglePoint();
-
-            var gp = GridManager.Instance.WorldToGrid(worldPos);
-            
-            var t1 = new TrianglePoint(gp.X, gp.Y, 1);
-            var t2 = new TrianglePoint(gp.X, gp.Y, -1);
-            
-            float d1 = Vector3.Distance(worldPos, GridManager.Instance.GetTriangleCenter(t1));
-            float d2 = Vector3.Distance(worldPos, GridManager.Instance.GetTriangleCenter(t2));
-            
-            return d1 < d2 ? t1 : t2;
+            OnCancel?.Invoke();
         }
     }
 }

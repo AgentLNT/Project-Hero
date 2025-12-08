@@ -210,6 +210,48 @@ namespace ProjectHero.Core.Grid
             return new Pathfinder.GridPoint(x, y);
         }
 
+        // Helper to convert World Position to the specific Triangle (X, Y, T)
+        public TrianglePoint WorldToTriangle(Vector3 worldPos)
+        {
+            // 1. Find nearest Grid Vertex (Even Parity)
+            var v = WorldToGrid(worldPos);
+            
+            // 2. The point is in one of the 6 triangles surrounding this vertex.
+            // We define the 6 candidates (Edge Centers + Orientation).
+            // Valid TrianglePoints have Odd parity (X+Y is Odd).
+            
+            var candidates = new TrianglePoint[]
+            {
+                new TrianglePoint(v.X + 1, v.Y, 1),  // Right-Up
+                new TrianglePoint(v.X + 1, v.Y, -1), // Right-Down
+                new TrianglePoint(v.X - 1, v.Y, 1),  // Left-Up
+                new TrianglePoint(v.X - 1, v.Y, -1), // Left-Down
+                new TrianglePoint(v.X, v.Y + 1, -1), // Top-Down (Base at Y+1)
+                new TrianglePoint(v.X, v.Y - 1, 1)   // Bottom-Up (Base at Y-1)
+            };
+
+            TrianglePoint bestTri = candidates[0];
+            float minDst = float.MaxValue;
+
+            // We ignore Y height (3D) for distance check, only XZ
+            Vector3 flatWorld = new Vector3(worldPos.x, 0, worldPos.z);
+
+            foreach (var tri in candidates)
+            {
+                Vector3 center = GetTriangleCenter(tri);
+                Vector3 flatCenter = new Vector3(center.x, 0, center.z);
+                
+                float dst = Vector3.SqrMagnitude(flatWorld - flatCenter);
+                if (dst < minDst)
+                {
+                    minDst = dst;
+                    bestTri = tri;
+                }
+            }
+
+            return bestTri;
+        }
+
         internal static Vector3 GetGroundPosition(Vector3 pos)
         {
             if (UnityEngine.Physics.Raycast(new Vector3(pos.x, 100f, pos.z), Vector3.down, out RaycastHit hit, 200f, Instance.groundLayer))

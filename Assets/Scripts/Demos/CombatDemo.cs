@@ -4,6 +4,10 @@ using ProjectHero.Core.Physics;
 using ProjectHero.Core.Timeline;
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Pathfinding;
+using ProjectHero.Core.Input;
+using ProjectHero.Core.Gameplay;
+using ProjectHero.Visuals;
+using ProjectHero.Core.Grid;
 using System.Threading;
 
 namespace ProjectHero.Demos
@@ -17,56 +21,77 @@ namespace ProjectHero.Demos
 
         private void Awake()
         {
-            // Position them for the demo using Grid Coordinates
-            // Player at roughly -5 world x -> -10 grid x
-            //if (Player != null)
-            //    Player.InitialGridPosition = new Pathfinder.GridPoint(-10, 0);
-            
-            //// Enemy at roughly 5 world x -> 10 grid x
-            //if (Enemy != null)
-            //    Enemy.InitialGridPosition = new Pathfinder.GridPoint(10, 0);
-
-            // We don't need to set transform.position manually anymore, CombatUnit.Start() will handle it.
-            // But since CombatUnit might have already Started if it was in the scene, we force update if needed.
         }
 
         void Start()
         {
             timer = 0;
 
-            if (Timeline == null) Timeline = gameObject.AddComponent<BattleTimeline>();
-            
-            Debug.Log("--- Starting Combat Demo ---");
-
-            // 1. Get an action from the unit's library
-            // Assuming Player has an ActionLibrary assigned with an action ID "HeavyCharge"
-            if (Player.ActionLibrary == null)
+            // Ensure GridManager exists (Must be before Start)
+            if (GridManager.Instance == null)
             {
-                Debug.LogError("Player has no ActionLibrary assigned!");
-                return;
+                var gridObj = new GameObject("GridManager");
+                var gridMgr = gridObj.AddComponent<GridManager>();
+                // CRITICAL: Set LayerMasks for dynamic instance (Default Layer = 0)
+                // Without this, Raycasts (GetGroundPosition) will fail.
+                gridMgr.groundLayer = 1 << 0;
             }
 
-            var chargeAction = Player.ActionLibrary.GetAction("HeavyCharge");
-            if (chargeAction == null) return;
-
-            // 2. Schedule the attack using the helper
-            // This automatically schedules the "Start" and "Impact" events based on the action's BaseTime.
-            // We start at T=0.5s
-            // Note: We no longer pass 'Enemy' as a target. The attack will hit whatever is in front of Player.
-            AttackAction.ScheduleAttack(Timeline, Player, chargeAction, 0.5f);
-
-            // 3. Enemy tries to block just before impact (Impact is at 0.5 + 1.0 = 1.5s)
-            Timeline.InsertReaction(1.4f, "Enemy Block Attempt", () => 
+            // Ensure InputManager exists
+            if (InputManager.Instance == null)
             {
-                Debug.Log("Enemy raises shield!");
-                // Logic to reduce damage or increase stability would go here
-            }, Enemy);
-            
-            // 4. Enemy tries to counter-attack AFTER impact (should be cancelled if staggered)
-            Timeline.ScheduleEvent(2.0f, "Enemy Counter Attack", () => 
+                var inputObj = new GameObject("InputManager");
+                var inputMgr = inputObj.AddComponent<InputManager>();
+                // CRITICAL: Set LayerMasks for dynamic instance
+                // Without this, Mouse Hover and Click will hit nothing.
+                inputMgr.groundLayer = 1 << 0; // Default Layer
+                inputMgr.unitLayer = 1 << 0;   // Default Layer
+            }
+
+            // Ensure TacticsController exists (The Brain)
+            if (Object.FindAnyObjectByType<TacticsController>() == null)
             {
-                Debug.Log("Enemy swings back!");
-            }, Enemy);
+                var tacticsObj = new GameObject("TacticsController");
+                var controller = tacticsObj.AddComponent<TacticsController>();
+                // Timeline might not be assigned yet if it's on this object
+                if (Timeline == null) Timeline = GetComponent<BattleTimeline>();
+                if (Timeline == null) Timeline = gameObject.AddComponent<BattleTimeline>();
+                controller.Timeline = Timeline;
+            }
+
+            Debug.Log("--- Starting Combat Demo ---");
+
+            // Ensure Units have Colliders for clicking
+            EnsureCollider(Player);
+            EnsureCollider(Enemy);
+
+            // Setup Visuals if missing
+            SetupVisuals();
+        }
+
+        void EnsureCollider(CombatUnit unit)
+        {
+            if (unit != null && unit.GetComponent<Collider>() == null)
+            {
+                var col = unit.gameObject.AddComponent<CapsuleCollider>();
+                col.height = 2.0f;
+                col.radius = 0.5f;
+                col.center = Vector3.up * 1.0f;
+            }
+        }
+
+        void SetupVisuals()
+        {
+            // Add GridVisuals to GridManager if missing
+            if (GridManager.Instance != null)
+            {
+                if (GridManager.Instance.GetComponent<GridVisuals>() == null)
+                    GridManager.Instance.gameObject.AddComponent<GridVisuals>();
+                
+                // Add UnitVolumeRenderer to GridManager if missing (Centralized Volume Rendering)
+                if (GridManager.Instance.GetComponent<UnitVolumeRenderer>() == null)
+                    GridManager.Instance.gameObject.AddComponent<UnitVolumeRenderer>();
+            }
         }
 
         void Update()

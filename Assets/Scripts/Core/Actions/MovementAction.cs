@@ -3,7 +3,6 @@ using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Timeline;
 using ProjectHero.Core.Pathfinding;
-using ProjectHero.Core.Visuals;
 
 namespace ProjectHero.Core.Actions
 {
