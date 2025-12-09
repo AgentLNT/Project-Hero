@@ -98,8 +98,27 @@ namespace ProjectHero.Core.Entities
         // Formula: CON * 10 (Example: 10 CON = 100 Stamina)
         public float MaxStamina => Constitution * 10f;
         
-        public bool IsStaggered;
-        public bool IsKnockedDown;
+        [Header("Status Flags")]
+        public bool IsStaggered;    // 硬直/失衡
+        public bool IsKnockedDown;  // 倒地
+        public bool IsForcedMoved;  // 被强制位移中
+
+        [Header("Action State")]
+        public bool IsActing;       // 总开关：是否正在执行任何动作（包括移动、攻击）
+        public bool InWindup;       // 前摇中（易被打断）
+        public bool InRecovery;     // 后摇中（可被取消）
+        public bool IsMoving;       // 移动中（主动移动）
+
+        // Helper to check if unit can accept new commands
+        public bool CanAct => !IsActing && !IsStaggered && !IsKnockedDown && !IsForcedMoved;
+
+        public void ResetActionState()
+        {
+            IsActing = false;
+            InWindup = false;
+            InRecovery = false;
+            IsMoving = false;
+        }
 
         // --- Grid Logic ---
 

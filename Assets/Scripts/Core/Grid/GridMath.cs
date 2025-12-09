@@ -7,38 +7,30 @@ namespace ProjectHero.Core.Grid
     {
         public static GridDirection GetDirection(Pathfinder.GridPoint from, Pathfinder.GridPoint to)
         {
-            int dx = to.X - from.X;
-            int dy = to.Y - from.Y;
+            // Robust Angle-Based Direction Calculation
+            // Works for any target point, not just immediate neighbors.
 
-            // --- Primary Directions (Even) ---
-            if (dy == 0)
-            {
-                if (dx > 0) return GridDirection.East;      // (+2, 0)
-                if (dx < 0) return GridDirection.West;      // (-2, 0)
-            }
-            if (Mathf.Abs(dx) == 1 && Mathf.Abs(dy) == 1)
-            {
-                if (dx > 0 && dy > 0) return GridDirection.NorthEast; // (+1, +1)
-                if (dx < 0 && dy > 0) return GridDirection.NorthWest; // (-1, +1)
-                if (dx < 0 && dy < 0) return GridDirection.SouthWest; // (-1, -1)
-                if (dx > 0 && dy < 0) return GridDirection.SouthEast; // (+1, -1)
-            }
+            // Convert to Cartesian coordinates (assuming HexSize = 1)
+            // X_world = X_log * 0.5
+            // Z_world = Y_log * (sqrt(3)/2)
+            
+            float dx = (to.X - from.X) * 0.5f;
+            float dy = (to.Y - from.Y) * 0.8660254f; // sqrt(3)/2
 
-            // --- Secondary Directions (Odd) ---
-            if (dx == 0)
-            {
-                if (dy > 0) return GridDirection.North;     // (0, +2)
-                if (dy < 0) return GridDirection.South;     // (0, -2)
-            }
-            if (Mathf.Abs(dx) == 3 && Mathf.Abs(dy) == 1)
-            {
-                if (dx > 0 && dy > 0) return GridDirection.EastNorth; // (+3, +1)
-                if (dx < 0 && dy > 0) return GridDirection.WestNorth; // (-3, +1)
-                if (dx < 0 && dy < 0) return GridDirection.WestSouth; // (-3, -1)
-                if (dx > 0 && dy < 0) return GridDirection.EastSouth; // (+3, -1)
-            }
+            // Calculate angle in degrees
+            float angle = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+            if (angle < 0) angle += 360f;
 
-            return GridDirection.East; // Default / Fallback
+            // Map to 12 sectors (30 degrees each)
+            // 0 deg = East (Index 0)
+            // 30 deg = EastNorth (Index 1)
+            // ...
+            
+            // Round to nearest 30 degrees
+            int index = Mathf.RoundToInt(angle / 30f);
+            index = index % 12;
+
+            return (GridDirection)index;
         }
 
         // Rotates a TrianglePoint by (steps * 60) degrees Counter-Clockwise around (0,0)

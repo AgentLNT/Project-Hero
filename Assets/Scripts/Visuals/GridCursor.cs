@@ -29,6 +29,14 @@ namespace ProjectHero.Visuals
             _meshFilter.mesh = _mesh;
         }
 
+        private void Update()
+        {
+            if (_meshRenderer != null && _meshRenderer.material.color != cursorColor)
+            {
+                _meshRenderer.material.color = cursorColor;
+            }
+        }
+
         public void Show(TrianglePoint tile)
         {
             ShowVolume(new List<TrianglePoint> { tile });

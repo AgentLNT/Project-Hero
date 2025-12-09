@@ -105,6 +105,9 @@ namespace ProjectHero.Core.Actions
                         // This stops the unit dead in its tracks at the previous valid position.
                         timeline.CancelEvents(unit);
                         
+                        // Reset state immediately since the "End" event is cancelled
+                        unit.ResetActionState();
+
                         // Optional: Trigger "Bump" animation or Stagger here
                         return;
                     }
@@ -144,6 +147,9 @@ namespace ProjectHero.Core.Actions
 
                         // Cancel all future steps
                         timeline.CancelEvents(unit);
+                        
+                        // Reset state immediately
+                        unit.ResetActionState();
                         return;
                     }
                     // ----------------------------------------------
@@ -160,6 +166,13 @@ namespace ProjectHero.Core.Actions
                 // Add this step's duration to the delay for the NEXT step
                 accumulatedDelay += stepDuration;
             }
+
+            // Final Event: Reset Action State
+            timeline.ScheduleEvent(accumulatedDelay, $"Movement Complete for {unit.name}", () => 
+            {
+                unit.ResetActionState();
+                Debug.Log($"[Action] {unit.name} finished moving.");
+            }, unit);
         }
     }
 }

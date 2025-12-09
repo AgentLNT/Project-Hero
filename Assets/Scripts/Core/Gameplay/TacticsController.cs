@@ -6,6 +6,7 @@ using ProjectHero.Core.Actions;
 using ProjectHero.Core.Timeline;
 using ProjectHero.Core.Input;
 using ProjectHero.Visuals;
+using ProjectHero.UI; // Added UI namespace
 
 namespace ProjectHero.Core.Gameplay
 {
@@ -20,6 +21,7 @@ namespace ProjectHero.Core.Gameplay
         public GridCursor Cursor;
 
         private CombatUnit _selectedUnit;
+        private Action _selectedAction; // New: Track selected action
 
         private void Start()
         {
@@ -54,6 +56,26 @@ namespace ProjectHero.Core.Gameplay
             }
         }
 
+        // Public API for UI to select an action
+        public void SelectAction(Action action)
+        {
+            _selectedAction = action;
+            Debug.Log($"[Tactics] Selected Action: {action.Name}");
+            
+            // Enable targeting mode (ignore unit clicks)
+            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+        }
+
+        // Public API for UI to select Move mode
+        public void SelectMove()
+        {
+            _selectedAction = null;
+            Debug.Log("[Tactics] Selected Move Mode");
+            
+            // Enable targeting mode (ignore unit clicks) to allow moving to tiles occupied by units
+            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+        }
+
         private void OnDestroy()
         {
             if (InputManager.Instance != null)
@@ -62,16 +84,36 @@ namespace ProjectHero.Core.Gameplay
                 InputManager.Instance.OnGroundClick -= HandleGroundClick;
                 InputManager.Instance.OnGroundHover -= HandleGroundHover;
                 InputManager.Instance.OnCancel -= HandleCancel;
+                
+                // Reset flag
+                InputManager.Instance.IgnoreUnitClicks = false;
             }
         }
 
         private void HandleCancel()
         {
+            if (_selectedAction != null)
+            {
+                Debug.Log($"[Tactics] Cancelled Action: {_selectedAction.Name}");
+                _selectedAction = null;
+                
+                // Disable targeting mode
+                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+                
+                return;
+            }
+
             if (_selectedUnit != null)
             {
                 Debug.Log($"[Tactics] Deselected Unit: {_selectedUnit.name}");
                 _selectedUnit = null;
                 if (Cursor != null) Cursor.Hide();
+                
+                // Notify UI
+                if (UIManager.Instance != null) UIManager.Instance.OnUnitDeselected();
+                
+                // Ensure targeting mode is off
+                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
             }
         }
 
@@ -81,19 +123,36 @@ namespace ProjectHero.Core.Gameplay
 
             if (_selectedUnit != null)
             {
-                // Mode: Unit Selected -> Show Projected Volume at Vertex
                 var targetGridPos = GridManager.Instance.WorldToGrid(worldPos);
-                
-                // Use the unit's current facing for the preview
-                // (Future: Could rotate based on mouse gesture or path)
-                var projectedVolume = _selectedUnit.GetProjectedOccupancy(targetGridPos, _selectedUnit.FacingDirection);
-                
-                Cursor.ShowVolume(projectedVolume);
+
+                if (_selectedAction != null)
+                {
+                    // Mode: Action Selected -> Show Attack Pattern
+                    // 1. Calculate Direction from Unit to Mouse
+                    var dir = GridMath.GetDirection(_selectedUnit.GridPosition, targetGridPos);
+                    
+                    // 2. Get Pattern for that direction
+                    if (_selectedAction.Pattern != null)
+                    {
+                        var attackVolume = _selectedAction.Pattern.GetAffectedTriangles(_selectedUnit.GridPosition, dir);
+                        Cursor.cursorColor = Color.red; // Temporary visual feedback
+                        Cursor.ShowVolume(attackVolume);
+                    }
+                }
+                else
+                {
+                    // Mode: Unit Selected (Movement) -> Show Projected Volume at Vertex
+                    // Use the unit's current facing for the preview
+                    var projectedVolume = _selectedUnit.GetProjectedOccupancy(targetGridPos, _selectedUnit.FacingDirection);
+                    Cursor.cursorColor = Color.yellow; // Revert color
+                    Cursor.ShowVolume(projectedVolume);
+                }
             }
             else
             {
                 // Mode: No Selection -> Snap to Triangle
                 var tile = GridManager.Instance.WorldToTriangle(worldPos);
+                Cursor.cursorColor = Color.yellow;
                 Cursor.Show(tile);
             }
         }
@@ -101,8 +160,16 @@ namespace ProjectHero.Core.Gameplay
         private void HandleUnitClick(CombatUnit unit)
         {
             _selectedUnit = unit;
+            _selectedAction = null; // Reset action on new unit selection
             Debug.Log($"[Tactics] Selected Unit: {unit.name}");
-            // Hide cursor immediately upon selection
+            
+            // Notify UI
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.OnUnitSelected(unit);
+            }
+
+            // Hide cursor immediately upon selection (will be updated by next hover)
             if (Cursor != null) Cursor.Hide();
         }
 
@@ -116,17 +183,52 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            // Unit Selected -> Move to Vertex
+            // Check if unit can act
+            if (!_selectedUnit.CanAct)
+            {
+                Debug.LogWarning($"[Tactics] Unit {_selectedUnit.name} cannot act (Busy/Stunned).");
+                return;
+            }
+
             var targetGridPos = GridManager.Instance.WorldToGrid(worldPos);
-            
-            // Basic Move Command
-            IssueMoveCommand(_selectedUnit, targetGridPos);
+
+            if (_selectedAction != null)
+            {
+                // Execute Attack
+                // 1. Determine Direction
+                var dir = GridMath.GetDirection(_selectedUnit.GridPosition, targetGridPos);
+                
+                Debug.Log($"[Tactics] Executing Attack {_selectedAction.Name} facing {dir}");
+                
+                // Mark as acting immediately to prevent double-clicks
+                _selectedUnit.IsActing = true;
+
+                // 2. Schedule Attack (Start immediately at T=0 relative to now)
+                AttackAction.ScheduleAttack(Timeline, _selectedUnit, _selectedAction, 0f, dir);
+                
+                _selectedAction = null; // Deselect action after use
+                Cursor.Hide();
+                
+                // Reset targeting mode
+                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+            }
+            else
+            {
+                // Execute Move
+                IssueMoveCommand(_selectedUnit, targetGridPos);
+
+                // Reset targeting mode
+                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+            }
         }
 
         private void IssueMoveCommand(CombatUnit unit, Pathfinder.GridPoint targetGridPos)
         {
             if (Timeline == null) return;
             
+            // Double check CanAct
+            if (!unit.CanAct) return;
+
             Debug.Log($"[Tactics] Moving {unit.name} to {targetGridPos}");
 
             // Get Obstacles (ignoring self)
@@ -139,6 +241,10 @@ namespace ProjectHero.Core.Gameplay
             if (path != null)
             {
                 Debug.Log($"[Tactics] Path found! Length: {path.Count}");
+                
+                // Mark as acting immediately
+                unit.IsActing = true;
+
                 MovementAction.SchedulePath(Timeline, unit, path);
             }
             else

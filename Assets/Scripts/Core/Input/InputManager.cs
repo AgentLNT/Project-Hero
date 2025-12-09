@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems; // Added for UI check
 using System;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Entities;
@@ -28,6 +29,9 @@ namespace ProjectHero.Core.Input
 
         public Camera _mainCamera;
         private Vector3 _lastHoveredPoint;
+
+        // New: Flag to ignore unit clicks (e.g. when targeting an action)
+        public bool IgnoreUnitClicks { get; set; } = false;
 
         private void Awake()
         {
@@ -99,6 +103,12 @@ namespace ProjectHero.Core.Input
             if (_mainCamera == null) _mainCamera = Camera.main;
             if (_mainCamera == null || _pointAction == null) return;
 
+            // Check if pointer is over UI
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             Vector2 mousePos = _pointAction.ReadValue<Vector2>();
             Ray ray = _mainCamera.ScreenPointToRay(mousePos);
 
@@ -114,6 +124,12 @@ namespace ProjectHero.Core.Input
             if (_mainCamera == null) _mainCamera = Camera.main;
             if (_mainCamera == null || _pointAction == null) return;
 
+            // Check if pointer is over UI
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             Vector2 mousePos = _pointAction.ReadValue<Vector2>();
             Ray ray = _mainCamera.ScreenPointToRay(mousePos);
 
@@ -122,7 +138,8 @@ namespace ProjectHero.Core.Input
             if (groundLayer.value == 0) groundLayer = LayerMask.GetMask("Default");
 
             // 1. Check for Unit Click (Higher Priority)
-            if (UnityEngine.Physics.Raycast(ray, out RaycastHit unitHit, 100f, unitLayer))
+            // Only perform if NOT ignoring unit clicks
+            if (!IgnoreUnitClicks && UnityEngine.Physics.Raycast(ray, out RaycastHit unitHit, 100f, unitLayer))
             {
                 var unit = unitHit.collider.GetComponentInParent<CombatUnit>();
                 if (unit != null)

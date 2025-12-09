@@ -12,12 +12,34 @@ namespace ProjectHero.Core.Actions
     /// </summary>
     public static class AttackAction
     {
-        // Updated: Removed 'target' parameter. Attacks are now directional/positional AoE.
-        public static void ScheduleAttack(BattleTimeline timeline, CombatUnit attacker, Action action, float startTime)
+        // Updated: Added 'targetDirection' to lock the attack direction at the start.
+        // If targetDirection is null, it uses the attacker's current facing.
+        public static void ScheduleAttack(BattleTimeline timeline, CombatUnit attacker, Action action, float startTime, GridDirection? targetDirection = null)
         {
+            // Calculate Recovery Time (e.g., 50% of BaseTime or defined in Action)
+            // For now, let's assume Recovery is 0.5s fixed or part of the action data.
+            float recoveryDuration = 0.5f; 
+
             // 1. Schedule the "Start" (Windup)
             timeline.ScheduleEvent(startTime, $"{attacker.name} starts {action.Name}", () => 
             {
+                if (!attacker.CanAct) 
+                {
+                    Debug.LogWarning($"[Action] {attacker.name} cannot act (Stunned/Busy). Attack cancelled.");
+                    return;
+                }
+
+                // Set State Flags
+                attacker.IsActing = true;
+                attacker.InWindup = true;
+
+                // Lock Facing Direction if provided
+                if (targetDirection.HasValue)
+                {
+                    attacker.FacingDirection = targetDirection.Value;
+                    // TODO: Update Visual Rotation immediately
+                }
+
                 Debug.Log($"[Action] {attacker.name} begins {action.Name} (Windup: {action.BaseTime}s)");
                 // Trigger animation trigger here in the future
             }, attacker);
@@ -29,9 +51,15 @@ namespace ProjectHero.Core.Actions
             // Use Attack Priority (Low) so it happens AFTER movement updates
             timeline.ScheduleEvent(impactTime, $"{attacker.name} hits with {action.Name}", () => 
             {
+                // Check if attack was interrupted (e.g. Staggered during windup)
+                if (!attacker.InWindup) return; 
+
+                // Transition State: Windup -> Recovery
+                attacker.InWindup = false;
+                attacker.InRecovery = true;
+
                 // 1. Determine Attack Area
                 // Uses the attacker's CURRENT position and facing at the moment of impact.
-                // This means if the attacker turns during windup (if allowed), the attack turns too.
                 if (action.Pattern == null)
                 {
                     Debug.LogWarning($"[Combat] Action {action.Name} has no AttackPattern!");
@@ -67,6 +95,16 @@ namespace ProjectHero.Core.Actions
                 }
 
             }, attacker, TimelinePriority.Attack);
+
+            // 3. Schedule the "End" (Recovery Finish)
+            float endTime = impactTime + recoveryDuration;
+            timeline.ScheduleEvent(endTime, $"{attacker.name} finishes {action.Name}", () => 
+            {
+                // Reset State Flags
+                attacker.InRecovery = false;
+                attacker.IsActing = false;
+                Debug.Log($"[Action] {attacker.name} recovered from {action.Name}");
+            }, attacker);
         }
     }
 }
