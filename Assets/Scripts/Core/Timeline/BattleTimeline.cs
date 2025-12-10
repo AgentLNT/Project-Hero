@@ -14,12 +14,13 @@ namespace ProjectHero.Core.Timeline
             public System.Action Action;
             public CombatUnit Owner; // The unit performing the action (can be null)
             public int Priority; // Higher executes first at same time
+            public bool IsForced; // If true, this event cannot be cancelled by normal interruptions (e.g. Knockback)
         }
 
         private List<TimelineEvent> _events = new List<TimelineEvent>();
         public float CurrentTime { get; private set; } = 0f;
 
-        public void ScheduleEvent(float delay, string description, System.Action action, CombatUnit owner = null, int priority = 0)
+        public void ScheduleEvent(float delay, string description, System.Action action, CombatUnit owner = null, int priority = 0, bool isForced = false)
         {
             _events.Add(new TimelineEvent 
             { 
@@ -27,7 +28,8 @@ namespace ProjectHero.Core.Timeline
                 Description = description, 
                 Action = action,
                 Owner = owner,
-                Priority = priority
+                Priority = priority,
+                IsForced = isForced
             });
             SortEvents();
         }
@@ -56,12 +58,12 @@ namespace ProjectHero.Core.Timeline
         /// Cancels all pending events for a specific unit.
         /// Useful when a unit is Staggered, Knocked Down, or Killed.
         /// </summary>
-        public void CancelEvents(CombatUnit unit)
+        public void CancelEvents(CombatUnit unit, bool includeForced = false)
         {
-            int removedCount = _events.RemoveAll(e => e.Owner == unit);
+            int removedCount = _events.RemoveAll(e => e.Owner == unit && (includeForced || !e.IsForced));
             if (removedCount > 0)
             {
-                Debug.Log($"[Timeline] Cancelled {removedCount} events for {unit.name}");
+                Debug.Log($"[Timeline] Cancelled {removedCount} events for {unit.name} (IncludeForced: {includeForced})");
             }
         }
 

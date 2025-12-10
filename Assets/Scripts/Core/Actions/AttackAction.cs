@@ -23,11 +23,22 @@ namespace ProjectHero.Core.Actions
             // 1. Schedule the "Start" (Windup)
             timeline.ScheduleEvent(startTime, $"{attacker.name} starts {action.Name}", () => 
             {
-                if (!attacker.CanAct) 
+                // Check for incapacitation ONLY. 
+                // Do NOT check IsActing, because TacticsController sets IsActing=true immediately upon command issue.
+                if (attacker.IsStaggered || attacker.IsKnockedDown || attacker.IsForcedMoved) 
                 {
-                    Debug.LogWarning($"[Action] {attacker.name} cannot act (Stunned/Busy). Attack cancelled.");
+                    Debug.LogWarning($"[Action] {attacker.name} cannot act. Staggered:{attacker.IsStaggered}, KnockedDown:{attacker.IsKnockedDown}, ForcedMoved:{attacker.IsForcedMoved}. Attack cancelled.");
                     return;
                 }
+
+                // Stamina Check
+                if (attacker.CurrentStamina < action.StaminaCost)
+                {
+                    Debug.LogWarning($"[Action] {attacker.name} not enough stamina for {action.Name} ({attacker.CurrentStamina}/{action.StaminaCost}). Attack cancelled.");
+                    attacker.ResetActionState();
+                    return;
+                }
+                attacker.CurrentStamina -= action.StaminaCost;
 
                 // Set State Flags
                 attacker.IsActing = true;
@@ -36,7 +47,8 @@ namespace ProjectHero.Core.Actions
                 // Lock Facing Direction if provided
                 if (targetDirection.HasValue)
                 {
-                    attacker.FacingDirection = targetDirection.Value;
+                    // CRITICAL FIX: Use SetFacingDirection to update GridManager occupancy
+                    attacker.SetFacingDirection(targetDirection.Value);
                     // TODO: Update Visual Rotation immediately
                 }
 
@@ -45,8 +57,14 @@ namespace ProjectHero.Core.Actions
             }, attacker);
 
             // 2. Schedule the "Impact"
-            // The delay is exactly the action's BaseTime
-            float impactTime = startTime + action.BaseTime;
+            // The delay is exactly the action's BaseTime, modified by Swiftness
+            // Higher Swiftness = Faster Attack (Lower BaseTime)
+            // Formula: ActualTime = BaseTime * (20 / Swiftness)
+            // 20 is the baseline Swiftness where speed is 100%
+            float speedFactor = 20f / Mathf.Max(1f, attacker.Swiftness);
+            float actualWindupTime = action.BaseTime * speedFactor;
+            
+            float impactTime = startTime + actualWindupTime;
 
             // Use Attack Priority (Low) so it happens AFTER movement updates
             timeline.ScheduleEvent(impactTime, $"{attacker.name} hits with {action.Name}", () => 
@@ -79,7 +97,7 @@ namespace ProjectHero.Core.Actions
                     foreach (var target in targets)
                     {
                         // 3. Apply Effects to EACH target
-                        PhysicsEngine.ResolveCollision(attacker, target, action);
+                        PhysicsEngine.ResolveCollision(timeline, attacker, target, action);
 
                         // Automatic Interruption Logic
                         if (target.IsStaggered || target.IsKnockedDown)
@@ -101,8 +119,7 @@ namespace ProjectHero.Core.Actions
             timeline.ScheduleEvent(endTime, $"{attacker.name} finishes {action.Name}", () => 
             {
                 // Reset State Flags
-                attacker.InRecovery = false;
-                attacker.IsActing = false;
+                attacker.ResetActionState();
                 Debug.Log($"[Action] {attacker.name} recovered from {action.Name}");
             }, attacker);
         }

@@ -33,6 +33,28 @@ namespace ProjectHero.Core.Grid
             return (GridDirection)index;
         }
 
+        public static Pathfinder.GridPoint GetNeighbor(Pathfinder.GridPoint start, GridDirection dir)
+        {
+            int dx = 0;
+            int dy = 0;
+            switch (dir)
+            {
+                case GridDirection.East: dx = 2; dy = 0; break;
+                case GridDirection.EastNorth: dx = 3; dy = 1; break;
+                case GridDirection.NorthEast: dx = 1; dy = 1; break;
+                case GridDirection.North: dx = 0; dy = 2; break;
+                case GridDirection.NorthWest: dx = -1; dy = 1; break;
+                case GridDirection.WestNorth: dx = -3; dy = 1; break;
+                case GridDirection.West: dx = -2; dy = 0; break;
+                case GridDirection.WestSouth: dx = -3; dy = -1; break;
+                case GridDirection.SouthWest: dx = -1; dy = -1; break;
+                case GridDirection.South: dx = 0; dy = -2; break;
+                case GridDirection.SouthEast: dx = 1; dy = -1; break;
+                case GridDirection.EastSouth: dx = 3; dy = -1; break;
+            }
+            return new Pathfinder.GridPoint(start.X + dx, start.Y + dy);
+        }
+
         // Rotates a TrianglePoint by (steps * 60) degrees Counter-Clockwise around (0,0)
         // Optimized using Center-of-Mass Rotation and Parity Conservation.
         public static TrianglePoint Rotate(TrianglePoint point, int steps)

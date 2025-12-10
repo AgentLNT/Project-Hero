@@ -9,27 +9,30 @@ namespace ProjectHero.Core.Visuals
     public class UnitMovement : MonoBehaviour
     {
         // Move the visual representation to a target world position over 'duration' seconds.
-        public void MoveVisuals(Vector3 targetPos, float duration, Action onComplete = null)
+        public void MoveVisuals(Vector3 targetPos, float duration, Action onComplete = null, bool rotate = true)
         {
             // Ensure target is grounded
             targetPos = GridManager.GetGroundPosition(targetPos);
             
             StopAllCoroutines();
-            StartCoroutine(MoveRoutine(targetPos, duration, onComplete));
+            StartCoroutine(MoveRoutine(targetPos, duration, onComplete, rotate));
         }
 
-        private IEnumerator MoveRoutine(Vector3 targetPos, float duration, Action onComplete)
+        private IEnumerator MoveRoutine(Vector3 targetPos, float duration, Action onComplete, bool rotate)
         {
             Vector3 startPos = transform.position;
             
-            // Instant rotation to face target (Design Choice: Crisp movement)
-            Vector3 direction = (targetPos - startPos).normalized;
-            if (direction != Vector3.zero)
+            if (rotate)
             {
-                // Flatten direction to ignore Y difference for rotation
-                direction.y = 0; 
-                if (direction != Vector3.zero) 
-                    transform.rotation = Quaternion.LookRotation(direction);
+                // Instant rotation to face target (Design Choice: Crisp movement)
+                Vector3 direction = (targetPos - startPos).normalized;
+                if (direction != Vector3.zero)
+                {
+                    // Flatten direction to ignore Y difference for rotation
+                    direction.y = 0; 
+                    if (direction != Vector3.zero) 
+                        transform.rotation = Quaternion.LookRotation(direction);
+                }
             }
 
             float elapsed = 0f;

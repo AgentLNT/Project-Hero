@@ -94,11 +94,29 @@ namespace ProjectHero.Demos
             // 2. Create Actions
             targetLibrary.Actions.Clear();
 
-            AddAction("QuickSlash", "Quick Slash", 0.5f, 10f, ImpactType.Slash, 10f, 1.0f, p_single);
-            AddAction("HeavySmash", "Heavy Smash", 1.5f, 30f, ImpactType.Blunt, 25f, 2.5f, p_single);
-            AddAction("WideCleave", "Wide Cleave", 1.0f, 15f, ImpactType.Slash, 20f, 1.2f, p_cleave);
-            AddAction("SpearThrust", "Spear Thrust", 0.8f, 15f, ImpactType.Pierce, 15f, 1.0f, p_line);
-            AddAction("Whirlwind", "Whirlwind", 2.0f, 20f, ImpactType.Slash, 40f, 3.0f, p_aoe);
+            // Rebalanced Actions for New Physics Model (v_impact vs v_target)
+            // Thresholds: Push > 0.5x, Stagger >= 1.0x, Knockdown >= 1.5x
+            // Base Impact Ratio = Kw * ForceMult (assuming equal mass/speed)
+
+            // Quick Slash (Slash Kw=0.6)
+            // Ratio = 0.6 * 0.8 = 0.48 (< 0.5). No control effect usually. Pure damage.
+            AddAction("QuickSlash", "Quick Slash", 0.5f, 15f, ImpactType.Slash, 10f, 0.8f, p_single);
+
+            // Heavy Smash (Blunt Kw=1.0)
+            // Ratio = 1.0 * 1.6 = 1.6 (> 1.5). Guaranteed Knockdown on equal footing.
+            AddAction("HeavySmash", "Heavy Smash", 1.5f, 40f, ImpactType.Blunt, 25f, 1.6f, p_single);
+
+            // Wide Cleave (Slash Kw=0.6)
+            // Ratio = 0.6 * 1.2 = 0.72 (> 0.5). Causes Push back. Good for crowd control.
+            AddAction("WideCleave", "Wide Cleave", 1.0f, 20f, ImpactType.Slash, 20f, 1.2f, p_cleave);
+
+            // Spear Thrust (Pierce Kw=0.3)
+            // Ratio = 0.3 * 1.0 = 0.3. No control. High penetration/precision (future mechanic).
+            AddAction("SpearThrust", "Spear Thrust", 0.8f, 25f, ImpactType.Pierce, 15f, 1.0f, p_line);
+
+            // Whirlwind (Slash Kw=0.6)
+            // Ratio = 0.6 * 2.5 = 1.5. Knockdown AoE. Ultimate move.
+            AddAction("Whirlwind", "Whirlwind", 2.0f, 30f, ImpactType.Slash, 40f, 2.5f, p_aoe);
 
             EditorUtility.SetDirty(targetLibrary);
             AssetDatabase.SaveAssets();

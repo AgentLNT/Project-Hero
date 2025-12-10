@@ -68,6 +68,7 @@ namespace ProjectHero.Core.Actions
         public static void SchedulePath(BattleTimeline timeline, CombatUnit unit, System.Collections.Generic.List<Pathfinder.GridPoint> path)
         {
             if (path == null || path.Count < 2) return;
+            if (GridManager.Instance == null) return;
 
             // Start from index 1 because index 0 is the current position
             float accumulatedDelay = 0f;
@@ -77,11 +78,24 @@ namespace ProjectHero.Core.Actions
                 var targetPoint = path[i];
                 var previousPoint = path[i-1];
                 
-                // Calculate duration for this step (same logic as single move)
-                float distance = 1.0f; 
+                // Calculate duration based on LOGICAL distance (User Request: 30-degree move = 2x cost)
+                // Even direction (0, 60...) = 1.0 distance
+                // Odd direction (30, 90...) = 2.0 distance
+                var moveDir = GridMath.GetDirection(previousPoint, targetPoint);
+                float distance = ((int)moveDir % 2 != 0) ? 2.0f : 1.0f;
+
+                // Stamina Check & Consumption
+                float staminaCost = distance * 5f; // Base cost per distance unit
+                if (unit.CurrentStamina < staminaCost)
+                {
+                    Debug.LogWarning($"[Movement] {unit.name} is too exhausted to move further!");
+                    break; // Stop path here
+                }
+                unit.CurrentStamina -= staminaCost;
+
                 float speed = Mathf.Max(1f, unit.Swiftness);
                 float stepDuration = distance / (speed * 0.2f);
-                stepDuration = Mathf.Clamp(stepDuration, 0.2f, 2.0f);
+                stepDuration = Mathf.Clamp(stepDuration, 0.2f, 4.0f);
 
                 // Define timing points
                 float startDelay = accumulatedDelay;

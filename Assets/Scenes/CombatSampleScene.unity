@@ -614,6 +614,7 @@ MonoBehaviour:
   ArmorWeight: 10
   ArmorDefense: 0
   MagicResistance: 0
+  CurrentHealth: 100
   CurrentStamina: 100
   CurrentFocus: 0
   CurrentAdrenaline: 0
@@ -655,7 +656,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -855,6 +856,7 @@ MonoBehaviour:
   ArmorWeight: 10
   ArmorDefense: 0
   MagicResistance: 0
+  CurrentHealth: 100
   CurrentStamina: 100
   CurrentFocus: 0
   CurrentAdrenaline: 0
@@ -896,7 +898,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
