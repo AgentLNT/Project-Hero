@@ -3,6 +3,7 @@ using ProjectHero.Core.Entities;
 using ProjectHero.Core.Timeline;
 using ProjectHero.Core.Physics;
 using ProjectHero.Core.Grid;
+using ProjectHero.Core.Interactions; // Added
 
 namespace ProjectHero.Core.Actions
 {
@@ -19,6 +20,11 @@ namespace ProjectHero.Core.Actions
             // Calculate Recovery Time (e.g., 50% of BaseTime or defined in Action)
             // For now, let's assume Recovery is 0.5s fixed or part of the action data.
             float recoveryDuration = 0.5f; 
+
+            // Calculate Impact Time upfront so we can use it for windows
+            float speedFactor = 20f / Mathf.Max(1f, attacker.Swiftness);
+            float actualWindupTime = action.BaseTime * speedFactor;
+            float impactTime = startTime + actualWindupTime;
 
             // 1. Schedule the "Start" (Windup)
             timeline.ScheduleEvent(startTime, $"{attacker.name} starts {action.Name}", () => 
@@ -54,20 +60,20 @@ namespace ProjectHero.Core.Actions
 
                 Debug.Log($"[Action] {attacker.name} begins {action.Name} (Windup: {action.BaseTime}s)");
                 // Trigger animation trigger here in the future
-            }, attacker);
+            }, attacker, 0, false, ActionType.Attack); // Tag as Attack
 
-            // 2. Schedule the "Impact"
+            // 2. Schedule the "Impact" (Detection Phase)
             // The delay is exactly the action's BaseTime, modified by Swiftness
             // Higher Swiftness = Faster Attack (Lower BaseTime)
             // Formula: ActualTime = BaseTime * (20 / Swiftness)
             // 20 is the baseline Swiftness where speed is 100%
-            float speedFactor = 20f / Mathf.Max(1f, attacker.Swiftness);
-            float actualWindupTime = action.BaseTime * speedFactor;
+            // float speedFactor = 20f / Mathf.Max(1f, attacker.Swiftness);
+            // float actualWindupTime = action.BaseTime * speedFactor;
             
-            float impactTime = startTime + actualWindupTime;
+            // float impactTime = startTime + actualWindupTime;
 
             // Use Attack Priority (Low) so it happens AFTER movement updates
-            timeline.ScheduleEvent(impactTime, $"{attacker.name} hits with {action.Name}", () => 
+            timeline.ScheduleEvent(impactTime, $"{attacker.name} hits with {action.Name} (Detection)", () => 
             {
                 // Check if attack was interrupted (e.g. Staggered during windup)
                 if (!attacker.InWindup) return; 
@@ -92,19 +98,39 @@ namespace ProjectHero.Core.Actions
 
                 if (targets.Count > 0)
                 {
-                    Debug.Log($"[Combat] {attacker.name} hit {targets.Count} targets!");
+                    Debug.Log($"[Combat] {attacker.name} detected {targets.Count} targets. Registering Intents...");
 
                     foreach (var target in targets)
                     {
-                        // 3. Apply Effects to EACH target
-                        PhysicsEngine.ResolveCollision(timeline, attacker, target, action);
-
-                        // Automatic Interruption Logic
-                        if (target.IsStaggered || target.IsKnockedDown)
+                        // Create an Intent for EACH target
+                        // This allows one swing to hit one guy but clash with another
+                        var intent = new CombatIntent(attacker, ActionType.Attack, action)
                         {
-                            Debug.Log($"[Tactics] {target.name} was interrupted! Cancelling pending events.");
-                            timeline.CancelEvents(target);
-                        }
+                            TargetUnit = target,
+                            OnSuccess = () => 
+                            {
+                                // Double check if target is still valid
+                                if (target.CurrentHealth <= 0) return;
+
+                                // Apply Effects
+                                PhysicsEngine.ResolveCollision(timeline, attacker, target, action);
+
+                                // Automatic Interruption Logic
+                                if (target.IsStaggered || target.IsKnockedDown)
+                                {
+                                    Debug.Log($"[Tactics] {target.name} was interrupted! Cancelling pending events.");
+                                    timeline.CancelEvents(target);
+                                }
+                            },
+                            OnInterrupted = (interactionType) =>
+                            {
+                                Debug.Log($"[Combat] Attack by {attacker.name} on {target.name} interrupted by {interactionType}");
+                                // TODO: Trigger specific VFX here (Sparks, Sound)
+                            }
+                        };
+
+                        // Register with Timeline -> Arbiter
+                        timeline.RegisterIntent(intent);
                     }
                 }
                 else
@@ -112,7 +138,7 @@ namespace ProjectHero.Core.Actions
                     Debug.Log($"[Combat] {attacker.name} missed (No targets in area)");
                 }
 
-            }, attacker, TimelinePriority.Attack);
+            }, attacker, TimelinePriority.Attack, false, ActionType.Attack, action); // Tag as Attack (Detection) and pass Action data
 
             // 3. Schedule the "End" (Recovery Finish)
             float endTime = impactTime + recoveryDuration;

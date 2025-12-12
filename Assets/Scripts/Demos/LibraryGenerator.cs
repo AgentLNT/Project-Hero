@@ -100,23 +100,23 @@ namespace ProjectHero.Demos
 
             // Quick Slash (Slash Kw=0.6)
             // Ratio = 0.6 * 0.8 = 0.48 (< 0.5). No control effect usually. Pure damage.
-            AddAction("QuickSlash", "Quick Slash", 0.5f, 15f, ImpactType.Slash, 10f, 0.8f, p_single);
+            AddAction("QuickSlash", "Quick Slash", ActionType.Attack, 0.5f, 15f, ImpactType.Slash, 10f, 0.8f, p_single);
 
             // Heavy Smash (Blunt Kw=1.0)
             // Ratio = 1.0 * 1.6 = 1.6 (> 1.5). Guaranteed Knockdown on equal footing.
-            AddAction("HeavySmash", "Heavy Smash", 1.5f, 40f, ImpactType.Blunt, 25f, 1.6f, p_single);
+            AddAction("HeavySmash", "Heavy Smash", ActionType.Attack, 1.5f, 40f, ImpactType.Blunt, 25f, 1.6f, p_single);
 
             // Wide Cleave (Slash Kw=0.6)
             // Ratio = 0.6 * 1.2 = 0.72 (> 0.5). Causes Push back. Good for crowd control.
-            AddAction("WideCleave", "Wide Cleave", 1.0f, 20f, ImpactType.Slash, 20f, 1.2f, p_cleave);
+            AddAction("WideCleave", "Wide Cleave", ActionType.Attack, 1.0f, 20f, ImpactType.Slash, 20f, 1.2f, p_cleave);
 
             // Spear Thrust (Pierce Kw=0.3)
             // Ratio = 0.3 * 1.0 = 0.3. No control. High penetration/precision (future mechanic).
-            AddAction("SpearThrust", "Spear Thrust", 0.8f, 25f, ImpactType.Pierce, 15f, 1.0f, p_line);
+            AddAction("SpearThrust", "Spear Thrust", ActionType.Attack, 0.8f, 25f, ImpactType.Pierce, 15f, 1.0f, p_line);
 
             // Whirlwind (Slash Kw=0.6)
             // Ratio = 0.6 * 2.5 = 1.5. Knockdown AoE. Ultimate move.
-            AddAction("Whirlwind", "Whirlwind", 2.0f, 30f, ImpactType.Slash, 40f, 2.5f, p_aoe);
+            AddAction("Whirlwind", "Whirlwind", ActionType.Attack, 2.0f, 30f, ImpactType.Slash, 40f, 2.5f, p_aoe);
 
             EditorUtility.SetDirty(targetLibrary);
             AssetDatabase.SaveAssets();
@@ -141,9 +141,9 @@ namespace ProjectHero.Demos
             return pattern;
         }
 
-        private void AddAction(string id, string name, float time, float dmg, ImpactType type, float stamina, float force, AttackPattern pattern)
+        private void AddAction(string id, string name, ActionType actionType, float time, float dmg, ImpactType type, float stamina, float force, AttackPattern pattern)
         {
-            var action = new Action(name, time, dmg, type, stamina, force, pattern);
+            var action = new Action(name, actionType, time, dmg, type, stamina, force, pattern);
             targetLibrary.Actions.Add(new ActionLibrarySO.ActionEntry { ID = id, Data = action });
         }
 #endif
