@@ -50,7 +50,11 @@ namespace ProjectHero.UI
                 }
             }
             
-            // 3. Add "Wait" Button (End Turn)
+            // 3. Add Defensive Actions
+            CreateButton("Block", null, (a) => Controller.ExecuteBlock());
+            CreateButton("Dodge", null, (a) => Controller.ExecuteDodge());
+            
+            // 4. Add "Wait" Button (End Turn)
             // CreateButton("Wait", null, (a) => Debug.Log("Wait clicked"));
         }
 

@@ -3,17 +3,6 @@ using ProjectHero.Core.Combat;
 
 namespace ProjectHero.Core.Actions
 {
-    public enum ActionType
-    {
-        None,
-        Attack,
-        Block,
-        Dodge,
-        Move,
-        Cast,
-        Item
-    }
-
     [System.Serializable]
     public class Action
     {

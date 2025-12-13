@@ -1,42 +1,43 @@
-using System.Collections.Generic;
+using UnityEngine;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Actions;
 
 namespace ProjectHero.Core.Interactions
 {
     /// <summary>
-    /// Represents a unit's attempt to change the game state at a specific moment.
-    /// This is a pure data structure used by the CombatArbiter.
+    /// Base class for all combat intentions.
+    /// Subclasses encapsulate specific execution logic and data.
     /// </summary>
-    public class CombatIntent
+    public abstract class CombatIntent
     {
-        public string ID; // Debug ID
+        public string ID;
         public CombatUnit Owner;
         public ActionType Type;
-        
-        // The primary target (if any)
-        public CombatUnit TargetUnit;
-        
-        // The raw action data (e.g., the Attack Action definition)
-        public object Data;
-
-        // Callbacks for the result of the arbitration
-        public System.Action OnSuccess; // Executed if the intent is not cancelled
-        public System.Action<InteractionType> OnInterrupted; // Executed if the intent is cancelled by an interaction (e.g. Clash)
-
         public bool IsCancelled { get; private set; } = false;
 
-        public CombatIntent(CombatUnit owner, ActionType type, object data = null)
+        public CombatIntent(CombatUnit owner, ActionType type)
         {
             Owner = owner;
             Type = type;
-            Data = data;
-            ID = $"{owner.name}_{type}_{UnityEngine.Time.frameCount}";
+            ID = $"{owner.name}_{type}_{Time.frameCount}";
         }
 
         public void Cancel()
         {
             IsCancelled = true;
+        }
+
+        /// <summary>
+        /// Executed by the Timeline if the intent is NOT cancelled by the Arbiter.
+        /// </summary>
+        public abstract void ExecuteSuccess();
+
+        /// <summary>
+        /// Executed by the Arbiter if the intent IS cancelled (e.g. Clash, Parry).
+        /// </summary>
+        public virtual void ExecuteInterruption(InteractionType interactionType)
+        {
+            Debug.Log($"[Combat] {Owner.name}'s {Type} interrupted by {interactionType}");
         }
     }
 }

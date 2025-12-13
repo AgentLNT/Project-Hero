@@ -130,7 +130,7 @@ namespace ProjectHero.Demos
             if (currentPath != null)
             {
                 Debug.Log($"Path found! Length: {currentPath.Count}");
-                MovementAction.SchedulePath(Timeline, unit, currentPath);
+                ActionScheduler.ScheduleMove(Timeline, unit, currentPath);
             }
             else
             {

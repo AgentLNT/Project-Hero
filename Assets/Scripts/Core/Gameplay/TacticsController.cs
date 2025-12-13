@@ -20,6 +20,10 @@ namespace ProjectHero.Core.Gameplay
         public BattleTimeline Timeline;
         public GridCursor Cursor;
 
+        [Header("Defensive Action Settings")]
+        public float BlockDuration = 1.0f; // Block window duration
+        public float DodgeDuration = 0.5f; // Dodge window duration
+
         private CombatUnit _selectedUnit;
         private Action _selectedAction; // New: Track selected action
 
@@ -74,6 +78,46 @@ namespace ProjectHero.Core.Gameplay
             
             // Enable targeting mode (ignore unit clicks) to allow moving to tiles occupied by units
             if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+        }
+
+        // Public API for UI to execute Block
+        public void ExecuteBlock()
+        {
+            if (_selectedUnit == null)
+            {
+                Debug.LogWarning("[Tactics] No unit selected for Block.");
+                return;
+            }
+
+            if (!_selectedUnit.CanAct)
+            {
+                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot act (Busy/Stunned).");
+                return;
+            }
+
+            Debug.Log($"[Tactics] {_selectedUnit.name} executes Block (Window: {BlockDuration}s)");
+            _selectedUnit.IsActing = true;
+            ActionScheduler.ScheduleBlock(Timeline, _selectedUnit, 0f, BlockDuration);
+        }
+
+        // Public API for UI to execute Dodge
+        public void ExecuteDodge()
+        {
+            if (_selectedUnit == null)
+            {
+                Debug.LogWarning("[Tactics] No unit selected for Dodge.");
+                return;
+            }
+
+            if (!_selectedUnit.CanAct)
+            {
+                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot act (Busy/Stunned).");
+                return;
+            }
+
+            Debug.Log($"[Tactics] {_selectedUnit.name} executes Dodge (Window: {DodgeDuration}s)");
+            _selectedUnit.IsActing = true;
+            ActionScheduler.ScheduleDodge(Timeline, _selectedUnit, 0f, DodgeDuration);
         }
 
         private void OnDestroy()
@@ -204,7 +248,7 @@ namespace ProjectHero.Core.Gameplay
                 _selectedUnit.IsActing = true;
 
                 // 2. Schedule Attack (Start immediately at T=0 relative to now)
-                AttackAction.ScheduleAttack(Timeline, _selectedUnit, _selectedAction, 0f, dir);
+                ActionScheduler.ScheduleAttack(Timeline, _selectedUnit, _selectedAction, 0f, dir);
                 
                 _selectedAction = null; // Deselect action after use
                 Cursor.Hide();
@@ -245,7 +289,7 @@ namespace ProjectHero.Core.Gameplay
                 // Mark as acting immediately
                 unit.IsActing = true;
 
-                MovementAction.SchedulePath(Timeline, unit, path);
+                ActionScheduler.ScheduleMove(Timeline, unit, path);
             }
             else
             {

@@ -1,15 +1,16 @@
-using UnityEngine;
-using System.Collections.Generic;
-using ProjectHero.Core.Pathfinding;
-using ProjectHero.Core.Grid;
-using ProjectHero.Core.Visuals;
 using ProjectHero.Core.Actions;
+using ProjectHero.Core.Actions.Intents;
+using ProjectHero.Core.Grid;
+using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Timeline;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace ProjectHero.Core.Entities
 {
     public class CombatUnit : MonoBehaviour
     {
+        // ... existing code ...
         [Header("Grid State")]
         public Pathfinder.GridPoint InitialGridPosition;
 
@@ -69,10 +70,13 @@ namespace ProjectHero.Core.Entities
         [Header("State")]
         public float CurrentHealth = 100f; // Added
         public float CurrentStamina = 100f;
-        public float CurrentFocus = 0f; // Focus Points
+        public float CurrentFocus = 0f; // Focus Points (Point-based resource)
         public float CurrentAdrenaline = 0f; // Adrenaline
 
         // --- Derived Stats (Design Section III) ---
+
+        // Max Focus (Point-based) = WIS / 2 (Example: 10 WIS = 5 Focus Points)
+        public float MaxFocus => Mathf.Max(3f, Wisdom * 0.5f);
 
         // Total Mass (M_total) = STR + CON + Armor
         // Formula approximation: Base(50) + STR*2 + CON*2 + Armor
@@ -107,7 +111,6 @@ namespace ProjectHero.Core.Entities
         [Header("Status Flags")]
         public bool IsStaggered;    // 硬直/失衡
         public bool IsKnockedDown;  // 倒地
-        public bool IsForcedMoved;  // 被强制位移中
         public bool IsExhausted => CurrentStamina < MaxStamina * 0.2f; // Low Stamina Flag (<20%)
 
         [Header("Action State")]
@@ -117,7 +120,7 @@ namespace ProjectHero.Core.Entities
         public bool IsMoving;       // 移动中（主动移动）
 
         // Helper to check if unit can accept new commands
-        public bool CanAct => !IsActing && !IsStaggered && !IsKnockedDown && !IsForcedMoved;
+        public bool CanAct => !IsActing && !IsStaggered && !IsKnockedDown;
 
         public void ResetActionState()
         {
@@ -290,8 +293,8 @@ namespace ProjectHero.Core.Entities
             {
                 Debug.Log($"{name} has been DEFEATED!");
                 
-                // 1. Cancel all events (including forced knockbacks)
-                if (timeline != null) timeline.CancelEvents(this, true);
+                // 1. Cancel all events
+                if (timeline != null) timeline.CancelEvents(this);
 
                 // 2. Unregister from Grid Logic
                 if (GridManager.Instance != null)
@@ -309,80 +312,9 @@ namespace ProjectHero.Core.Entities
             // 2. Apply Knockback / Forced Movement
             if (pushDistance > 0)
             {
-                ApplyKnockback(timeline, pushDirection, pushDistance);
+                ActionScheduler.ScheduleKnockback(timeline, this, pushDirection, pushDistance, impactVelocity);
             }
         }
 
-        private void ApplyKnockback(BattleTimeline timeline, GridDirection direction, int distance)
-        {
-            if (GridManager.Instance == null) return;
-
-            if (IsForcedMoved) 
-            {
-                Debug.LogWarning($"{name} is already being forced moved! Ignoring new knockback.");
-                return;
-            }
-
-            IsForcedMoved = true;
-            
-            float stepDuration = 0.15f; 
-            float accumulatedDelay = 0f;
-            var currentPos = GridPosition;
-
-            for (int i = 0; i < distance; i++)
-            {
-                int stepIndex = i;
-                var nextPos = GridMath.GetNeighbor(currentPos, direction);
-                var previousPos = currentPos;
-                
-                Vector3 targetWorldPos = GridManager.Instance.GridToWorld(nextPos);
-                targetWorldPos = GridManager.GetGroundPosition(targetWorldPos);
-
-                // 1. Start Step Event
-                timeline.ScheduleEvent(accumulatedDelay, $"Knockback Start {i}", () => 
-                {
-                    // Check Collision
-                    var projectedVolume = GetProjectedOccupancy(nextPos, FacingDirection);
-                    if (GridManager.Instance.IsSpaceOccupied(projectedVolume, this))
-                    {
-                        Debug.Log($"{name} hit an obstacle during knockback step {stepIndex}!");
-                        CurrentHealth -= 5f; // Wall Splat
-                        Debug.Log($"{name} took 5 wall splat damage!");
-                        
-                        // Cancel remaining forced events (Wall Splat stops knockback)
-                        timeline.CancelEvents(this, true);
-                        IsForcedMoved = false;
-                        return;
-                    }
-
-                    // Trigger Visuals
-                    var mover = GetComponent<UnitMovement>();
-                    if (mover != null)
-                    {
-                        // Do NOT rotate during knockback
-                        mover.MoveVisuals(targetWorldPos, stepDuration, null, false);
-                    }
-                    else
-                    {
-                        transform.position = targetWorldPos; 
-                    }
-                }, this, 0, true); // Priority 0, IsForced = true
-
-                // 2. End Step Event
-                timeline.ScheduleEvent(accumulatedDelay + stepDuration, $"Knockback End {i}", () => 
-                {
-                    SetGridPosition(nextPos);
-                    
-                    if (stepIndex == distance - 1)
-                    {
-                        IsForcedMoved = false;
-                        Debug.Log($"{name} finished knockback to {nextPos}");
-                    }
-                }, this, 0, true); // Priority 0, IsForced = true
-
-                currentPos = nextPos;
-                accumulatedDelay += stepDuration;
-            }
-        }
     }
 }
