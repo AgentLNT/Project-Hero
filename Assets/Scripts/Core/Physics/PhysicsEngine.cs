@@ -91,21 +91,18 @@ namespace ProjectHero.Core.Physics
             // Push: 0.5x (was 1.0x)
             if (impactVelocity >= v_target * 1.5f)
             {
-                displacementHexes = Mathf.Max(displacementHexes, 2); // Ensure at least 2 hexes for knockdown
                 target.IsKnockedDown = true;
                 target.OnImpact(timeline, impactVelocity, totalDamage, displacementHexes, pushDir); 
-                Debug.Log($"[Result] {target.name} KNOCKED DOWN! (v_impact {impactVelocity:F2} >= 1.5 * {v_target:F2}) -> Dist: {displacementHexes}");
+                Debug.Log($"[Result] {target.name} KNOCKED DOWN! (v_impact {impactVelocity:F2} >= 1.5 * {v_target:F2})");
             }
             else if (impactVelocity >= v_target * 1.0f)
             {
-                displacementHexes = Mathf.Max(displacementHexes, 1); // Ensure at least 1 hex for stagger
                 target.IsStaggered = true;
                 target.OnImpact(timeline, impactVelocity, totalDamage, displacementHexes, pushDir);
-                Debug.Log($"[Result] {target.name} STAGGERED! (v_impact {impactVelocity:F2} >= 1.0 * {v_target:F2}) -> Dist: {displacementHexes}");
+                Debug.Log($"[Result] {target.name} STAGGERED! (v_impact {impactVelocity:F2} >= 1.0 * {v_target:F2})");
             }
             else if (impactVelocity > v_target * 0.5f)
             {
-                 displacementHexes = Mathf.Max(displacementHexes, 1); // Ensure at least 1 hex for push
                  Debug.Log($"[Result] {target.name} Pushed Back {displacementHexes} Hexes! (v_impact {impactVelocity:F2} > 0.5 * {v_target:F2})");
                  target.OnImpact(timeline, impactVelocity, totalDamage, displacementHexes, pushDir);
             }

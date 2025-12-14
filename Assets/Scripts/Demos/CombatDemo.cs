@@ -65,6 +65,18 @@ namespace ProjectHero.Demos
             EnsureCollider(Player);
             EnsureCollider(Enemy);
 
+            if (Player != null) Player.IsPlayerControlled = true;
+
+            // Basic enemy AI
+            if (Enemy != null)
+            {
+                var ai = Enemy.GetComponent<EnemyAIController>();
+                if (ai == null) ai = Enemy.gameObject.AddComponent<EnemyAIController>();
+                ai.Timeline = Timeline;
+                ai.ControlledUnit = Enemy;
+                ai.TargetUnit = Player;
+            }
+
             // Setup Visuals if missing
             SetupVisuals();
         }
@@ -96,6 +108,18 @@ namespace ProjectHero.Demos
 
         void Update()
         {
+            if (Timeline != null && Input.GetKeyDown(KeyCode.P))
+            {
+                Timeline.SetPaused(!Timeline.Paused);
+                Debug.Log($"[Demo] Timeline Paused = {Timeline.Paused}");
+            }
+
+            if (Timeline != null && Timeline.Paused)
+            {
+                // Simulation paused; UI and editing still work.
+                return;
+            }
+
             timer += Time.deltaTime;
             Timeline.AdvanceTime(timer);
         }

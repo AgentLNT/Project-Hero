@@ -12,12 +12,19 @@ namespace ProjectHero.UI
         
         private Action _action; // Null means "Move" or special command
         private System.Action<Action> _callback;
+        private Color _baseColor = Color.white;
 
-        public void Setup(string name, Action action, System.Action<Action> onClick)
+        public void Setup(string name, Action action, System.Action<Action> onClick, Color? baseColor = null)
         {
             if (Label != null) Label.text = name;
             _action = action;
             _callback = onClick;
+
+            _baseColor = baseColor ?? Color.white;
+            if (Button != null && Button.image != null)
+            {
+                Button.image.color = _baseColor;
+            }
             
             if (Button != null)
             {
@@ -28,9 +35,22 @@ namespace ProjectHero.UI
 
         public void SetSelected(bool selected)
         {
-            // Visual feedback (e.g. change color)
-            if (Button != null)
-                Button.image.color = selected ? Color.green : Color.white;
+            if (Button == null || Button.image == null) return;
+
+            // Mild highlight without changing the hue.
+            if (selected)
+            {
+                var c = _baseColor;
+                Button.image.color = new Color(
+                    Mathf.Clamp01(c.r * 1.15f),
+                    Mathf.Clamp01(c.g * 1.15f),
+                    Mathf.Clamp01(c.b * 1.15f),
+                    c.a);
+            }
+            else
+            {
+                Button.image.color = _baseColor;
+            }
         }
     }
 }

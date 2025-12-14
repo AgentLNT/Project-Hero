@@ -47,6 +47,9 @@ namespace ProjectHero.Core.Actions.Intents
                     Owner.InRecovery = true;
                     Owner.InWindup = false;
                     break;
+                case "Busy":
+                    // Generic marker state. Actual IsActing flag is set via SetIsActing.
+                    break;
                 case "Idle":
                     Owner.ResetActionState();
                     break;

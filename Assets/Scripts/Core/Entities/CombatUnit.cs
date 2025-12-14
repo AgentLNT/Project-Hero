@@ -11,6 +11,10 @@ namespace ProjectHero.Core.Entities
     public class CombatUnit : MonoBehaviour
     {
         // ... existing code ...
+
+        [Header("Control")]
+        [Tooltip("Only the player-controlled unit can be selected for issuing commands. Other units can only be Observed.")]
+        public bool IsPlayerControlled = false;
         [Header("Grid State")]
         public Pathfinder.GridPoint InitialGridPosition;
 

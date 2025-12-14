@@ -7,6 +7,7 @@ using ProjectHero.Core.Timeline;
 using ProjectHero.Core.Input;
 using ProjectHero.Visuals;
 using ProjectHero.UI; // Added UI namespace
+using ProjectHero.UI.Timeline;
 
 namespace ProjectHero.Core.Gameplay
 {
@@ -16,6 +17,12 @@ namespace ProjectHero.Core.Gameplay
     /// </summary>
     public class TacticsController : MonoBehaviour
     {
+        private enum PlanStep
+        {
+            None,
+            Targeting,
+            Placing
+        }
         [Header("References")]
         public BattleTimeline Timeline;
         public GridCursor Cursor;
@@ -26,6 +33,13 @@ namespace ProjectHero.Core.Gameplay
 
         private CombatUnit _selectedUnit;
         private Action _selectedAction; // New: Track selected action
+        private bool _isMoveMode;
+        private PlanStep _planStep = PlanStep.None;
+
+        // Cached target info for Step 2 -> Step 3 -> Step back
+        private Pathfinder.GridPoint _plannedTarget;
+        private GridDirection _plannedDirection;
+        private System.Collections.Generic.List<Pathfinder.GridPoint> _plannedPath;
 
         private void Start()
         {
@@ -64,6 +78,8 @@ namespace ProjectHero.Core.Gameplay
         public void SelectAction(Action action)
         {
             _selectedAction = action;
+            _isMoveMode = false;
+            _planStep = PlanStep.Targeting;
             Debug.Log($"[Tactics] Selected Action: {action.Name}");
             
             // Enable targeting mode (ignore unit clicks)
@@ -74,6 +90,8 @@ namespace ProjectHero.Core.Gameplay
         public void SelectMove()
         {
             _selectedAction = null;
+            _isMoveMode = true;
+            _planStep = PlanStep.Targeting;
             Debug.Log("[Tactics] Selected Move Mode");
             
             // Enable targeting mode (ignore unit clicks) to allow moving to tiles occupied by units
@@ -95,9 +113,34 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            Debug.Log($"[Tactics] {_selectedUnit.name} executes Block (Window: {BlockDuration}s)");
-            _selectedUnit.IsActing = true;
-            ActionScheduler.ScheduleBlock(Timeline, _selectedUnit, 0f, BlockDuration);
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+            if (timelineUI == null)
+            {
+                Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Block.");
+                ActionScheduler.ScheduleBlock(Timeline, _selectedUnit, 0f, BlockDuration);
+                return;
+            }
+
+            // Step 3: Placement on timeline (no world targeting required)
+            _planStep = PlanStep.Placing;
+            timelineUI.PlacementCommitted -= OnPlacementCommitted;
+            timelineUI.PlacementCancelled -= OnPlacementCancelled;
+            timelineUI.PlacementCommitted += OnPlacementCommitted;
+            timelineUI.PlacementCancelled += OnPlacementCancelled;
+
+            var placement = new TimelineActionPlacement
+            {
+                Owner = _selectedUnit,
+                Kind = TimelineActionKind.Block,
+                Label = "Block",
+                DurationSeconds = BlockDuration,
+                Lane = TimelineLane.Player,
+                Schedule = (startDelay, groupId) =>
+                {
+                    ActionScheduler.ScheduleBlock(Timeline, _selectedUnit, startDelay, BlockDuration, focusCost: 2f, groupId: groupId);
+                }
+            };
+            timelineUI.BeginPlacement(placement);
         }
 
         // Public API for UI to execute Dodge
@@ -115,9 +158,60 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            Debug.Log($"[Tactics] {_selectedUnit.name} executes Dodge (Window: {DodgeDuration}s)");
-            _selectedUnit.IsActing = true;
-            ActionScheduler.ScheduleDodge(Timeline, _selectedUnit, 0f, DodgeDuration);
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+            if (timelineUI == null)
+            {
+                Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Dodge.");
+                ActionScheduler.ScheduleDodge(Timeline, _selectedUnit, 0f, DodgeDuration);
+                return;
+            }
+
+            // Step 3: Placement on timeline (no world targeting required)
+            _planStep = PlanStep.Placing;
+            timelineUI.PlacementCommitted -= OnPlacementCommitted;
+            timelineUI.PlacementCancelled -= OnPlacementCancelled;
+            timelineUI.PlacementCommitted += OnPlacementCommitted;
+            timelineUI.PlacementCancelled += OnPlacementCancelled;
+
+            var placement = new TimelineActionPlacement
+            {
+                Owner = _selectedUnit,
+                Kind = TimelineActionKind.Dodge,
+                Label = "Dodge",
+                DurationSeconds = DodgeDuration,
+                Lane = TimelineLane.Player,
+                Schedule = (startDelay, groupId) =>
+                {
+                    ActionScheduler.ScheduleDodge(Timeline, _selectedUnit, startDelay, DodgeDuration, focusCost: 1f, groupId: groupId);
+                }
+            };
+            timelineUI.BeginPlacement(placement);
+        }
+
+        private void OnPlacementCommitted()
+        {
+            // After placing a block, exit planning mode.
+            _selectedAction = null;
+            _isMoveMode = false;
+            _planStep = PlanStep.None;
+            _plannedPath = null;
+
+            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+            if (Cursor != null) Cursor.Hide();
+        }
+
+        private void OnPlacementCancelled()
+        {
+            // Step back from timeline placement to world targeting.
+            if (_selectedAction != null || _isMoveMode)
+            {
+                _planStep = PlanStep.Targeting;
+                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+            }
+            else
+            {
+                _planStep = PlanStep.None;
+            }
         }
 
         private void OnDestroy()
@@ -136,14 +230,32 @@ namespace ProjectHero.Core.Gameplay
 
         private void HandleCancel()
         {
+            // Step-back logic for planning
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+            if (_planStep == PlanStep.Placing && timelineUI != null && timelineUI.HasPendingPlacement)
+            {
+                timelineUI.CancelPlacement();
+                return;
+            }
+
             if (_selectedAction != null)
             {
                 Debug.Log($"[Tactics] Cancelled Action: {_selectedAction.Name}");
                 _selectedAction = null;
+                _planStep = PlanStep.None;
                 
                 // Disable targeting mode
                 if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
                 
+                return;
+            }
+
+            if (_isMoveMode)
+            {
+                Debug.Log("[Tactics] Cancelled Move Mode");
+                _isMoveMode = false;
+                _planStep = PlanStep.None;
+                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
                 return;
             }
 
@@ -165,6 +277,13 @@ namespace ProjectHero.Core.Gameplay
         {
             if (Cursor == null || GridManager.Instance == null) return;
 
+            // Step 3: timeline placement should not update world previews.
+            if (_planStep == PlanStep.Placing)
+            {
+                Cursor.Hide();
+                return;
+            }
+
             if (_selectedUnit != null)
             {
                 var targetGridPos = GridManager.Instance.WorldToGrid(worldPos);
@@ -183,13 +302,18 @@ namespace ProjectHero.Core.Gameplay
                         Cursor.ShowVolume(attackVolume);
                     }
                 }
-                else
+                else if (_isMoveMode)
                 {
                     // Mode: Unit Selected (Movement) -> Show Projected Volume at Vertex
                     // Use the unit's current facing for the preview
                     var projectedVolume = _selectedUnit.GetProjectedOccupancy(targetGridPos, _selectedUnit.FacingDirection);
                     Cursor.cursorColor = Color.yellow; // Revert color
                     Cursor.ShowVolume(projectedVolume);
+                }
+                else
+                {
+                    // Mode: unit selected but not in any targeting mode -> no auto movement preview
+                    Cursor.Hide();
                 }
             }
             else
@@ -203,11 +327,23 @@ namespace ProjectHero.Core.Gameplay
 
         private void HandleUnitClick(CombatUnit unit)
         {
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+
+            // Only the designated player-controlled unit can be selected for issuing commands.
+            // Any other unit click should only update ObservedUnit.
+            if (timelineUI != null && (unit == null || !unit.IsPlayerControlled))
+            {
+                timelineUI.SetObservedUnit(unit);
+                Debug.Log($"[Tactics] Observed Unit: {unit.name}");
+                if (Cursor != null) Cursor.Hide();
+                return;
+            }
+
             _selectedUnit = unit;
             _selectedAction = null; // Reset action on new unit selection
             Debug.Log($"[Tactics] Selected Unit: {unit.name}");
-            
-            // Notify UI
+
+            // Notify UI (this also sets PlayerUnit on the timeline UI)
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.OnUnitSelected(unit);
@@ -219,6 +355,13 @@ namespace ProjectHero.Core.Gameplay
 
         private void HandleGroundClick(Vector3 worldPos)
         {
+            // Step 3: timeline placement should not accept world clicks.
+            if (_planStep == PlanStep.Placing)
+            {
+                Debug.Log("[Tactics] Ground click ignored (timeline placement active).");
+                return;
+            }
+
             if (_selectedUnit == null)
             {
                 // Optional: Select Tile Info?
@@ -238,27 +381,64 @@ namespace ProjectHero.Core.Gameplay
 
             if (_selectedAction != null)
             {
-                // Execute Attack
-                // 1. Determine Direction
-                var dir = GridMath.GetDirection(_selectedUnit.GridPosition, targetGridPos);
-                
-                Debug.Log($"[Tactics] Executing Attack {_selectedAction.Name} facing {dir}");
-                
-                // Mark as acting immediately to prevent double-clicks
-                _selectedUnit.IsActing = true;
+                // Prepare Attack Block for timeline placement
+                var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+                if (timelineUI == null)
+                {
+                    Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Attack.");
+                    var dirNow = GridMath.GetDirection(_selectedUnit.GridPosition, targetGridPos);
+                    ActionScheduler.ScheduleAttack(Timeline, _selectedUnit, _selectedAction, 0f, dirNow);
+                }
+                else
+                {
+                    var dir = GridMath.GetDirection(_selectedUnit.GridPosition, targetGridPos);
+                    float duration = ActionScheduler.EstimateAttackDuration(_selectedUnit, _selectedAction);
+                    var actionCopy = _selectedAction;
+                    var ownerCopy = _selectedUnit;
+                    var dirCopy = dir;
 
-                // 2. Schedule Attack (Start immediately at T=0 relative to now)
-                ActionScheduler.ScheduleAttack(Timeline, _selectedUnit, _selectedAction, 0f, dir);
-                
-                _selectedAction = null; // Deselect action after use
-                Cursor.Hide();
+                    _plannedTarget = targetGridPos;
+                    _planStep = PlanStep.Placing;
+
+                    timelineUI.PlacementCommitted -= OnPlacementCommitted;
+                    timelineUI.PlacementCancelled -= OnPlacementCancelled;
+                    timelineUI.PlacementCommitted += OnPlacementCommitted;
+                    timelineUI.PlacementCancelled += OnPlacementCancelled;
+
+                    var placement = new TimelineActionPlacement
+                    {
+                        Owner = ownerCopy,
+                        Kind = TimelineActionKind.Attack,
+                        Label = actionCopy.Name,
+                        DurationSeconds = duration,
+                        Lane = TimelineLane.Player,
+                        AttackFacingAbsolute = dirCopy,
+                        Schedule = (startDelay, groupId) =>
+                        {
+                            // Store absolute facing (not relative) so chaining won't accumulate rotations.
+                            ActionScheduler.ScheduleAttack(Timeline, ownerCopy, actionCopy, startDelay, targetDirection: dirCopy, groupId: groupId);
+                        }
+                    };
+                    timelineUI.BeginPlacement(placement);
+                }
+
+                // Do not clear selection here; clearing happens on placement commit.
+                if (Cursor != null) Cursor.Hide();
                 
                 // Reset targeting mode
                 if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
             }
             else
             {
-                // Execute Move
+                // Only allow moving when Move mode is explicitly selected.
+                if (!_isMoveMode)
+                {
+                    Debug.Log("[Tactics] Ground click ignored (no action selected).");
+                    return;
+                }
+
+                // Step 2: confirm target point in world, then Step 3: placement on timeline
+                _plannedTarget = targetGridPos;
                 IssueMoveCommand(_selectedUnit, targetGridPos);
 
                 // Reset targeting mode
@@ -285,11 +465,40 @@ namespace ProjectHero.Core.Gameplay
             if (path != null)
             {
                 Debug.Log($"[Tactics] Path found! Length: {path.Count}");
-                
-                // Mark as acting immediately
-                unit.IsActing = true;
 
-                ActionScheduler.ScheduleMove(Timeline, unit, path);
+                var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+                if (timelineUI == null)
+                {
+                    Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Move.");
+                    unit.IsActing = true;
+                    ActionScheduler.ScheduleMove(Timeline, unit, path);
+                    return;
+                }
+
+                _planStep = PlanStep.Placing;
+                timelineUI.PlacementCommitted -= OnPlacementCommitted;
+                timelineUI.PlacementCancelled -= OnPlacementCancelled;
+                timelineUI.PlacementCommitted += OnPlacementCommitted;
+                timelineUI.PlacementCancelled += OnPlacementCancelled;
+
+                float duration = ActionScheduler.EstimateMoveDuration(unit, path);
+                var ownerCopy = unit;
+                var destCopy = targetGridPos;
+                _plannedPath = new System.Collections.Generic.List<Pathfinder.GridPoint>(path);
+                var placement = new TimelineActionPlacement
+                {
+                    Owner = ownerCopy,
+                    Kind = TimelineActionKind.Move,
+                    Label = "Move",
+                    DurationSeconds = duration,
+                    Lane = TimelineLane.Player,
+                    MoveDestination = destCopy,
+                    Schedule = (startDelay, groupId) =>
+                    {
+                        ActionScheduler.ScheduleMoveTo(Timeline, ownerCopy, destCopy, startTime: startDelay, groupId: groupId);
+                    }
+                };
+                timelineUI.BeginPlacement(placement);
             }
             else
             {

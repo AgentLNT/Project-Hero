@@ -158,6 +158,11 @@ namespace ProjectHero.Core.Input
 
         private void OnCancelPerformed(InputAction.CallbackContext context)
         {
+            // If pointer is over UI, let UI handle right-click (e.g., timeline cancel/delete)
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             OnCancel?.Invoke();
         }
     }

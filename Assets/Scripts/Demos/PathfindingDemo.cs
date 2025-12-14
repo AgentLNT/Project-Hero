@@ -78,6 +78,18 @@ namespace ProjectHero.Demos
 
         void Update()
         {
+            if (Timeline != null && Input.GetKeyDown(KeyCode.P))
+            {
+                Timeline.SetPaused(!Timeline.Paused);
+                Debug.Log($"[Demo] Timeline Paused = {Timeline.Paused}");
+            }
+
+            if (Timeline != null && Timeline.Paused)
+            {
+                // Simulation paused; UI and editing still work.
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 // Legacy test
