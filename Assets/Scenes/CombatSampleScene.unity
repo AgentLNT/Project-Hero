@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 209602781}
-  - component: {fileID: 209602780}
+  - component: {fileID: 209602782}
   m_Layer: 0
   m_Name: ActionGenerator
   m_TagString: Untagged
@@ -136,20 +136,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &209602780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 209602779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b6caa9abc7df284daebd65077c15015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetLibrary: {fileID: 11400000, guid: 9ea53fc4064c1594796601d06dff0ac9, type: 2}
-  generatedPath: Assets/Resourses/Attack Pattern/Radius_1
 --- !u!4 &209602781
 Transform:
   m_ObjectHideFlags: 0
@@ -165,6 +151,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &209602782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 209602779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b6caa9abc7df284daebd65077c15015, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLibrary: {fileID: 11400000, guid: d09b70a28dd2ced43bf159a1a12b29bf, type: 2}
+  generatedPath: Assets/Resources/GeneratedActions
+  SelectedRadius: 2
+  GenerateUnitVolumes: 0
+  GenerateAllRadiiPatterns: 0
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,6 +494,7 @@ MonoBehaviour:
   InWindup: 0
   InRecovery: 0
   IsMoving: 0
+  IsRecoveringAction: 0
 --- !u!4 &776904710
 Transform:
   m_ObjectHideFlags: 0
@@ -683,7 +687,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1072590960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -714,7 +718,7 @@ MonoBehaviour:
     Y: 5
   UnitVolumeDefinition: {fileID: 11400000, guid: 25dd84dc5108e4d40a90528a9ecb301c, type: 2}
   FacingDirection: 0
-  ActionLibrary: {fileID: 0}
+  ActionLibrary: {fileID: 11400000, guid: d09b70a28dd2ced43bf159a1a12b29bf, type: 2}
   Strength: 10
   Dexterity: 10
   Constitution: 10
@@ -733,6 +737,7 @@ MonoBehaviour:
   InWindup: 0
   InRecovery: 0
   IsMoving: 0
+  IsRecoveringAction: 0
 --- !u!4 &1072590962
 Transform:
   m_ObjectHideFlags: 0
@@ -1570,7 +1575,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2011197735}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f155e3f29df44c74390a009dcf98424b, type: 3}
   m_Name: 

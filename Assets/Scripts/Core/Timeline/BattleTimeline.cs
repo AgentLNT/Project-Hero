@@ -82,9 +82,32 @@ namespace ProjectHero.Core.Timeline
             });
             
             // Keep sorted by time
-            _events.Sort((a, b) => a.Time.CompareTo(b.Time));
+            // NOTE: Some events are scheduled extremely close together (e.g., Move step boundary vs delayed commit).
+            // When absolute time values become equal/near-equal due to float resolution, execution order must still be stable.
+            const float tieWindowSeconds = 0.001f;
+            _events.Sort((a, b) =>
+            {
+                float dt = a.Time - b.Time;
+                if (dt < -tieWindowSeconds) return -1;
+                if (dt > tieWindowSeconds) return 1;
+
+                int pa = GetSortPriority(a.Intent);
+                int pb = GetSortPriority(b.Intent);
+                int p = pa.CompareTo(pb);
+                if (p != 0) return p;
+
+                return a.Id.CompareTo(b.Id);
+            });
 
             return id;
+        }
+
+        private static int GetSortPriority(CombatIntent intent)
+        {
+            // Lower is earlier.
+            // Commit intents must execute before any same-timestamp actions that depend on the committed state.
+            if (intent is ProjectHero.Core.Actions.Intents.CommitMoveStepIntent) return 0;
+            return 10;
         }
 
         /// <summary>
@@ -105,6 +128,18 @@ namespace ProjectHero.Core.Timeline
         public void CancelGroup(long groupId)
         {
             if (groupId == 0) return;
+            // Release any movement reservations tied to commit intents we are about to remove.
+            for (int i = 0; i < _events.Count; i++)
+            {
+                var evt = _events[i];
+                if (evt.GroupId != groupId) continue;
+
+                if (evt.Intent is ProjectHero.Core.Actions.Intents.CommitMoveStepIntent commit)
+                {
+                    commit.ReleaseReservation();
+                }
+            }
+
             int removed = _events.RemoveAll(e => e.GroupId == groupId);
             if (removed > 0)
             {
@@ -117,6 +152,18 @@ namespace ProjectHero.Core.Timeline
         /// </summary>
         public void CancelEvents(CombatUnit unit)
         {
+            // Release any movement reservations tied to commit intents we are about to remove.
+            for (int i = 0; i < _events.Count; i++)
+            {
+                var evt = _events[i];
+                if (evt.Intent == null || evt.Intent.Owner != unit) continue;
+
+                if (evt.Intent is ProjectHero.Core.Actions.Intents.CommitMoveStepIntent commit)
+                {
+                    commit.ReleaseReservation();
+                }
+            }
+
             int removed = _events.RemoveAll(e => e.Intent.Owner == unit);
             if (removed > 0)
             {

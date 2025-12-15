@@ -21,7 +21,7 @@ namespace ProjectHero.Core.Actions.Intents
         private readonly long _groupId;
 
         public PlanMoveIntent(CombatUnit owner, Pathfinder.GridPoint destination, BattleTimeline timeline, long groupId)
-            : base(owner, ActionType.None)
+            : base(owner, ActionType.Move)  // Use Move type so the group is recognized as a Move action for UI rendering.
         {
             Destination = destination;
             _timeline = timeline;
@@ -61,7 +61,7 @@ namespace ProjectHero.Core.Actions.Intents
                 float speed = Mathf.Max(1f, Owner.Swiftness);
                 float duration = Mathf.Clamp(distance / (speed * 0.1f), 0.2f, 4.0f);
 
-                var step = new MoveIntent(Owner, from, to, duration, i, _timeline);
+                var step = new MoveIntent(Owner, from, to, duration, i, _timeline, _groupId);
                 _timeline.Schedule(accumulatedDelay, step, $"Move Step {i}", _groupId);
                 accumulatedDelay += duration;
             }

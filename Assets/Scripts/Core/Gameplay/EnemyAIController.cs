@@ -32,8 +32,11 @@ namespace ProjectHero.Core.Gameplay
 
         private float _nextThinkAtUnscaled;
         private float _suppressUntilTimelineTime;
+        private float _lastTimelineTime;
+        private float _lastTimelineTimeCheckUnscaled;
         private bool _warnedNoAttackAction;
         private bool _warnedNoGrid;
+        private bool _warnedTimelineNotAdvancing;
 
         private void Awake()
         {
@@ -48,6 +51,21 @@ namespace ProjectHero.Core.Gameplay
 
             if (Timeline.Paused) return;
             if (TargetUnit == null) return;
+
+            // Detect a common setup problem: timeline exists but nobody is advancing it.
+            if (Time.unscaledTime - _lastTimelineTimeCheckUnscaled > 1.0f)
+            {
+                _lastTimelineTimeCheckUnscaled = Time.unscaledTime;
+                if (Mathf.Abs(Timeline.CurrentTime - _lastTimelineTime) < 0.0001f)
+                {
+                    if (!_warnedTimelineNotAdvancing && EnableDebugLogs)
+                    {
+                        _warnedTimelineNotAdvancing = true;
+                        Debug.LogWarning("[EnemyAI] BattleTimeline.CurrentTime is not advancing. Scheduled intents will never execute. Ensure something calls Timeline.AdvanceTime(...).");
+                    }
+                }
+                _lastTimelineTime = Timeline.CurrentTime;
+            }
 
             if (Time.unscaledTime < _nextThinkAtUnscaled) return;
             _nextThinkAtUnscaled = Time.unscaledTime + ThinkIntervalSeconds;
@@ -87,7 +105,7 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            var best = FindBestDestinationNearTarget();
+            var best = FindBestDestinationNearTarget(maxRings: 6);
             if (!best.hasPath)
             {
                 // Try again soon.
@@ -147,7 +165,7 @@ namespace ProjectHero.Core.Gameplay
             return false;
         }
 
-        private (bool hasPath, Pathfinder.GridPoint destination, List<Pathfinder.GridPoint> path) FindBestDestinationNearTarget()
+        private (bool hasPath, Pathfinder.GridPoint destination, List<Pathfinder.GridPoint> path) FindBestDestinationNearTarget(int maxRings)
         {
             var obstacles = GridManager.Instance.GetGlobalObstacles(ControlledUnit);
             var pathfinder = new Pathfinder();
@@ -157,29 +175,48 @@ namespace ProjectHero.Core.Gameplay
             Pathfinder.GridPoint bestDest = default;
             List<Pathfinder.GridPoint> bestPath = null;
 
-            // Consider 12 neighbors around the target.
-            for (int d = 0; d < 12; d++)
+            // Consider expanding rings around the target. This is required for large unit volumes.
+            var seen = new HashSet<Pathfinder.GridPoint>();
+            var frontier = new List<Pathfinder.GridPoint> { TargetUnit.GridPosition };
+            seen.Add(TargetUnit.GridPosition);
+
+            for (int ring = 1; ring <= Mathf.Max(1, maxRings); ring++)
             {
-                var dir = (GridDirection)d;
-                var dest = GridMath.GetNeighbor(TargetUnit.GridPosition, dir);
-
-                // Quick occupancy check (projected facing doesn't matter much for single-tile units, but keep it consistent).
-                var projDir = GridMath.GetDirection(ControlledUnit.GridPosition, dest);
-                var projected = ControlledUnit.GetProjectedOccupancy(dest, projDir);
-                if (GridManager.Instance.IsSpaceOccupied(projected, ControlledUnit)) continue;
-
-                var path = pathfinder.FindPath(ControlledUnit.GridPosition, dest, ControlledUnit.UnitVolumeDefinition, obstacles);
-                if (path == null || path.Count < 2) continue;
-
-                // Score: shortest path length.
-                float score = path.Count;
-                if (score < bestScore)
+                var next = new List<Pathfinder.GridPoint>();
+                for (int i = 0; i < frontier.Count; i++)
                 {
-                    bestScore = score;
-                    bestDest = dest;
-                    bestPath = path;
-                    found = true;
+                    var cur = frontier[i];
+                    for (int d = 0; d < 12; d++)
+                    {
+                        var nb = GridMath.GetNeighbor(cur, (GridDirection)d);
+                        if (seen.Add(nb)) next.Add(nb);
+                    }
                 }
+                frontier = next;
+
+                // Evaluate this ring only (keeps the AI local and prevents weird long walks).
+                for (int i = 0; i < frontier.Count; i++)
+                {
+                    var dest = frontier[i];
+
+                    var projDir = GridMath.GetDirection(ControlledUnit.GridPosition, dest);
+                    var projected = ControlledUnit.GetProjectedOccupancy(dest, projDir);
+                    if (GridManager.Instance.IsSpaceOccupied(projected, ControlledUnit)) continue;
+
+                    var path = pathfinder.FindPath(ControlledUnit.GridPosition, dest, ControlledUnit.UnitVolumeDefinition, obstacles);
+                    if (path == null || path.Count < 2) continue;
+
+                    float score = path.Count;
+                    if (score < bestScore)
+                    {
+                        bestScore = score;
+                        bestDest = dest;
+                        bestPath = path;
+                        found = true;
+                    }
+                }
+
+                if (found) break;
             }
 
             return (found, bestDest, bestPath);

@@ -98,9 +98,11 @@ namespace ProjectHero.Demos
             }
 
             // --- Real-time Obstacle Control ---
-            // If we move the Blocker's transform in the Scene View, update its Grid Logic.
-            SyncUnitLogic(Blocker);
-            SyncUnitLogic(Mover); // Also allow dragging the Mover
+            // DISABLED: SyncUnitLogic was causing conflicts with the delayed-commit movement system.
+            // The movement system now handles visual->logic transitions via CommitMoveStepIntent.
+            // If you need to manually reposition units in the editor, do it while paused.
+            // SyncUnitLogic(Blocker);
+            // SyncUnitLogic(Mover);
             // ----------------------------------
 
             // Simple timer for demo

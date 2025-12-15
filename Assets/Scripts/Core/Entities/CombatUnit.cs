@@ -3,6 +3,7 @@ using ProjectHero.Core.Actions.Intents;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Timeline;
+using ProjectHero.Core.Visuals;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,15 @@ namespace ProjectHero.Core.Entities
     public class CombatUnit : MonoBehaviour
     {
         // ... existing code ...
+
+        private void Awake()
+        {
+            // Ensure UnitMovement component exists for visual movement.
+            if (GetComponent<UnitMovement>() == null)
+            {
+                gameObject.AddComponent<UnitMovement>();
+            }
+        }
 
         [Header("Control")]
         [Tooltip("Only the player-controlled unit can be selected for issuing commands. Other units can only be Observed.")]
@@ -122,6 +132,9 @@ namespace ProjectHero.Core.Entities
         public bool InWindup;       // 前摇中（易被打断）
         public bool InRecovery;     // 后摇中（可被取消）
         public bool IsMoving;       // 移动中（主动移动）
+
+        [Header("Recovery")]
+        public bool IsRecoveringAction; // Uninterruptible "stand up / regain balance" action
 
         // Helper to check if unit can accept new commands
         public bool CanAct => !IsActing && !IsStaggered && !IsKnockedDown;

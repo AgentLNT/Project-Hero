@@ -131,7 +131,7 @@ namespace ProjectHero.Core.Actions
                 // We can add it later.
 
                 // Schedule Step
-                var moveIntent = new MoveIntent(unit, from, to, duration, i, timeline);
+                var moveIntent = new MoveIntent(unit, from, to, duration, i, timeline, groupId);
                 timeline.Schedule(accumulatedDelay, moveIntent, $"Move Step {i}", groupId);
 
                 accumulatedDelay += duration;
@@ -224,8 +224,12 @@ namespace ProjectHero.Core.Actions
             if (distance <= 0) return;
 
             // 1. Interrupt Existing Actions
-            timeline.CancelEvents(unit);
-            unit.ResetActionState();
+            // If the unit is performing an uninterruptible recovery, do not cancel their timeline.
+            if (!unit.IsRecoveringAction)
+            {
+                timeline.CancelEvents(unit);
+                unit.ResetActionState();
+            }
             // Do not lock immediately; lock at scheduled start.
             var startIntent = new StateChangeIntent(unit, "Busy")
             {
@@ -250,7 +254,7 @@ namespace ProjectHero.Core.Actions
                 
                 // Schedule Move (No Rotation, Forced)
                 // Note: MoveIntent checks for obstacles. If blocked, it cancels subsequent steps.
-                var moveIntent = new MoveIntent(unit, currentPos, nextPos, stepDuration, i, timeline, rotate: false, isForced: true);
+                var moveIntent = new MoveIntent(unit, currentPos, nextPos, stepDuration, i, timeline, groupId, rotate: false, isForced: true);
                 timeline.Schedule(accumulatedDelay, moveIntent, $"Knockback Step {i}", groupId);
 
                 accumulatedDelay += stepDuration;
@@ -260,6 +264,32 @@ namespace ProjectHero.Core.Actions
             // 3. End State
             var endIntent = new StateChangeIntent(unit, "Idle");
             timeline.Schedule(accumulatedDelay, endIntent, "Knockback End", groupId);
+        }
+
+        public static float EstimateRecoverDuration()
+        {
+            return 0.35f;
+        }
+
+        public static void ScheduleRecover(BattleTimeline timeline, CombatUnit unit, float startTime, float staminaCost = 10f, float duration = 0.35f, long groupId = 0)
+        {
+            // Mark busy at the scheduled start time
+            var startIntent = new StateChangeIntent(unit, "Busy")
+            {
+                SetIsActing = true,
+                StaminaCost = staminaCost
+            };
+            timeline.Schedule(startTime, startIntent, $"{unit.name} Recover Start", groupId);
+
+            // Flag so knockback won't cancel this action's scheduled intents.
+            var setFlag = new SetRecoveringFlagIntent(unit, true);
+            timeline.Schedule(startTime + 0.0001f, setFlag, $"{unit.name} Recover Flag On", groupId);
+
+            var recover = new RecoverIntent(unit);
+            timeline.Schedule(startTime + duration, recover, $"{unit.name} Recover", groupId);
+
+            var endIntent = new StateChangeIntent(unit, "Idle");
+            timeline.Schedule(startTime + duration + 0.0001f, endIntent, $"{unit.name} Recover End", groupId);
         }
     }
 }

@@ -93,14 +93,27 @@ namespace ProjectHero.UI
             if (PauseButton == null)
             {
                 var btnGo = new GameObject("PauseButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Outline), typeof(Button));
-                btnGo.transform.SetParent(canvas.transform, false);
+                // Prefer placing relative to the timeline UI so it sits right above it.
+                if (TimelineUI != null) btnGo.transform.SetParent(TimelineUI.transform, false);
+                else btnGo.transform.SetParent(canvas.transform, false);
                 btnGo.transform.SetAsLastSibling();
 
                 var rect = btnGo.GetComponent<RectTransform>();
-                rect.anchorMin = new Vector2(1f, 1f);
-                rect.anchorMax = new Vector2(1f, 1f);
-                rect.pivot = new Vector2(1f, 1f);
-                rect.anchoredPosition = new Vector2(-16f, -16f);
+                if (TimelineUI != null)
+                {
+                    // TimelineUI root is bottom-anchored; its top edge is where we want the button.
+                    rect.anchorMin = new Vector2(0.5f, 1f);
+                    rect.anchorMax = new Vector2(0.5f, 1f);
+                    rect.pivot = new Vector2(0.5f, 0f);
+                    rect.anchoredPosition = new Vector2(0f, 10f);
+                }
+                else
+                {
+                    rect.anchorMin = new Vector2(1f, 1f);
+                    rect.anchorMax = new Vector2(1f, 1f);
+                    rect.pivot = new Vector2(1f, 1f);
+                    rect.anchoredPosition = new Vector2(-16f, -16f);
+                }
                 rect.sizeDelta = new Vector2(72f, 52f);
 
                 var img = btnGo.GetComponent<Image>();
@@ -185,6 +198,9 @@ namespace ProjectHero.UI
             // 3. Add Defensive Actions
             CreateButton("Block", null, (a) => Controller.ExecuteBlock(), palette != null ? palette.GetBaseColor(TimelineActionKind.Block) : (Color?)null);
             CreateButton("Dodge", null, (a) => Controller.ExecuteDodge(), palette != null ? palette.GetBaseColor(TimelineActionKind.Dodge) : (Color?)null);
+
+            // 3.5 Recover (stand up / regain balance)
+            CreateButton("Recover", null, (a) => Controller.ExecuteRecover(), palette != null ? palette.GetBaseColor(TimelineActionKind.Recover) : (Color?)null);
             
             // 4. Add "Wait" Button (End Turn)
             // CreateButton("Wait", null, (a) => Debug.Log("Wait clicked"));

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
@@ -12,8 +13,8 @@ namespace ProjectHero.UI.Timeline
 {
     public class TimelineEditorUI : MonoBehaviour
     {
-        public event Action PlacementCommitted;
-        public event Action PlacementCancelled;
+        public event System.Action PlacementCommitted;
+        public event System.Action PlacementCancelled;
 
         [Header("Refs")]
         public BattleTimeline Timeline;
@@ -28,7 +29,7 @@ namespace ProjectHero.UI.Timeline
         public CombatUnit ObservedUnit;
 
         [Header("Mapping")]
-        public float PixelsPerSecond = 120f;
+        public float PixelsPerSecond = 240f;
         public float MinBlockWidthPx = 24f;
 
         [Header("Colors")]
@@ -36,6 +37,7 @@ namespace ProjectHero.UI.Timeline
         public Color AttackColor = new Color(1.00f, 0.30f, 0.30f, 1f);
         public Color BlockColor = new Color(1.00f, 0.75f, 0.15f, 1f);
         public Color DodgeColor = new Color(0.25f, 0.95f, 0.65f, 1f);
+        public Color RecoverColor = new Color(0.75f, 0.65f, 1.00f, 1f);
 
         [Header("Depth By Length")]
         public float DeepenAtSeconds = 3.0f;
@@ -43,6 +45,9 @@ namespace ProjectHero.UI.Timeline
 
         private readonly Dictionary<long, TimelineBlockView> _blocksByGroup = new();
         private readonly Dictionary<long, TimelineActionPlacement> _placementsByGroupId = new();
+
+        // Snapshot-only grouped events (AI or system scheduled). Separate so they don't interfere with UI-authored blocks.
+        private readonly Dictionary<long, TimelineBlockView> _snapshotBlocksByGroupId = new();
 
         private struct PlacedBlockModel
         {
@@ -110,18 +115,43 @@ namespace ProjectHero.UI.Timeline
                 TimelineActionKind.Block => BlockColor,
                 TimelineActionKind.Dodge => DodgeColor,
                 TimelineActionKind.Attack => AttackColor,
+                TimelineActionKind.Recover => RecoverColor,
                 _ => new Color(1f, 1f, 1f, 1f)
             };
         }
 
         public void SetPlayerUnit(CombatUnit unit)
         {
+            if (PlayerUnit == unit) return;
             PlayerUnit = unit;
+            ClearSnapshotBlocks();
+            _layoutDirty = true;
         }
 
         public void SetObservedUnit(CombatUnit unit)
         {
+            if (ObservedUnit == unit) return;
             ObservedUnit = unit;
+            ClearSnapshotBlocks();
+            _layoutDirty = true;
+        }
+
+        private void ClearSnapshotBlocks()
+        {
+            foreach (var kvp in _snapshotBlocksByGroupId)
+            {
+                if (kvp.Value != null) Destroy(kvp.Value.gameObject);
+            }
+            _snapshotBlocksByGroupId.Clear();
+
+            // Also clear snapshot single-event views (these are stored in _blocksByGroup using negative keys).
+            var keys = _blocksByGroup.Keys.ToList();
+            foreach (var k in keys)
+            {
+                if (k >= 0) continue;
+                if (_blocksByGroup[k] != null) Destroy(_blocksByGroup[k].gameObject);
+                _blocksByGroup.Remove(k);
+            }
         }
 
         public void BeginPlacement(TimelineActionPlacement placement)
@@ -477,10 +507,106 @@ namespace ProjectHero.UI.Timeline
                 _layoutDirty = false;
             }
 
+            // Render snapshot groups that are not UI-authored (e.g., AI actions on observed lane).
+            RenderGroupedSnapshotEvents(relevant);
+
             // Optionally, render snapshot-only single events (no group) that involve relevant owners.
             RenderUngroupedSnapshotEvents(relevant);
 
             CleanupOrphanViews();
+        }
+
+        private void RenderGroupedSnapshotEvents(List<BattleTimeline.ScheduledIntentInfo> relevant)
+        {
+            if (Timeline == null) return;
+            if (PlayerLane == null || ObservedLane == null) return;
+
+            var grouped = relevant
+                .Where(e => e.GroupId != 0 && e.Owner != null)
+                .GroupBy(e => e.GroupId)
+                .ToList();
+
+            var liveGroupIds = new HashSet<long>(grouped.Select(g => g.Key));
+
+            // Remove stale snapshot group blocks
+            var existing = _snapshotBlocksByGroupId.Keys.ToList();
+            foreach (var gid in existing)
+            {
+                if (!liveGroupIds.Contains(gid))
+                {
+                    if (_snapshotBlocksByGroupId[gid] != null) Destroy(_snapshotBlocksByGroupId[gid].gameObject);
+                    _snapshotBlocksByGroupId.Remove(gid);
+                }
+            }
+
+            foreach (var g in grouped)
+            {
+                long groupId = g.Key;
+
+                // If this group is UI-authored (placed/repositioned), do not duplicate.
+                if (_placedByGroupId.ContainsKey(groupId) || _placementsByGroupId.ContainsKey(groupId))
+                {
+                    continue;
+                }
+
+                var owners = g.Select(e => e.Owner).Where(o => o != null).Distinct().ToList();
+                if (owners.Count != 1) continue;
+                var owner = owners[0];
+
+                // Only show for the two lanes we support.
+                RectTransform lane = null;
+                if (owner == PlayerUnit) lane = PlayerLane;
+                else if (owner == ObservedUnit) lane = ObservedLane;
+                else continue;
+
+                float start = g.Min(e => e.Time);
+                float end = g.Max(e => e.Time);
+                float duration = Mathf.Max(0.05f, end - start);
+
+                // Determine kind by priority.
+                var types = g.Select(e => e.Type).ToList();
+                TimelineActionKind kind = TimelineActionKind.None;
+                if (types.Contains(ActionType.Move)) kind = TimelineActionKind.Move;
+                else if (types.Contains(ActionType.Attack)) kind = TimelineActionKind.Attack;
+                else if (types.Contains(ActionType.Block)) kind = TimelineActionKind.Block;
+                else if (types.Contains(ActionType.Dodge)) kind = TimelineActionKind.Dodge;
+                else kind = TimelineActionKind.None;
+
+                if (kind == TimelineActionKind.None)
+                {
+                    // Pure state-change groups aren't meaningful as blocks.
+                    continue;
+                }
+
+                float width = Mathf.Max(MinBlockWidthPx, duration * PixelsPerSecond);
+                float startXFromLeft = (start - Timeline.CurrentTime) * PixelsPerSecond;
+                float xLeftEdge = startXFromLeft;
+
+                if (!_snapshotBlocksByGroupId.TryGetValue(groupId, out var view) || view == null)
+                {
+                    view = CreateBlockGO(lane);
+                    _snapshotBlocksByGroupId[groupId] = view;
+
+                    // Snapshot blocks are informational only: do not allow delete/reposition.
+                    if (view.Background != null) view.Background.raycastTarget = false;
+                }
+
+                view.SetModel(groupId: groupId, eventId: 0, startTime: start, duration: duration, label: string.Empty, isGhost: false);
+                view.SetWidth(width);
+                view.SetX(xLeftEdge + width * 0.5f);
+                view.SetColor(ApplyDepth(GetBaseColor(kind), duration, isGhost: false));
+
+                // Set keyframe markers for snapshot blocks (same as placed blocks).
+                view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(kind, duration), PixelsPerSecond);
+
+                // Clean up blocks only when RIGHT edge passes lane's LEFT edge.
+                float rightEdgeX = startXFromLeft + width;
+                if (rightEdgeX < 0f)
+                {
+                    Destroy(view.gameObject);
+                    _snapshotBlocksByGroupId.Remove(groupId);
+                }
+            }
         }
 
         private void UpdatePendingPlacementDynamics(float startAbs)
@@ -566,7 +692,7 @@ namespace ProjectHero.UI.Timeline
             var ghostOffsets = GetKeyframeOffsetsSeconds(_pendingPlacement.Kind, _pendingPlacement.DurationSeconds);
             if (ghostOffsets.Count == 0) return desiredCenterX;
 
-            // Collect candidate key times from placed blocks.
+            // Collect candidate key times from placed blocks AND snapshot blocks (including Observed lane).
             var candidateTimes = new List<float>();
             foreach (var kvp in _placedByGroupId)
             {
@@ -579,6 +705,37 @@ namespace ProjectHero.UI.Timeline
                 for (int i = 0; i < offsets.Count; i++)
                 {
                     candidateTimes.Add(m.StartTimeAbs + offsets[i]);
+                }
+            }
+
+            // Also collect keyframes from snapshot blocks (AI/Observed lane actions).
+            if (Timeline != null)
+            {
+                var snapshot = Timeline.GetScheduledIntentsSnapshot();
+                var grouped = snapshot
+                    .Where(e => e.GroupId != 0 && e.Owner != null && !_placedByGroupId.ContainsKey(e.GroupId))
+                    .GroupBy(e => e.GroupId);
+
+                foreach (var g in grouped)
+                {
+                    float start = g.Min(e => e.Time);
+                    float end = g.Max(e => e.Time);
+                    float dur = Mathf.Max(0.05f, end - start);
+
+                    var types = g.Select(e => e.Type).ToList();
+                    TimelineActionKind kind = TimelineActionKind.None;
+                    if (types.Contains(ActionType.Move)) kind = TimelineActionKind.Move;
+                    else if (types.Contains(ActionType.Attack)) kind = TimelineActionKind.Attack;
+                    else if (types.Contains(ActionType.Block)) kind = TimelineActionKind.Block;
+                    else if (types.Contains(ActionType.Dodge)) kind = TimelineActionKind.Dodge;
+
+                    if (kind == TimelineActionKind.None) continue;
+
+                    var offsets = GetKeyframeOffsetsSeconds(kind, dur);
+                    for (int i = 0; i < offsets.Count; i++)
+                    {
+                        candidateTimes.Add(start + offsets[i]);
+                    }
                 }
             }
 

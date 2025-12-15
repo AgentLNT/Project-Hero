@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01511c6326086974ab1e98830528a667, type: 3}
+  m_Name: ForRadius2
+  m_EditorClassIdentifier: 
+  Actions:
+  - ID: QuickSlash
+    Data:
+      Name: Quick Slash
+      Type: 1
+      BaseTime: 0.5
+      BaseDamage: 15
+      ImpactType: 1
+      StaminaCost: 10
+      ForceMultiplier: 0.8
+      Pattern: {fileID: 11400000, guid: e80d7761622c08d458f98c274dd7a7f4, type: 2}
+  - ID: HeavySmash
+    Data:
+      Name: Heavy Smash
+      Type: 1
+      BaseTime: 1.5
+      BaseDamage: 40
+      ImpactType: 0
+      StaminaCost: 25
+      ForceMultiplier: 1.6
+      Pattern: {fileID: 11400000, guid: 4aa4cdfdbdcef0348b1520ab222a6d4a, type: 2}
+  - ID: WideCleave
+    Data:
+      Name: Wide Cleave
+      Type: 1
+      BaseTime: 1
+      BaseDamage: 20
+      ImpactType: 1
+      StaminaCost: 20
+      ForceMultiplier: 1.2
+      Pattern: {fileID: 11400000, guid: e31792b18b25fc54584b7d1c9b87e3d8, type: 2}
+  - ID: SpearThrust
+    Data:
+      Name: Spear Thrust
+      Type: 1
+      BaseTime: 0.8
+      BaseDamage: 25
+      ImpactType: 2
+      StaminaCost: 15
+      ForceMultiplier: 1
+      Pattern: {fileID: 11400000, guid: cc8de6ceea7a3f242b9a0e8483d6222c, type: 2}
+  - ID: Whirlwind
+    Data:
+      Name: Whirlwind
+      Type: 1
+      BaseTime: 2
+      BaseDamage: 30
+      ImpactType: 1
+      StaminaCost: 40
+      ForceMultiplier: 2.5
+      Pattern: {fileID: 11400000, guid: 47719ed4b12fdf94990db9e92b7e40f5, type: 2}

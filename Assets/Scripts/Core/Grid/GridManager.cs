@@ -19,6 +19,10 @@ namespace ProjectHero.Core.Grid
         // Maps every occupied TrianglePoint to the Unit that occupies it.
         // If value is null, it means it's occupied by a static obstacle (terrain).
         private Dictionary<TrianglePoint, CombatUnit> OccupancyMap = new Dictionary<TrianglePoint, CombatUnit>();
+
+        // --- Reservation System ---
+        // Temporary claims used for in-progress movement steps, without changing logical GridPosition.
+        private Dictionary<TrianglePoint, CombatUnit> ReservationMap = new Dictionary<TrianglePoint, CombatUnit>();
         
         // Track all active units for global systems (like visualization)
         private HashSet<CombatUnit> _activeUnits = new HashSet<CombatUnit>();
@@ -56,6 +60,27 @@ namespace ProjectHero.Core.Grid
             }
         }
 
+        public void RegisterReservation(CombatUnit owner, List<TrianglePoint> volume)
+        {
+            if (owner == null || volume == null) return;
+            foreach (var point in volume)
+            {
+                ReservationMap[point] = owner;
+            }
+        }
+
+        public void UnregisterReservation(CombatUnit owner, List<TrianglePoint> volume)
+        {
+            if (owner == null || volume == null) return;
+            foreach (var point in volume)
+            {
+                if (ReservationMap.TryGetValue(point, out CombatUnit existing) && existing == owner)
+                {
+                    ReservationMap.Remove(point);
+                }
+            }
+        }
+
         public void UnregisterOccupancy(List<TrianglePoint> volume)
         {
             if (volume == null) return;
@@ -74,6 +99,12 @@ namespace ProjectHero.Core.Grid
             {
                 // If owner is the unit asking (ignoreUnit), then it's NOT considered blocked (Self-Overlap)
                 if (owner == ignoreUnit) return false;
+                return true;
+            }
+
+            if (ReservationMap.TryGetValue(point, out CombatUnit reservingOwner))
+            {
+                if (reservingOwner == ignoreUnit) return false;
                 return true;
             }
             return false;
@@ -115,6 +146,14 @@ namespace ProjectHero.Core.Grid
             // But for compatibility with current Pathfinder signature:
             var set = new HashSet<TrianglePoint>();
             foreach (var kvp in OccupancyMap)
+            {
+                if (kvp.Value != ignoreUnit)
+                {
+                    set.Add(kvp.Key);
+                }
+            }
+
+            foreach (var kvp in ReservationMap)
             {
                 if (kvp.Value != ignoreUnit)
                 {

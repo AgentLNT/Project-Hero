@@ -17,7 +17,8 @@ namespace ProjectHero.UI.Timeline
         Move,
         Attack,
         Block,
-        Dodge
+        Dodge,
+        Recover
     }
 
     public sealed class TimelineActionPlacement

@@ -79,6 +79,12 @@ namespace ProjectHero.Demos
 
             // Setup Visuals if missing
             SetupVisuals();
+
+            // Auto-set Observed unit to Enemy so the Observed lane shows their actions immediately.
+            if (Enemy != null && ProjectHero.UI.UIManager.Instance != null && ProjectHero.UI.UIManager.Instance.TimelineUI != null)
+            {
+                ProjectHero.UI.UIManager.Instance.TimelineUI.SetObservedUnit(Enemy);
+            }
         }
 
         void EnsureCollider(CombatUnit unit)
@@ -108,6 +114,16 @@ namespace ProjectHero.Demos
 
         void Update()
         {
+            // Fallback: Ensure ObservedUnit is set (in case UIManager wasn't ready during Start).
+            if (Enemy != null && ProjectHero.UI.UIManager.Instance != null && ProjectHero.UI.UIManager.Instance.TimelineUI != null)
+            {
+                var timelineUI = ProjectHero.UI.UIManager.Instance.TimelineUI;
+                if (timelineUI.ObservedUnit == null)
+                {
+                    timelineUI.SetObservedUnit(Enemy);
+                }
+            }
+
             if (Timeline != null && Input.GetKeyDown(KeyCode.P))
             {
                 Timeline.SetPaused(!Timeline.Paused);

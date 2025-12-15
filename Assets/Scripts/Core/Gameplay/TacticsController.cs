@@ -77,6 +77,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to select an action
         public void SelectAction(Action action)
         {
+            ResetPlanningFlow(clearPlacement: true);
             _selectedAction = action;
             _isMoveMode = false;
             _planStep = PlanStep.Targeting;
@@ -89,6 +90,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to select Move mode
         public void SelectMove()
         {
+            ResetPlanningFlow(clearPlacement: true);
             _selectedAction = null;
             _isMoveMode = true;
             _planStep = PlanStep.Targeting;
@@ -101,6 +103,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to execute Block
         public void ExecuteBlock()
         {
+            ResetPlanningFlow(clearPlacement: true);
             if (_selectedUnit == null)
             {
                 Debug.LogWarning("[Tactics] No unit selected for Block.");
@@ -146,6 +149,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to execute Dodge
         public void ExecuteDodge()
         {
+            ResetPlanningFlow(clearPlacement: true);
             if (_selectedUnit == null)
             {
                 Debug.LogWarning("[Tactics] No unit selected for Dodge.");
@@ -188,16 +192,64 @@ namespace ProjectHero.Core.Gameplay
             timelineUI.BeginPlacement(placement);
         }
 
+        // Public API for UI to execute Recover (stand up / regain balance)
+        public void ExecuteRecover()
+        {
+            ResetPlanningFlow(clearPlacement: true);
+            if (_selectedUnit == null)
+            {
+                Debug.LogWarning("[Tactics] No unit selected for Recover.");
+                return;
+            }
+
+            // Recover is specifically allowed when staggered/knocked down, but not while already acting.
+            if (_selectedUnit.IsActing)
+            {
+                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot recover while acting.");
+                return;
+            }
+
+            if (!_selectedUnit.IsStaggered && !_selectedUnit.IsKnockedDown)
+            {
+                Debug.LogWarning($"[Tactics] {_selectedUnit.name} is not staggered/knocked down.");
+                return;
+            }
+
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+            float duration = ActionScheduler.EstimateRecoverDuration();
+
+            if (timelineUI == null)
+            {
+                Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Recover.");
+                ActionScheduler.ScheduleRecover(Timeline, _selectedUnit, 0f, staminaCost: 10f, duration: duration);
+                return;
+            }
+
+            _planStep = PlanStep.Placing;
+            timelineUI.PlacementCommitted -= OnPlacementCommitted;
+            timelineUI.PlacementCancelled -= OnPlacementCancelled;
+            timelineUI.PlacementCommitted += OnPlacementCommitted;
+            timelineUI.PlacementCancelled += OnPlacementCancelled;
+
+            var placement = new TimelineActionPlacement
+            {
+                Owner = _selectedUnit,
+                Kind = TimelineActionKind.Recover,
+                Label = "Recover",
+                DurationSeconds = duration,
+                Lane = TimelineLane.Player,
+                Schedule = (startDelay, groupId) =>
+                {
+                    ActionScheduler.ScheduleRecover(Timeline, _selectedUnit, startDelay, staminaCost: 10f, duration: duration, groupId: groupId);
+                }
+            };
+            timelineUI.BeginPlacement(placement);
+        }
+
         private void OnPlacementCommitted()
         {
             // After placing a block, exit planning mode.
-            _selectedAction = null;
-            _isMoveMode = false;
-            _planStep = PlanStep.None;
-            _plannedPath = null;
-
-            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
-            if (Cursor != null) Cursor.Hide();
+            ResetPlanningFlow(clearPlacement: false);
         }
 
         private void OnPlacementCancelled()
@@ -340,7 +392,7 @@ namespace ProjectHero.Core.Gameplay
             }
 
             _selectedUnit = unit;
-            _selectedAction = null; // Reset action on new unit selection
+            ResetPlanningFlow(clearPlacement: true);
             Debug.Log($"[Tactics] Selected Unit: {unit.name}");
 
             // Notify UI (this also sets PlayerUnit on the timeline UI)
@@ -350,6 +402,32 @@ namespace ProjectHero.Core.Gameplay
             }
 
             // Hide cursor immediately upon selection (will be updated by next hover)
+            if (Cursor != null) Cursor.Hide();
+        }
+
+        private void ResetPlanningFlow(bool clearPlacement)
+        {
+            // Clear any cached targeting/placement state so switching actions is always clean.
+            _selectedAction = null;
+            _isMoveMode = false;
+            _planStep = PlanStep.None;
+            _plannedTarget = default;
+            _plannedDirection = default;
+            _plannedPath = null;
+
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+            if (timelineUI != null)
+            {
+                timelineUI.PlacementCommitted -= OnPlacementCommitted;
+                timelineUI.PlacementCancelled -= OnPlacementCancelled;
+
+                if (clearPlacement && timelineUI.HasPendingPlacement)
+                {
+                    timelineUI.CancelPlacement();
+                }
+            }
+
+            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
             if (Cursor != null) Cursor.Hide();
         }
 
