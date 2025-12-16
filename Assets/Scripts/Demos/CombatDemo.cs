@@ -67,15 +67,15 @@ namespace ProjectHero.Demos
 
             if (Player != null) Player.IsPlayerControlled = true;
 
-            // Basic enemy AI
-            if (Enemy != null)
-            {
-                var ai = Enemy.GetComponent<EnemyAIController>();
-                if (ai == null) ai = Enemy.gameObject.AddComponent<EnemyAIController>();
-                ai.Timeline = Timeline;
-                ai.ControlledUnit = Enemy;
-                ai.TargetUnit = Player;
-            }
+            //// Basic enemy AI
+            //if (Enemy != null)
+            //{
+            //    var ai = Enemy.GetComponent<EnemyAIController>();
+            //    if (ai == null) ai = Enemy.gameObject.AddComponent<EnemyAIController>();
+            //    ai.Timeline = Timeline;
+            //    ai.ControlledUnit = Enemy;
+            //    ai.TargetUnit = Player;
+            //}
 
             // Setup Visuals if missing
             SetupVisuals();

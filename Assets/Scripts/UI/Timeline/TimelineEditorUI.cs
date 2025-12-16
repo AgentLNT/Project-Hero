@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Timeline;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,10 +19,14 @@ namespace ProjectHero.UI.Timeline
         [Header("Refs")]
         public BattleTimeline Timeline;
         public Canvas Canvas;
+        public Font UiFont;
 
         [Header("Lanes")]
         public RectTransform PlayerLane;
         public RectTransform ObservedLane;
+
+        [Header("Time Ruler")]
+        public RectTransform RulerArea;
 
         [Header("Units")]
         public CombatUnit PlayerUnit;
@@ -43,27 +47,27 @@ namespace ProjectHero.UI.Timeline
         public float DeepenAtSeconds = 3.0f;
         public float MaxDarkenFactor = 0.45f;
 
-        private readonly Dictionary<long, TimelineBlockView> _blocksByGroup = new();
+        [Header("Snapping")]
+        public float SnapThresholdSeconds = 0.15f;
+
+        private readonly Dictionary<long, TimelineBlockView> _activeViews = new();
         private readonly Dictionary<long, TimelineActionPlacement> _placementsByGroupId = new();
+        private readonly Dictionary<long, BlockRenderModel> _playerBlocks = new();
+        private readonly Dictionary<long, BlockRenderModel> _observedBlocks = new();
 
-        // Snapshot-only grouped events (AI or system scheduled). Separate so they don't interfere with UI-authored blocks.
-        private readonly Dictionary<long, TimelineBlockView> _snapshotBlocksByGroupId = new();
-
-        private struct PlacedBlockModel
+        private class BlockRenderModel
         {
             public long GroupId;
+            public long OriginalGroupId;
             public CombatUnit Owner;
             public TimelineLane Lane;
             public TimelineActionKind Kind;
             public float StartTimeAbs;
             public float Duration;
-
-            // Optional metadata for prediction.
+            public bool IsInteractable;
             public Pathfinder.GridPoint? MoveDestination;
-            public GridDirection? AttackFacingAbsolute;
         }
 
-        private readonly Dictionary<long, PlacedBlockModel> _placedByGroupId = new();
         private TimelineActionPlacement _pendingPlacement;
         private TimelineBlockView _pendingGhost;
         private RectTransform _pendingLane;
@@ -72,7 +76,7 @@ namespace ProjectHero.UI.Timeline
 
         private bool _isRepositioning;
         private long _repositionGroupId;
-        private PlacedBlockModel _repositionOriginalModel;
+        private BlockRenderModel _repositionOriginalModel;
 
         private bool _isDraggingExisting;
         private long _draggingGroupId;
@@ -83,13 +87,13 @@ namespace ProjectHero.UI.Timeline
         private Image _currentTimeLineObserved;
         private Image _mouseLinePlayer;
         private Image _mouseLineObserved;
+        private Image _snapIndicatorLine;
+
         private Text _mouseTimeText;
         private Text _nowTimeText;
 
         private Image _placementShield;
-
         private bool _layoutDirty;
-
         private float _suppressBlockClicksUntilUnscaled;
 
         public bool SuppressBlockClicks => Time.unscaledTime < _suppressBlockClicksUntilUnscaled;
@@ -102,6 +106,18 @@ namespace ProjectHero.UI.Timeline
         {
             if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
             if (Canvas == null) Canvas = GetComponentInParent<Canvas>();
+
+            if (RulerArea == null)
+            {
+                var go = new GameObject("RulerArea", typeof(RectTransform));
+                go.transform.SetParent(transform, false);
+                RulerArea = go.GetComponent<RectTransform>();
+                RulerArea.anchorMin = new Vector2(0, 1);
+                RulerArea.anchorMax = new Vector2(1, 1);
+                RulerArea.pivot = new Vector2(0.5f, 1f);
+                RulerArea.sizeDelta = new Vector2(0, 30);
+                RulerArea.anchoredPosition = Vector2.zero;
+            }
 
             EnsureTimeLines();
             EnsureLaneMasks();
@@ -124,7 +140,7 @@ namespace ProjectHero.UI.Timeline
         {
             if (PlayerUnit == unit) return;
             PlayerUnit = unit;
-            ClearSnapshotBlocks();
+            ClearAllBlocks();
             _layoutDirty = true;
         }
 
@@ -132,26 +148,17 @@ namespace ProjectHero.UI.Timeline
         {
             if (ObservedUnit == unit) return;
             ObservedUnit = unit;
-            ClearSnapshotBlocks();
+            _observedBlocks.Clear();
             _layoutDirty = true;
         }
 
-        private void ClearSnapshotBlocks()
+        private void ClearAllBlocks()
         {
-            foreach (var kvp in _snapshotBlocksByGroupId)
-            {
-                if (kvp.Value != null) Destroy(kvp.Value.gameObject);
-            }
-            _snapshotBlocksByGroupId.Clear();
-
-            // Also clear snapshot single-event views (these are stored in _blocksByGroup using negative keys).
-            var keys = _blocksByGroup.Keys.ToList();
-            foreach (var k in keys)
-            {
-                if (k >= 0) continue;
-                if (_blocksByGroup[k] != null) Destroy(_blocksByGroup[k].gameObject);
-                _blocksByGroup.Remove(k);
-            }
+            foreach (var view in _activeViews.Values) if (view != null) Destroy(view.gameObject);
+            _activeViews.Clear();
+            _playerBlocks.Clear();
+            _observedBlocks.Clear();
+            _placementsByGroupId.Clear();
         }
 
         public void BeginPlacement(TimelineActionPlacement placement)
@@ -165,18 +172,15 @@ namespace ProjectHero.UI.Timeline
             _isRepositioning = false;
             _repositionGroupId = 0;
 
-            // Create a ghost block in the proper lane.
             var lane = placement.Lane == TimelineLane.Player ? PlayerLane : ObservedLane;
             _pendingLane = lane;
             EnsurePlacementShield(lane);
+
             var ghost = CreateBlockGO(lane);
-            ghost.SetModel(groupId: 0, eventId: 0, startTime: 0f, duration: placement.DurationSeconds, label: string.Empty, isGhost: true);
+            ghost.SetModel(groupId: 0, eventId: 0, startTime: 0f, duration: placement.DurationSeconds, label: placement.Label, isGhost: true);
             ghost.SetWidth(Mathf.Max(MinBlockWidthPx, placement.DurationSeconds * PixelsPerSecond));
+            ghost.SetColor(ApplyDepth(GetBaseColor(placement.Kind), placement.DurationSeconds, isGhost: true));
 
-            var baseColor = GetBaseColor(placement.Kind);
-            ghost.SetColor(ApplyDepth(baseColor, placement.DurationSeconds, isGhost: true));
-
-            // Initial placement: start at lane's left edge; Update() will follow mouse.
             float halfWidth = ghost.GetComponent<RectTransform>().sizeDelta.x * 0.5f;
             ghost.SetX(halfWidth);
             _pendingLastResolvedCenterX = halfWidth;
@@ -188,68 +192,48 @@ namespace ProjectHero.UI.Timeline
 
         public void CancelPlacement()
         {
-            // Prevent the same click from affecting underlying blocks.
             _suppressBlockClicksUntilUnscaled = Time.unscaledTime + 0.05f;
 
-            // If we were repositioning an existing block, restore it.
             if (_isRepositioning && Timeline != null && _repositionGroupId != 0)
             {
                 if (_placementsByGroupId.TryGetValue(_repositionGroupId, out var placement) && placement != null)
                 {
                     float delay = Mathf.Max(0f, _repositionOriginalModel.StartTimeAbs - Timeline.CurrentTime);
                     placement.Schedule?.Invoke(delay, _repositionGroupId);
-                    _placedByGroupId[_repositionGroupId] = _repositionOriginalModel;
+                    _playerBlocks[_repositionGroupId] = _repositionOriginalModel;
                     _layoutDirty = true;
                 }
-
                 _isRepositioning = false;
                 _repositionGroupId = 0;
             }
 
-            if (_pendingGhost != null)
-            {
-                Destroy(_pendingGhost.gameObject);
-            }
+            if (_pendingGhost != null) Destroy(_pendingGhost.gameObject);
             DestroyPlacementShield();
             _pendingGhost = null;
             _pendingPlacement = null;
             _pendingLane = null;
+            if (_snapIndicatorLine != null) _snapIndicatorLine.enabled = false;
             PlacementCancelled?.Invoke();
         }
 
         public void FinalizePlacement(TimelineBlockView ghost)
         {
             if (_pendingPlacement == null || ghost == null || Timeline == null) return;
-
-            // Prevent the same click from affecting underlying blocks.
             _suppressBlockClicksUntilUnscaled = Time.unscaledTime + 0.05f;
-
-            // Recompute predicted duration based on the final ghost center and resolve any dependency
-            // between start time and width (because left edge depends on width).
-            for (int iter = 0; iter < 2; iter++)
-            {
-                float halfWidthIter = ghost.GetComponent<RectTransform>().sizeDelta.x * 0.5f;
-                float leftEdgeXIter = ghost.GetX() - halfWidthIter;
-                float startDelayIter = Mathf.Max(0f, leftEdgeXIter / Mathf.Max(1f, PixelsPerSecond));
-                float startAbsIter = Timeline.CurrentTime + startDelayIter;
-                UpdatePendingPlacementDynamics(startAbsIter);
-            }
 
             float halfWidth = ghost.GetComponent<RectTransform>().sizeDelta.x * 0.5f;
             float leftEdgeX = ghost.GetX() - halfWidth;
             float startDelay = Mathf.Max(0f, leftEdgeX / Mathf.Max(1f, PixelsPerSecond));
-
             float startAbs = Timeline.CurrentTime + startDelay;
-            float endAbs = startAbs + Mathf.Max(0f, _pendingPlacement.DurationSeconds);
+
+            UpdatePendingPlacementDynamics(startAbs);
 
             long groupId = _isRepositioning ? _repositionGroupId : Timeline.ReserveGroupId();
 
             _pendingPlacement.Schedule?.Invoke(startDelay, groupId);
-
-            // Remember how to reschedule this group later.
             _placementsByGroupId[groupId] = _pendingPlacement;
 
-            _placedByGroupId[groupId] = new PlacedBlockModel
+            _playerBlocks[groupId] = new BlockRenderModel
             {
                 GroupId = groupId,
                 Owner = _pendingPlacement.Owner,
@@ -257,8 +241,8 @@ namespace ProjectHero.UI.Timeline
                 Kind = _pendingPlacement.Kind,
                 StartTimeAbs = startAbs,
                 Duration = _pendingPlacement.DurationSeconds,
-                MoveDestination = _pendingPlacement.MoveDestination,
-                AttackFacingAbsolute = _pendingPlacement.AttackFacingAbsolute
+                IsInteractable = true,
+                MoveDestination = _pendingPlacement.MoveDestination
             };
 
             var placedOwner = _pendingPlacement.Owner;
@@ -272,41 +256,21 @@ namespace ProjectHero.UI.Timeline
             _pendingGhost = null;
             _pendingPlacement = null;
             _pendingLane = null;
+            if (_snapIndicatorLine != null) _snapIndicatorLine.enabled = false;
 
-            // Recompute durations and push-right to avoid overlaps immediately.
-            RecomputePlacedBlocksForLane(placedOwner, placedLane);
-
+            RecomputePlayerBlocksForLane(placedOwner, placedLane);
             PlacementCommitted?.Invoke();
         }
 
         public void RequestDelete(TimelineBlockView block)
         {
             if (block == null || Timeline == null) return;
-
-            if (block.GroupId != 0)
+            if (block.GroupId != 0 && _playerBlocks.ContainsKey(block.GroupId))
             {
                 Timeline.CancelGroup(block.GroupId);
                 _placementsByGroupId.Remove(block.GroupId);
-                _placedByGroupId.Remove(block.GroupId);
-
-                if (_blocksByGroup.TryGetValue(block.GroupId, out var view) && view != null)
-                {
-                    Destroy(view.gameObject);
-                }
-                _blocksByGroup.Remove(block.GroupId);
-
+                _playerBlocks.Remove(block.GroupId);
                 _layoutDirty = true;
-            }
-            else if (block.EventId != 0)
-            {
-                Timeline.CancelEvent(block.EventId);
-
-                long key = -block.EventId;
-                if (_blocksByGroup.TryGetValue(key, out var view) && view != null)
-                {
-                    Destroy(view.gameObject);
-                }
-                _blocksByGroup.Remove(key);
             }
         }
 
@@ -314,23 +278,19 @@ namespace ProjectHero.UI.Timeline
         {
             if (block == null || Timeline == null) return;
             if (block.GroupId == 0) return;
-            if (!_placementsByGroupId.TryGetValue(block.GroupId, out var placement) || placement == null) return;
-            if (!_placedByGroupId.TryGetValue(block.GroupId, out var model)) return;
+            if (!_playerBlocks.TryGetValue(block.GroupId, out var model)) return;
+            if (!_placementsByGroupId.TryGetValue(block.GroupId, out var placement)) return;
 
-            // If another placement is active, cancel it first.
-            if (_pendingGhost != null)
-            {
-                CancelPlacement();
-            }
+            if (_pendingGhost != null) CancelPlacement();
 
-            // Cancel the old scheduled intents immediately, and remove the visible block.
             Timeline.CancelGroup(block.GroupId);
-            _placedByGroupId.Remove(block.GroupId);
-            if (_blocksByGroup.TryGetValue(block.GroupId, out var view) && view != null)
+            _playerBlocks.Remove(block.GroupId);
+
+            if (_activeViews.TryGetValue(block.GroupId, out var view))
             {
                 Destroy(view.gameObject);
+                _activeViews.Remove(block.GroupId);
             }
-            _blocksByGroup.Remove(block.GroupId);
 
             _pendingPlacement = placement;
             _pendingLane = model.Lane == TimelineLane.Player ? PlayerLane : ObservedLane;
@@ -343,7 +303,7 @@ namespace ProjectHero.UI.Timeline
             _pendingLastMouseXFromLeft = 0f;
 
             var ghost = CreateBlockGO(_pendingLane);
-            ghost.SetModel(groupId: 0, eventId: 0, startTime: model.StartTimeAbs, duration: model.Duration, label: string.Empty, isGhost: true);
+            ghost.SetModel(groupId: 0, eventId: 0, startTime: model.StartTimeAbs, duration: model.Duration, label: placement.Label, isGhost: true);
             float width = Mathf.Max(MinBlockWidthPx, model.Duration * PixelsPerSecond);
             ghost.SetWidth(width);
             ghost.SetColor(ApplyDepth(GetBaseColor(model.Kind), model.Duration, isGhost: true));
@@ -358,9 +318,8 @@ namespace ProjectHero.UI.Timeline
 
         internal void BeginDragExisting(TimelineBlockView block)
         {
-            if (block == null) return;
-            if (block.GroupId == 0) return;
-            if (!_placementsByGroupId.ContainsKey(block.GroupId)) return;
+            if (block == null || block.GroupId == 0) return;
+            if (!_playerBlocks.ContainsKey(block.GroupId)) return;
 
             _isDraggingExisting = true;
             _draggingGroupId = block.GroupId;
@@ -372,8 +331,7 @@ namespace ProjectHero.UI.Timeline
         {
             if (!_isDraggingExisting) return;
             if (block == null || block.GroupId != _draggingGroupId) { ResetDrag(); return; }
-            if (Timeline == null) { ResetDrag(); return; }
-            if (!_placementsByGroupId.TryGetValue(_draggingGroupId, out var placement) || placement == null) { ResetDrag(); return; }
+            if (!_placementsByGroupId.TryGetValue(_draggingGroupId, out var placement)) { ResetDrag(); return; }
 
             float halfWidth = block.GetComponent<RectTransform>().sizeDelta.x * 0.5f;
             float leftEdgeX = block.GetX() - halfWidth;
@@ -385,7 +343,6 @@ namespace ProjectHero.UI.Timeline
 
             if (WouldOverlap(owner: placement.Owner, lane: placement.Lane, startAbs: startAbs, endAbs: endAbs, ignoreGroupId: _draggingGroupId))
             {
-                // Reject move and snap back.
                 block.SetX(_dragOriginalX);
                 ResetDrag();
                 return;
@@ -394,11 +351,10 @@ namespace ProjectHero.UI.Timeline
             Timeline.CancelGroup(_draggingGroupId);
             placement.Schedule?.Invoke(startDelay, _draggingGroupId);
 
-            if (_placedByGroupId.ContainsKey(_draggingGroupId))
+            if (_playerBlocks.TryGetValue(_draggingGroupId, out var model))
             {
-                var model = _placedByGroupId[_draggingGroupId];
                 model.StartTimeAbs = startAbs;
-                _placedByGroupId[_draggingGroupId] = model;
+                _playerBlocks[_draggingGroupId] = model;
             }
 
             ResetDrag();
@@ -419,238 +375,415 @@ namespace ProjectHero.UI.Timeline
             UpdateCurrentTimeLines();
             UpdateMouseLineAndTime();
             EnsureLaneMasks();
-
-            // Placement mode: ghost follows mouse X; left click commits; right click cancels.
-            if (_pendingGhost != null && _pendingLane != null)
-            {
-                var mousePos = UnityEngine.Input.mousePosition;
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_pendingLane, mousePos, null, out var localPoint))
-                {
-                    float xFromLeft = LocalXToXFromLeft(_pendingLane, localPoint.x);
-                    float mouseClamped = Mathf.Clamp(xFromLeft, 0f, _pendingLane.rect.width);
-
-                    float resolvedCenterFinal = _pendingLastResolvedCenterX;
-
-                    // Small fixed-point solve: resolve position -> compute startAbs -> predict duration/width -> resolve again.
-                    for (int iter = 0; iter < 2; iter++)
-                    {
-                        float halfWidth = _pendingGhost.GetComponent<RectTransform>().sizeDelta.x * 0.5f;
-                        // Allow right overflow; only clamp to left bound.
-                        float desiredCenter = Mathf.Max(0f + halfWidth, mouseClamped);
-
-                        // Snap based on current duration.
-                        desiredCenter = ApplyKeyframeSnap(desiredCenter, halfWidth);
-
-                        bool movingRight = mouseClamped > _pendingLastMouseXFromLeft + 0.001f;
-                        bool movingLeft = mouseClamped < _pendingLastMouseXFromLeft - 0.001f;
-
-                        float resolvedCenter = ResolveGhostCenterInsert(
-                            desiredCenter,
-                            _pendingPlacement,
-                            halfWidth,
-                            _pendingLane.rect.width,
-                            movingRight,
-                            movingLeft,
-                            _pendingLastResolvedCenterX);
-
-                        resolvedCenterFinal = resolvedCenter;
-                        _pendingGhost.SetX(resolvedCenterFinal);
-
-                        // Predict duration using the resolved center (because being "pushed" changes start time).
-                        float leftEdgeX = resolvedCenterFinal - halfWidth;
-                        float startDelaySeconds = Mathf.Max(0f, leftEdgeX / Mathf.Max(1f, PixelsPerSecond));
-                        float startAbs = Timeline.CurrentTime + startDelaySeconds;
-                        UpdatePendingPlacementDynamics(startAbs);
-                    }
-
-                    _pendingGhost.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(_pendingPlacement.Kind, _pendingPlacement.DurationSeconds), PixelsPerSecond);
-
-                    _pendingLastResolvedCenterX = resolvedCenterFinal;
-                    _pendingLastMouseXFromLeft = mouseClamped;
-                }
-
-                // Only react to clicks if mouse is over the lane region
-                bool overLane = RectTransformUtility.RectangleContainsScreenPoint(_pendingLane, mousePos, null);
-                if (overLane)
-                {
-                    if (UnityEngine.Input.GetMouseButtonDown(1))
-                    {
-                        CancelPlacement();
-                        return;
-                    }
-                    if (UnityEngine.Input.GetMouseButtonDown(0))
-                    {
-                        FinalizePlacement(_pendingGhost);
-                        return;
-                    }
-                }
-            }
-
-            var snapshot = Timeline.GetScheduledIntentsSnapshot();
-
-            // Only show blocks for player and observed unit.
-            var owners = new HashSet<CombatUnit>();
-            if (PlayerUnit != null) owners.Add(PlayerUnit);
-            if (ObservedUnit != null) owners.Add(ObservedUnit);
-
-            var relevant = snapshot
-                .Where(e => e.Owner != null && owners.Contains(e.Owner))
-                .ToList();
-
-            // Render placed blocks (UI-authored) from our own models so they don't disappear when intents execute.
-            RenderPlacedBlocks();
+            UpdatePlacementGhost();
 
             if (_layoutDirty)
             {
-                RecomputePlacedBlocksForLane(PlayerUnit, TimelineLane.Player);
-                RecomputePlacedBlocksForLane(ObservedUnit, TimelineLane.Observed);
+                RecomputePlayerBlocksForLane(PlayerUnit, TimelineLane.Player);
                 _layoutDirty = false;
             }
 
-            // Render snapshot groups that are not UI-authored (e.g., AI actions on observed lane).
-            RenderGroupedSnapshotEvents(relevant);
-
-            // Optionally, render snapshot-only single events (no group) that involve relevant owners.
-            RenderUngroupedSnapshotEvents(relevant);
-
-            CleanupOrphanViews();
+            SyncObservedBlocks();
+            RenderAllBlocks();
         }
 
-        private void RenderGroupedSnapshotEvents(List<BattleTimeline.ScheduledIntentInfo> relevant)
+        private void UpdatePlacementGhost()
         {
-            if (Timeline == null) return;
-            if (PlayerLane == null || ObservedLane == null) return;
+            if (_pendingGhost == null || _pendingLane == null) return;
 
-            var grouped = relevant
-                .Where(e => e.GroupId != 0 && e.Owner != null)
-                .GroupBy(e => e.GroupId)
-                .ToList();
-
-            var liveGroupIds = new HashSet<long>(grouped.Select(g => g.Key));
-
-            // Remove stale snapshot group blocks
-            var existing = _snapshotBlocksByGroupId.Keys.ToList();
-            foreach (var gid in existing)
+            var mousePos = UnityEngine.Input.mousePosition;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_pendingLane, mousePos, null, out var localPoint))
             {
-                if (!liveGroupIds.Contains(gid))
+                float xFromLeft = LocalXToXFromLeft(_pendingLane, localPoint.x);
+                float mouseClamped = Mathf.Clamp(xFromLeft, 0f, _pendingLane.rect.width);
+                float resolvedCenterFinal = _pendingLastResolvedCenterX;
+
+                for (int iter = 0; iter < 2; iter++)
                 {
-                    if (_snapshotBlocksByGroupId[gid] != null) Destroy(_snapshotBlocksByGroupId[gid].gameObject);
-                    _snapshotBlocksByGroupId.Remove(gid);
+                    float halfWidth = _pendingGhost.GetComponent<RectTransform>().sizeDelta.x * 0.5f;
+                    float desiredCenter = Mathf.Max(0f + halfWidth, mouseClamped);
+
+                    desiredCenter = ApplyKeyframeSnap(desiredCenter, halfWidth, out bool snapped, out float snapX);
+
+                    if (_snapIndicatorLine != null)
+                    {
+                        if (snapped)
+                        {
+                            _snapIndicatorLine.enabled = true;
+                            SetLineX(_snapIndicatorLine.rectTransform, snapX);
+                        }
+                        else
+                        {
+                            _snapIndicatorLine.enabled = false;
+                        }
+                    }
+
+                    bool movingRight = mouseClamped > _pendingLastMouseXFromLeft + 0.001f;
+                    bool movingLeft = mouseClamped < _pendingLastMouseXFromLeft - 0.001f;
+
+                    float resolvedCenter = ResolveGhostCenterInsert(
+                        desiredCenter, _pendingPlacement, halfWidth, _pendingLane.rect.width,
+                        movingRight, movingLeft, _pendingLastResolvedCenterX);
+
+                    resolvedCenterFinal = resolvedCenter;
+                    _pendingGhost.SetX(resolvedCenterFinal);
+
+                    float leftEdgeX = resolvedCenterFinal - halfWidth;
+                    float startDelaySeconds = Mathf.Max(0f, leftEdgeX / Mathf.Max(1f, PixelsPerSecond));
+                    float startAbs = Timeline.CurrentTime + startDelaySeconds;
+                    UpdatePendingPlacementDynamics(startAbs);
                 }
+
+                _pendingGhost.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(_pendingPlacement.Kind, _pendingPlacement.DurationSeconds), PixelsPerSecond);
+                _pendingLastResolvedCenterX = resolvedCenterFinal;
+                _pendingLastMouseXFromLeft = mouseClamped;
             }
+
+            bool overLane = RectTransformUtility.RectangleContainsScreenPoint(_pendingLane, mousePos, null);
+            if (overLane)
+            {
+                if (UnityEngine.Input.GetMouseButtonDown(1)) { CancelPlacement(); return; }
+                if (UnityEngine.Input.GetMouseButtonDown(0)) { FinalizePlacement(_pendingGhost); return; }
+            }
+        }
+
+        private void SyncObservedBlocks()
+        {
+            var snapshot = Timeline.GetScheduledIntentsSnapshot();
+            var grouped = snapshot.Where(e => e.GroupId != 0 && e.Owner != null).GroupBy(e => e.GroupId);
+            var seenGroups = new HashSet<long>();
 
             foreach (var g in grouped)
             {
                 long groupId = g.Key;
+                if (_playerBlocks.ContainsKey(groupId)) continue;
 
-                // If this group is UI-authored (placed/repositioned), do not duplicate.
-                if (_placedByGroupId.ContainsKey(groupId) || _placementsByGroupId.ContainsKey(groupId))
-                {
-                    continue;
-                }
-
-                var owners = g.Select(e => e.Owner).Where(o => o != null).Distinct().ToList();
+                var owners = g.Select(e => e.Owner).Distinct().ToList();
                 if (owners.Count != 1) continue;
                 var owner = owners[0];
 
-                // Only show for the two lanes we support.
-                RectTransform lane = null;
-                if (owner == PlayerUnit) lane = PlayerLane;
-                else if (owner == ObservedUnit) lane = ObservedLane;
+                TimelineLane lane;
+                if (owner == PlayerUnit) lane = TimelineLane.Player;
+                else if (owner == ObservedUnit) lane = TimelineLane.Observed;
                 else continue;
 
-                float start = g.Min(e => e.Time);
-                float end = g.Max(e => e.Time);
-                float duration = Mathf.Max(0.05f, end - start);
+                seenGroups.Add(groupId);
 
-                // Determine kind by priority.
+                float minTime = g.Min(e => e.Time);
+                float maxTime = g.Max(e => e.Time);
+
                 var types = g.Select(e => e.Type).ToList();
                 TimelineActionKind kind = TimelineActionKind.None;
-                if (types.Contains(ActionType.Move)) kind = TimelineActionKind.Move;
-                else if (types.Contains(ActionType.Attack)) kind = TimelineActionKind.Attack;
+                if (types.Contains(ActionType.Attack)) kind = TimelineActionKind.Attack;
                 else if (types.Contains(ActionType.Block)) kind = TimelineActionKind.Block;
                 else if (types.Contains(ActionType.Dodge)) kind = TimelineActionKind.Dodge;
-                else kind = TimelineActionKind.None;
+                else if (types.Contains(ActionType.Move)) kind = TimelineActionKind.Move;
+                else if (types.Contains(ActionType.Cast)) kind = TimelineActionKind.Attack;
 
-                if (kind == TimelineActionKind.None)
+                if (kind == TimelineActionKind.None) continue;
+
+                if (!_observedBlocks.TryGetValue(groupId, out var model))
                 {
-                    // Pure state-change groups aren't meaningful as blocks.
-                    continue;
+                    model = new BlockRenderModel
+                    {
+                        GroupId = groupId,
+                        Owner = owner,
+                        Lane = lane,
+                        IsInteractable = false
+                    };
+                    model.StartTimeAbs = minTime;
                 }
 
-                float width = Mathf.Max(MinBlockWidthPx, duration * PixelsPerSecond);
-                float startXFromLeft = (start - Timeline.CurrentTime) * PixelsPerSecond;
-                float xLeftEdge = startXFromLeft;
+                float currentEnd = model.StartTimeAbs + model.Duration;
+                float newEnd = maxTime;
 
-                if (!_snapshotBlocksByGroupId.TryGetValue(groupId, out var view) || view == null)
+                if (Mathf.Abs(newEnd - currentEnd) > 0.01f)
                 {
-                    view = CreateBlockGO(lane);
-                    _snapshotBlocksByGroupId[groupId] = view;
-
-                    // Snapshot blocks are informational only: do not allow delete/reposition.
-                    if (view.Background != null) view.Background.raycastTarget = false;
+                    model.Duration = Mathf.Max(0.05f, newEnd - model.StartTimeAbs);
                 }
 
-                view.SetModel(groupId: groupId, eventId: 0, startTime: start, duration: duration, label: string.Empty, isGhost: false);
-                view.SetWidth(width);
-                view.SetX(xLeftEdge + width * 0.5f);
-                view.SetColor(ApplyDepth(GetBaseColor(kind), duration, isGhost: false));
+                model.Kind = kind;
+                _observedBlocks[groupId] = model;
+            }
 
-                // Set keyframe markers for snapshot blocks (same as placed blocks).
-                view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(kind, duration), PixelsPerSecond);
-
-                // Clean up blocks only when RIGHT edge passes lane's LEFT edge.
-                float rightEdgeX = startXFromLeft + width;
-                if (rightEdgeX < 0f)
+            var keys = _observedBlocks.Keys.ToList();
+            foreach (var key in keys)
+            {
+                bool isFinished = !seenGroups.Contains(key);
+                if (isFinished)
                 {
-                    Destroy(view.gameObject);
-                    _snapshotBlocksByGroupId.Remove(groupId);
+                    var model = _observedBlocks[key];
+                    float xLeft = (model.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
+                    float width = model.Duration * PixelsPerSecond;
+                    if (xLeft + width < -50f)
+                    {
+                        _observedBlocks.Remove(key);
+                    }
                 }
             }
         }
 
+        private void RenderAllBlocks()
+        {
+            var validViewIds = new HashSet<long>();
+
+            foreach (var model in _playerBlocks.Values) RenderBlockModel(model, validViewIds);
+            foreach (var model in _observedBlocks.Values) RenderBlockModel(model, validViewIds);
+
+            var snapshot = Timeline.GetScheduledIntentsSnapshot();
+            var singles = snapshot.Where(e => e.GroupId == 0 && (e.Owner == PlayerUnit || e.Owner == ObservedUnit));
+            foreach (var e in singles)
+            {
+                long viewId = -e.Id;
+                validViewIds.Add(viewId);
+                RectTransform lane = (e.Owner == PlayerUnit) ? PlayerLane : ObservedLane;
+                float startX = (e.Time - Timeline.CurrentTime) * PixelsPerSecond;
+                float width = MinBlockWidthPx;
+                if (startX + width < -50f) continue;
+
+                if (!_activeViews.TryGetValue(viewId, out var view))
+                {
+                    view = CreateBlockGO(lane);
+                    _activeViews[viewId] = view;
+                }
+                view.SetModel(0, e.Id, e.Time, 0.05f, "", false);
+                view.SetWidth(width);
+                view.SetX(startX + width * 0.5f);
+                view.SetColor(new Color(1f, 1f, 1f, 0.35f));
+                view.Background.raycastTarget = false;
+            }
+
+            var allKeys = _activeViews.Keys.ToList();
+            foreach (var key in allKeys)
+            {
+                if (!validViewIds.Contains(key))
+                {
+                    Destroy(_activeViews[key].gameObject);
+                    _activeViews.Remove(key);
+                }
+            }
+        }
+
+        private void RenderBlockModel(BlockRenderModel model, HashSet<long> validViewIds)
+        {
+            if (model.Owner == null) return;
+
+            RectTransform lane = (model.Lane == TimelineLane.Player) ? PlayerLane : ObservedLane;
+            if (lane == null) return;
+
+            float width = Mathf.Max(MinBlockWidthPx, model.Duration * PixelsPerSecond);
+            float startX = (model.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
+
+            if (startX + width < -50f)
+            {
+                if (model.IsInteractable)
+                {
+                    _playerBlocks.Remove(model.GroupId);
+                    _placementsByGroupId.Remove(model.GroupId);
+                }
+                return;
+            }
+
+            validViewIds.Add(model.GroupId);
+
+            if (!_activeViews.TryGetValue(model.GroupId, out var view))
+            {
+                view = CreateBlockGO(lane);
+                _activeViews[model.GroupId] = view;
+            }
+
+            if (view.transform.parent != lane)
+            {
+                view.transform.SetParent(lane, false);
+            }
+
+            var rt = view.GetComponent<RectTransform>();
+            var pos = rt.anchoredPosition;
+            pos.y = 0;
+            rt.anchoredPosition = pos;
+
+            string label = "";
+            if (model.IsInteractable && _placementsByGroupId.TryGetValue(model.GroupId, out var placement))
+            {
+                label = placement.Label;
+            }
+
+            view.SetModel(model.GroupId, 0, model.StartTimeAbs, model.Duration, label, false);
+            view.SetWidth(width);
+            view.SetX(startX + width * 0.5f);
+
+            var baseColor = GetBaseColor(model.Kind);
+            var finalColor = ApplyDepth(baseColor, model.Duration, isGhost: false);
+            if (!model.IsInteractable) finalColor.a = 0.85f;
+            view.SetColor(finalColor);
+
+            view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(model.Kind, model.Duration), PixelsPerSecond);
+            if (view.Background != null) view.Background.raycastTarget = model.IsInteractable;
+        }
+
+        // --- Helpers ---
+
+        private void EnsureTimeLines()
+        {
+            if (PlayerLane == null || ObservedLane == null) return;
+
+            if (_currentTimeLinePlayer == null) _currentTimeLinePlayer = CreateLine(PlayerLane, "CurrentTimeLine");
+            if (_currentTimeLineObserved == null) _currentTimeLineObserved = CreateLine(ObservedLane, "CurrentTimeLine");
+            if (_mouseLinePlayer == null) _mouseLinePlayer = CreateLine(PlayerLane, "MouseLine");
+            if (_mouseLineObserved == null) _mouseLineObserved = CreateLine(ObservedLane, "MouseLine");
+
+            if (_snapIndicatorLine == null)
+            {
+                var go = new GameObject("SnapLine", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                go.transform.SetParent(transform, false);
+                go.transform.SetAsLastSibling();
+                var img = go.GetComponent<Image>();
+                img.color = new Color(0f, 1f, 1f, 0.8f);
+                img.enabled = false;
+                var r = go.GetComponent<RectTransform>();
+                r.anchorMin = new Vector2(0, 0);
+                r.anchorMax = new Vector2(0, 1);
+                r.sizeDelta = new Vector2(3, 0);
+                _snapIndicatorLine = img;
+            }
+
+            if (_mouseTimeText == null && RulerArea != null)
+            {
+                _mouseTimeText = CreateTimeText("MouseTimeText", RulerArea, Color.yellow);
+            }
+            if (_nowTimeText == null && RulerArea != null)
+            {
+                _nowTimeText = CreateTimeText("NowTimeText", RulerArea, Color.white);
+            }
+
+            if (_mouseLinePlayer != null) _mouseLinePlayer.enabled = false;
+            if (_mouseLineObserved != null) _mouseLineObserved.enabled = false;
+        }
+
+        private Text CreateTimeText(string name, RectTransform parent, Color color)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            go.transform.SetParent(parent, false);
+            var t = go.GetComponent<Text>();
+
+            // Safe Font Fallback
+            if (UiFont != null) t.font = UiFont;
+            else
+            {
+                try { t.font = Resources.GetBuiltinResource<Font>("Arial.ttf"); }
+                catch { t.font = Resources.Load<Font>("Arial"); }
+            }
+
+            t.fontSize = 14;
+            t.color = color;
+            t.alignment = TextAnchor.LowerLeft;
+            t.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+            var r = go.GetComponent<RectTransform>();
+            r.anchorMin = new Vector2(0, 0);
+            r.anchorMax = new Vector2(0, 0);
+            r.pivot = new Vector2(0f, 0f);
+            return t;
+        }
+
+        private void UpdateCurrentTimeLines()
+        {
+            if (_currentTimeLinePlayer == null) return;
+            SetLineX(_currentTimeLinePlayer.rectTransform, 0f);
+            SetLineX(_currentTimeLineObserved.rectTransform, 0f);
+
+            if (_nowTimeText != null && Timeline != null)
+            {
+                _nowTimeText.text = $"NOW: {Timeline.CurrentTime:F2}";
+                float rulerX = ConvertLaneXToRulerX(0f);
+                SetTextX(_nowTimeText.rectTransform, rulerX);
+            }
+        }
+
+        private void UpdateMouseLineAndTime()
+        {
+            if (_mouseLinePlayer == null) return;
+            var mousePos = UnityEngine.Input.mousePosition;
+            bool overP = RectTransformUtility.RectangleContainsScreenPoint(PlayerLane, mousePos, null);
+            bool overO = RectTransformUtility.RectangleContainsScreenPoint(ObservedLane, mousePos, null);
+
+            if (!overP && !overO)
+            {
+                _mouseLinePlayer.enabled = false;
+                _mouseLineObserved.enabled = false;
+                if (_mouseTimeText != null) _mouseTimeText.enabled = false;
+                return;
+            }
+
+            RectTransform lane = overP ? PlayerLane : ObservedLane;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(lane, mousePos, null, out var lp)) return;
+
+            float x = Mathf.Clamp(LocalXToXFromLeft(lane, lp.x), 0f, lane.rect.width);
+            _mouseLinePlayer.enabled = true;
+            _mouseLineObserved.enabled = true;
+            SetLineX(_mouseLinePlayer.rectTransform, x);
+            SetLineX(_mouseLineObserved.rectTransform, x);
+
+            float t = Timeline != null ? Timeline.CurrentTime + x / PixelsPerSecond : 0f;
+
+            if (_mouseTimeText != null)
+            {
+                _mouseTimeText.enabled = true;
+                _mouseTimeText.text = $"{t:F2}s";
+                float rulerX = ConvertLaneXToRulerX(x);
+                SetTextX(_mouseTimeText.rectTransform, rulerX);
+
+                if (_nowTimeText != null)
+                {
+                    float dist = Mathf.Abs(_nowTimeText.rectTransform.anchoredPosition.x - rulerX);
+                    _nowTimeText.enabled = dist > 60f;
+                }
+            }
+        }
+
+        private float ConvertLaneXToRulerX(float laneX)
+        {
+            if (PlayerLane == null || RulerArea == null) return laneX;
+            float localXInLane = laneX - PlayerLane.rect.width * PlayerLane.pivot.x;
+            Vector3 worldPos = PlayerLane.TransformPoint(new Vector3(localXInLane, 0, 0));
+            Vector2 localPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(RulerArea, RectTransformUtility.WorldToScreenPoint(null, worldPos), null, out localPoint);
+            return localPoint.x;
+        }
+
+        private void SetLineX(RectTransform r, float x) { var p = r.anchoredPosition; p.x = x; r.anchoredPosition = p; }
+        private void SetTextX(RectTransform r, float x) { var p = r.anchoredPosition; p.x = x; r.anchoredPosition = p; }
+
         private void UpdatePendingPlacementDynamics(float startAbs)
         {
             if (_pendingPlacement == null || _pendingGhost == null) return;
-            if (_pendingPlacement.Owner == null) return;
+            if (_pendingPlacement.Kind != TimelineActionKind.Move || !_pendingPlacement.MoveDestination.HasValue) return;
 
-            // Only Move needs dynamic duration prediction; others have fixed estimates.
-            if (_pendingPlacement.Kind != TimelineActionKind.Move) return;
-            if (!_pendingPlacement.MoveDestination.HasValue) return;
-
-            // Predict the owner's position at this start time using already-placed blocks.
             float t = QuantizeSeconds(startAbs, PredictionTimeQuantumSeconds);
-            var predictedStart = PredictUnitGridPositionAt(_pendingPlacement.Owner, t, ignoreGroupId: _isRepositioning ? _repositionGroupId : 0);
+            var predictedStart = PredictUnitGridPositionAt(_pendingPlacement.Owner, t, _isRepositioning ? _repositionGroupId : 0);
 
-            // Compute path & duration using the same rules as ActionScheduler.ScheduleMove.
             var obstacles = GridManager.Instance != null ? GridManager.Instance.GetGlobalObstacles(_pendingPlacement.Owner) : null;
             var pathfinder = new Pathfinder();
             var path = pathfinder.FindPath(predictedStart, _pendingPlacement.MoveDestination.Value, _pendingPlacement.Owner.UnitVolumeDefinition, obstacles);
 
-            float newDuration = ProjectHero.Core.Actions.ActionScheduler.EstimateMoveDuration(_pendingPlacement.Owner, path);
+            float newDuration = ActionScheduler.EstimateMoveDuration(_pendingPlacement.Owner, path);
             if (newDuration <= 0f) newDuration = _pendingPlacement.DurationSeconds;
-
             newDuration = QuantizeSeconds(newDuration, DurationQuantumSeconds);
 
-            // Apply if changed.
             if (Mathf.Abs(newDuration - _pendingPlacement.DurationSeconds) > 0.001f)
             {
                 _pendingPlacement.DurationSeconds = newDuration;
-                _pendingGhost.SetModel(groupId: 0, eventId: 0, startTime: startAbs, duration: newDuration, label: string.Empty, isGhost: true);
-
+                _pendingGhost.SetModel(0, 0, startAbs, newDuration, _pendingPlacement.Label, true);
                 float width = Mathf.Max(MinBlockWidthPx, newDuration * PixelsPerSecond);
                 _pendingGhost.SetWidth(width);
-                _pendingGhost.SetColor(ApplyDepth(GetBaseColor(_pendingPlacement.Kind), newDuration, isGhost: true));
+                _pendingGhost.SetColor(ApplyDepth(GetBaseColor(_pendingPlacement.Kind), newDuration, true));
             }
         }
 
         private Pathfinder.GridPoint PredictUnitGridPositionAt(CombatUnit unit, float timeAbs, long ignoreGroupId)
         {
-            // Start from the unit's current logical position at "now".
             var pos = unit.GridPosition;
-
-            // Apply all completed moves scheduled before timeAbs.
-            foreach (var kvp in _placedByGroupId.OrderBy(k => k.Value.StartTimeAbs))
+            foreach (var kvp in _playerBlocks.OrderBy(k => k.Value.StartTimeAbs))
             {
                 if (kvp.Key == ignoreGroupId) continue;
                 var m = kvp.Value;
@@ -664,243 +797,74 @@ namespace ProjectHero.UI.Timeline
                     pos = m.MoveDestination.Value;
                 }
             }
-
             return pos;
         }
 
-        private float QuantizeSeconds(float value, float quantum)
+        private bool WouldOverlap(CombatUnit owner, TimelineLane lane, float startAbs, float endAbs, long ignoreGroupId)
         {
-            if (quantum <= 0f) return value;
-            return Mathf.Round(value / quantum) * quantum;
-        }
-
-        private float ApplyKeyframeSnap(float desiredCenterX, float halfWidth)
-        {
-            if (_pendingPlacement == null) return desiredCenterX;
-            if (Timeline == null) return desiredCenterX;
-
-            // Snap when a keyframe is close enough to another keyframe.
-            const float snapSeconds = 0.08f;
-            float snapPx = snapSeconds * Mathf.Max(1f, PixelsPerSecond);
-
-            float leftEdgeX = desiredCenterX - halfWidth;
-            float startDelay = Mathf.Max(0f, leftEdgeX / Mathf.Max(1f, PixelsPerSecond));
-            float ghostStartAbs = Timeline.CurrentTime + startDelay;
-
-            ghostStartAbs = QuantizeSeconds(ghostStartAbs, PredictionTimeQuantumSeconds);
-
-            var ghostOffsets = GetKeyframeOffsetsSeconds(_pendingPlacement.Kind, _pendingPlacement.DurationSeconds);
-            if (ghostOffsets.Count == 0) return desiredCenterX;
-
-            // Collect candidate key times from placed blocks AND snapshot blocks (including Observed lane).
-            var candidateTimes = new List<float>();
-            foreach (var kvp in _placedByGroupId)
+            foreach (var model in _playerBlocks.Values)
             {
-                // Ignore the block being repositioned.
-                if (_isRepositioning && kvp.Key == _repositionGroupId) continue;
-                var m = kvp.Value;
-                if (m.Owner == null) continue;
+                if (model.GroupId == ignoreGroupId) continue;
+                if (model.Owner != owner || model.Lane != lane) continue;
 
-                var offsets = GetKeyframeOffsetsSeconds(m.Kind, m.Duration);
-                for (int i = 0; i < offsets.Count; i++)
-                {
-                    candidateTimes.Add(m.StartTimeAbs + offsets[i]);
-                }
+                float otherStart = model.StartTimeAbs;
+                float otherEnd = model.StartTimeAbs + Mathf.Max(0f, model.Duration);
+                if (startAbs < otherEnd && endAbs > otherStart) return true;
             }
-
-            // Also collect keyframes from snapshot blocks (AI/Observed lane actions).
-            if (Timeline != null)
-            {
-                var snapshot = Timeline.GetScheduledIntentsSnapshot();
-                var grouped = snapshot
-                    .Where(e => e.GroupId != 0 && e.Owner != null && !_placedByGroupId.ContainsKey(e.GroupId))
-                    .GroupBy(e => e.GroupId);
-
-                foreach (var g in grouped)
-                {
-                    float start = g.Min(e => e.Time);
-                    float end = g.Max(e => e.Time);
-                    float dur = Mathf.Max(0.05f, end - start);
-
-                    var types = g.Select(e => e.Type).ToList();
-                    TimelineActionKind kind = TimelineActionKind.None;
-                    if (types.Contains(ActionType.Move)) kind = TimelineActionKind.Move;
-                    else if (types.Contains(ActionType.Attack)) kind = TimelineActionKind.Attack;
-                    else if (types.Contains(ActionType.Block)) kind = TimelineActionKind.Block;
-                    else if (types.Contains(ActionType.Dodge)) kind = TimelineActionKind.Dodge;
-
-                    if (kind == TimelineActionKind.None) continue;
-
-                    var offsets = GetKeyframeOffsetsSeconds(kind, dur);
-                    for (int i = 0; i < offsets.Count; i++)
-                    {
-                        candidateTimes.Add(start + offsets[i]);
-                    }
-                }
-            }
-
-            float bestDeltaSeconds = 0f;
-            float bestDeltaPx = float.MaxValue;
-
-            for (int i = 0; i < ghostOffsets.Count; i++)
-            {
-                float ghostKeyAbs = ghostStartAbs + ghostOffsets[i];
-                for (int j = 0; j < candidateTimes.Count; j++)
-                {
-                    float delta = candidateTimes[j] - ghostKeyAbs;
-                    float deltaPx = Mathf.Abs(delta * Mathf.Max(1f, PixelsPerSecond));
-                    if (deltaPx <= snapPx && deltaPx < bestDeltaPx)
-                    {
-                        bestDeltaPx = deltaPx;
-                        bestDeltaSeconds = delta;
-                    }
-                }
-            }
-
-            if (bestDeltaPx == float.MaxValue) return desiredCenterX;
-            float snapped = desiredCenterX + bestDeltaSeconds * Mathf.Max(1f, PixelsPerSecond);
-
-            // Clamp to left bound only; allow right overflow.
-            return Mathf.Max(0f + halfWidth, snapped);
-        }
-
-        private List<float> GetKeyframeOffsetsSeconds(TimelineActionKind kind, float durationSeconds)
-        {
-            var offsets = new List<float>();
-            float d = Mathf.Max(0f, durationSeconds);
-
-            switch (kind)
-            {
-                case TimelineActionKind.Move:
-                    // Keyframe: move ends.
-                    offsets.Add(d);
-                    break;
-                case TimelineActionKind.Attack:
-                    // Keyframe: impact moment (duration minus recovery).
-                    offsets.Add(Mathf.Clamp(d - 0.5f, 0f, d));
-                    break;
-            }
-
-            return offsets;
-        }
-
-        private void CleanupOrphanViews()
-        {
-            // Remove any placed-group views that no longer exist in the placed model set.
-            var keys = _blocksByGroup.Keys.ToList();
-            foreach (var key in keys)
-            {
-                // Negative keys are snapshot-only singles; keep them (they manage their own lifetime).
-                if (key < 0) continue;
-
-                // Ghost is not stored in _blocksByGroup.
-                if (!_placedByGroupId.ContainsKey(key))
-                {
-                    if (_blocksByGroup.TryGetValue(key, out var view) && view != null)
-                    {
-                        Destroy(view.gameObject);
-                    }
-                    _blocksByGroup.Remove(key);
-                }
-            }
-        }
-
-        private float ConstrainGhostX(float desiredCenterX, float previousCenterX, TimelineActionPlacement placement, float halfWidth)
-        {
-            return desiredCenterX;
+            return false;
         }
 
         private float ResolveGhostCenterInsert(float desiredCenterX, TimelineActionPlacement placement, float halfWidth, float laneWidth, bool movingRight, bool movingLeft, float lastResolvedCenterX)
         {
-            if (placement == null || placement.Owner == null) return desiredCenterX;
-
             float width = halfWidth * 2f;
-            float left = desiredCenterX - halfWidth;
-            // Allow right overflow; only clamp to 0.
-            left = Mathf.Max(0f, left);
+            float left = Mathf.Max(0f, desiredCenterX - halfWidth);
+            var intervals = new List<(float left, float right)>();
 
-            var intervals = GetOccupiedIntervals(placement);
-            if (intervals.Count == 0) return left + halfWidth;
-
-            // If direction is ambiguous, infer from the resolved center history.
-            if (!movingRight && !movingLeft)
+            foreach (var b in _playerBlocks.Values)
             {
-                movingRight = desiredCenterX > _pendingLastResolvedCenterX + 0.001f;
-                movingLeft = desiredCenterX < _pendingLastResolvedCenterX - 0.001f;
+                if (b.Owner != placement.Owner || b.Lane != placement.Lane) continue;
+                float w = Mathf.Max(MinBlockWidthPx, b.Duration * PixelsPerSecond);
+                float l = (b.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
+                intervals.Add((l, l + w));
             }
+            intervals.Sort((a, b) => a.left.CompareTo(b.left));
 
-            // Insertion mode:
-            // - Never overlap with blocks on the LEFT (blocks that start before our left edge).
-            // - Allow overlap with blocks on the RIGHT; they will be shifted on commit.
-            //
-            // This preserves the "small gap insert" behavior while fixing the near-left-neighbor case:
-            // when halfWidth makes the computed left edge fall inside the left neighbor, we push to its end.
-            for (int safety = 0; safety < intervals.Count + 2; safety++)
+            for (int i = 0; i < intervals.Count + 2; i++)
             {
                 float right = left + width;
-
                 (float oLeft, float oRight)? overlapLeftNeighbor = null;
                 foreach (var iv in intervals)
                 {
-                    // Only consider blocks that start before our left edge (left-neighbors).
-                    // Touching edges is allowed.
                     if (iv.left < left - 0.001f && left < iv.right && right > iv.left)
                     {
                         overlapLeftNeighbor = (iv.left, iv.right);
                         break;
                     }
                 }
-
                 if (overlapLeftNeighbor == null) break;
-
-                // Push just after the left neighbor.
                 left = overlapLeftNeighbor.Value.oRight;
             }
-
             return left + halfWidth;
         }
 
-        private List<(float left, float right)> GetOccupiedIntervals(TimelineActionPlacement placement)
+        private void RecomputePlayerBlocksForLane(CombatUnit owner, TimelineLane lane)
         {
-            var list = new List<(float left, float right)>();
-            foreach (var b in _placedByGroupId.Values)
-            {
-                if (b.Owner != placement.Owner) continue;
-                if (b.Lane != placement.Lane) continue;
+            if (Timeline == null || owner == null) return;
 
-                float width = Mathf.Max(MinBlockWidthPx, b.Duration * PixelsPerSecond);
-                float left = (b.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
-                float right = left + width;
-                list.Add((left, right));
-            }
-
-            list.Sort((a, c) => a.left.CompareTo(c.left));
-            return list;
-        }
-
-        private void RecomputePlacedBlocksForLane(CombatUnit owner, TimelineLane lane)
-        {
-            if (Timeline == null) return;
-            if (owner == null) return;
-
-            // Get blocks for this owner+lane, sorted by time.
-            var ids = _placedByGroupId
-                .Where(kvp => kvp.Value.Owner == owner && kvp.Value.Lane == lane)
-                .OrderBy(kvp => kvp.Value.StartTimeAbs)
-                .Select(kvp => kvp.Key)
+            var ids = _playerBlocks.Values
+                .Where(b => b.Owner == owner && b.Lane == lane)
+                .OrderBy(b => b.StartTimeAbs)
+                .Select(b => b.GroupId)
                 .ToList();
 
             if (ids.Count == 0) return;
 
-            // Update move durations predictably (based on chain order), and when overlaps occur,
-            // shift ALL blocks to the right by the required delta (preserving gaps among them).
             var predictedPos = owner.GridPosition;
 
-            // First: compute durations (and predictedPos chain) in current order.
             for (int i = 0; i < ids.Count; i++)
             {
                 long id = ids[i];
-                var model = _placedByGroupId[id];
+                var model = _playerBlocks[id];
 
                 float duration = Mathf.Max(0f, model.Duration);
                 if (model.Kind == TimelineActionKind.Move && model.MoveDestination.HasValue)
@@ -908,27 +872,24 @@ namespace ProjectHero.UI.Timeline
                     var obstacles = GridManager.Instance != null ? GridManager.Instance.GetGlobalObstacles(owner) : null;
                     var pathfinder = new Pathfinder();
                     var path = pathfinder.FindPath(predictedPos, model.MoveDestination.Value, owner.UnitVolumeDefinition, obstacles);
-                    float d = ProjectHero.Core.Actions.ActionScheduler.EstimateMoveDuration(owner, path);
+                    float d = ActionScheduler.EstimateMoveDuration(owner, path);
                     if (d > 0f) duration = QuantizeSeconds(d, DurationQuantumSeconds);
                     predictedPos = model.MoveDestination.Value;
                 }
 
-                if (Mathf.Abs(model.Duration - duration) > 0.0001f)
+                if (Mathf.Abs(model.Duration - duration) > 0.001f)
                 {
                     model.Duration = duration;
-                    _placedByGroupId[id] = model;
+                    _playerBlocks[id] = model;
                 }
             }
 
-            // Second: resolve overlaps by shifting the suffix.
             for (int i = 0; i < ids.Count - 1; i++)
             {
                 long leftId = ids[i];
                 long rightId = ids[i + 1];
-
-                var left = _placedByGroupId[leftId];
-                var right = _placedByGroupId[rightId];
-
+                var left = _playerBlocks[leftId];
+                var right = _playerBlocks[rightId];
                 float leftEnd = left.StartTimeAbs + Mathf.Max(0f, left.Duration);
                 if (right.StartTimeAbs < leftEnd)
                 {
@@ -936,25 +897,20 @@ namespace ProjectHero.UI.Timeline
                     for (int j = i + 1; j < ids.Count; j++)
                     {
                         long id = ids[j];
-                        var m = _placedByGroupId[id];
+                        var m = _playerBlocks[id];
                         m.StartTimeAbs += delta;
-                        _placedByGroupId[id] = m;
+                        _playerBlocks[id] = m;
                     }
                 }
             }
 
-            // Finally: reschedule any groups whose start/duration changed.
             for (int i = 0; i < ids.Count; i++)
             {
                 long id = ids[i];
-                var model = _placedByGroupId[id];
-
-                // Do not reschedule actions that are already in the past, otherwise they would re-execute.
+                var model = _playerBlocks[id];
                 if (model.StartTimeAbs < Timeline.CurrentTime + 0.0001f) continue;
-
                 if (_placementsByGroupId.TryGetValue(id, out var placement) && placement != null)
                 {
-                    // Keep placement duration in sync with model.
                     placement.DurationSeconds = model.Duration;
                     Timeline.CancelGroup(id);
                     float delay = Mathf.Max(0f, model.StartTimeAbs - Timeline.CurrentTime);
@@ -963,382 +919,93 @@ namespace ProjectHero.UI.Timeline
             }
         }
 
-        private void EnsurePlacementShield(RectTransform lane)
+        private float ApplyKeyframeSnap(float desiredCenterX, float halfWidth, out bool snapped, out float snapX)
         {
-            if (lane == null) return;
-            if (_placementShield != null)
-            {
-                // Move to the current lane.
-                if (_placementShield.transform.parent != lane)
-                {
-                    _placementShield.transform.SetParent(lane, false);
-                }
+            snapped = false;
+            snapX = 0f;
 
-                _placementShield.transform.SetAsLastSibling();
-                return;
+            float snapPx = SnapThresholdSeconds * Mathf.Max(1f, PixelsPerSecond);
+            float leftEdgeX = desiredCenterX - halfWidth;
+            float ghostStartAbs = Timeline.CurrentTime + Mathf.Max(0f, leftEdgeX / Mathf.Max(1f, PixelsPerSecond));
+
+            var ghostOffsets = GetKeyframeOffsetsSeconds(_pendingPlacement.Kind, _pendingPlacement.DurationSeconds);
+            var candidateTimes = new List<float>();
+
+            foreach (var m in _playerBlocks.Values)
+            {
+                if (_isRepositioning && m.GroupId == _repositionGroupId) continue;
+                var offsets = GetKeyframeOffsetsSeconds(m.Kind, m.Duration);
+                foreach (var o in offsets) candidateTimes.Add(m.StartTimeAbs + o);
+            }
+            foreach (var m in _observedBlocks.Values)
+            {
+                var offsets = GetKeyframeOffsetsSeconds(m.Kind, m.Duration);
+                foreach (var o in offsets) candidateTimes.Add(m.StartTimeAbs + o);
             }
 
-            var go = new GameObject("PlacementShield", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            go.transform.SetParent(lane, false);
-            go.transform.SetAsLastSibling();
+            float bestDeltaPx = float.MaxValue;
+            float bestSnapShiftSeconds = 0f;
+            float bestTargetTime = 0f;
 
-            var rect = go.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(1f, 1f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
+            foreach (var gk in ghostOffsets)
+            {
+                float ghostKeyAbs = ghostStartAbs + gk;
+                foreach (var ct in candidateTimes)
+                {
+                    float d = ct - ghostKeyAbs;
+                    float dPx = Mathf.Abs(d * PixelsPerSecond);
 
-            var img = go.GetComponent<Image>();
-            img.color = new Color(0f, 0f, 0f, 0f);
-            img.raycastTarget = true;
-            _placementShield = img;
+                    if (dPx <= snapPx && dPx < bestDeltaPx)
+                    {
+                        bestDeltaPx = dPx;
+                        bestSnapShiftSeconds = d;
+                        bestTargetTime = ct;
+                    }
+                }
+            }
+
+            if (bestDeltaPx != float.MaxValue)
+            {
+                snapped = true;
+                float shiftPx = bestSnapShiftSeconds * PixelsPerSecond;
+                float finalCenterX = desiredCenterX + shiftPx;
+                snapX = (bestTargetTime - Timeline.CurrentTime) * PixelsPerSecond;
+                return finalCenterX;
+            }
+
+            float quantizedStart = QuantizeSeconds(ghostStartAbs, PredictionTimeQuantumSeconds);
+            float qDelay = quantizedStart - Timeline.CurrentTime;
+            float qCenterX = (qDelay * PixelsPerSecond) + halfWidth;
+
+            return qCenterX;
         }
 
-        private void DestroyPlacementShield()
+        private float QuantizeSeconds(float value, float quantum) => quantum <= 0f ? value : Mathf.Round(value / quantum) * quantum;
+
+        private List<float> GetKeyframeOffsetsSeconds(TimelineActionKind kind, float durationSeconds)
         {
-            if (_placementShield == null) return;
-            Destroy(_placementShield.gameObject);
-            _placementShield = null;
-        }
-
-        private void EnsureLaneMasks()
-        {
-            if (PlayerLane != null && PlayerLane.GetComponent<RectMask2D>() == null)
-            {
-                PlayerLane.gameObject.AddComponent<RectMask2D>();
-            }
-            if (ObservedLane != null && ObservedLane.GetComponent<RectMask2D>() == null)
-            {
-                ObservedLane.gameObject.AddComponent<RectMask2D>();
-            }
-        }
-
-        private void RenderPlacedBlocks()
-        {
-            var groupIds = _placedByGroupId.Keys.ToList();
-            foreach (var groupId in groupIds)
-            {
-                if (!_placedByGroupId.TryGetValue(groupId, out var model)) continue;
-                if (model.Owner == null) { _placedByGroupId.Remove(groupId); continue; }
-
-                var lane = model.Lane == TimelineLane.Player ? PlayerLane : ObservedLane;
-                if (lane == null) continue;
-
-                float width = Mathf.Max(MinBlockWidthPx, model.Duration * PixelsPerSecond);
-                float startXFromLeft = (model.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
-                float xLeftEdge = startXFromLeft;
-
-                // Cull only when RIGHT edge passes lane's left edge.
-                if (startXFromLeft + width < 0f)
-                {
-                    if (_blocksByGroup.TryGetValue(groupId, out var stale) && stale != null) Destroy(stale.gameObject);
-                    _blocksByGroup.Remove(groupId);
-                    _placedByGroupId.Remove(groupId);
-                    _placementsByGroupId.Remove(groupId);
-                    continue;
-                }
-
-                if (!_blocksByGroup.TryGetValue(groupId, out var view) || view == null)
-                {
-                    view = CreateBlockGO(lane);
-                    _blocksByGroup[groupId] = view;
-                }
-
-                view.SetModel(groupId: groupId, eventId: 0, startTime: model.StartTimeAbs, duration: model.Duration, label: string.Empty, isGhost: false);
-                view.SetWidth(width);
-                view.SetX(xLeftEdge + width * 0.5f);
-
-                var color = ApplyDepth(GetBaseColor(model.Kind), model.Duration, isGhost: false);
-                view.SetColor(color);
-
-                view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(model.Kind, model.Duration), PixelsPerSecond);
-            }
-        }
-
-        private void RenderUngroupedSnapshotEvents(List<BattleTimeline.ScheduledIntentInfo> relevant)
-        {
-            // Only single events (GroupId==0) are displayed as a tiny block so the UI stays stable.
-            // These are not reschedulable, and will naturally disappear once executed.
-            var singles = relevant.Where(e => e.GroupId == 0).ToList();
-            var singleKeys = new HashSet<long>(singles.Select(e => e.Id));
-
-            // Remove stale single-event blocks
-            var existingSingleKeys = _blocksByGroup.Keys.Where(k => k < 0).ToList();
-            foreach (var key in existingSingleKeys)
-            {
-                long eventId = -key;
-                if (!singleKeys.Contains(eventId))
-                {
-                    if (_blocksByGroup[key] != null) Destroy(_blocksByGroup[key].gameObject);
-                    _blocksByGroup.Remove(key);
-                }
-            }
-
-            foreach (var e in singles)
-            {
-                var owner = e.Owner;
-                if (owner == null) continue;
-
-                var lane = owner == PlayerUnit ? PlayerLane : ObservedLane;
-                if (lane == null) continue;
-
-                float duration = 0.05f;
-                float width = Mathf.Max(MinBlockWidthPx, duration * PixelsPerSecond);
-                float startXFromLeft = (e.Time - Timeline.CurrentTime) * PixelsPerSecond;
-                float xLeftEdge = startXFromLeft;
-
-                long key = -e.Id;
-                if (!_blocksByGroup.TryGetValue(key, out var view) || view == null)
-                {
-                    view = CreateBlockGO(lane);
-                    _blocksByGroup[key] = view;
-                }
-
-                view.SetModel(groupId: 0, eventId: e.Id, startTime: e.Time, duration: duration, label: string.Empty, isGhost: false);
-                view.SetWidth(width);
-                view.SetX(xLeftEdge + width * 0.5f);
-                view.SetColor(new Color(1f, 1f, 1f, 0.35f));
-
-                if (startXFromLeft + width < 0f)
-                {
-                    Destroy(view.gameObject);
-                    _blocksByGroup.Remove(key);
-                }
-            }
-        }
-
-        private bool WouldOverlap(CombatUnit owner, TimelineLane lane, float startAbs, float endAbs, long ignoreGroupId)
-        {
-            foreach (var kvp in _placedByGroupId)
-            {
-                if (kvp.Key == ignoreGroupId) continue;
-                var other = kvp.Value;
-                if (other.Owner != owner) continue;
-                if (other.Lane != lane) continue;
-
-                float otherStart = other.StartTimeAbs;
-                float otherEnd = other.StartTimeAbs + Mathf.Max(0f, other.Duration);
-
-                // Overlap if intervals intersect (touching edges is allowed).
-                if (startAbs < otherEnd && endAbs > otherStart)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private float LocalXToXFromLeft(RectTransform lane, float localX)
-        {
-            // ScreenPointToLocalPointInRectangle returns local coords with origin at pivot.
-            // Our UI elements are anchored from the left edge (anchorX=0), so convert to "from left".
-            return localX + lane.rect.width * lane.pivot.x;
+            var offsets = new List<float>();
+            float d = Mathf.Max(0f, durationSeconds);
+            if (kind == TimelineActionKind.Move) offsets.Add(d);
+            else if (kind == TimelineActionKind.Attack) offsets.Add(Mathf.Clamp(d - 0.5f, 0f, d));
+            return offsets;
         }
 
         private Color ApplyDepth(Color baseColor, float durationSeconds, bool isGhost)
         {
             float t = DeepenAtSeconds <= 0f ? 1f : Mathf.Clamp01(durationSeconds / DeepenAtSeconds);
             float darken = Mathf.Lerp(0f, MaxDarkenFactor, t);
-            var darker = new Color(
-                Mathf.Clamp01(baseColor.r * (1f - darken)),
-                Mathf.Clamp01(baseColor.g * (1f - darken)),
-                Mathf.Clamp01(baseColor.b * (1f - darken)),
-                1f);
-
-            darker.a = isGhost ? 0.45f : 0.90f;
-            return darker;
+            var c = new Color(baseColor.r * (1f - darken), baseColor.g * (1f - darken), baseColor.b * (1f - darken), 1f);
+            c.a = isGhost ? 0.45f : 0.90f;
+            return c;
         }
 
-        private void EnsureTimeLines()
-        {
-            if (PlayerLane == null || ObservedLane == null) return;
-
-            if (_currentTimeLinePlayer == null) _currentTimeLinePlayer = CreateLine(PlayerLane, "CurrentTimeLine");
-            if (_currentTimeLineObserved == null) _currentTimeLineObserved = CreateLine(ObservedLane, "CurrentTimeLine");
-            if (_mouseLinePlayer == null) _mouseLinePlayer = CreateLine(PlayerLane, "MouseLine");
-            if (_mouseLineObserved == null) _mouseLineObserved = CreateLine(ObservedLane, "MouseLine");
-
-            if (_mouseTimeText == null)
-            {
-                var go = new GameObject("MouseTimeText", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-                go.transform.SetParent(transform, false);
-                var rect = go.GetComponent<RectTransform>();
-                rect.anchorMin = new Vector2(0f, 1f);
-                rect.anchorMax = new Vector2(0f, 1f);
-                rect.pivot = new Vector2(0.5f, 1f);
-                rect.anchoredPosition = new Vector2(0f, -6f);
-                rect.sizeDelta = new Vector2(220f, 24f);
-
-                var text = go.GetComponent<Text>();
-                text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-                text.fontSize = 14;
-                text.alignment = TextAnchor.UpperLeft;
-                text.color = new Color(1f, 1f, 1f, 0.9f);
-                text.text = string.Empty;
-                _mouseTimeText = text;
-            }
-
-            if (_nowTimeText == null)
-            {
-                var go = new GameObject("NowTimeText", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
-                go.transform.SetParent(transform, false);
-                var rect = go.GetComponent<RectTransform>();
-                rect.anchorMin = new Vector2(0f, 1f);
-                rect.anchorMax = new Vector2(0f, 1f);
-                rect.pivot = new Vector2(0f, 1f);
-                rect.anchoredPosition = new Vector2(8f, -6f);
-                rect.sizeDelta = new Vector2(180f, 24f);
-
-                var text = go.GetComponent<Text>();
-                text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-                text.fontSize = 14;
-                text.alignment = TextAnchor.UpperLeft;
-                text.color = new Color(1f, 1f, 1f, 0.9f);
-                text.text = string.Empty;
-                _nowTimeText = text;
-            }
-
-            // Default hidden for mouse lines
-            if (_mouseLinePlayer != null) _mouseLinePlayer.enabled = false;
-            if (_mouseLineObserved != null) _mouseLineObserved.enabled = false;
-        }
-
-        private Image CreateLine(RectTransform lane, string name)
-        {
-            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            go.transform.SetParent(lane, false);
-
-            var rect = go.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 1f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(2f, 0f);
-
-            var img = go.GetComponent<Image>();
-            img.color = new Color(1f, 1f, 1f, 0.8f);
-
-            return img;
-        }
-
-        private void UpdateCurrentTimeLines()
-        {
-            if (_currentTimeLinePlayer == null || _currentTimeLineObserved == null) return;
-
-            // Current time is lane's left edge.
-            SetLineX(_currentTimeLinePlayer.rectTransform, 0f);
-            SetLineX(_currentTimeLineObserved.rectTransform, 0f);
-
-            if (_nowTimeText != null && Timeline != null)
-            {
-                _nowTimeText.text = $"now {Timeline.CurrentTime:F2}s";
-            }
-        }
-
-        private void UpdateMouseLineAndTime()
-        {
-            if (_mouseLinePlayer == null || _mouseLineObserved == null || _mouseTimeText == null) return;
-
-            var mousePos = UnityEngine.Input.mousePosition;
-            bool overPlayer = RectTransformUtility.RectangleContainsScreenPoint(PlayerLane, mousePos, null);
-            bool overObserved = RectTransformUtility.RectangleContainsScreenPoint(ObservedLane, mousePos, null);
-
-            if (!overPlayer && !overObserved)
-            {
-                _mouseLinePlayer.enabled = false;
-                _mouseLineObserved.enabled = false;
-                _mouseTimeText.text = string.Empty;
-                return;
-            }
-
-            RectTransform lane = overPlayer ? PlayerLane : ObservedLane;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(lane, mousePos, null, out var localPoint))
-            {
-                _mouseLinePlayer.enabled = false;
-                _mouseLineObserved.enabled = false;
-                _mouseTimeText.text = string.Empty;
-                return;
-            }
-
-            float xFromLeft = LocalXToXFromLeft(lane, localPoint.x);
-            float x = Mathf.Clamp(xFromLeft, 0f, lane.rect.width);
-
-            _mouseLinePlayer.enabled = true;
-            _mouseLineObserved.enabled = true;
-
-            SetLineX(_mouseLinePlayer.rectTransform, x);
-            SetLineX(_mouseLineObserved.rectTransform, x);
-
-            float offsetSeconds = x / Mathf.Max(1f, PixelsPerSecond);
-            float now = Timeline != null ? Timeline.CurrentTime : 0f;
-            float offset = Mathf.Max(0f, offsetSeconds);
-            float absTime = now + offset;
-            _mouseTimeText.text = $"{now:F2}s + {offset:F2}s";
-
-            // Follow the mouse line (in screen space of this UI)
-            var rect = _mouseTimeText.GetComponent<RectTransform>();
-            if (rect != null)
-            {
-                // Put the label near the top, centered on the mouse line.
-                rect.anchoredPosition = new Vector2(x, -6f);
-            }
-
-            AvoidTimeTextOverlap();
-            ClampMouseTimeTextToScreen();
-        }
-
-        private void ClampMouseTimeTextToScreen()
-        {
-            if (_mouseTimeText == null) return;
-            var rect = _mouseTimeText.GetComponent<RectTransform>();
-            if (rect == null) return;
-
-            var parent = transform as RectTransform;
-            if (parent == null) return;
-
-            float pad = 8f;
-            float half = rect.rect.width * 0.5f;
-            float minX = half + pad;
-            float maxX = Mathf.Max(minX, parent.rect.width - half - pad);
-
-            var pos = rect.anchoredPosition;
-            pos.x = Mathf.Clamp(pos.x, minX, maxX);
-            rect.anchoredPosition = pos;
-        }
-
-        private void AvoidTimeTextOverlap()
-        {
-            if (_mouseTimeText == null || _nowTimeText == null) return;
-
-            var mouseRect = _mouseTimeText.GetComponent<RectTransform>();
-            var nowRect = _nowTimeText.GetComponent<RectTransform>();
-            if (mouseRect == null || nowRect == null) return;
-
-            float pad = 6f;
-            float nowLeft = nowRect.anchoredPosition.x - nowRect.pivot.x * nowRect.sizeDelta.x;
-            float nowRight = nowLeft + nowRect.sizeDelta.x;
-            float mouseLeft = mouseRect.anchoredPosition.x - mouseRect.pivot.x * mouseRect.sizeDelta.x;
-            float mouseRight = mouseLeft + mouseRect.sizeDelta.x;
-
-            bool overlapX = mouseRight + pad > nowLeft && mouseLeft - pad < nowRight;
-            if (!overlapX) return;
-
-            // Move mouse label to a second line when overlapping.
-            mouseRect.anchoredPosition = new Vector2(mouseRect.anchoredPosition.x, -30f);
-        }
-
-        private void SetLineX(RectTransform rect, float x)
-        {
-            var pos = rect.anchoredPosition;
-            pos.x = x;
-            rect.anchoredPosition = pos;
-        }
+        private float LocalXToXFromLeft(RectTransform lane, float localX) => localX + lane.rect.width * lane.pivot.x;
 
         private TimelineBlockView CreateBlockGO(RectTransform lane)
         {
             var go = new GameObject("TimelineBlock", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(TimelineBlockView));
             go.transform.SetParent(lane, false);
-
             var rect = go.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0f, 0.5f);
             rect.anchorMax = new Vector2(0f, 0.5f);
@@ -1350,10 +1017,31 @@ namespace ProjectHero.UI.Timeline
 
             var view = go.GetComponent<TimelineBlockView>();
             view.Background = img;
-            view.Label = null;
             view.Init(this, lane, Canvas);
-
             return view;
         }
+
+        private void EnsurePlacementShield(RectTransform lane)
+        {
+            if (lane == null) return;
+            if (_placementShield != null)
+            {
+                if (_placementShield.transform.parent != lane) _placementShield.transform.SetParent(lane, false);
+                _placementShield.transform.SetAsLastSibling();
+                return;
+            }
+            var go = new GameObject("PlacementShield", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            go.transform.SetParent(lane, false);
+            go.transform.SetAsLastSibling();
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            var img = go.GetComponent<Image>();
+            img.color = Color.clear;
+            img.raycastTarget = true;
+            _placementShield = img;
+        }
+        private void DestroyPlacementShield() { if (_placementShield != null) { Destroy(_placementShield.gameObject); _placementShield = null; } }
+        private void EnsureLaneMasks() { if (PlayerLane != null && PlayerLane.GetComponent<RectMask2D>() == null) PlayerLane.gameObject.AddComponent<RectMask2D>(); if (ObservedLane != null && ObservedLane.GetComponent<RectMask2D>() == null) ObservedLane.gameObject.AddComponent<RectMask2D>(); }
+        private Image CreateLine(RectTransform lane, string name) { var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)); go.transform.SetParent(lane, false); var img = go.GetComponent<Image>(); img.color = new Color(1f, 1f, 1f, 0.8f); var r = go.GetComponent<RectTransform>(); r.anchorMin = new Vector2(0, 0); r.anchorMax = new Vector2(0, 1); r.sizeDelta = new Vector2(2, 0); return img; }
     }
 }

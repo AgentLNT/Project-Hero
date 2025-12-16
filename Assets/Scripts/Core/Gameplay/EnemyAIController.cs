@@ -9,10 +9,6 @@ using ProjectHero.Core.Timeline;
 
 namespace ProjectHero.Core.Gameplay
 {
-    /// <summary>
-    /// Very simple enemy AI: if it has no queued actions, it will move toward the target and attack.
-    /// Designed for demo/prototyping.
-    /// </summary>
     public class EnemyAIController : MonoBehaviour
     {
         [Header("Refs")]
@@ -52,7 +48,6 @@ namespace ProjectHero.Core.Gameplay
             if (Timeline.Paused) return;
             if (TargetUnit == null) return;
 
-            // Detect a common setup problem: timeline exists but nobody is advancing it.
             if (Time.unscaledTime - _lastTimelineTimeCheckUnscaled > 1.0f)
             {
                 _lastTimelineTimeCheckUnscaled = Time.unscaledTime;
@@ -61,7 +56,7 @@ namespace ProjectHero.Core.Gameplay
                     if (!_warnedTimelineNotAdvancing && EnableDebugLogs)
                     {
                         _warnedTimelineNotAdvancing = true;
-                        Debug.LogWarning("[EnemyAI] BattleTimeline.CurrentTime is not advancing. Scheduled intents will never execute. Ensure something calls Timeline.AdvanceTime(...).");
+                        Debug.LogWarning("[EnemyAI] Timeline not advancing.");
                     }
                 }
                 _lastTimelineTime = Timeline.CurrentTime;
@@ -70,21 +65,18 @@ namespace ProjectHero.Core.Gameplay
             if (Time.unscaledTime < _nextThinkAtUnscaled) return;
             _nextThinkAtUnscaled = Time.unscaledTime + ThinkIntervalSeconds;
 
-            // Prevent spamming new plans while our last plan hasn't had time to execute.
             if (Timeline.CurrentTime < _suppressUntilTimelineTime) return;
 
             var action = FindFirstUsableAttackAction();
             if (action == null && !_warnedNoAttackAction)
             {
                 _warnedNoAttackAction = true;
-                if (EnableDebugLogs)
-                {
-                    Debug.LogWarning($"[EnemyAI] {ControlledUnit.name} has no usable attack Action (missing ActionLibrary/Pattern). Will only move.");
-                }
+                if (EnableDebugLogs) Debug.LogWarning($"[EnemyAI] {ControlledUnit.name} has no usable attack Action.");
             }
 
             float startDelay = MinLeadTimeSeconds;
 
+            // Case 1: Attack Immediately
             if (action != null && CanHitTargetNow(action))
             {
                 var dir = GridMath.GetDirection(ControlledUnit.GridPosition, TargetUnit.GridPosition);
@@ -94,37 +86,34 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            // Move toward the target: choose a reachable neighbor around the target.
-            if (GridManager.Instance == null)
-            {
-                if (!_warnedNoGrid)
-                {
-                    _warnedNoGrid = true;
-                    if (EnableDebugLogs) Debug.LogWarning("[EnemyAI] GridManager.Instance is null; cannot move.");
-                }
-                return;
-            }
+            // Case 2: Move then Attack
+            if (GridManager.Instance == null) return;
 
             var best = FindBestDestinationNearTarget(maxRings: 6);
             if (!best.hasPath)
             {
-                // Try again soon.
                 _suppressUntilTimelineTime = Timeline.CurrentTime + 0.25f;
                 return;
             }
 
+            // --- DECOUPLING FIX ---
+            // Use separate groups for Move and Attack so they render as distinct blocks in UI.
+
             long moveGroup = Timeline.ReserveGroupId();
             ActionScheduler.ScheduleMoveTo(Timeline, ControlledUnit, best.destination, startTime: startDelay, groupId: moveGroup);
 
-            // Schedule a follow-up attack using predicted end position (destination) to compute facing.
             float moveDuration = ActionScheduler.EstimateMoveDuration(ControlledUnit, best.path);
             float totalPlanned = startDelay + moveDuration;
 
             if (action != null)
             {
+                long attackGroup = Timeline.ReserveGroupId(); // Separate Group for Attack
+
                 float attackStart = startDelay + moveDuration + PostMoveAttackDelaySeconds;
                 var face = GridMath.GetDirection(best.destination, TargetUnit.GridPosition);
-                ActionScheduler.ScheduleAttack(Timeline, ControlledUnit, action, attackStart, targetDirection: face, groupId: moveGroup);
+
+                ActionScheduler.ScheduleAttack(Timeline, ControlledUnit, action, attackStart, targetDirection: face, groupId: attackGroup);
+
                 totalPlanned = attackStart + ActionScheduler.EstimateAttackDuration(ControlledUnit, action);
             }
 
@@ -133,15 +122,11 @@ namespace ProjectHero.Core.Gameplay
 
         private Action FindFirstUsableAttackAction()
         {
-            if (ControlledUnit.ActionLibrary == null) return null;
-            if (ControlledUnit.ActionLibrary.Actions == null) return null;
-
+            if (ControlledUnit.ActionLibrary == null || ControlledUnit.ActionLibrary.Actions == null) return null;
             for (int i = 0; i < ControlledUnit.ActionLibrary.Actions.Count; i++)
             {
                 var data = ControlledUnit.ActionLibrary.Actions[i].Data;
-                if (data == null) continue;
-                if (data.Pattern == null) continue;
-                return data;
+                if (data != null && data.Pattern != null) return data;
             }
             return null;
         }
@@ -149,11 +134,8 @@ namespace ProjectHero.Core.Gameplay
         private bool CanHitTargetNow(Action action)
         {
             if (action.Pattern == null) return false;
-
             var dir = GridMath.GetDirection(ControlledUnit.GridPosition, TargetUnit.GridPosition);
             var attackArea = action.Pattern.GetAffectedTriangles(ControlledUnit.GridPosition, dir);
-            if (attackArea == null || attackArea.Count == 0) return false;
-
             var targetOcc = TargetUnit.GetOccupiedTriangles();
             for (int i = 0; i < targetOcc.Count; i++)
             {
@@ -175,7 +157,6 @@ namespace ProjectHero.Core.Gameplay
             Pathfinder.GridPoint bestDest = default;
             List<Pathfinder.GridPoint> bestPath = null;
 
-            // Consider expanding rings around the target. This is required for large unit volumes.
             var seen = new HashSet<Pathfinder.GridPoint>();
             var frontier = new List<Pathfinder.GridPoint> { TargetUnit.GridPosition };
             seen.Add(TargetUnit.GridPosition);
@@ -194,11 +175,9 @@ namespace ProjectHero.Core.Gameplay
                 }
                 frontier = next;
 
-                // Evaluate this ring only (keeps the AI local and prevents weird long walks).
                 for (int i = 0; i < frontier.Count; i++)
                 {
                     var dest = frontier[i];
-
                     var projDir = GridMath.GetDirection(ControlledUnit.GridPosition, dest);
                     var projected = ControlledUnit.GetProjectedOccupancy(dest, projDir);
                     if (GridManager.Instance.IsSpaceOccupied(projected, ControlledUnit)) continue;
@@ -215,10 +194,8 @@ namespace ProjectHero.Core.Gameplay
                         found = true;
                     }
                 }
-
                 if (found) break;
             }
-
             return (found, bestDest, bestPath);
         }
     }
