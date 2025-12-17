@@ -110,9 +110,9 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            if (!_selectedUnit.CanAct)
+            if (_selectedUnit.IsStaggered || _selectedUnit.IsKnockedDown)
             {
-                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot act (Busy/Stunned).");
+                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot act (Staggered/KnockedDown).");
                 return;
             }
 
@@ -156,9 +156,9 @@ namespace ProjectHero.Core.Gameplay
                 return;
             }
 
-            if (!_selectedUnit.CanAct)
+            if (_selectedUnit.IsStaggered || _selectedUnit.IsKnockedDown)
             {
-                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot act (Busy/Stunned).");
+                Debug.LogWarning($"[Tactics] {_selectedUnit.name} cannot act (Staggered/KnockedDown).");
                 return;
             }
 
@@ -449,9 +449,9 @@ namespace ProjectHero.Core.Gameplay
             }
 
             // Check if unit can act
-            if (!_selectedUnit.CanAct)
+            if (_selectedUnit.IsStaggered || _selectedUnit.IsKnockedDown)
             {
-                Debug.LogWarning($"[Tactics] Unit {_selectedUnit.name} cannot act (Busy/Stunned).");
+                Debug.LogWarning($"[Tactics] Unit {_selectedUnit.name} cannot act (Staggered/KnockedDown).");
                 return;
             }
 

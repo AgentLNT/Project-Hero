@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using TMPro;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace ProjectHero.Visuals
 {
@@ -8,16 +9,48 @@ namespace ProjectHero.Visuals
     {
         public static GameFeelManager Instance { get; private set; }
 
-        [Header("Floating Text Settings")]
-        public GameObject FloatingTextPrefab; // ASSIGN A PREFAB WITH TMP HERE
-        public float TextFloatSpeed = 2.0f;
-        public float TextFadeDuration = 1.0f;
-        public float TextScaleMultiplier = 0.05f;
+        [Header("Settings")]
+        // 关键：在 Inspector 里拖入一个字体文件！
+        public Font DamageFont;
+
+        private GameObject _screenCanvasObj;
+        private Canvas _screenCanvas;
+
+        // 简单的堆叠管理：记录每个单位头顶最近一次飘字的高度偏移
+        private Dictionary<int, float> _stackOffsetMap = new Dictionary<int, float>();
 
         private void Awake()
         {
             if (Instance == null) Instance = this;
             else Destroy(gameObject);
+
+            EnsureScreenCanvas();
+        }
+
+        private void Update()
+        {
+            // 慢慢衰减堆叠高度
+            List<int> keys = new List<int>(_stackOffsetMap.Keys);
+            foreach (var k in keys)
+            {
+                _stackOffsetMap[k] -= Time.unscaledDeltaTime * 2.0f;
+                if (_stackOffsetMap[k] < 0) _stackOffsetMap[k] = 0;
+            }
+        }
+
+        private void EnsureScreenCanvas()
+        {
+            if (_screenCanvas != null) return;
+
+            _screenCanvasObj = new GameObject("DamageTextCanvas");
+            _screenCanvas = _screenCanvasObj.AddComponent<Canvas>();
+            // FIX 3: 使用 ScreenSpaceOverlay 解决模型遮挡问题
+            _screenCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            _screenCanvas.sortingOrder = 100; // 确保在最上层
+
+            var scaler = _screenCanvasObj.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
         }
 
         public void ShowDamageNumber(Vector3 worldPos, float damage, bool isCritical)
@@ -25,87 +58,125 @@ namespace ProjectHero.Visuals
             Color color = isCritical ? new Color(1f, 0.2f, 0.2f) : Color.white;
             float size = isCritical ? 1.5f : 1.0f;
             size += Mathf.Clamp(damage / 50f, 0f, 1.0f);
-            SpawnFloatingText(worldPos + Vector3.up * 2f, Mathf.RoundToInt(damage).ToString(), color, size);
+
+            SpawnText(worldPos, Mathf.RoundToInt(damage).ToString(), color, size);
         }
 
-        public void ShowStatusText(Vector3 worldPos, string text, Color color)
+        public void ShowStatusText(Vector3 worldPos, string content, Color color)
         {
-            SpawnFloatingText(worldPos + Vector3.up * 2.5f, text, color, 1.2f);
+            SpawnText(worldPos, content, color, 1.2f);
         }
 
-        private void SpawnFloatingText(Vector3 pos, string content, Color color, float sizeScale)
+        private void SpawnText(Vector3 worldPos, string content, Color color, float sizeScale)
         {
-            if (FloatingTextPrefab == null)
+            if (_screenCanvas == null) EnsureScreenCanvas();
+
+            GameObject go = new GameObject("FloatText", typeof(RectTransform));
+            go.transform.SetParent(_screenCanvas.transform, false);
+
+            var text = go.AddComponent<Text>();
+
+            // --- Unity 6 Font Fix ---
+            if (DamageFont != null)
             {
-                Debug.LogWarning("FloatingTextPrefab not assigned in GameFeelManager!");
-                return;
+                text.font = DamageFont;
             }
+            else
+            {
+                // Fallback: 尝试使用系统字体，避免 crash
+                text.font = Font.CreateDynamicFontFromOSFont("Arial", 32);
+            }
+            // ------------------------
 
-            // Move text towards camera to prevent z-fighting
-            Vector3 camFwd = Camera.main.transform.forward;
-            Vector3 renderPos = pos - camFwd * 2.0f;
-            renderPos += Random.insideUnitSphere * 0.3f;
+            text.text = content;
+            text.color = color;
+            text.fontSize = 32;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.horizontalOverflow = HorizontalWrapMode.Overflow;
+            text.verticalOverflow = VerticalWrapMode.Overflow;
 
-            GameObject go = Instantiate(FloatingTextPrefab, renderPos, Camera.main.transform.rotation);
+            // 加个描边更清晰
+            var outline = go.AddComponent<Outline>();
+            outline.effectColor = Color.black;
+            outline.effectDistance = new Vector2(1, -1);
 
-            var tmp = go.GetComponent<TextMeshPro>();
-            if (tmp == null) tmp = go.AddComponent<TextMeshPro>(); // Fallback
+            // FIX 4: 简单的哈希映射来计算堆叠
+            int posKey = Mathf.FloorToInt(worldPos.x * 10) + Mathf.FloorToInt(worldPos.z * 10) * 1000;
+            if (!_stackOffsetMap.ContainsKey(posKey)) _stackOffsetMap[posKey] = 0f;
 
-            tmp.text = content;
-            tmp.color = color;
-            tmp.fontSize = 6;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.fontStyle = FontStyles.Bold;
+            float currentStackHeight = _stackOffsetMap[posKey];
+            _stackOffsetMap[posKey] += 0.8f; // 每个新字往上顶一点
 
-            go.transform.localScale = Vector3.one * sizeScale;
-
-            StartCoroutine(AnimateFloatingText(go, tmp));
+            StartCoroutine(AnimateTextScreenSpace(go, text, worldPos, sizeScale, currentStackHeight));
         }
 
-        private IEnumerator AnimateFloatingText(GameObject go, TextMeshPro tmp)
+        private IEnumerator AnimateTextScreenSpace(GameObject go, Text text, Vector3 worldPos, float sizeScale, float startHeightOffset)
         {
+            float duration = 1.0f;
             float timer = 0f;
-            Vector3 startPos = go.transform.position;
-            Color startColor = tmp.color;
+            Vector3 startScale = Vector3.one * sizeScale;
+            RectTransform rect = go.GetComponent<RectTransform>();
 
-            while (timer < TextFadeDuration)
+            float randomX = Random.Range(-15f, 15f);
+
+            while (timer < duration)
             {
                 if (go == null) yield break;
-                timer += Time.unscaledDeltaTime;
-                float progress = timer / TextFadeDuration;
-                go.transform.position = startPos + Vector3.up * (progress * TextFloatSpeed);
+                timer += Time.unscaledDeltaTime; // 使用 unscaledDeltaTime 保证顿帧时飘字依然流畅
+                float t = timer / duration;
 
-                if (progress < 0.2f)
+                if (Camera.main != null)
                 {
-                    float s = Mathf.Lerp(0.5f, 1.2f, progress / 0.2f);
-                    float pScale = (s == 0 ? 1 : s);
-                    go.transform.localScale = Vector3.one * (s * (go.transform.localScale.x / pScale));
+                    // 核心：实时转换坐标
+                    Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+
+                    // 只有当物体在相机前方时才显示
+                    if (screenPos.z > 0)
+                    {
+                        text.enabled = true;
+                        // Y轴偏移 = 基础高度(防遮挡) + 堆叠高度 + 动画上升
+                        screenPos.y += 100f + (startHeightOffset * 40f) + (t * 80f);
+                        screenPos.x += randomX;
+                        rect.position = screenPos;
+                    }
+                    else
+                    {
+                        text.enabled = false;
+                    }
                 }
 
-                if (progress > 0.5f)
+                // 弹跳动画
+                if (t < 0.2f)
                 {
-                    float alpha = Mathf.Lerp(1f, 0f, (progress - 0.5f) / 0.5f);
-                    tmp.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+                    float s = Mathf.Lerp(0.5f, 1.2f, t / 0.2f);
+                    rect.localScale = startScale * s;
                 }
+                else
+                {
+                    rect.localScale = startScale;
+                }
+
+                // 淡出
+                if (t > 0.5f)
+                {
+                    float alpha = Mathf.Lerp(1f, 0f, (t - 0.5f) / 0.5f);
+                    text.color = new Color(text.color.r, text.color.g, text.color.b, alpha);
+                }
+
                 yield return null;
             }
             Destroy(go);
         }
 
-        // ... Juice ...
+        // --- Juice ---
         private bool _isFrozen = false;
-        public void HitStop(float durationRealtime)
-        {
-            if (_isFrozen) return;
-            StartCoroutine(DoHitStop(durationRealtime));
-        }
+        public void HitStop(float durationRealtime) { if (!_isFrozen) StartCoroutine(DoHitStop(durationRealtime)); }
         private IEnumerator DoHitStop(float duration)
         {
             _isFrozen = true;
-            float originalScale = Time.timeScale;
             Time.timeScale = 0.05f;
             yield return new WaitForSecondsRealtime(duration);
-            Time.timeScale = originalScale;
+            Time.timeScale = 1.0f;
             _isFrozen = false;
         }
         public void ScreenShake(float intensity, float duration) { StartCoroutine(DoScreenShake(intensity, duration)); }
@@ -117,9 +188,7 @@ namespace ProjectHero.Visuals
             while (elapsed < duration)
             {
                 float strength = Mathf.Lerp(intensity, 0f, elapsed / duration);
-                float x = Random.Range(-1f, 1f) * strength;
-                float y = Random.Range(-1f, 1f) * strength;
-                cam.position = originalPos + cam.right * x + cam.up * y;
+                cam.position = originalPos + (Vector3)Random.insideUnitCircle * strength;
                 elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }

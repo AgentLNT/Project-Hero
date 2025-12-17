@@ -19,7 +19,7 @@ namespace ProjectHero.UI.Timeline
         [Header("Refs")]
         public BattleTimeline Timeline;
         public Canvas Canvas;
-        public Font UiFont;
+        public Font UiFont; // Optional: Drag a .ttf here if you want custom font
 
         [Header("Lanes")]
         public RectTransform PlayerLane;
@@ -107,14 +107,17 @@ namespace ProjectHero.UI.Timeline
             if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
             if (Canvas == null) Canvas = GetComponentInParent<Canvas>();
 
+            // Ensure Ruler Area
             if (RulerArea == null)
             {
                 var go = new GameObject("RulerArea", typeof(RectTransform));
                 go.transform.SetParent(transform, false);
                 RulerArea = go.GetComponent<RectTransform>();
+                
                 RulerArea.anchorMin = new Vector2(0, 1);
                 RulerArea.anchorMax = new Vector2(1, 1);
-                RulerArea.pivot = new Vector2(0.5f, 1f);
+                
+                RulerArea.pivot = new Vector2(0f, 1f);
                 RulerArea.sizeDelta = new Vector2(0, 30);
                 RulerArea.anchoredPosition = Vector2.zero;
             }
@@ -122,6 +125,16 @@ namespace ProjectHero.UI.Timeline
             EnsureTimeLines();
             EnsureLaneMasks();
         }
+
+        private void Start()
+        {
+            if (RulerArea != null)
+            {
+                RulerArea.SetAsLastSibling();
+            }
+        }
+
+        // --- Core Methods ---
 
         public Color GetBaseColor(TimelineActionKind kind)
         {
@@ -160,6 +173,8 @@ namespace ProjectHero.UI.Timeline
             _observedBlocks.Clear();
             _placementsByGroupId.Clear();
         }
+
+        // --- Interaction Logic ---
 
         public void BeginPlacement(TimelineActionPlacement placement)
         {
@@ -387,6 +402,8 @@ namespace ProjectHero.UI.Timeline
             RenderAllBlocks();
         }
 
+        // --- Helper Methods (All Included) ---
+
         private void UpdatePlacementGhost()
         {
             if (_pendingGhost == null || _pendingLane == null) return;
@@ -527,8 +544,17 @@ namespace ProjectHero.UI.Timeline
         {
             var validViewIds = new HashSet<long>();
 
-            foreach (var model in _playerBlocks.Values) RenderBlockModel(model, validViewIds);
-            foreach (var model in _observedBlocks.Values) RenderBlockModel(model, validViewIds);
+            var playerModels = _playerBlocks.Values.ToList();
+            foreach (var model in playerModels)
+            {
+                RenderBlockModel(model, validViewIds);
+            }
+
+            var observedModels = _observedBlocks.Values.ToList();
+            foreach (var model in observedModels)
+            {
+                RenderBlockModel(model, validViewIds);
+            }
 
             var snapshot = Timeline.GetScheduledIntentsSnapshot();
             var singles = snapshot.Where(e => e.GroupId == 0 && (e.Owner == PlayerUnit || e.Owner == ObservedUnit));
@@ -539,6 +565,7 @@ namespace ProjectHero.UI.Timeline
                 RectTransform lane = (e.Owner == PlayerUnit) ? PlayerLane : ObservedLane;
                 float startX = (e.Time - Timeline.CurrentTime) * PixelsPerSecond;
                 float width = MinBlockWidthPx;
+
                 if (startX + width < -50f) continue;
 
                 if (!_activeViews.TryGetValue(viewId, out var view))
@@ -558,7 +585,7 @@ namespace ProjectHero.UI.Timeline
             {
                 if (!validViewIds.Contains(key))
                 {
-                    Destroy(_activeViews[key].gameObject);
+                    if (_activeViews[key] != null) Destroy(_activeViews[key].gameObject);
                     _activeViews.Remove(key);
                 }
             }
@@ -571,8 +598,10 @@ namespace ProjectHero.UI.Timeline
             RectTransform lane = (model.Lane == TimelineLane.Player) ? PlayerLane : ObservedLane;
             if (lane == null) return;
 
+            // FIX: Check if width calculation is exploding
             float width = Mathf.Max(MinBlockWidthPx, model.Duration * PixelsPerSecond);
-            float startX = (model.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
+            // Safety Clamp: Prevent width from exceeding reasonable limits (e.g. 10000px)
+            if (width > 5000f) width = 5000f; float startX = (model.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
 
             if (startX + width < -50f)
             {
@@ -592,6 +621,7 @@ namespace ProjectHero.UI.Timeline
                 _activeViews[model.GroupId] = view;
             }
 
+            // CRITICAL FIX: Reset parent and Y position
             if (view.transform.parent != lane)
             {
                 view.transform.SetParent(lane, false);
@@ -599,7 +629,7 @@ namespace ProjectHero.UI.Timeline
 
             var rt = view.GetComponent<RectTransform>();
             var pos = rt.anchoredPosition;
-            pos.y = 0;
+            pos.y = 0; // Center in lane
             rt.anchoredPosition = pos;
 
             string label = "";
@@ -620,8 +650,6 @@ namespace ProjectHero.UI.Timeline
             view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(model.Kind, model.Duration), PixelsPerSecond);
             if (view.Background != null) view.Background.raycastTarget = model.IsInteractable;
         }
-
-        // --- Helpers ---
 
         private void EnsureTimeLines()
         {
@@ -644,6 +672,8 @@ namespace ProjectHero.UI.Timeline
                 r.anchorMin = new Vector2(0, 0);
                 r.anchorMax = new Vector2(0, 1);
                 r.sizeDelta = new Vector2(3, 0);
+                r.localScale = Vector3.one;
+                r.anchoredPosition3D = Vector3.zero;
                 _snapIndicatorLine = img;
             }
 
@@ -664,25 +694,35 @@ namespace ProjectHero.UI.Timeline
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
             go.transform.SetParent(parent, false);
+
             var t = go.GetComponent<Text>();
 
-            // Safe Font Fallback
-            if (UiFont != null) t.font = UiFont;
+            if (UiFont != null)
+            {
+                t.font = UiFont;
+            }
             else
             {
-                try { t.font = Resources.GetBuiltinResource<Font>("Arial.ttf"); }
-                catch { t.font = Resources.Load<Font>("Arial"); }
+                t.font = Font.CreateDynamicFontFromOSFont("Bangers", 14);
             }
+            // --- FIX END ---
 
             t.fontSize = 14;
             t.color = color;
             t.alignment = TextAnchor.LowerLeft;
             t.horizontalOverflow = HorizontalWrapMode.Overflow;
+            t.verticalOverflow = VerticalWrapMode.Truncate; 
 
             var r = go.GetComponent<RectTransform>();
             r.anchorMin = new Vector2(0, 0);
             r.anchorMax = new Vector2(0, 0);
             r.pivot = new Vector2(0f, 0f);
+
+            r.sizeDelta = new Vector2(100, 20);
+
+            r.localScale = Vector3.one;
+            r.anchoredPosition3D = Vector3.zero;
+
             return t;
         }
 
@@ -692,11 +732,19 @@ namespace ProjectHero.UI.Timeline
             SetLineX(_currentTimeLinePlayer.rectTransform, 0f);
             SetLineX(_currentTimeLineObserved.rectTransform, 0f);
 
+            // FIX: Ensure _nowTimeText is updated even if mouse is not moving
             if (_nowTimeText != null && Timeline != null)
             {
-                _nowTimeText.text = $"NOW: {Timeline.CurrentTime:F2}";
+                // Format: "now 1.50s"
+                _nowTimeText.text = $"now {Timeline.CurrentTime:F2}s";
+
+                // Keep it anchored at X=0 (left edge of timeline content)
+                // Assuming RulerArea aligns with Lanes horizontally
                 float rulerX = ConvertLaneXToRulerX(0f);
                 SetTextX(_nowTimeText.rectTransform, rulerX);
+
+                // Ensure it's enabled (unless mouse logic hides it later, but default to true here)
+                _nowTimeText.enabled = true;
             }
         }
 
@@ -707,11 +755,13 @@ namespace ProjectHero.UI.Timeline
             bool overP = RectTransformUtility.RectangleContainsScreenPoint(PlayerLane, mousePos, null);
             bool overO = RectTransformUtility.RectangleContainsScreenPoint(ObservedLane, mousePos, null);
 
+            // FIX: If mouse is NOT over lanes, hide lines and mouse text, but KEEP NOW TEXT VISIBLE
             if (!overP && !overO)
             {
                 _mouseLinePlayer.enabled = false;
                 _mouseLineObserved.enabled = false;
                 if (_mouseTimeText != null) _mouseTimeText.enabled = false;
+                if (_nowTimeText != null) _nowTimeText.enabled = true; // Ensure NOW comes back
                 return;
             }
 
@@ -724,19 +774,26 @@ namespace ProjectHero.UI.Timeline
             SetLineX(_mouseLinePlayer.rectTransform, x);
             SetLineX(_mouseLineObserved.rectTransform, x);
 
-            float t = Timeline != null ? Timeline.CurrentTime + x / PixelsPerSecond : 0f;
+            // Calculate offset time
+            float offsetTime = x / PixelsPerSecond;
+            float absTime = Timeline != null ? Timeline.CurrentTime + offsetTime : 0f;
 
             if (_mouseTimeText != null)
             {
                 _mouseTimeText.enabled = true;
-                _mouseTimeText.text = $"{t:F2}s";
+
+                // FIX: Format requirement "now + offset"
+                // e.g. "1.50s (+0.50)"
+                _mouseTimeText.text = $"{absTime:F2}s (+{offsetTime:F2})";
+
                 float rulerX = ConvertLaneXToRulerX(x);
                 SetTextX(_mouseTimeText.rectTransform, rulerX);
 
+                // Anti-Overlap: Hide NOW text if Mouse text is too close (< 80px)
                 if (_nowTimeText != null)
                 {
                     float dist = Mathf.Abs(_nowTimeText.rectTransform.anchoredPosition.x - rulerX);
-                    _nowTimeText.enabled = dist > 60f;
+                    _nowTimeText.enabled = dist > 80f;
                 }
             }
         }
@@ -1007,9 +1064,14 @@ namespace ProjectHero.UI.Timeline
             var go = new GameObject("TimelineBlock", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(TimelineBlockView));
             go.transform.SetParent(lane, false);
             var rect = go.GetComponent<RectTransform>();
+
+            // FIX: Ensure Anchors are set for Left-Middle alignment to support width scaling correctly
             rect.anchorMin = new Vector2(0f, 0.5f);
             rect.anchorMax = new Vector2(0f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
+
+            // FIX: Reset sizeDelta to a sane default, height relative to lane
+            // Do NOT use PixelsPerSecond here for initialization, width will be set by SetWidth later.
             rect.sizeDelta = new Vector2(MinBlockWidthPx, lane.rect.height * 0.8f);
 
             var img = go.GetComponent<Image>();
