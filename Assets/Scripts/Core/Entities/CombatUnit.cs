@@ -4,6 +4,7 @@ using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Timeline;
 using ProjectHero.Visuals;
+using ProjectHero.UI; // 引用 UI 命名空间
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace ProjectHero.Core.Entities
 {
     public class CombatUnit : MonoBehaviour
     {
+        private bool _hasRegisteredUI = false;
+
         private void Awake()
         {
             if (GetComponent<UnitMovement>() == null)
@@ -20,7 +23,6 @@ namespace ProjectHero.Core.Entities
         }
 
         [Header("Control")]
-        [Tooltip("Only the player-controlled unit can be selected for issuing commands.")]
         public bool IsPlayerControlled = false;
 
         [Header("Grid State")]
@@ -34,13 +36,23 @@ namespace ProjectHero.Core.Entities
         [Header("Actions")]
         public ActionLibrarySO ActionLibrary;
 
+        [Header("Action Timing (For UI)")]
+        public float CurrentStateStartTime;
+        public float CurrentStateDuration;
+
+        public float GetActionProgress()
+        {
+            if (CurrentStateDuration <= 0f) return 0f;
+            float elapsed = Time.time - CurrentStateStartTime;
+            return Mathf.Clamp01(elapsed / CurrentStateDuration);
+        }
+        // ------------------------------
+
         public List<TrianglePoint> GetOccupiedTriangles()
         {
             if (UnitVolumeDefinition == null) return new List<TrianglePoint>();
-
             var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(FacingDirection);
             var occupied = new List<TrianglePoint>();
-
             foreach (var rel in relativeTriangles)
             {
                 occupied.Add(new TrianglePoint(GridPosition.X + rel.X, GridPosition.Y + rel.Y, rel.T));
@@ -51,10 +63,8 @@ namespace ProjectHero.Core.Entities
         public List<TrianglePoint> GetProjectedOccupancy(Pathfinder.GridPoint targetPos, GridDirection targetFacing)
         {
             if (UnitVolumeDefinition == null) return new List<TrianglePoint>();
-
             var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(targetFacing);
             var occupied = new List<TrianglePoint>();
-
             foreach (var rel in relativeTriangles)
             {
                 occupied.Add(new TrianglePoint(targetPos.X + rel.X, targetPos.Y + rel.Y, rel.T));
@@ -81,22 +91,14 @@ namespace ProjectHero.Core.Entities
         public float CurrentAdrenaline = 0f;
 
         public float MaxFocus => Mathf.Max(3f, Wisdom * 0.5f);
-
         public float TotalMass => 50f + (Strength * 2f) + (Constitution * 2f) + ArmorWeight;
 
-        // Swiftness (v) = DEX + STR
-        // REBALANCED: Reduced multipliers to slow down game pace significantly.
-        // Old: DEX*1.5 + STR*0.5
-        // New: DEX*0.75 + STR*0.25 (Approx 50% slower action speed)
         public float Swiftness
         {
             get
             {
                 float baseVal = (Dexterity * 0.75f) + (Strength * 0.25f);
-                if (IsExhausted)
-                {
-                    return baseVal * 0.5f;
-                }
+                if (IsExhausted) return baseVal * 0.5f;
                 return baseVal;
             }
         }
@@ -127,9 +129,8 @@ namespace ProjectHero.Core.Entities
             InWindup = false;
             InRecovery = false;
             IsMoving = false;
+            CurrentStateDuration = 0f; // Reset duration
         }
-
-        // --- Grid Logic ---
 
         public void SetGridPosition(Pathfinder.GridPoint point)
         {
@@ -146,26 +147,9 @@ namespace ProjectHero.Core.Entities
             }
         }
 
-        public void SetGridPositionAndFacing(Pathfinder.GridPoint point, GridDirection facing)
-        {
-            if (GridManager.Instance != null)
-            {
-                var oldVolume = GetOccupiedTriangles();
-                GridManager.Instance.UnregisterOccupancy(oldVolume);
-            }
-            GridPosition = point;
-            FacingDirection = facing;
-            if (GridManager.Instance != null)
-            {
-                var newVolume = GetOccupiedTriangles();
-                GridManager.Instance.RegisterOccupancy(this, newVolume);
-            }
-        }
-
         public void SetFacingDirection(GridDirection newFacing)
         {
             if (FacingDirection == newFacing) return;
-
             if (GridManager.Instance != null)
             {
                 var oldVolume = GetOccupiedTriangles();
@@ -181,12 +165,21 @@ namespace ProjectHero.Core.Entities
 
         private void Update()
         {
+            if (!_hasRegisteredUI)
+            {
+                if (HUDManager.Instance != null)
+                {
+                    HUDManager.Instance.RegisterUnit(this);
+                    _hasRegisteredUI = true; // 注册成功，下次不再试
+                    Debug.Log($"[UI] {name} successfully registered HUD!");
+                }
+            }
+
             if (CurrentAdrenaline > 0)
             {
                 CurrentAdrenaline -= 5f * Time.deltaTime;
                 if (CurrentAdrenaline < 0) CurrentAdrenaline = 0;
             }
-
             if (CurrentStamina < MaxStamina)
             {
                 float regenRate = IsExhausted ? 2f : 5f;
@@ -203,7 +196,6 @@ namespace ProjectHero.Core.Entities
             {
                 GridManager.Instance.RegisterUnit(this);
                 GridManager.Instance.RegisterOccupancy(this, GetOccupiedTriangles());
-
                 Vector3 position = GridManager.Instance.GridToWorld(GridPosition);
                 transform.position = GridManager.GetGroundPosition(position);
             }

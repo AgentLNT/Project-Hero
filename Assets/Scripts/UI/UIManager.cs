@@ -276,14 +276,12 @@ namespace ProjectHero.UI
             var canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
             foreach (var c in canvases)
             {
-                // FIX: 增加过滤条件，绝对不要挂在飘字画布上！
                 if (c.renderMode != RenderMode.WorldSpace && c.name != "DamageTextCanvas")
                 {
                     return c;
                 }
             }
 
-            // 如果没找到合适的，就新建一个 MainUI_Canvas
             var canvasObj = new GameObject("MainUI_Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             var canvas = canvasObj.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -293,7 +291,7 @@ namespace ProjectHero.UI
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 0.5f;
 
-            canvas.sortingOrder = 0; // 确保在飘字下面
+            canvas.sortingOrder = 0; 
 
             return canvas;
         }
