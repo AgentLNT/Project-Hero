@@ -1,7 +1,8 @@
-using UnityEngine;
 using ProjectHero.Core.Entities;
-using ProjectHero.Core.Interactions;
 using ProjectHero.Core.Grid;
+using ProjectHero.Core.Interactions;
+using ProjectHero.Core.Timeline;
+using UnityEngine;
 
 namespace ProjectHero.Core.Actions.Intents
 {
@@ -12,13 +13,12 @@ namespace ProjectHero.Core.Actions.Intents
         public bool SetIsActing;
         public GridDirection? ForceFacing;
 
-        // [新增] 持续时间
-        public float Duration;
+        public float DurationSeconds;
 
-        public StateChangeIntent(CombatUnit owner, string stateName, float duration = 0f) : base(owner, ActionType.None)
+        public StateChangeIntent(CombatUnit owner, string stateName, float durationSeconds = 0f) : base(owner, ActionType.None)
         {
             StateName = stateName;
-            Duration = duration;
+            DurationSeconds = durationSeconds;
         }
 
         public override void ExecuteSuccess()
@@ -35,9 +35,13 @@ namespace ProjectHero.Core.Actions.Intents
 
             if (SetIsActing) Owner.IsActing = true;
 
-            // [新增] 记录时间供 UI 使用
-            Owner.CurrentStateStartTime = Time.time;
-            Owner.CurrentStateDuration = Duration;
+            var timeline = Object.FindFirstObjectByType<BattleTimeline>();
+            if (timeline != null)
+            {
+                Owner.CurrentStateStartTick = timeline.CurrentTick;
+            }
+            // 存储为 Tick
+            Owner.CurrentStateDurationTicks = Mathf.RoundToInt(DurationSeconds * BattleTimeline.TicksPerSecond);
 
             switch (StateName)
             {
@@ -48,18 +52,14 @@ namespace ProjectHero.Core.Actions.Intents
                     Owner.InRecovery = true;
                     Owner.InWindup = false;
                     break;
-                case "Busy":
-                    break;
+                case "Busy": break;
                 case "Idle":
                     Owner.ResetActionState();
-                    Owner.CurrentStateDuration = 0f;
+                    Owner.CurrentStateDurationTicks = 0;
                     break;
             }
 
-            if (ForceFacing.HasValue)
-            {
-                Owner.SetFacingDirection(ForceFacing.Value);
-            }
+            if (ForceFacing.HasValue) Owner.SetFacingDirection(ForceFacing.Value);
         }
     }
 }

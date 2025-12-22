@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using System.Collections.Generic;
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
@@ -16,187 +15,244 @@ namespace ProjectHero.Core.Gameplay
         public CombatUnit ControlledUnit;
         public CombatUnit TargetUnit;
 
-        [Header("Timing")]
-        public float ThinkIntervalSeconds = 0.6f;
-        public float MinLeadTimeSeconds = 0.2f;
+        [Header("AI Personality")]
+        public float MinActionInterval = 0.5f;
+        public float MaxActionInterval = 1.2f;
+        public float ReactionDelay = 0.3f;
+        public float StaminaSafetyMargin = 20f;
 
-        [Header("Behavior")]
-        public float PostMoveAttackDelaySeconds = 0.05f;
-
-        [Header("Diagnostics")]
+        [Header("Debug")]
         public bool EnableDebugLogs = false;
+        public string DebugState = "Init";
 
-        private float _nextThinkAtUnscaled;
-        private float _suppressUntilTimelineTime;
-        private float _lastTimelineTime;
-        private float _lastTimelineTimeCheckUnscaled;
-        private bool _warnedNoAttackAction;
-        private bool _warnedNoGrid;
-        private bool _warnedTimelineNotAdvancing;
+        private float _nextThinkTimeReal;
+        private float _nextAvailableTickTime;
+        private const float THINK_HZ = 0.1f;
 
         private void Awake()
         {
             if (ControlledUnit == null) ControlledUnit = GetComponent<CombatUnit>();
         }
 
+        private void Start()
+        {
+            _nextThinkTimeReal = Time.unscaledTime + Random.Range(0f, 1f);
+        }
+
         private void Update()
         {
             if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
-            if (ControlledUnit == null) ControlledUnit = GetComponent<CombatUnit>();
-            if (Timeline == null || ControlledUnit == null) return;
 
-            if (Timeline.Paused) return;
-            if (TargetUnit == null) return;
-
-            if (Time.unscaledTime - _lastTimelineTimeCheckUnscaled > 1.0f)
+            if (TargetUnit == null)
             {
-                _lastTimelineTimeCheckUnscaled = Time.unscaledTime;
-                if (Mathf.Abs(Timeline.CurrentTime - _lastTimelineTime) < 0.0001f)
+                var units = FindObjectsByType<CombatUnit>(FindObjectsSortMode.None);
+                foreach (var u in units)
                 {
-                    if (!_warnedTimelineNotAdvancing && EnableDebugLogs)
+                    if (u.IsPlayerControlled && u != ControlledUnit)
                     {
-                        _warnedTimelineNotAdvancing = true;
-                        Debug.LogWarning("[EnemyAI] Timeline not advancing.");
+                        TargetUnit = u;
+                        break;
                     }
                 }
-                _lastTimelineTime = Timeline.CurrentTime;
             }
 
-            if (Time.unscaledTime < _nextThinkAtUnscaled) return;
-            _nextThinkAtUnscaled = Time.unscaledTime + ThinkIntervalSeconds;
-
-            if (Timeline.CurrentTime < _suppressUntilTimelineTime) return;
-
-            var action = FindFirstUsableAttackAction();
-            if (action == null && !_warnedNoAttackAction)
+            if (ControlledUnit == null || TargetUnit == null)
             {
-                _warnedNoAttackAction = true;
-                if (EnableDebugLogs) Debug.LogWarning($"[EnemyAI] {ControlledUnit.name} has no usable attack Action.");
-            }
-
-            float startDelay = MinLeadTimeSeconds;
-
-            // Case 1: Attack Immediately
-            if (action != null && CanHitTargetNow(action))
-            {
-                var dir = GridMath.GetDirection(ControlledUnit.GridPosition, TargetUnit.GridPosition);
-                long groupId = Timeline.ReserveGroupId();
-                ActionScheduler.ScheduleAttack(Timeline, ControlledUnit, action, startDelay, targetDirection: dir, groupId: groupId);
-                _suppressUntilTimelineTime = Timeline.CurrentTime + startDelay + ActionScheduler.EstimateAttackDuration(ControlledUnit, action);
+                DebugState = "No Target";
                 return;
             }
 
-            // Case 2: Move then Attack
-            if (GridManager.Instance == null) return;
+            if (Timeline.Paused) return;
 
-            var best = FindBestDestinationNearTarget(maxRings: 6);
-            if (!best.hasPath)
+            if (Time.unscaledTime < _nextThinkTimeReal) return;
+            _nextThinkTimeReal = Time.unscaledTime + THINK_HZ;
+
+            if (Timeline.CurrentTime < _nextAvailableTickTime)
             {
-                _suppressUntilTimelineTime = Timeline.CurrentTime + 0.25f;
+                DebugState = "Cooling Down";
                 return;
             }
 
-            // --- DECOUPLING FIX ---
-            // Use separate groups for Move and Attack so they render as distinct blocks in UI.
-
-            long moveGroup = Timeline.ReserveGroupId();
-            ActionScheduler.ScheduleMoveTo(Timeline, ControlledUnit, best.destination, startTime: startDelay, groupId: moveGroup);
-
-            float moveDuration = ActionScheduler.EstimateMoveDuration(ControlledUnit, best.path);
-            float totalPlanned = startDelay + moveDuration;
-
-            if (action != null)
-            {
-                long attackGroup = Timeline.ReserveGroupId(); // Separate Group for Attack
-
-                float attackStart = startDelay + moveDuration + PostMoveAttackDelaySeconds;
-                var face = GridMath.GetDirection(best.destination, TargetUnit.GridPosition);
-
-                ActionScheduler.ScheduleAttack(Timeline, ControlledUnit, action, attackStart, targetDirection: face, groupId: attackGroup);
-
-                totalPlanned = attackStart + ActionScheduler.EstimateAttackDuration(ControlledUnit, action);
-            }
-
-            _suppressUntilTimelineTime = Timeline.CurrentTime + totalPlanned;
+            MakeDecision();
         }
 
-        private Action FindFirstUsableAttackAction()
+        private void MakeDecision()
         {
-            if (ControlledUnit.ActionLibrary == null || ControlledUnit.ActionLibrary.Actions == null) return null;
-            for (int i = 0; i < ControlledUnit.ActionLibrary.Actions.Count; i++)
+            if (ControlledUnit.IsStaggered || ControlledUnit.IsKnockedDown)
             {
-                var data = ControlledUnit.ActionLibrary.Actions[i].Data;
-                if (data != null && data.Pattern != null) return data;
+                if (!ControlledUnit.IsRecoveringAction) ScheduleRecovery();
+                else DebugState = "Recovering";
+                return;
             }
-            return null;
+
+            if (ControlledUnit.IsActing)
+            {
+                DebugState = "Acting";
+                return;
+            }
+
+            if (ControlledUnit.CurrentStamina < StaminaSafetyMargin || ControlledUnit.IsExhausted)
+            {
+                if (EnableDebugLogs) Debug.Log($"[AI] {name} Resting (Stamina).");
+                DebugState = "Resting";
+                _nextAvailableTickTime = Timeline.CurrentTime + Random.Range(1.0f, 1.5f);
+                return;
+            }
+
+            var bestAttack = PickBestAttack();
+            if (bestAttack != null)
+            {
+                DebugState = "Attacking";
+                ScheduleAttack(bestAttack);
+                return;
+            }
+
+            DebugState = "Thinking Move";
+            ScheduleMovement();
         }
 
-        private bool CanHitTargetNow(Action action)
+        private void ScheduleRecovery()
+        {
+            float reaction = Random.Range(0.1f, 0.3f);
+            float duration = ActionScheduler.EstimateRecoverDuration();
+
+            long groupId = Timeline.ReserveGroupId();
+            ActionScheduler.ScheduleRecover(Timeline, ControlledUnit, reaction, staminaCost: 5f, duration: duration, groupId: groupId);
+
+            _nextAvailableTickTime = Timeline.CurrentTime + reaction + duration + 0.1f;
+        }
+
+        private void ScheduleAttack(Action action)
+        {
+            float startDelay = ReactionDelay + Random.Range(0f, 0.1f);
+            float duration = ActionScheduler.EstimateAttackDuration(ControlledUnit, action);
+            var dir = GridMath.GetDirection(ControlledUnit.GridPosition, TargetUnit.GridPosition);
+
+            long groupId = Timeline.ReserveGroupId();
+            ActionScheduler.ScheduleAttack(Timeline, ControlledUnit, action, startDelay, targetDirection: dir, groupId: groupId);
+
+            float cooldown = Random.Range(MinActionInterval, MaxActionInterval);
+            _nextAvailableTickTime = Timeline.CurrentTime + startDelay + duration + cooldown;
+        }
+
+        private void ScheduleMovement()
+        {
+            var (found, dest, path) = FindBestPositionNearTarget(maxRings: 3);
+
+            if (!found)
+            {
+                DebugState = "No Path Found";
+                _nextAvailableTickTime = Timeline.CurrentTime + 0.5f;
+                return;
+            }
+
+            if (path != null && path.Count <= 1)
+            {
+                DebugState = "At Position (Holding)";
+                _nextAvailableTickTime = Timeline.CurrentTime + 0.3f;
+                return;
+            }
+
+            DebugState = $"Moving to {dest}";
+            float startDelay = ReactionDelay;
+            float moveDuration = ActionScheduler.EstimateMoveDuration(ControlledUnit, path);
+
+            long groupId = Timeline.ReserveGroupId();
+            ActionScheduler.ScheduleMoveTo(Timeline, ControlledUnit, dest, startTime: startDelay, groupId: groupId);
+
+            float cooldown = Random.Range(MinActionInterval * 0.5f, MaxActionInterval * 0.8f);
+            _nextAvailableTickTime = Timeline.CurrentTime + startDelay + moveDuration + cooldown;
+        }
+
+        private Action PickBestAttack()
+        {
+            if (ControlledUnit.ActionLibrary == null) return null;
+            var usable = new List<Action>();
+            var dir = GridMath.GetDirection(ControlledUnit.GridPosition, TargetUnit.GridPosition);
+
+            foreach (var entry in ControlledUnit.ActionLibrary.Actions)
+            {
+                var action = entry.Data;
+                if (action.StaminaCost > ControlledUnit.CurrentStamina) continue;
+                if (CanHitTarget(action, dir)) usable.Add(action);
+            }
+
+            if (usable.Count == 0) return null;
+            return usable[Random.Range(0, usable.Count)];
+        }
+
+        private bool CanHitTarget(Action action, GridDirection dir)
         {
             if (action.Pattern == null) return false;
-            var dir = GridMath.GetDirection(ControlledUnit.GridPosition, TargetUnit.GridPosition);
             var attackArea = action.Pattern.GetAffectedTriangles(ControlledUnit.GridPosition, dir);
             var targetOcc = TargetUnit.GetOccupiedTriangles();
-            for (int i = 0; i < targetOcc.Count; i++)
+            foreach (var tTri in targetOcc)
             {
-                for (int j = 0; j < attackArea.Count; j++)
+                foreach (var aTri in attackArea)
                 {
-                    if (targetOcc[i].Equals(attackArea[j])) return true;
+                    if (tTri.Equals(aTri)) return true;
                 }
             }
             return false;
         }
 
-        private (bool hasPath, Pathfinder.GridPoint destination, List<Pathfinder.GridPoint> path) FindBestDestinationNearTarget(int maxRings)
+        private (bool found, Pathfinder.GridPoint dest, List<Pathfinder.GridPoint> path) FindBestPositionNearTarget(int maxRings)
         {
+            if (GridManager.Instance == null) return (false, default, null);
+
             var obstacles = GridManager.Instance.GetGlobalObstacles(ControlledUnit);
             var pathfinder = new Pathfinder();
 
-            bool found = false;
-            float bestScore = float.MaxValue;
             Pathfinder.GridPoint bestDest = default;
             List<Pathfinder.GridPoint> bestPath = null;
+            float bestScore = float.MaxValue;
+            bool anyFound = false;
 
-            var seen = new HashSet<Pathfinder.GridPoint>();
-            var frontier = new List<Pathfinder.GridPoint> { TargetUnit.GridPosition };
-            seen.Add(TargetUnit.GridPosition);
+            var visited = new HashSet<Pathfinder.GridPoint>();
+            var queue = new Queue<(Pathfinder.GridPoint point, int depth)>();
 
-            for (int ring = 1; ring <= Mathf.Max(1, maxRings); ring++)
+            visited.Add(TargetUnit.GridPosition);
+            queue.Enqueue((TargetUnit.GridPosition, 0));
+
+            while (queue.Count > 0)
             {
-                var next = new List<Pathfinder.GridPoint>();
-                for (int i = 0; i < frontier.Count; i++)
+                var (current, depth) = queue.Dequeue();
+
+                if (depth > maxRings) continue;
+
+                if (depth > 0)
                 {
-                    var cur = frontier[i];
-                    for (int d = 0; d < 12; d++)
+                    var projectedVol = ControlledUnit.GetProjectedOccupancy(current, GridDirection.East);
+
+                    if (!GridManager.Instance.IsSpaceOccupied(projectedVol, ControlledUnit))
                     {
-                        var nb = GridMath.GetNeighbor(cur, (GridDirection)d);
-                        if (seen.Add(nb)) next.Add(nb);
+                        var path = pathfinder.FindPath(ControlledUnit.GridPosition, current, ControlledUnit.UnitVolumeDefinition, obstacles);
+                        if (path != null)
+                        {
+                            float score = path.Count;
+
+                            if (score < bestScore)
+                            {
+                                bestScore = score;
+                                bestDest = current;
+                                bestPath = path;
+                                anyFound = true;
+                            }
+                        }
                     }
                 }
-                frontier = next;
 
-                for (int i = 0; i < frontier.Count; i++)
+                for (int i = 0; i < 12; i++)
                 {
-                    var dest = frontier[i];
-                    var projDir = GridMath.GetDirection(ControlledUnit.GridPosition, dest);
-                    var projected = ControlledUnit.GetProjectedOccupancy(dest, projDir);
-                    if (GridManager.Instance.IsSpaceOccupied(projected, ControlledUnit)) continue;
-
-                    var path = pathfinder.FindPath(ControlledUnit.GridPosition, dest, ControlledUnit.UnitVolumeDefinition, obstacles);
-                    if (path == null || path.Count < 2) continue;
-
-                    float score = path.Count;
-                    if (score < bestScore)
+                    var neighbor = GridMath.GetNeighbor(current, (GridDirection)i);
+                    if (visited.Add(neighbor))
                     {
-                        bestScore = score;
-                        bestDest = dest;
-                        bestPath = path;
-                        found = true;
+                        queue.Enqueue((neighbor, depth + 1));
                     }
                 }
-                if (found) break;
             }
-            return (found, bestDest, bestPath);
+
+            return (anyFound, bestDest, bestPath);
         }
     }
 }

@@ -4,7 +4,7 @@ using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Timeline;
 using ProjectHero.Visuals;
-using ProjectHero.UI; // 引用 UI 命名空间
+using ProjectHero.UI;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,13 +13,13 @@ namespace ProjectHero.Core.Entities
     public class CombatUnit : MonoBehaviour
     {
         private bool _hasRegisteredUI = false;
+        private bool _hasRegisteredGrid = false; 
+        private BattleTimeline _timeline;
 
         private void Awake()
         {
             if (GetComponent<UnitMovement>() == null)
-            {
                 gameObject.AddComponent<UnitMovement>();
-            }
         }
 
         [Header("Control")]
@@ -36,17 +36,16 @@ namespace ProjectHero.Core.Entities
         [Header("Actions")]
         public ActionLibrarySO ActionLibrary;
 
-        [Header("Action Timing (For UI)")]
-        public float CurrentStateStartTime;
-        public float CurrentStateDuration;
+        [Header("Action Timing (Logic Ticks)")]
+        public long CurrentStateStartTick;
+        public int CurrentStateDurationTicks;
 
-        public float GetActionProgress()
+        public float GetActionProgress(long currentTimelineTick)
         {
-            if (CurrentStateDuration <= 0f) return 0f;
-            float elapsed = Time.time - CurrentStateStartTime;
-            return Mathf.Clamp01(elapsed / CurrentStateDuration);
+            if (CurrentStateDurationTicks <= 0) return 0f;
+            long elapsedTicks = currentTimelineTick - CurrentStateStartTick;
+            return Mathf.Clamp01((float)elapsedTicks / CurrentStateDurationTicks);
         }
-        // ------------------------------
 
         public List<TrianglePoint> GetOccupiedTriangles()
         {
@@ -54,9 +53,7 @@ namespace ProjectHero.Core.Entities
             var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(FacingDirection);
             var occupied = new List<TrianglePoint>();
             foreach (var rel in relativeTriangles)
-            {
                 occupied.Add(new TrianglePoint(GridPosition.X + rel.X, GridPosition.Y + rel.Y, rel.T));
-            }
             return occupied;
         }
 
@@ -66,25 +63,19 @@ namespace ProjectHero.Core.Entities
             var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(targetFacing);
             var occupied = new List<TrianglePoint>();
             foreach (var rel in relativeTriangles)
-            {
                 occupied.Add(new TrianglePoint(targetPos.X + rel.X, targetPos.Y + rel.Y, rel.T));
-            }
             return occupied;
         }
 
-        [Header("Base Attributes")]
+        // Stats
         public float Strength = 10f;
         public float Dexterity = 10f;
         public float Constitution = 10f;
         public float Wisdom = 10f;
         public float Intelligence = 10f;
-
-        [Header("Equipment")]
         public float ArmorWeight = 10f;
         public float ArmorDefense = 0f;
         public float MagicResistance = 0f;
-
-        [Header("State")]
         public float CurrentHealth = 100f;
         public float CurrentStamina = 100f;
         public float CurrentFocus = 0f;
@@ -92,7 +83,6 @@ namespace ProjectHero.Core.Entities
 
         public float MaxFocus => Mathf.Max(3f, Wisdom * 0.5f);
         public float TotalMass => 50f + (Strength * 2f) + (Constitution * 2f) + ArmorWeight;
-
         public float Swiftness
         {
             get
@@ -102,23 +92,18 @@ namespace ProjectHero.Core.Entities
                 return baseVal;
             }
         }
-
         public float ReactionWindow => Wisdom * 0.1f;
         public float MaxStamina => Constitution * 10f;
         public float MaxHealth => Constitution * 20f;
 
-        [Header("Status Flags")]
         public bool IsStaggered;
         public bool IsKnockedDown;
         public bool IsExhausted => CurrentStamina < MaxStamina * 0.2f;
 
-        [Header("Action State")]
         public bool IsActing;
         public bool InWindup;
         public bool InRecovery;
         public bool IsMoving;
-
-        [Header("Recovery")]
         public bool IsRecoveringAction;
 
         public bool CanAct => !IsActing && !IsStaggered && !IsKnockedDown;
@@ -129,79 +114,89 @@ namespace ProjectHero.Core.Entities
             InWindup = false;
             InRecovery = false;
             IsMoving = false;
-            CurrentStateDuration = 0f; // Reset duration
+            CurrentStateDurationTicks = 0;
         }
 
         public void SetGridPosition(Pathfinder.GridPoint point)
         {
-            if (GridManager.Instance != null)
+            if (GridManager.Instance != null && _hasRegisteredGrid)
             {
-                var oldVolume = GetOccupiedTriangles();
-                GridManager.Instance.UnregisterOccupancy(oldVolume);
+                GridManager.Instance.UnregisterOccupancy(GetOccupiedTriangles());
             }
             GridPosition = point;
-            if (GridManager.Instance != null)
+            if (GridManager.Instance != null && _hasRegisteredGrid)
             {
-                var newVolume = GetOccupiedTriangles();
-                GridManager.Instance.RegisterOccupancy(this, newVolume);
+                GridManager.Instance.RegisterOccupancy(this, GetOccupiedTriangles());
             }
         }
 
         public void SetFacingDirection(GridDirection newFacing)
         {
             if (FacingDirection == newFacing) return;
-            if (GridManager.Instance != null)
+            if (GridManager.Instance != null && _hasRegisteredGrid)
             {
-                var oldVolume = GetOccupiedTriangles();
-                GridManager.Instance.UnregisterOccupancy(oldVolume);
+                GridManager.Instance.UnregisterOccupancy(GetOccupiedTriangles());
             }
             FacingDirection = newFacing;
-            if (GridManager.Instance != null)
+            if (GridManager.Instance != null && _hasRegisteredGrid)
             {
-                var newVolume = GetOccupiedTriangles();
-                GridManager.Instance.RegisterOccupancy(this, newVolume);
-            }
-        }
-
-        private void Update()
-        {
-            if (!_hasRegisteredUI)
-            {
-                if (HUDManager.Instance != null)
-                {
-                    HUDManager.Instance.RegisterUnit(this);
-                    _hasRegisteredUI = true; // 注册成功，下次不再试
-                    Debug.Log($"[UI] {name} successfully registered HUD!");
-                }
-            }
-
-            if (CurrentAdrenaline > 0)
-            {
-                CurrentAdrenaline -= 5f * Time.deltaTime;
-                if (CurrentAdrenaline < 0) CurrentAdrenaline = 0;
-            }
-            if (CurrentStamina < MaxStamina)
-            {
-                float regenRate = IsExhausted ? 2f : 5f;
-                CurrentStamina += regenRate * Time.deltaTime;
-                if (CurrentStamina > MaxStamina) CurrentStamina = MaxStamina;
+                GridManager.Instance.RegisterOccupancy(this, GetOccupiedTriangles());
             }
         }
 
         private void Start()
         {
+            _timeline = FindFirstObjectByType<BattleTimeline>();
             GridPosition = InitialGridPosition;
 
+            TryRegisterToGrid();
+
+            CurrentStamina = MaxStamina;
+            CurrentHealth = MaxHealth;
+        }
+
+        private void TryRegisterToGrid()
+        {
+            if (_hasRegisteredGrid) return;
             if (GridManager.Instance != null)
             {
                 GridManager.Instance.RegisterUnit(this);
                 GridManager.Instance.RegisterOccupancy(this, GetOccupiedTriangles());
+
                 Vector3 position = GridManager.Instance.GridToWorld(GridPosition);
                 transform.position = GridManager.GetGroundPosition(position);
+
+                _hasRegisteredGrid = true;
+            }
+        }
+
+        private void Update()
+        {
+            if (!_hasRegisteredGrid) TryRegisterToGrid();
+
+            if (!_hasRegisteredUI && HUDManager.Instance != null)
+            {
+                HUDManager.Instance.RegisterUnit(this);
+                _hasRegisteredUI = true;
             }
 
-            CurrentStamina = MaxStamina;
-            CurrentHealth = MaxHealth;
+            float dt = Time.deltaTime;
+            if (_timeline != null && _timeline.Paused) dt = 0f;
+
+            if (dt > 0f)
+            {
+                if (CurrentAdrenaline > 0)
+                {
+                    CurrentAdrenaline -= 5f * dt;
+                    if (CurrentAdrenaline < 0) CurrentAdrenaline = 0;
+                }
+                if (CurrentStamina < MaxStamina)
+                {
+                    float regenRate = IsExhausted ? 2f : 5f;
+                    CurrentStamina += regenRate * dt;
+                    if (CurrentStamina > MaxStamina) CurrentStamina = MaxStamina;
+                }
+            }
         }
 
         private void OnDestroy()

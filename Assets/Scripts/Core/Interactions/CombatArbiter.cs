@@ -1,113 +1,176 @@
 using UnityEngine;
 using System.Collections.Generic;
-using ProjectHero.Core.Actions.Intents; // Added
+using ProjectHero.Core.Actions.Intents;
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
-
+using ProjectHero.Core.Physics;
+using ProjectHero.Visuals;
+using ProjectHero.Core.Timeline;
 
 namespace ProjectHero.Core.Interactions
 {
     public static class CombatArbiter
     {
-        public static void Resolve(List<CombatIntent> intents)
+        public static void Resolve(List<CombatIntent> intents, BattleTimeline timeline)
         {
             if (intents == null || intents.Count == 0) return;
 
-            // 1. Interaction Detection Phase
+            HashSet<CombatIntent> processed = new HashSet<CombatIntent>();
+
             for (int i = 0; i < intents.Count; i++)
             {
                 for (int j = i + 1; j < intents.Count; j++)
                 {
-                    var intentA = intents[i];
-                    var intentB = intents[j];
+                    var a = intents[i];
+                    var b = intents[j];
 
-                    if (intentA.IsCancelled || intentB.IsCancelled) continue;
+                    if (processed.Contains(a) || processed.Contains(b)) continue;
+                    if (a.IsCancelled || b.IsCancelled) continue;
 
-                    InteractionType interaction = CheckInteraction(intentA, intentB);
+                    InteractionType type = CheckInteraction(a, b);
 
-                    if (interaction != InteractionType.None)
+                    if (type != InteractionType.None)
                     {
-                        ApplyInteraction(intentA, intentB, interaction);
-                    }
-                }
-            }
+                        ApplyInteraction(a, b, type, timeline);
 
-            // 2. Execution Phase
-            foreach (var intent in intents)
-            {
-                if (!intent.IsCancelled)
-                {
-                    intent.ExecuteSuccess();
+                        processed.Add(a);
+                        processed.Add(b);
+                    }
                 }
             }
         }
 
         private static InteractionType CheckInteraction(CombatIntent a, CombatIntent b)
         {
-            // --- Attack vs Attack (Clash) ---
             if (a.Type == ActionType.Attack && b.Type == ActionType.Attack)
             {
-                bool aHitsB = IsTargeting(a, b.Owner);
-                bool bHitsA = IsTargeting(b, a.Owner);
-
-                if (aHitsB && bHitsA) return InteractionType.Clash;
+                if (IsTargeting(a, b.Owner) && IsTargeting(b, a.Owner)) return InteractionType.Clash;
             }
 
-            // --- Attack vs Block (Parry) ---
-            if (a.Type == ActionType.Attack && b.Type == ActionType.Block)
+            if (IsAttackVsType(a, b, ActionType.Block, out var atk, out var blk))
             {
-                if (IsTargeting(a, b.Owner)) return InteractionType.Parry;
-            }
-            if (b.Type == ActionType.Attack && a.Type == ActionType.Block)
-            {
-                if (IsTargeting(b, a.Owner)) return InteractionType.Parry;
+                if (IsTargeting(atk, blk.Owner)) return InteractionType.Parry;
             }
 
-            // --- Attack vs Dodge (Dodge) ---
-            if (a.Type == ActionType.Attack && b.Type == ActionType.Dodge)
+            if (IsAttackVsType(a, b, ActionType.Dodge, out atk, out var ddg))
             {
-                if (IsTargeting(a, b.Owner)) return InteractionType.Dodge;
-            }
-            if (b.Type == ActionType.Attack && a.Type == ActionType.Dodge)
-            {
-                if (IsTargeting(b, a.Owner)) return InteractionType.Dodge;
+                if (IsTargeting(atk, ddg.Owner)) return InteractionType.Dodge;
             }
 
-            // --- Attack vs Move (Intercept / Escape) ---
-            if (a.Type == ActionType.Attack && b.Type == ActionType.Move)
+            if (IsAttackVsType(a, b, ActionType.Move, out atk, out var mov))
             {
-                return CheckAttackVsMove(a, b);
-            }
-            if (b.Type == ActionType.Attack && a.Type == ActionType.Move)
-            {
-                return CheckAttackVsMove(b, a);
+                var moveIntent = (MoveIntent)mov;
+                bool hitsStart = IsPointTargeted(atk, moveIntent.From);
+                bool hitsEnd = IsPointTargeted(atk, moveIntent.To);
+
+                if (hitsEnd) return InteractionType.Intercept;
+                if (hitsStart && !hitsEnd) return InteractionType.Escape;
             }
 
             return InteractionType.None;
         }
 
-        private static InteractionType CheckAttackVsMove(CombatIntent attack, CombatIntent move)
-        {
-            bool hitsStart = IsTargeting(attack, move.Owner);
-            bool hitsEnd = false;
-            
-            // Pattern Matching for MoveIntent
-            if (move is MoveIntent moveIntent)
-            {
-                 hitsEnd = IsPointTargeted(attack, moveIntent.To);
-            }
 
-            if (hitsEnd) return InteractionType.Intercept;
-            else if (hitsStart && !hitsEnd) return InteractionType.Dodge; 
-            
-            return InteractionType.None;
+        private static void ApplyInteraction(CombatIntent a, CombatIntent b, InteractionType type, BattleTimeline timeline)
+        {
+            Debug.Log($"[Arbiter] Resolving {type}...");
+
+            switch (type)
+            {
+                case InteractionType.Clash:
+                    var atk1 = (AttackIntent)a;
+                    var atk2 = (AttackIntent)b;
+
+                    float p1 = PhysicsEngine.CalculateMomentum(atk1.Owner, atk1.ActionDefinition);
+                    float p2 = PhysicsEngine.CalculateMomentum(atk2.Owner, atk2.ActionDefinition);
+
+                    atk1.Owner.CurrentFocus += 1;
+                    atk2.Owner.CurrentFocus += 1;
+
+                    atk1.Cancel();
+                    atk2.Cancel();
+
+                    float residual = p1 - p2;
+                    if (residual > 0)
+                    {
+                        PhysicsEngine.ApplyClashResult(timeline, atk2.Owner, residual, atk1.Owner.GridPosition);
+                    }
+                    else if (residual < 0)
+                    {
+                        PhysicsEngine.ApplyClashResult(timeline, atk1.Owner, Mathf.Abs(residual), atk2.Owner.GridPosition);
+                    }
+                    else
+                    {
+                        if (GameFeelManager.Instance) GameFeelManager.Instance.ShowStatusText(atk1.Owner.transform.position, "EVEN!", Color.white);
+                    }
+                    break;
+
+
+                case InteractionType.Parry:
+                    GetAttackAndDefender(a, b, ActionType.Block, out var pAtk, out var pDef);
+
+                    pAtk.Cancel();
+                    pDef.Cancel();
+
+                    if (GameFeelManager.Instance)
+                    {
+                        GameFeelManager.Instance.HitStop(0.1f);
+                        GameFeelManager.Instance.ShowStatusText(pDef.Owner.transform.position, "PARRY", Color.cyan);
+                    }
+                    break;
+
+                case InteractionType.Dodge:
+                    GetAttackAndDefender(a, b, ActionType.Dodge, out var dAtk, out var dDef);
+
+                    dAtk.Cancel();
+                    if (timeline != null)
+                    {
+                        timeline.TriggerSlowMotion(0.05f, 2.0f);
+                        timeline.RequestDodgeCounterMove(dDef.Owner); 
+                    }
+
+                    if (GameFeelManager.Instance) GameFeelManager.Instance.ShowStatusText(dDef.Owner.transform.position, "DODGE!", Color.green);
+                    break;
+
+                case InteractionType.Intercept:
+                    GetAttackAndDefender(a, b, ActionType.Move, out var iAtk, out var iMov);
+                    iAtk.Owner.CurrentFocus += 1;
+
+                    iMov.Cancel();
+
+                    iMov.Owner.IsKnockedDown = true;
+
+                    if (GameFeelManager.Instance) GameFeelManager.Instance.ShowStatusText(iMov.Owner.transform.position, "INTERCEPT!", Color.red);
+                    break;
+
+                case InteractionType.Escape:
+                    GetAttackAndDefender(a, b, ActionType.Move, out var eAtk, out var eMov);
+
+                    eMov.Owner.CurrentFocus += 1;
+
+                    if (GameFeelManager.Instance) GameFeelManager.Instance.ShowStatusText(eMov.Owner.transform.position, "ESCAPE", Color.green);
+                    break;
+            }
+        }
+
+
+        private static bool IsAttackVsType(CombatIntent a, CombatIntent b, ActionType targetType, out CombatIntent atk, out CombatIntent target)
+        {
+            if (a.Type == ActionType.Attack && b.Type == targetType) { atk = a; target = b; return true; }
+            if (b.Type == ActionType.Attack && a.Type == targetType) { atk = b; target = a; return true; }
+            atk = null; target = null; return false;
+        }
+
+        private static void GetAttackAndDefender(CombatIntent a, CombatIntent b, ActionType defType, out AttackIntent atk, out CombatIntent def)
+        {
+            if (a.Type == ActionType.Attack) { atk = (AttackIntent)a; def = b; }
+            else { atk = (AttackIntent)b; def = a; }
         }
 
         private static bool IsTargeting(CombatIntent attackerIntent, CombatUnit potentialTarget)
         {
-            // Pattern Matching for AttackIntent
             if (attackerIntent is AttackIntent attackIntent)
             {
                 var action = attackIntent.ActionDefinition;
@@ -121,7 +184,7 @@ namespace ProjectHero.Core.Interactions
             return false;
         }
 
-        private static bool IsPointTargeted(CombatIntent attackerIntent, Pathfinder.GridPoint targetPoint)
+        private static bool IsPointTargeted(CombatIntent attackerIntent, Pathfinder.GridPoint point)
         {
             if (attackerIntent is AttackIntent attackIntent)
             {
@@ -131,48 +194,11 @@ namespace ProjectHero.Core.Interactions
                     var area = action.Pattern.GetAffectedTriangles(attackerIntent.Owner.GridPosition, attackerIntent.Owner.FacingDirection);
                     foreach (var tri in area)
                     {
-                        if (tri.X == targetPoint.X && tri.Y == targetPoint.Y) return true;
+                        if (tri.X == point.X && tri.Y == point.Y) return true;
                     }
                 }
             }
             return false;
-        }
-
-        private static void ApplyInteraction(CombatIntent a, CombatIntent b, InteractionType type)
-        {
-            Debug.Log($"[Arbiter] Interaction Resolved: {type} between {a.Owner.name} and {b.Owner.name}");
-
-            switch (type)
-            {
-                case InteractionType.Clash:
-                    a.Cancel();
-                    b.Cancel();
-                    a.ExecuteInterruption(InteractionType.Clash);
-                    b.ExecuteInterruption(InteractionType.Clash);
-                    break;
-
-                case InteractionType.Parry:
-                    var attacker = (a.Type == ActionType.Attack) ? a : b;
-                    var defender = (a.Type == ActionType.Attack) ? b : a;
-                    attacker.Cancel();
-                    attacker.ExecuteInterruption(InteractionType.Parry);
-                    defender.ExecuteSuccess(); 
-                    break;
-
-                case InteractionType.Dodge:
-                    attacker = (a.Type == ActionType.Attack) ? a : b;
-                    defender = (a.Type == ActionType.Attack) ? b : a;
-                    attacker.Cancel();
-                    attacker.ExecuteInterruption(InteractionType.Dodge);
-                    defender.ExecuteSuccess();
-                    break;
-
-                case InteractionType.Intercept:
-                    var movingUnit = (a.Type == ActionType.Move) ? a : b;
-                    movingUnit.Cancel();
-                    movingUnit.ExecuteInterruption(InteractionType.Intercept);
-                    break;
-            }
         }
     }
 }

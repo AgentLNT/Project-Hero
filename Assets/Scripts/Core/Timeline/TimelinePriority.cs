@@ -1,24 +1,27 @@
 namespace ProjectHero.Core.Timeline
 {
     /// <summary>
-    /// Defines execution order for events happening at the exact same time.
-    /// Higher values execute first.
+    /// Defines execution order for events happening at the exact same Tick.
+    /// Higher values execute FIRST.
     /// </summary>
     public static class TimelinePriority
     {
-        // 1. State Updates (Movement, Teleport, Spawn)
-        // Must happen first so the world is in the correct state for interactions.
-        public const int Movement = 20;
+        // 1. Meta / System (Start of frame cleanup, flag resets)
+        public const int System = 100;
 
-        // 2. Defensive Reactions (Block, Dodge stance)
-        // Must happen before damage to mitigate it.
-        public const int Reaction = 10;
+        // 2. State Changes (Movement commit, Stance changes, Windup starts)
+        // Must happen before interactions so the unit is in the correct state/position.
+        public const int State = 50;
 
-        // 3. Offensive Interactions (Attack Impact, Spell Hit)
-        // Happens last, querying the updated state.
+        // 3. Defensive Reactions (Block start, Dodge start)
+        // Must be active before the attack hits in the same frame.
+        public const int Defense = 25;
+
+        // 4. Offensive Interactions (Attack Impact, Spell Hit)
+        // Happens last to query the final state of the frame.
         public const int Attack = 0;
-        
-        // 4. Post-Process (Cleanup, UI updates)
-        public const int Cleanup = -10;
+
+        // 5. Post-Process (Cleanup, UI updates, Death processing)
+        public const int Cleanup = -50;
     }
 }

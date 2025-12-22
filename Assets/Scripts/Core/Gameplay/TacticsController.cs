@@ -34,6 +34,7 @@ namespace ProjectHero.Core.Gameplay
         private CombatUnit _selectedUnit;
         private Action _selectedAction; // New: Track selected action
         private bool _isMoveMode;
+        private bool _isDodgeCounterMode = false;
         private PlanStep _planStep = PlanStep.None;
 
         // Cached target info for Step 2 -> Step 3 -> Step back
@@ -48,6 +49,8 @@ namespace ProjectHero.Core.Gameplay
             {
                 Debug.LogWarning("TacticsController: No BattleTimeline found in scene.");
             }
+
+            Timeline.OnDodgeSuccessRequestMove += HandleDodgeCounterMove;
 
             // Ensure Cursor exists
             if (Cursor == null)
@@ -71,6 +74,11 @@ namespace ProjectHero.Core.Gameplay
             else
             {
                 Debug.LogError("TacticsController: InputManager instance not found!");
+            }
+
+            if (Timeline != null)
+            {
+                Timeline.OnDodgeSuccessRequestMove += HandleDodgeCounterMove;
             }
         }
 
@@ -282,7 +290,20 @@ namespace ProjectHero.Core.Gameplay
 
         private void HandleCancel()
         {
-            // Step-back logic for planning
+            if (_isDodgeCounterMode)
+            {
+                Debug.Log("[Tactics] Cancelled Dodge Counter. Resuming time.");
+
+                _isDodgeCounterMode = false;
+                _isMoveMode = false;
+
+                Timeline.SetPaused(false);
+                Time.timeScale = 1.0f; 
+
+                if (UIManager.Instance) UIManager.Instance.OnUnitSelected(_selectedUnit);
+                return;
+            }
+
             var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
             if (_planStep == PlanStep.Placing && timelineUI != null && timelineUI.HasPendingPlacement)
             {
@@ -295,10 +316,8 @@ namespace ProjectHero.Core.Gameplay
                 Debug.Log($"[Tactics] Cancelled Action: {_selectedAction.Name}");
                 _selectedAction = null;
                 _planStep = PlanStep.None;
-                
-                // Disable targeting mode
+
                 if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
-                
                 return;
             }
 
@@ -316,15 +335,12 @@ namespace ProjectHero.Core.Gameplay
                 Debug.Log($"[Tactics] Deselected Unit: {_selectedUnit.name}");
                 _selectedUnit = null;
                 if (Cursor != null) Cursor.Hide();
-                
-                // Notify UI
+
                 if (UIManager.Instance != null) UIManager.Instance.OnUnitDeselected();
-                
-                // Ensure targeting mode is off
+
                 if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
             }
         }
-
         private void HandleGroundHover(Vector3 worldPos)
         {
             if (Cursor == null || GridManager.Instance == null) return;
@@ -524,21 +540,58 @@ namespace ProjectHero.Core.Gameplay
             }
         }
 
+        private void HandleDodgeCounterMove(CombatUnit unit)
+        {
+            if (!unit.IsPlayerControlled) 
+                return;
+
+            Debug.Log($"[Tactics] Dodge Success! Choose counter step for {unit.name}");
+
+            _selectedUnit = unit;
+            _isMoveMode = true; 
+            _isDodgeCounterMode = true;
+
+            Timeline.SetPaused(true);
+
+        }
+
         private void IssueMoveCommand(CombatUnit unit, Pathfinder.GridPoint targetGridPos)
         {
             if (Timeline == null) return;
-            
-            // Double check CanAct
+
+            if (_isDodgeCounterMode)
+            {
+                int distX = Mathf.Abs(unit.GridPosition.X - targetGridPos.X);
+                int distY = Mathf.Abs(unit.GridPosition.Y - targetGridPos.Y);
+
+                var pathfinder = new Pathfinder();
+                var dodgePath = pathfinder.FindPath(unit.GridPosition, targetGridPos, unit.UnitVolumeDefinition, null);
+
+                if (dodgePath == null || dodgePath.Count > 2)
+                {
+                    Debug.LogWarning("[Tactics] Dodge step must be exactly 1 tile!");
+                    return;
+                }
+
+                unit.SetGridPosition(targetGridPos);
+                Debug.Log($"[Tactics] Dodge Counter Executed to {targetGridPos}");
+
+                Timeline.SetPaused(false);
+                Time.timeScale = 1.0f; 
+                _isDodgeCounterMode = false;
+                _isMoveMode = false;
+
+                if (UIManager.Instance) UIManager.Instance.OnUnitSelected(unit);
+                return;
+            }
             if (!unit.CanAct) return;
 
             Debug.Log($"[Tactics] Moving {unit.name} to {targetGridPos}");
 
-            // Get Obstacles (ignoring self)
             var obstacles = GridManager.Instance.GetGlobalObstacles(unit);
-            
-            // Find Path
-            var pathfinder = new Pathfinder();
-            var path = pathfinder.FindPath(unit.GridPosition, targetGridPos, unit.UnitVolumeDefinition, obstacles);
+
+            var pathfinderNormal = new Pathfinder();
+            var path = pathfinderNormal.FindPath(unit.GridPosition, targetGridPos, unit.UnitVolumeDefinition, obstacles);
 
             if (path != null)
             {
@@ -563,6 +616,7 @@ namespace ProjectHero.Core.Gameplay
                 var ownerCopy = unit;
                 var destCopy = targetGridPos;
                 _plannedPath = new System.Collections.Generic.List<Pathfinder.GridPoint>(path);
+
                 var placement = new TimelineActionPlacement
                 {
                     Owner = ownerCopy,

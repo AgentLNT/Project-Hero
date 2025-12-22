@@ -594,14 +594,14 @@ namespace ProjectHero.UI.Timeline
         private void RenderBlockModel(BlockRenderModel model, HashSet<long> validViewIds)
         {
             if (model.Owner == null) return;
-
             RectTransform lane = (model.Lane == TimelineLane.Player) ? PlayerLane : ObservedLane;
             if (lane == null) return;
 
-            // FIX: Check if width calculation is exploding
             float width = Mathf.Max(MinBlockWidthPx, model.Duration * PixelsPerSecond);
-            // Safety Clamp: Prevent width from exceeding reasonable limits (e.g. 10000px)
-            if (width > 5000f) width = 5000f; float startX = (model.StartTimeAbs - Timeline.CurrentTime) * PixelsPerSecond;
+            if (width > 5000f) width = 5000f;
+
+            // 使用 VisualTime
+            float startX = (model.StartTimeAbs - Timeline.VisualTime) * PixelsPerSecond;
 
             if (startX + width < -50f)
             {
@@ -614,34 +614,25 @@ namespace ProjectHero.UI.Timeline
             }
 
             validViewIds.Add(model.GroupId);
+            // ... (Create view logic unchanged)
 
             if (!_activeViews.TryGetValue(model.GroupId, out var view))
             {
                 view = CreateBlockGO(lane);
                 _activeViews[model.GroupId] = view;
             }
-
-            // CRITICAL FIX: Reset parent and Y position
-            if (view.transform.parent != lane)
-            {
-                view.transform.SetParent(lane, false);
-            }
-
+            if (view.transform.parent != lane) view.transform.SetParent(lane, false);
             var rt = view.GetComponent<RectTransform>();
-            var pos = rt.anchoredPosition;
-            pos.y = 0; // Center in lane
-            rt.anchoredPosition = pos;
+            var pos = rt.anchoredPosition; pos.y = 0; rt.anchoredPosition = pos;
 
             string label = "";
-            if (model.IsInteractable && _placementsByGroupId.TryGetValue(model.GroupId, out var placement))
-            {
-                label = placement.Label;
-            }
+            if (model.IsInteractable && _placementsByGroupId.TryGetValue(model.GroupId, out var placement)) label = placement.Label;
 
             view.SetModel(model.GroupId, 0, model.StartTimeAbs, model.Duration, label, false);
             view.SetWidth(width);
             view.SetX(startX + width * 0.5f);
 
+            // ... (Color logic unchanged)
             var baseColor = GetBaseColor(model.Kind);
             var finalColor = ApplyDepth(baseColor, model.Duration, isGhost: false);
             if (!model.IsInteractable) finalColor.a = 0.85f;
@@ -650,7 +641,6 @@ namespace ProjectHero.UI.Timeline
             view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(model.Kind, model.Duration), PixelsPerSecond);
             if (view.Background != null) view.Background.raycastTarget = model.IsInteractable;
         }
-
         private void EnsureTimeLines()
         {
             if (PlayerLane == null || ObservedLane == null) return;
@@ -731,65 +721,49 @@ namespace ProjectHero.UI.Timeline
             if (_currentTimeLinePlayer == null) return;
             SetLineX(_currentTimeLinePlayer.rectTransform, 0f);
             SetLineX(_currentTimeLineObserved.rectTransform, 0f);
-
-            // FIX: Ensure _nowTimeText is updated even if mouse is not moving
             if (_nowTimeText != null && Timeline != null)
             {
-                // Format: "now 1.50s"
-                _nowTimeText.text = $"now {Timeline.CurrentTime:F2}s";
-
-                // Keep it anchored at X=0 (left edge of timeline content)
-                // Assuming RulerArea aligns with Lanes horizontally
+                // 使用 VisualTime
+                _nowTimeText.text = $"now {Timeline.VisualTime:F2}s";
                 float rulerX = ConvertLaneXToRulerX(0f);
                 SetTextX(_nowTimeText.rectTransform, rulerX);
-
-                // Ensure it's enabled (unless mouse logic hides it later, but default to true here)
                 _nowTimeText.enabled = true;
             }
         }
 
         private void UpdateMouseLineAndTime()
         {
+            // ... (Logic unchanged)
             if (_mouseLinePlayer == null) return;
             var mousePos = UnityEngine.Input.mousePosition;
             bool overP = RectTransformUtility.RectangleContainsScreenPoint(PlayerLane, mousePos, null);
             bool overO = RectTransformUtility.RectangleContainsScreenPoint(ObservedLane, mousePos, null);
 
-            // FIX: If mouse is NOT over lanes, hide lines and mouse text, but KEEP NOW TEXT VISIBLE
             if (!overP && !overO)
             {
                 _mouseLinePlayer.enabled = false;
                 _mouseLineObserved.enabled = false;
                 if (_mouseTimeText != null) _mouseTimeText.enabled = false;
-                if (_nowTimeText != null) _nowTimeText.enabled = true; // Ensure NOW comes back
+                if (_nowTimeText != null) _nowTimeText.enabled = true;
                 return;
             }
 
             RectTransform lane = overP ? PlayerLane : ObservedLane;
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(lane, mousePos, null, out var lp)) return;
-
             float x = Mathf.Clamp(LocalXToXFromLeft(lane, lp.x), 0f, lane.rect.width);
-            _mouseLinePlayer.enabled = true;
-            _mouseLineObserved.enabled = true;
-            SetLineX(_mouseLinePlayer.rectTransform, x);
-            SetLineX(_mouseLineObserved.rectTransform, x);
+            _mouseLinePlayer.enabled = true; _mouseLineObserved.enabled = true;
+            SetLineX(_mouseLinePlayer.rectTransform, x); SetLineX(_mouseLineObserved.rectTransform, x);
 
-            // Calculate offset time
             float offsetTime = x / PixelsPerSecond;
-            float absTime = Timeline != null ? Timeline.CurrentTime + offsetTime : 0f;
+            // 使用 VisualTime
+            float absTime = Timeline != null ? Timeline.VisualTime + offsetTime : 0f;
 
             if (_mouseTimeText != null)
             {
                 _mouseTimeText.enabled = true;
-
-                // FIX: Format requirement "now + offset"
-                // e.g. "1.50s (+0.50)"
                 _mouseTimeText.text = $"{absTime:F2}s (+{offsetTime:F2})";
-
                 float rulerX = ConvertLaneXToRulerX(x);
                 SetTextX(_mouseTimeText.rectTransform, rulerX);
-
-                // Anti-Overlap: Hide NOW text if Mouse text is too close (< 80px)
                 if (_nowTimeText != null)
                 {
                     float dist = Mathf.Abs(_nowTimeText.rectTransform.anchoredPosition.x - rulerX);

@@ -477,8 +477,8 @@ MonoBehaviour:
   UnitVolumeDefinition: {fileID: 11400000, guid: e7b3456b17272bf4d882a50c38d433e2, type: 2}
   FacingDirection: 0
   ActionLibrary: {fileID: 11400000, guid: 9ea53fc4064c1594796601d06dff0ac9, type: 2}
-  CurrentStateStartTime: 0
-  CurrentStateDuration: 0
+  CurrentStateStartTick: 0
+  CurrentStateDurationTicks: 0
   Strength: 10
   Dexterity: 10
   Constitution: 10
@@ -739,8 +739,8 @@ MonoBehaviour:
   UnitVolumeDefinition: {fileID: 11400000, guid: 25dd84dc5108e4d40a90528a9ecb301c, type: 2}
   FacingDirection: 0
   ActionLibrary: {fileID: 11400000, guid: d09b70a28dd2ced43bf159a1a12b29bf, type: 2}
-  CurrentStateStartTime: 0
-  CurrentStateDuration: 0
+  CurrentStateStartTick: 0
+  CurrentStateDurationTicks: 0
   Strength: 10
   Dexterity: 10
   Constitution: 10
@@ -1144,7 +1144,7 @@ MonoBehaviour:
   Player: {fileID: 776904709}
   Enemy: {fileID: 1072590961}
   Timeline: {fileID: 2011197736}
-  timer: 0
+  DebugTimeDisplay: 0
 --- !u!4 &1572899355
 Transform:
   m_ObjectHideFlags: 0
@@ -1638,10 +1638,12 @@ MonoBehaviour:
   Timeline: {fileID: 2011197736}
   ControlledUnit: {fileID: 1072590961}
   TargetUnit: {fileID: 776904709}
-  ThinkIntervalSeconds: 0.6
-  MinLeadTimeSeconds: 0.2
-  PostMoveAttackDelaySeconds: 0.05
+  MinActionInterval: 0.5
+  MaxActionInterval: 1.2
+  ReactionDelay: 0.3
+  StaminaSafetyMargin: 20
   EnableDebugLogs: 0
+  DebugState: Initializing
 --- !u!114 &2011197748
 MonoBehaviour:
   m_ObjectHideFlags: 0

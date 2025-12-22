@@ -8,20 +8,14 @@ using ProjectHero.Core.Interactions;
 
 namespace ProjectHero.Core.Actions.Intents
 {
-    /// <summary>
-    /// Computes a move path at execution time (based on the unit's then-current position)
-    /// and schedules the concrete MoveIntent steps into the timeline.
-    /// This enables sequential plans to chain correctly.
-    /// </summary>
     public sealed class PlanMoveIntent : CombatIntent
     {
         public Pathfinder.GridPoint Destination { get; }
-
         private readonly BattleTimeline _timeline;
         private readonly long _groupId;
 
         public PlanMoveIntent(CombatUnit owner, Pathfinder.GridPoint destination, BattleTimeline timeline, long groupId)
-            : base(owner, ActionType.Move)  // Use Move type so the group is recognized as a Move action for UI rendering.
+            : base(owner, ActionType.Move)
         {
             Destination = destination;
             _timeline = timeline;
@@ -31,21 +25,16 @@ namespace ProjectHero.Core.Actions.Intents
         public override void ExecuteSuccess()
         {
             if (Owner == null || _timeline == null || GridManager.Instance == null) return;
-
-            // If the unit is dead/disabled, just bail.
             if (!Owner.gameObject.activeInHierarchy) return;
 
-            // Compute obstacles (ignore self)
             var obstacles = GridManager.Instance.GetGlobalObstacles(Owner);
-
             var pathfinder = new Pathfinder();
             List<Pathfinder.GridPoint> path = pathfinder.FindPath(Owner.GridPosition, Destination, Owner.UnitVolumeDefinition, obstacles);
 
             if (path == null || path.Count < 2)
             {
-                // Nothing to do; ensure we don't remain Busy forever.
                 var endIntent = new StateChangeIntent(Owner, "Idle");
-                _timeline.Schedule(0f, endIntent, "Move End (No Path)", _groupId);
+                _timeline.Schedule(0f, endIntent, "Move End (No Path)", _groupId, TimelinePriority.State);
                 return;
             }
 
@@ -62,21 +51,21 @@ namespace ProjectHero.Core.Actions.Intents
                 float duration = Mathf.Clamp(distance / (speed * 0.1f), 0.2f, 4.0f);
 
                 var step = new MoveIntent(Owner, from, to, duration, i, _timeline, _groupId);
-                _timeline.Schedule(accumulatedDelay, step, $"Move Step {i}", _groupId);
+
+                // Priority: State (50)
+                _timeline.Schedule(accumulatedDelay, step, $"Move Step {i}", _groupId, TimelinePriority.State);
+
                 accumulatedDelay += duration;
             }
 
             var end = new StateChangeIntent(Owner, "Idle");
-            _timeline.Schedule(accumulatedDelay, end, "Move End", _groupId);
+            _timeline.Schedule(accumulatedDelay, end, "Move End", _groupId, TimelinePriority.State);
         }
 
         public override void ExecuteInterruption(InteractionType interactionType)
         {
-            // If planning was interrupted, cancel the whole group so we don't leave stray steps.
             if (_timeline != null && _groupId != 0)
-            {
                 _timeline.CancelGroup(_groupId);
-            }
             base.ExecuteInterruption(interactionType);
         }
     }

@@ -7,6 +7,7 @@ namespace ProjectHero.Core.Interactions
         Dodge,      // Dodge vs Attack
         Clash,      // Attack vs Attack (Mutual)
         Intercept,  // Attack vs Move (Into Range)
-        Hit         // Attack connects (Default)
+        Hit,         // Attack connects (Default)
+        Escape
     }
 }
