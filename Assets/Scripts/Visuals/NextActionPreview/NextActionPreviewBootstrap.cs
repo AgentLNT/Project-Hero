@@ -1,5 +1,6 @@
 using UnityEngine;
 using ProjectHero.Core.Grid;
+using UnityEngine.SceneManagement;
 
 namespace ProjectHero.Visuals
 {
@@ -8,17 +9,11 @@ namespace ProjectHero.Visuals
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Install()
         {
-            if (Object.FindFirstObjectByType<NextActionPreviewSystem>() != null) return;
+            if (Object.FindFirstObjectByType<NextActionPreviewInstaller>() != null) return;
 
-            var grid = GridManager.Instance;
-            if (grid == null) grid = Object.FindFirstObjectByType<GridManager>();
-            if (grid == null) return;
-
-            var root = new GameObject("NextActionPreview");
-            root.transform.SetParent(grid.transform, false);
-
-            root.AddComponent<NextActionPreviewRenderer>();
-            root.AddComponent<NextActionPreviewSystem>();
+            var go = new GameObject("NextActionPreviewInstaller");
+            Object.DontDestroyOnLoad(go);
+            go.AddComponent<NextActionPreviewInstaller>();
         }
     }
 }

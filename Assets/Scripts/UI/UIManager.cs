@@ -55,6 +55,11 @@ namespace ProjectHero.UI
             if (_timeline == null) _timeline = FindFirstObjectByType<BattleTimeline>();
             bool paused = _timeline != null && _timeline.Paused;
 
+            if (PauseButton != null)
+            {
+                PauseButton.interactable = _timeline != null && !_timeline.SystemPaused;
+            }
+
             if (_pauseBorderRoot != null) _pauseBorderRoot.SetActive(paused);
             if (_pauseButtonLabel != null) _pauseButtonLabel.text = paused ? ">" : "||";
         }
@@ -152,6 +157,7 @@ namespace ProjectHero.UI
         {
             if (_timeline == null) _timeline = FindFirstObjectByType<BattleTimeline>();
             if (_timeline == null) return;
+            if (_timeline.SystemPaused) return;
             _timeline.SetPaused(!_timeline.Paused);
         }
 

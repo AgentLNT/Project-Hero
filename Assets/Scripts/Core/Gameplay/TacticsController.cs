@@ -297,7 +297,7 @@ namespace ProjectHero.Core.Gameplay
                 _isDodgeCounterMode = false;
                 _isMoveMode = false;
 
-                Timeline.SetPaused(false);
+                Timeline.SetSystemPaused(false);
                 Time.timeScale = 1.0f; 
 
                 if (UIManager.Instance) UIManager.Instance.OnUnitSelected(_selectedUnit);
@@ -551,7 +551,7 @@ namespace ProjectHero.Core.Gameplay
             _isMoveMode = true; 
             _isDodgeCounterMode = true;
 
-            Timeline.SetPaused(true);
+            Timeline.SetSystemPaused(true);
 
         }
 
@@ -576,7 +576,7 @@ namespace ProjectHero.Core.Gameplay
                 unit.SetGridPosition(targetGridPos);
                 Debug.Log($"[Tactics] Dodge Counter Executed to {targetGridPos}");
 
-                Timeline.SetPaused(false);
+                Timeline.SetSystemPaused(false);
                 Time.timeScale = 1.0f; 
                 _isDodgeCounterMode = false;
                 _isMoveMode = false;

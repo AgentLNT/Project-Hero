@@ -23,9 +23,14 @@ namespace ProjectHero.Core.Timeline
         // = �ѹ̶����߼�ʱ�� + ��ǰ֡���۵Ĳ���ʱ��
         public float VisualTime => (CurrentTick * SecondsPerTick) + _timeAccumulator;
 
-        public bool Paused { get; private set; } = false;
+        private bool _userPaused = false;
+        private bool _systemPaused = false;
+
+        public bool Paused => _userPaused || _systemPaused;
+        public bool SystemPaused => _systemPaused;
 
         public System.Action OnScheduleChanged;
+        public System.Action<long, System.Collections.Generic.IReadOnlyList<CombatIntent>> OnTickProcessed;
 
         public System.Action<CombatUnit> OnDodgeSuccessRequestMove;
 
@@ -53,7 +58,12 @@ namespace ProjectHero.Core.Timeline
 
         public void SetPaused(bool paused)
         {
-            Paused = paused;
+            _userPaused = paused;
+        }
+
+        public void SetSystemPaused(bool paused)
+        {
+            _systemPaused = paused;
         }
 
         public void RequestDodgeCounterMove(CombatUnit unit)
@@ -184,6 +194,13 @@ namespace ProjectHero.Core.Timeline
                 {
                     intent.ExecuteSuccess();
                 }
+            }
+
+            if (_frameIntents.Count > 0)
+            {
+                // Copy to avoid subscribers observing list reuse across ticks.
+                var processed = _frameIntents.ToArray();
+                OnTickProcessed?.Invoke(tick, processed);
             }
         }
 

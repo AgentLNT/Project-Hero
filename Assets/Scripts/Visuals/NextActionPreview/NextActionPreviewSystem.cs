@@ -30,8 +30,32 @@ namespace ProjectHero.Visuals
             public long PlannedStartTick;
             public int PlannedEventCount;
             public long PlannedMaxEventId;
+
+            public int CompletedMoveSteps;
+            public List<Pathfinder.GridPoint> MoveStepDestinations = new List<Pathfinder.GridPoint>();
+            public List<List<TrianglePoint>> MoveStepVolumes = new List<List<TrianglePoint>>();
+
             public HashSet<TrianglePoint> Move = new HashSet<TrianglePoint>();
             public HashSet<TrianglePoint> Attack = new HashSet<TrianglePoint>();
+
+            public void ResetSteps()
+            {
+                CompletedMoveSteps = 0;
+                MoveStepDestinations.Clear();
+                MoveStepVolumes.Clear();
+                Move.Clear();
+            }
+
+            public void RecomputeMoveUnion()
+            {
+                Move.Clear();
+                for (int i = Mathf.Clamp(CompletedMoveSteps, 0, MoveStepVolumes.Count); i < MoveStepVolumes.Count; i++)
+                {
+                    var step = MoveStepVolumes[i];
+                    if (step == null) continue;
+                    for (int t = 0; t < step.Count; t++) Move.Add(step[t]);
+                }
+            }
         }
 
         private readonly Dictionary<CombatUnit, UnitPreviewCache> _cache = new Dictionary<CombatUnit, UnitPreviewCache>();
@@ -48,6 +72,7 @@ namespace ProjectHero.Visuals
             if (_timeline != null)
             {
                 _timeline.OnScheduleChanged += MarkDirty;
+                _timeline.OnTickProcessed += HandleTickProcessed;
                 _lastTick = _timeline.CurrentTick;
             }
 
@@ -59,6 +84,65 @@ namespace ProjectHero.Visuals
             if (_timeline != null)
             {
                 _timeline.OnScheduleChanged -= MarkDirty;
+                _timeline.OnTickProcessed -= HandleTickProcessed;
+            }
+        }
+
+        private void HandleTickProcessed(long tick, IReadOnlyList<ProjectHero.Core.Interactions.CombatIntent> intents)
+        {
+            if (intents == null || intents.Count == 0) return;
+
+            bool changed = false;
+
+            for (int i = 0; i < intents.Count; i++)
+            {
+                var intent = intents[i];
+                if (intent == null || intent.Owner == null) continue;
+
+                if (!_cache.TryGetValue(intent.Owner, out var cache) || cache == null) continue;
+
+                switch (intent)
+                {
+                    case AttackIntent:
+                    {
+                        if (cache.Attack.Count > 0)
+                        {
+                            cache.Attack.Clear();
+                            changed = true;
+                        }
+                        break;
+                    }
+
+                    case CommitMoveStepIntent commit:
+                    {
+                        if (cache.MoveStepDestinations.Count == 0) break;
+
+                        int start = Mathf.Clamp(cache.CompletedMoveSteps, 0, cache.MoveStepDestinations.Count);
+                        int found = -1;
+                        for (int s = start; s < cache.MoveStepDestinations.Count; s++)
+                        {
+                            if (cache.MoveStepDestinations[s].Equals(commit.To))
+                            {
+                                found = s;
+                                break;
+                            }
+                        }
+
+                        if (found >= 0)
+                        {
+                            cache.CompletedMoveSteps = Mathf.Max(cache.CompletedMoveSteps, found + 1);
+                            cache.RecomputeMoveUnion();
+                            changed = true;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                _dirty = true;
+                _nextAllowedRefreshTime = 0f;
             }
         }
 
@@ -164,14 +248,15 @@ namespace ProjectHero.Visuals
                 if (groupChanged || groupRescheduled)
                 {
                     cache.GroupKey = chosenGroupKey;
-                    cache.Move.Clear();
+                    cache.ResetSteps();
                     cache.Attack.Clear();
 
                     cache.PlannedStartTick = plannedStartTick;
                     cache.PlannedEventCount = plannedCount;
                     cache.PlannedMaxEventId = plannedMaxEventId;
 
-                    SimulateAndCollect(unit, groupEvents, cache.Move, cache.Attack);
+                    SimulateAndCollect(unit, groupEvents, cache);
+                    cache.RecomputeMoveUnion();
                 }
 
                 if (showMovePreview && cache.Move.Count > 0)
@@ -224,8 +309,7 @@ namespace ProjectHero.Visuals
         private static void SimulateAndCollect(
             CombatUnit unit,
             List<BattleTimeline.ScheduledIntentDetailedInfo> orderedEvents,
-            HashSet<TrianglePoint> moveOut,
-            HashSet<TrianglePoint> attackOut)
+            UnitPreviewCache cache)
         {
             var predictedPos = unit.GridPosition;
             var predictedFacing = unit.FacingDirection;
@@ -252,10 +336,11 @@ namespace ProjectHero.Visuals
                             var from = path[i - 1];
                             var to = path[i];
                             var dir = GridMath.GetDirection(from, to);
-                            foreach (var tri in unit.GetProjectedOccupancy(to, dir))
-                            {
-                                moveOut.Add(tri);
-                            }
+
+                            var occ = unit.GetProjectedOccupancy(to, dir);
+                            cache.MoveStepDestinations.Add(to);
+                            cache.MoveStepVolumes.Add(occ);
+
                             predictedPos = to;
                             predictedFacing = dir;
                         }
@@ -266,10 +351,9 @@ namespace ProjectHero.Visuals
                     case MoveIntent move:
                     {
                         var dir = GridMath.GetDirection(move.From, move.To);
-                        foreach (var tri in unit.GetProjectedOccupancy(move.To, dir))
-                        {
-                            moveOut.Add(tri);
-                        }
+                        var occ = unit.GetProjectedOccupancy(move.To, dir);
+                        cache.MoveStepDestinations.Add(move.To);
+                        cache.MoveStepVolumes.Add(occ);
 
                         predictedPos = move.To;
                         if (move.Rotate) predictedFacing = dir;
@@ -304,7 +388,7 @@ namespace ProjectHero.Visuals
 
                         foreach (var tri in pattern.GetAffectedTriangles(predictedPos, predictedFacing))
                         {
-                            attackOut.Add(tri);
+                            cache.Attack.Add(tri);
                         }
                         break;
                     }

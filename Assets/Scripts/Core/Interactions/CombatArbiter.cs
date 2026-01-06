@@ -150,6 +150,13 @@ namespace ProjectHero.Core.Interactions
 
                     eMov.Owner.CurrentFocus += 1;
 
+                    // If the mover escapes the targeted area at the impact frame,
+                    // ensure they are not damaged by this attack's execution (which may still see old occupancy).
+                    if (eMov.Owner != null)
+                    {
+                        eAtk.IgnoreTarget(eMov.Owner);
+                    }
+
                     if (GameFeelManager.Instance) GameFeelManager.Instance.ShowStatusText(eMov.Owner.transform.position, "ESCAPE", Color.green);
                     break;
             }
