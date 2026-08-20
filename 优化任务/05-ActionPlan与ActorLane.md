@@ -32,14 +32,14 @@
    - `CreatedAtTick`、`LastEditedScheduleRevision`、`AutomaticDeferralCount`、`LockedAtTick`
    - `Editable`、`Locked`、`Running`、自然终态 `Completed` 和带原因的非自然终态 `Terminated`
    - `TerminalTick`
-   - 独立的 `ActionTerminationReason`；至少区分 `CancelledByCommand`、`TargetInvalid`、`ActorUnavailableAtStart`、`AutoDeferralLimitExceeded`、`SourceThreatCancelled`、`InterruptedByClash`、`InterruptedByIntercept`、`InterruptedByControl`、`OwnerDied` 和 `BattleEnded`
+   - 独立的 `ActionTerminationReason`；至少区分 `CancelledByCommand`、`TargetInvalid`、`ActorUnavailableAtStart`、`AutoDeferralLimitExceeded`、`SourceThreatCancelled`、`InterruptedByClash`、`InterruptedByIntercept`、`InterruptedByControl`、`ReservationPreemptedByForcedDisplacement`、`MovementOriginInvalidated`、`OwnerDied` 和 `BattleEnded`
 2. 全局 ActionPlan 注册表，按稳定键访问和快照化，不按 WindowId 分桶执行。
 3. 每单位一条全局 `ActorLane`：
    - 计划按 `StartTick -> ActionPlanId` 排序。
    - Locked/Running 普通计划与固定反应区间是不可变障碍；Editable 普通计划可由权威 ScheduleEditor 放置、移动、删除、排序并只向右避让。
    - `IsSubmissionLocked`、计划状态、最大队列数量、单批规模、依赖闭包和最大预排 Tick 共同决定是否接受/编辑计划。
 4. 唯一 `ActionPlanTerminalCoordinator`（或等价 `ActionLifecycle.EnterTerminal` 入口）：
-   - 自然完成、RemoveEditablePlan/显式生命周期取消、启动失败或自动延期越界、目标失效、来源威胁取消、交互/控制打断、Owner 死亡和战斗结束都只能经该入口改变计划终态。
+   - 自然完成、RemoveEditablePlan/显式生命周期取消、启动失败或自动延期越界、目标失效、来源威胁取消、交互/控制打断、强制位移破坏旧起点或 Reservation、Owner 死亡和战斗结束都只能经该入口改变计划终态。
    - 第一次终态请求胜出；重复或冲突请求幂等，不覆盖状态、原因或 TerminalTick，不重复发事件。
    - 使用显式、固定顺序的清理参与者，先阻止计划继续调度，再清除未冻结/未来 Intent、Lane 项、机会绑定和活动索引；任务 06/07 在同一入口接入 MovementSegment/空间 Reservation、TurnBudget 账本与肾上腺素 Reservation，不得另建清理入口。
    - 历史记录保留；每个 Step 返回前可统一检查没有活动对象引用终态计划。
@@ -80,7 +80,7 @@
 - Lane 锁定只阻止新提交，不清除已有计划。
 - 单位当前不是 `Idle` 不代表 Lane 拒绝排在未来的计划；当前是 `Idle` 也不代表一定可提交。
 - 计划启动和产生 Intent 时不检查 `SubmittedWindowId`；门禁启动提交只把该计划已有的预算预留转为消费，不二次收费。系统延期可按同源求值原子调整预留，但不能转移来源或重开关闭窗口。
-- Editable 普通计划经 Remove 或在锁定前因目标/死亡等进入终态时释放尚未消费的 TurnBudget 预留；Locked/Running 后的自然完成、交互打断、死亡或战斗结束不退款。所有路径都不回卷或复用 ID/Sequence、不撤销已提交伤害/状态/移动，也不自动前移后续计划。`SourceThreatCancelled` 继续请求任务 07 按 Cycle 释放反应预留。
+- Editable 普通计划经 Remove 或在锁定前因目标/死亡等进入终态时释放尚未消费的 TurnBudget 预留；Locked/Running 后的自然完成、交互打断、强制位移失效、死亡或战斗结束不退款。强制位移终态中，实际被换位且 Move 依赖旧起点时使用 `MovementOriginInvalidated`，否则因最终 footprint 抢占空间承诺时使用 `ReservationPreemptedByForcedDisplacement`；同一计划同时满足两者时前者优先。所有路径都不回卷或复用 ID/Sequence、不撤销已提交伤害/状态/移动，也不自动前移后续计划。Editable 的 Reserved 释放只是未消费预留清理，不重开窗口或转移额度；`SourceThreatCancelled` 继续请求任务 07 按 Cycle 释放反应预留。
 - 终态请求按 Step 阶段与其既有稳定键提交；同一计划第一次成功请求确定最终结果，后续死亡或战斗结束请求不得覆盖。`Completed` 可以没有终止原因，`Terminated` 必须把明确原因写入事件和快照。
 - Block 的载荷归零与 Dodge 的空间失效都不终止来源攻击；反应计划在 TriggerTick 结算后继续 Recovery，并在固定 EndTick 经统一入口自然完成。
 - `ScheduleRevision` 是全局乐观并发版本；Expected 值与 Step 冻结时的 BatchBaseScheduleRevision 比较，不与本批前一事务递增后的实时值比较。互不相交 Lane 可按 CommandSequence 各成功并各 +1；触及本批已改写 Plan/Lane 依赖闭包的后处理事务以 `SCHEDULE_EDIT_CONFLICT_IN_BATCH` 拒绝。显式命令阶段完成后，成功的系统自动延期按稳定到期顺序读取当前排程并各 +1；预览、任意失败、窗口切换、锁定与自然推进不增加修订号，跨 Tick 旧修订以 `STALE_SCHEDULE_REVISION` 拒绝。
@@ -93,7 +93,7 @@
 2. 实现全局计划注册表与稳定枚举 API。
 3. 实现 ActorLane 新增/编辑检查、Editable 与不可变区间查询、投影整体替换、执行前启动门禁/原子锁定端口，以及只供终态协调器调用的移除接口。
 4. 实现统一终态协调器、固定清理参与者顺序和 Step 末无孤儿引用检查；本任务先接入调度器、测试 Intent、Lane 和活动计划索引，保留任务 06 的 MovementSegment/空间 Reservation 与任务 07 的 TurnBudget/肾上腺素账本参与者槽位。
-5. 将自然完成、RemoveEditablePlan、目标失效、来源威胁取消、死亡和 BattleEndFinalizer 接入该协调器；为任务 08 冻结 Resolution 终态请求接口。排程删除也不得旁路清理。
+5. 将自然完成、RemoveEditablePlan、目标失效、来源威胁取消、死亡和 BattleEndFinalizer 接入该协调器；为任务 08 冻结 Resolution 终态请求接口，以及 `MovementOriginInvalidated` / `ReservationPreemptedByForcedDisplacement` 的原因优先级、按 ActionPlanId 去重顺序和同一协调器调用边界。排程删除与强制位移都不得旁路清理。
 6. 将生命周期接入任务 03 的 Step 扩展点，明确“状态到期 -> 命令编辑 -> 启动门禁 -> 原子锁定/启动”的固定顺序；本任务没有真实交互时可用确定的测试 Intent。
 7. 建立 ScheduleEvaluator、ScheduleEditor、Add/Move/Remove 操作、插入锚点、只向右 ripple、ScheduleRevision、系统自动延期与原子事务，保留任务 06/07 接入 RetryAtTick 空间阻塞、空间 Reservation 和预算预留/消费的扩展点。
 8. 实现同一纯求值器的只读预览结果；结果列出受影响计划、规范 Tick、移动链预测与失败原因，预览不得分配正式 ID 或修改修订号。
@@ -171,6 +171,9 @@
 - `TerminalCleanupIsIdempotentAndFirstReasonWins`
 - `TerminalCleanupDoesNotRewindIdsOrSequences`
 - `TerminalCleanupEmitsLifecycleEventOnce`
+- `ForcedDisplacementPlanInvalidationUsesSingleLifecycleEntry`
+- `MovementOriginInvalidatedWinsOverReservationPreemptionForSamePlan`
+- `ForcedDisplacementTerminationDoesNotPullLaterPlansForward`
 - `SubmissionLockDoesNotDeleteExistingPlans`
 - `NonIdleStateDoesNotByItselfRejectFuturePlan`
 - `SubmittedWindowIdDoesNotFilterPlanExecution`
@@ -218,7 +221,7 @@
 - 首版保留未来放置、拖动重排、删除、向右避让与移动链重算；删除不自动左吸，UI 预览和权威提交没有两套算法。
 - 事务失败后不存在孤立计划、错误 `NextAvailableTick` 或残留测试 Intent；计划进入权威注册表后的任意终态也不会留下活动索引、Lane 项或未冻结/未来 Intent。
 - 任务 07 可以在不改变 ActionPlan 生命周期的前提下接入新增授权、Editable 预算预留、系统延期预算调整与启动门禁的原子消费。
-- 终态清理幂等，第一次状态/原因/TerminalTick 保持；Editable 普通计划释放未消费预算，Locked 后不退款，反应仅保留当前周期 `SourceThreatCancelled` 释放例外；不回卷 ID/Sequence、不撤销已提交结果或前移后续计划。
+- 终态清理幂等，第一次状态/原因/TerminalTick 保持；Editable 普通计划释放未消费预算，Locked 后不退款，反应仅保留当前周期 `SourceThreatCancelled` 释放例外；强制位移两种原因按冻结优先级进入同一入口并完整清理空间从属对象，不回卷 ID/Sequence、不撤销已提交结果或前移后续计划。
 - 战斗结束复用普通终态协调器；结束后不存在仍可启动或产生 Intent 的活动计划，最终快照仍能审计每个计划的原始 Tick、状态和终止原因。
 - 对应隐藏场景/Shadow 用例已重跑；计划、Lane、攻击时序和终态差异全部可追溯，新模拟仍零 Unity/旧状态/反馈写入。
 
@@ -233,9 +236,10 @@
 - 不把普通计划先标为 Locked 再分别扣预算/尝试 Running；启动提交必须原子，内部矛盾不能降级为普通终态。
 - 不把 Editable 预算预留释放误实现为 Locked 后退款；不允许释放旧窗口预留后重开窗口或转移预算。
 - 不允许 Resolution、死亡系统、BattleEndFinalizer、命令处理器或 ActorLane 直接改写计划终态或各自删除一部分从属对象。
+- 不允许强制位移求解器或 `ApplyBatchRelocation` 直接改写计划终态；任务 08 必须按 ActionPlanId 请求本任务的统一协调器。
 - 不通过事件总线、反射发现或不稳定注册顺序执行终态清理参与者。
 - 不实现完整 `TurnWindowManager`、肾上腺素账户、并发行动或 AI；但必须提供任务 06/07/09 可原子接入的目的格、资源与命令端口。
 
 ## 交接重点
 
-交接必须冻结 `Editable -> Locked -> Running -> 终态` 状态图、N+1 状态到期/编辑先于启动门禁的阶段顺序、`ActionStartGateResult` 四分结果、StartBlockerReason 与终态映射、有限 RetryAtTick、`MaxAutomaticDeferralsPerPlan`、原子锁定/预算消费/启动端口、系统延期的稳定顺序/修订/事件/快照语义、ActionPlan 单一身份、ScheduleEdit 操作/Scope/Revision/拒绝码、向右避让与不左吸算法、预览/命令提交/系统延期同源求值器、依赖闭包上限、计划创建/编辑/自动延期/锁定快照字段（含 Move 的 EdgeCount/PathWeightUnits/ResolvedBaseStepTicks）、PrimaryTarget 与 FactionRelationResolver/AllowedTargetRelations 的 Add/候选/门禁校验、`ActionTerminationReason`、统一终态入口、第一次请求胜出与幂等语义、清理参与者固定顺序、冻结 Intent 边界、Step 末无孤儿引用检查、五类动作解析 Tick/成本字段、反应固定区间插入/不延期规则、按关系掩码生成 ReactionOpportunity 的状态/选项截止/TriggerBinding/关闭原因、本任务新增的 Shadow 检查点与精确批准差异，以及任务 06/07/08/09 如何分别接入空间 RetryAtTick/Reservation、预算预留/调整/原子消费与肾上腺素、Resolution 和 ScheduleEdit/ReactionCommand。任务 08 只能消费 Locked 计划已固定的 Impact/Trigger 时刻并调用统一终态入口，不得自行重新解释速度、动作时长、目标关系或直接清理计划。
+交接必须冻结 `Editable -> Locked -> Running -> 终态` 状态图、N+1 状态到期/编辑先于启动门禁的阶段顺序、`ActionStartGateResult` 四分结果、StartBlockerReason 与终态映射、有限 RetryAtTick、`MaxAutomaticDeferralsPerPlan`、原子锁定/预算消费/启动端口、系统延期的稳定顺序/修订/事件/快照语义、ActionPlan 单一身份、ScheduleEdit 操作/Scope/Revision/拒绝码、向右避让与不左吸算法、预览/命令提交/系统延期同源求值器、依赖闭包上限、计划创建/编辑/自动延期/锁定快照字段（含 Move 的 EdgeCount/PathWeightUnits/ResolvedBaseStepTicks）、PrimaryTarget 与 FactionRelationResolver/AllowedTargetRelations 的 Add/候选/门禁校验、`ActionTerminationReason`（含 `MovementOriginInvalidated` / `ReservationPreemptedByForcedDisplacement`）、两者的优先级与 ActionPlanId 去重顺序、统一终态入口、第一次请求胜出与幂等语义、清理参与者固定顺序、冻结 Intent 边界、Step 末无孤儿引用检查、五类动作解析 Tick/成本字段、反应固定区间插入/不延期规则、按关系掩码生成 ReactionOpportunity 的状态/选项截止/TriggerBinding/关闭原因、本任务新增的 Shadow 检查点与精确批准差异，以及任务 06/07/08/09 如何分别接入空间 RetryAtTick/Reservation、预算预留/调整/原子消费与肾上腺素、Resolution 和 ScheduleEdit/ReactionCommand。任务 08 只能消费 Locked 计划已固定的 Impact/Trigger 时刻并调用统一终态入口，不得自行重新解释速度、动作时长、目标关系或直接清理计划。

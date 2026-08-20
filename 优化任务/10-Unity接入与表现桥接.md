@@ -51,8 +51,8 @@
    - 构建或初始化失败时阻止战斗启动并显示完整、稳定错误；不得在同一次启动中回退到 Legacy 或跳过配置。运维回切只能显式结束并新建一场 Legacy 战斗。
 5. `CombatUnitView` 或等价桥：初始化器通过任务 02B 返回的槽位映射解析本场 `(UnitId, FactionId)` 后完成绑定；View 只读取快照和事件，不持有逻辑写权限，也不手填运行时数字 ID/FactionId。阵营颜色、图标和本地文案可由 View 元数据映射，但不能反向成为 Logic 关系来源。
 6. `GridView`：负责世界坐标与离散网格坐标转换、射线和调试绘制；LogicGrid 保持权威。
-7. `CombatFeedbackMapper`：把分通道 Damage、Guard、Dodge、Block、Clash、StateChanged 等语义事件映射到伤害数字、震屏、顿帧、动画和音效策略；表现可以合并显示，但调试层必须能展示 Raw/抵抗后伤害与抵抗前后动量。
-8. `UnitMovement` 改为纯视觉插值；不得在插值完成回调中提交逻辑位置。收到移动计划终态事件或发现最新快照仍位于最后已提交逻辑格时，必须停止旧目的地插值并向权威快照位置收敛，不能让表现继续暗示计划将在原 EndTick 到达。
+7. `CombatFeedbackMapper`：把分通道 Damage、Guard、Dodge、Block、Clash、StateChanged、ForcedDisplacementResolved 等语义事件映射到伤害数字、震屏、顿帧、动画和音效策略；表现可以合并显示，但调试层必须能展示 Raw/抵抗后伤害、抵抗前后动量，以及强制位移的 Requested/AppliedSteps、StopReason 和 InvalidatedPlanIds。
+8. `UnitMovement` 改为纯视觉插值；不得在插值完成回调中提交逻辑位置。收到移动计划终态事件或发现最新快照仍位于最后已提交逻辑格时，必须停止旧目的地插值并向权威快照位置收敛，不能让表现继续暗示计划将在原 EndTick 到达。收到 `ForcedDisplacementResolvedEvent` 时只从事件 From 向最终 To 播放一次位移表现；不得逐格回写、重新做碰撞/寻路/Reservation 判定，零步结果只播放可选受阻反馈并保持快照位置。
 9. UI/时间线以只读快照为权威，但保留普通计划编辑能力，不能直接写全局集合：
    - 显示 `CurrentTick + 1` 锁定线及 Editable/Locked/Running/终态差异；支持未来放置、整数 Tick/关键帧吸附、拖动重排、删除、向右避让预览，以及移动链预测位置/路径/路径权重/时长/预算变化。路径、时长与预算必须完整来自 Logic 预览；UI 不按世界距离、MoveSpeed 或 EdgeCount 自行估算。
    - 一次拖拽过程只修改本地草稿，并调用 Logic 的纯 SchedulePreview API；确认时仅发送一个带 ExpectedScheduleRevision 的原子 ScheduleEditCommand。收到旧修订/锁定/路径/预算拒绝后丢弃本地候选并基于最新快照重预览，不做局部合并。
@@ -117,6 +117,9 @@
 - `DuplicateOrMissingEncounterSlotBindingFailsClearly`
 - `MovementInterpolationDoesNotCommitLogicPosition`
 - `InterruptedMovementStopsVisualDestinationAndReconcilesToSnapshot`
+- `ForcedDisplacementEventInterpolatesOnlyFromCommittedFromTo`
+- `ForcedDisplacementVisualNeverRecomputesCollisionPathOrWinner`
+- `ZeroStepForcedDisplacementKeepsSnapshotPositionAndMayPlayBlockedFeedback`
 - `SemanticEventsMapToFeedbackWithoutLogicWriteback`
 - `ReactionUiUsesOpportunityAndNeverConstructsTriggerTick`
 - `ReactionUiClosesOnAcceptedExpiredOrSourceCancelledEvent`
@@ -154,6 +157,7 @@
 - 主场景只通过任务 02B 的完整定义和初始化 API 创建逻辑世界；任务 10 没有第二套 ID 映射、默认值或旧资产转换代码。
 - 逻辑状态只由 Step 修改；旧组件若保留，只做绑定、转发或只读兼容。
 - 相同命令下改变表现速度不改变最终快照哈希和事件序列。
+- 强制位移表现只消费已提交的 From/To/AppliedSteps/StopReason；动画速度、碰撞表现、补间中间格或受阻反馈均不能改变 LogicGrid、计划终态、Reservation、事件或快照。
 - 普通时间线在不持有可变 Logic 引用的前提下恢复未来放置、重排、删除、向右避让和移动链重算；所有确认操作可追溯为 ScheduleEditCommand，预览与提交使用同一 Logic 求值器。
 - 系统自动延期后 UI 只消费事件/快照并重基线，不直接改 Plan/Lane、不伪造 ScheduleEdit，Locked/Running/固定反应仍保持只读。
 - 反应 UI 只消费机会事件/快照并构造 ReactionCommand；没有预测敌方 Impact 后直接写 Tick、资源、状态或逻辑位置的旁路。
@@ -177,9 +181,10 @@
 - 不把普通时间线退化为完全只读，也不让 UI 直接改 Plan/Lane、自己提交 ripple/路径结果、编辑越过锁定线，或把每帧拖拽写入命令/回放。
 - 不用 `Time.timeScale` 直接控制逻辑 Tick 频率。
 - 不为修复表现而复制第二份位置、状态或动作权威数据。
+- 不在 View 中重演强制位移逐格求解、选冲突赢家、执行连锁推人或根据 Collider 修正 To；事件与最新快照是唯一位置事实。
 - 不让 View 写入/推断 FactionId，不用 GameObject Tag/Layer、材质颜色、玩家标志或 Controller 类型决定敌我和可选目标。
 - 不在本任务扩展新玩法或重做无关 UI 美术。
 
 ## 交接重点
 
-交接必须列出使用的 EncounterDefinition、BattleDefinitionHash、`BattleRuntimeInputs` 的显式来源、`ReplayFormatVersion` 与首个 Step 前 `InitialStateHash` 的回放保存证据、场景槽位绑定及其 `UnitId/FactionId` 映射证据、Faction 显示元数据与 Logic 关系/目标资格的单向边界、目标选择器使用 DecisionSnapshot/AllowedTargetRelations 的证据、唯一 Bootstrap 与三模式调用计数、主场景 New 默认值证据、完整 Shadow 报告及全部批准差异、重新开局式回切演练步骤、场景绑定变化、旧组件剩余职责、普通时间线的锁定线/Editable 操作/预览/原子提交/修订冲突与 AutoDeferred 重基线映射、ReactionOpportunity UI/命令映射、TurnBudget/肾上腺素 HUD、分通道伤害/动量事件到表现的映射表、暂停与时间累积语义、已移除的热路径查询，以及任务 11 可删除的 Legacy 兼容壳候选。
+交接必须列出使用的 EncounterDefinition、BattleDefinitionHash、`BattleRuntimeInputs` 的显式来源、`ReplayFormatVersion` 与首个 Step 前 `InitialStateHash` 的回放保存证据、场景槽位绑定及其 `UnitId/FactionId` 映射证据、Faction 显示元数据与 Logic 关系/目标资格的单向边界、目标选择器使用 DecisionSnapshot/AllowedTargetRelations 的证据、唯一 Bootstrap 与三模式调用计数、主场景 New 默认值证据、完整 Shadow 报告及全部批准差异、重新开局式回切演练步骤、场景绑定变化、旧组件剩余职责、普通时间线的锁定线/Editable 操作/预览/原子提交/修订冲突与 AutoDeferred 重基线映射、ReactionOpportunity UI/命令映射、TurnBudget/肾上腺素 HUD、分通道伤害/动量事件和 `ForcedDisplacementResolvedEvent` 到纯表现插值/受阻反馈的映射表、暂停与时间累积语义、已移除的热路径查询，以及任务 11 可删除的 Legacy 兼容壳候选。

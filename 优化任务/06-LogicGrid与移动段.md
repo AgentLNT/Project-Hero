@@ -41,6 +41,11 @@
    - `HeuristicWeightUnits = dy + max(0, (dx-dy)/2)`，其中 `dx/dy` 是 doubled-coordinate 绝对差，整数除法向下；坐标减法/绝对值先扩展为 checked `long`。A* 的 `g/h/f` 都使用 checked `long`；开放集按 `(f, h, GridPoint.X, GridPoint.Y)` 升序取节点，不增加 `g` 或 `DiscoveryOrdinal/InsertSequence` 末级键。相同坐标只有更小的 `g` 才更新，相同 `g` 保留已有父节点。
    - 只在 `LogicGrid` / Encounter 明确声明的合法网格边界内搜索。首版 `PathSearchRules` 固定为 `MaxExpandedNodes = 4096`、`MaxPathWeightUnits = 256`、`MaxPathEdges = 192`；三项使用包含式边界，值 `<=` 上限合法，只有严格 `>` 才失败。不设置独立坐标距离上限。每次取出非过期开放集节点时先 checked 增加 ExpandedNodes，起点计 1，过期队列项不计数；若结果 `> 4096`，必须在目标检查和邻居展开之前返回节点上限失败。禁止保留旧 `maxIterations = 1000`、距起点 `±100` 或返回 `null` 的隐式语义。
    - 建立开放集前按起点、终点顺序预检。非法 doubled-coordinate、越过 Encounter 边界或不满足相应占位/目的地体积条件分别返回 `PATH_INVALID_START`、`PATH_INVALID_DESTINATION`；两者同时非法时起点优先，不得进入搜索后伪装为无路。搜索阶段使用稳定判别结果：`PATH_NOT_FOUND`、`PATH_SEARCH_NODE_LIMIT_EXCEEDED`、`PATH_WEIGHT_LIMIT_EXCEEDED`、`PATH_EDGE_LIMIT_EXCEEDED`、`PATH_COST_OVERFLOW`。候选边先做 checked 坐标/成本运算，再计算 EdgeCount 和 PathWeight，随后检查边界/占位；checked 溢出立即终止整个搜索。`CandidateEdgeCount > 192` 或 `CandidatePathWeightUnits > 256` 只丢弃该候选并记录原因，等于上限继续松弛；其他合法分支继续搜索。开放集耗尽后按 `PATH_EDGE_LIMIT_EXCEEDED -> PATH_WEIGHT_LIMIT_EXCEEDED -> PATH_NOT_FOUND` 选择已记录的最高原因。进入搜索后的全局优先级固定为 `PATH_COST_OVERFLOW > PATH_SEARCH_NODE_LIMIT_EXCEEDED > PATH_EDGE_LIMIT_EXCEEDED > PATH_WEIGHT_LIMIT_EXCEEDED > PATH_NOT_FOUND`。ScheduleEvaluator、AI 和只读预览必须消费同一结果，不得各自猜测失败原因。
+13. 为任务 08 提供强制位移专用的原子占位提交原语，但本任务不实现同时求解器：
+   - `BatchRelocation(UnitId, ExpectedFrom, To)` 与 `LogicGrid.ApplyBatchRelocation(IReadOnlyList<BatchRelocation>)`；输入先按 UnitId 检查唯一性，仅用于验证/规范诊断，不用于选择赢家。
+   - 调用前，任务 08 已在不可变快照和临时空间确定全部最终位置，并已通过任务 05 的终态协调器释放冲突移动计划的未来 Segment/Reservation。本原语不得调用 Pathfinder、MoveTimingSpec、MovementSegment 推进、`TryReservePath` 或普通 Reservation 仲裁。
+   - 方法先验证全部单位仍处于 `ExpectedFrom`、来源 footprint 与当前权威占位一致、目标锚点/完整 footprint 合法、批次目标彼此不重叠、移除批次内全部旧 footprint 后不与静止单位相交，且待抢占 Reservation 已清理。全部验证通过后，先统一移除所有旧 footprint，再统一写入全部新 footprint。
+   - 任一验证失败报告 `InvariantViolation` 且真实 LogicGrid 零写入；禁止按 UnitId 部分提交、现场重算落点或改为单单位移动。该方法不产生表现事件，任务 08 在成功提交后发射规范位移事件。
 
 ## 逻辑与表现边界
 
@@ -55,7 +60,7 @@
 - 移动计划若在当前段 `EndTick` 前进入终态，单位保留最后一次已提交的逻辑格（通常为当前段 `From`），目的格与未来路径 Reservation 立即释放，原 `EndTick` 不得再提交到 `To`。若命令前边界已经先完成该段提交，则保留已提交的 `To`；结果只由 Step 阶段顺序决定，不读取视觉插值进度。
 - Editable Move 尚未开始，不修改当前真实 Occupancy；其路径和结束格是排程预测。ScheduleEdit 删除/移动前序计划时，从最后一个 Locked/Running/已提交位置重新计算受影响链；无路、超步数、预算或 Reservation 冲突使整批失败，不能只保留部分下游旧预测。
 - 系统自动延期同样从最后一个不可变位置重算候选链，并遵守只向右、禁止移动 Locked/Running/固定反应、不左吸与最大视野规则。成功前旧 Segment/Reservation 保持权威；失败时旧候选不做局部替换，随后由任务 05 的终态协调器释放到期 Editable 计划持有的全部空间预留。
-- 强制位移是 Resolution 提交的独立逻辑结果，不得伪装成“让已终态移动段继续到达 To”，也不能复用被清理的 Reservation。
+- 强制位移是 Resolution 提交的独立逻辑结果，不得伪装成“让已终态移动段继续到达 To”，也不能复用被清理的 Reservation。任务 06 只提供 `ApplyBatchRelocation` 原子提交原语；逐格临时求解、争抢/交换/依赖图/停止原因、Reservation 抢占和位移事件全部由任务 08 负责。
 
 ## 工作步骤
 
@@ -65,6 +70,7 @@
 4. 保留 `GridManager` 作为过渡期坐标/场景桥，但停止它作为新 Logic 路径的权威占位源。
 5. 添加权重 1/2、整数启发、开放集平局、搜索边界/上限/溢出、速度与选路正交、原始命令批次枚举顺序、规范化命令顺序、路径冲突和快照回归测试。
 6. 将 Dodge 目的格预留接入任务 05 反应计划事务和统一终态清理；建立 TriggerTick 原子提交 API，并证明该提交早于任务 08 同 Tick 接触复核。
+7. 实现并单测 `ApplyBatchRelocation`：先完成全批验证，再统一移除来源 footprint、统一写入目标 footprint；为任务 08 冻结调用前置条件与 `InvariantViolation` 零写入语义，不在本任务加入强制位移求解规则。
 
 ## 允许改动
 
@@ -154,6 +160,13 @@
 - `DodgeDestinationConflictFollowsCanonicalCommandOrder`
 - `InvalidDodgeDestinationTerminatesReactionWithoutMovingUnit`
 - `AreaAttackCanStillHitCommittedDodgeDestination`
+- `BatchRelocationValidatesAllSourcesBeforeMutation`
+- `BatchRelocationValidatesWholeMultiCellFootprint`
+- `BatchRelocationRemovesAllOldFootprintsBeforeAddingNewFootprints`
+- `BatchRelocationRejectsOverlapWithStationaryOccupancy`
+- `BatchRelocationFailureLeavesGridUnchanged`
+- `BatchRelocationRequiresPreemptedReservationsToBeCleared`
+- `BatchRelocationDoesNotUsePathfinderSegmentsOrReservationArbitration`
 - `LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference`
 
 ## 验收标准
@@ -169,6 +182,7 @@
 - 后处理的冲突命令只回滚自身事务，不得撤销或修改先前命令拥有的 ActionPlan、ActorLane 和 Reservation；ScheduleEdit 只能在单个原子批次内整体替换该批可控 Editable 计划自己的预测与 Reservation。
 - 旧 GridManager 不再是新逻辑路径的双写权威源。
 - 任务 08 可以只通过只读 LogicGrid 和 MovementSegment 查询完成交互判定。
+- 任务 08 可以把已同时求解的全局最终位置交给一个 `ApplyBatchRelocation` 调用；该调用在任何来源/footprint/Reservation 不变量失败时零写入，成功时真实网格不存在可观察的逐单位中间状态。
 - 任务 08 能在单一固定阶段调用 Dodge 原子提交，然后只读取新占位重新验证攻击；没有基于 Dodging 状态的免伤旁路。
 - 任意计划终态后都不存在该计划的活动/未来 MovementSegment 或 Reservation；移动中断停在最后已提交逻辑格，且不会在旧 EndTick 发生迟到位置提交。
 - Editable 移动链的时间线重排会同步重算预测起点、路径、边数、路径权重、结束 Tick、预算接缝、Segment 与 Reservation，但不重采样 MoveSpeed；Locked/Running/反应计划和真实 Occupancy 不被该重算改写。
@@ -191,9 +205,11 @@
 - 不为未知/永久空间冲突编造 `tick + 1` RetryAtTick，不以轮询掩盖非法占位或 Reservation 所有权矛盾。
 - 不由移动系统、Intercept Resolution 或 BattleEndFinalizer 直接改写 ActionPlan 终态，也不各自复制一套 Segment/Reservation 清理。
 - 不把终态清理当作强制位移，或依据 Transform/动画进度选择 From/To。
+- 不在本任务实现强制位移的争抢赢家、依赖图、停止原因、Reservation 抢占或事件；不让 `ApplyBatchRelocation` 调用 Pathfinder、MoveTiming、MovementSegment 或普通 Reservation 竞争逻辑。
+- 不把批量换位拆成按 UnitId 循环调用单单位 `Unregister/Register` 的可观察提交，也不在部分验证或部分写入失败后保留半批结果。
 - 不在本任务实现完整攻击仲裁或表现层网格重绘。
 - 不把 Dodge 实现为普通 Move 的加速版本、连续穿越路径或持续无敌区间；逻辑只在 TriggerTick 从 From 原子切换到 Destination。
 
 ## 交接重点
 
-交接必须冻结 `GridDirection 0 -> 11` 的规范邻居枚举顺序、非法邻居跳过语义、偶数/奇数方向 1/2 `StepWeightUnits`、整数启发公式、checked long 成本、`(f, h, GridPoint.X, GridPoint.Y)` 平局与相同 `g` 不替换父节点规则、Encounter 网格边界、三个搜索上限及五类稳定失败码，任务 02B 预展开 12 向 Pattern/Volume 表的只读消费接口与“只索引、平移、不旋转”边界，占位半开区间、FactionRelation 不影响 Occupancy/Reservation 的边界、`Free/RetryableTimedBlock/TerminalOrUnknownBlock` 空间门禁结果与有限 ReleaseTick、首次量化的 Move 每权重单位 Tick、显式编辑/系统自动延期共用的 Editable 移动依赖闭包预测位置/路径/边数/路径权重/Segment/Reservation 整批重算、Locked 后冻结边界、Dodge TriggerTick 目的格预留与原子提交阶段、复用任务 03 网关 `CommandSequence` 的处理顺序与“先成功提交者持有 Reservation”规则、仅回滚当前事务的路径失败语义、统一终态清理参与者及其排序、移动中断保留最后已提交逻辑格的规则、本任务新增的 Shadow 检查点与精确批准差异，以及供任务 08 使用的新位置/移动查询接口。任务 08 的 Intercept 只能请求计划终态和独立强制位移 Resolution，不能直接删除 Segment/Reservation；Dodge 结果也必须来自空间复核，不能从状态推断。
+交接必须冻结 `GridDirection 0 -> 11` 的规范邻居枚举顺序、非法邻居跳过语义、偶数/奇数方向 1/2 `StepWeightUnits`、整数启发公式、checked long 成本、`(f, h, GridPoint.X, GridPoint.Y)` 平局与相同 `g` 不替换父节点规则、Encounter 网格边界、三个搜索上限及五类稳定失败码，任务 02B 预展开 12 向 Pattern/Volume 表的只读消费接口与“只索引、平移、不旋转”边界，占位半开区间、FactionRelation 不影响 Occupancy/Reservation 的边界、`Free/RetryableTimedBlock/TerminalOrUnknownBlock` 空间门禁结果与有限 ReleaseTick、首次量化的 Move 每权重单位 Tick、显式编辑/系统自动延期共用的 Editable 移动依赖闭包预测位置/路径/边数/路径权重/Segment/Reservation 整批重算、Locked 后冻结边界、Dodge TriggerTick 目的格预留与原子提交阶段、复用任务 03 网关 `CommandSequence` 的处理顺序与“先成功提交者持有 Reservation”规则、仅回滚当前事务的路径失败语义、统一终态清理参与者及其排序、移动中断保留最后已提交逻辑格的规则、`BatchRelocation` / `ApplyBatchRelocation` 的全批预检、统一移除/统一写入、失败零写入和“只提交不求解”边界、本任务新增的 Shadow 检查点与精确批准差异，以及供任务 08 使用的新位置/移动查询接口。任务 08 的 Intercept 只能请求计划终态和独立强制位移 Resolution，不能直接删除 Segment/Reservation；任务 08 拥有同时强制位移求解、Reservation 抢占与事件并只调用一次批量换位原语，Dodge 结果也必须来自空间复核，不能从状态推断。

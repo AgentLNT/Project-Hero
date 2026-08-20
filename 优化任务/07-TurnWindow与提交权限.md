@@ -43,6 +43,7 @@
 10. 将预算账本作为任务 05 统一终态协调器的显式、状态感知参与者：Editable 普通计划终态释放其 Reserved；Locked/Running/Completed 的 Spent 保持不变。只有尚未提交成功的 ScheduleEdit 可以调用事务回滚接口，终态协调器不得伪造回滚或重开窗口。
 11. 扩展任务 03B 的 Shadow 检查点，覆盖窗口打开/关闭、整数预算、并发授权、肾上腺素清零和跨窗口计划不变性；旧资源模型与新规则差异必须逐用例登记。
 12. 将窗口预算与肾上腺素作为两种独立资源参与者接入任务 05：普通计划使用 Editable Reserved -> Startable 原子提交中的 Locked Spent，Retryable 自动延期仍为 Reserved；反应使用 Available -> Reaction Reservation -> Trigger 消费。拒绝或事务失败只回滚本次候选变化。冻结一个只接受任务 08 规范 `AdrenalineAccrualFacts` 的 Tick 末批量入口，其他系统不得逐接触直接加 Available。
+13. 为任务 08 冻结强制位移终态的资源语义：`MovementOriginInvalidated` 与 `ReservationPreemptedByForcedDisplacement` 都调用任务 05 的同一状态感知预算参与者。Locked/Running 的 Spent 和已触发肾上腺素不退；Editable 普通计划只释放未消费 Reserved，且该释放不重开已关闭窗口、不转移给其他窗口、不前移后续计划。不得把强制位移当作 ScheduleEdit 失败回滚。
 
 ## 原子性与关闭语义
 
@@ -52,7 +53,7 @@
 - 系统自动延期的预算/排程/空间候选任一步失败：回滚该候选的全部局部写入；随后若任务 05 令仍为 Editable 的到期计划进入终态，预算参与者只执行一次 ReleasedBeforeLock。自动延期失败本身不是 Locked 后退款。
 - Startable 原子提交任一步发生内部错误：不得提交 `ConsumedAtLock`、Locked 或 Running 的任何子集；以不变量错误令 Step 失败，而不是把计划终止后继续。
 - 同一冻结批次中的后处理命令若与已提交 Reservation 冲突，只拒绝并回滚自身事务；不得撤销先处理命令的预算、Lane、计划或 Reservation。
-- 普通 ActionPlan 在 Editable 阶段终止会释放尚未消费的窗口预算预留；锁定时 Reserved 转为 Spent，此后无论自然完成或以何种原因终止均不退。反应计划只有 `SourceThreatCancelled` 且尚未触发时按预留周期规则释放；其余终态不退肾上腺素。Block 的载荷归零与 Dodge 的空间失效都不终止来源攻击计划。
+- 普通 ActionPlan 在 Editable 阶段终止会释放尚未消费的窗口预算预留；锁定时 Reserved 转为 Spent，此后无论自然完成或以何种原因终止均不退。强制位移导致 `MovementOriginInvalidated` / `ReservationPreemptedByForcedDisplacement` 时也遵守同一矩阵：“不退款”指不返还 Spent；Editable Reserved 的移除只是未消费预留清理，不能形成新的窗口授权或可转移额度。反应计划只有 `SourceThreatCancelled` 且尚未触发时按预留周期规则释放；其余终态不退肾上腺素。Block 的载荷归零与 Dodge 的空间失效都不终止来源攻击计划。
 - 请求关闭立即设置 `IsAcceptingSubmissions = false`，因此本 Tick 后续命令稳定拒绝；正式关闭在 Tick 末完成。
 - 新窗口最早在下一 Tick 打开，且只能在该 Tick 的动作前边界、状态/持续效果、死亡和胜负阶段完成并确认战斗未结束后打开。
 - 关闭时不查询、遍历、移动、锁定、取消或结算 ActionPlan、Intent、Lane、MovementSegment、Reservation；只把窗口设为不再接受新增/预算增加。既有预算预留账本继续可审计。
@@ -124,6 +125,9 @@
 - `AdrenalineOutcomeRewardOccursOncePerPlanOrConflictGroup`
 - `AvailableAdrenalineIsCappedWithoutChangingReservations`
 - `AllLockedPlanTerminalReasonsPreserveSpentBudget`
+- `ForcedDisplacementDoesNotRefundSpentMoveBudget`
+- `ForcedDisplacementReleasesOnlyUnconsumedEditableReservation`
+- `ForcedDisplacementReservationReleaseDoesNotReopenOrTransferWindowBudget`
 - `RepeatedEditableTerminalCleanupCannotReleaseReservationTwice`
 - `RepeatedLockedTerminalCleanupCannotInvokeBudgetRollback`
 - `BattleEndClosesWindowRevokesAuthorityAndClearsFutureScheduleWithoutRefund`
@@ -138,6 +142,7 @@
 - 并发激活不能跨 Controller、不能用旧 `ExpectedWindowId` 授权当前窗口，且改变请求载荷不能改变权威能力费用。
 - 时间预算全程为整数 Tick；Logic 中不出现 float 预算递减。
 - Editable 阶段严格使用 Reserved；只有 Startable 原子提交可与 Locked/Running 一起转为 Spent，系统自动延期继续 Reserved。事务回滚只服务未提交成功的 ScheduleEdit/系统候选/启动候选；统一终态协调器只能按计划状态释放 Reserved 或保持 Spent，重复清理不改变任一值。
+- 强制位移终止 Move 时只按计划当前状态结算资源：Editable 清理 Reserved、Locked/Running 保持 Spent；不会调用事务回滚、重开窗口、转移预算、退款或让后续计划左移。
 - 旧体力/专注玩法不再被新的 Logic 路径读取；字段若保留仅用于兼容。
 - Available、每条反应预留、ReservationCycleId 和个人周期号进入规范化快照；伤害/结果奖励按冻结公式聚合且 Available 不超过周期上限，不存在逐接触舍入差异、重复奖励、重复消费、跨周期退款套利或窗口关闭误清零。
 - 战斗结束后不存在打开或待打开窗口，也不存在仍有效的并发提交授权。
@@ -155,7 +160,8 @@
 - 不把 Editable TurnBudget 预留释放实现成 Locked 后退款，也不让旧窗口释放额重开/转移；肾上腺素仍只实现“来源威胁触发前取消”的周期内返还。
 - 不在启动门禁前预先消费预算，不允许普通计划处于 Locked 但预算仍 Reserved、或预算已 Spent 但未 Running。
 - 不从死亡、Clash、删除或 BattleEnd 路径调用 ScheduleEdit 事务回滚接口；这些路径只能经统一终态协调器的预算参与者按计划状态结算。
+- 不从强制位移求解器、Reservation 抢占或 `ApplyBatchRelocation` 调用 ScheduleEdit 回滚/预算退款；它们只能请求统一终态原因。
 
 ## 交接重点
 
-交接必须列出窗口状态流、关闭原因、普通动作 `ControllerId -> UnitId` 授权矩阵、TurnBudget `Available -> Reserved -> Spent` 状态机、Startable 的 Spent/Locked/Running 原子提交、Retryable 系统延期的 Reserved/差额/失败释放矩阵、Editable 释放/锁定后不退矩阵、关闭窗口账本保留与不可重开规则、ScheduleEdit 与 SystemAutoDeferral 成本差额事务边界、并发能力权威费用来源、肾上腺素 Available/Reservation/Cycle 状态机、来源取消释放矩阵、窗口打开清零时机、全部稳定拒绝码、本任务新增的 Shadow 检查点与精确批准差异，以及任务 09 的 ScheduleEdit 新增/增费必须验证 ExpectedWindowId、Move/Remove 必须验证控制权与 Editable/Revision、ReactionCommand 必须验证 ReactionOpportunityId 且不得要求窗口/并发授权的边界。
+交接必须列出窗口状态流、关闭原因、普通动作 `ControllerId -> UnitId` 授权矩阵、TurnBudget `Available -> Reserved -> Spent` 状态机、Startable 的 Spent/Locked/Running 原子提交、Retryable 系统延期的 Reserved/差额/失败释放矩阵、Editable 释放/锁定后不退矩阵、强制位移两种终态原因的 Editable/Locked/Running 资源矩阵及“不退款不等于保留未消费预留”的边界、关闭窗口账本保留与不可重开规则、ScheduleEdit 与 SystemAutoDeferral 成本差额事务边界、并发能力权威费用来源、肾上腺素 Available/Reservation/Cycle 状态机、来源取消释放矩阵、窗口打开清零时机、全部稳定拒绝码、本任务新增的 Shadow 检查点与精确批准差异，以及任务 09 的 ScheduleEdit 新增/增费必须验证 ExpectedWindowId、Move/Remove 必须验证控制权与 Editable/Revision、ReactionCommand 必须验证 ReactionOpportunityId 且不得要求窗口/并发授权的边界。
