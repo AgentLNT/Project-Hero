@@ -1,0 +1,1206 @@
+﻿====================================================================================
+ Project Hero 任务 01 — 只读资产/场景诊断输出 (BaselineDiagnosticRunner)
+ 生成时间 (本地): 2026-09-22 20:23:03.989
+ Unity 版本: 6000.6.2f1
+ 项目路径: C:\Users\1\repos\Project Hero\Project-Hero
+ 说明: 本工具只读，不修改任何资产/场景/.meta；不调用 SaveAssets。
+====================================================================================
+
+
+########## S01 环境与程序集 ##########
+ 编辑器模式: batchmode/Editor (True)
+ 平台: WindowsEditor
+ 公司/产品名: DefaultCompany / Project Hero
+ 自定义 .asmdef 文件数: 0 (预期 0)
+ 自定义 .asmref 文件数: 0 (预期 0)
+ 工程内 .cs 文件总数: 89 (含 TextMesh Pro 示例)
+ 其中 Editor 目录脚本数 (→ Assembly-CSharp-Editor): 1
+ 结论: 无自定义 asmdef → 全部运行时代码编译进 Assembly-CSharp，Editor 目录脚本编译进 Assembly-CSharp-Editor。
+---------- S01 环境与程序集 小节错误数: 0 ----------
+
+########## S02 配置资产总清单 (Resources 下 ScriptableObject) ##########
+ ActionLibrarySO 资产数: 3
+   ActionLibrarySO "ForRadius1" @ Assets/Resources/ActionLibrary/ForRadius1.asset
+       guid=9ea53fc4064c1594796601d06dff0ac9  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Actions.ActionLibrarySO
+   ActionLibrarySO "ForRadius2" @ Assets/Resources/ActionLibrary/ForRadius2.asset
+       guid=d09b70a28dd2ced43bf159a1a12b29bf  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Actions.ActionLibrarySO
+   ActionLibrarySO "ForRadius3" @ Assets/Resources/ActionLibrary/ForRadius3.asset
+       guid=6e64b254bcf0a25428f0efc237c0f7bf  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Actions.ActionLibrarySO
+ AttackPattern 资产数: 10
+   AttackPattern "Pattern_Cleave_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Cleave_R1_0.asset
+       guid=291cdb608889dc042b5e622d77a9f794  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Cleave_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Cleave_R2_0.asset
+       guid=e31792b18b25fc54584b7d1c9b87e3d8  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Slash_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Slash_R1_0.asset
+       guid=476b68c23aee80645b5c81c50cd2abb2  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Slash_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Slash_R2_0.asset
+       guid=e80d7761622c08d458f98c274dd7a7f4  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Smash_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Smash_R1_0.asset
+       guid=872797ef83a8d13488fbb8d109ca365f  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Smash_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Smash_R2_0.asset
+       guid=4aa4cdfdbdcef0348b1520ab222a6d4a  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Thrust_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Thrust_R1_0.asset
+       guid=b3d713a61713abd439306c87da89adc0  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Thrust_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Thrust_R2_0.asset
+       guid=cc8de6ceea7a3f242b9a0e8483d6222c  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Whirlwind_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R1_0.asset
+       guid=960e6645f09f9b4428f7d0c5490492ed  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+   AttackPattern "Pattern_Whirlwind_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R2_0.asset
+       guid=47719ed4b12fdf94990db9e92b7e40f5  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Combat.AttackPattern
+ UnitVolume 资产数: 3
+   UnitVolume "Radius_1" @ Assets/Resources/Unit Volume/Radius_1.asset
+       guid=e7b3456b17272bf4d882a50c38d433e2  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Grid.UnitVolume
+   UnitVolume "Radius_2" @ Assets/Resources/Unit Volume/Radius_2.asset
+       guid=25dd84dc5108e4d40a90528a9ecb301c  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Grid.UnitVolume
+   UnitVolume "Radius_3" @ Assets/Resources/Unit Volume/Radius_3.asset
+       guid=faaf1464668507348836395402a34bca  meta.mainObjectFileID=11400000  yamlAnchor=11400000  type=ProjectHero.Core.Grid.UnitVolume
+ Resources 下其余 ScriptableObject: 0
+---------- S02 配置资产总清单 (Resources 下 ScriptableObject) 小节错误数: 0 ----------
+
+########## S03 ActionLibrarySO 全字段 dump ##########
+ ==== ActionLibrarySO "ForRadius1" @ Assets/Resources/ActionLibrary/ForRadius1.asset [guid 9ea53fc4064c1594796601d06dff0ac9] ====
+ Actions.Count = 5
+ Actions[0].ID = QuickSlash
+     DataName = "Quick Slash"
+     DataType = 1 (Attack)
+     DataBase Time = 0.5
+     DataBase Damage = 15
+     DataImpact Type = 1 (Slash)
+     DataStamina Cost = 10
+     DataForce Multiplier = 0.8
+     DataPattern -> AttackPattern "Pattern_Slash_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Slash_R1_0.asset [guid 476b68c23aee80645b5c81c50cd2abb2 fileID 11400000]
+ Actions[1].ID = HeavySmash
+     DataName = "Heavy Smash"
+     DataType = 1 (Attack)
+     DataBase Time = 1.5
+     DataBase Damage = 40
+     DataImpact Type = 0 (Blunt)
+     DataStamina Cost = 25
+     DataForce Multiplier = 1.6
+     DataPattern -> AttackPattern "Pattern_Smash_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Smash_R1_0.asset [guid 872797ef83a8d13488fbb8d109ca365f fileID 11400000]
+ Actions[2].ID = WideCleave
+     DataName = "Wide Cleave"
+     DataType = 1 (Attack)
+     DataBase Time = 1
+     DataBase Damage = 20
+     DataImpact Type = 1 (Slash)
+     DataStamina Cost = 20
+     DataForce Multiplier = 1.2
+     DataPattern -> AttackPattern "Pattern_Cleave_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Cleave_R1_0.asset [guid 291cdb608889dc042b5e622d77a9f794 fileID 11400000]
+ Actions[3].ID = SpearThrust
+     DataName = "Spear Thrust"
+     DataType = 1 (Attack)
+     DataBase Time = 0.8
+     DataBase Damage = 25
+     DataImpact Type = 2 (Pierce)
+     DataStamina Cost = 15
+     DataForce Multiplier = 1
+     DataPattern -> AttackPattern "Pattern_Thrust_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Thrust_R1_0.asset [guid b3d713a61713abd439306c87da89adc0 fileID 11400000]
+ Actions[4].ID = Whirlwind
+     DataName = "Whirlwind"
+     DataType = 1 (Attack)
+     DataBase Time = 2
+     DataBase Damage = 30
+     DataImpact Type = 1 (Slash)
+     DataStamina Cost = 40
+     DataForce Multiplier = 2.5
+     DataPattern -> AttackPattern "Pattern_Whirlwind_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R1_0.asset [guid 960e6645f09f9b4428f7d0c5490492ed fileID 11400000]
+ ==== ActionLibrarySO "ForRadius2" @ Assets/Resources/ActionLibrary/ForRadius2.asset [guid d09b70a28dd2ced43bf159a1a12b29bf] ====
+ Actions.Count = 5
+ Actions[0].ID = QuickSlash
+     DataName = "Quick Slash"
+     DataType = 1 (Attack)
+     DataBase Time = 0.5
+     DataBase Damage = 15
+     DataImpact Type = 1 (Slash)
+     DataStamina Cost = 10
+     DataForce Multiplier = 0.8
+     DataPattern -> AttackPattern "Pattern_Slash_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Slash_R2_0.asset [guid e80d7761622c08d458f98c274dd7a7f4 fileID 11400000]
+ Actions[1].ID = HeavySmash
+     DataName = "Heavy Smash"
+     DataType = 1 (Attack)
+     DataBase Time = 1.5
+     DataBase Damage = 40
+     DataImpact Type = 0 (Blunt)
+     DataStamina Cost = 25
+     DataForce Multiplier = 1.6
+     DataPattern -> AttackPattern "Pattern_Smash_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Smash_R2_0.asset [guid 4aa4cdfdbdcef0348b1520ab222a6d4a fileID 11400000]
+ Actions[2].ID = WideCleave
+     DataName = "Wide Cleave"
+     DataType = 1 (Attack)
+     DataBase Time = 1
+     DataBase Damage = 20
+     DataImpact Type = 1 (Slash)
+     DataStamina Cost = 20
+     DataForce Multiplier = 1.2
+     DataPattern -> AttackPattern "Pattern_Cleave_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Cleave_R2_0.asset [guid e31792b18b25fc54584b7d1c9b87e3d8 fileID 11400000]
+ Actions[3].ID = SpearThrust
+     DataName = "Spear Thrust"
+     DataType = 1 (Attack)
+     DataBase Time = 0.8
+     DataBase Damage = 25
+     DataImpact Type = 2 (Pierce)
+     DataStamina Cost = 15
+     DataForce Multiplier = 1
+     DataPattern -> AttackPattern "Pattern_Thrust_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Thrust_R2_0.asset [guid cc8de6ceea7a3f242b9a0e8483d6222c fileID 11400000]
+ Actions[4].ID = Whirlwind
+     DataName = "Whirlwind"
+     DataType = 1 (Attack)
+     DataBase Time = 2
+     DataBase Damage = 30
+     DataImpact Type = 1 (Slash)
+     DataStamina Cost = 40
+     DataForce Multiplier = 2.5
+     DataPattern -> AttackPattern "Pattern_Whirlwind_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R2_0.asset [guid 47719ed4b12fdf94990db9e92b7e40f5 fileID 11400000]
+ ==== ActionLibrarySO "ForRadius3" @ Assets/Resources/ActionLibrary/ForRadius3.asset [guid 6e64b254bcf0a25428f0efc237c0f7bf] ====
+ Actions.Count = 0
+---------- S03 ActionLibrarySO 全字段 dump 小节错误数: 0 ----------
+
+########## S04 AttackPattern 全字段 dump ##########
+ ==== AttackPattern "Pattern_Cleave_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Cleave_R1_0.asset [guid 291cdb608889dc042b5e622d77a9f794] ====
+  RelativeTriangles (Even/East 基准) Count = 24
+   [0] (3, 0, 1)
+   [1] (2, 1, -1)
+   [2] (3, 0, -1)
+   [3] (4, 1, -1)
+   [4] (2, 1, 1)
+   [5] (2, -1, 1)
+   [6] (4, -1, 1)
+   [7] (4, 1, 1)
+   [8] (5, 0, 1)
+   [9] (1, 2, -1)
+   [10] (3, 2, -1)
+   [11] (2, -1, -1)
+   [12] (4, -1, -1)
+   [13] (5, 0, -1)
+   [14] (5, 2, -1)
+   [15] (1, 2, 1)
+   [16] (3, 2, 1)
+   [17] (1, -2, 1)
+   [18] (3, -2, 1)
+   [19] (5, -2, 1)
+   [20] (2, 3, -1)
+   [21] (1, -2, -1)
+   [22] (3, -2, -1)
+   [23] (2, -3, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 27
+   [0] (2, 1, -1)
+   [1] (2, 1, 1)
+   [2] (3, 0, 1)
+   [3] (1, 2, -1)
+   [4] (3, 2, -1)
+   [5] (3, 0, -1)
+   [6] (4, 1, -1)
+   [7] (0, 1, 1)
+   [8] (1, 2, 1)
+   [9] (3, 2, 1)
+   [10] (4, 1, 1)
+   [11] (2, -1, 1)
+   [12] (4, -1, 1)
+   [13] (5, 0, 1)
+   [14] (-1, 2, -1)
+   [15] (0, 3, -1)
+   [16] (2, 3, -1)
+   [17] (5, 2, -1)
+   [18] (2, -1, -1)
+   [19] (4, -1, -1)
+   [20] (5, 0, -1)
+   [21] (-1, 2, 1)
+   [22] (0, 3, 1)
+   [23] (3, -2, 1)
+   [24] (5, -2, 1)
+   [25] (-2, 3, -1)
+   [26] (3, -2, -1)
+ ==== AttackPattern "Pattern_Cleave_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Cleave_R2_0.asset [guid e31792b18b25fc54584b7d1c9b87e3d8] ====
+  RelativeTriangles (Even/East 基准) Count = 40
+   [0] (5, 0, 1)
+   [1] (4, 1, -1)
+   [2] (5, 0, -1)
+   [3] (6, 1, -1)
+   [4] (4, 1, 1)
+   [5] (4, -1, 1)
+   [6] (6, -1, 1)
+   [7] (6, 1, 1)
+   [8] (7, 0, 1)
+   [9] (3, 2, -1)
+   [10] (5, 2, -1)
+   [11] (4, -1, -1)
+   [12] (6, -1, -1)
+   [13] (7, 0, -1)
+   [14] (7, 2, -1)
+   [15] (3, 2, 1)
+   [16] (5, 2, 1)
+   [17] (3, -2, 1)
+   [18] (5, -2, 1)
+   [19] (7, -2, 1)
+   [20] (2, 3, -1)
+   [21] (4, 3, -1)
+   [22] (6, 3, -1)
+   [23] (3, -2, -1)
+   [24] (5, -2, -1)
+   [25] (1, 2, 1)
+   [26] (2, 3, 1)
+   [27] (4, 3, 1)
+   [28] (2, -3, 1)
+   [29] (4, -3, 1)
+   [30] (6, -3, 1)
+   [31] (1, 4, -1)
+   [32] (3, 4, -1)
+   [33] (1, -2, -1)
+   [34] (2, -3, -1)
+   [35] (4, -3, -1)
+   [36] (1, 4, 1)
+   [37] (1, -4, 1)
+   [38] (3, -4, 1)
+   [39] (1, -4, -1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 40
+   [0] (4, 1, 1)
+   [1] (3, 2, -1)
+   [2] (4, 1, -1)
+   [3] (5, 2, -1)
+   [4] (3, 2, 1)
+   [5] (5, 0, 1)
+   [6] (5, 2, 1)
+   [7] (6, 1, 1)
+   [8] (2, 3, -1)
+   [9] (4, 3, -1)
+   [10] (5, 0, -1)
+   [11] (6, 1, -1)
+   [12] (6, 3, -1)
+   [13] (7, 2, -1)
+   [14] (1, 2, 1)
+   [15] (2, 3, 1)
+   [16] (4, 3, 1)
+   [17] (4, -1, 1)
+   [18] (6, -1, 1)
+   [19] (7, 0, 1)
+   [20] (0, 3, -1)
+   [21] (1, 4, -1)
+   [22] (3, 4, -1)
+   [23] (4, -1, -1)
+   [24] (6, -1, -1)
+   [25] (7, 0, -1)
+   [26] (-1, 2, 1)
+   [27] (0, 3, 1)
+   [28] (1, 4, 1)
+   [29] (3, -2, 1)
+   [30] (5, -2, 1)
+   [31] (7, -2, 1)
+   [32] (-2, 3, -1)
+   [33] (-1, 4, -1)
+   [34] (3, -2, -1)
+   [35] (5, -2, -1)
+   [36] (-2, 3, 1)
+   [37] (-1, 4, 1)
+   [38] (4, -3, 1)
+   [39] (6, -3, 1)
+ ==== AttackPattern "Pattern_Slash_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Slash_R1_0.asset [guid 476b68c23aee80645b5c81c50cd2abb2] ====
+  RelativeTriangles (Even/East 基准) Count = 8
+   [0] (3, 0, 1)
+   [1] (2, 1, -1)
+   [2] (3, 0, -1)
+   [3] (4, 1, -1)
+   [4] (2, -1, 1)
+   [5] (4, -1, 1)
+   [6] (4, 1, 1)
+   [7] (4, -1, -1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 6
+   [0] (2, 1, -1)
+   [1] (2, 1, 1)
+   [2] (3, 0, 1)
+   [3] (3, 2, -1)
+   [4] (4, 1, -1)
+   [5] (4, 1, 1)
+ ==== AttackPattern "Pattern_Slash_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Slash_R2_0.asset [guid e80d7761622c08d458f98c274dd7a7f4] ====
+  RelativeTriangles (Even/East 基准) Count = 14
+   [0] (5, 0, 1)
+   [1] (4, 1, -1)
+   [2] (5, 0, -1)
+   [3] (6, 1, -1)
+   [4] (4, 1, 1)
+   [5] (4, -1, 1)
+   [6] (6, -1, 1)
+   [7] (6, 1, 1)
+   [8] (5, 2, -1)
+   [9] (4, -1, -1)
+   [10] (6, -1, -1)
+   [11] (5, 2, 1)
+   [12] (5, -2, 1)
+   [13] (5, -2, -1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 12
+   [0] (4, 1, 1)
+   [1] (3, 2, -1)
+   [2] (4, 1, -1)
+   [3] (5, 2, -1)
+   [4] (3, 2, 1)
+   [5] (5, 0, 1)
+   [6] (5, 2, 1)
+   [7] (6, 1, 1)
+   [8] (2, 3, -1)
+   [9] (4, 3, -1)
+   [10] (5, 0, -1)
+   [11] (6, 1, -1)
+ ==== AttackPattern "Pattern_Smash_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Smash_R1_0.asset [guid 872797ef83a8d13488fbb8d109ca365f] ====
+  RelativeTriangles (Even/East 基准) Count = 10
+   [0] (3, 0, 1)
+   [1] (2, 1, -1)
+   [2] (3, 0, -1)
+   [3] (4, 1, -1)
+   [4] (2, -1, 1)
+   [5] (4, -1, 1)
+   [6] (5, 0, 1)
+   [7] (5, 0, -1)
+   [8] (6, 1, -1)
+   [9] (6, -1, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 13
+   [0] (2, 1, -1)
+   [1] (2, 1, 1)
+   [2] (3, 0, 1)
+   [3] (1, 2, -1)
+   [4] (3, 2, -1)
+   [5] (3, 0, -1)
+   [6] (4, 1, -1)
+   [7] (3, 2, 1)
+   [8] (4, 1, 1)
+   [9] (5, 0, 1)
+   [10] (4, 3, -1)
+   [11] (5, 2, -1)
+   [12] (6, 1, -1)
+ ==== AttackPattern "Pattern_Smash_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Smash_R2_0.asset [guid 4aa4cdfdbdcef0348b1520ab222a6d4a] ====
+  RelativeTriangles (Even/East 基准) Count = 10
+   [0] (5, 0, 1)
+   [1] (4, 1, -1)
+   [2] (5, 0, -1)
+   [3] (6, 1, -1)
+   [4] (4, -1, 1)
+   [5] (6, -1, 1)
+   [6] (7, 0, 1)
+   [7] (7, 0, -1)
+   [8] (8, 1, -1)
+   [9] (8, -1, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 12
+   [0] (4, 1, 1)
+   [1] (3, 2, -1)
+   [2] (4, 1, -1)
+   [3] (5, 2, -1)
+   [4] (3, 2, 1)
+   [5] (5, 0, 1)
+   [6] (5, 2, 1)
+   [7] (6, 1, 1)
+   [8] (4, 3, -1)
+   [9] (6, 1, -1)
+   [10] (6, 3, -1)
+   [11] (7, 2, -1)
+ ==== AttackPattern "Pattern_Thrust_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Thrust_R1_0.asset [guid b3d713a61713abd439306c87da89adc0] ====
+  RelativeTriangles (Even/East 基准) Count = 18
+   [0] (3, 0, 1)
+   [1] (2, 1, -1)
+   [2] (3, 0, -1)
+   [3] (4, 1, -1)
+   [4] (2, -1, 1)
+   [5] (4, -1, 1)
+   [6] (5, 0, 1)
+   [7] (5, 0, -1)
+   [8] (6, 1, -1)
+   [9] (6, -1, 1)
+   [10] (7, 0, 1)
+   [11] (7, 0, -1)
+   [12] (8, 1, -1)
+   [13] (8, -1, 1)
+   [14] (9, 0, 1)
+   [15] (9, 0, -1)
+   [16] (10, 1, -1)
+   [17] (10, -1, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 15
+   [0] (2, 1, -1)
+   [1] (2, 1, 1)
+   [2] (3, 0, 1)
+   [3] (3, 2, -1)
+   [4] (4, 1, -1)
+   [5] (4, 1, 1)
+   [6] (5, 2, -1)
+   [7] (5, 2, 1)
+   [8] (6, 1, 1)
+   [9] (6, 3, -1)
+   [10] (7, 2, -1)
+   [11] (7, 2, 1)
+   [12] (8, 3, -1)
+   [13] (8, 3, 1)
+   [14] (9, 2, 1)
+ ==== AttackPattern "Pattern_Thrust_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Thrust_R2_0.asset [guid cc8de6ceea7a3f242b9a0e8483d6222c] ====
+  RelativeTriangles (Even/East 基准) Count = 18
+   [0] (5, 0, 1)
+   [1] (4, 1, -1)
+   [2] (5, 0, -1)
+   [3] (6, 1, -1)
+   [4] (4, -1, 1)
+   [5] (6, -1, 1)
+   [6] (7, 0, 1)
+   [7] (7, 0, -1)
+   [8] (8, 1, -1)
+   [9] (8, -1, 1)
+   [10] (9, 0, 1)
+   [11] (9, 0, -1)
+   [12] (10, 1, -1)
+   [13] (10, -1, 1)
+   [14] (11, 0, 1)
+   [15] (11, 0, -1)
+   [16] (12, 1, -1)
+   [17] (12, -1, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 15
+   [0] (4, 1, 1)
+   [1] (3, 2, -1)
+   [2] (4, 1, -1)
+   [3] (5, 2, -1)
+   [4] (5, 2, 1)
+   [5] (6, 1, 1)
+   [6] (6, 3, -1)
+   [7] (7, 2, -1)
+   [8] (7, 2, 1)
+   [9] (8, 3, -1)
+   [10] (8, 3, 1)
+   [11] (9, 2, 1)
+   [12] (9, 4, -1)
+   [13] (10, 3, -1)
+   [14] (10, 3, 1)
+ ==== AttackPattern "Pattern_Whirlwind_R1_0" @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R1_0.asset [guid 960e6645f09f9b4428f7d0c5490492ed] ====
+  RelativeTriangles (Even/East 基准) Count = 36
+   [0] (3, 0, 1)
+   [1] (2, 1, -1)
+   [2] (3, 0, -1)
+   [3] (4, 1, -1)
+   [4] (2, 1, 1)
+   [5] (2, -1, 1)
+   [6] (4, -1, 1)
+   [7] (4, 1, 1)
+   [8] (1, 2, -1)
+   [9] (3, 2, -1)
+   [10] (2, -1, -1)
+   [11] (4, -1, -1)
+   [12] (0, 1, 1)
+   [13] (1, 2, 1)
+   [14] (1, -2, 1)
+   [15] (3, -2, 1)
+   [16] (-1, 2, -1)
+   [17] (0, 3, -1)
+   [18] (0, -1, -1)
+   [19] (1, -2, -1)
+   [20] (-2, 1, 1)
+   [21] (-1, 2, 1)
+   [22] (-1, -2, 1)
+   [23] (0, -3, 1)
+   [24] (-3, 2, -1)
+   [25] (-2, 1, -1)
+   [26] (-2, -1, -1)
+   [27] (-1, -2, -1)
+   [28] (-4, 1, 1)
+   [29] (-3, 0, 1)
+   [30] (-3, -2, 1)
+   [31] (-2, -1, 1)
+   [32] (-4, 1, -1)
+   [33] (-3, 0, -1)
+   [34] (-4, -1, -1)
+   [35] (-4, -1, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 36
+   [0] (2, 1, -1)
+   [1] (2, 1, 1)
+   [2] (3, 0, 1)
+   [3] (1, 2, -1)
+   [4] (3, 2, -1)
+   [5] (3, 0, -1)
+   [6] (4, 1, -1)
+   [7] (0, 1, 1)
+   [8] (1, 2, 1)
+   [9] (4, 1, 1)
+   [10] (2, -1, 1)
+   [11] (4, -1, 1)
+   [12] (-1, 2, -1)
+   [13] (0, 3, -1)
+   [14] (2, -1, -1)
+   [15] (4, -1, -1)
+   [16] (-2, 1, 1)
+   [17] (-1, 2, 1)
+   [18] (1, -2, 1)
+   [19] (3, -2, 1)
+   [20] (-3, 2, -1)
+   [21] (-2, 1, -1)
+   [22] (0, -1, -1)
+   [23] (1, -2, -1)
+   [24] (-4, 1, 1)
+   [25] (-3, 0, 1)
+   [26] (-1, -2, 1)
+   [27] (0, -3, 1)
+   [28] (-4, 1, -1)
+   [29] (-3, 0, -1)
+   [30] (-2, -1, -1)
+   [31] (-1, -2, -1)
+   [32] (-4, -1, 1)
+   [33] (-2, -1, 1)
+   [34] (-3, -2, 1)
+   [35] (-4, -1, -1)
+ ==== AttackPattern "Pattern_Whirlwind_R2_0" @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R2_0.asset [guid 47719ed4b12fdf94990db9e92b7e40f5] ====
+  RelativeTriangles (Even/East 基准) Count = 60
+   [0] (5, 0, 1)
+   [1] (4, 1, -1)
+   [2] (5, 0, -1)
+   [3] (6, 1, -1)
+   [4] (4, 1, 1)
+   [5] (4, -1, 1)
+   [6] (6, -1, 1)
+   [7] (6, 1, 1)
+   [8] (3, 2, -1)
+   [9] (5, 2, -1)
+   [10] (4, -1, -1)
+   [11] (6, -1, -1)
+   [12] (3, 2, 1)
+   [13] (5, 2, 1)
+   [14] (3, -2, 1)
+   [15] (5, -2, 1)
+   [16] (2, 3, -1)
+   [17] (4, 3, -1)
+   [18] (3, -2, -1)
+   [19] (5, -2, -1)
+   [20] (1, 2, 1)
+   [21] (2, 3, 1)
+   [22] (2, -3, 1)
+   [23] (4, -3, 1)
+   [24] (0, 3, -1)
+   [25] (1, 4, -1)
+   [26] (1, -2, -1)
+   [27] (2, -3, -1)
+   [28] (-1, 2, 1)
+   [29] (0, 3, 1)
+   [30] (0, -3, 1)
+   [31] (1, -4, 1)
+   [32] (-2, 3, -1)
+   [33] (-1, 4, -1)
+   [34] (-1, -2, -1)
+   [35] (0, -3, -1)
+   [36] (-3, 2, 1)
+   [37] (-2, 3, 1)
+   [38] (-2, -3, 1)
+   [39] (-1, -4, 1)
+   [40] (-4, 3, -1)
+   [41] (-3, 2, -1)
+   [42] (-3, -2, -1)
+   [43] (-2, -3, -1)
+   [44] (-5, 2, 1)
+   [45] (-4, 1, 1)
+   [46] (-4, -3, 1)
+   [47] (-3, -2, 1)
+   [48] (-5, 2, -1)
+   [49] (-4, 1, -1)
+   [50] (-5, -2, -1)
+   [51] (-4, -1, -1)
+   [52] (-6, 1, 1)
+   [53] (-5, 0, 1)
+   [54] (-5, -2, 1)
+   [55] (-4, -1, 1)
+   [56] (-6, 1, -1)
+   [57] (-5, 0, -1)
+   [58] (-6, -1, -1)
+   [59] (-6, -1, 1)
+  RelativeTrianglesOdd (Odd/EastNorth 基准) Count = 60
+   [0] (4, 1, 1)
+   [1] (3, 2, -1)
+   [2] (4, 1, -1)
+   [3] (5, 2, -1)
+   [4] (3, 2, 1)
+   [5] (5, 0, 1)
+   [6] (5, 2, 1)
+   [7] (6, 1, 1)
+   [8] (2, 3, -1)
+   [9] (4, 3, -1)
+   [10] (5, 0, -1)
+   [11] (6, 1, -1)
+   [12] (1, 2, 1)
+   [13] (2, 3, 1)
+   [14] (4, -1, 1)
+   [15] (6, -1, 1)
+   [16] (0, 3, -1)
+   [17] (1, 4, -1)
+   [18] (4, -1, -1)
+   [19] (6, -1, -1)
+   [20] (-1, 2, 1)
+   [21] (0, 3, 1)
+   [22] (3, -2, 1)
+   [23] (5, -2, 1)
+   [24] (-2, 3, -1)
+   [25] (-1, 4, -1)
+   [26] (3, -2, -1)
+   [27] (5, -2, -1)
+   [28] (-3, 2, 1)
+   [29] (-2, 3, 1)
+   [30] (2, -3, 1)
+   [31] (4, -3, 1)
+   [32] (-4, 3, -1)
+   [33] (-3, 2, -1)
+   [34] (1, -2, -1)
+   [35] (2, -3, -1)
+   [36] (-5, 2, 1)
+   [37] (-4, 1, 1)
+   [38] (0, -3, 1)
+   [39] (1, -4, 1)
+   [40] (-5, 2, -1)
+   [41] (-4, 1, -1)
+   [42] (-1, -2, -1)
+   [43] (0, -3, -1)
+   [44] (-6, 1, 1)
+   [45] (-5, 0, 1)
+   [46] (-2, -3, 1)
+   [47] (-1, -4, 1)
+   [48] (-6, 1, -1)
+   [49] (-5, 0, -1)
+   [50] (-3, -2, -1)
+   [51] (-2, -3, -1)
+   [52] (-6, -1, 1)
+   [53] (-4, -1, 1)
+   [54] (-4, -3, 1)
+   [55] (-3, -2, 1)
+   [56] (-6, -1, -1)
+   [57] (-4, -1, -1)
+   [58] (-5, -2, -1)
+   [59] (-5, -2, 1)
+---------- S04 AttackPattern 全字段 dump 小节错误数: 0 ----------
+
+########## S05 UnitVolume 全字段 dump ##########
+ ==== UnitVolume "Radius_1" @ Assets/Resources/Unit Volume/Radius_1.asset [guid e7b3456b17272bf4d882a50c38d433e2] ====
+ Volumes.Count = 2
+ Volumes[0].Direction = 0 (East)
+    RelativeTriangles Count = 6
+   [0] (1, 0, 1)
+   [1] (1, 0, -1)
+   [2] (0, 1, -1)
+   [3] (0, -1, 1)
+   [4] (-1, 0, 1)
+   [5] (-1, 0, -1)
+ Volumes[1].Direction = 1 (East North)
+    RelativeTriangles Count = 6
+   [0] (1, 0, 1)
+   [1] (1, 0, -1)
+   [2] (0, 1, -1)
+   [3] (0, -1, 1)
+   [4] (-1, 0, 1)
+   [5] (-1, 0, -1)
+ ==== UnitVolume "Radius_2" @ Assets/Resources/Unit Volume/Radius_2.asset [guid 25dd84dc5108e4d40a90528a9ecb301c] ====
+ Volumes.Count = 2
+ Volumes[0].Direction = 0 (East)
+    RelativeTriangles Count = 24
+   [0] (1, 0, 1)
+   [1] (1, 0, -1)
+   [2] (3, 0, 1)
+   [3] (3, 0, -1)
+   [4] (2, 1, 1)
+   [5] (2, 1, -1)
+   [6] (0, 1, 1)
+   [7] (0, 1, -1)
+   [8] (1, 2, -1)
+   [9] (-1, 2, -1)
+   [10] (-2, 1, 1)
+   [11] (-2, 1, -1)
+   [12] (-1, 0, 1)
+   [13] (-1, 0, -1)
+   [14] (-3, 0, 1)
+   [15] (-3, 0, -1)
+   [16] (2, -1, 1)
+   [17] (2, -1, -1)
+   [18] (0, -1, 1)
+   [19] (0, -1, -1)
+   [20] (-2, -1, 1)
+   [21] (-2, -1, -1)
+   [22] (1, -2, 1)
+   [23] (-1, -2, 1)
+ Volumes[1].Direction = 1 (East North)
+    RelativeTriangles Count = 24
+   [0] (1, 0, 1)
+   [1] (1, 0, -1)
+   [2] (3, 0, 1)
+   [3] (3, 0, -1)
+   [4] (2, 1, 1)
+   [5] (2, 1, -1)
+   [6] (0, 1, 1)
+   [7] (0, 1, -1)
+   [8] (1, 2, -1)
+   [9] (-1, 2, -1)
+   [10] (-2, 1, 1)
+   [11] (-2, 1, -1)
+   [12] (-1, 0, 1)
+   [13] (-1, 0, -1)
+   [14] (-3, 0, 1)
+   [15] (-3, 0, -1)
+   [16] (2, -1, 1)
+   [17] (2, -1, -1)
+   [18] (0, -1, 1)
+   [19] (0, -1, -1)
+   [20] (-2, -1, 1)
+   [21] (-2, -1, -1)
+   [22] (1, -2, 1)
+   [23] (-1, -2, 1)
+ ==== UnitVolume "Radius_3" @ Assets/Resources/Unit Volume/Radius_3.asset [guid faaf1464668507348836395402a34bca] ====
+ Volumes.Count = 2
+ Volumes[0].Direction = 0 (East)
+    RelativeTriangles Count = 54
+   [0] (1, 0, 1)
+   [1] (1, 0, -1)
+   [2] (3, 0, 1)
+   [3] (3, 0, -1)
+   [4] (2, 1, 1)
+   [5] (2, 1, -1)
+   [6] (0, 1, 1)
+   [7] (0, 1, -1)
+   [8] (1, 2, -1)
+   [9] (-1, 2, -1)
+   [10] (-2, 1, 1)
+   [11] (-2, 1, -1)
+   [12] (-1, 0, 1)
+   [13] (-1, 0, -1)
+   [14] (-3, 0, 1)
+   [15] (-3, 0, -1)
+   [16] (2, -1, 1)
+   [17] (2, -1, -1)
+   [18] (0, -1, 1)
+   [19] (0, -1, -1)
+   [20] (-2, -1, 1)
+   [21] (-2, -1, -1)
+   [22] (1, -2, 1)
+   [23] (-1, -2, 1)
+   [24] (4, -1, 1)
+   [25] (4, -1, -1)
+   [26] (3, -2, 1)
+   [27] (3, -2, -1)
+   [28] (-3, -2, 1)
+   [29] (-3, -2, -1)
+   [30] (-4, -1, 1)
+   [31] (-4, -1, -1)
+   [32] (-2, -3, 1)
+   [33] (-1, -2, -1)
+   [34] (0, -3, 1)
+   [35] (2, -3, 1)
+   [36] (1, -2, -1)
+   [37] (-3, 2, 1)
+   [38] (-3, 2, -1)
+   [39] (-4, 1, 1)
+   [40] (-4, 1, -1)
+   [41] (-5, 0, 1)
+   [42] (-5, 0, -1)
+   [43] (5, 0, 1)
+   [44] (5, 0, -1)
+   [45] (4, 1, 1)
+   [46] (4, 1, -1)
+   [47] (3, 2, 1)
+   [48] (3, 2, -1)
+   [49] (2, 3, -1)
+   [50] (1, 2, 1)
+   [51] (0, 3, -1)
+   [52] (-1, 2, 1)
+   [53] (-2, 3, -1)
+ Volumes[1].Direction = 1 (East North)
+    RelativeTriangles Count = 54
+   [0] (1, 0, 1)
+   [1] (1, 0, -1)
+   [2] (3, 0, 1)
+   [3] (3, 0, -1)
+   [4] (2, 1, 1)
+   [5] (2, 1, -1)
+   [6] (0, 1, 1)
+   [7] (0, 1, -1)
+   [8] (1, 2, -1)
+   [9] (-1, 2, -1)
+   [10] (-2, 1, 1)
+   [11] (-2, 1, -1)
+   [12] (-1, 0, 1)
+   [13] (-1, 0, -1)
+   [14] (-3, 0, 1)
+   [15] (-3, 0, -1)
+   [16] (2, -1, 1)
+   [17] (2, -1, -1)
+   [18] (0, -1, 1)
+   [19] (0, -1, -1)
+   [20] (-2, -1, 1)
+   [21] (-2, -1, -1)
+   [22] (1, -2, 1)
+   [23] (-1, -2, 1)
+   [24] (4, -1, 1)
+   [25] (4, -1, -1)
+   [26] (3, -2, 1)
+   [27] (3, -2, -1)
+   [28] (-3, -2, 1)
+   [29] (-3, -2, -1)
+   [30] (-4, -1, 1)
+   [31] (-4, -1, -1)
+   [32] (-2, -3, 1)
+   [33] (-1, -2, -1)
+   [34] (0, -3, 1)
+   [35] (2, -3, 1)
+   [36] (1, -2, -1)
+   [37] (-3, 2, 1)
+   [38] (-3, 2, -1)
+   [39] (-4, 1, 1)
+   [40] (-4, 1, -1)
+   [41] (-5, 0, 1)
+   [42] (-5, 0, -1)
+   [43] (5, 0, 1)
+   [44] (5, 0, -1)
+   [45] (4, 1, 1)
+   [46] (4, 1, -1)
+   [47] (3, 2, 1)
+   [48] (3, 2, -1)
+   [49] (2, 3, -1)
+   [50] (1, 2, 1)
+   [51] (0, 3, -1)
+   [52] (-1, 2, 1)
+   [53] (-2, 3, -1)
+---------- S05 UnitVolume 全字段 dump 小节错误数: 0 ----------
+
+########## S06 跨资产同名局部 ID 一致性 (QuickSlash 等) ##########
+ 参与比较的 ActionLibrarySO: 3
+ 全部局部 ID（按 Ordinal 排序）: HeavySmash, QuickSlash, SpearThrust, Whirlwind, WideCleave
+ ---- 局部 ID "HeavySmash" ----
+   ForRadius1: BaseTime=1.5 BaseDamage=40 ImpactType=0 StaminaCost=25 ForceMultiplier=1.6 Pattern=Pattern_Smash_R1_0 @ Assets/Resources/GeneratedActions/Pattern_Smash_R1_0.asset [guid 872797ef83a8d13488fbb8d109ca365f]
+   ForRadius2: BaseTime=1.5 BaseDamage=40 ImpactType=0 StaminaCost=25 ForceMultiplier=1.6 Pattern=Pattern_Smash_R2_0 @ Assets/Resources/GeneratedActions/Pattern_Smash_R2_0.asset [guid 4aa4cdfdbdcef0348b1520ab222a6d4a]
+   <缺失> in ForRadius3 @ Assets/Resources/ActionLibrary/ForRadius3.asset
+   => 结论: 各库中同名 ID "HeavySmash" 的标量字段（BaseTime/BaseDamage/ImpactType/StaminaCost/ForceMultiplier）一致
+ ---- 局部 ID "QuickSlash" ----
+   ForRadius1: BaseTime=0.5 BaseDamage=15 ImpactType=1 StaminaCost=10 ForceMultiplier=0.8 Pattern=Pattern_Slash_R1_0 @ Assets/Resources/GeneratedActions/Pattern_Slash_R1_0.asset [guid 476b68c23aee80645b5c81c50cd2abb2]
+   ForRadius2: BaseTime=0.5 BaseDamage=15 ImpactType=1 StaminaCost=10 ForceMultiplier=0.8 Pattern=Pattern_Slash_R2_0 @ Assets/Resources/GeneratedActions/Pattern_Slash_R2_0.asset [guid e80d7761622c08d458f98c274dd7a7f4]
+   <缺失> in ForRadius3 @ Assets/Resources/ActionLibrary/ForRadius3.asset
+   => 结论: 各库中同名 ID "QuickSlash" 的标量字段（BaseTime/BaseDamage/ImpactType/StaminaCost/ForceMultiplier）一致
+ ---- 局部 ID "SpearThrust" ----
+   ForRadius1: BaseTime=0.8 BaseDamage=25 ImpactType=2 StaminaCost=15 ForceMultiplier=1 Pattern=Pattern_Thrust_R1_0 @ Assets/Resources/GeneratedActions/Pattern_Thrust_R1_0.asset [guid b3d713a61713abd439306c87da89adc0]
+   ForRadius2: BaseTime=0.8 BaseDamage=25 ImpactType=2 StaminaCost=15 ForceMultiplier=1 Pattern=Pattern_Thrust_R2_0 @ Assets/Resources/GeneratedActions/Pattern_Thrust_R2_0.asset [guid cc8de6ceea7a3f242b9a0e8483d6222c]
+   <缺失> in ForRadius3 @ Assets/Resources/ActionLibrary/ForRadius3.asset
+   => 结论: 各库中同名 ID "SpearThrust" 的标量字段（BaseTime/BaseDamage/ImpactType/StaminaCost/ForceMultiplier）一致
+ ---- 局部 ID "Whirlwind" ----
+   ForRadius1: BaseTime=2 BaseDamage=30 ImpactType=1 StaminaCost=40 ForceMultiplier=2.5 Pattern=Pattern_Whirlwind_R1_0 @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R1_0.asset [guid 960e6645f09f9b4428f7d0c5490492ed]
+   ForRadius2: BaseTime=2 BaseDamage=30 ImpactType=1 StaminaCost=40 ForceMultiplier=2.5 Pattern=Pattern_Whirlwind_R2_0 @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R2_0.asset [guid 47719ed4b12fdf94990db9e92b7e40f5]
+   <缺失> in ForRadius3 @ Assets/Resources/ActionLibrary/ForRadius3.asset
+   => 结论: 各库中同名 ID "Whirlwind" 的标量字段（BaseTime/BaseDamage/ImpactType/StaminaCost/ForceMultiplier）一致
+ ---- 局部 ID "WideCleave" ----
+   ForRadius1: BaseTime=1 BaseDamage=20 ImpactType=1 StaminaCost=20 ForceMultiplier=1.2 Pattern=Pattern_Cleave_R1_0 @ Assets/Resources/GeneratedActions/Pattern_Cleave_R1_0.asset [guid 291cdb608889dc042b5e622d77a9f794]
+   ForRadius2: BaseTime=1 BaseDamage=20 ImpactType=1 StaminaCost=20 ForceMultiplier=1.2 Pattern=Pattern_Cleave_R2_0 @ Assets/Resources/GeneratedActions/Pattern_Cleave_R2_0.asset [guid e31792b18b25fc54584b7d1c9b87e3d8]
+   <缺失> in ForRadius3 @ Assets/Resources/ActionLibrary/ForRadius3.asset
+   => 结论: 各库中同名 ID "WideCleave" 的标量字段（BaseTime/BaseDamage/ImpactType/StaminaCost/ForceMultiplier）一致
+ ---- 同原型 Pattern 资产 R1/R2 三角形集合比较 ----
+   Slash: Even count R1=8 R2=14 setEqual=False; Odd count R1=6 R2=12 setEqual=False
+   Smash: Even count R1=10 R2=10 setEqual=False; Odd count R1=13 R2=12 setEqual=False
+   Cleave: Even count R1=24 R2=40 setEqual=False; Odd count R1=27 R2=40 setEqual=False
+   Thrust: Even count R1=18 R2=18 setEqual=False; Odd count R1=15 R2=15 setEqual=False
+   Whirlwind: Even count R1=36 R2=60 setEqual=False; Odd count R1=36 R2=60 setEqual=False
+---------- S06 跨资产同名局部 ID 一致性 (QuickSlash 等) 小节错误数: 0 ----------
+
+########## S07 主战斗场景消费关系 (CombatSampleScene) ##########
+ 场景: Assets/Scenes/CombatSampleScene.unity  (只读 YAML 文本解析；Unity 6 中 LoadAllAssetsAtPath 对场景返回 0 个对象，故不依赖它)
+ 场景 GameObject 数 (YAML u!1 块): 15
+ 场景 MonoBehaviour 总数 (u!114 带 m_Script): 28
+   MonoBehaviour on "ActionGenerator" (&209602782): script=Assets/Scripts/Demos/LibraryGenerator.cs [guid 6b6caa9abc7df284daebd65077c15015]
+   MonoBehaviour on "Main Camera" (&330585547): script=Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalCameraData.cs [guid a79441f348de89743a2939f4d699eac1]
+   MonoBehaviour on "Directional Light" (&410087042): script=Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalLightData.cs [guid 474bcb49853aa07438625e644c072ee6]
+   MonoBehaviour on "Player" (&776904708): script=Assets/Scripts/Visuals/UnitMovement.cs [guid 9a81fcbe8872b1e4f89c5be627e2dafc]
+   MonoBehaviour on "Player" (&776904709): script=Assets/Scripts/Core/Entities/CombatUnit.cs [guid bbdfb68cb1c7920419923f7ddf05d69b]
+   MonoBehaviour on "Player" (&776904712): script=Assets/Scripts/Visuals/UnitBounce.cs [guid 55c0ec54dcea6c047b43cf7292693341]
+   MonoBehaviour on "Global Volume" (&832575518): script=Packages/com.unity.render-pipelines.core/Runtime/Volume/Volume.cs [guid 172515602e62fb746b5d573b38a5fe58]
+   MonoBehaviour on "Enemy" (&1072590960): script=Assets/Scripts/Visuals/UnitMovement.cs [guid 9a81fcbe8872b1e4f89c5be627e2dafc]
+   MonoBehaviour on "Enemy" (&1072590961): script=Assets/Scripts/Core/Entities/CombatUnit.cs [guid bbdfb68cb1c7920419923f7ddf05d69b]
+   MonoBehaviour on "Enemy" (&1072590964): script=Assets/Scripts/Visuals/UnitBounce.cs [guid 55c0ec54dcea6c047b43cf7292693341]
+   MonoBehaviour on "Canvas" (&1371144490): script=Packages/com.unity.ugui/Runtime/UGUI/UI/Core/GraphicRaycaster.cs [guid dc42784cf147c0c48a680349fa168899]
+   MonoBehaviour on "Canvas" (&1371144491): script=Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/CanvasScaler.cs [guid 0cd44c1031e13a943bb63640046fad76]
+   MonoBehaviour on "CombatDemo" (&1572899354): script=Assets/Scripts/Demos/CombatDemo.cs [guid 36b5844c231027947bbff204d06de000]
+   MonoBehaviour on "ActionPanel" (&1575253795): script=Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs [guid 59f8146938fff824cb5fd77236b75775]
+   MonoBehaviour on "Cursor" (&1663901092): script=Assets/Scripts/Visuals/GridCursor.cs [guid 0ccf2c9aa262409479505a096c5c5369]
+   MonoBehaviour on "EventSystem" (&1906731666): script=Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs [guid 01614664b831546d2ae94a42149d80ac]
+   MonoBehaviour on "EventSystem" (&1906731667): script=Packages/com.unity.ugui/Runtime/UGUI/EventSystem/EventSystem.cs [guid 76c392e42b5098c458856cdf6ecaaaa1]
+   MonoBehaviour on "Manager" (&2011197736): script=Assets/Scripts/Core/Timeline/BattleTimeline.cs [guid a882c992b3d461940a83cbedf7c7073c]
+   MonoBehaviour on "Manager" (&2011197737): script=Assets/Scripts/UI/UIManager.cs [guid 6f2c220d2806bf54fb06b4f5dcc276aa]
+   MonoBehaviour on "Manager" (&2011197738): script=Assets/Scripts/Core/Input/InputManager.cs [guid e7c7012490d74d64cbf9e35ac5b85b2a]
+   MonoBehaviour on "Manager" (&2011197739): script=Assets/Scripts/Core/Gameplay/TacticsController.cs [guid 44db49e140f3b354b83ed3403bcda7f3]
+   MonoBehaviour on "Manager" (&2011197740): script=Assets/Scripts/Visuals/UnitVolumeRenderer.cs [guid 96e38bf181bd2f94e85282fc58288af7]
+   MonoBehaviour on "Manager" (&2011197741): script=Assets/Scripts/Visuals/GridVisuals.cs [guid f8b2750f59155854bb39169be1ac05a8]
+   MonoBehaviour on "Manager" (&2011197744): script=Assets/Scripts/Core/Grid/GridManager.cs [guid 7b2887d546179b04c87a3f4bdebee38c]
+   MonoBehaviour on "Manager" (&2011197746): script=Assets/Scripts/Visuals/GameFeelManager.cs [guid dc618c5c135d2a049a7ed40c186cf6f2]
+   MonoBehaviour on "Manager" (&2011197747): script=Assets/Scripts/Core/Gameplay/EnemyAIController.cs [guid f155e3f29df44c74390a009dcf98424b]
+   MonoBehaviour on "Manager" (&2011197748): script=Assets/Scripts/Core/Gameplay/BattleManager.cs [guid 3880bb61fb0a4cd4f89e33382d1bf570]
+   MonoBehaviour on "Manager" (&2011197749): script=Assets/Scripts/UI/HUDManager.cs [guid cb01f616adc0c8c42a3dbb6b3b958b11]
+ ---- 特殊组件 Assets/Scripts/Demos/LibraryGenerator.cs on "ActionGenerator" (&209602782) 完整 YAML 块 ----
+   MonoBehaviour:
+     m_ObjectHideFlags: 0
+     m_CorrespondingSourceObject: {fileID: 0}
+     m_PrefabInstance: {fileID: 0}
+     m_PrefabAsset: {fileID: 0}
+     m_GameObject: {fileID: 209602779}
+     m_Enabled: 1
+     m_EditorHideFlags: 0
+     m_Script: {fileID: 11500000, guid: 6b6caa9abc7df284daebd65077c15015, type: 3}
+     m_Name: 
+     m_EditorClassIdentifier: 
+     targetLibrary: {fileID: 11400000, guid: d09b70a28dd2ced43bf159a1a12b29bf, type: 2}
+     generatedPath: Assets/Resources/GeneratedActions
+     SelectedRadius: 2
+     GenerateUnitVolumes: 0
+     GenerateAllRadiiPatterns: 0
+ ---- CombatUnit #1 on "Player" (&776904709) 完整 YAML 块 ----
+   MonoBehaviour:
+     m_ObjectHideFlags: 0
+     m_CorrespondingSourceObject: {fileID: 0}
+     m_PrefabInstance: {fileID: 0}
+     m_PrefabAsset: {fileID: 0}
+     m_GameObject: {fileID: 776904707}
+     m_Enabled: 1
+     m_EditorHideFlags: 0
+     m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
+     m_Name: 
+     m_EditorClassIdentifier: 
+     IsPlayerControlled: 1
+     InitialGridPosition:
+       X: -5
+       Y: -5
+     UnitVolumeDefinition: {fileID: 11400000, guid: e7b3456b17272bf4d882a50c38d433e2, type: 2}
+     FacingDirection: 0
+     ActionLibrary: {fileID: 11400000, guid: 9ea53fc4064c1594796601d06dff0ac9, type: 2}
+     CurrentStateStartTick: 0
+     CurrentStateDurationTicks: 0
+     Strength: 10
+     Dexterity: 10
+     Constitution: 10
+     Wisdom: 10
+     Intelligence: 10
+     ArmorWeight: 10
+     ArmorDefense: 0
+     MagicResistance: 0
+     CurrentHealth: 100
+     CurrentStamina: 100
+     CurrentFocus: 0
+     CurrentAdrenaline: 0
+     IsStaggered: 0
+     IsKnockedDown: 0
+     IsActing: 0
+     InWindup: 0
+     InRecovery: 0
+     IsMoving: 0
+     IsRecoveringAction: 0
+ ---- CombatUnit #2 on "Enemy" (&1072590961) 完整 YAML 块 ----
+   MonoBehaviour:
+     m_ObjectHideFlags: 0
+     m_CorrespondingSourceObject: {fileID: 0}
+     m_PrefabInstance: {fileID: 0}
+     m_PrefabAsset: {fileID: 0}
+     m_GameObject: {fileID: 1072590959}
+     m_Enabled: 1
+     m_EditorHideFlags: 0
+     m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
+     m_Name: 
+     m_EditorClassIdentifier: 
+     IsPlayerControlled: 0
+     InitialGridPosition:
+       X: 5
+       Y: 5
+     UnitVolumeDefinition: {fileID: 11400000, guid: 25dd84dc5108e4d40a90528a9ecb301c, type: 2}
+     FacingDirection: 0
+     ActionLibrary: {fileID: 11400000, guid: d09b70a28dd2ced43bf159a1a12b29bf, type: 2}
+     CurrentStateStartTick: 0
+     CurrentStateDurationTicks: 0
+     Strength: 10
+     Dexterity: 10
+     Constitution: 10
+     Wisdom: 10
+     Intelligence: 10
+     ArmorWeight: 10
+     ArmorDefense: 0
+     MagicResistance: 0
+     CurrentHealth: 100
+     CurrentStamina: 100
+     CurrentFocus: 0
+     CurrentAdrenaline: 0
+     IsStaggered: 0
+     IsKnockedDown: 0
+     IsActing: 0
+     InWindup: 0
+     InRecovery: 0
+     IsMoving: 0
+     IsRecoveringAction: 0
+ ---- 特殊组件 Assets/Scripts/Demos/CombatDemo.cs on "CombatDemo" (&1572899354) 完整 YAML 块 ----
+   MonoBehaviour:
+     m_ObjectHideFlags: 0
+     m_CorrespondingSourceObject: {fileID: 0}
+     m_PrefabInstance: {fileID: 0}
+     m_PrefabAsset: {fileID: 0}
+     m_GameObject: {fileID: 1572899353}
+     m_Enabled: 1
+     m_EditorHideFlags: 0
+     m_Script: {fileID: 11500000, guid: 36b5844c231027947bbff204d06de000, type: 3}
+     m_Name: 
+     m_EditorClassIdentifier: 
+     Player: {fileID: 776904709}
+     Enemy: {fileID: 1072590961}
+     Timeline: {fileID: 2011197736}
+     DebugTimeDisplay: 0
+ 场景 CombatUnit 实例数: 2
+ ---- 场景 YAML guid 引用解析 ----
+ 场景 YAML 中唯一 guid 数: 41
+   guid 0000000000000000e000000000000000 -> Library/unity default resources
+   guid 0000000000000000f000000000000000 -> Resources/unity_builtin_extra
+   guid 01614664b831546d2ae94a42149d80ac -> Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/UI/InputSystemUIInputModule.cs
+   guid 0293c391cf9948f4398359921faec1ce -> Assets/Material/Enemy.mat
+   guid 0ccf2c9aa262409479505a096c5c5369 -> Assets/Scripts/Visuals/GridCursor.cs
+   guid 0cd44c1031e13a943bb63640046fad76 -> Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/CanvasScaler.cs
+   guid 10fc4df2da32a41aaa32d77bc913491c -> Assets/Settings/SampleSceneProfile.asset
+   guid 172515602e62fb746b5d573b38a5fe58 -> Packages/com.unity.render-pipelines.core/Runtime/Volume/Volume.cs
+   guid 25ca135bb7b99974e9cd3cd5d9aae9ee -> Assets/Material/Player.mat
+   guid 25dd84dc5108e4d40a90528a9ecb301c -> Assets/Resources/Unit Volume/Radius_2.asset
+   guid 31321ba15b8f8eb4c954353edc038b1d -> Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat
+   guid 36b5844c231027947bbff204d06de000 -> Assets/Scripts/Demos/CombatDemo.cs
+   guid 3880bb61fb0a4cd4f89e33382d1bf570 -> Assets/Scripts/Core/Gameplay/BattleManager.cs
+   guid 3fd2303d66e1d7b4fb40be557ce29a79 -> Assets/InputSystem.inputactions
+   guid 44db49e140f3b354b83ed3403bcda7f3 -> Assets/Scripts/Core/Gameplay/TacticsController.cs
+   guid 474bcb49853aa07438625e644c072ee6 -> Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalLightData.cs
+   guid 55c0ec54dcea6c047b43cf7292693341 -> Assets/Scripts/Visuals/UnitBounce.cs
+   guid 59f8146938fff824cb5fd77236b75775 -> Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs
+   guid 5dd49b3eacc540408c98eee0de38e0f1 -> Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers.ttf
+   guid 67da0df7e8cd17048850400fff60f952 -> Assets/Prefab/UnitStatusHUD.prefab
+   guid 6b6caa9abc7df284daebd65077c15015 -> Assets/Scripts/Demos/LibraryGenerator.cs
+   guid 6f2c220d2806bf54fb06b4f5dcc276aa -> Assets/Scripts/UI/UIManager.cs
+   guid 76c392e42b5098c458856cdf6ecaaaa1 -> Packages/com.unity.ugui/Runtime/UGUI/EventSystem/EventSystem.cs
+   guid 7b2887d546179b04c87a3f4bdebee38c -> Assets/Scripts/Core/Grid/GridManager.cs
+   guid 96e38bf181bd2f94e85282fc58288af7 -> Assets/Scripts/Visuals/UnitVolumeRenderer.cs
+   guid 9a81fcbe8872b1e4f89c5be627e2dafc -> Assets/Scripts/Visuals/UnitMovement.cs
+   guid 9ea53fc4064c1594796601d06dff0ac9 -> Assets/Resources/ActionLibrary/ForRadius1.asset
+   guid a79441f348de89743a2939f4d699eac1 -> Packages/com.unity.render-pipelines.universal/Runtime/UniversalAdditionalCameraData.cs
+   guid a882c992b3d461940a83cbedf7c7073c -> Assets/Scripts/Core/Timeline/BattleTimeline.cs
+   guid bbdfb68cb1c7920419923f7ddf05d69b -> Assets/Scripts/Core/Entities/CombatUnit.cs
+   guid ca9f5fa95ffab41fb9a615ab714db018 -> Packages/com.unity.inputsystem/InputSystem/Runtime/Plugins/PlayerInput/DefaultInputActions.inputactions
+   guid cb01f616adc0c8c42a3dbb6b3b958b11 -> Assets/Scripts/UI/HUDManager.cs
+   guid d09b70a28dd2ced43bf159a1a12b29bf -> Assets/Resources/ActionLibrary/ForRadius2.asset
+   guid dc42784cf147c0c48a680349fa168899 -> Packages/com.unity.ugui/Runtime/UGUI/UI/Core/GraphicRaycaster.cs
+   guid dc618c5c135d2a049a7ed40c186cf6f2 -> Assets/Scripts/Visuals/GameFeelManager.cs
+   guid e3265ab4bf004d28a9537516768c1c75 -> Assets/TextMesh Pro/Fonts/LiberationSans.ttf
+   guid e7b3456b17272bf4d882a50c38d433e2 -> Assets/Resources/Unit Volume/Radius_1.asset
+   guid e7c7012490d74d64cbf9e35ac5b85b2a -> Assets/Scripts/Core/Input/InputManager.cs
+   guid e9df7b16311d57c449120fb2215ccad1 -> Assets/Prefab/Button.prefab
+   guid f155e3f29df44c74390a009dcf98424b -> Assets/Scripts/Core/Gameplay/EnemyAIController.cs
+   guid f8b2750f59155854bb39169be1ac05a8 -> Assets/Scripts/Visuals/GridVisuals.cs
+ ---- 配置资产场景引用判定 ----
+   [场景引用] ActionLibrarySO @ Assets/Resources/ActionLibrary/ForRadius1.asset [guid 9ea53fc4064c1594796601d06dff0ac9]
+   [场景引用] ActionLibrarySO @ Assets/Resources/ActionLibrary/ForRadius2.asset [guid d09b70a28dd2ced43bf159a1a12b29bf]
+   [未引用 ] ActionLibrarySO @ Assets/Resources/ActionLibrary/ForRadius3.asset [guid 6e64b254bcf0a25428f0efc237c0f7bf]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Cleave_R1_0.asset [guid 291cdb608889dc042b5e622d77a9f794]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Cleave_R2_0.asset [guid e31792b18b25fc54584b7d1c9b87e3d8]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Slash_R1_0.asset [guid 476b68c23aee80645b5c81c50cd2abb2]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Slash_R2_0.asset [guid e80d7761622c08d458f98c274dd7a7f4]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Smash_R1_0.asset [guid 872797ef83a8d13488fbb8d109ca365f]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Smash_R2_0.asset [guid 4aa4cdfdbdcef0348b1520ab222a6d4a]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Thrust_R1_0.asset [guid b3d713a61713abd439306c87da89adc0]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Thrust_R2_0.asset [guid cc8de6ceea7a3f242b9a0e8483d6222c]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R1_0.asset [guid 960e6645f09f9b4428f7d0c5490492ed]
+   [未引用 ] AttackPattern @ Assets/Resources/GeneratedActions/Pattern_Whirlwind_R2_0.asset [guid 47719ed4b12fdf94990db9e92b7e40f5]
+   [场景引用] UnitVolume @ Assets/Resources/Unit Volume/Radius_1.asset [guid e7b3456b17272bf4d882a50c38d433e2]
+   [场景引用] UnitVolume @ Assets/Resources/Unit Volume/Radius_2.asset [guid 25dd84dc5108e4d40a90528a9ecb301c]
+   [未引用 ] UnitVolume @ Assets/Resources/Unit Volume/Radius_3.asset [guid faaf1464668507348836395402a34bca]
+---------- S07 主战斗场景消费关系 (CombatSampleScene) 小节错误数: 0 ----------
+
+########## S08 Prefab 引用扫描 ##########
+ ==== Prefab @ Assets/Prefab/Button.prefab [guid e9df7b16311d57c449120fb2215ccad1] ====
+   MonoBehaviour on "Button": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Button.cs
+   MonoBehaviour on "Button": Assets/Scripts/UI/ActionButton.cs
+   MonoBehaviour on "Button": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+   MonoBehaviour on "Text (TMP)": Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs
+ ==== Prefab @ Assets/Prefab/FocusPoint.prefab [guid 4f5d6c76f6fc00f4f859736bef6ed7d7] ====
+   MonoBehaviour on "FocusPoint": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+ ==== Prefab @ Assets/Prefab/UnitStatusHUD.prefab [guid 67da0df7e8cd17048850400fff60f952] ====
+   MonoBehaviour on "StaminaBar": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+   MonoBehaviour on "HPBar": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+   MonoBehaviour on "ActionRing": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+   MonoBehaviour on "LeftPanel": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs
+   MonoBehaviour on "FocusWrapper": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs
+   MonoBehaviour on "UnitStatusHUD": Assets/Scripts/UI/UnitStatusHUD.cs
+   MonoBehaviour on "AdrenalineBar": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+   MonoBehaviour on "RightPanel": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/VerticalLayoutGroup.cs
+   MonoBehaviour on "UnitStatusHUD": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/CanvasScaler.cs
+   MonoBehaviour on "UnitStatusHUD": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/GraphicRaycaster.cs
+   MonoBehaviour on "FocusContainer": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/HorizontalLayoutGroup.cs
+   MonoBehaviour on "StatusIcon": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs
+   MonoBehaviour on "AdrenalineBar": Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout/LayoutElement.cs
+---------- S08 Prefab 引用扫描 小节错误数: 0 ----------
+
+########## S09 脚本程序集与 MonoScript GUID 报告 ##########
+ 关键脚本的 MonoScript GUID（.meta 保留要求依据）与所属程序集：
+   Scripts/Demos/CombatDemo.cs                                  guid=36b5844c231027947bbff204d06de000  asm=Assembly-CSharp
+   Scripts/Demos/LibraryGenerator.cs                            guid=6b6caa9abc7df284daebd65077c15015  asm=Assembly-CSharp
+   Scripts/UI/HUDManager.cs                                     guid=cb01f616adc0c8c42a3dbb6b3b958b11  asm=Assembly-CSharp
+   Scripts/UI/UIManager.cs                                      guid=6f2c220d2806bf54fb06b4f5dcc276aa  asm=Assembly-CSharp
+   Scripts/Core/Actions/Action.cs                               guid=4fd6e0102c9fedb4fbfcad9d54ddbbb0  asm=Assembly-CSharp
+   Scripts/Core/Actions/ActionLibrarySO.cs                      guid=01511c6326086974ab1e98830528a667  asm=Assembly-CSharp
+   Scripts/Core/Actions/ActionScheduler.cs                      guid=b6ca0da554e976f438cdee7a6f2b52d1  asm=Assembly-CSharp
+   Scripts/Core/Actions/ActionType.cs                           guid=705a19ed911c72846984cbb86dfedeee  asm=Assembly-CSharp
+   Scripts/Core/Combat/AttackPattern.cs                         guid=b92768f6a1e2386498c8346979c110a1  asm=Assembly-CSharp
+   Scripts/Core/Entities/CombatUnit.cs                          guid=bbdfb68cb1c7920419923f7ddf05d69b  asm=Assembly-CSharp
+   Scripts/Core/Gameplay/BattleManager.cs                       guid=3880bb61fb0a4cd4f89e33382d1bf570  asm=Assembly-CSharp
+   Scripts/Core/Gameplay/EnemyAIController.cs                   guid=f155e3f29df44c74390a009dcf98424b  asm=Assembly-CSharp
+   Scripts/Core/Gameplay/TacticsController.cs                   guid=44db49e140f3b354b83ed3403bcda7f3  asm=Assembly-CSharp
+   Scripts/Core/Grid/GridDirection.cs                           guid=817c58b5becc8a84eb4d22f76ef97d05  asm=Assembly-CSharp
+   Scripts/Core/Grid/GridMath.cs                                guid=e00f3f9eb1c972e4a841a2235c80c841  asm=Assembly-CSharp
+   Scripts/Core/Grid/TrianglePoint.cs                           guid=a9ad652aaa6538444b3d009fba1f1abf  asm=Assembly-CSharp
+   Scripts/Core/Grid/UnitVolume.cs                              guid=72c1b722215097e42819e4e1e5ed94a5  asm=Assembly-CSharp
+   Scripts/Core/Interactions/CombatArbiter.cs                   guid=ea672b45bd41fb748b7bb55f51df112b  asm=Assembly-CSharp
+   Scripts/Core/Interactions/CombatIntent.cs                    guid=f46a0ab709965e84a898c815e9562d3f  asm=Assembly-CSharp
+   Scripts/Core/Pathfinding/Pathfinder.cs                       guid=8cb0965490d74a548afdc90f83633938  asm=Assembly-CSharp
+   Scripts/Core/Physics/PhysicsEngine.cs                        guid=940d2ce08782cd44591e9d59e0dd9042  asm=Assembly-CSharp
+   Scripts/UI/Timeline/TimelineEditorUI.cs                      guid=0c18b8596b798004597444c787a86f02  asm=Assembly-CSharp
+   Scripts/Visuals/NextActionPreview/NextActionPreviewSystem.cs guid=e001256ca136efd489008f0594557c30  asm=Assembly-CSharp
+   Scripts/Core/Actions/Intents/AttackIntent.cs                 guid=822e8d671d21d3243829b68e9e78c07d  asm=Assembly-CSharp
+---------- S09 脚本程序集与 MonoScript GUID 报告 小节错误数: 0 ----------
+
+########## S10 缺失稳定 ID 的源码证据扫描 ##########
+ 只读扫描 Assets/Scripts 下全部 .cs，寻找不稳定 ID 来源（对象名/注册顺序/GetInstanceID/Time.frameCount）。
+ 以下为静态证据；语义归属由架构师记录负责。
+ -- Scripts/Demos/CombatDemo.cs
+    L40 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Object.FindAnyObjectByType<TacticsController>() == null)
+ -- Scripts/UI/HUDManager.cs
+    L27 [名字拼进 ID / 名字派生对象名]: go.name = $"HUD_{unit.name}";
+ -- Scripts/UI/UIManager.cs
+    L45 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Controller == null) Controller = FindFirstObjectByType<TacticsController>();
+    L55 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (_timeline == null) _timeline = FindFirstObjectByType<BattleTimeline>();
+    L72 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (_timeline == null) _timeline = FindFirstObjectByType<BattleTimeline>();
+    L158 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (_timeline == null) _timeline = FindFirstObjectByType<BattleTimeline>();
+    L230 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: TimelineUI = FindFirstObjectByType<TimelineEditorUI>();
+    L282 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: var canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+ -- Scripts/UI/UnitStatusHUD.cs
+    L39 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: _timeline = FindFirstObjectByType<BattleTimeline>();
+ -- Scripts/Visuals/GridVisuals.cs
+    L24 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (gridManager == null) gridManager = FindFirstObjectByType<GridManager>();
+ -- Scripts/Visuals/UnitMovement.cs
+    L25 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: _timeline = FindFirstObjectByType<BattleTimeline>();
+ -- Scripts/Core/Entities/CombatUnit.cs
+    L149 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: _timeline = FindFirstObjectByType<BattleTimeline>();
+ -- Scripts/Core/Gameplay/BattleManager.cs
+    L40 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: var units = FindObjectsByType<CombatUnit>(FindObjectsSortMode.None);
+ -- Scripts/Core/Gameplay/EnemyAIController.cs
+    L44 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
+    L48 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: var units = FindObjectsByType<CombatUnit>(FindObjectsSortMode.None);
+ -- Scripts/Core/Gameplay/TacticsController.cs
+    L47 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
+    L58 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: Cursor = FindFirstObjectByType<GridCursor>();
+ -- Scripts/Core/Interactions/CombatIntent.cs
+    L22 [Time.frameCount]: ID = $"{owner.name}_{type}_{Time.frameCount}";
+    L22 [名字拼进 ID / 名字派生对象名]: ID = $"{owner.name}_{type}_{Time.frameCount}";
+ -- Scripts/Editor/BaselineDiagnostics/BaselineDiagnosticRunner.cs
+    L629 [Time.frameCount]: Sb.AppendLine(" 只读扫描 Assets/Scripts 下全部 .cs，寻找不稳定 ID 来源（对象名/注册顺序/GetInstanceID/Time.frameCount）。");
+    L634 [Time.frameCount]: ("Time.frameCount", @"Time\.frameCount"),
+    L635 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: ("注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)", @"FindObjectsByType|FindObjectsOfType|FindObjectOfType|FindAnyObjectByType|FindFirstObjectByType"),
+    L637 [nameof/注册顺序顺序依赖提示 (List/Array 顺序索引注释不扫描)]: ("nameof/注册顺序顺序依赖提示 (List/Array 顺序索引注释不扫描)", @"GetComponentsInChildren|GetComponents\b"),
+ -- Scripts/UI/Timeline/TimelineEditorUI.cs
+    L107 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
+ -- Scripts/Visuals/NextActionPreview/NextActionPreviewBootstrap.cs
+    L12 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Object.FindFirstObjectByType<NextActionPreviewInstaller>() != null) return;
+ -- Scripts/Visuals/NextActionPreview/NextActionPreviewInstaller.cs
+    L27 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (Object.FindFirstObjectByType<NextActionPreviewSystem>() != null) return;
+    L30 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (grid == null) grid = Object.FindFirstObjectByType<GridManager>();
+ -- Scripts/Visuals/NextActionPreview/NextActionPreviewSystem.cs
+    L71 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: _timeline = FindFirstObjectByType<BattleTimeline>();
+    L153 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: if (_timeline == null) _timeline = FindFirstObjectByType<BattleTimeline>();
+ -- Scripts/Core/Actions/Intents/StateChangeIntent.cs
+    L38 [注册顺序扫描 (FindObjects*/FindFirst*/FindAny*)]: var timeline = Object.FindFirstObjectByType<BattleTimeline>();
+ 匹配行总数: 30
+---------- S10 缺失稳定 ID 的源码证据扫描 小节错误数: 0 ----------
+
+====================================================================================
+ 诊断结束。总错误数: 0
+====================================================================================
