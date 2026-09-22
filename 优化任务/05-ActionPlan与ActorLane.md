@@ -32,7 +32,7 @@
    - `CreatedAtTick`、`LastEditedScheduleRevision`、`AutomaticDeferralCount`、`LockedAtTick`
    - `Editable`、`Locked`、`Running`、自然终态 `Completed` 和带原因的非自然终态 `Terminated`
    - `TerminalTick`
-   - 独立的 `ActionTerminationReason`；至少区分 `CancelledByCommand`、`TargetInvalid`、`ActorUnavailableAtStart`、`AutoDeferralLimitExceeded`、`SourceThreatCancelled`、`InterruptedByClash`、`InterruptedByIntercept`、`InterruptedByControl`、`ReservationPreemptedByForcedDisplacement`、`MovementOriginInvalidated`、`OwnerDied` 和 `BattleEnded`
+   - 独立的 `ActionTerminationReason`；至少区分 `CancelledByCommand`、`TargetInvalid`、`ActorUnavailableAtStart`、`AutoDeferralLimitExceeded`、`SourceThreatCancelled`、`InterruptedByClash`、`InterruptedByIntercept`、`InterruptedByControl`、`ReservationPreemptedByForcedDisplacement`、`MovementOriginInvalidated`、`MovementOriginInvalidatedByDodge`、`OwnerDied` 和 `BattleEnded`
 2. 全局 ActionPlan 注册表，按稳定键访问和快照化，不按 WindowId 分桶执行。
 3. 每单位一条全局 `ActorLane`：
    - 计划按 `StartTick -> ActionPlanId` 排序。
@@ -42,7 +42,7 @@
    - 自然完成、RemoveEditablePlan/显式生命周期取消、启动失败或自动延期越界、目标失效、来源威胁取消、交互/控制打断、强制位移破坏旧起点或 Reservation、Owner 死亡和战斗结束都只能经该入口改变计划终态。
    - 第一次终态请求胜出；重复或冲突请求幂等，不覆盖状态、原因或 TerminalTick，不重复发事件。
    - 使用显式、固定顺序的清理参与者，先阻止计划继续调度，再清除未冻结/未来 Intent、Lane 项、机会绑定和活动索引；任务 06/07 在同一入口接入 MovementSegment/空间 Reservation、TurnBudget 账本与肾上腺素 Reservation，不得另建清理入口。
-   - 历史记录保留；每个 Step 返回前可统一检查没有活动对象引用终态计划。
+   - 历史记录保留；每个 Step 返回前可统一检查没有活动对象引用终态计划。协调器登记新终态候选，在本 Tick 全部清理和只读不变量检查完成后通过任务 03 归档端口冻结一次；完整字段留在不可变归档，逐 Tick 快照使用历史记录数与摘要，不遍历旧终态记录。归档不产生新的玩法事件、不改变计划 ID 或修订号。
 5. 动作生命周期接入 Step：命令前边界、排程编辑、执行前启动门禁、到期计划原子锁定/启动、动作后边界和统一终态清理均有固定阶段。目标 Tick=T 的状态到期和编辑先于 StartTick=T 的门禁。
    - 冻结闭合 `ActionStartGateResult`：`Startable`、`Retryable(StartBlockerReason, RetryAtTick)`、`Terminal(ActionTerminationReason)`、`InvariantViolation(errorCode)`。RetryAtTick 必须有限且严格大于当前 Tick。
    - Startable 的 Timing/Path/Reservation 冻结、任务 07 的 TurnBudget `Reserved -> Spent`、`LockedAtTick`/锁定事件与 `Running` 起始状态必须通过一个提交端口原子完成；失败时不得留下 Locked-but-not-Running、部分资源消费或 Telegraph。
@@ -53,7 +53,7 @@
 7. 排程规范化规则：只有直接移动的计划可早于旧 StartTick；重叠只向右 ripple，删除不自动左吸；受影响 Move 链的预测起止位置、路径、边数、路径权重、绝对 Tick 和预算/Reservation 接缝一起重算。预览与提交必须复用同一求值器。
 8. ActionPlan、ActorLane 与 ScheduleRevision 的快照和语义事件；每个成功命令排程事务或成功系统自动延期事务只增加一个修订号，失败/预览/锁定/自然推进不增加。`ActionPlanAutoDeferredEvent` 必须包含阻塞原因、旧/新 StartTick、RetryAtTick、次数、稳定 ripple PlanId 列表和提交后修订号。
 9. 接入任务 04 的死亡通知：Dead 锁定 Lane 的新提交，并按 ActionPlanId 将该单位全部非终态 Editable/Locked/Running 计划以 `OwnerDied` 原因交给统一协调器；该清理不依赖窗口。
-10. 接入任务 03 的战斗结束 Finalizer：按 UnitId 锁定全部 Lane，按 ActionPlanId 将全部非终态计划通过同一协调器转为 `Terminated(BattleEnded)`；从活动索引和 Lane 队列移除，但在只读历史注册表与最终快照中保留计划记录。Finalizer 不得复制一套计划清理逻辑。
+10. 接入任务 03 的战斗结束 Finalizer：按 UnitId 锁定全部 Lane，按 ActionPlanId 将全部非终态计划通过同一协调器转为 `Terminated(BattleEnded)`；从活动索引和 Lane 队列移除，在只读归档保留完整计划记录，最终快照保存对应历史记录数与摘要并支持按需诊断读取。Finalizer 不得复制一套计划清理逻辑。
 11. `ReactionOpportunitySystem`：
    - 来源 AttackPlan 在执行 Tick 锁定、启动并进入 `TelegraphTick`（首版等于 StartTick）后，才按 `SourceAttackPlanId -> DefenderUnitId` 稳定顺序生成机会；攻击仍为 Editable 时不能公开或响应。
    - 只为带 `Reactable` 且满足 `ImpactTick - TelegraphTick >= MinimumReactionLeadTicks` 的攻击创建机会；PrimaryTargetOnly 按通过 `AllowedTargetRelations` 的固定目标、区域攻击按 TelegraphTick 的逻辑威胁区域和同一关系掩码生成防御者候选，不读取 `IsPlayerControlled`、敌我 Controller 类型或任何默认敌方标志。显式允许友军伤害时，友军威胁与反应使用完全相同流程。
@@ -62,6 +62,7 @@
    - 来源攻击在 TriggerTick 前终止时关闭机会，并以 `SourceThreatCancelled` 终止绑定反应；该原因向任务 07 发出“释放未消费预留”通知。其他反应终态不触发该例外。
    - 状态固定为 `Open/Accepted/Triggered/Expired/SourceCancelled/BattleEnded`，只有 Open 接收命令；每个选项在其截止 Tick 命令阶段结束后只发一次过期事件，最后一项过期才关闭机会。第一次离开 Open 只发一次关闭事件，Accepted 后的触发/来源取消由专用触发或计划终态事件记录。
    - 机会状态、选项截止/过期、接受/关闭原因、`NextReactionOpportunityId` 和绑定计划进入事件/规范化快照。
+   - Dodge 的 Triggered 转换与 ReactionTriggeredEvent 必须等待任务 06/08 的 TriggerTick 位置事务成功；生成反应 Intent 不等于实际触发。失败使用计划终态与实际尝试的 DodgeResolvedEvent 记录，不伪造触发；成功避伤和奖励另按主方案 0.4.1 的旧/新接触结果判定。
 
 ## 核心规则
 
@@ -86,6 +87,13 @@
 - `ScheduleRevision` 是全局乐观并发版本；Expected 值与 Step 冻结时的 BatchBaseScheduleRevision 比较，不与本批前一事务递增后的实时值比较。互不相交 Lane 可按 CommandSequence 各成功并各 +1；触及本批已改写 Plan/Lane 依赖闭包的后处理事务以 `SCHEDULE_EDIT_CONFLICT_IN_BATCH` 拒绝。显式命令阶段完成后，成功的系统自动延期按稳定到期顺序读取当前排程并各 +1；预览、任意失败、窗口切换、锁定与自然推进不增加修订号，跨 Tick 旧修订以 `STALE_SCHEDULE_REVISION` 拒绝。
 - ScheduleEvaluator 从当前 Lane 投影开始，只对直接操作和其向后依赖闭包求值；显式编辑与系统自动延期必须调用同一实现。它把 Locked/Running/反应区间视为障碍，只向右避让。删除只移除目标并重算必要的空间依赖，不自动压缩绝对时间空隙。
 - `BattleRules.MaxAutomaticDeferralsPerPlan` 与最大排程视野共同限制重试；未知/无限状态不能返回 Retryable。门禁发现 Lane 投影与当前动作所有权矛盾、RetryAtTick 非法或原子启动提交不一致时必须以稳定不变量错误令 Step 失败，不能终止计划后继续。
+
+### Dodge 对后续移动的终态接缝
+
+- 按主方案 3.1.2 冻结 `MovementOriginInvalidatedByDodge` 原因；由统一终态协调器处理，保留历史且不增加 ScheduleRevision。
+- 复用排程位置依赖模型提供只读查询：找出实际 From 变化会失效的后续 Editable Move 及传递闭包，跨过 Attack/Guard 等非移动计划，不以“紧邻下一项”代替依赖关系。供预检和 TriggerTick 共用，触发时读取当前排程，覆盖接受后新增/编辑的移动。
+- 接受 Dodge 不提前取消或重排这些 Move，不按预期落点重写路径。只有 TriggerTick 换位事务成功才提交该终态；失败/取消不因本 Dodge 修改移动链。Lane 时间重叠仍按原规则拒绝。
+- 清理必须加入任务 06/07 的同一原子换位事务，不允许真实计划先终态、换位随后失败。非依赖计划保持原 Tick，不自动改路、左吸或 ripple。
 
 ## 工作步骤
 
@@ -113,6 +121,12 @@
 - 旧 `Assets/Scripts/Core/Actions/ActionScheduler.cs` 仅限增加兼容转发或停用新写入路径
 
 ## 必需测试
+
+- `DodgeAcceptanceDoesNotTerminateFutureMoves`
+- `DodgeOriginInvalidationFindsTransitiveMovesAcrossNonMovementPlans`
+- `DodgeOriginInvalidationUsesCurrentScheduleIncludingLaterEdits`
+- `DodgeMovementTerminalIsIdempotentAndDoesNotIncrementScheduleRevision`
+- `DodgeOriginInvalidationPreservesIndependentPlansAndTheirTicks`
 
 - `SameActorPlansAreSerializedByLane`
 - `DifferentActorPlansMayOverlap`
@@ -222,7 +236,7 @@
 - 事务失败后不存在孤立计划、错误 `NextAvailableTick` 或残留测试 Intent；计划进入权威注册表后的任意终态也不会留下活动索引、Lane 项或未冻结/未来 Intent。
 - 任务 07 可以在不改变 ActionPlan 生命周期的前提下接入新增授权、Editable 预算预留、系统延期预算调整与启动门禁的原子消费。
 - 终态清理幂等，第一次状态/原因/TerminalTick 保持；Editable 普通计划释放未消费预算，Locked 后不退款，反应仅保留当前周期 `SourceThreatCancelled` 释放例外；强制位移两种原因按冻结优先级进入同一入口并完整清理空间从属对象，不回卷 ID/Sequence、不撤销已提交结果或前移后续计划。
-- 战斗结束复用普通终态协调器；结束后不存在仍可启动或产生 Intent 的活动计划，最终快照仍能审计每个计划的原始 Tick、状态和终止原因。
+- 战斗结束复用普通终态协调器；结束后不存在仍可启动或产生 Intent 的活动计划，最终快照的历史前缀可按需展开，审计每个计划的原始 Tick、状态和终止原因。归档记录不可变、重复终态不重复追加；新增终态仅处理本 Tick 候选，无新增时不读取旧归档，活动计划与历史不丢失、不重复。
 - 对应隐藏场景/Shadow 用例已重跑；计划、Lane、攻击时序和终态差异全部可追溯，新模拟仍零 Unity/旧状态/反馈写入。
 
 ## 禁止事项

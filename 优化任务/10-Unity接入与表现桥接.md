@@ -52,6 +52,7 @@
 5. `CombatUnitView` 或等价桥：初始化器通过任务 02B 返回的槽位映射解析本场 `(UnitId, FactionId)` 后完成绑定；View 只读取快照和事件，不持有逻辑写权限，也不手填运行时数字 ID/FactionId。阵营颜色、图标和本地文案可由 View 元数据映射，但不能反向成为 Logic 关系来源。
 6. `GridView`：负责世界坐标与离散网格坐标转换、射线和调试绘制；LogicGrid 保持权威。
 7. `CombatFeedbackMapper`：把分通道 Damage、Guard、Dodge、Block、Clash、StateChanged、ForcedDisplacementResolved 等语义事件映射到伤害数字、震屏、顿帧、动画和音效策略；表现可以合并显示，但调试层必须能展示 Raw/抵抗后伤害、抵抗前后动量，以及强制位移的 Requested/AppliedSteps、StopReason 和 InvalidatedPlanIds。
+   - Dodge 动作触发只消费 ReactionTriggeredEvent；成功避伤反馈只消费 DodgeResolvedEvent 的非空 AvoidedAttackerPlanIds。换位但仍被命中、Undodgeable 追踪、新格新增攻击和提交失败应按结算事实显示，不能从动画或位置变化自行广播成功闪避/奖励；同一计划不得重复播放触发或成功反馈。
 8. `UnitMovement` 改为纯视觉插值；不得在插值完成回调中提交逻辑位置。收到移动计划终态事件或发现最新快照仍位于最后已提交逻辑格时，必须停止旧目的地插值并向权威快照位置收敛，不能让表现继续暗示计划将在原 EndTick 到达。收到 `ForcedDisplacementResolvedEvent` 时只从事件 From 向最终 To 播放一次位移表现；不得逐格回写、重新做碰撞/寻路/Reservation 判定，零步结果只播放可选受阻反馈并保持快照位置。
 9. UI/时间线以只读快照为权威，但保留普通计划编辑能力，不能直接写全局集合：
    - 显示 `CurrentTick + 1` 锁定线及 Editable/Locked/Running/终态差异；支持未来放置、整数 Tick/关键帧吸附、拖动重排、删除、向右避让预览，以及移动链预测位置/路径/路径权重/时长/预算变化。路径、时长与预算必须完整来自 Logic 预览；UI 不按世界距离、MoveSpeed 或 EdgeCount 自行估算。
@@ -61,6 +62,7 @@
    - 选择攻击目标时只用 DecisionSnapshot 提供的只读 `FactionRelationResolver + ActionSpec.AllowedTargetRelations` 结果展示 Self/Allied/Neutral/Hostile 候选；显式友伤/中立目标按动作掩码展示。UI 显示过滤不是授权，不能用 GameObject Tag/Layer、颜色、Controller 或 `IsPlayerControlled` 自建敌人列表。
    - 收到 `ReactionOpportunityOpenedEvent` 后显示来源威胁、Impact/截止 Tick、可选 Block/Dodge、费用与合法 Dodge 落点；玩家只选择机会/动作/落点，UI 不生成或拖拽 BlockTick/EvadeTick。单个选项过期时只移除该选项，机会关闭、接受或来源取消时再撤销整个提示。
    - TurnBudget HUD 区分 Available/Reserved/Spent；肾上腺素 HUD 区分 Available 与计划预留。二者只读取快照/事件，不在本地预测权威奖励、退款、消费或周期清零。
+   - Dodge 确认前读取 Logic 条件预检，提示“闪避成功将取消后续 N 个移动计划，并释放其未消费预算”；受影响 PlanId、数量与按窗口分组的释放额不得由 UI 自算。接受后仅标记可能失效，不提前删除时间线项；失败/取消保留移动，成功按实际提交事件的 InvalidatedPlanIds 更新并丢弃受影响本地拖拽候选，不等待 ScheduleRevision 增加。已关闭窗口的历史释放额不得显示为当前可用预算。
 10. 单位注册表与明确绑定替换战斗热路径中的 `FindObjectsByType` 和重复 `GetComponent`。
 11. 迁移 `BattleManager`、`CombatUnit`、`PhysicsEngine`、`CombatDemo` 等所有运行时入口和旧写入点；场景中保持一个 Bootstrap、一个当前模式和一条权威写入路径。
 
@@ -124,6 +126,10 @@
 - `ReactionUiUsesOpportunityAndNeverConstructsTriggerTick`
 - `ReactionUiClosesOnAcceptedExpiredOrSourceCancelledEvent`
 - `DodgePreviewUsesLogicValidatedDestinationsButDoesNotCommitPosition`
+- `DodgeConfirmationShowsLogicProvidedConditionalMoveCancellationAndBudgetByWindow`
+- `PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems`
+- `DodgeFailureOrCancellationKeepsFutureMovesVisible`
+- `DodgeCommitUpdatesTimelineFromActualInvalidatedPlanIds`
 - `AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation`
 - `TimelineShowsLockLineAtSnapshotTickPlusOne`
 - `TimelineCanPlaceMoveAndRemoveOnlyEditableOrdinaryPlans`

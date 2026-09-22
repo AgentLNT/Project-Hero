@@ -35,7 +35,7 @@
    - Move 首次进入 Editable 时验证确定路径，把当时 MoveSpeed 量化为固定 `ResolvedBaseStepTicks`；MoveSpeed 不进入 Pathfinder。若自身 Destination、Lane 顺序或更早 Move 改变预测起点，ScheduleEvaluator 必须重算受影响 Editable 链的路径、`ResolvedPathEdgeCount`、`ResolvedPathWeightUnits`、绝对 Tick、MovementSegment 和 Reservation；每段持续时间严格为 `StepWeightUnits * ResolvedBaseStepTicks`。Locked 后只读取冻结结果，不得按新路径输入、属性或视觉速度重算。
    - Dodge 不生成持续移动段，也不逐步插值逻辑位置。反应接受事务按 `ReactionOpportunityId` / `ActionPlanId` 为 TriggerTick 预留合法目的格；在任务 08 构图前的固定阶段原子把占位从 From 提交到 Destination，再释放该目的格预留。
    - Dodge 目的格必须满足 `DodgePayloadSpec` 的距离/Pattern、边界、占位和时间区间冲突规则。来源威胁触发前取消时释放预留；防御者自身原因导致触发失败时以 `TargetInvalid` 终止，由任务 07 按不退款处理。
-   - Dodge 提交后，所有同 Tick 攻击必须针对新格重新建立/验证接触；本任务提供只读新位置，不能直接把攻击标为 Dodged。
+   - 为任务 08 提供任何 Dodge 提交前的统一只读空间快照，以及全部提交后的新位置与 From/Destination/提交结果；任务 08 用同一批冻结 Intent 建立旧/新接触并集、保留 Undodgeable 旧接触并去重。本任务不能直接把攻击标为 Dodged，不能只提供新格而丢失旧接触证据。
 12. 实现唯一纯逻辑 Pathfinder 与版本化成本/搜索协议：
    - `PathCostRules` 沿用现有玩法：偶数方向 `East/NorthEast/NorthWest/West/SouthWest/SouthEast` 权重 1，奇数方向 `EastNorth/North/WestNorth/WestSouth/South/EastSouth` 权重 2。路径成本是 checked `long` 的权重和；不使用“直行/斜向”命名，也不按单位速度、动画距离或世界坐标改权重。
    - `HeuristicWeightUnits = dy + max(0, (dx-dy)/2)`，其中 `dx/dy` 是 doubled-coordinate 绝对差，整数除法向下；坐标减法/绝对值先扩展为 checked `long`。A* 的 `g/h/f` 都使用 checked `long`；开放集按 `(f, h, GridPoint.X, GridPoint.Y)` 升序取节点，不增加 `g` 或 `DiscoveryOrdinal/InsertSequence` 末级键。相同坐标只有更小的 `g` 才更新，相同 `g` 保留已有父节点。
@@ -47,6 +47,12 @@
    - 方法先验证全部单位仍处于 `ExpectedFrom`、来源 footprint 与当前权威占位一致、目标锚点/完整 footprint 合法、批次目标彼此不重叠、移除批次内全部旧 footprint 后不与静止单位相交，且待抢占 Reservation 已清理。全部验证通过后，先统一移除所有旧 footprint，再统一写入全部新 footprint。
    - 任一验证失败报告 `InvariantViolation` 且真实 LogicGrid 零写入；禁止按 UnitId 部分提交、现场重算落点或改为单单位移动。该方法不产生表现事件，任务 08 在成功提交后发射规范位移事件。
 
+### Dodge 换位与移动依赖的原子提交
+
+按主方案 3.1.2，在候选中先预检落点与任务 05 返回的当前移动依赖闭包；仅实际换位成功时，将后续 Editable Move 的 `MovementOriginInvalidatedByDodge` 终态、全部未来段/预留清理、任务 07 的预算释放和 Occupancy 变化作为一个原子提交。不得先终止真实 Move 再尝试换位；任一内部提交失败应零局部写入并报告 InvariantViolation。失败/取消/未换位不因本 Dodge 清理移动。
+
+接受和等待 Dodge 不改变普通移动的位置预测；未来 Move 仍基于当前权威移动链，成功换位时统一清理失效依赖，不从预期 Dodge 落点自动改路。单纯未来起点依赖不拒绝 Dodge，但既有真实 Reservation/占位冲突仍遵守原校验，Dodge 不获得强制位移式的抢占权限。提供同源只读条件预检，列出受影响 Move PlanId；任务 07 加入按原窗口分组的拟释放预算，供 UI/AI 消费。触发时重新求值，记录实际 InvalidatedPlanIds/释放额；预检不得写入状态或分配 ID。
+
 ## 逻辑与表现边界
 
 - `WorldToGrid`、`GridToWorld`、射线检测、Gizmo 与视觉插值留在 UnityView。
@@ -56,7 +62,7 @@
 - Pathfinder 必须只消费 `GetNeighborsOrdered` 的规范邻居序列；开放集只按 `(f, h, GridPoint.X, GridPoint.Y)` 取节点，相同坐标、相同 `g` 时保留已有父节点，不得再以发现序号或普通容器枚举顺序补充平局规则。`GridDirection` 数值/顺序、GridPoint 的 `X → Y` 字典序、1/2 权重、启发函数、平局规则、搜索上限和 Encounter 网格边界全部进入 `BattleDefinitionHash`。
 - 所有活单位默认按体积参与 Occupancy/Reservation，不因 Allied/Neutral/Hostile、Controller 或玩家标志而穿透；FactionRelationResolver 只供后续动作目标资格使用。未来若需要友军穿越，必须由显式移动/占位规则版本化，不能把关系矩阵当碰撞开关。
 - 仲裁所需的移动上下文以只读查询提供；本任务不决定 Attack 对移动是 Escape 还是 Intercept。
-- `Dodging` 状态不影响占位或命中资格；只有成功执行 TriggerTick 原子提交才改变逻辑位置。仍覆盖新格的 AOE、Undodgeable 接触或提交失败的 Dodge 继续由任务 08 正常命中。
+- `Dodging` 状态不影响占位或命中资格；只有成功执行 TriggerTick 原子提交才改变逻辑位置。仍覆盖新格的 AOE、新格新增接触、旧格已成立而被保留的 Undodgeable 接触或提交失败的 Dodge 继续由任务 08 正常求解；旧/新都无接触时不凭空追踪。换位成功不等于成功避伤。
 - 移动计划若在当前段 `EndTick` 前进入终态，单位保留最后一次已提交的逻辑格（通常为当前段 `From`），目的格与未来路径 Reservation 立即释放，原 `EndTick` 不得再提交到 `To`。若命令前边界已经先完成该段提交，则保留已提交的 `To`；结果只由 Step 阶段顺序决定，不读取视觉插值进度。
 - Editable Move 尚未开始，不修改当前真实 Occupancy；其路径和结束格是排程预测。ScheduleEdit 删除/移动前序计划时，从最后一个 Locked/Running/已提交位置重新计算受影响链；无路、超步数、预算或 Reservation 冲突使整批失败，不能只保留部分下游旧预测。
 - 系统自动延期同样从最后一个不可变位置重算候选链，并遵守只向右、禁止移动 Locked/Running/固定反应、不左吸与最大视野规则。成功前旧 Segment/Reservation 保持权威；失败时旧候选不做局部替换，随后由任务 05 的终态协调器释放到期 Editable 计划持有的全部空间预留。
@@ -155,6 +161,11 @@
 - `MoveSegmentWeightSumMatchesLockedPlanResolvedPathWeightUnits`
 - `DodgeDestinationIsReservedForDerivedTriggerTick`
 - `DodgeCommitsDestinationAtomicallyBeforeContactRecheck`
+- `DodgeRelocationAndDependentMoveCleanupCommitAtomically`
+- `DodgeCommitFailureLeavesDependentMovesReservationsAndBudgetsUnchanged`
+- `CancelledDodgePreservesFutureMovementChain`
+- `DodgeWithoutPositionChangeDoesNotInvalidateMoves`
+- `DodgeDependencyPreviewIsReadOnlyAndUsesCommitDependencyQuery`
 - `DodgeDoesNotCreateContinuousMovementOrInvulnerability`
 - `SourceThreatCancellationReleasesDodgeDestinationReservation`
 - `DodgeDestinationConflictFollowsCanonicalCommandOrder`
@@ -183,7 +194,7 @@
 - 旧 GridManager 不再是新逻辑路径的双写权威源。
 - 任务 08 可以只通过只读 LogicGrid 和 MovementSegment 查询完成交互判定。
 - 任务 08 可以把已同时求解的全局最终位置交给一个 `ApplyBatchRelocation` 调用；该调用在任何来源/footprint/Reservation 不变量失败时零写入，成功时真实网格不存在可观察的逐单位中间状态。
-- 任务 08 能在单一固定阶段调用 Dodge 原子提交，然后只读取新占位重新验证攻击；没有基于 Dodging 状态的免伤旁路。
+- 任务 08 能在单一固定阶段先冻结统一旧格接触、调用 Dodge 原子提交，再合并新占位接触；支持 Undodgeable 保留且不重复结算，没有基于 Dodging 状态的免伤旁路。
 - 任意计划终态后都不存在该计划的活动/未来 MovementSegment 或 Reservation；移动中断停在最后已提交逻辑格，且不会在旧 EndTick 发生迟到位置提交。
 - Editable 移动链的时间线重排会同步重算预测起点、路径、边数、路径权重、结束 Tick、预算接缝、Segment 与 Reservation，但不重采样 MoveSpeed；Locked/Running/反应计划和真实 Occupancy 不被该重算改写。
 - 门禁只把具有权威有限 ReleaseTick 的空间阻塞报告为 Retryable；系统延期与显式编辑复用同一空间求值器，成功时整批替换 Editable 依赖闭包，失败时无局部空间写入并由统一终态路径清理。

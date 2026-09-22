@@ -76,7 +76,15 @@
 - `Assets/Tests/PlayMode/**`，仅限任务 03B 隐藏场景和 Shadow 比较用例
 - 旧资源字段只允许增加兼容映射，不在本任务批量删除场景序列化字段
 
+### Dodge 移动依赖失效的预算参与者
+
+`MovementOriginInvalidatedByDodge` 只释放受影响 Editable Move 的未消费 Reserved，按各自 SubmittedWindowId 回到原账本；已关闭窗口只更新历史，不重开、不转移额度。该清理参与 TriggerTick 的原子换位事务，不能独立先退款；Dodge 未换位时不因本 Dodge 改变后续 Move 账本。提供按窗口分组的拟释放/实际释放额供条件预检和语义事件使用，明确历史释放额不等于当前可用额度。Dodge 自身费用和来源取消退款仍遵守既有肾上腺素规则。
+
 ## 必需测试
+
+- `DodgeMoveInvalidationReleasesReservedToEachOriginalWindowExactlyOnce`
+- `DodgeMoveInvalidationDoesNotReopenClosedWindowOrTransferBudget`
+- `DodgeRelocationFailureDoesNotReleaseFutureMoveBudget`
 
 - `EditablePlanReservesBudgetWithoutSpendingIt`
 - `StartableCommitConvertsReservedBudgetToSpentExactlyOnce`
