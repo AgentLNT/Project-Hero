@@ -6,19 +6,10 @@ namespace ProjectHero.Core.Pathfinding
 {
     public class Pathfinder
     {
-        // Represents a coordinate on the triangular grid
-        [System.Serializable]
-        public struct GridPoint
-        {
-            public int X;
-            public int Y;
-
-            public GridPoint(int x, int y) { X = x; Y = y; }
-            
-            public override bool Equals(object obj) => obj is GridPoint other && X == other.X && Y == other.Y;
-            public override int GetHashCode() => (X, Y).GetHashCode();
-            public override string ToString() => $"({X}, {Y})";
-        }
+        // 任务 02B 前置拆分：原先嵌套在此处的 GridPoint 结构体已抽为顶层类型
+        // Assets/Scripts/Grid/GridPoint.cs（共享网格程序集 ProjectHero.Grid），
+        // 命名空间仍为 ProjectHero.Core.Pathfinding，序列化字段 X/Y 保持不变。
+        // Pathfinder.cs 的 MonoScript GUID（8cb09654…）与文件位置未变，场景/资产引用不受影响。
 
         // Updated to support Volume-based Collision
         public List<GridPoint> FindPath(GridPoint start, GridPoint goal, UnitVolume unitVolume = null, HashSet<TrianglePoint> volumeObstacles = null)

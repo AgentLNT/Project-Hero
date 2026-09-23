@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ProjectHero.Authoring.Legacy;
 using System.Linq;
 using UnityEngine;
 using ProjectHero.Core.Interactions;

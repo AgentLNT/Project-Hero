@@ -1,4 +1,5 @@
 using UnityEngine;
+using ProjectHero.Authoring.Legacy;
 using System.Collections.Generic;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Gameplay;

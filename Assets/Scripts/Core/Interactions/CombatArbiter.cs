@@ -1,4 +1,5 @@
 using UnityEngine;
+using ProjectHero.Authoring.Legacy;
 using System.Collections.Generic;
 using ProjectHero.Core.Actions.Intents;
 using ProjectHero.Core.Actions;
@@ -191,7 +192,7 @@ namespace ProjectHero.Core.Interactions
             return false;
         }
 
-        private static bool IsPointTargeted(CombatIntent attackerIntent, Pathfinder.GridPoint point)
+        private static bool IsPointTargeted(CombatIntent attackerIntent, GridPoint point)
         {
             if (attackerIntent is AttackIntent attackIntent)
             {

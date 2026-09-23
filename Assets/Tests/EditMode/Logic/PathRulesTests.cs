@@ -51,13 +51,13 @@ namespace ProjectHero.Logic.Tests
         public void PathSearchRulesRejectNonPositiveLimits()
         {
             Assert.That(new PathSearchRules(0, 256, 192).Validate(),
-                Is.EqualTo(PathSearchCodes.PATH_SEARCH_LIMIT_INVALID));
+                Is.EqualTo(PathSearchCodes.PATH_SEARCH_RULE_INVALID));
             Assert.That(new PathSearchRules(4096, 0, 192).Validate(),
-                Is.EqualTo(PathSearchCodes.PATH_SEARCH_LIMIT_INVALID));
+                Is.EqualTo(PathSearchCodes.PATH_SEARCH_RULE_INVALID));
             Assert.That(new PathSearchRules(4096, 256, 0).Validate(),
-                Is.EqualTo(PathSearchCodes.PATH_SEARCH_LIMIT_INVALID));
+                Is.EqualTo(PathSearchCodes.PATH_SEARCH_RULE_INVALID));
             Assert.That(new PathSearchRules(-1, 256, 192).Validate(),
-                Is.EqualTo(PathSearchCodes.PATH_SEARCH_LIMIT_INVALID));
+                Is.EqualTo(PathSearchCodes.PATH_SEARCH_RULE_INVALID));
 
             var frozen = PathSearchRules.FrozenV1;
             Assert.That(frozen.Validate(), Is.Null);

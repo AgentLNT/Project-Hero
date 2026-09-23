@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ProjectHero.Authoring.Legacy;
 using UnityEngine;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Timeline;
@@ -19,7 +20,7 @@ namespace ProjectHero.Core.Actions
             return action.BaseTime * speedFactor + 0.5f; // Impact + Recovery
         }
 
-        public static float EstimateMoveDuration(CombatUnit unit, List<Pathfinder.GridPoint> path)
+        public static float EstimateMoveDuration(CombatUnit unit, List<GridPoint> path)
         {
             if (path == null || path.Count < 2) return 0f;
             float total = 0f;
@@ -62,7 +63,7 @@ namespace ProjectHero.Core.Actions
             timeline.Schedule(endTime, recoveryIntent, $"{attacker.name} recovers", groupId, TimelinePriority.State);
         }
 
-        public static void ScheduleMove(BattleTimeline timeline, CombatUnit unit, List<Pathfinder.GridPoint> path, float startTime = 0f, long groupId = 0)
+        public static void ScheduleMove(BattleTimeline timeline, CombatUnit unit, List<GridPoint> path, float startTime = 0f, long groupId = 0)
         {
             if (path == null || path.Count < 2) return;
 
@@ -89,7 +90,7 @@ namespace ProjectHero.Core.Actions
             timeline.Schedule(accumulatedDelay, endIntent, "Move End", groupId, TimelinePriority.State);
         }
 
-        public static void ScheduleMoveTo(BattleTimeline timeline, CombatUnit unit, Pathfinder.GridPoint destination, float startTime = 0f, long groupId = 0)
+        public static void ScheduleMoveTo(BattleTimeline timeline, CombatUnit unit, GridPoint destination, float startTime = 0f, long groupId = 0)
         {
             var startIntent = new StateChangeIntent(unit, "Busy") { SetIsActing = true };
             timeline.Schedule(startTime, startIntent, "Move Start", groupId, TimelinePriority.State);

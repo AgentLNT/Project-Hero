@@ -171,7 +171,7 @@ namespace ProjectHero.Core.Grid
         }
 
         // Convert GridPoint (Doubled Coordinates) to World Position
-        public Vector3 GridToWorld(Pathfinder.GridPoint gridPoint)
+        public Vector3 GridToWorld(GridPoint gridPoint)
         {
             // Corrected for Triangular Grid (Doubled Coordinates)
             // HexSize is treated as the Side Length (L) of the triangle.
@@ -193,7 +193,7 @@ namespace ProjectHero.Core.Grid
             float height = L * Mathf.Sqrt(3) / 2f;
             
             // Get the position of the reference point (Edge Center)
-            Vector3 edgeCenter = GridToWorld(new Pathfinder.GridPoint(tri.X, tri.Y));
+            Vector3 edgeCenter = GridToWorld(new GridPoint(tri.X, tri.Y));
 
             // Offset based on T (1 for Up, -1 for Down)
             // Centroid is at 1/3 of the height from the edge
@@ -217,15 +217,15 @@ namespace ProjectHero.Core.Grid
              // (2,0) = (X+1, Y)
              // (1,-1) = (X, Y-1)
 
-             var p1 = GridToWorld(new Pathfinder.GridPoint(tri.X - 1, tri.Y));
-             var p2 = GridToWorld(new Pathfinder.GridPoint(tri.X + 1, tri.Y));
-             var p3 = GridToWorld(new Pathfinder.GridPoint(tri.X, tri.Y + tri.T));
+             var p1 = GridToWorld(new GridPoint(tri.X - 1, tri.Y));
+             var p2 = GridToWorld(new GridPoint(tri.X + 1, tri.Y));
+             var p3 = GridToWorld(new GridPoint(tri.X, tri.Y + tri.T));
 
              return new Vector3[] { GetGroundPosition(p1), GetGroundPosition(p2), GetGroundPosition(p3) };
         }
 
         // Convert World Position to GridPoint (Doubled Coordinates)
-        public Pathfinder.GridPoint WorldToGrid(Vector3 worldPos)
+        public GridPoint WorldToGrid(Vector3 worldPos)
         {
             float L = HexSize;
 
@@ -246,7 +246,7 @@ namespace ProjectHero.Core.Grid
                 x += 1; 
             }
 
-            return new Pathfinder.GridPoint(x, y);
+            return new GridPoint(x, y);
         }
 
         // Helper to convert World Position to the specific Triangle (X, Y, T)
@@ -324,7 +324,7 @@ namespace ProjectHero.Core.Grid
             }
         }
 
-        //public List<TrianglePoint> GetTrianglesAroundVertex(Pathfinder.GridPoint vertex)
+        //public List<TrianglePoint> GetTrianglesAroundVertex(GridPoint vertex)
         //{
         //    if ((vertex.X + vertex.Y) % 2 != 0)
         //    {

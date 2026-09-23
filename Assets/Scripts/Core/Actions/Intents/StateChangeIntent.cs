@@ -1,4 +1,5 @@
 using ProjectHero.Core.Entities;
+using ProjectHero.Authoring.Legacy;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Interactions;
 using ProjectHero.Core.Timeline;

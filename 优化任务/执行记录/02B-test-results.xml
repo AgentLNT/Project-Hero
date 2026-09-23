@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="119" result="Passed" total="119" passed="119" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.560999">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="119" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.560999" total="119" passed="119" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1003" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.037591" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20780" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1004" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.033483" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1005" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.033113" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1006" name="Compatibility" fullname="ProjectHero.Tests.Compatibility" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.032847" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1007" name="Editor" fullname="ProjectHero.Tests.Compatibility.Editor" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.032714" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1001" name="LegacyCombatUnitAdapterTests" fullname="ProjectHero.Tests.Compatibility.Editor.LegacyCombatUnitAdapterTests" classname="ProjectHero.Tests.Compatibility.Editor.LegacyCombatUnitAdapterTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.031444" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1002" name="CombatUnitFieldsMapOnceIntoLogicUnitDefinition" fullname="ProjectHero.Tests.Compatibility.Editor.LegacyCombatUnitAdapterTests.CombatUnitFieldsMapOnceIntoLogicUnitDefinition" methodname="CombatUnitFieldsMapOnceIntoLogicUnitDefinition" classname="ProjectHero.Tests.Compatibility.Editor.LegacyCombatUnitAdapterTests" runstate="Runnable" seed="939650566" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.020309" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1087" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="73" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.427349" total="73" passed="73" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20780" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1088" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="73" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.426840" total="73" passed="73" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1089" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="73" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.426766" total="73" passed="73" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1090" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="73" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.426655" total="73" passed="73" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1008" name="AssemblyBoundaryAuthoringTests" fullname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests" classname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.166820" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1009" name="AuthoringAssemblyDoesNotReferenceAssemblyCSharp" fullname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests.AuthoringAssemblyDoesNotReferenceAssemblyCSharp" methodname="AuthoringAssemblyDoesNotReferenceAssemblyCSharp" classname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests" runstate="Runnable" seed="1158478224" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.014080" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1010" name="CurrentMainBattleSceneLoadsWithNoNewCompileErrors" fullname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests.CurrentMainBattleSceneLoadsWithNoNewCompileErrors" methodname="CurrentMainBattleSceneLoadsWithNoNewCompileErrors" classname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests" runstate="Runnable" seed="1868762105" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.096348" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1011" name="MainEncounterReactionActionsAreReachableFromActionSets" fullname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests.MainEncounterReactionActionsAreReachableFromActionSets" methodname="MainEncounterReactionActionsAreReachableFromActionSets" classname="ProjectHero.Authoring.Tests.AssemblyBoundaryAuthoringTests" runstate="Runnable" seed="406917093" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.055530" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1012" name="AuthoringInstanceRuleTests" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" testcasecount="35" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.096760" total="35" passed="35" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1042" name="ActionSetReactionAvailabilityDoesNotDependOnControllerKind" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ActionSetReactionAvailabilityDoesNotDependOnControllerKind" methodname="ActionSetReactionAvailabilityDoesNotDependOnControllerKind" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1338952997" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.002495" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="AmbiguousLegacyDamageTypeStopsDefinitionBuild" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.AmbiguousLegacyDamageTypeStopsDefinitionBuild" methodname="AmbiguousLegacyDamageTypeStopsDefinitionBuild" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="686599144" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001361" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1022" name="AttackTargetRelationMasksAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.AttackTargetRelationMasksAffectDefinitionHash" methodname="AttackTargetRelationMasksAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1327833819" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.006311" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1040" name="BlockAndDodgeRewardsMustBeLowerThanEveryCorrespondingCost" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BlockAndDodgeRewardsMustBeLowerThanEveryCorrespondingCost" methodname="BlockAndDodgeRewardsMustBeLowerThanEveryCorrespondingCost" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="238549988" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000549" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1021" name="BuilderRejectsEmptyOrUnknownTargetRelationMaskBits" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsEmptyOrUnknownTargetRelationMaskBits" methodname="BuilderRejectsEmptyOrUnknownTargetRelationMaskBits" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1772836984" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001008" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1024" name="BuilderRejectsEmptyOverlappingOrDanglingVictoryFactions" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsEmptyOverlappingOrDanglingVictoryFactions" methodname="BuilderRejectsEmptyOverlappingOrDanglingVictoryFactions" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="680442225" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.002008" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1018" name="BuilderRejectsMissingDuplicateReverseDuplicateOrDanglingFactionRelation" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsMissingDuplicateReverseDuplicateOrDanglingFactionRelation" methodname="BuilderRejectsMissingDuplicateReverseDuplicateOrDanglingFactionRelation" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1870373553" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000936" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="BuilderRejectsMissingOrUnknownSlotFaction" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsMissingOrUnknownSlotFaction" methodname="BuilderRejectsMissingOrUnknownSlotFaction" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1606980749" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000667" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1031" name="BuilderRejectsMoveSpeedAsPathCostCoefficient" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsMoveSpeedAsPathCostCoefficient" methodname="BuilderRejectsMoveSpeedAsPathCostCoefficient" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="2113105125" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001127" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1033" name="BuilderRejectsUnsupportedForcedDisplacementProtocolVersion" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsUnsupportedForcedDisplacementProtocolVersion" methodname="BuilderRejectsUnsupportedForcedDisplacementProtocolVersion" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1108374384" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000306" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1025" name="BuilderRejectsVictoryGroupsContradictingFactionMatrix" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.BuilderRejectsVictoryGroupsContradictingFactionMatrix" methodname="BuilderRejectsVictoryGroupsContradictingFactionMatrix" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1814941814" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000597" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1047" name="ConcurrentActionCostIsDefinedAndAffectsDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ConcurrentActionCostIsDefinedAndAffectsDefinitionHash" methodname="ConcurrentActionCostIsDefinedAndAffectsDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="484211265" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.002493" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1034" name="DamageChannelsImpactProfilesAndResistanceMapsAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.DamageChannelsImpactProfilesAndResistanceMapsAffectDefinitionHash" methodname="DamageChannelsImpactProfilesAndResistanceMapsAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1550110339" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.003403" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1013" name="DuplicateOrDanglingControllerBindingIsRejected" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.DuplicateOrDanglingControllerBindingIsRejected" methodname="DuplicateOrDanglingControllerBindingIsRejected" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="669918292" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001099" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1023" name="DynamicSpawnFactionComesOnlyFromFixedOrExplicitInheritancePolicy" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.DynamicSpawnFactionComesOnlyFromFixedOrExplicitInheritancePolicy" methodname="DynamicSpawnFactionComesOnlyFromFixedOrExplicitInheritancePolicy" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="438912767" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000596" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1014" name="ExternalSystemControllerBindingIsRejected" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ExternalSystemControllerBindingIsRejected" methodname="ExternalSystemControllerBindingIsRejected" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1806107498" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001872" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1016" name="FactionMatrixCanonicalizesEveryUnorderedPair" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.FactionMatrixCanonicalizesEveryUnorderedPair" methodname="FactionMatrixCanonicalizesEveryUnorderedPair" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="2079316173" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001006" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1017" name="FactionMatrixHashIgnoresInputEnumerationOrder" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.FactionMatrixHashIgnoresInputEnumerationOrder" methodname="FactionMatrixHashIgnoresInputEnumerationOrder" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1165476782" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000898" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="FactionResolverReturnsConfiguredAlliedNeutralAndHostile" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.FactionResolverReturnsConfiguredAlliedNeutralAndHostile" methodname="FactionResolverReturnsConfiguredAlliedNeutralAndHostile" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="65518305" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.003799" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1032" name="ForcedDisplacementProtocolVersionAndStopReasonsAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ForcedDisplacementProtocolVersionAndStopReasonsAffectDefinitionHash" methodname="ForcedDisplacementProtocolVersionAndStopReasonsAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1003505752" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000842" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1035" name="LegacyImpactTypeMigratesToExplicitDamageAndMomentumFields" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.LegacyImpactTypeMigratesToExplicitDamageAndMomentumFields" methodname="LegacyImpactTypeMigratesToExplicitDamageAndMomentumFields" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="698059596" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001628" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1043" name="MainEncounterBuildsWithoutFallbackOrSkippedAsset" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.MainEncounterBuildsWithoutFallbackOrSkippedAsset" methodname="MainEncounterBuildsWithoutFallbackOrSkippedAsset" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1502677949" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.009691" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1044" name="MainEncounterDefinitionHashMatchesFrozenAnchor" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.MainEncounterDefinitionHashMatchesFrozenAnchor" methodname="MainEncounterDefinitionHashMatchesFrozenAnchor" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="867454619" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.006386" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1027" name="PathCostRulesPreserveLegacyOneTwoWeights" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.PathCostRulesPreserveLegacyOneTwoWeights" methodname="PathCostRulesPreserveLegacyOneTwoWeights" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="526183113" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000721" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="PathRulesAndEncounterGridBoundaryAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.PathRulesAndEncounterGridBoundaryAffectDefinitionHash" methodname="PathRulesAndEncounterGridBoundaryAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1204142708" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.003428" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="PathSearchLimitsAllowEqualityAndRejectOnlyGreaterValues" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.PathSearchLimitsAllowEqualityAndRejectOnlyGreaterValues" methodname="PathSearchLimitsAllowEqualityAndRejectOnlyGreaterValues" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="382489533" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000297" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1028" name="PathSearchRulesUseFrozen4096Node256Weight192EdgeLimits" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.PathSearchRulesUseFrozen4096Node256Weight192EdgeLimits" methodname="PathSearchRulesUseFrozen4096Node256Weight192EdgeLimits" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="962859886" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000310" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1037" name="ReactableAttackRequiresMinimumReactionLead" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ReactableAttackRequiresMinimumReactionLead" methodname="ReactableAttackRequiresMinimumReactionLead" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="602808966" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001090" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1041" name="ReactionCostCannotExceedCycleMaximum" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ReactionCostCannotExceedCycleMaximum" methodname="ReactionCostCannotExceedCycleMaximum" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="6737306" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000254" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1039" name="ReactionCostsTimingsTagsAndAdrenalineRulesAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.ReactionCostsTimingsTagsAndAdrenalineRulesAffectDefinitionHash" methodname="ReactionCostsTimingsTagsAndAdrenalineRulesAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="149198092" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.013541" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1045" name="RenamingDisplayNameDoesNotChangeLogicIdOrHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.RenamingDisplayNameDoesNotChangeLogicIdOrHash" methodname="RenamingDisplayNameDoesNotChangeLogicIdOrHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="984089569" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.005496" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1046" name="RuntimeInputsProvideMetaResourceWithoutExternalSingleton" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.RuntimeInputsProvideMetaResourceWithoutExternalSingleton" methodname="RuntimeInputsProvideMetaResourceWithoutExternalSingleton" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="1679708252" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000921" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="SameUnitIsSelfAndSameFactionOtherUnitIsAllied" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.SameUnitIsSelfAndSameFactionOtherUnitIsAllied" methodname="SameUnitIsSelfAndSameFactionOtherUnitIsAllied" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="724213003" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000629" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1038" name="UnreactableAttackDoesNotRequireReactionLead" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.UnreactableAttackDoesNotRequireReactionLead" methodname="UnreactableAttackDoesNotRequireReactionLead" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="628910765" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000403" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1026" name="VictoryDefinitionAndAutomaticDeferralLimitAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests.VictoryDefinitionAndAutomaticDeferralLimitAffectDefinitionHash" methodname="VictoryDefinitionAndAutomaticDeferralLimitAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringInstanceRuleTests" runstate="Runnable" seed="334490473" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.007815" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1048" name="AuthoringMigrationTests" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.123233" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1053" name="AllReferencedActionLibrariesConvert" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.AllReferencedActionLibrariesConvert" methodname="AllReferencedActionLibrariesConvert" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1649903918" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001605" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1054" name="AllReferencedPatternsAndVolumesConvert" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.AllReferencedPatternsAndVolumesConvert" methodname="AllReferencedPatternsAndVolumesConvert" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1216287017" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000625" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1051" name="AmbiguousLegacyLocalIdRequiresExplicitMapping" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.AmbiguousLegacyLocalIdRequiresExplicitMapping" methodname="AmbiguousLegacyLocalIdRequiresExplicitMapping" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1647834004" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000941" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1063" name="BuilderOutputContainsNoRuntimeRotationRecipe" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.BuilderOutputContainsNoRuntimeRotationRecipe" methodname="BuilderOutputContainsNoRuntimeRotationRecipe" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1903278483" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.005020" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1064" name="BuilderRejectsDanglingDefinitionReference" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.BuilderRejectsDanglingDefinitionReference" methodname="BuilderRejectsDanglingDefinitionReference" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="348312109" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.008083" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1065" name="BuilderRejectsInvalidOrDuplicateDefinitionId" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.BuilderRejectsInvalidOrDuplicateDefinitionId" methodname="BuilderRejectsInvalidOrDuplicateDefinitionId" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1531277482" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001605" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1060" name="CurrentPatternAndVolumeAssetsMatchLegacyOutputInAllDirections" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.CurrentPatternAndVolumeAssetsMatchLegacyOutputInAllDirections" methodname="CurrentPatternAndVolumeAssetsMatchLegacyOutputInAllDirections" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="571191762" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.029806" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1066" name="DefinitionAndHashIgnoreAssetDiscoveryOrder" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.DefinitionAndHashIgnoreAssetDiscoveryOrder" methodname="DefinitionAndHashIgnoreAssetDiscoveryOrder" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="2099990693" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.014537" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1067" name="DefinitionHashChangesWhenGameplayDefinitionChanges" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.DefinitionHashChangesWhenGameplayDefinitionChanges" methodname="DefinitionHashChangesWhenGameplayDefinitionChanges" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1092123550" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.002440" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1059" name="DirectionalExpansionDeduplicatesAndSortsCanonicalPoints" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.DirectionalExpansionDeduplicatesAndSortsCanonicalPoints" methodname="DirectionalExpansionDeduplicatesAndSortsCanonicalPoints" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="3697474" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.002785" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1062" name="DirectionalExpansionIgnoresAssetAndPointEnumerationOrder" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.DirectionalExpansionIgnoresAssetAndPointEnumerationOrder" methodname="DirectionalExpansionIgnoresAssetAndPointEnumerationOrder" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1852075917" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.017673" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1058" name="DirectionalExpansionOverflowStopsDefinitionBuild" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.DirectionalExpansionOverflowStopsDefinitionBuild" methodname="DirectionalExpansionOverflowStopsDefinitionBuild" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="770392485" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000595" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1069" name="EquivalentCanonicalTablesKeepHashAcrossBuilderImplementationChanges" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.EquivalentCanonicalTablesKeepHashAcrossBuilderImplementationChanges" methodname="EquivalentCanonicalTablesKeepHashAcrossBuilderImplementationChanges" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="2008397482" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.008180" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1049" name="EveryReferencedLegacyDefinitionHasExplicitStableId" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.EveryReferencedLegacyDefinitionHasExplicitStableId" methodname="EveryReferencedLegacyDefinitionHasExplicitStableId" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="2100378191" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001412" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1068" name="ExpandedPatternAndVolumeTablesAffectDefinitionHash" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.ExpandedPatternAndVolumeTablesAffectDefinitionHash" methodname="ExpandedPatternAndVolumeTablesAffectDefinitionHash" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="968060502" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.002062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1061" name="ExplicitLegacyDirectionMustMatchCanonicalExpansion" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.ExplicitLegacyDirectionMustMatchCanonicalExpansion" methodname="ExplicitLegacyDirectionMustMatchCanonicalExpansion" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1690822261" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000811" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1057" name="InvalidTriangleOrientationOrParityStopsDefinitionBuild" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.InvalidTriangleOrientationOrParityStopsDefinitionBuild" methodname="InvalidTriangleOrientationOrParityStopsDefinitionBuild" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="2059677087" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000552" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1055" name="LegacyEvenAndOddBasesExpandToCanonicalTwelveDirections" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.LegacyEvenAndOddBasesExpandToCanonicalTwelveDirections" methodname="LegacyEvenAndOddBasesExpandToCanonicalTwelveDirections" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1532226225" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.016111" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1050" name="LegacyLocalIdIsNotImplicitlyTreatedAsGlobalId" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.LegacyLocalIdIsNotImplicitlyTreatedAsGlobalId" methodname="LegacyLocalIdIsNotImplicitlyTreatedAsGlobalId" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1256067519" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.000687" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1056" name="MissingEvenOrOddDirectionalBaseStopsDefinitionBuild" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.MissingEvenOrOddDirectionalBaseStopsDefinitionBuild" methodname="MissingEvenOrOddDirectionalBaseStopsDefinitionBuild" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="1483309162" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:29Z" duration="0.001202" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1052" name="SameFinalIdWithDifferentContentIsRejected" fullname="ProjectHero.Authoring.Tests.AuthoringMigrationTests.SameFinalIdWithDifferentContentIsRejected" methodname="SameFinalIdWithDifferentContentIsRejected" classname="ProjectHero.Authoring.Tests.AuthoringMigrationTests" runstate="Runnable" seed="38171126" result="Passed" start-time="2026-09-22 16:14:29Z" end-time="2026-09-22 16:14:30Z" duration="0.003655" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1070" name="BattleInitializationTests" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.027053" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1073" name="ControllerBindingsMapSlotsToDeterministicUnitIds" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.ControllerBindingsMapSlotsToDeterministicUnitIds" methodname="ControllerBindingsMapSlotsToDeterministicUnitIds" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="2132540617" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.007898" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1072" name="EncounterInitializationIgnoresSceneRegistrationOrder" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.EncounterInitializationIgnoresSceneRegistrationOrder" methodname="EncounterInitializationIgnoresSceneRegistrationOrder" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="1831300921" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001549" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1071" name="EncounterInitializationUsesOrdinalSlotOrder" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.EncounterInitializationUsesOrdinalSlotOrder" methodname="EncounterInitializationUsesOrdinalSlotOrder" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="358177546" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000717" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1074" name="EncounterSlotsMapFactionIdsToRuntimeUnits" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.EncounterSlotsMapFactionIdsToRuntimeUnits" methodname="EncounterSlotsMapFactionIdsToRuntimeUnits" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="1140607109" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000958" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1075" name="FactionMappingDoesNotDependOnControllerKind" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.FactionMappingDoesNotDependOnControllerKind" methodname="FactionMappingDoesNotDependOnControllerKind" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="1665629468" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000832" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1077" name="InitializationRejectsUnknownEncounterAndInvalidRuntimeInputs" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.InitializationRejectsUnknownEncounterAndInvalidRuntimeInputs" methodname="InitializationRejectsUnknownEncounterAndInvalidRuntimeInputs" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="2000686570" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000566" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1076" name="RepeatedInitializationIsByteIdenticalAcrossOneHundredRuns" fullname="ProjectHero.Authoring.Tests.BattleInitializationTests.RepeatedInitializationIsByteIdenticalAcrossOneHundredRuns" methodname="RepeatedInitializationIsByteIdenticalAcrossOneHundredRuns" classname="ProjectHero.Authoring.Tests.BattleInitializationTests" runstate="Runnable" seed="2042107916" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.008145" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1078" name="LegacyAdapterTests" fullname="ProjectHero.Authoring.Tests.LegacyAdapterTests" classname="ProjectHero.Authoring.Tests.LegacyAdapterTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.005089" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1081" name="AuthoringRejectsInvalidMomentumOrDamageInputs" fullname="ProjectHero.Authoring.Tests.LegacyAdapterTests.AuthoringRejectsInvalidMomentumOrDamageInputs" methodname="AuthoringRejectsInvalidMomentumOrDamageInputs" classname="ProjectHero.Authoring.Tests.LegacyAdapterTests" runstate="Runnable" seed="451100985" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.002232" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1079" name="LegacyAdapterConvertsAttackWindupAndRecoverySecondsExactlyOnce" fullname="ProjectHero.Authoring.Tests.LegacyAdapterTests.LegacyAdapterConvertsAttackWindupAndRecoverySecondsExactlyOnce" methodname="LegacyAdapterConvertsAttackWindupAndRecoverySecondsExactlyOnce" classname="ProjectHero.Authoring.Tests.LegacyAdapterTests" runstate="Runnable" seed="1005886903" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001317" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1080" name="LegacyAttackWithoutRecoveryUsesThirtyTickDefault" fullname="ProjectHero.Authoring.Tests.LegacyAdapterTests.LegacyAttackWithoutRecoveryUsesThirtyTickDefault" methodname="LegacyAttackWithoutRecoveryUsesThirtyTickDefault" classname="ProjectHero.Authoring.Tests.LegacyAdapterTests" runstate="Runnable" seed="1416186865" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000295" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1082" name="LegacyStatsAdapterMapsArmorToExplicitPhysicalChannels" fullname="ProjectHero.Authoring.Tests.LegacyAdapterTests.LegacyStatsAdapterMapsArmorToExplicitPhysicalChannels" methodname="LegacyStatsAdapterMapsArmorToExplicitPhysicalChannels" classname="ProjectHero.Authoring.Tests.LegacyAdapterTests" runstate="Runnable" seed="23500817" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000459" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1083" name="LegacyGeometrySliceTests" fullname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests" classname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.006912" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1086" name="LegacyExplicitVolumeDirectionsAreValidatedAgainstGeneratedTable" fullname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests.LegacyExplicitVolumeDirectionsAreValidatedAgainstGeneratedTable" methodname="LegacyExplicitVolumeDirectionsAreValidatedAgainstGeneratedTable" classname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests" runstate="Runnable" seed="585739938" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000618" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1085" name="LegacyMissingOddBaseIsRejected" fullname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests.LegacyMissingOddBaseIsRejected" methodname="LegacyMissingOddBaseIsRejected" classname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests" runstate="Runnable" seed="1507778887" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000261" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1084" name="LegacyPatternAndVolumeSliceExpandEvenAndOddBasesWithoutFloat" fullname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests.LegacyPatternAndVolumeSliceExpandEvenAndOddBasesWithoutFloat" methodname="LegacyPatternAndVolumeSliceExpandEvenAndOddBasesWithoutFloat" classname="ProjectHero.Authoring.Tests.LegacyGeometrySliceTests" runstate="Runnable" seed="2040825942" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.005423" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1145" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.081553" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20780" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1146" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.081320" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1147" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.081247" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1148" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.081128" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1091" name="ActionDefinitionTests" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.004757" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1098" name="ActionPayloadKeepsDamageComponentsSeparateFromMomentumProfile" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.ActionPayloadKeepsDamageComponentsSeparateFromMomentumProfile" methodname="ActionPayloadKeepsDamageComponentsSeparateFromMomentumProfile" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="14170318" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001372" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1093" name="AttackTimingRejectsNonPositiveOrNonFiniteActionSpeed" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.AttackTimingRejectsNonPositiveOrNonFiniteActionSpeed" methodname="AttackTimingRejectsNonPositiveOrNonFiniteActionSpeed" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="1243017701" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000199" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1092" name="AttackTimingRejectsNonPositiveWindupOrRecovery" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.AttackTimingRejectsNonPositiveWindupOrRecovery" methodname="AttackTimingRejectsNonPositiveWindupOrRecovery" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="338013751" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000241" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1096" name="BlockEligibleResistanceIsFixedFull" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.BlockEligibleResistanceIsFixedFull" methodname="BlockEligibleResistanceIsFixedFull" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="1533471770" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000597" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1095" name="GuardEligibleResistanceMustBePartial" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.GuardEligibleResistanceMustBePartial" methodname="GuardEligibleResistanceMustBePartial" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="1414490568" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000358" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1094" name="GuardTimingRequiresPositiveWindupActiveAndRecovery" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.GuardTimingRequiresPositiveWindupActiveAndRecovery" methodname="GuardTimingRequiresPositiveWindupActiveAndRecovery" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="542315814" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000142" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1097" name="OrdinaryActionsCannotDeclareAdrenalineCost" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.OrdinaryActionsCannotDeclareAdrenalineCost" methodname="OrdinaryActionsCannotDeclareAdrenalineCost" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="1920400359" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000448" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1099" name="ResistanceRejectsValuesOutsideQ10Range" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests.ResistanceRejectsValuesOutsideQ10Range" methodname="ResistanceRejectsValuesOutsideQ10Range" classname="ProjectHero.Logic.Tests.ActionDefinitionTests" runstate="Runnable" seed="519523183" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000478" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1100" name="AssemblyBoundaryTests" fullname="ProjectHero.Logic.Tests.AssemblyBoundaryTests" classname="ProjectHero.Logic.Tests.AssemblyBoundaryTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.052744" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1101" name="LogicAssemblyHasNoUnityEngineReference" fullname="ProjectHero.Logic.Tests.AssemblyBoundaryTests.LogicAssemblyHasNoUnityEngineReference" methodname="LogicAssemblyHasNoUnityEngineReference" classname="ProjectHero.Logic.Tests.AssemblyBoundaryTests" runstate="Runnable" seed="598488834" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.022556" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1102" name="LogicDefinitionContainsNoUnityObjectReference" fullname="ProjectHero.Logic.Tests.AssemblyBoundaryTests.LogicDefinitionContainsNoUnityObjectReference" methodname="LogicDefinitionContainsNoUnityObjectReference" classname="ProjectHero.Logic.Tests.AssemblyBoundaryTests" runstate="Runnable" seed="1040562922" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.029632" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1103" name="DefinitionIdTests" fullname="ProjectHero.Logic.Tests.DefinitionIdTests" classname="ProjectHero.Logic.Tests.DefinitionIdTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.003003" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1107" name="DamageChannelAndImpactProfileIdsCannotBeInterchanged" fullname="ProjectHero.Logic.Tests.DefinitionIdTests.DamageChannelAndImpactProfileIdsCannotBeInterchanged" methodname="DamageChannelAndImpactProfileIdsCannotBeInterchanged" classname="ProjectHero.Logic.Tests.DefinitionIdTests" runstate="Runnable" seed="360925345" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000652" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1105" name="DefinitionIdRejectsDuplicateWithinNamespace" fullname="ProjectHero.Logic.Tests.DefinitionIdTests.DefinitionIdRejectsDuplicateWithinNamespace" methodname="DefinitionIdRejectsDuplicateWithinNamespace" classname="ProjectHero.Logic.Tests.DefinitionIdTests" runstate="Runnable" seed="1659779009" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000190" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1104" name="DefinitionIdRejectsEmptyOrInvalidFormat" fullname="ProjectHero.Logic.Tests.DefinitionIdTests.DefinitionIdRejectsEmptyOrInvalidFormat" methodname="DefinitionIdRejectsEmptyOrInvalidFormat" classname="ProjectHero.Logic.Tests.DefinitionIdTests" runstate="Runnable" seed="1519225860" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000320" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1106" name="DistinctIdTypesCannotBeInterchanged" fullname="ProjectHero.Logic.Tests.DefinitionIdTests.DistinctIdTypesCannotBeInterchanged" methodname="DistinctIdTypesCannotBeInterchanged" classname="ProjectHero.Logic.Tests.DefinitionIdTests" runstate="Runnable" seed="1682695631" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000494" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1108" name="InstanceIdsUseZeroAsInvalidAndStartAtOne" fullname="ProjectHero.Logic.Tests.DefinitionIdTests.InstanceIdsUseZeroAsInvalidAndStartAtOne" methodname="InstanceIdsUseZeroAsInvalidAndStartAtOne" classname="ProjectHero.Logic.Tests.DefinitionIdTests" runstate="Runnable" seed="195292095" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000379" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1109" name="EncounterAndFactionTests" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.002314" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1111" name="EncounterRejectsDuplicateSlotId" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests.EncounterRejectsDuplicateSlotId" methodname="EncounterRejectsDuplicateSlotId" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" seed="1076998357" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000304" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1110" name="EncounterSlotOrderingUsesStringComparerOrdinal" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests.EncounterSlotOrderingUsesStringComparerOrdinal" methodname="EncounterSlotOrderingUsesStringComparerOrdinal" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" seed="52630947" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000718" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1112" name="EncounterSlotRequiresFactionId" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests.EncounterSlotRequiresFactionId" methodname="EncounterSlotRequiresFactionId" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" seed="1269153878" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000184" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1115" name="FactionDispositionAndUnitRelationUseStableExplicitValues" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests.FactionDispositionAndUnitRelationUseStableExplicitValues" methodname="FactionDispositionAndUnitRelationUseStableExplicitValues" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" seed="1082759117" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000140" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1114" name="TargetRelationMaskRejectsEmptyOrUnknownBits" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests.TargetRelationMaskRejectsEmptyOrUnknownBits" methodname="TargetRelationMaskRejectsEmptyOrUnknownBits" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" seed="2018221496" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000131" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1113" name="TargetRelationMaskUsesStableExplicitBitValues" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests.TargetRelationMaskUsesStableExplicitBitValues" methodname="TargetRelationMaskUsesStableExplicitBitValues" classname="ProjectHero.Logic.Tests.EncounterAndFactionTests" runstate="Runnable" seed="1623990665" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000106" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1129" name="ForcedDisplacementTests" fullname="ProjectHero.Logic.Tests.ForcedDisplacementTests" classname="ProjectHero.Logic.Tests.ForcedDisplacementTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001160" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1130" name="ForcedDisplacementStopReasonEncodingIsStableAndUnique" fullname="ProjectHero.Logic.Tests.ForcedDisplacementTests.ForcedDisplacementStopReasonEncodingIsStableAndUnique" methodname="ForcedDisplacementStopReasonEncodingIsStableAndUnique" classname="ProjectHero.Logic.Tests.ForcedDisplacementTests" runstate="Runnable" seed="578121344" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000819" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1116" name="GridGeometryTests" fullname="ProjectHero.Logic.Tests.GridGeometryTests" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.006069" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1121" name="DirectionalTriangleTableRequiresCanonicalTwelveDirections" fullname="ProjectHero.Logic.Tests.GridGeometryTests.DirectionalTriangleTableRequiresCanonicalTwelveDirections" methodname="DirectionalTriangleTableRequiresCanonicalTwelveDirections" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" seed="487514971" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001654" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1117" name="GridPointRejectsOddCoordinateParity" fullname="ProjectHero.Logic.Tests.GridGeometryTests.GridPointRejectsOddCoordinateParity" methodname="GridPointRejectsOddCoordinateParity" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" seed="1284390495" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000465" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1119" name="IntegerSixtyDegreeExpansionPreservesTriangleLattice" fullname="ProjectHero.Logic.Tests.GridGeometryTests.IntegerSixtyDegreeExpansionPreservesTriangleLattice" methodname="IntegerSixtyDegreeExpansionPreservesTriangleLattice" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" seed="574454901" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000572" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1122" name="LogicDirectionalGeometryHasNoRuntimeRotationDependency" fullname="ProjectHero.Logic.Tests.GridGeometryTests.LogicDirectionalGeometryHasNoRuntimeRotationDependency" methodname="LogicDirectionalGeometryHasNoRuntimeRotationDependency" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" seed="1776417912" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001786" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1120" name="SixIntegerRotationsReturnOriginalTriangle" fullname="ProjectHero.Logic.Tests.GridGeometryTests.SixIntegerRotationsReturnOriginalTriangle" methodname="SixIntegerRotationsReturnOriginalTriangle" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" seed="1466912280" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000300" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1118" name="TrianglePointRejectsInvalidOrientationOrParity" fullname="ProjectHero.Logic.Tests.GridGeometryTests.TrianglePointRejectsInvalidOrientationOrParity" methodname="TrianglePointRejectsInvalidOrientationOrParity" classname="ProjectHero.Logic.Tests.GridGeometryTests" runstate="Runnable" seed="159719618" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000457" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1123" name="HashParticipationTests" fullname="ProjectHero.Logic.Tests.HashParticipationTests" classname="ProjectHero.Logic.Tests.HashParticipationTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.002623" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1128" name="AdrenalineRulesParticipateInDefinitionHash" fullname="ProjectHero.Logic.Tests.HashParticipationTests.AdrenalineRulesParticipateInDefinitionHash" methodname="AdrenalineRulesParticipateInDefinitionHash" classname="ProjectHero.Logic.Tests.HashParticipationTests" runstate="Runnable" seed="1795332708" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000331" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1124" name="AttackTimingRulesParticipateInBattleDefinitionHash" fullname="ProjectHero.Logic.Tests.HashParticipationTests.AttackTimingRulesParticipateInBattleDefinitionHash" methodname="AttackTimingRulesParticipateInBattleDefinitionHash" classname="ProjectHero.Logic.Tests.HashParticipationTests" runstate="Runnable" seed="26228953" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000453" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1126" name="ForcedDisplacementProtocolAndStopReasonEncodingParticipateInDefinitionHash" fullname="ProjectHero.Logic.Tests.HashParticipationTests.ForcedDisplacementProtocolAndStopReasonEncodingParticipateInDefinitionHash" methodname="ForcedDisplacementProtocolAndStopReasonEncodingParticipateInDefinitionHash" classname="ProjectHero.Logic.Tests.HashParticipationTests" runstate="Runnable" seed="44954494" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000357" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1125" name="MoveTimingAndReferenceSpeedParticipateInDefinitionHash" fullname="ProjectHero.Logic.Tests.HashParticipationTests.MoveTimingAndReferenceSpeedParticipateInDefinitionHash" methodname="MoveTimingAndReferenceSpeedParticipateInDefinitionHash" classname="ProjectHero.Logic.Tests.HashParticipationTests" runstate="Runnable" seed="639088598" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000355" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1127" name="ReactionTimingAndMinimumLeadParticipateInDefinitionHash" fullname="ProjectHero.Logic.Tests.HashParticipationTests.ReactionTimingAndMinimumLeadParticipateInDefinitionHash" methodname="ReactionTimingAndMinimumLeadParticipateInDefinitionHash" classname="ProjectHero.Logic.Tests.HashParticipationTests" runstate="Runnable" seed="1863570172" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000400" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1131" name="PathRulesTests" fullname="ProjectHero.Logic.Tests.PathRulesTests" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.004136" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1137" name="LegacyPerEdgeDurationClampIsNotANewTimingRule" fullname="ProjectHero.Logic.Tests.PathRulesTests.LegacyPerEdgeDurationClampIsNotANewTimingRule" methodname="LegacyPerEdgeDurationClampIsNotANewTimingRule" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="341988858" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000768" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1138" name="MoveMaxPathWeightCannotExceedSearchRuleLimit" fullname="ProjectHero.Logic.Tests.PathRulesTests.MoveMaxPathWeightCannotExceedSearchRuleLimit" methodname="MoveMaxPathWeightCannotExceedSearchRuleLimit" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="535407392" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000328" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1134" name="MoveReferenceSpeedIsFrozenAtTwenty" fullname="ProjectHero.Logic.Tests.PathRulesTests.MoveReferenceSpeedIsFrozenAtTwenty" methodname="MoveReferenceSpeedIsFrozenAtTwenty" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="394135330" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000155" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1135" name="MoveSpeedIsNotAPathCostInput" fullname="ProjectHero.Logic.Tests.PathRulesTests.MoveSpeedIsNotAPathCostInput" methodname="MoveSpeedIsNotAPathCostInput" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="1909685353" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001098" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1136" name="PathCostAndSearchRulesParticipateInDefinitionHash" fullname="ProjectHero.Logic.Tests.PathRulesTests.PathCostAndSearchRulesParticipateInDefinitionHash" methodname="PathCostAndSearchRulesParticipateInDefinitionHash" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="410250546" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000350" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1132" name="PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo" fullname="ProjectHero.Logic.Tests.PathRulesTests.PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo" methodname="PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="2083299210" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000260" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1133" name="PathSearchRulesRejectNonPositiveLimits" fullname="ProjectHero.Logic.Tests.PathRulesTests.PathSearchRulesRejectNonPositiveLimits" methodname="PathSearchRulesRejectNonPositiveLimits" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="603759931" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000287" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1139" name="ReactionAndAdrenalineTests" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" classname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.003605" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1140" name="AdrenalineRulesRejectBlockOrDodgeRewardAtOrAboveCost" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.AdrenalineRulesRejectBlockOrDodgeRewardAtOrAboveCost" methodname="AdrenalineRulesRejectBlockOrDodgeRewardAtOrAboveCost" classname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" runstate="Runnable" seed="1688036524" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000390" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1141" name="AdrenalineRulesRejectCostAboveCycleMaximum" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.AdrenalineRulesRejectCostAboveCycleMaximum" methodname="AdrenalineRulesRejectCostAboveCycleMaximum" classname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" runstate="Runnable" seed="1917147772" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000390" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1143" name="ContradictoryDamageEligibilityAndBypassTagsAreRejected" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.ContradictoryDamageEligibilityAndBypassTagsAreRejected" methodname="ContradictoryDamageEligibilityAndBypassTagsAreRejected" classname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" runstate="Runnable" seed="803056484" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000219" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1144" name="ReactionOptionsAreSortedByActionSpecId" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.ReactionOptionsAreSortedByActionSpecId" methodname="ReactionOptionsAreSortedByActionSpecId" classname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" runstate="Runnable" seed="1958670457" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.001143" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1142" name="TrueDamageBypassesPassiveAndActionResistance" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.TrueDamageBypassesPassiveAndActionResistance" methodname="TrueDamageBypassesPassiveAndActionResistance" classname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" runstate="Runnable" seed="387496454" result="Passed" start-time="2026-09-22 16:14:30Z" end-time="2026-09-22 16:14:30Z" duration="0.000473" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

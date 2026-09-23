@@ -12,9 +12,9 @@ namespace ProjectHero.Core.Actions.Intents
     /// </summary>
     public sealed class PlanFacingIntent : CombatIntent
     {
-        public Pathfinder.GridPoint AimPoint { get; }
+        public GridPoint AimPoint { get; }
 
-        public PlanFacingIntent(CombatUnit owner, Pathfinder.GridPoint aimPoint)
+        public PlanFacingIntent(CombatUnit owner, GridPoint aimPoint)
             : base(owner, ActionType.None)
         {
             AimPoint = aimPoint;

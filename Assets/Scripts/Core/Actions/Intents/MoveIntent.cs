@@ -9,8 +9,8 @@ namespace ProjectHero.Core.Actions.Intents
 {
     public class MoveIntent : CombatIntent
     {
-        public Pathfinder.GridPoint From { get; private set; }
-        public Pathfinder.GridPoint To { get; private set; }
+        public GridPoint From { get; private set; }
+        public GridPoint To { get; private set; }
         public float Duration { get; private set; }
         public int StepIndex { get; private set; }
         public bool Rotate { get; private set; }
@@ -20,7 +20,7 @@ namespace ProjectHero.Core.Actions.Intents
         private readonly long _groupId;
         private System.Collections.Generic.List<TrianglePoint> _reservedVolume;
 
-        public MoveIntent(CombatUnit owner, Pathfinder.GridPoint from, Pathfinder.GridPoint to, float duration, int index, BattleTimeline timeline, long groupId = 0, bool rotate = true, bool isForced = false)
+        public MoveIntent(CombatUnit owner, GridPoint from, GridPoint to, float duration, int index, BattleTimeline timeline, long groupId = 0, bool rotate = true, bool isForced = false)
             : base(owner, ActionType.Move)
         {
             From = from;

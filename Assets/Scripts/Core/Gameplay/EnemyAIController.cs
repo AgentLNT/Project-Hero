@@ -1,4 +1,5 @@
 using UnityEngine;
+using ProjectHero.Authoring.Legacy;
 using System.Collections.Generic;
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
@@ -196,20 +197,20 @@ namespace ProjectHero.Core.Gameplay
             return false;
         }
 
-        private (bool found, Pathfinder.GridPoint dest, List<Pathfinder.GridPoint> path) FindBestPositionNearTarget(int maxRings)
+        private (bool found, GridPoint dest, List<GridPoint> path) FindBestPositionNearTarget(int maxRings)
         {
             if (GridManager.Instance == null) return (false, default, null);
 
             var obstacles = GridManager.Instance.GetGlobalObstacles(ControlledUnit);
             var pathfinder = new Pathfinder();
 
-            Pathfinder.GridPoint bestDest = default;
-            List<Pathfinder.GridPoint> bestPath = null;
+            GridPoint bestDest = default;
+            List<GridPoint> bestPath = null;
             float bestScore = float.MaxValue;
             bool anyFound = false;
 
-            var visited = new HashSet<Pathfinder.GridPoint>();
-            var queue = new Queue<(Pathfinder.GridPoint point, int depth)>();
+            var visited = new HashSet<GridPoint>();
+            var queue = new Queue<(GridPoint point, int depth)>();
 
             visited.Add(TargetUnit.GridPosition);
             queue.Enqueue((TargetUnit.GridPosition, 0));

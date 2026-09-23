@@ -1,4 +1,5 @@
 using UnityEngine;
+using ProjectHero.Authoring.Legacy;
 using UnityEngine.UI;
 using TMPro;
 using ProjectHero.Core.Actions;

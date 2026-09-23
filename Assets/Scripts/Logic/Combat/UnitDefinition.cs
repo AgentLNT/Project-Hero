@@ -9,6 +9,11 @@ namespace ProjectHero.Logic.Combat
     /// ActionSpeed 只修正攻击前摇；MoveSpeed 只修正普通 Move 每权重单位 Tick，不参与选路。
     /// 被动抵抗按 DamageChannelId 索引，范围 [0, 1024]（Q10），缺失通道视为 0；
     /// 不存在通用 DamageReduction。
+    ///
+    /// <see cref="InitialHealth"/> 是 Authoring 在加载边界由旧 <c>MaxHealth</c>
+    /// （Constitution × 20）一次性量化得到的首版初始生命：它属于配置数据并进入
+    /// BattleDefinitionHash，Logic 侧不得再实现第二套生命派生公式。
+    /// <see cref="ActionSetId"/> 指向该单位理论可用的动作集合；它与单位的控制者类型无关。
     /// </summary>
     public sealed record UnitDefinition(
         UnitDefinitionId UnitDefinitionId,
@@ -16,7 +21,9 @@ namespace ProjectHero.Logic.Combat
         float MomentumSpeed,
         float ActionSpeed,
         float MoveSpeed,
-        IReadOnlyDictionary<DamageChannelId, int> BaseDamageResistanceQ10)
+        IReadOnlyDictionary<DamageChannelId, int> BaseDamageResistanceQ10,
+        float InitialHealth = 200f,
+        Ids.ActionSetId ActionSetId = default)
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
@@ -25,6 +32,8 @@ namespace ProjectHero.Logic.Combat
             writer.Write("unit.momentum_speed", (double)MomentumSpeed);
             writer.Write("unit.action_speed", (double)ActionSpeed);
             writer.Write("unit.move_speed", (double)MoveSpeed);
+            writer.Write("unit.initial_health", (double)InitialHealth);
+            writer.Write("unit.action_set_id", ActionSetId.Value ?? string.Empty);
 
             if (BaseDamageResistanceQ10 != null)
             {
@@ -60,6 +69,8 @@ namespace ProjectHero.Logic.Combat
         public const string UNIT_MOVE_SPEED_INVALID = "UNIT_MOVE_SPEED_INVALID";
         public const string UNIT_RESISTANCE_OUT_OF_RANGE = "UNIT_RESISTANCE_OUT_OF_RANGE";
         public const string UNIT_RESISTANCE_CHANNEL_INVALID = "UNIT_RESISTANCE_CHANNEL_INVALID";
+        public const string UNIT_INITIAL_HEALTH_INVALID = "UNIT_INITIAL_HEALTH_INVALID";
+        public const string UNIT_ACTION_SET_ID_INVALID = "UNIT_ACTION_SET_ID_INVALID";
     }
 
     public static class UnitDefinitionValidation
@@ -78,6 +89,8 @@ namespace ProjectHero.Logic.Combat
             if (!IsFinitePositive(definition.ActionSpeed)) return UnitDefinitionCodes.UNIT_ACTION_SPEED_INVALID;
             if (!IsFinitePositive(definition.MoveSpeed)) return UnitDefinitionCodes.UNIT_MOVE_SPEED_INVALID;
 
+            // 被动抵抗范围优先于 02B 新增字段校验：保持任务 02 已冻结的错误优先级
+            // （越过 Q10 范围必须报 UNIT_RESISTANCE_OUT_OF_RANGE）。
             if (definition.BaseDamageResistanceQ10 != null)
             {
                 foreach (var pair in definition.BaseDamageResistanceQ10)
@@ -88,6 +101,16 @@ namespace ProjectHero.Logic.Combat
                         return UnitDefinitionCodes.UNIT_RESISTANCE_OUT_OF_RANGE;
                 }
             }
+
+            if (!IsFinitePositive(definition.InitialHealth)) return UnitDefinitionCodes.UNIT_INITIAL_HEALTH_INVALID;
+
+            // ActionSetId 在本任务引入；为空表示"该定义未绑定动作集合"，
+            // 该情形由 Builder 的跨定义引用校验（DEFINITION_REFERENCE_DANGLING）负责拒绝，
+            // 不属于单定义自洽性。非空时必须是合法 ID 格式。
+            if (!string.IsNullOrEmpty(definition.ActionSetId.Value) &&
+                DefinitionIdValidation.ValidateFormat(definition.ActionSetId.Value) != null)
+                return UnitDefinitionCodes.UNIT_ACTION_SET_ID_INVALID;
+
             return null;
         }
 

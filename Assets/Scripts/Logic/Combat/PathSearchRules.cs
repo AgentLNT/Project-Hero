@@ -21,7 +21,7 @@ namespace ProjectHero.Logic.Combat
 
         public string Validate()
             => MaxExpandedNodes <= 0 || MaxPathWeightUnits <= 0 || MaxPathEdges <= 0
-                ? PathSearchCodes.PATH_SEARCH_LIMIT_INVALID : null;
+                ? PathSearchCodes.PATH_SEARCH_RULE_INVALID : null;
 
         /// <summary>包含式边界：严格大于上限才失败。</summary>
         public bool ExceedsNodeLimit(long candidate) => candidate > MaxExpandedNodes;
@@ -46,7 +46,7 @@ namespace ProjectHero.Logic.Combat
     /// </summary>
     public static class PathSearchCodes
     {
-        public const string PATH_SEARCH_LIMIT_INVALID = "PATH_SEARCH_LIMIT_INVALID";
+        public const string PATH_SEARCH_RULE_INVALID = "PATH_SEARCH_RULE_INVALID";
         public const string PATH_INVALID_START = "PATH_INVALID_START";
         public const string PATH_INVALID_DESTINATION = "PATH_INVALID_DESTINATION";
         public const string PATH_COST_OVERFLOW = "PATH_COST_OVERFLOW";

@@ -16,7 +16,7 @@ namespace ProjectHero.Visuals
         private float _moveStartTime;
         private float _moveDuration;
         private bool _rotateOnMove;
-        private Pathfinder.GridPoint _lastKnownLogicPos;
+        private GridPoint _lastKnownLogicPos;
         private bool _hasLastKnownLogicPos;
 
         private void Awake()
@@ -89,7 +89,7 @@ namespace ProjectHero.Visuals
             }
         }
 
-        public void MoveVisuals(Vector3 targetPos, float duration, System.Action onComplete = null, bool rotate = true, Pathfinder.GridPoint? expectedLogicEnd = null)
+        public void MoveVisuals(Vector3 targetPos, float duration, System.Action onComplete = null, bool rotate = true, GridPoint? expectedLogicEnd = null)
         {
             targetPos = GridManager.GetGroundPosition(targetPos);
             _moveStartPos = transform.position;

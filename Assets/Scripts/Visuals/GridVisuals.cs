@@ -47,7 +47,7 @@ namespace ProjectHero.Visuals
                     // If (x+y)%2 != 0, it's a triangle center, which we don't need for the mesh vertices.
                     if ((x + y) % 2 != 0) continue;
 
-                    Vector3 worldPos = gridManager.GridToWorld(new Pathfinder.GridPoint(x, y));
+                    Vector3 worldPos = gridManager.GridToWorld(new GridPoint(x, y));
                     
                     // Snap to ground
                     // Replicating GetGroundPosition logic to avoid internal access issues and support Editor time execution

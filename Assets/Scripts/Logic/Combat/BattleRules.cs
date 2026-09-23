@@ -25,7 +25,8 @@ namespace ProjectHero.Logic.Combat
         int KnockdownAutoRecoveryTicks,
         PathCostRules PathCostRules,
         PathSearchRules PathSearchRules,
-        ForcedDisplacementProtocolVersion ForcedDisplacementProtocolVersion)
+        ForcedDisplacementProtocolVersion ForcedDisplacementProtocolVersion,
+        int MaxAutomaticDeferralsPerPlan = BattleRules.FrozenMaxAutomaticDeferralsPerPlan)
     {
         public const string TICKS_PER_SECOND_INVALID = "TICKS_PER_SECOND_INVALID";
         public const string REFERENCE_ACTION_SPEED_INVALID = "REFERENCE_ACTION_SPEED_INVALID";
@@ -34,6 +35,8 @@ namespace ProjectHero.Logic.Combat
         public const string STAGGER_AUTO_RECOVERY_INVALID = "STAGGER_AUTO_RECOVERY_INVALID";
         public const string KNOCKDOWN_AUTO_RECOVERY_INVALID = "KNOCKDOWN_AUTO_RECOVERY_INVALID";
         public const string FORCED_DISPLACEMENT_PROTOCOL_INVALID = "FORCED_DISPLACEMENT_PROTOCOL_INVALID";
+        /// <summary>任务 02B 冻结：普通计划自动延期次数上限必须非负。</summary>
+        public const string MAX_AUTOMATIC_DEFERRALS_INVALID = "MAX_AUTOMATIC_DEFERRALS_INVALID";
 
         /// <summary>
         /// Block 对合格接触的完全抵抗固定为 1024（规则固定值），Authoring 不提供可降低该值的字段。
@@ -45,6 +48,24 @@ namespace ProjectHero.Logic.Combat
         public const int FrozenDefaultAttackRecoveryTicks = 30;
         public const int FrozenStaggerAutoRecoveryTicks = 30;
         public const int FrozenKnockdownAutoRecoveryTicks = 60;
+
+        /// <summary>
+        /// 首版冻结的"每个普通计划允许的系统自动延期次数上限"（00 号规则 29）。
+        /// 任务 02B 只负责声明该版本化常量、校验其非负并让它进入 BattleDefinitionHash；
+        /// 实际延期事务、RetryAtTick 与失败判定由任务 05 实现。取值必须能与
+        /// <see cref="PathSearchRules.MaxPathEdges"/> 量级共同支撑一场战斗，不得为 0（0 会让任何
+        /// 临时阻塞直接终止计划），也不得无上限。
+        /// </summary>
+        public const int FrozenMaxAutomaticDeferralsPerPlan = 8;
+
+        /// <summary>
+        /// 最大排程视野（Tick）。任务 02B 只冻结并哈希该版本化常量，
+        /// 供任务 05 的排程评估与任务 07 的窗口预算共同使用；不改变任何窗口语义。
+        /// </summary>
+        public const int FrozenMaxScheduleHorizonTicks = 60 * 600; // 600 秒 @ 60 Tick/s
+
+        /// <summary>最大排程视野（Tick），与 <see cref="FrozenMaxScheduleHorizonTicks"/> 同值。</summary>
+        public int MaxScheduleHorizonTicks => FrozenMaxScheduleHorizonTicks;
 
         /// <summary>首版冻结规则实例（TicksPerSecond = 60，RoundHalfUp，1/2 路径权重，4096/256/192，SimultaneousStepV1）。</summary>
         public static readonly BattleRules FrozenV1 = new BattleRules(
@@ -69,10 +90,11 @@ namespace ProjectHero.Logic.Combat
             if (DefaultAttackRecoveryTicks <= 0) return DEFAULT_ATTACK_RECOVERY_INVALID;
             if (StaggerAutoRecoveryTicks < 0) return STAGGER_AUTO_RECOVERY_INVALID;
             if (KnockdownAutoRecoveryTicks < 0) return KNOCKDOWN_AUTO_RECOVERY_INVALID;
+            if (MaxAutomaticDeferralsPerPlan < 0) return MAX_AUTOMATIC_DEFERRALS_INVALID;
             if (!ForcedDisplacementProtocolVersion.IsValid) return FORCED_DISPLACEMENT_PROTOCOL_INVALID;
             string pathCostError = PathCostRules == null ? PathCostRules.PATH_COST_WEIGHT_INVALID : PathCostRules.Validate();
             if (pathCostError != null) return pathCostError;
-            return PathSearchRules == null ? PathSearchCodes.PATH_SEARCH_LIMIT_INVALID : PathSearchRules.Validate();
+            return PathSearchRules == null ? PathSearchCodes.PATH_SEARCH_RULE_INVALID : PathSearchRules.Validate();
         }
 
         public void WriteHashComponents(CanonicalHashWriter writer)
@@ -85,6 +107,8 @@ namespace ProjectHero.Logic.Combat
             writer.Write("rules.stagger_auto_recovery_ticks", StaggerAutoRecoveryTicks);
             writer.Write("rules.knockdown_auto_recovery_ticks", KnockdownAutoRecoveryTicks);
             writer.Write("rules.full_block_resistance_q10", FullBlockResistanceQ10);
+            writer.Write("rules.max_automatic_deferrals_per_plan", MaxAutomaticDeferralsPerPlan);
+            writer.Write("rules.max_schedule_horizon_ticks", MaxScheduleHorizonTicks);
             PathCostRules.WriteHashComponents(writer);
             PathSearchRules.WriteHashComponents(writer);
             ForcedDisplacementProtocolVersion.WriteHashComponents(writer);

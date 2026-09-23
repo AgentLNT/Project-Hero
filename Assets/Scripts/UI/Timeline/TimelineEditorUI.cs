@@ -65,7 +65,7 @@ namespace ProjectHero.UI.Timeline
             public float StartTimeAbs;
             public float Duration;
             public bool IsInteractable;
-            public Pathfinder.GridPoint? MoveDestination;
+            public GridPoint? MoveDestination;
         }
 
         private TimelineActionPlacement _pendingPlacement;
@@ -811,7 +811,7 @@ namespace ProjectHero.UI.Timeline
             }
         }
 
-        private Pathfinder.GridPoint PredictUnitGridPositionAt(CombatUnit unit, float timeAbs, long ignoreGroupId)
+        private GridPoint PredictUnitGridPositionAt(CombatUnit unit, float timeAbs, long ignoreGroupId)
         {
             var pos = unit.GridPosition;
             foreach (var kvp in _playerBlocks.OrderBy(k => k.Value.StartTimeAbs))

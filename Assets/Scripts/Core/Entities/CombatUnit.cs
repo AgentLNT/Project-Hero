@@ -26,8 +26,8 @@ namespace ProjectHero.Core.Entities
         public bool IsPlayerControlled = false;
 
         [Header("Grid State")]
-        public Pathfinder.GridPoint InitialGridPosition;
-        public Pathfinder.GridPoint GridPosition { get; private set; }
+        public GridPoint InitialGridPosition;
+        public GridPoint GridPosition { get; private set; }
 
         [Header("Volume")]
         public UnitVolume UnitVolumeDefinition;
@@ -57,7 +57,7 @@ namespace ProjectHero.Core.Entities
             return occupied;
         }
 
-        public List<TrianglePoint> GetProjectedOccupancy(Pathfinder.GridPoint targetPos, GridDirection targetFacing)
+        public List<TrianglePoint> GetProjectedOccupancy(GridPoint targetPos, GridDirection targetFacing)
         {
             if (UnitVolumeDefinition == null) return new List<TrianglePoint>();
             var relativeTriangles = UnitVolumeDefinition.GetVolumeFor(targetFacing);
@@ -117,7 +117,7 @@ namespace ProjectHero.Core.Entities
             CurrentStateDurationTicks = 0;
         }
 
-        public void SetGridPosition(Pathfinder.GridPoint point)
+        public void SetGridPosition(GridPoint point)
         {
             if (GridManager.Instance != null && _hasRegisteredGrid)
             {

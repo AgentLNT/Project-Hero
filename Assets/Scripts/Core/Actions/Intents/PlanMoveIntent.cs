@@ -10,11 +10,11 @@ namespace ProjectHero.Core.Actions.Intents
 {
     public sealed class PlanMoveIntent : CombatIntent
     {
-        public Pathfinder.GridPoint Destination { get; }
+        public GridPoint Destination { get; }
         private readonly BattleTimeline _timeline;
         private readonly long _groupId;
 
-        public PlanMoveIntent(CombatUnit owner, Pathfinder.GridPoint destination, BattleTimeline timeline, long groupId)
+        public PlanMoveIntent(CombatUnit owner, GridPoint destination, BattleTimeline timeline, long groupId)
             : base(owner, ActionType.Move)
         {
             Destination = destination;
@@ -29,7 +29,7 @@ namespace ProjectHero.Core.Actions.Intents
 
             var obstacles = GridManager.Instance.GetGlobalObstacles(Owner);
             var pathfinder = new Pathfinder();
-            List<Pathfinder.GridPoint> path = pathfinder.FindPath(Owner.GridPosition, Destination, Owner.UnitVolumeDefinition, obstacles);
+            List<GridPoint> path = pathfinder.FindPath(Owner.GridPosition, Destination, Owner.UnitVolumeDefinition, obstacles);
 
             if (path == null || path.Count < 2)
             {

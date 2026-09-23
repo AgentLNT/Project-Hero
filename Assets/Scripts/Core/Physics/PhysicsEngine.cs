@@ -9,7 +9,10 @@ using UnityEngine;
 
 namespace ProjectHero.Core.Physics
 {
-    public enum ImpactType { Blunt, Slash, Pierce }
+    // 任务 02B 前置拆分：原在此处的 enum ImpactType 已拆到
+    // Assets/Scripts/Authoring/Legacy/ImpactType.cs（ProjectHero.Authoring 程序集），
+    // 命名空间仍为 ProjectHero.Core.Physics。本文件保留原 MonoScript GUID（940d2ce0…），
+    // 旧资产中 ImpactType 只按 int 序列化，拆分不影响任何既有引用。
 
     public static class PhysicsEngine
     {
@@ -26,7 +29,7 @@ namespace ProjectHero.Core.Physics
             return false;
         }
 
-        public static void ApplyClashResult(BattleTimeline timeline, CombatUnit victim, float residualMomentum, Pathfinder.GridPoint sourcePos)
+        public static void ApplyClashResult(BattleTimeline timeline, CombatUnit victim, float residualMomentum, GridPoint sourcePos)
         {
             float impactVelocity = residualMomentum / victim.TotalMass;
             float impactDamage = residualMomentum * 0.1f;

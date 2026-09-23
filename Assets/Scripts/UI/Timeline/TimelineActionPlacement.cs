@@ -30,7 +30,7 @@ namespace ProjectHero.UI.Timeline
         public TimelineLane Lane;
 
         // Optional metadata to support prediction/visualization.
-        public Pathfinder.GridPoint? MoveDestination;
+        public GridPoint? MoveDestination;
         public GridDirection? AttackFacingAbsolute;
 
         // startDelaySeconds is relative to current time when placed.

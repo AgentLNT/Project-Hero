@@ -32,7 +32,7 @@ namespace ProjectHero.Visuals
             public long PlannedMaxEventId;
 
             public int CompletedMoveSteps;
-            public List<Pathfinder.GridPoint> MoveStepDestinations = new List<Pathfinder.GridPoint>();
+            public List<GridPoint> MoveStepDestinations = new List<GridPoint>();
             public List<List<TrianglePoint>> MoveStepVolumes = new List<List<TrianglePoint>>();
 
             public HashSet<TrianglePoint> Move = new HashSet<TrianglePoint>();

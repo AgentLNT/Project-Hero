@@ -16,6 +16,8 @@ namespace ProjectHero.Logic.Combat
         int OddDirectionStepWeightUnits)
     {
         public const string PATH_COST_WEIGHT_INVALID = "PATH_COST_WEIGHT_INVALID";
+        /// <summary>任务 02B 冻结：偶数方向权重必须恰好为 1、奇数方向恰好为 2。</summary>
+        public const string PATH_COST_RULE_INVALID = "PATH_COST_RULE_INVALID";
 
         /// <summary>启发函数版本标识（主方案 3.8 冻结的非负整数公式）。</summary>
         public const string HeuristicVersion = "3.8-nonnegative-integer-v1";
@@ -23,9 +25,30 @@ namespace ProjectHero.Logic.Combat
         /// <summary>首版冻结：偶数 1 / 奇数 2。</summary>
         public static readonly PathCostRules FrozenV1 = new(1, 2);
 
+        /// <summary>基本合法性：两个权重均为正。</summary>
         public string Validate()
             => EvenDirectionStepWeightUnits <= 0 || OddDirectionStepWeightUnits <= 0
                 ? PATH_COST_WEIGHT_INVALID : null;
+
+        /// <summary>
+        /// 任务 02B 定义级校验：除"必须为正"外，还要求权重恰好等于冻结的
+        /// 偶数 1 / 奇数 2（主方案 3.8、00 号规则 32），且启发函数版本受支持。
+        /// 本方法不修改规则，也不接受 MoveSpeed 或任何单位速度作为输入。
+        /// </summary>
+        public string ValidateFrozenRules()
+        {
+            string basic = Validate();
+            if (basic != null) return basic;
+            if (EvenDirectionStepWeightUnits != FrozenV1.EvenDirectionStepWeightUnits ||
+                OddDirectionStepWeightUnits != FrozenV1.OddDirectionStepWeightUnits)
+                return PATH_COST_RULE_INVALID;
+            if (!IsSupportedHeuristicVersion(HeuristicVersion)) return PATH_COST_RULE_INVALID;
+            return null;
+        }
+
+        /// <summary>首版只支持 <see cref="HeuristicVersion"/> 一个启发函数/平局版本。</summary>
+        public static bool IsSupportedHeuristicVersion(string version)
+            => string.Equals(version, HeuristicVersion, System.StringComparison.Ordinal);
 
         /// <summary>偶数方向权重 1、奇数方向权重 2（冻结值经字段承载以便进哈希）。</summary>
         public int StepWeightUnits(GridDirection direction)

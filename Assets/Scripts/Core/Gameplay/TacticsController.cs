@@ -1,4 +1,5 @@
 using UnityEngine;
+using ProjectHero.Authoring.Legacy;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
@@ -38,9 +39,9 @@ namespace ProjectHero.Core.Gameplay
         private PlanStep _planStep = PlanStep.None;
 
         // Cached target info for Step 2 -> Step 3 -> Step back
-        private Pathfinder.GridPoint _plannedTarget;
+        private GridPoint _plannedTarget;
         private GridDirection _plannedDirection;
-        private System.Collections.Generic.List<Pathfinder.GridPoint> _plannedPath;
+        private System.Collections.Generic.List<GridPoint> _plannedPath;
 
         private void Start()
         {
@@ -555,7 +556,7 @@ namespace ProjectHero.Core.Gameplay
 
         }
 
-        private void IssueMoveCommand(CombatUnit unit, Pathfinder.GridPoint targetGridPos)
+        private void IssueMoveCommand(CombatUnit unit, GridPoint targetGridPos)
         {
             if (Timeline == null) return;
 
@@ -615,7 +616,7 @@ namespace ProjectHero.Core.Gameplay
                 float duration = ActionScheduler.EstimateMoveDuration(unit, path);
                 var ownerCopy = unit;
                 var destCopy = targetGridPos;
-                _plannedPath = new System.Collections.Generic.List<Pathfinder.GridPoint>(path);
+                _plannedPath = new System.Collections.Generic.List<GridPoint>(path);
 
                 var placement = new TimelineActionPlacement
                 {

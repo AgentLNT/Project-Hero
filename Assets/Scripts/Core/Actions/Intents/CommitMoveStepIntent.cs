@@ -14,12 +14,12 @@ namespace ProjectHero.Core.Actions.Intents
     /// </summary>
     public sealed class CommitMoveStepIntent : CombatIntent
     {
-        public Pathfinder.GridPoint From { get; }
-        public Pathfinder.GridPoint To { get; }
+        public GridPoint From { get; }
+        public GridPoint To { get; }
 
         private List<TrianglePoint> _reservedVolume;
 
-        public CommitMoveStepIntent(CombatUnit owner, Pathfinder.GridPoint from, Pathfinder.GridPoint to, List<TrianglePoint> reservedVolume)
+        public CommitMoveStepIntent(CombatUnit owner, GridPoint from, GridPoint to, List<TrianglePoint> reservedVolume)
             : base(owner, ActionType.None)
         {
             From = from;
