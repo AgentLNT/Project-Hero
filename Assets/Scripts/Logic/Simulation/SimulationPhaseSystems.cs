@@ -404,7 +404,7 @@ namespace ProjectHero.Logic.Simulation
         public BattleSimulationAssembly(
             IUnitStateAdvanceSystem unitStateAdvance = null,
             IVictoryEvaluator victoryEvaluator = null,
-            ITurnWindowSchedule turnWindowSchedule = null,
+            Turns.ITurnWindowSchedule turnWindowSchedule = null,
             IFrozenCommandProcessor commandProcessor = null,
             IForcedDisplacementRequestBuilder displacementRequestBuilder = null,
             IForcedDisplacementSolver displacementSolver = null,
@@ -424,11 +424,13 @@ namespace ProjectHero.Logic.Simulation
             IReactionReservationReleaseSink reactionReservationReleaseSink = null,
             IMovementPathCalculator movementPathCalculator = null,
             IUnitVolumeTableSource unitVolumeTables = null,
-            Action<IReadOnlyList<ActionPlanId>> budgetReleaseSink = null)
+            Action<IReadOnlyList<ActionPlanId>> budgetReleaseSink = null,
+            UnitId? concurrentHeroUnitId = null,
+            Resources.IAdrenalineAccrualFactSource adrenalineAccrualFactSource = null)
         {
             UnitStateAdvance = unitStateAdvance ?? NoUnitStateAdvanceSystem.Instance;
             VictoryEvaluator = victoryEvaluator ?? FactionEliminationVictoryEvaluator.Instance;
-            TurnWindowSchedule = turnWindowSchedule ?? NoTurnWindowSchedule.Instance;
+            TurnWindowSchedule = turnWindowSchedule ?? Turns.NoTurnWindowSchedule.Instance;
             CommandProcessor = commandProcessor ?? PendingImplementationCommandProcessor.Instance;
             DisplacementRequestBuilder = displacementRequestBuilder ?? NoForcedDisplacementRequests.Instance;
             DisplacementSolver = displacementSolver ?? NoForcedDisplacementSolver.Instance;
@@ -440,7 +442,11 @@ namespace ProjectHero.Logic.Simulation
             DecisionObservers = decisionObservers ?? Array.Empty<IDecisionObserver>();
             PhaseTiming = phaseTiming;
             LifecycleNoticeSink = lifecycleNoticeSink;
-            StartCommitPort = startCommitPort ?? Timeline.NoTurnBudgetCommitPort.Instance;
+            // 未显式注入时保持 null：BattleSimulation 会把本场自己的预算权威接到该接缝上
+            // （任务 07 的真实 Reserved -> Spent 提交端口）。
+            // 注意：这里**不得**兜底成 NoTurnBudgetCommitPort——那会让
+            // "assembly.StartCommitPort ?? 预算权威" 变成死代码，任务 07 的启动提交永不生效。
+            StartCommitPort = startCommitPort;
             DodgeRelocationTransaction = dodgeRelocationTransaction;
             AreaThreatCandidateSource = areaThreatCandidateSource;
             ReactionPreparationPort = reactionPreparationPort;
@@ -448,6 +454,8 @@ namespace ProjectHero.Logic.Simulation
             MovementPathCalculator = movementPathCalculator;
             UnitVolumeTables = unitVolumeTables;
             BudgetReleaseSink = budgetReleaseSink;
+            ConcurrentHeroUnitId = concurrentHeroUnitId;
+            AdrenalineAccrualFactSource = adrenalineAccrualFactSource;
             // 阶段 2 的判据扩展点：显式给出的优先；否则若评估器同时实现了它
             // （测试用的同类夹具常常同时实现两处钩子），自动采用同一实例，
             // 避免"评估器被推迟但命令前判据没被推迟"这类装配歧义。
@@ -456,7 +464,7 @@ namespace ProjectHero.Logic.Simulation
 
         public IUnitStateAdvanceSystem UnitStateAdvance { get; }
         public IVictoryEvaluator VictoryEvaluator { get; }
-        public ITurnWindowSchedule TurnWindowSchedule { get; }
+        public Turns.ITurnWindowSchedule TurnWindowSchedule { get; }
         public IFrozenCommandProcessor CommandProcessor { get; }
         public IForcedDisplacementRequestBuilder DisplacementRequestBuilder { get; }
         public IForcedDisplacementSolver DisplacementSolver { get; }
@@ -484,12 +492,27 @@ namespace ProjectHero.Logic.Simulation
         public IPreCommandVictoryGate PreCommandVictoryGate { get; }
 
         /// <summary>
-        /// 任务 05 的启动门禁原子提交端口（默认 <c>NoTurnBudgetCommitPort</c>）。
-        ///
-        /// 任务 07 提供真实实现以接入 TurnBudget 账本与肾上腺素；它<strong>不改变</strong>
+        /// 任务 05 的启动门禁原子提交端口。<strong>默认 null</strong> ⇒ 由 <c>BattleSimulation</c>
+        /// 接上本场自己的预算权威（任务 07 的真实实现，把 <c>Reserved</c> 原子转为 <c>Spent</c>）；
+        /// 显式注入的端口优先（任务 05 的失败端口、诊断装配等）。它<strong>不改变</strong>
         /// 门禁的四分结果、原子性要求或计划生命周期。
         /// </summary>
         public IActionPlanStartCommitPort StartCommitPort { get; }
+
+        /// <summary>
+        /// 任务 07：可激活并发行动的<strong>主角</strong>单位（默认 null ⇒ 激活 fail-closed）。
+        ///
+        /// 它<strong>必须</strong>由装配方显式给出：Logic 绝不从 Controller、玩家标志、阵营或名称
+        /// 猜"谁是主角"，否则并发提交授权就退化为"按调用方自报身份放行"。
+        /// </summary>
+        public UnitId? ConcurrentHeroUnitId { get; }
+
+        /// <summary>
+        /// 任务 07 冻结的 Tick 末肾上腺素入账事实来源（任务 08 在全部 Resolution 提交后提供；
+        /// 默认 null = 本 Tick 不入账）。它是 Available 增长的<strong>唯一</strong>入口，
+        /// 其他系统不得逐接触直接加 Available。
+        /// </summary>
+        public Resources.IAdrenalineAccrualFactSource AdrenalineAccrualFactSource { get; }
 
         /// <summary>
         /// 任务 05 的 <strong>Dodge TriggerTick 换位事务端口</strong>（默认 null = 明确拒绝且零写入）。

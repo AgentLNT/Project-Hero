@@ -14,9 +14,11 @@ using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
 using ProjectHero.Logic.Movement;
 using ProjectHero.Logic.Replay;
+using ProjectHero.Logic.Resources;
 using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Status;
 using ProjectHero.Logic.Timeline;
+using ProjectHero.Logic.Turns;
 using ProjectHero.Logic.Units;
 
 namespace ProjectHero.Logic.Simulation
@@ -187,7 +189,39 @@ namespace ProjectHero.Logic.Simulation
         private readonly LogicEventOutbox _outbox;
         private readonly HistoryArchive _history = new HistoryArchive();
         private readonly StepPhaseTrace _trace = new StepPhaseTrace();
-        private readonly TurnWindowState _window = new TurnWindowState();
+
+        /// <summary>
+        /// 任务 07：唯一的窗口管理器与预算账本（含并发授权）。
+        /// 窗口<strong>不</strong>拥有动作，也不是执行/结算边界；它只控制提交权限与整数 Tick 预算。
+        /// </summary>
+        private readonly TurnWindowManager _windowManager;
+        private readonly ConcurrentActionSystem _concurrentAction;
+
+        /// <summary>
+        /// 任务 07：全场唯一的肾上腺素账本集合（每单位一份，按 UnitId 升序的规范枚举）。
+        /// 它是肾上腺素资源的唯一所有者与唯一写入通道。
+        /// </summary>
+        private readonly AdrenalineLedgerRegistry _adrenaline;
+
+        /// <summary>
+        /// 任务 07：TurnBudget 窗口账本的<strong>唯一</strong>写入通道
+        /// （排程事务、启动门禁原子提交与终态清理参与者共用同一份账本）。
+        /// </summary>
+        private readonly TurnWindowBudgetAuthority _budgetAuthority;
+
+        /// <summary>
+        /// 任务 07：统一终态协调器的"状态感知预算参与者"（固定槽位 600）。
+        /// 它在协调器构造时先建、依赖在预算权威建好后回填（与机会绑定参与者同一装配模式）；
+        /// 回填之前不存在任何终态请求，因此不存在"漏清理"的中间态。
+        /// </summary>
+        private readonly BudgetAndAdrenalineCleanupParticipant _budgetParticipant =
+            new BudgetAndAdrenalineCleanupParticipant();
+
+        /// <summary>任务 07：本场局外资源（并发能力费用从这里原子消费；初始值来自运行时输入）。</summary>
+        private int _metaResource;
+
+        /// <summary>任务 07：战斗结束 Finalizer 实际清空的窗口预算预留总额（诊断与报告）。</summary>
+        private long _windowBudgetClearedAtBattleEnd;
 
         /// <summary>整场唯一的效果推进器（任务 04；后续任务必须复用，不得另建第二套）。</summary>
         private readonly BuffSystem _buffSystem;
@@ -358,9 +392,110 @@ namespace ProjectHero.Logic.Simulation
                 _opportunityBindingParticipant,
                 // 任务 06 的移动段/Reservation 清理参与者：插在任务 05 冻结的固定位置
                 // （MovementAndReservation = 500），不新建第二条清理路径。
-                _movementAuthority
+                _movementAuthority,
+                // 任务 07 的状态感知预算参与者：固定槽位 BudgetAndAdrenaline = 600，
+                // 在空间清理之后按"计划当前状态"结算 Reserved/Spent，绝不重开窗口或退款。
+                _budgetParticipant
             });
-            _startCommitPort = assembly.StartCommitPort ?? NoTurnBudgetCommitPort.Instance;
+
+            // —— 任务 07：唯一窗口管理器 + 唯一预算账本 + 独立肾上腺素账本 + 并发授权 ——
+            //
+            // 窗口管理器只持有"提交权限与整数 Tick 预算"；它不持有任何计划、Intent 或 Reservation。
+            // 窗口 ID 的唯一分配器仍是任务 03 契约的 LogicIdGenerator（不建第二份计数状态）。
+            //
+            // 创建顺序（无环，且不依赖"稍后回填"）：
+            //   ① 肾上腺素账本集合（窗口打开时要递增个人周期并清零 Available）；
+            //   ② 窗口管理器（它的关闭回调以闭包读字段，因此并发系统可以稍后赋值）；
+            //   ③ 并发授权系统（需要窗口管理器做控制权与当前窗口判定）；
+            //   ④ 预算权威（账本唯一写入通道 + 启动门禁的原子提交端口）与终态清理参与者。
+            _metaResource = runtimeInputs.InitialMetaResource;
+            _adrenaline = new AdrenalineLedgerRegistry(definition.AdrenalineRules)
+            {
+                ChangedSink = change =>
+                {
+                    SyncUnitAdrenalineMirror(change.UnitId);
+                    long reservationPlanId = change.ReservationPlanId.HasValue
+                        ? change.ReservationPlanId.Value.Value
+                        : 0L;
+                    _outbox.Emit(sequence => new AdrenalineLedgerChangedEvent(
+                        _tick, sequence, change.UnitId, change.CycleId, change.ChangeKind,
+                        change.AvailableBefore, change.AvailableAfter,
+                        reservationPlanId, change.ReservationAmount));
+                }
+            };
+
+            _windowManager = new TurnWindowManager(
+                new SimulationTurnWindowWorld(
+                    unitId => _unitsById.TryGetValue(unitId.Value, out UnitRuntimeState state) && state.IsAlive,
+                    () => _battleEnd.IsEnded),
+                _idGenerator.NextWindowId)
+            {
+                WindowOpenedSink = (window, openedTick) =>
+                {
+                    WindowId windowId = window.WindowId;
+                    UnitId ownerId = window.OwnerUnitId;
+                    int budget = window.TotalBudgetTicks;
+                    _outbox.Emit(sequence => new TurnWindowOpenedEvent(openedTick, sequence, windowId, ownerId, budget));
+                },
+                WindowClosedSink = (window, reason, closedTick) =>
+                {
+                    WindowId windowId = window.WindowId;
+                    UnitId ownerId = window.OwnerUnitId;
+                    _outbox.Emit(sequence => new TurnWindowClosedEvent(closedTick, sequence, windowId, ownerId, reason));
+                },
+                OwnerCycleResetSink = (unitId, tick) => _adrenaline.BeginOwnWindow(unitId),
+                WindowClosedAuthoritySink = (windowId, tick) => _concurrentAction?.RevokeForWindow(windowId)
+            };
+
+            _concurrentAction = new ConcurrentActionSystem(definition.ConcurrentAction, _windowManager)
+            {
+                // 只有"主角"能购买并发行动；装配未显式指定时保持 null ⇒ 激活 fail-closed
+                // （稳定拒绝 WINDOW_CONCURRENT_INVALID_ACTOR，绝不按 Controller/玩家标志猜主角）。
+                HeroUnitId = assembly.ConcurrentHeroUnitId,
+                ActivatedSink = (windowId, playerUnitId, ownerUnitId) =>
+                    _outbox.Emit(sequence => new ConcurrentActionActivatedEvent(
+                        _tick, sequence, windowId, playerUnitId, ownerUnitId)),
+                DeactivatedSink = (windowId, playerUnitId) =>
+                    _outbox.Emit(sequence => new ConcurrentActionDeactivatedEvent(_tick, sequence, windowId, playerUnitId))
+            };
+            _concurrentAction.BindMetaResource(() => _metaResource, value => _metaResource = value);
+
+            // 预算权威 = 账本的唯一写入通道 + 启动门禁的原子提交端口（Reserved -> Spent）。
+            // 装配显式注入的端口优先（任务 05 的既有测试夹具），否则用本任务的真实实现。
+            _budgetAuthority = new TurnWindowBudgetAuthority(_windowManager, _concurrentAction);
+            _budgetAuthority.ChangedSink = change => _outbox.Emit(sequence => new TurnBudgetChangedEvent(
+                _tick, sequence, change.WindowId, change.OwnerUnitId,
+                change.ActionPlanId.HasValue ? change.ActionPlanId.Value.Value : 0L,
+                change.ChangeKind, change.Source,
+                change.AvailableBefore, change.AvailableAfter,
+                change.ReservedBefore, change.ReservedAfter,
+                change.SpentBefore, change.SpentAfter));
+            _startCommitPort = assembly.StartCommitPort ?? (IActionPlanStartCommitPort)_budgetAuthority;
+
+            // 统一终态协调器的"状态感知预算参与者"（固定槽位 600）：Editable 释放未消费预留，
+            // Locked/Running 保持 Spent；它不重开窗口、不转移额度、不前移后续计划。
+            _budgetParticipant.Bind(_budgetAuthority, _windowManager, _adrenaline);
+
+            // 控制权注册：唯一来源是已验证定义里的 ControllerBinding（与阵营/胜负/目标资格正交）。
+            // 没有这一步，窗口的提交授权与并发激活都会以 WINDOW_ISSUER_CANNOT_CONTROL_UNIT
+            // 拒绝一切带账本效果的显式排程编辑——那是"没接线"，不是"权限模型生效"。
+            foreach (KeyValuePair<ControllerId, IReadOnlyList<UnitId>> controllerBinding in _controllerToUnitIds)
+            {
+                IReadOnlyList<UnitId> controlled = controllerBinding.Value;
+                if (controlled == null) continue;
+                for (int i = 0; i < controlled.Count; i++)
+                    _windowManager.RegisterControllerBinding(controllerBinding.Key, controlled[i]);
+            }
+
+            // 排程事务的预算上下文：显式编辑必须验证 ExpectedWindowId 与提交授权；
+            // 系统自动延期由上下文来源区分（它不要求发行者授权，也不得重开已关闭窗口）。
+            _scheduleEditor.BudgetContextFactory = (source, targetTick, expectedWindowId, issuer) =>
+                new ScheduleBudgetContext(
+                    source,
+                    _budgetAuthority,
+                    expectedWindowId,
+                    _windowManager.CurrentWindow != null ? _windowManager.CurrentWindow.WindowId : (WindowId?)null,
+                    issuer);
             _terminalArchiveSource = new ActionPlanTerminalArchiveSource(_scheduleAuthority, _terminalCoordinator);
             _planCommandProcessor = new ActionPlanCommandProcessor(_scheduleAuthority, _scheduleEditor, assembly.CommandProcessor);
 
@@ -395,7 +530,10 @@ namespace ProjectHero.Logic.Simulation
             {
                 EventSink = sink => _outbox.Emit(sink),
                 PreparationPort = assembly.ReactionPreparationPort,
-                ReservationReleaseSink = assembly.ReactionReservationReleaseSink
+                ReservationReleaseSink = assembly.ReactionReservationReleaseSink,
+                // 任务 07：反应接受把费用从 Available 原子转入带个人周期的计划预留，
+                // TriggerTick 消费、来源威胁取消按周期返还。唯一的肾上腺素权威是 _adrenaline。
+                AdrenalinePort = _adrenaline
             };
             // 任务 06：Dodge 目的格预留端口。装配方注入的实现若同时提供该端口则优先使用，
             // 否则用本任务的真实现（默认装配，绝不静默缺省）。
@@ -418,8 +556,18 @@ namespace ProjectHero.Logic.Simulation
             // 反应命令是阶段 6 的一部分：处理器只把已冻结命令转给系统，绝不重建机会或推导 Tick。
             _planCommandProcessor.ReactionCommandHandler = HandleReactionCommand;
 
+            // 窗口命令（关窗 / 并发行动激活）走同一条冻结命令批处理路径：
+            // 身份来自命令网关绑定的 ControllerId，窗口来自 scope 的 ExpectedWindowId，
+            // 费用只来自权威 ConcurrentActionDefinition（载荷里根本没有这些字段）。
+            _planCommandProcessor.WindowCommandHandler = HandleWindowCommand;
+
             // 已创建事件只在成功提交的排程事务上发射（失败/预览事务不发射）。
-            _planCommandProcessor.CommittedTransactionSink = EmitPlanCreatedEvents;
+            // 同一次成功提交还要把 **Remove 掉的计划**经统一终态协调器收口（见下）。
+            _planCommandProcessor.CommittedTransactionSink = (result, tick) =>
+            {
+                EmitPlanCreatedEvents(result, tick);
+                TerminateRemovedPlans(result, tick);
+            };
 
             // Dodge 终态接缝：只读闭包查询 + 统一终态提交；换位事务端口由任务 06/08 注入。
             // 任务 06 硬前置条件（缺陷 D6）：这里必须复用**排程编辑器持有的同一个求值器实例**，
@@ -451,6 +599,8 @@ namespace ProjectHero.Logic.Simulation
                 unit.StateMachine = new UnitStateMachine(unit.UnitId, _outbox);
                 _units.Add(unit);
                 _unitsById[unit.UnitId.Value] = unit;
+                // 任务 07：每单位一份肾上腺素账本；开局 Available 与个人周期号来自权威初始化快照。
+                _adrenaline.Register(unit.UnitId, initial.AvailableAdrenaline, initial.AdrenalineCycleId);
 
                 // 任务 06：把活单位注册进唯一的 <c>LogicGrid</c>（所有活单位默认按体积参与
                 // Occupancy/Reservation，不因 Allied/Neutral/Hostile、Controller 或玩家标志穿透）。
@@ -467,8 +617,6 @@ namespace ProjectHero.Logic.Simulation
                     throw new LogicDefinitionException(registration,
                         "unit=" + unit.UnitId.Value.ToString(CultureInfo.InvariantCulture));
             }
-
-            _window.Clear();
 
             // 入口注册：外部入口来自已验证定义中的 ControllerBinding；
             // System 入口只有 Logic 内部稳定来源才能创建（优先级 20）。
@@ -585,6 +733,21 @@ namespace ProjectHero.Logic.Simulation
 
         /// <summary>唯一统一终态协调器（第一次请求胜出、幂等、固定清理顺序）。</summary>
         public ActionPlanTerminalCoordinator TerminalCoordinator => _terminalCoordinator;
+
+        /// <summary>
+        /// 任务 07：本场<strong>唯一</strong>的窗口管理器（含已关闭窗口的可审计账本）。
+        ///
+        /// 它是只读观察入口：账本写入全部经 <c>TurnWindowBudgetAuthority</c>，
+        /// 且只允许在 <c>ProjectHero.Logic</c> 内调用。命令生产者<strong>不得</strong>用它
+        /// 自报窗口身份——<c>ExpectedWindowId</c> 仍由命令 scope 声明并逐条校验。
+        /// </summary>
+        public TurnWindowManager WindowManager => _windowManager;
+
+        /// <summary>任务 07：当前窗口（未打开时为 null）；只读观察用。</summary>
+        public TurnWindow CurrentTurnWindow => _windowManager.CurrentWindow;
+
+        /// <summary>任务 07：该单位当前的肾上腺素账本（不存在时为 null）；只读观察用。</summary>
+        public AdrenalineLedger AdrenalineLedgerOf(UnitId unitId) => _adrenaline.Find(unitId);
 
         /// <summary>
         /// 任务 06：本场战斗<strong>唯一</strong>的空间权威（占位、稳定区域查询、规范邻居序列与
@@ -1253,28 +1416,9 @@ namespace ProjectHero.Logic.Simulation
 
         private void OpenDueWindows(long tick)
         {
-            WindowOpenRequest request = _assembly.TurnWindowSchedule.TryOpenDue(tick);
-            if (request == null || _window.IsOpen) return;
-
-            // 拥有者已在前述阶段死亡时按稳定顺序跳过，且不得产生该单位的打开事件。
-            if (!_unitsById.TryGetValue(request.OwnerUnitId.Value, out UnitRuntimeState owner) || !owner.IsAlive)
-                return;
-
-            // 自身窗口打开：先递增个人周期并清零 AvailableAdrenaline（既有预留不取消）。
-            owner.AdrenalineCycleId = owner.AdrenalineCycleId + 1L;
-            owner.AvailableAdrenaline = 0;
-
-            _window.WindowId = _idGenerator.NextWindowId();
-            _window.OwnerUnitId = request.OwnerUnitId;
-            _window.OpenedAtTick = tick;
-            _window.BudgetTicks = request.BudgetTicks;
-            _window.CloseRequested = false;
-            _window.IsOpen = true;
-
-            WindowId windowId = _window.WindowId;
-            int budget = _window.BudgetTicks;
-            UnitId ownerId = _window.OwnerUnitId;
-            _outbox.Emit(sequence => new TurnWindowOpenedEvent(tick, sequence, windowId, ownerId, budget));
+            // 脚本/装配的窗口排程先在**本 Tick** 到期处排定，再由唯一管理器打开。
+            _windowManager.ScheduleDueWindow(tick, _assembly.TurnWindowSchedule);
+            _windowManager.TryOpenDueWindow(tick);
         }
 
         private void RefreshExistingReactionOpportunities(long tick)
@@ -1546,6 +1690,28 @@ namespace ProjectHero.Logic.Simulation
         /// 已创建事件：只对<strong>成功提交</strong>的排程事务新增的计划发射（一次一个）。
         /// 计划对象从权威注册表读取，事件只携带不可变值与稳定 ID。
         /// </summary>
+        /// <summary>
+        /// 任务 07 裁定 A（排程删除的终态收口）：一次成功提交里被 Remove 的普通计划必须经
+        /// <strong>唯一且幂等的终态协调器</strong>结束（00 号规则 19：排程删除是终态之一，
+        /// 且 Step 返回时不得有任何活动产物引用它）。
+        ///
+        /// 分工（裁定：编辑器独占预算释放）：<c>ScheduleEditor</c> 在事务里负责"移出 Lane +
+        /// 释放未消费预留 + 归零计划字段"；本方法只负责把计划对象**置为终态**。
+        /// 600 槽位的预算参与者随后会发现账本里已无该计划的预留，因此幂等空转——
+        /// 不存在第二次释放，也不存在"已删除但仍活动"的中间态。
+        /// </summary>
+        private void TerminateRemovedPlans(ScheduleEditTransactionResult result, long tick)
+        {
+            if (result == null || result.RemovedPlanIds == null || result.RemovedPlanIds.Count == 0) return;
+
+            for (int i = 0; i < result.RemovedPlanIds.Count; i++)
+            {
+                ActionPlan plan = _scheduleAuthority.Registry.Find(result.RemovedPlanIds[i]);
+                if (plan == null || plan.IsTerminal) continue;
+                _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.CancelledByCommand, tick);
+            }
+        }
+
         private void EmitPlanCreatedEvents(ScheduleEditTransactionResult result, long tick)
         {
             if (result == null || result.AddedPlanIds == null) return;
@@ -1569,6 +1735,38 @@ namespace ProjectHero.Logic.Simulation
         /// <item>返回 null = 已接受；否则返回稳定拒绝码（处理器据此发 <c>CommandRejectedEvent</c>）。</item>
         /// </list>
         /// </summary>
+        /// <summary>
+        /// 窗口命令的唯一处理入口（任务 07「必须产出」5）。
+        ///
+        /// 它<strong>不</strong>解析任何自报身份或费用：发行者来自 <see cref="CommandEnvelope.ControllerId"/>，
+        /// 目标窗口来自 <see cref="WindowCommandScope.ExpectedWindowId"/>，
+        /// 并发能力费用只来自权威 <c>ConcurrentActionDefinition</c>。
+        /// 返回非 null = 稳定拒绝码（本命令零副作用，同批其他命令不受影响）。
+        /// </summary>
+        private string HandleWindowCommand(CommandEnvelope envelope, long tick)
+        {
+            if (envelope == null) return Commands.CommandCodes.COMMAND_REQUEST_NULL;
+            if (!(envelope.Request.Payload is WindowCommandPayload payload))
+                return Commands.CommandCodes.SCOPE_PAYLOAD_MISMATCH;
+            if (!(envelope.Request.Scope is WindowCommandScope scope))
+                return Commands.CommandCodes.SCOPE_PAYLOAD_MISMATCH;
+
+            switch (payload.WindowKind)
+            {
+                case WindowCommandKind.CloseOwnWindow:
+                    return _windowManager.TryRequestCloseForIssuer(envelope.ControllerId, scope.ExpectedWindowId);
+
+                case WindowCommandKind.ActivateConcurrentAction:
+                    if (!_concurrentAction.HeroUnitId.HasValue)
+                        return TurnWindowCodes.INVALID_CONCURRENT_ACTOR;
+                    return _concurrentAction.TryActivate(
+                        envelope.ControllerId, _concurrentAction.HeroUnitId.Value, scope.ExpectedWindowId);
+
+                default:
+                    return Commands.CommandCodes.SCOPE_PAYLOAD_MISMATCH;
+            }
+        }
+
         private string HandleReactionCommand(CommandEnvelope envelope, long tick)
         {
             if (envelope?.Request == null) return CommandCodes.COMMAND_REQUEST_NULL;
@@ -1849,22 +2047,50 @@ namespace ProjectHero.Logic.Simulation
         {
             // 阶段 14 只能读取批量换位<em>之后</em>的最终位置。
             _assembly.ResolutionCommit.CommitStateControlAndRemainingTerminalsOrdered(tick, BuildUnitSnapshots());
+
+            // 任务 07：肾上腺素 Available 的唯一入账入口。它只接受任务 08 在全部 Resolution
+            // 提交后提供的规范聚合事实（每单位每 Tick 至多一条、按 UnitId 严格升序）；
+            // 其他系统一律不得逐接触直接加 Available（不变量 27）。
+            IAdrenalineAccrualFactSource accrualSource = _assembly.AdrenalineAccrualFactSource;
+            if (accrualSource != null)
+                _adrenaline.ApplyTickEndAccrual(accrualSource.BuildAccrualFactsOrdered(tick));
+        }
+
+        /// <summary>
+        /// 把账本事实同步到单位的只读镜像字段（<c>AvailableAdrenaline</c> / <c>AdrenalineCycleId</c>）。
+        ///
+        /// 唯一权威是 <see cref="AdrenalineLedgerRegistry"/>；镜像只服务单位快照与既有只读消费者。
+        /// 任何系统都<strong>不得</strong>反过来通过镜像字段修改账本。
+        /// </summary>
+        private void SyncUnitAdrenalineMirror(UnitId unitId)
+        {
+            if (!_unitsById.TryGetValue(unitId.Value, out UnitRuntimeState unit)) return;
+            AdrenalineLedger ledger = _adrenaline.Find(unitId);
+            if (ledger == null) return;
+            unit.AvailableAdrenaline = ledger.AvailableAdrenaline;
+            unit.AdrenalineCycleId = ledger.CycleId;
         }
 
         private void CloseRequestedWindowAndScheduleNext(long tick)
         {
-            if (!_window.IsOpen) return;
-            if (!_assembly.TurnWindowSchedule.ShouldCloseCurrentWindow(tick)) return;
-            CloseWindow(tick, TurnWindowCloseReason.OwnerRequested);
+            // 脚本窗口可以在任意 Tick 请求关闭当前窗口；请求与正式关闭分离：
+            // 请求立即停止接受提交（本 Tick 后续命令稳定拒绝），正式关闭在本阶段完成。
+            if (_assembly.TurnWindowSchedule.ShouldCloseCurrentWindow(tick))
+                _windowManager.CurrentWindow?.RequestClose(TurnWindowCloseReason.OwnerRequested);
+
+            _windowManager.FinalizeRequestedClose(tick);
         }
 
+        /// <summary>
+        /// 关闭当前窗口（唯一实现）。它只撤销属于该窗口的并发授权、翻转窗口位并发射关闭事件；
+        /// <strong>不</strong>查询、取消、移动或结算任何 <c>ActionPlan</c>，也不清零肾上腺素。
+        /// </summary>
         private void CloseWindow(long tick, TurnWindowCloseReason reason)
         {
-            if (!_window.IsOpen) return;
-            WindowId windowId = _window.WindowId;
-            UnitId ownerId = _window.OwnerUnitId;
-            _window.Clear();
-            _outbox.Emit(sequence => new TurnWindowClosedEvent(tick, sequence, windowId, ownerId, reason));
+            TurnWindow window = _windowManager.CurrentWindow;
+            if (window == null) return;
+            window.RequestClose(reason);
+            _windowManager.FinalizeRequestedClose(tick);
         }
 
         private void DeliverDecisionSnapshot(long tick)
@@ -1891,12 +2117,20 @@ namespace ProjectHero.Logic.Simulation
             int clearedFacts = CountFutureTickBucketFacts();
             _ingress.MarkBattleEnded();
 
-            bool closedWindow = false;
-            if (_window.IsOpen)
-            {
-                CloseWindow(tick, TurnWindowCloseReason.BattleEnded);
-                closedWindow = true;
-            }
+            bool closedWindow = _windowManager.CurrentWindow != null;
+            _windowManager.CloseAllForBattleEnd(tick);
+
+            // 未消费的窗口预算预留随战斗结束清空：保留已消费的 Spent（不退款），
+            // 逐窗口发射 BattleEndCleared（含 WindowId 与 Available/Reserved/Spent 前后值）。
+            _windowBudgetClearedAtBattleEnd = _budgetAuthority.ClearReservationsForBattleEnd(tick);
+
+            // 并发提交授权随窗口关闭一并撤销；它不取消任何计划。
+            _concurrentAction.RevokeAll();
+
+            // 肾上腺素：清空 Available 与全部预留，不产生可继续使用的退款额度，
+            // 也不排定下一窗口（最后一条 AdrenalineLedgerChangedEvent 之后才发 BattleEndedEvent）。
+            _adrenaline.ClearForBattleEnd();
+            for (int i = 0; i < _units.Count; i++) SyncUnitAdrenalineMirror(_units[i].UnitId);
 
             // 任务 05：战斗结束复用<strong>同一个</strong>统一终态协调器，
             // 按 UnitId -> ActionPlanId 锁定全部 Lane 并终止全部非终态计划。
@@ -2130,15 +2364,54 @@ namespace ProjectHero.Logic.Simulation
             return snapshots;
         }
 
+        private static TurnWindowSnapshot ToWindowSnapshot(TurnWindow window)
+        {
+            IReadOnlyList<TurnWindowReservation> reservations = window.Reservations;
+            var projected = new List<TurnWindowReservationSnapshot>(reservations.Count);
+            for (int i = 0; i < reservations.Count; i++)
+            {
+                projected.Add(new TurnWindowReservationSnapshot(
+                    reservations[i].ActionPlanId.Value, reservations[i].ReservedTicks));
+            }
+            return new TurnWindowSnapshot(
+                window.WindowId.Value,
+                window.OwnerUnitId.Value,
+                window.OpenedAtTick,
+                window.TotalBudgetTicks,
+                window.ReservedBudgetTicks,
+                window.SpentBudgetTicks,
+                window.AvailableBudgetTicks,
+                window.IsOpen,
+                window.IsAcceptingSubmissions,
+                (int)(window.CloseReason ?? TurnWindowCloseReason.OwnerRequested),
+                projected);
+        }
+
         private LogicSnapshot BuildSnapshot(long tick)
         {
-            var windows = new List<TurnWindowSnapshot>(1);
-            if (_window.IsOpen)
+            var windows = new List<TurnWindowSnapshot>();
+            if (_windowManager.CurrentWindow != null)
+                windows.Add(ToWindowSnapshot(_windowManager.CurrentWindow));
+            for (int i = 0; i < _windowManager.ClosedWindows.Count; i++)
+                windows.Add(ToWindowSnapshot(_windowManager.ClosedWindows[i]));
+            windows.Sort((a, b) => a.WindowId.CompareTo(b.WindowId));
+
+            long total = 0L;
+            long reserved = 0L;
+            long spent = 0L;
+            for (int i = 0; i < windows.Count; i++)
             {
-                windows.Add(new TurnWindowSnapshot(
-                    _window.WindowId.Value, _window.OwnerUnitId.Value, _window.OpenedAtTick,
-                    _window.BudgetTicks, _window.CloseRequested));
+                total += windows[i].TotalBudgetTicks;
+                reserved += windows[i].ReservedBudgetTicks;
+                spent += windows[i].SpentBudgetTicks;
             }
+
+            var windowManager = new TurnWindowManagerSnapshot(
+                _windowManager.CurrentWindow != null ? _windowManager.CurrentWindow.WindowId.Value : 0L,
+                _windowManager.NextWindowTick,
+                _windowManager.NextWindowOrdinal,
+                _windowManager.LastClosedWindowId,
+                windows);
 
             return new LogicSnapshot(
                 tick,
@@ -2148,9 +2421,11 @@ namespace ProjectHero.Logic.Simulation
                 _battleEnd,
                 BuildUnitSnapshots(),
                 BuildEffectSnapshots(),
-                new TurnWindowManagerSnapshot(_window.IsOpen ? _window.WindowId.Value : 0L, -1L, windows),
-                ConcurrentActionSnapshot.None(),
-                BattleResourceSnapshot.None(_runtimeInputs.InitialMetaResource),
+                windowManager,
+                _concurrentAction.BuildSnapshot(),
+                new BattleResourceSnapshot(
+                    _metaResource, total - reserved - spent, reserved, spent,
+                    _adrenaline.BuildSnapshots()),
                 _scheduleRevision,
                 BuildActionPlanSnapshots(),
                 _reactionSystem.BuildSnapshots(),

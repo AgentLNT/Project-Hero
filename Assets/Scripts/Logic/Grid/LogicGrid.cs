@@ -53,7 +53,17 @@ namespace ProjectHero.Logic.Grid
         private readonly Dictionary<TrianglePoint, long> _triangleOwner = new Dictionary<TrianglePoint, long>();
 
         private readonly Dictionary<ReservationKey, Reservation> _reservations = new Dictionary<ReservationKey, Reservation>();
-        private readonly Dictionary<GridPoint, ReservationKey> _reservationOwner = new Dictionary<GridPoint, ReservationKey>();
+
+        /// <summary>
+        /// 每格的预留持有者（任务 07 裁定 B：<strong>一格可以有多条互不重叠的同单位预留</strong>）。
+        ///
+        /// 只有 <see cref="TryReserve"/> 的"同一单位 + 时间窗互不重叠"判据会往这里放第二条；
+        /// 其余一切冲突仍然拒绝。所有"该格有没有被占"的只读查询都经
+        /// <see cref="TryGetCanonicalHolder"/> 取规范持有者，因此一格一条预留的既有形状
+        /// （06 冻结的全部形状）读法与冻结版本逐字相同。
+        /// </summary>
+        private readonly Dictionary<GridPoint, List<ReservationKey>> _reservationHolders =
+            new Dictionary<GridPoint, List<ReservationKey>>();
 
         public LogicGrid(GridBoundaryDefinition boundary)
         {
@@ -358,8 +368,17 @@ namespace ProjectHero.Logic.Grid
 
         /// <summary>
         /// 尝试为 <paramref name="reservation"/> 取得目标格。
-        /// 成功返回 null；被其他计划的 Reservation 占用时返回
-        /// <see cref="LogicGridCodes.LOGIC_GRID_RESERVED_BY_OTHER"/>（<strong>不</strong>抢占）。
+        ///
+        /// <strong>占用判定（任务 07 裁定 B 的唯一放宽）</strong>：同格的每条既有预留都逐条与
+        /// 新预留比较，只有<strong>同一单位</strong>且<strong>时间窗互不重叠</strong>
+        /// （<c>existing.EndTick &lt;= candidate.StartTick</c> 或反向）时才允许<strong>共存</strong>；
+        /// 其余任何情形（其他单位的一切预留、同单位但时间窗重叠、甚至完全相同的区间）
+        /// 一律返回 <see cref="LogicGridCodes.LOGIC_GRID_RESERVED_BY_OTHER"/>
+        /// 且<strong>不</strong>抢占。因此"先成功提交者持有、后者稳定拒绝"这条 06 冻结仲裁在
+        /// 同一时间窗内逐字不变，静止单位/他人的占位也照旧阻挡。
+        ///
+        /// 只有一个单位<strong>稍后重新经过自己先前的格</strong>（回程链）时才需要共存：
+        /// 单位的先后两段占用时间窗天然有界而不相交，空间上并不冲突。
         /// </summary>
         public string TryReserve(Reservation reservation)
         {
@@ -369,27 +388,79 @@ namespace ProjectHero.Logic.Grid
             if (_reservations.ContainsKey(reservation.Key))
                 return LogicGridCodes.LOGIC_GRID_RESERVATION_DUPLICATE_KEY;
 
-            if (_reservationOwner.TryGetValue(reservation.Cell, out ReservationKey holder))
+            if (_reservationHolders.TryGetValue(reservation.Cell, out List<ReservationKey> holders))
             {
-                if (!holder.Equals(reservation.Key))
+                for (int i = 0; i < holders.Count; i++)
+                {
+                    ReservationKey holder = holders[i];
+                    if (holder.Equals(reservation.Key)) continue;
+                    if (CanCoexistTimeDisjointSameUnit(_reservations[holder], reservation)) continue;
                     return LogicGridCodes.LOGIC_GRID_RESERVED_BY_OTHER;
+                }
+            }
+            else
+            {
+                holders = new List<ReservationKey>(1);
+                _reservationHolders[reservation.Cell] = holders;
             }
 
             _reservations[reservation.Key] = reservation;
-            _reservationOwner[reservation.Cell] = reservation.Key;
+            holders.Add(reservation.Key);
             return null;
         }
+
+        /// <summary>
+        /// 同格共存的<strong>唯一</strong>判据：同一单位 + 时间窗互不重叠（半开区间）。
+        /// 判据只依赖 <see cref="Reservation"/> 自带的两端，不依赖 Tick 之外的任何状态。
+        /// </summary>
+        private static bool CanCoexistTimeDisjointSameUnit(Reservation existing, Reservation candidate)
+        {
+            if (existing.UnitId.Value != candidate.UnitId.Value) return false;
+            return existing.EndTick <= candidate.StartTick || candidate.EndTick <= existing.StartTick;
+        }
+
+        /// <summary>
+        /// 该格的<strong>规范持有者</strong>（用于所有"该格有没有被占"的只读查询）：
+        /// 取释放边界最晚的一条，平局时按 <see cref="Reservation.CompareCanonical"/>。
+        ///
+        /// 取"最晚释放"是刻意的保守选择：门禁的 <c>RetryableTimedBlock</c> 提示的释放 Tick 因此
+        /// 绝不会早于该格真正空出来的时刻。一格只有一条预留时（既有全部形状）它就是那条。
+        /// </summary>
+        private bool TryGetCanonicalHolder(GridPoint cell, out ReservationKey key)
+        {
+            if (!_reservationHolders.TryGetValue(cell, out List<ReservationKey> holders) || holders.Count == 0)
+            {
+                key = default;
+                return false;
+            }
+
+            int best = 0;
+            for (int i = 1; i < holders.Count; i++)
+            {
+                Reservation current = _reservations[holders[i]];
+                Reservation chosen = _reservations[holders[best]];
+                if (current.EndTick > chosen.EndTick) { best = i; continue; }
+                if (current.EndTick == chosen.EndTick &&
+                    Reservation.CompareCanonical(current, chosen) < 0) best = i;
+            }
+            key = holders[best];
+            return true;
+        }
+
+        /// <summary>该键是否确实是 <paramref name="cell"/> 的持有者之一（多持有者时含非规范持有者）。</summary>
+        private bool IsReservationHolderOf(GridPoint cell, ReservationKey key)
+            => _reservationHolders.TryGetValue(cell, out List<ReservationKey> holders) && holders.Contains(key);
 
         public bool TryGetReservation(ReservationKey key, out Reservation reservation)
             => _reservations.TryGetValue(key, out reservation);
 
-        /// <summary>该格的 Reservation 持有者（无则 false）。</summary>
+        /// <summary>该格的 Reservation 持有者（无则 false；多持有者时取规范持有者）。</summary>
         public bool TryGetReservationKey(GridPoint cell, out ReservationKey key)
-            => _reservationOwner.TryGetValue(cell, out key);
+            => TryGetCanonicalHolder(cell, out key);
 
-        /// <summary>该格的 Reservation（无则 null）。</summary>
+        /// <summary>该格的 Reservation（无则 null；多持有者时取规范持有者）。</summary>
         public Reservation ReservationAt(GridPoint cell)
-            => _reservationOwner.TryGetValue(cell, out ReservationKey key) ? _reservations[key] : null;
+            => TryGetCanonicalHolder(cell, out ReservationKey key) ? _reservations[key] : null;
 
         /// <summary>某计划持有的全部 Reservation（按稳定空间键 <c>(StartTick, X, Y, PlanId, StepIndex)</c> 升序）。</summary>
         public IReadOnlyList<Reservation> ReservationsOfPlanOrdered(ActionPlanId actionPlanId)
@@ -412,13 +483,19 @@ namespace ProjectHero.Logic.Grid
             return result;
         }
 
-        /// <summary>释放单个预留键。</summary>
+        /// <summary>
+        /// 释放单个预留键。释放顺序与"该格是否仍被占"的读法无关：只要该格还剩任何持有者，
+        /// <see cref="ReservationAt"/> / <see cref="TryGetReservationKey"/> 就仍然给出规范持有者。
+        /// </summary>
         public bool ReleaseReservation(ReservationKey key)
         {
             if (!_reservations.TryGetValue(key, out Reservation reservation)) return false;
             _reservations.Remove(key);
-            if (_reservationOwner.TryGetValue(reservation.Cell, out ReservationKey holder) && holder.Equals(key))
-                _reservationOwner.Remove(reservation.Cell);
+            if (_reservationHolders.TryGetValue(reservation.Cell, out List<ReservationKey> holders))
+            {
+                holders.RemoveAll(candidate => candidate.Equals(key));
+                if (holders.Count == 0) _reservationHolders.Remove(reservation.Cell);
+            }
             return true;
         }
 
@@ -615,7 +692,7 @@ namespace ProjectHero.Logic.Grid
                 detail = "occupancy-release@unit=" + cellOwner.ToString(CultureInfo.InvariantCulture);
             }
 
-            if (_reservationOwner.TryGetValue(destination, out ReservationKey key))
+            if (TryGetCanonicalHolder(destination, out ReservationKey key))
             {
                 Reservation reservation = _reservations[key];
                 if (reservation.UnitId.Value != unitId.Value)
@@ -684,8 +761,12 @@ namespace ProjectHero.Logic.Grid
             }
             foreach (KeyValuePair<ReservationKey, Reservation> pair in _reservations)
             {
-                if (!_reservationOwner.TryGetValue(pair.Value.Cell, out ReservationKey holder) || !holder.Equals(pair.Key))
-                    return LogicGridCodes.LOGIC_GRID_OWNERSHIP_CONTRADICTION + ":reservation=" + pair.Key;
+                if (TryGetCanonicalHolder(pair.Value.Cell, out ReservationKey holder) && holder.Equals(pair.Key))
+                    continue;
+                // 任务 07 裁定 B：同一单位在一格上以**互不重叠**的时间窗持有两条预留是合法形状
+                // （见 TryReserve 的共存判据），但它必须仍有明确归属。
+                if (IsReservationHolderOf(pair.Value.Cell, pair.Key)) continue;
+                return LogicGridCodes.LOGIC_GRID_OWNERSHIP_CONTRADICTION + ":reservation=" + pair.Key;
             }
             return null;
         }
@@ -774,12 +855,15 @@ namespace ProjectHero.Logic.Grid
                 }
 
                 // —— 6. 待抢占 Reservation 必须已清理 ——
+                // 多持有者时逐条判定（"任何一条仍属于别的计划"就不得提交），
+                // 一格一条的既有形状下与冻结版本逐字等价。
                 for (int c = 0; c < cells.Count; c++)
                 {
-                    if (_reservationOwner.TryGetValue(cells[c], out ReservationKey holder) &&
-                        holder.ActionPlanId.Value != row.UnitId.Value)
+                    if (!_reservationHolders.TryGetValue(cells[c], out List<ReservationKey> holders)) continue;
+                    for (int h = 0; h < holders.Count; h++)
                     {
-                        return LogicGridCodes.LOGIC_GRID_BATCH_RESERVATION_NOT_CLEARED + ":cell=" + cells[c];
+                        if (holders[h].ActionPlanId.Value != row.UnitId.Value)
+                            return LogicGridCodes.LOGIC_GRID_BATCH_RESERVATION_NOT_CLEARED + ":cell=" + cells[c];
                     }
                 }
 

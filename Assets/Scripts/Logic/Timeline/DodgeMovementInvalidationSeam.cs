@@ -127,6 +127,27 @@ namespace ProjectHero.Logic.Timeline
         public bool HasTransaction => _transaction != null;
 
         /// <summary>
+        /// <strong>裁定 A 的统一容忍判据</strong>：Dodge 的固定反应区间可以覆盖"它自己在 TriggerTick
+        /// 会失效掉的后续 Editable 移动族"。
+        ///
+        /// 判据与 <see cref="QueryInvalidatedMoves(ActionPlan)"/> 的闭包过滤器<strong>逐字一致</strong>
+        /// （<c>IsEditable</c> + <c>IsMovementFamily</c>，对应
+        /// <c>QueryPositionDependencyClosure(..., movementOnly: true)</c>），并额外要求该计划是
+        /// <strong>后续</strong>的（起点不早于本区间起点）。
+        ///
+        /// 两处 Lane 检查（<c>ReactionOpportunitySystem</c> 的接受预检与 <c>ReactionPlanner</c> 的复核）
+        /// <strong>必须共用本判据</strong>——判据一旦分叉，就会出现"预检放行、复核拒绝"或
+        /// "容忍了一个不会被清理的 Move"这两类不一致。
+        /// Block 不换位 ⇒ 一律不容忍。
+        /// </summary>
+        public static bool DodgeMayInvalidate(ActionPlan overlapping, ActionType reactionType, long intervalStart)
+            => reactionType == ActionType.Dodge
+               && overlapping != null
+               && overlapping.IsEditable
+               && overlapping.IsMovementFamily
+               && overlapping.StartTick >= intervalStart;
+
+        /// <summary>
         /// <strong>只读</strong>查询：实际 From 变化会失效的后续 Editable 移动（含传递闭包，
         /// 跨过非移动计划；按 <c>ActionPlanId</c> 升序）。它不写任何状态、不改修订号。
         /// </summary>

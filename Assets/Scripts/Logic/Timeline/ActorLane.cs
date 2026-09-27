@@ -246,6 +246,33 @@ namespace ProjectHero.Logic.Timeline
         }
 
         /// <summary>
+        /// 与 <see cref="TryFindOverlap"/> 同一重叠判据（半开区间、相邻不算、Editable 与障碍一律占位），
+        /// 但允许调用方声明<strong>哪些重叠是可容忍的</strong>（<paramref name="tolerated"/> 为 true 表示该计划
+        /// 的重叠不构成本次拒绝）。
+        ///
+        /// 用途（任务 07 裁定 A）：Dodge 的固定反应区间可以覆盖"它自己会在 TriggerTick 失效掉的
+        /// 后续 Editable 移动族"，因为那正是设计内的机制而不是冲突；除该判据之外的一切重叠
+        /// （Locked/Running、非移动族、非后续）仍然是硬冲突。
+        /// </summary>
+        public bool TryFindOverlapExcept(
+            long startTick, long lengthTicks, ActionPlanId? ignore,
+            Func<ActionPlan, bool> tolerated, out ActionPlan conflict)
+        {
+            long endTick = startTick + (lengthTicks < 0L ? 0L : lengthTicks);
+            for (int i = 0; i < _plans.Count; i++)
+            {
+                ActionPlan plan = _plans[i];
+                if (ignore.HasValue && plan.ActionPlanId == ignore.Value) continue;
+                if (plan.StartTick >= endTick || startTick >= plan.EndTick) continue;
+                if (tolerated != null && tolerated(plan)) continue;
+                conflict = plan;
+                return true;
+            }
+            conflict = null;
+            return false;
+        }
+
+        /// <summary>
         /// 求"从 <paramref name="desiredStartTick"/> 起、长度为
         /// <paramref name="lengthTicks"/> 的最早无重叠起点"。
         ///

@@ -9,12 +9,15 @@ using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Determinism;
+using ProjectHero.Logic.Encounter;
 using ProjectHero.Logic.Events;
 using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Resources;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Timeline;
+using ProjectHero.Logic.Turns;
 using ProjectHero.Logic.Units;
 
 // 别名：同名前缀的命名空间 ProjectHero.Authoring.Tests.Task03 会让裸写 `Task03.HeroUnitId`
@@ -43,6 +46,31 @@ namespace ProjectHero.Authoring.Tests.Task05
     /// <c>action.quick_slash.radius_1</c> 的 <c>BaseWindupTicks = 30</c>、<c>RecoveryTicks = 30</c>
     /// ⇒ 解析后前摇 60、<c>ImpactTick = Start + 60</c>、<c>EndTick = Start + 90</c>、
     /// <c>BudgetCostTicks = 90</c>。
+    ///
+    /// <para><strong>§装配说明（任务 07 生效后新增，2026-09 修订）</strong></para>
+    ///
+    /// 任务 07 把"新增/增加预算必须有仍接受提交的当前窗口、且命令必须声明它"
+    /// （00 号规则 18）接进了唯一排程事务：Add 现在必须能解析到
+    /// <strong>当前窗口</strong>（<c>WINDOW_NO_OPEN_WINDOW</c> /
+    /// <c>WINDOW_BUDGET_SOURCE_CLOSED_OR_MISMATCH</c> / <c>WINDOW_STALE_OR_CLOSED</c> /
+    /// <c>WINDOW_INSUFFICIENT_BUDGET</c> / <c>WINDOW_ISSUER_CANNOT_CONTROL_UNIT</c>
+    /// 任一不满足即<strong>整批拒绝、零局部写入</strong>）。
+    /// 本文件原本的 <c>ScheduleEditScope(revision, null)</c> + 无窗口装配因此不再合规：
+    /// 25 个用例在第一个 Add 上被整批拒绝（"没有计划 ⇒ 没有 Lane"），
+    /// 第 26 个（<c>SubmittedWindowIdDoesNotFilterPlanExecution</c>）不经事务，见其文档说明。
+    ///
+    /// 现在的装配（<see cref="NewSim"/> / <see cref="NewOutsiderSim"/>）做两件事：
+    /// <list type="number">
+    /// <item>按已验证定义的 <c>ControllerBinding</c> 登记控制权
+    /// （它是 <c>CanControl</c> 的唯一判据，也是提交授权判定的第一步）；</item>
+    /// <item>在 Tick 0 打开一个属于<strong>计划拥有者</strong>的脚本窗口（预算 1000、整场不关闭），
+    /// 并由 <c>Schedule(...)</c> 把<strong>真实的</strong> <c>CurrentTurnWindow.WindowId</c>
+    /// 写进命令 scope。</item>
+    /// </list>
+    ///
+    /// 因此本文件测的仍然是它原本要测的东西（排程事务、启动门禁、终态清理、自动延期、
+    /// 反应机会接线），而不是窗口系统本身；窗口只是这些用例重新变得<strong>合规</strong>的前提。
+    /// 唯一例外的用例见 <c>SubmittedWindowIdDoesNotFilterPlanExecution</c>（附新契约说明）。
     /// </summary>
     [TestFixture]
     public sealed class Task05SimulationWiringTests
@@ -63,13 +91,147 @@ namespace ProjectHero.Authoring.Tests.Task05
         // 夹具
         // ————————————————————————————————————————————————————————————
 
-        private static BattleSimulation NewSim(BattleSimulationAssembly assembly = null)
-            => T03.NewSim(assembly);
+        /// <summary>
+        /// 脚本窗口的预算（整数 Tick）。本文件任何用例同时预留的总量不超过 3 × 90 = 270
+        /// （解析后的攻击 <c>BudgetCostTicks = 90</c>），因此 1000 保证"预算不足"永远不是失败原因。
+        /// </summary>
+        private const int ScriptWindowBudget = 1000;
 
+        /// <summary>
+        /// 最近一次 <see cref="NewSim"/> / <see cref="NewOutsiderSim"/> 装配的模拟。
+        ///
+        /// 为什么是夹具静态字段而不是给 <c>Schedule(...)</c> 加一个 <c>sim</c> 参数：
+        /// 26 个提交点只关心"目标 Tick / 修订号 / 操作"，逐个传 sim 只会制造噪声与误传风险；
+        /// NUnit 在同一夹具内串行执行用例（本文件没有 Parallelizable），且每个用例恰好装配一场模拟。
+        /// </summary>
+        private static BattleSimulation _fixtureSim;
+
+        /// <summary>
+        /// 本文件统一的<strong>合规装配</strong>（任务 07「必须产出」4 与 00 号规则 18）：
+        /// <list type="number">
+        /// <item>把已验证定义里的 <c>ControllerBinding</c> 登记进唯一窗口管理器
+        /// （<c>TurnWindowManager.CanControl</c> 是提交授权的唯一判据）；</item>
+        /// <item>在 Tick 0 打开一个属于计划拥有者的脚本窗口（预算 <see cref="ScriptWindowBudget"/>、
+        /// 整场不关闭），使"新增/增加预算"恒有<strong>仍接受提交的当前窗口</strong>——
+        /// 这正是任务 07 的排程事务对 Add 的硬前置条件。</item>
+        /// </list>
+        /// 窗口本身<strong>不</strong>是本文件的被测对象（窗口系统的证据在 <c>Task07*</c> 系列）；
+        /// 它只是让本文件重新测回原本的意图：排程事务 / 启动门禁 / 终态清理 / 自动延期 / 反应机会。
+        /// </summary>
+        private static BattleSimulation NewSim(BattleSimulationAssembly assembly = null)
+        {
+            BattleSimulation sim = T03.NewSim(assembly);
+            _fixtureSim = sim;
+            RegisterDefinitionControllerBindings(sim, T03.Encounter);
+            OpenScriptWindow(sim, T03.HeroUnitId);
+            return sim;
+        }
+
+        /// <summary>
+        /// 目标外阵营变体（Task04）的同一套合规装配。
+        ///
+        /// 变体定义<strong>故意</strong>不给第三槽位任何 <c>ControllerBinding</c>
+        /// （"目标外单位不被任何外部入口控制"是 Task04 的显式契约），
+        /// 但本文件唯一使用它的用例需要一个"经玩家入口提交、且死亡不结束战斗"的计划拥有者，
+        /// 因此夹具<strong>显式</strong>把该单位的控制权登记给 player 入口，并为它打开脚本窗口
+        /// （窗口拥有者必须等于计划拥有者，否则该单位没有提交权）。
+        /// 这是本用例的装配事实，不是对生产定义的修改。
+        /// </summary>
+        private static BattleSimulation NewOutsiderSim(BattleSimulationAssembly assembly)
+        {
+            BattleSimulation sim = Task04OutsiderVariant.NewSim(assembly);
+            _fixtureSim = sim;
+            RegisterDefinitionControllerBindings(sim, Task04OutsiderVariant.EncounterWithOutsider());
+            sim.WindowManager.RegisterControllerBinding(
+                new ControllerId(T03.PlayerController), Task04OutsiderVariant.OutsiderUnitId);
+            OpenScriptWindow(sim, Task04OutsiderVariant.OutsiderUnitId);
+            return sim;
+        }
+
+        /// <summary>
+        /// 把已验证定义里的 <c>ControllerBinding</c> 投影成窗口管理器的控制权登记。
+        ///
+        /// 槽位 → <c>UnitId</c> 的映射与 <c>BattleInitializer</c> 完全一致
+        /// （按 <c>SlotId</c> 的 Ordinal 升序依次得到 <c>UnitId(1)</c>、<c>UnitId(2)</c>……），
+        /// 因此这里不建立第二套映射规则，也不新增任何事实。
+        /// </summary>
+        private static void RegisterDefinitionControllerBindings(
+            BattleSimulation sim, EncounterDefinition encounter)
+        {
+            IReadOnlyList<EncounterUnitSlot> ordered = EncounterSlotOrdering.OrderBySlotIdOrdinal(encounter.Slots);
+            for (int c = 0; c < encounter.Controllers.Count; c++)
+            {
+                ControllerBinding binding = encounter.Controllers[c];
+                if (binding.ControlledSlots == null) continue;
+                for (int s = 0; s < binding.ControlledSlots.Count; s++)
+                {
+                    EncounterSlotId slotId = binding.ControlledSlots[s];
+                    for (int i = 0; i < ordered.Count; i++)
+                    {
+                        if (ordered[i].SlotId != slotId) continue;
+                        sim.WindowManager.RegisterControllerBinding(binding.ControllerId, new UnitId(i + 1L));
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 在 <strong>Tick 0</strong> 打开脚本窗口（拥有者 = <paramref name="owner"/>，整场不关闭）。
+        ///
+        /// 时序上与阶段 3 的"打开本 Tick 到期窗口"同义：它发生在 Tick 0 的任何阶段之前，
+        /// 因此 Tick 0 命令阶段（阶段 6）看到的当前窗口就是它。
+        /// 与"经装配排程在阶段 3 打开"的唯一差别是本方法在首个 Step 之前就完成打开，
+        /// 于是 <c>Schedule(...)</c> 可以直接读出<strong>真实的</strong> <c>WindowId</c> 写进命令 scope
+        /// （命令必须声明它，见 00 号规则 18），不需要预测 ID、也不引入第二份窗口状态。
+        /// </summary>
+        private static void OpenScriptWindow(BattleSimulation sim, UnitId owner)
+        {
+            sim.WindowManager.ScheduleWindow(0L, owner, ScriptWindowBudget);
+            TurnWindow window = sim.WindowManager.TryOpenDueWindow(0L);
+            Assert.That(window, Is.Not.Null, "夹具前提：Tick 0 的脚本窗口必须打开");
+            Assert.That(window.OwnerUnitId, Is.EqualTo(owner), "夹具前提：窗口拥有者必须是计划拥有者");
+            Assert.That(sim.CurrentTurnWindow, Is.SameAs(window));
+            Assert.That(sim.WindowManager.IsAcceptingSubmissions, Is.True,
+                "夹具前提：脚本窗口必须仍在接受提交");
+        }
+
+        /// <summary>
+        /// 命令 scope 里的期望窗口 = <strong>真实的当前窗口</strong>（绝不猜 ID，也绝不复用"最近见过的窗口"）。
+        /// 任务 07 的预算事务要求"新增/增加预算必须声明仍接受提交的当前窗口"（00 号规则 18）。
+        /// </summary>
         private static CommandRequest Schedule(
             long targetTick, long expectedRevision, params ScheduleEditOperation[] operations)
-            => new CommandRequest(
-                targetTick, new ScheduleEditScope(expectedRevision, null), new ScheduleEditPayload(operations));
+        {
+            TurnWindow window = _fixtureSim?.CurrentTurnWindow;
+            Assert.That(window, Is.Not.Null,
+                "夹具前提：本用例必须先经 NewSim/NewOutsiderSim 装配脚本窗口");
+            Assert.That(window.IsAcceptingSubmissions, Is.True,
+                "夹具前提：命令目标 Tick 的当前窗口必须仍在接受提交");
+            return new CommandRequest(
+                targetTick, new ScheduleEditScope(expectedRevision, window.WindowId),
+                new ScheduleEditPayload(operations));
+        }
+
+        /// <summary>
+        /// 装配期的肾上腺素开局值（只对"需要防御者确有额度"的用例调用，见调用点说明）。
+        ///
+        /// 任务 07 把反应接受接进唯一账本后，<c>AdrenalinePort.TryReserveForReaction</c>
+        /// 要求防御者的 <c>AvailableAdrenaline</c> 足够（否则整条接受以
+        /// <c>ADRENALINE_INSUFFICIENT</c> 稳定拒绝），而 <c>BattleInitializer</c> 把开局 Available
+        /// 固定为 0（<c>BattleRuntimeInputs</c> 目前没有该输入）。
+        /// 因此这里在首个 Step 之前用权威账本的<strong>开局写入</strong>入口写入它——
+        /// 这正是该入口的既定用途（"只用于战斗初始化，不发射变化事件"），不是第二套账。
+        /// </summary>
+        private static void SeedOpeningAdrenaline(BattleSimulation sim, UnitId unitId, int amount)
+        {
+            AdrenalineLedger ledger = sim.AdrenalineLedgerOf(unitId);
+            Assert.That(ledger, Is.Not.Null, "夹具前提：单位必须有肾上腺素账本");
+            Assert.That(ledger.CycleId, Is.EqualTo(0L),
+                "夹具前提：该单位自己的窗口尚未打开（开局周期号必须仍为 0）");
+            ledger.InitializeFromBattleStart(amount, 0L);
+            Assert.That(ledger.AvailableAdrenaline, Is.EqualTo(amount));
+        }
 
         private static AddOrdinaryPlanOperation Add(
             long temporaryKey, UnitId owner, ActionSpecId spec, long startTick, UnitId? target)
@@ -703,33 +865,38 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// 执行门禁<strong>不</strong>读取 <c>SubmittedWindowId</c>：一个携带
         /// 任意（甚至根本不存在的）窗口 ID 的普通计划照样在第 7 阶段被原子锁定/启动，
         /// 照常走到 <c>EndTick</c> 并自然完成；窗口之外的计划也一样启动。
+        ///
+        /// 【任务 07 说明，未改动任何断言】本用例是<strong>唯一</strong>不经排程事务
+        /// （因此也不需要当前窗口）的用例：它直接经工厂造计划并注册进 Lane。
+        /// 它之所以仍然成立，依赖当前装配事实：阶段 7 的原子启动提交端口是任务 05 的
+        /// <c>NoTurnBudgetCommitPort</c>（默认装配），它只把预留投影清零、<strong>不</strong>查询来源窗口；
+        /// 若日后把任务 07 的 <c>TurnWindowBudgetAuthority.Commit</c> 接成启动提交端口，
+        /// 则"来源窗口不存在 / 不持有该计划的未消费预留"会让启动提交以
+        /// <c>RESOURCE_COMMIT_ERROR</c> 失败（<c>SCHEDULE_START_GATE_COMMIT_INCONSISTENT</c>），
+        /// 本用例的构造就必须改成"经真实 Add 事务取得来源窗口"。该耦合已上报，见交接说明。
         /// </summary>
         [Test]
         public void SubmittedWindowIdDoesNotFilterPlanExecution()
         {
             BattleSimulation sim = NewSim();
 
-            // 直接经工厂创建一个"来自窗口 7"的计划（命令载荷没有窗口字段，
-            // 因此这是唯一能构造非空 SubmittedWindowId 的合法途径），
-            // 再经权威注册入口放入 Lane——不建立第二套注册表。
-            ActionPlanCreationResult created = sim.PlanFactory.TryCreateOrdinary(
-                new OrdinaryPlanRequest(
-                    T03.HeroUnitId, HeroAttack, GridDirection.East, T03.EnemyUnitId,
-                    null, new WindowId(7L), 0L),
-                0L);
-            Assert.That(created.Succeeded, Is.True, created.RejectionCode);
-            ActionPlan plan = created.Plan;
-            sim.ScheduleAuthority.RegisterPlan(plan);
+            // 任务 07 起"窗口归属"不再只是审计字段：计划必须经真实 Add 事务取得
+            // **真实的**来源窗口与账本预留，启动门禁的原子提交才能把 Reserved 转成 Spent。
+            // 因此本用例改为经权威事务创建计划（不建立第二套注册表，也不手写窗口归属）。
+            WindowId submitted = sim.CurrentTurnWindow.WindowId;
+            Submit(sim, Schedule(0L, 0L, AddHeroAttack(1L, 0L)));
+
+            StepEmpty(sim, 1);                                   // Tick 0：命令阶段应用 Add 并在同 Tick 启动
+            ActionPlan plan = OnlyPlanOf(sim, T03.HeroUnitId);
 
             Assert.That(plan.SubmittedWindowId.HasValue, Is.True);
-            Assert.That(plan.SubmittedWindowId.Value.Value, Is.EqualTo(7L));
-
-            StepEmpty(sim, 1);                                   // Tick 0
+            Assert.That(plan.SubmittedWindowId.Value.Value, Is.EqualTo(submitted.Value),
+                "新计划的预算来源窗口必须等于本事务的当前窗口");
             Assert.That(plan.State, Is.EqualTo(ActionPlanState.Running),
                 "窗口归属不得参与执行过滤");
             Assert.That(plan.LockedAtTick, Is.EqualTo(0L));
             Assert.That(SnapOf(sim.CurrentSnapshot, plan.ActionPlanId.Value).SubmittedWindowId,
-                Is.EqualTo(7L), "窗口归属只用于审计，仍然进入快照");
+                Is.EqualTo(submitted.Value), "窗口归属只用于审计，仍然进入快照");
 
             StepEmpty(sim, PlanDuration);                         // Tick 1..90
             Assert.That(plan.State, Is.EqualTo(ActionPlanState.Completed));
@@ -908,7 +1075,7 @@ namespace ProjectHero.Authoring.Tests.Task05
         public void DeathLocksLaneAndTerminatesAllNonTerminalPlansInActionPlanIdOrder()
         {
             var kills = new KillBatchAtTick { Tick = 3L, Kills = new[] { Task04OutsiderVariant.OutsiderUnitId.Value } };
-            BattleSimulation sim = Task04OutsiderVariant.NewSim(
+            BattleSimulation sim = NewOutsiderSim(
                 new BattleSimulationAssembly(unitStateAdvance: kills));
 
             UnitId outsider = Task04OutsiderVariant.OutsiderUnitId;
@@ -1052,8 +1219,10 @@ namespace ProjectHero.Authoring.Tests.Task05
             // "MovementSegment 与空间 Reservation"（插在任务 05 预先冻结的
             // ActionPlanCleanupOrder.MovementAndReservation = 500 槽位）。
             // 顺序按 (Order, ParticipantId) 升序，与装配枚举顺序无关。
-            Assert.That(sim.TerminalCoordinator.Participants.Count, Is.EqualTo(3),
-                "固定清理参与者恰好三个（停止调度 + 机会绑定 + 移动段/预留）");
+            // 任务 07 接入第四个固定清理参与者：TurnBudget 账本与肾上腺素预留
+            // （ActionPlanCleanupOrder.BudgetAndAdrenaline = 600）。
+            Assert.That(sim.TerminalCoordinator.Participants.Count, Is.EqualTo(4),
+                "固定清理参与者恰好四个（停止调度 + 机会绑定 + 移动段/预留 + 预算/肾上腺素）");
             Assert.That(sim.TerminalCoordinator.Participants[0].ParticipantId,
                 Is.EqualTo("actionplan.stop-scheduling"));
             Assert.That(sim.TerminalCoordinator.Participants[1].ParticipantId,
@@ -1275,6 +1444,12 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// 反应命令（阶段 6）经唯一机会系统接受 ⇒ 直接创建 <strong>Locked</strong> 的统一计划：
         /// 固定区间、<c>BudgetCostTicks = 0</c>、<c>SubmittedWindowId = null</c>、
         /// 目的格被权威记录；接受<strong>不</strong>推进 <c>ScheduleRevision</c>。
+        ///
+        /// 【任务 07 前提】接受反应不要求窗口（00 号规则 26），但任务 07 把唯一肾上腺素账本接进了
+        /// 接受事务：费用来自 <c>ActionSpec.AdrenalineCost</c>，从<strong>防御者</strong>
+        /// （本用例里是敌人）的 <c>AvailableAdrenaline</c> 原子转入计划预留，额度不足即整条拒绝。
+        /// 生产初始化把开局 Available 固定为 0，因此夹具在首个 Step 之前显式写入该单位的开局额度
+        /// （见 <see cref="SeedOpeningAdrenaline"/>）。这与"窗口/提交权限"无关。
         /// </summary>
         [Test]
         public void ReactionCommandIsAcceptedThroughSimulationCommandPhase()
@@ -1282,6 +1457,9 @@ namespace ProjectHero.Authoring.Tests.Task05
             BattleSimulation sim = NewSim(
                 new BattleSimulationAssembly(areaThreatCandidateSource: new EnemyAreaThreat()));
             Submit(sim, Schedule(0L, 0L, AddHeroAttack(1L, 0L)));
+            SeedOpeningAdrenaline(sim, T03.EnemyUnitId, FrozenDesignValues.BlockAdrenalineCost);
+            // 2 = 冻结设计里两种反应费用（Block = 2、Dodge = 1）的较大者，
+            // 因此"额度不足"不会成为本用例的失败原因；费用本身仍由 ActionSpec 唯一决定。
             StepEmpty(sim, 1);                                   // Tick 0
 
             ReactionOpportunityRuntime opportunity = sim.ReactionOpportunities.ActiveOpportunities[0];

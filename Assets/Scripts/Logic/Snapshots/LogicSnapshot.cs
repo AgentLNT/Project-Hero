@@ -5,6 +5,7 @@ using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Determinism;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Simulation;
+using ProjectHero.Logic.Turns;
 using ProjectHero.Logic.Units;
 
 namespace ProjectHero.Logic.Snapshots
@@ -77,16 +78,28 @@ namespace ProjectHero.Logic.Snapshots
         long WindowId,
         long OwnerUnitId,
         long OpenedAtTick,
-        int BudgetTicks,
-        bool CloseRequested);
+        int TotalBudgetTicks,
+        int ReservedBudgetTicks,
+        int SpentBudgetTicks,
+        int AvailableBudgetTicks,
+        bool IsOpen,
+        bool IsAcceptingSubmissions,
+        int CloseReason,
+        IReadOnlyList<TurnWindowReservationSnapshot> Reservations);
+
+    /// <summary>窗口账本里的一条按计划归属的预留明细（审计用；窗口不保存计划对象）。</summary>
+    public sealed record TurnWindowReservationSnapshot(long ActionPlanId, int ReservedTicks);
 
     /// <summary>窗口管理器快照。<see cref="CurrentWindowId"/> = 0 表示当前没有打开窗口。</summary>
     public sealed record TurnWindowManagerSnapshot(
         long CurrentWindowId,
         long NextWindowTick,
+        long NextWindowOrdinal,
+        long LastClosedWindowId,
         IReadOnlyList<TurnWindowSnapshot> Windows)
     {
-        public static TurnWindowManagerSnapshot None() => new TurnWindowManagerSnapshot(0L, -1L, Array.Empty<TurnWindowSnapshot>());
+        public static TurnWindowManagerSnapshot None()
+            => new TurnWindowManagerSnapshot(0L, -1L, 0L, 0L, Array.Empty<TurnWindowSnapshot>());
     }
 
     /// <summary>并发行动授权快照（任务 07 扩展版本化内部状态）。</summary>
@@ -95,11 +108,31 @@ namespace ProjectHero.Logic.Snapshots
         public static ConcurrentActionSnapshot None() => new ConcurrentActionSnapshot(false, 0L, 0L);
     }
 
-    /// <summary>资源账本快照（任务 07 接入 TurnBudget / 肾上腺素账本明细）。</summary>
-    public sealed record BattleResourceSnapshot(int MetaResource, long TurnBudgetAvailable, long TurnBudgetReserved, long TurnBudgetSpent)
+    /// <summary>单位肾上腺素账本快照（任务 07：Available + 个人周期 + 按计划归属的预留明细）。</summary>
+    public sealed record AdrenalineLedgerSnapshot(
+        long UnitId,
+        int AvailableAdrenaline,
+        long CycleId,
+        IReadOnlyList<AdrenalineReservationSnapshot> Reservations,
+        int ReservedTotal);
+
+    /// <summary>一条反应肾上腺素预留快照（按 <see cref="ActionPlanId"/> 与个人周期归属）。</summary>
+    public sealed record AdrenalineReservationSnapshot(long ActionPlanId, int ReservedAmount, long ReservationCycleId);
+
+    /// <summary>
+    /// 资源账本快照。<see cref="TurnBudgetAvailable"/>/<see cref="TurnBudgetReserved"/>/
+    /// <see cref="TurnBudgetSpent"/> 是<strong>全部窗口</strong>的规范聚合（含已关闭窗口的审计账本），
+    /// 因此恒有 <c>Reserved + Spent + Available == Σ Total</c>。
+    /// </summary>
+    public sealed record BattleResourceSnapshot(
+        int MetaResource,
+        long TurnBudgetAvailable,
+        long TurnBudgetReserved,
+        long TurnBudgetSpent,
+        IReadOnlyList<AdrenalineLedgerSnapshot> AdrenalineLedgers = null)
     {
         public static BattleResourceSnapshot None(int metaResource)
-            => new BattleResourceSnapshot(metaResource, 0L, 0L, 0L);
+            => new BattleResourceSnapshot(metaResource, 0L, 0L, 0L, Array.Empty<AdrenalineLedgerSnapshot>());
     }
 
     /// <summary>
@@ -399,6 +432,12 @@ namespace ProjectHero.Logic.Snapshots
         public long NextUnitId { get; }
         public long NextActionPlanId { get; }
         public long NextReactionOpportunityId { get; }
+
+        /// <summary>
+        /// 下一个将被分配的 <c>WindowId</c>（任务 03 冻结契约：所有"下一个 ID/Sequence"值
+        /// 进入规范化快照与哈希）。窗口 ID 与其它实例 ID 共用同一个 <c>LogicIdGenerator</c>，
+        /// 这里只是它的只读投影，<strong>不是</strong>第二份计数状态。
+        /// </summary>
         public long NextWindowId { get; }
         public long NextEffectId { get; }
         public long NextCommandSequence { get; }
@@ -490,16 +529,34 @@ namespace ProjectHero.Logic.Snapshots
 
             encoder.WriteInt64(WindowManager.CurrentWindowId);
             encoder.WriteInt64(WindowManager.NextWindowTick);
+            encoder.WriteInt64(WindowManager.NextWindowOrdinal);
+            encoder.WriteInt64(WindowManager.LastClosedWindowId);
             var windows = new List<TurnWindowSnapshot>(WindowManager.Windows);
             windows.Sort((a, b) => a.WindowId.CompareTo(b.WindowId));
             encoder.WriteCount(windows.Count);
             for (int i = 0; i < windows.Count; i++)
             {
-                encoder.WriteInt64(windows[i].WindowId);
-                encoder.WriteInt64(windows[i].OwnerUnitId);
-                encoder.WriteInt64(windows[i].OpenedAtTick);
-                encoder.WriteInt32(windows[i].BudgetTicks);
-                encoder.WriteBool(windows[i].CloseRequested);
+                TurnWindowSnapshot window = windows[i];
+                encoder.WriteInt64(window.WindowId);
+                encoder.WriteInt64(window.OwnerUnitId);
+                encoder.WriteInt64(window.OpenedAtTick);
+                encoder.WriteInt32(window.TotalBudgetTicks);
+                encoder.WriteInt32(window.ReservedBudgetTicks);
+                encoder.WriteInt32(window.SpentBudgetTicks);
+                encoder.WriteInt32(window.AvailableBudgetTicks);
+                encoder.WriteBool(window.IsOpen);
+                encoder.WriteBool(window.IsAcceptingSubmissions);
+                encoder.WriteInt32(window.CloseReason);
+                // 账本明细按 ActionPlanId 升序（窗口不持有计划对象，只持有这份可审计预留明细）。
+                var windowReservations = new List<TurnWindowReservationSnapshot>(
+                    window.Reservations ?? Array.Empty<TurnWindowReservationSnapshot>());
+                windowReservations.Sort((a, b) => a.ActionPlanId.CompareTo(b.ActionPlanId));
+                encoder.WriteCount(windowReservations.Count);
+                for (int r = 0; r < windowReservations.Count; r++)
+                {
+                    encoder.WriteInt64(windowReservations[r].ActionPlanId);
+                    encoder.WriteInt32(windowReservations[r].ReservedTicks);
+                }
             }
 
             encoder.WriteBool(ConcurrentAction.HasActiveAuthorization);
@@ -510,6 +567,29 @@ namespace ProjectHero.Logic.Snapshots
             encoder.WriteInt64(Resources.TurnBudgetAvailable);
             encoder.WriteInt64(Resources.TurnBudgetReserved);
             encoder.WriteInt64(Resources.TurnBudgetSpent);
+            // 肾上腺素账本：Available、每条反应预留与 ReservationCycleId 全部进入规范快照。
+            var ledgers = new List<AdrenalineLedgerSnapshot>(
+                Resources.AdrenalineLedgers ?? Array.Empty<AdrenalineLedgerSnapshot>());
+            ledgers.Sort((a, b) => a.UnitId.CompareTo(b.UnitId));
+            encoder.WriteCount(ledgers.Count);
+            for (int i = 0; i < ledgers.Count; i++)
+            {
+                AdrenalineLedgerSnapshot ledger = ledgers[i];
+                encoder.WriteInt64(ledger.UnitId);
+                encoder.WriteInt32(ledger.AvailableAdrenaline);
+                encoder.WriteInt64(ledger.CycleId);
+                encoder.WriteInt32(ledger.ReservedTotal);
+                var adrenalineReservations = new List<AdrenalineReservationSnapshot>(
+                    ledger.Reservations ?? Array.Empty<AdrenalineReservationSnapshot>());
+                adrenalineReservations.Sort((a, b) => a.ActionPlanId.CompareTo(b.ActionPlanId));
+                encoder.WriteCount(adrenalineReservations.Count);
+                for (int r = 0; r < adrenalineReservations.Count; r++)
+                {
+                    encoder.WriteInt64(adrenalineReservations[r].ActionPlanId);
+                    encoder.WriteInt32(adrenalineReservations[r].ReservedAmount);
+                    encoder.WriteInt64(adrenalineReservations[r].ReservationCycleId);
+                }
+            }
 
             encoder.WriteInt64(ScheduleRevision);
 

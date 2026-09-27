@@ -7,6 +7,8 @@ using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Factions;
 using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Resources;
+using ProjectHero.Logic.Turns;
 
 namespace ProjectHero.Logic.Timeline
 {
@@ -137,6 +139,19 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public Action<ActionPlanId, long, long, long> CommittedSpacePlanSink { get; set; }
 
+        /// <summary>
+        /// <strong>TurnBudget 上下文工厂</strong>（任务 07「必须产出」4：统一 ScheduleEdit 预算事务）。
+        ///
+        /// 参数顺序 =（来源、目标 Tick、命令 scope 的 <c>ExpectedWindowId</c>、发行者 <c>ControllerId</c>）。
+        /// 由模拟方在装配时注入；<strong>返回 null 或未设置 ⇒ 本事务不建模预算</strong>
+        /// （任务 05/06 既有语义：只维护 <c>ActionPlan.ReservedTurnBudgetTicks</c> 投影）。
+        ///
+        /// 工厂必须只读、可重复调用且无副作用：本编辑器在提交路径上按需调用它，
+        /// 但账本的唯一权威始终是 <see cref="ITurnBudgetAuthority"/>——编辑器
+        /// <strong>不</strong>读窗口对象、<strong>不</strong>自行扣费，也不保存第二套预算状态。
+        /// </summary>
+        public Func<ResourceChangeSource, long, WindowId?, ControllerId, ScheduleBudgetContext> BudgetContextFactory { get; set; }
+
         public ScheduleLimits Limits => _authority.Limits;
 
         /// <summary>本批已被成功事务改写的计划（只读；诊断与测试用）。</summary>
@@ -164,14 +179,25 @@ namespace ProjectHero.Logic.Timeline
         /// <param name="preview">
         /// 预览模式：<strong>不</strong>分配正式 ID、<strong>不</strong>改修订号、<strong>不</strong>写任何权威状态。
         /// </param>
+        /// <param name="expectedWindowId">
+        /// 命令 scope（<c>ScheduleEditScope</c>）声明的期望窗口；新增/增费时窗口必填（00 号规则 18）。
+        /// 为 null 表示命令没有声明窗口：预算校验按"没有期望窗口"处理（见 <c>ValidateBudget</c>），
+        /// <strong>不</strong>回退成"当前窗口"。
+        /// </param>
+        /// <param name="issuer">
+        /// 由命令网关绑定的发行者 <c>ControllerId</c>（<strong>不</strong>来自命令载荷）。
+        /// 只有显式 <c>ScheduleEdit</c> 才用它做提交授权校验；系统自动延期不走这里。
+        /// </param>
         public ScheduleEditTransactionResult Apply(
             IReadOnlyList<ScheduleEditOperation> operations,
             long currentTick,
             long batchBaseScheduleRevision,
             long expectedScheduleRevision,
-            bool preview = false)
+            bool preview = false,
+            WindowId? expectedWindowId = null,
+            ControllerId issuer = default)
             => ApplyInternal(operations, currentTick, batchBaseScheduleRevision, expectedScheduleRevision,
-                preview, null);
+                preview, null, expectedWindowId, issuer);
 
         /// <summary>
         /// 系统自动延期事务（任务包「必须产出」5 第二段）。
@@ -223,7 +249,61 @@ namespace ProjectHero.Logic.Timeline
 
             long baseRevision = _authority.ScheduleRevision;
             plan.AutomaticDeferralCount++;
+
+            // —— 任务 07「必须产出」4 第四段：系统自动延期的预算差额 ——
+            //
+            // 上下文来源 = SystemAutoDeferral（它让 ValidateSubmissionAuthority 不被要求）；
+            // expectedWindowId = null、issuer = default（系统延期不是玩家提交，没有 scope 身份）。
+            // CurrentWindowId 必须取"当时真实的当前窗口"：成本增加时
+            // TurnWindowBudgetAuthority.ValidateBudget 会要求 change.WindowId == context.CurrentWindowId，
+            // 于是"关闭窗口不得因系统延期重开"由账本端口判定，本编辑器不自行猜测。
+            ScheduleBudgetContext budgetContext = BudgetContextFactory == null
+                ? null
+                : BudgetContextFactory(
+                    ResourceChangeSource.SystemAutoDeferral, currentTick, null, default);
+
+            // 差额必须在**求值改写之前**捕获旧预留（同 <see cref="ApplyInternal"/> 的理由）。
+            var capturedReserved = new Dictionary<long, int>();
+            var evaluatedPlans = new List<ActionPlan>();
+            var projectionSnapshots = new List<SpaceProjectionSnapshot>();
+            for (int i = 0; i < evaluation.Evaluations.Count; i++)
+            {
+                ActionPlan evaluated = _authority.Registry.Find(evaluation.Evaluations[i].PlanId);
+                if (evaluated == null || !evaluated.IsOrdinary) continue;
+                if (!capturedReserved.ContainsKey(evaluated.ActionPlanId.Value))
+                {
+                    capturedReserved[evaluated.ActionPlanId.Value] = evaluated.ReservedTurnBudgetTicks;
+                    evaluatedPlans.Add(evaluated);
+                }
+                projectionSnapshots.Add(new SpaceProjectionSnapshot(evaluated));
+            }
+            if (plan.IsOrdinary && !capturedReserved.ContainsKey(plan.ActionPlanId.Value))
+            {
+                capturedReserved[plan.ActionPlanId.Value] = plan.ReservedTurnBudgetTicks;
+                evaluatedPlans.Add(plan);
+                projectionSnapshots.Add(new SpaceProjectionSnapshot(plan));
+            }
+
             CommitEvaluatedPlans(evaluation, baseRevision + 1L, null);
+
+            // 候选变化（纯计算）；自动延期只改绝对 Tick，但路径重算可能改变成本 ⇒ 必须重算差额。
+            List<TurnBudgetChangeRequest> budgetChanges = BuildBudgetChanges(
+                budgetContext, null, evaluatedPlans, null, capturedReserved);
+            bool needsBudgetCommit = budgetChanges.Count > 0;
+
+            // 校验必须先于空间端口提交（空间提交成功后无法撤销空间侧）。
+            // 注意：系统自动延期**不**校验发行者授权——它不是玩家提交，不得要求 ControllerId 授权。
+            if (needsBudgetCommit && budgetContext != null && budgetContext.HasAuthority)
+            {
+                string budgetError = budgetContext.Authority.ValidateBudget(budgetChanges, budgetContext);
+                if (budgetError != null)
+                {
+                    // 失败：回滚本次候选的全部局部写入（延期计数 + 排程投影），零预算变化。
+                    plan.AutomaticDeferralCount--;
+                    RestoreProjections(projectionSnapshots);
+                    return ScheduleEditTransactionResult.Rejected(budgetError, baseRevision);
+                }
+            }
 
             // 空间整批替换（任务 06）在 Lane 投影替换之前完成：失败即整批拒绝并撤销延期计数。
             if (MovementSpacePort != null)
@@ -232,14 +312,52 @@ namespace ProjectHero.Logic.Timeline
                     evaluation, baseRevision + 1L, currentTick, null, null);
                 if (spaceError != null)
                 {
+                    // 此处预算尚未应用（应用在空间端口成功之后），因此无需 RollbackBudget。
                     plan.AutomaticDeferralCount--;
+                    RestoreProjections(projectionSnapshots);
                     return ScheduleEditTransactionResult.Rejected(spaceError, baseRevision);
                 }
             }
 
-            CommitLaneProjections(evaluation, null);
-            _authority.IncrementRevision();
+            // 空间成功后立即应用预算差额；ApplyBudget 契约上不得失败，失败即不变量错误。
+            if (needsBudgetCommit && budgetContext != null && budgetContext.HasAuthority)
+            {
+                try
+                {
+                    budgetContext.Authority.ApplyBudget(budgetChanges, budgetContext, currentTick);
+                }
+                catch (Exception)
+                {
+                    plan.AutomaticDeferralCount--;
+                    RestoreProjections(projectionSnapshots);
+                    throw;
+                }
+            }
 
+            try
+            {
+                CommitLaneProjections(evaluation, null);
+                _authority.IncrementRevision();
+            }
+            catch (Exception)
+            {
+                if (needsBudgetCommit && budgetContext != null && budgetContext.HasAuthority)
+                {
+                    try
+                    {
+                        budgetContext.Authority.RollbackBudget(budgetChanges, budgetContext, currentTick);
+                    }
+                    catch (Exception)
+                    {
+                        // 同上：回滚异常不得掩盖原始异常。
+                    }
+                }
+                plan.AutomaticDeferralCount--;
+                RestoreProjections(projectionSnapshots);
+                throw;
+            }
+
+            // 成功：计划保持 Editable、账本保持 Reserved（绝不产生 ConsumedAtLock）。
             return BuildCommitted(baseRevision, evaluation, null, null);
         }
 
@@ -253,9 +371,23 @@ namespace ProjectHero.Logic.Timeline
             long batchBaseScheduleRevision,
             long expectedScheduleRevision,
             bool preview,
-            IReadOnlyList<ActionPlanId> preClaimed)
+            IReadOnlyList<ActionPlanId> preClaimed,
+            WindowId? expectedWindowId = null,
+            ControllerId issuer = default)
         {
             long baseRevision = _authority.ScheduleRevision;
+
+            // —— 任务 07「必须产出」4：TurnBudget 上下文（只读；null ⇒ 本事务不建模预算）——
+            //
+            // 上下文在**纯校验阶段之前**取一次并复用：它的 CurrentWindowId 同时是
+            // ①本次新增计划携带的 SubmittedWindowId（预算来源与审计，见 ResolveAdd）
+            // ②预算候选的窗口来源。取一次即可保证"同一事务内的事实一致"，
+            // 也保证预览路径拿到与提交路径完全同源的上下文（预览绝不写账本，见第 9 条）。
+            ScheduleBudgetContext budgetContext = BudgetContextFactory == null
+                ? null
+                : BudgetContextFactory(
+                    ResourceChangeSource.ExplicitScheduleEdit, currentTick, expectedWindowId, issuer);
+            WindowId? currentWindowId = budgetContext == null ? (WindowId?)null : budgetContext.CurrentWindowId;
 
             if (operations == null || operations.Count == 0)
                 return ScheduleEditTransactionResult.Rejected(ScheduleCodes.SCHEDULE_OPERATION_INVALID, baseRevision);
@@ -323,7 +455,7 @@ namespace ProjectHero.Logic.Timeline
                     case AddOrdinaryPlanOperation add:
                         error = ResolveAdd(
                             add, currentTick, new ActionPlanId(nextIdCandidate + preparedAdds),
-                            temporaryKeys, addedPlans, intents, appliedEdits);
+                            temporaryKeys, addedPlans, intents, appliedEdits, currentWindowId);
                         if (error == null) preparedAdds++;
                         break;
                     case MoveEditablePlanOperation move:
@@ -427,6 +559,11 @@ namespace ProjectHero.Logic.Timeline
             // 提交前的排程投影快照：空间整批替换失败时用它把本批已改写的计划恢复原状。
             var planLookup = new Dictionary<long, ActionPlan>();
             var projectionSnapshots = new List<SpaceProjectionSnapshot>();
+            // 任务 07「必须产出」4 第三段第 1 条：为本次求值覆盖到的每个 IsOrdinary 计划捕获
+            // **改写前**的 ReservedTurnBudgetTicks。捕获必须早于 ApplyEvaluatedProjections，
+            // 因为那里会调用 plan.SyncEditableReservation() 把该字段改写成新成本（晚取就丢旧值）。
+            var capturedReserved = new Dictionary<long, int>();
+            var evaluatedPlans = new List<ActionPlan>();
             for (int i = 0; i < addedPlans.Count; i++) planLookup[addedPlans[i].ActionPlanId.Value] = addedPlans[i];
             for (int i = 0; i < evaluation.Evaluations.Count; i++)
             {
@@ -438,11 +575,84 @@ namespace ProjectHero.Logic.Timeline
                     planLookup[plan.ActionPlanId.Value] = plan;
                 }
                 if (!plan.IsOrdinary) continue;
+                if (!capturedReserved.ContainsKey(plan.ActionPlanId.Value))
+                {
+                    capturedReserved[plan.ActionPlanId.Value] = plan.ReservedTurnBudgetTicks;
+                    evaluatedPlans.Add(plan);
+                }
                 projectionSnapshots.Add(new SpaceProjectionSnapshot(plan));
+            }
+
+            // Add 候选同样要在求值改写前捕获旧预留：新计划刚由工厂创建，
+            // ReservedTurnBudgetTicks 恒为 0（工厂不分配账本），这里显式记录以保证
+            // "ExpectedReserved 来自捕获值"这一规则对所有候选一致。
+            for (int i = 0; i < addedPlans.Count; i++)
+            {
+                if (!addedPlans[i].IsOrdinary) continue;
+                if (capturedReserved.ContainsKey(addedPlans[i].ActionPlanId.Value)) continue;
+                capturedReserved[addedPlans[i].ActionPlanId.Value] = addedPlans[i].ReservedTurnBudgetTicks;
+            }
+
+            // Remove 候选：删除后计划不再可读，因此旧预留必须在这里（任何写入之前）捕获。
+            for (int i = 0; i < removedPlans.Count; i++)
+            {
+                if (!removedPlans[i].IsOrdinary) continue;
+                if (capturedReserved.ContainsKey(removedPlans[i].ActionPlanId.Value)) continue;
+                capturedReserved[removedPlans[i].ActionPlanId.Value] = removedPlans[i].ReservedTurnBudgetTicks;
             }
 
             // 逐计划重绑绝对 Tick + 应用路径投影（此时注册表与 Lane 仍未被触碰）。
             ApplyEvaluatedProjections(evaluation, nextRevision, explicitRequestPlanIds, planLookup);
+
+            // —— 任务 07「必须产出」4 第三段第 3 条：构造候选变化（纯计算，零写入）——
+            //
+            // 变化列表按 ActionPlanId 升序稳定排序后再提交，因此提交顺序与
+            // 操作顺序、求值顺序、字典枚举顺序都无关（确定性）。
+            List<TurnBudgetChangeRequest> budgetChanges = BuildBudgetChanges(
+                budgetContext, addedPlans, evaluatedPlans, removedPlans, capturedReserved);
+            bool needsBudgetCommit = budgetChanges.Count > 0;
+
+            // —— 任务 07「必须产出」4 第三段第 4 条：校验（零写入）——
+            //
+            // 必须早于空间端口：空间端口一旦提交成功就无法"撤销空间侧"，
+            // 因此预算拒绝只能在它之前发生，才能保证排程、Lane、空间与预算同时零局部写入。
+            if (needsBudgetCommit && budgetContext != null && budgetContext.HasAuthority)
+            {
+                // 提交授权只对**显式**排程编辑成立（00 号规则 18）：系统自动延期不是玩家提交，
+                // 不得要求发行者授权，因此这里用 Source 显式区分（任务 07「必须产出」4 第三段第 4 条）。
+                if (budgetContext.Source == ResourceChangeSource.ExplicitScheduleEdit)
+                {
+                    for (int i = 0; i < budgetChanges.Count; i++)
+                    {
+                        TurnBudgetChangeRequest change = budgetChanges[i];
+                        if (!change.IsNewReservation && change.Delta <= 0) continue;
+                        ActionPlan owner;
+                        if (!planLookup.TryGetValue(change.PlanId.Value, out owner))
+                            owner = _authority.Registry.Find(change.PlanId);
+                        if (owner == null)
+                        {
+                            RestoreProjections(projectionSnapshots);
+                            return ScheduleEditTransactionResult.Rejected(
+                                TurnWindowCodes.BUDGET_LEDGER_INVARIANT, baseRevision);
+                        }
+
+                        string authorityError = budgetContext.Authority.ValidateSubmissionAuthority(
+                            budgetContext.Issuer, owner.OwnerUnitId, owner.ActionType, change.WindowId);
+                        if (authorityError != null)
+                        {
+                            RestoreProjections(projectionSnapshots);
+                            return ScheduleEditTransactionResult.Rejected(authorityError, baseRevision);
+                        }
+                    }
+                }
+
+                string budgetError = budgetContext.Authority.ValidateBudget(budgetChanges, budgetContext);
+                if (budgetError != null)
+                {
+                    RestoreProjections(projectionSnapshots);
+                    return ScheduleEditTransactionResult.Rejected(budgetError, baseRevision);
+                }
+            }
 
             // 空间整批替换（任务 06）仍在**写注册表与 Lane 之前**完成：它只依赖刚重绑好的
             // 计划投影。失败时 ScheduleEditor 自身把投影恢复原状并整批拒绝，
@@ -453,21 +663,73 @@ namespace ProjectHero.Logic.Timeline
                     evaluation, nextRevision, currentTick, addedPlans, removedPlans);
                 if (spaceError != null)
                 {
-                    for (int i = 0; i < projectionSnapshots.Count; i++) projectionSnapshots[i].Restore();
+                    // 此时预算**尚未应用**（应用在空间端口成功之后），因此无需 RollbackBudget。
+                    RestoreProjections(projectionSnapshots);
                     return ScheduleEditTransactionResult.Rejected(spaceError, baseRevision);
                 }
             }
 
-            for (int i = 0; i < addedPlans.Count; i++) _ids.ReserveActionPlanId(addedPlans[i].ActionPlanId);
-            for (int i = 0; i < addedPlans.Count; i++) _authority.RegisterPlan(addedPlans[i]);
-            for (int i = 0; i < removedPlans.Count; i++)
+            // —— 任务 07「必须产出」4 第三段第 6 条：空间端口成功后立即应用预算 ——
+            if (needsBudgetCommit && budgetContext != null && budgetContext.HasAuthority)
             {
-                _authority.RemoveFromLane(removedPlans[i].OwnerUnitId, removedPlans[i].ActionPlanId);
+                try
+                {
+                    budgetContext.Authority.ApplyBudget(budgetChanges, budgetContext, currentTick);
+                }
+                catch (Exception)
+                {
+                    // 接口契约：ValidateBudget 通过后 ApplyBudget 不得失败。走到这里是不变量错误：
+                    // 排程投影必须恢复原状（账本侧由 ApplyBudget 自身的原子性负责），
+                    // 并且异常必须向上抛，不得吞掉或以"继续执行"收场。
+                    RestoreProjections(projectionSnapshots);
+                    throw;
+                }
             }
 
-            CommitLaneProjections(evaluation, removedPlans);
+            // —— 任务 07「必须产出」4 第三段第 7 条：写入段全部包在 try/catch 内 ——
+            //
+            // 该分支代表不变量错误（例如 ID 预留跳号）。捕获到异常时：
+            // ① RollbackBudget——回滚**本次尚未提交成功**的预算变化（唯一允许调用它的场景之一）；
+            // ② 恢复投影快照；
+            // ③ 把原异常重新抛出（绝不吞掉、绝不以"继续执行"收场）。
+            try
+            {
+                for (int i = 0; i < addedPlans.Count; i++) _ids.ReserveActionPlanId(addedPlans[i].ActionPlanId);
+                for (int i = 0; i < addedPlans.Count; i++) _authority.RegisterPlan(addedPlans[i]);
+                for (int i = 0; i < removedPlans.Count; i++)
+                {
+                    _authority.RemoveFromLane(removedPlans[i].OwnerUnitId, removedPlans[i].ActionPlanId);
+                }
 
-            _authority.IncrementRevision();
+                CommitLaneProjections(evaluation, removedPlans);
+
+                _authority.IncrementRevision();
+            }
+            catch (Exception)
+            {
+                if (needsBudgetCommit && budgetContext != null && budgetContext.HasAuthority)
+                {
+                    try
+                    {
+                        budgetContext.Authority.RollbackBudget(budgetChanges, budgetContext, currentTick);
+                    }
+                    catch (Exception)
+                    {
+                        // 回滚本身失败是更严重的不变量错误，但绝不能掩盖原始异常：
+                        // 原异常携带真正的根因，这里显式忽略回滚异常并继续抛出原异常。
+                    }
+                }
+                RestoreProjections(projectionSnapshots);
+                throw;
+            }
+
+            // 任务 07「必须产出」4 第三段第 8 条：Remove 的预算释放成功后把计划字段归零，
+            // 使 ActionPlan.ReservedTurnBudgetTicks 与账本（已无该计划预留）保持一致。
+            for (int i = 0; i < removedPlans.Count; i++)
+            {
+                if (removedPlans[i].IsOrdinary) removedPlans[i].ReservedTurnBudgetTicks = 0;
+            }
+
             _batchCommittedCount++;
             for (int i = 0; i < evaluation.Evaluations.Count; i++)
                 _batchClaimedPlans.Add(evaluation.Evaluations[i].PlanId.Value);
@@ -481,6 +743,13 @@ namespace ProjectHero.Logic.Timeline
         // 操作解析（纯校验，零写入）
         // ————————————————————————————————————————————————————————————
 
+        /// <param name="currentWindowId">
+        /// 本次事务的当前窗口（任务 07）：普通计划创建时把它写进 <c>SubmittedWindowId</c>，
+        /// 使"计划自己的预算来源记录"与"本事务实际预留的窗口"恒等，
+        /// 后续成本差额（<c>ReservationAdjusted</c>）与释放（<c>ReleasedBeforeLock</c>）
+        /// 才能回到<strong>原账本</strong>而不是回退到当前窗口。
+        /// 为 null（未接入窗口模型，任务 05/06 语义）时沿用既有的空来源。
+        /// </param>
         private string ResolveAdd(
             AddOrdinaryPlanOperation add,
             long currentTick,
@@ -488,7 +757,8 @@ namespace ProjectHero.Logic.Timeline
             Dictionary<long, ActionPlan> temporaryKeys,
             List<ActionPlan> addedPlans,
             List<ScheduleOperationIntent> intents,
-            List<AppliedScheduleEdit> appliedEdits)
+            List<AppliedScheduleEdit> appliedEdits,
+            WindowId? currentWindowId)
         {
             if (!add.OwnerUnitId.IsValid) return ActionPlanCodes.ACTION_PLAN_OWNER_INVALID;
             if (add.RequestedStartTick < 0L) return ScheduleCodes.SCHEDULE_OPERATION_INVALID;
@@ -500,7 +770,7 @@ namespace ProjectHero.Logic.Timeline
             ActionPlanCreationResult created = _factory.TryCreateOrdinary(
                 new OrdinaryPlanRequest(
                     add.OwnerUnitId, add.ActionSpecId, add.Facing, add.PrimaryTargetUnitId,
-                    add.Destination, null, add.RequestedStartTick),
+                    add.Destination, currentWindowId, add.RequestedStartTick),
                 currentTick,
                 allocated);
             if (!created.Succeeded) return created.RejectionCode;
@@ -684,6 +954,145 @@ namespace ProjectHero.Logic.Timeline
         /// 因此调用方必须把新计划作为 <paramref name="lookup"/> 的一部分传进来；
         /// 已注册计划仍以注册表为准。
         /// </summary>
+        // ————————————————————————————————————————————————————————————
+        // 提交：TurnBudget 候选变化（任务 07「必须产出」4 第三段）
+        // ————————————————————————————————————————————————————————————
+
+        /// <summary>
+        /// 把本次事务的候选计划投影翻译成<strong>稳定的</strong>预算变化列表（纯计算、零写入）。
+        ///
+        /// 规则（任务 07「必须产出」4 第三段第 3 条）：
+        /// <list type="bullet">
+        /// <item>Add 的普通计划：<c>IsNewReservation = true</c>、窗口 = 当前窗口
+        /// （为 null ⇒ 用"无效窗口"候选，由 <c>ValidateBudget</c> 以
+        /// <c>BUDGET_SOURCE_CLOSED_OR_MISMATCH</c> 整批拒绝）、<c>Delta = 成本</c>、<c>ExpectedReserved = 0</c>、
+        /// <c>Kind = Reserved</c>；</item>
+        /// <item>既有普通计划且成本相对捕获值变化：窗口 = <strong>计划自己的 SubmittedWindowId</strong>
+        /// （为 null ⇒ 同样整批拒绝；<strong>绝不</strong>回退到当前窗口）、<c>Delta = 新成本 - 旧预留</c>、
+        /// <c>Kind = ReservationAdjusted</c>；</item>
+        /// <item>Remove 的普通计划且旧预留 &gt; 0：窗口 = 计划的 <c>SubmittedWindowId</c>
+        /// （为 null ⇒ 跳过释放并继续）、<c>Delta = -旧预留</c>、<c>Kind = ReleasedBeforeLock</c>；</item>
+        /// <item>反应计划（<c>IsReaction</c>）<strong>一律不参与</strong>窗口预算——它们用肾上腺素账本。</item>
+        /// </list>
+        ///
+        /// 同一计划在多处出现时按"Add → 求值 → Remove"的固定优先级取<strong>第一次</strong>出现，
+        /// 从而保证排序键（<c>ActionPlanId</c> 升序）唯一、结果与遍历顺序无关。
+        /// </summary>
+        private static List<TurnBudgetChangeRequest> BuildBudgetChanges(
+            ScheduleBudgetContext context,
+            IReadOnlyList<ActionPlan> addedPlans,
+            IReadOnlyList<ActionPlan> evaluatedPlans,
+            IReadOnlyList<ActionPlan> removedPlans,
+            IReadOnlyDictionary<long, int> capturedReserved)
+        {
+            var changes = new List<TurnBudgetChangeRequest>();
+            var seen = new HashSet<long>();
+
+            // —— Add 候选：首次预留（从当前窗口的 Available 转入该计划名下的 Reserved）——
+            if (addedPlans != null)
+            {
+                for (int i = 0; i < addedPlans.Count; i++)
+                {
+                    ActionPlan plan = addedPlans[i];
+                    if (plan == null || !plan.IsOrdinary) continue;
+                    if (!seen.Add(plan.ActionPlanId.Value)) continue;
+
+                    int cost = plan.BudgetCostTicks;
+                    changes.Add(new TurnBudgetChangeRequest(
+                        plan.ActionPlanId,
+                        plan.SubmittedWindowId ?? WindowIdOf(context),
+                        cost,
+                        cost,
+                        // 冻结契约（任务 07「必须产出」4 第三段第 3 条）：Add 候选的
+                        // ExpectedReserved 恒为 0——该计划 ID 是本次事务新分配的，账本里
+                        // 不可能存在它的预留，因此端口会同时校验 held == 0 与 held != 0 为漂移。
+                        // 这里**不得**读 plan.ReservedTurnBudgetTicks：那是计划自己的投影字段
+                        // （创建时即等于成本），不是账本事实。
+                        expectedReserved: 0,
+                        isNewReservation: true,
+                        TurnBudgetChangeKind.Reserved));
+                }
+            }
+
+            // —— 既有计划：成本差额（Move 链重算可能改变路径权重 ⇒ 必须重算差额）——
+            if (evaluatedPlans != null)
+            {
+                for (int i = 0; i < evaluatedPlans.Count; i++)
+                {
+                    ActionPlan plan = evaluatedPlans[i];
+                    if (plan == null || !plan.IsOrdinary) continue;
+                    if (!seen.Add(plan.ActionPlanId.Value)) continue;
+
+                    int oldReserved = ExpectedReservedOf(capturedReserved, plan.ActionPlanId);
+                    int newCost = plan.BudgetCostTicks;
+                    if (newCost == oldReserved) continue;   // 成本中性：不产生任何账本变化
+
+                    changes.Add(new TurnBudgetChangeRequest(
+                        plan.ActionPlanId,
+                        plan.SubmittedWindowId ?? WindowIdOf(context),
+                        newCost,
+                        newCost - oldReserved,
+                        oldReserved,
+                        isNewReservation: false,
+                        TurnBudgetChangeKind.ReservationAdjusted));
+                }
+            }
+
+            // —— Remove 候选：锁定前终态释放未消费预留 ——
+            if (removedPlans != null)
+            {
+                for (int i = 0; i < removedPlans.Count; i++)
+                {
+                    ActionPlan plan = removedPlans[i];
+                    if (plan == null || !plan.IsOrdinary) continue;
+                    if (!seen.Add(plan.ActionPlanId.Value)) continue;
+
+                    int oldReserved = ExpectedReservedOf(capturedReserved, plan.ActionPlanId);
+                    if (oldReserved <= 0) continue;
+                    // 来源窗口缺失 ⇒ 跳过释放并继续（冻结契约：找不到来源就不释放，
+                    // 也不把释放额转移到当前窗口）。
+                    if (!plan.SubmittedWindowId.HasValue) continue;
+
+                    changes.Add(new TurnBudgetChangeRequest(
+                        plan.ActionPlanId,
+                        plan.SubmittedWindowId.Value,
+                        0,
+                        -oldReserved,
+                        oldReserved,
+                        isNewReservation: false,
+                        TurnBudgetChangeKind.ReleasedBeforeLock));
+                }
+            }
+
+            // 确定性：按 ActionPlanId 升序稳定排序（同一计划理论上只出现一次，平局再按窗口/类别定序）。
+            changes.Sort(CompareBudgetChanges);
+            return changes;
+        }
+
+        private static int CompareBudgetChanges(TurnBudgetChangeRequest a, TurnBudgetChangeRequest b)
+        {
+            int byPlan = a.PlanId.Value.CompareTo(b.PlanId.Value);
+            if (byPlan != 0) return byPlan;
+            int byWindow = a.WindowId.Value.CompareTo(b.WindowId.Value);
+            if (byWindow != 0) return byWindow;
+            return ((int)a.Kind).CompareTo((int)b.Kind);
+        }
+
+        private static int ExpectedReservedOf(IReadOnlyDictionary<long, int> captured, ActionPlanId planId)
+            => captured != null && captured.TryGetValue(planId.Value, out int value) ? value : 0;
+
+        private static WindowId WindowIdOf(ScheduleBudgetContext context)
+            => context != null && context.CurrentWindowId.HasValue
+                ? context.CurrentWindowId.Value
+                : default;
+
+        /// <summary>把本批已改写的排程投影恢复成提交前的形状（零局部写入的排程侧一半）。</summary>
+        private static void RestoreProjections(IReadOnlyList<SpaceProjectionSnapshot> snapshots)
+        {
+            if (snapshots == null) return;
+            for (int i = 0; i < snapshots.Count; i++) snapshots[i].Restore();
+        }
+
         private void ApplyEvaluatedProjections(
             ScheduleEvaluationResult evaluation,
             long revision,

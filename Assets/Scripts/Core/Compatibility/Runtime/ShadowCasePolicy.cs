@@ -71,7 +71,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private ShadowCasePolicy(
             string caseId, string rulesVersion, List<TemporarilyUncomparableField> temporarilyUncomparable,
             List<ShadowComparisonApproval> approvals, List<string> rejections,
-            bool compareScheduleFacts = false, bool compareMovementFacts = false)
+            bool compareScheduleFacts = false, bool compareMovementFacts = false,
+            bool compareTurnWindowFacts = false)
         {
             CaseId = caseId;
             RulesVersion = rulesVersion;
@@ -80,6 +81,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             Rejections = rejections;
             CompareScheduleFacts = compareScheduleFacts;
             CompareMovementFacts = compareMovementFacts;
+            CompareTurnWindowFacts = compareTurnWindowFacts;
         }
 
         public string CaseId { get; }
@@ -119,6 +121,35 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public bool CompareMovementFacts { get; }
 
         /// <summary>
+        /// <strong>逐用例开启</strong>的任务 07 TurnWindow / 整数预算 / 并发授权 / 肾上腺素周期
+        /// 检查点（默认 <c>false</c>）。
+        ///
+        /// 为 <c>true</c> 时：报告额外比较以下逐条事实（Logic 世界对 Logic 世界通道）——
+        /// <list type="bullet">
+        /// <item><c>currentWindowId</c>/<c>nextWindowTick</c>/<c>nextWindowOrdinal</c>/
+        /// <c>lastClosedWindowId</c>/<c>windows.count</c> 与逐窗口
+        /// <c>windows[i].*</c>（拥有者、打开 Tick、整数预算四项、打开/接受提交位、关闭原因、
+        /// 按计划归属的预留明细、<c>budgetIdentity</c> 与预留明细合计一致性）；</item>
+        /// <item><c>resources.turnBudgetAvailable/Reserved/Spent</c> 与
+        /// <c>resources.turnBudgetIdentity</c>、<c>resources.metaResource</c>；</item>
+        /// <item><c>concurrentAction.hasActiveAuthorization/windowId/playerUnitId</c> 与
+        /// "授权必须指向仍开放的当前窗口且不是拥有者本人"这一派生不变量；</item>
+        /// <item><c>adrenaline[unitId].available/cycleId/reservedTotal/reservations</c> 与
+        /// 单位只读镜像一致性（窗口打开清零、跨其他单位窗口保留的<b>证据字段</b>）；</item>
+        /// <item><c>plans[i].budgetCostTicks</c>/<c>reservedTurnBudgetTicks</c>/
+        /// <c>submittedWindowLedger</c>/<c>budgetLedgerLinked</c>——即"计划跨窗口切换时
+        /// 身份、状态、排程与预算归属逐字不变"的检查点。</item>
+        /// </list>
+        ///
+        /// 同时额外登记本任务在<strong>生产旧侧观测通道</strong>上无法采样的字段：
+        /// 旧权威里根本没有"提交窗口""整数 Tick 预算账本""并发提交授权""肾上腺素周期账本"
+        /// 这四类对象（旧侧只有逐帧时间累加器与浮点 <c>CurrentAdrenaline</c>）。
+        ///
+        /// 既有用例使用默认值 ⇒ 它们的报告逐字节不变（不引入任何新差异类别）。
+        /// </summary>
+        public bool CompareTurnWindowFacts { get; }
+
+        /// <summary>
         /// 任务 03B 的冻结用例策略。
         ///
         /// 暂不可比较字段逐条给出对象路径/字段/原因/负责任务/最迟清零门槛。
@@ -126,7 +157,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// </summary>
         public static ShadowCasePolicy CreateDefault(
             string caseId, string rulesVersion,
-            bool compareScheduleFacts = false, bool compareMovementFacts = false)
+            bool compareScheduleFacts = false, bool compareMovementFacts = false,
+            bool compareTurnWindowFacts = false)
         {
             var temporarilyUncomparable = new List<TemporarilyUncomparableField>();
             var approvals = new List<ShadowComparisonApproval>();
@@ -136,7 +168,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 temporarilyUncomparable, rejections,
                 "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline",
                 "availableAdrenaline",
-                "旧实现用浮点 CurrentAdrenaline 逐帧衰减（CombatUnit.Update，5/s），新内核用整数 AvailableAdrenaline + 个人 CycleId；量纲与生命周期都不同，在只读检查点无法稳定采样。",
+                "旧实现用浮点 CurrentAdrenaline 逐帧衰减（CombatUnit.Update，5/s），新内核用整数 AvailableAdrenaline + 个人 CycleId；"
+                + "量纲与生命周期都不同，在只读检查点无法稳定采样。"
+                + "任务 07 已把新侧模型落定（每单位 AdrenalineLedger：Available 不衰减、跨其他单位窗口保留、"
+                + "自己窗口打开时先递增 CycleId 再清零、预留按 ReservationCycleId 归属、Tick 末只接受规范聚合事实入账），"
+                + "但旧侧浮点衰减仍在逐帧改变取值 ⇒ 本条**仍**不可做字段级相等比较（不是被忽略，也不是被批准）。"
+                + "逐窗口/逐周期的真实比较在 Logic 对 Logic 通道上完成（Task07TurnWindowFacts，"
+                + "逐用例由 ShadowCasePolicy.CompareTurnWindowFacts 开启）；"
+                + "本条的迁移归属仍是任务 10（旧表现层最后一次读取旧字段之前）。",
                 "07",
                 "任务 10 切换主场景到 New 之前");
 
@@ -144,7 +183,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 temporarilyUncomparable, rejections,
                 "CombatSampleScene/Player#CombatUnit.CurrentStamina",
                 "staminaQ10",
-                "旧体力是 CombatUnit 浮点字段，新方案 1.2 已定移除；在新资源模型落地前没有对应字段可比较。",
+                "旧体力是 CombatUnit 浮点字段，新方案 1.2 已定移除；在新资源模型落地前没有对应字段可比较。"
+                + "任务 07 的整数预算与肾上腺素账本**都不映射**旧体力/专注（旧体力不再被任何 Logic 路径读取），"
+                + "因此本条不会因任务 07 而消失：它随旧字段一起在任务 10 的场景迁移中清零。",
                 "07",
                 "任务 10 切换主场景到 New 之前");
 
@@ -312,8 +353,27 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 RegisterTask06MovementRegistrations(temporarilyUncomparable, rejections);
             }
 
+            // —— 任务 07：TurnWindow / 整数预算 / 并发授权 / 肾上腺素周期的生产通道
+            //    （旧侧观测）登记项 ——
+            //
+            // 为什么必须登记而不是"转成批准差异"或"塞进可比较字段"：
+            // 旧权威里根本没有"提交窗口""整数 Tick 预算账本""并发提交授权""个人肾上腺素周期账本"
+            // 这四类对象——旧玩法里玩家单位可以随时直接下达动作（TacticsController），
+            // 时间是逐帧浮点累加器（BattleTimeline._timeAccumulator），
+            // 肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline 且逐帧衰减。
+            // 它们**不可能**经 BattleSimulationSourceFactory.Observe() 真读；
+            // 按 03B 观测契约，这类字段必须逐条声明"暂不可比较 + 负责任务 + 清零门槛"，
+            // 绝不允许用定义派生常量冒充旧侧事实，也绝不允许整体忽略。
+            // 真正的逐窗口/逐账本比较在 Logic 对 Logic 通道上完成
+            // （见 ShadowDifferenceDetector.Task07TurnWindowFacts，逐用例由本开关开启）。
+            if (compareTurnWindowFacts)
+            {
+                RegisterTask07TurnWindowRegistrations(temporarilyUncomparable, rejections);
+            }
+
             return new ShadowCasePolicy(caseId ?? string.Empty, rulesVersion ?? string.Empty,
-                temporarilyUncomparable, approvals, rejections, compareScheduleFacts, compareMovementFacts);
+                temporarilyUncomparable, approvals, rejections, compareScheduleFacts, compareMovementFacts,
+                compareTurnWindowFacts);
         }
 
         /// <summary>
@@ -422,6 +482,149 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
             RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "terminalPlanRecordCount",
                 "旧侧没有「终态计划历史 + 增量摘要」这一结构（任务 03 归档协议是新的）。", owner, gate);
+        }
+
+        /// <summary>
+        /// 任务 07 的登记项：覆盖「窗口打开/关闭、整数 Tick 预算、并发提交授权、肾上腺素周期账本、
+        /// 跨窗口计划不变性」五类事实在<strong>生产旧侧观测通道</strong>上的覆盖边界。
+        ///
+        /// 每条都带旧侧对象路径 + 字段 + 原因 + 负责任务 + 最迟清零门槛；
+        /// 逐条登记而不是整类忽略——"新侧存在、旧侧不存在"这一事实本身就是差异，
+        /// 必须写进登记表，而不是塞进批准差异（本策略<strong>不批准任何差异</strong>）。
+        /// </summary>
+        private static void RegisterTask07TurnWindowRegistrations(
+            List<TemporarilyUncomparableField> fields, List<string> rejections)
+        {
+            const string owner = "07";
+            const string gate = "任务 10 切换主场景到 New 之前";
+            // 旧侧的「战斗所有者」：它没有任何回合窗口/提交权限对象（旧玩法随时可下令）。
+            const string legacyBattleOwner = "CombatSampleScene/Manager#BattleManager";
+            // 旧侧唯一的时间事实：逐帧浮点累加器（不是「按动作预留的整数 Tick 预算」）。
+            const string legacyTime = "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator";
+            // 旧侧唯一的玩家输入路径：直接执行动作，没有「授权」这一中间对象。
+            const string legacyInput = "CombatSampleScene/Core/Gameplay#TacticsController";
+            // 旧侧肾上腺素：浮点字段（与既有 availableAdrenaline 登记项同一对象路径）。
+            const string legacyAdrenaline = "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline";
+            // 旧侧计划/排程：BattleTimeline 的事件表（无计划对象，也没有窗口归属字段）。
+            const string legacyPlans = "CombatSampleScene/CombatDemo#BattleTimeline._events";
+
+            const string whyNoWindow =
+                "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态"
+                + "（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），"
+                + "因此该字段在只读检查点上没有可采样的旧侧事实。"
+                + "逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。";
+            const string whyNoIntegerBudget =
+                "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），"
+                + "既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式"
+                + "（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。";
+            const string whyNoAuthority =
+                "旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，"
+                + "也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。";
+            const string whyNoCycle =
+                "旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），"
+                + "新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；"
+                + "周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。";
+
+            // —— ① 窗口打开/关闭 ——
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "currentWindowId",
+                whyNoWindow + "（窗口 ID 计数器 nextWindowId 仍作为基础设施事实逐检查点比较；"
+                + "这里登记的是「哪个窗口是当前窗口」这一权限状态）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows.count",
+                whyNoWindow + "（含已关闭窗口的可审计账本，旧侧没有窗口对象可计数）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].openedAtTick",
+                whyNoWindow + "（旧侧没有「窗口在哪个 Tick 打开」的权威边界）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].isOpen",
+                whyNoWindow + "（旧侧没有「已请求关闭/已正式关闭」这两个分离的窗口位）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].isAcceptingSubmissions",
+                whyNoWindow + "（旧侧没有「立即停止接受新增提交，但本 Tick 后续命令仍按稳定码拒绝」这一语义）",
+                owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].closeReason",
+                whyNoWindow + "（OwnerRequested/BudgetExhausted/OwnerDied/BattleEnded 四类关闭原因是新内核的显式语义）",
+                owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].totalBudgetTicks",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].reservedBudgetTicks",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].spentBudgetTicks",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].availableBudgetTicks",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].reservations",
+                whyNoIntegerBudget + "（按 ActionPlanId 归属的预留明细尤其不存在：旧侧动作没有「从哪个窗口预留了多少 Tick」这一事实）",
+                owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].budgetIdentity",
+                whyNoIntegerBudget + "（恒等式 Reserved + Spent + Available == Total 与预留明细合计一致性都是新侧不变量）",
+                owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "nextWindowTick",
+                whyNoWindow + "（旧侧没有「下一个窗口最早在哪一 Tick 打开」的排程事实）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "lastClosedWindowId",
+                whyNoWindow + "（旧侧没有「最近关闭的窗口」这一审计事实）", owner, gate);
+
+            // —— ② 整数预算的全局聚合（战斗资源快照）——
+            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetAvailable",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetReserved",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetSpent",
+                whyNoIntegerBudget, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetIdentity",
+                whyNoIntegerBudget + "（全部窗口聚合的恒等式同样是新侧不变量）", owner, gate);
+
+            // —— ③ 并发提交授权 ——
+            RegisterTemporarilyUncomparable(fields, rejections, legacyInput, "concurrentAction.hasActiveAuthorization",
+                whyNoAuthority, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyInput, "concurrentAction.windowId",
+                whyNoAuthority + "（授权绑定到哪一个窗口同样是新侧事实）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyInput, "concurrentAction.playerUnitId",
+                whyNoAuthority + "（「激活者」必须等于装配显式注入的主角单位，旧侧没有该身份）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyInput, "resources.metaResource",
+                "旧侧局外资源没有被「按窗口一次、由权威定义定价」的消费通道："
+                + "新侧并发激活的费用只来自 ConcurrentActionDefinition，并原子扣减唯一计数；"
+                + "旧侧没有对应的事实可采样（旧输入路径不消费该资源）。", owner, gate);
+
+            // —— ④ 肾上腺素周期账本（清零时机与跨窗口保留）——
+            RegisterTemporarilyUncomparable(fields, rejections, legacyAdrenaline, "adrenaline[unitId].cycleId",
+                whyNoCycle, owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyAdrenaline, "adrenaline[unitId].reservations",
+                whyNoCycle + "（旧侧没有「按计划归属、带 ReservationCycleId」的预留明细）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyAdrenaline, "adrenaline[unitId].reservedTotal",
+                whyNoCycle + "（预留合计同样不存在）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyAdrenaline, "units[i].adrenalineCycleId",
+                whyNoCycle + "（单位只读镜像里的周期号在旧侧没有对应字段）", owner, gate);
+
+            // —— ⑤ 跨窗口计划不变性（计划的预算投影与来源窗口账本的联系）——
+            RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "plans[i].budgetCostTicks",
+                whyNoIntegerBudget + "（动作的整数预算成本在旧侧由动画/时间线隐式决定，没有可比较字段）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "plans[i].reservedTurnBudgetTicks",
+                whyNoIntegerBudget + "（计划当前持有的预留额同样是新侧投影）", owner, gate);
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "plans[i].submittedWindowLedger",
+                whyNoWindow + "（「计划跨窗口切换时其来源窗口账本逐字不变」这条不变量的旧侧对应事实不存在："
+                + "旧侧动作根本没有窗口归属；plans[i].submittedWindowId 本身已由任务 05 的登记项覆盖）",
+                owner, gate);
         }
 
         /// <summary>用显式给出的暂不可比较字段、批准差异与既有拒绝项构造策略。</summary>

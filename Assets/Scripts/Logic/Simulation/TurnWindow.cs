@@ -1,64 +1,35 @@
+using System;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Turns;
 
 namespace ProjectHero.Logic.Simulation
 {
-    /// <summary>窗口关闭原因（任务 07 会追加新值；数值参与快照哈希，不得重排）。</summary>
-    public enum TurnWindowCloseReason
-    {
-        /// <summary>拥有者或规则显式请求关闭。</summary>
-        OwnerRequested = 0,
-
-        /// <summary>战斗进入终态：当前窗口以该原因关闭。</summary>
-        BattleEnded = 1
-    }
-
-    /// <summary>一个待打开的提交窗口请求（阶段 3 消费）。</summary>
-    public sealed record WindowOpenRequest(UnitId OwnerUnitId, int BudgetTicks);
-
     /// <summary>
-    /// 窗口排程扩展点（阶段 3 / 17）。任务 03 的默认实现是"不排定任何窗口"；
-    /// 任务 07 用真实 <c>TurnWindowManager</c> 替换它。
+    /// 窗口管理器所需的<strong>只读世界事实</strong>（任务 07「必须产出」2）。
     ///
-    /// 窗口<strong>只</strong>控制提交新动作的权限和预算：它不拥有动作，也不是动作执行或结算边界
-    /// （00 号规则 2）。因此这里没有、也不允许出现"窗口内含计划集合"的结构。
+    /// 管理器<strong>不</strong>持有单位状态、也不查询网格或计划：它只问两件事——
+    /// "这个单位的拥有者还活着吗""战斗是否已经结束"。两个答案都由本场模拟提供，
+    /// 因此窗口系统与单位/胜负模型保持单向依赖（Logic 内部无环）。
     /// </summary>
-    public interface ITurnWindowSchedule
+    internal sealed class SimulationTurnWindowWorld : ITurnWindowWorldView
     {
-        /// <summary>本 Tick 应打开的窗口；null 表示没有。</summary>
-        WindowOpenRequest TryOpenDue(long tick);
+        private readonly Func<UnitId, bool> _isUnitAlive;
+        private readonly Func<bool> _isBattleEnded;
 
-        /// <summary>本 Tick 是否正式关闭当前窗口。</summary>
-        bool ShouldCloseCurrentWindow(long tick);
-    }
-
-    /// <summary>默认窗口排程：永不打开、永不关闭（任务 07 接入真实实现）。</summary>
-    public sealed class NoTurnWindowSchedule : ITurnWindowSchedule
-    {
-        public static readonly NoTurnWindowSchedule Instance = new NoTurnWindowSchedule();
-
-        public WindowOpenRequest TryOpenDue(long tick) => null;
-
-        public bool ShouldCloseCurrentWindow(long tick) => false;
-    }
-
-    /// <summary>运行期窗口状态（只描述权限边界，不拥有任何计划）。</summary>
-    internal sealed class TurnWindowState
-    {
-        public WindowId WindowId;
-        public UnitId OwnerUnitId;
-        public long OpenedAtTick;
-        public int BudgetTicks;
-        public bool CloseRequested;
-        public bool IsOpen;
-
-        public void Clear()
+        public SimulationTurnWindowWorld(Func<UnitId, bool> isUnitAlive, Func<bool> isBattleEnded)
         {
-            WindowId = default;
-            OwnerUnitId = default;
-            OpenedAtTick = -1L;
-            BudgetTicks = 0;
-            CloseRequested = false;
-            IsOpen = false;
+            _isUnitAlive = isUnitAlive;
+            _isBattleEnded = isBattleEnded;
         }
+
+        /// <summary>
+        /// 窗口拥有者是否仍存活（待打开窗口在打开阶段前死亡 ⇒ 按稳定顺序跳过，
+        /// 不产生该单位的窗口打开事件，也不产生预算）。
+        /// </summary>
+        public bool IsUnitAliveForWindow(UnitId unitId)
+            => _isUnitAlive != null && _isUnitAlive(unitId);
+
+        /// <summary>战斗是否已经结束（结束后不再打开、也不排定任何窗口）。</summary>
+        public bool IsBattleEnded => _isBattleEnded != null && _isBattleEnded();
     }
 }

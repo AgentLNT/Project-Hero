@@ -23,6 +23,14 @@ namespace ProjectHero.Logic.Timeline
         public const string SOURCE_ALREADY_OPEN = "REACTION_SOURCE_ALREADY_OPEN";
         public const string OPTION_ALREADY_RESOLVED = "REACTION_OPTION_ALREADY_RESOLVED";
         public const string OPPORTUNITY_NOT_OPEN = ReactionCodes.OPPORTUNITY_NOT_OPEN;
+
+        /// <summary>
+        /// 07-A：肾上腺素预留已经成功，但计划创建/注册未能提交 = <strong>内部矛盾</strong>
+        /// （前置校验与工厂判定分叉）。它以稳定不变量错误令 Step 失败，
+        /// 绝不静默留下"已扣费但没有计划"的半提交状态。
+        /// </summary>
+        public const string REACTION_ADRENALINE_COMMIT_INCONSISTENT =
+            "REACTION_ADRENALINE_COMMIT_INCONSISTENT";
     }
 
     /// <summary>
@@ -273,6 +281,29 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public IDodgeDestinationReservationPort DestinationReservationPort { get; set; }
 
+        /// <summary>
+        /// <strong>07-E：肾上腺素事务端口</strong>（<c>IAdrenalineLedgerPort</c>；唯一权威是
+        /// <c>AdrenalineLedger</c> / <c>AdrenalineLedgerRegistry</c>，本系统<strong>不</strong>持有第二份状态）。
+        ///
+        /// 装配后：
+        /// <list type="bullet">
+        /// <item><strong>接受</strong>（<see cref="TryAccept"/> 全族）在创建/注册计划之前按权威
+        /// <c>ActionSpec.AdrenalineCost</c> 预留，失败即整条接受失败且零副作用（07-A）；</item>
+        /// <item><strong>触发确认</strong>（<see cref="ConfirmTrigger"/>）在同一提交边界消费预留（07-B）；</item>
+        /// <item><strong>来源威胁取消</strong>（<see cref="CancelForSourceThreat"/>）按周期规则释放预留，
+        /// 并确定性地下发 <see cref="PendingReservationReleases"/> 里的排队项（07-C）；其余终态一律不退款（07-D）。</item>
+        /// </list>
+        ///
+        /// 未设置时（任务 05/06 的既有装配）本系统<strong>保持既有语义</strong>：不抛异常、
+        /// 不改变任何既有拒绝码、不改变排队行为。属性与 <see cref="Planner"/> 上的同名属性是
+        /// <strong>同一个状态</strong>（转发），因此不存在两个可写端口。
+        /// </summary>
+        public Resources.IAdrenalineLedgerPort AdrenalinePort
+        {
+            get => _planner.AdrenalinePort;
+            set => _planner.AdrenalinePort = value;
+        }
+
         /// <summary>活动机会（按 <c>ReactionOpportunityId</c> 升序的稳定枚举）。</summary>
         public IReadOnlyList<ReactionOpportunityRuntime> ActiveOpportunities => _active;
 
@@ -478,11 +509,45 @@ namespace ProjectHero.Logic.Timeline
             if (optionSpec.Type == ActionType.Block && dodgeDestination.HasValue)
                 return ReactionCodes.REACTION_ACTION_NOT_BLOCK_OR_DODGE;
 
+            // 07-A：接受反应的**权威费用**只来自 ActionSpec.AdrenalineCost
+            // （AdrenalineRules.ValidateReactionCost 所约束的同一字段）；命令载荷与调用参数
+            // 都不携带、也不能覆盖它。这里只判定"该费用是否允许这次接受"，
+            // 真正的预留由 ReactionPlanner 在同一事务内用同一权威字段完成（见下）。
+            // 未装配肾上腺素端口时跳过（任务 05/06 的既有装配保持既有语义）。
+            if (AdrenalinePort != null)
+            {
+                string costError = _definition.AdrenalineRules.ValidateReactionCost(
+                    optionSpec.Type, optionSpec.AdrenalineCost);
+                if (costError != null) return costError;
+            }
+
             ActorLane lane = _authority.FindLane(defenderUnitId);
             if (lane != null && lane.IsSubmissionLocked)
                 return ReactionCodes.REACTION_LANE_SUBMISSION_LOCKED;
 
-            // 先冻结资源/目的格（任务 07/06 接缝），再创建计划：失败必须整条回滚。
+            // 07-A：固定反应区间与 Lane 的占位判定提前到**任何冻结与预留之前**
+            // （区间按 ActionPlan.ApplyReactionInterval 的同一规则从 ActionSpec 推导）。
+            // 因此"区间被占用"这条拒绝路径既不占用 ActionPlanId、也不写 Lane、
+            // 也不触碰肾上腺素账本，且选项保持开放。
+            string intervalError = ReactionPlanner.TryResolveReactionInterval(
+                optionSpec, opportunity.TriggerTick, out long intervalStart, out long intervalLength);
+            if (intervalError != null) return intervalError;
+
+            // 任务 07 裁定 A（放宽接受侧，使 MovementOriginInvalidatedByDodge 在生产路径可达）：
+            // Dodge 的固定反应区间**允许**覆盖"它自己在 TriggerTick 会失效掉的后续 Editable 移动族"。
+            // 容忍判据收敛在 DodgeMovementInvalidationSeam.DodgeMayInvalidate（与失效闭包过滤器
+            // 逐字一致），本预检与 ReactionPlanner 的复核共用它，避免两处判据分叉。
+            // Block 不换位 ⇒ 绝不容忍任何重叠（保持原判据）。
+            if (lane != null && lane.TryFindOverlapExcept(
+                    intervalStart, intervalLength, null,
+                    overlapping => DodgeMovementInvalidationSeam.DodgeMayInvalidate(
+                        overlapping, optionSpec.Type, intervalStart),
+                    out _))
+                return ReactionCodes.REACTION_LANE_INTERVAL_OCCUPIED;
+
+            // 冻结注入的准备接缝（任务 06 的空间/资源预检；失败必须整条回滚）。
+            // 07-A：肾上腺素预留不在这里 —— 它必须在"候选 ActionPlanId 已解析、且不再有
+            // 任何可预期校验"之后，与计划创建/注册合成同一个提交（见下）。
             string prepared = PreparationPort?.Prepare(sourcePlan, option.Option, defenderUnitId, tick);
             if (prepared != null) return prepared;
 
@@ -500,8 +565,15 @@ namespace ProjectHero.Logic.Timeline
                 }
             }
 
-            string planError = _planner.TryPlan(
-                opportunity, option, sourcePlan, tick, dodgeDestination, out ActionPlan reaction);
+            // 07-A：先解析候选 ActionPlanId（只读观察：**不**推进 ID 计数器），再由规划器在
+            // "预留 → 创建并注册"的同一事务里提交。预留失败 ⇒ 整条接受失败且零副作用
+            // （不注册计划、不写 Lane、不占用 ID、不消费机会）；候选值必须恰好等于工厂
+            // 随后分配到的值（ReactionPlanner 以 ACTION_PLAN_ID_RESERVATION_MISMATCH 复核）。
+            // 反应接受不得要求窗口、ExpectedWindowId 或 ConcurrentActionSystem 授权（00 号规则 26）。
+            ActionPlanId candidatePlanId = new ActionPlanId(_idGenerator.NextActionPlanIdValue);
+            string planError = _planner.TryPlanWithReservation(
+                opportunity, option, sourcePlan, tick, dodgeDestination, candidatePlanId,
+                out ActionPlan reaction);
             if (planError != null)
             {
                 DestinationReservationPort?.ReleaseDestination(opportunity.Id);
@@ -625,17 +697,29 @@ namespace ProjectHero.Logic.Timeline
         /// 任务 06/08 的 TriggerTick 位置事务<strong>成功</strong>之后的确认接缝。
         /// 只有它能把 <c>Accepted</c> 推进到 <c>Triggered</c> 并发射
         /// <see cref="ReactionTriggeredEvent"/>；本任务绝不伪造触发。
+        ///
+        /// 07-B：同一提交边界内消费该反应的肾上腺素预留
+        /// （<c>IAdrenalineLedgerPort.ConsumeAtTrigger</c>；幂等）。
         /// </summary>
         public string ConfirmTrigger(ReactionOpportunityId opportunityId, long tick)
         {
             ReactionOpportunityRuntime opportunity = FindById(opportunityId);
             if (opportunity == null) return ReactionOpportunityCodes.OPPORTUNITY_NOT_OPEN;
-            if (opportunity.State == ReactionOpportunityState.Triggered) return null;
-            if (opportunity.State != ReactionOpportunityState.Accepted)
+            bool alreadyTriggered = opportunity.State == ReactionOpportunityState.Triggered;
+            if (!alreadyTriggered && opportunity.State != ReactionOpportunityState.Accepted)
                 return ReactionOpportunityCodes.OPPORTUNITY_NOT_OPEN;
 
             ActionPlan bound = _authority.Registry.Find(opportunity.BoundActionPlanId);
             if (bound == null) return ReactionCodes.REACTION_SOURCE_THREAT_ALREADY_TERMINAL;
+
+            // 07-B：TriggerTick 的预留消费与"触发确认"是**同一个提交边界** —— 只有反应
+            // 实际执行（任务 06/08 的位置/换位事务成功）之后才会走到这里，因此
+            // 既不会"触发之前消费"，也不会留下"触发成功但仍持预留"的空洞。
+            // 账本保证幂等（无预留 ⇒ 无操作，不重复消费）；重复确认路径同样调用它，
+            // 因此"端口晚于首次确认才装配"这一装配顺序也不会留下永久预留。
+            AdrenalinePort?.ConsumeAtTrigger(bound.ActionPlanId);
+
+            if (alreadyTriggered) return null;   // 幂等：重复确认不重复发事件
 
             opportunity.State = ReactionOpportunityState.Triggered;
             Record(new ReactionTriggeredEvent(
@@ -883,6 +967,23 @@ namespace ProjectHero.Logic.Timeline
 
         private void RequestReservationRelease(ActionPlanId reactionPlanId, ReactionOpportunityId opportunityId, long tick)
         {
+            // 任务 05/06 冻结的通知语义（接收方优先，否则就地释放，再否则排队保留）：
+            // 逐字保留，未装配肾上腺素端口时行为完全不变。
+            NotifyReservationRelease(reactionPlanId, opportunityId, tick);
+
+            // 07-C：肾上腺素释放与上面的"目的格预留通知"是两条独立、幂等的通道。
+            // 它只认来源威胁取消（调用者只有 CancelForSourceThreat），未装端口时为无操作。
+            TryDispatchAdrenalineRelease(reactionPlanId);
+        }
+
+        /// <summary>
+        /// 任务 05/06 冻结的预留释放通知（<strong>逐字保留</strong>的原实现）：
+        /// 有接收方 ⇒ 交给接收方；绑定计划已终态/不存在且目的格端口本身是接收方 ⇒ 就地释放；
+        /// 其余情形（"绑定计划仍非终态且没有接收方"）<strong>排队保留</strong>，绝不静默丢弃。
+        /// </summary>
+        private void NotifyReservationRelease(
+            ActionPlanId reactionPlanId, ReactionOpportunityId opportunityId, long tick)
+        {
             if (ReservationReleaseSink != null)
             {
                 ReservationReleaseSink.ReleaseFor(reactionPlanId, opportunityId, tick);
@@ -916,6 +1017,95 @@ namespace ProjectHero.Logic.Timeline
             }
 
             _pendingReleases.Add(new ReactionReservationReleaseRequest(reactionPlanId, opportunityId, tick));
+        }
+
+        /// <summary>
+        /// <strong>07-C：把排队中的"来源威胁取消 ⇒ 释放未消费预留"请求确定性地下发到肾上腺素端口，
+        /// 并在下发后清空对应队列项。</strong>
+        ///
+        /// 它是本 Tick 处理边界的消费者（绑定计划进入终态后、或 Tick 末由装配方调用一次）：
+        /// <list type="bullet">
+        /// <item><strong>稳定顺序</strong>：按 <c>(ActionPlanId, ReactionOpportunityId)</c> 升序下发，
+        /// 与入队顺序无关；同一计划只下发一次；</item>
+        /// <item><strong>幂等</strong>：重复调用不会重复下发（队列项已清空；账本对已释放的预留也是无操作）；</item>
+        /// <item><strong>不退款集合</strong>（07-D）：绑定计划已因<strong>其他</strong>原因进入终态
+        /// （主动取消/被控制/死亡/目的格失效/已触发等）的条目<strong>不</strong>下发、也<strong>不</strong>清除
+        /// （保留可审计事实，绝不调用任何释放/返还）；</item>
+        /// <item>未装配肾上腺素端口时（任务 05/06 的既有装配）返回 0 且<strong>不</strong>改动队列 ——
+        /// 既有"排队保留给任务 07"的语义完全不变。</item>
+        /// </list>
+        /// 返回实际下发的<strong>不同计划</strong>数。
+        /// </summary>
+        public int DispatchPendingReservationReleases()
+        {
+            if (AdrenalinePort == null || _pendingReleases.Count == 0) return 0;
+
+            var ordered = new List<ReactionReservationReleaseRequest>(_pendingReleases);
+            ordered.Sort(CompareReleaseRequests);
+
+            var dispatchedPlanIds = new List<long>();
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                ReactionReservationReleaseRequest request = ordered[i];
+                if (!IsAdrenalineReleaseAdmissible(request.ReactionPlanId)) continue;
+                if (dispatchedPlanIds.Contains(request.ReactionPlanId.Value)) continue;
+
+                AdrenalinePort.ReleaseForSourceThreatCancelled(request.ReactionPlanId);
+                dispatchedPlanIds.Add(request.ReactionPlanId.Value);
+            }
+
+            if (dispatchedPlanIds.Count == 0) return 0;
+
+            // 下发后清空对应队列项（按已下发的计划键，而不是重新判定状态）。
+            for (int i = _pendingReleases.Count - 1; i >= 0; i--)
+            {
+                if (dispatchedPlanIds.Contains(_pendingReleases[i].ReactionPlanId.Value))
+                    _pendingReleases.RemoveAt(i);
+            }
+            return dispatchedPlanIds.Count;
+        }
+
+        /// <summary>
+        /// 07-C 的单条下发（来源取消路径内的即时下发；未装端口时为无操作）。
+        /// </summary>
+        private bool TryDispatchAdrenalineRelease(ActionPlanId reactionPlanId)
+        {
+            if (AdrenalinePort == null) return false;
+            if (!IsAdrenalineReleaseAdmissible(reactionPlanId)) return false;
+
+            AdrenalinePort.ReleaseForSourceThreatCancelled(reactionPlanId);
+            return true;
+        }
+
+        /// <summary>
+        /// <strong>07-D：肾上腺素释放的准入判定</strong> —— 只有"来源威胁取消且反应尚未触发"才可释放。
+        ///
+        /// 调用者只有来源取消路径（<see cref="CancelForSourceThreat"/>，且只处理
+        /// <c>Open/Accepted</c> 的机会 ⇒ 反应<strong>尚未触发</strong>）；这里再排除
+        /// "绑定计划已因<strong>其他</strong>原因进入终态"：防御者主动取消、被控制、死亡、
+        /// 目的格失效、<c>InterruptedByControl</c> 等终态一律<strong>不</strong>退款
+        /// （00 号规则 27 / 任务 07「必须产出」7 第四段）。
+        ///
+        /// 未注册的计划返回 true：账本里不可能存在该计划的预留（预留与注册在同一事务内），
+        /// 因此端口调用是幂等无操作。
+        /// </summary>
+        private bool IsAdrenalineReleaseAdmissible(ActionPlanId reactionPlanId)
+        {
+            if (!reactionPlanId.IsValid) return false;
+
+            ActionPlan bound = _authority.Registry.Find(reactionPlanId);
+            if (bound == null) return true;
+            if (!bound.IsTerminal) return true;   // 机会已按 SourceCancelled 关闭 ⇒ 永不触发
+            return bound.TerminationReason == ActionTerminationReason.SourceThreatCancelled;
+        }
+
+        /// <summary>释放请求的规范顺序：<c>ActionPlanId</c> 升序 → <c>ReactionOpportunityId</c> 升序。</summary>
+        private static int CompareReleaseRequests(
+            ReactionReservationReleaseRequest left, ReactionReservationReleaseRequest right)
+        {
+            int byPlan = left.ReactionPlanId.Value.CompareTo(right.ReactionPlanId.Value);
+            if (byPlan != 0) return byPlan;
+            return left.OpportunityId.Value.CompareTo(right.OpportunityId.Value);
         }
 
         private ReactionOpportunityRuntime FindById(ReactionOpportunityId id)

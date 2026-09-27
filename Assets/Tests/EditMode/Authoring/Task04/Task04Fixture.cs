@@ -11,6 +11,7 @@ using ProjectHero.Logic.Initialization;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Status;
+using ProjectHero.Logic.Turns;
 using ProjectHero.Logic.Units;
 
 namespace ProjectHero.Authoring.Tests.Task04

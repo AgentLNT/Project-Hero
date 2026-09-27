@@ -4,6 +4,7 @@ using System.Globalization;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Combat;
+using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Simulation;
 
 namespace ProjectHero.Logic.Timeline
@@ -68,6 +69,14 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public Action<ScheduleEditTransactionResult, long> CommittedTransactionSink { get; set; }
 
+        /// <summary>
+        /// 窗口命令处理端口（任务 07 的 <c>TurnWindowManager</c> + <c>ConcurrentActionSystem</c> 注入）。
+        ///
+        /// 返回 null = 已处理（成功或幂等无操作）；否则为稳定拒绝码。
+        /// 未注入时窗口命令<strong>不</strong>静默接受：它们走既有的 fallback 路径并以稳定码拒绝。
+        /// </summary>
+        public Func<CommandEnvelope, long, string> WindowCommandHandler { get; set; }
+
         /// <summary>每个 Step 开始时复位本 Tick 的批内冲突集合。</summary>
         public void BeginTick()
         {
@@ -91,8 +100,14 @@ namespace ProjectHero.Logic.Timeline
                     case ScheduleEditPayload schedule:
                     {
                         long expectedRevision = ExpectedRevisionOf(envelope.Request.Scope);
+                        // 任务 07「必须产出」4 / 00 号规则 18：新增或增加预算时窗口必填，
+                        // 且发行者身份只能来自命令网关绑定的 CommandEnvelope.ControllerId
+                        // （绝不来自命令载荷、scope 或调用参数）。
                         ScheduleEditTransactionResult result = _editor.Apply(
-                            schedule.Operations, tick, batchBaseScheduleRevision, expectedRevision);
+                            schedule.Operations, tick, batchBaseScheduleRevision, expectedRevision,
+                            preview: false,
+                            expectedWindowId: ExpectedWindowIdOf(envelope.Request.Scope),
+                            issuer: envelope.ControllerId);
                         if (!result.Succeeded)
                         {
                             rejections.Add(new CommandRejectionRecord(envelope, result.RejectionCode));
@@ -119,10 +134,24 @@ namespace ProjectHero.Logic.Timeline
                     }
 
                     case WindowCommandPayload _:
-                        // 任务 07：窗口预算与提交授权。本任务不写任何状态。
-                        rejections.Add(new CommandRejectionRecord(
-                            envelope, FallbackReasonFor(envelope, tick, batchBaseScheduleRevision)));
+                    {
+                        // 任务 07：关窗与并发行动激活的权威入口。
+                        // 身份（ControllerId）、目标窗口（ExpectedWindowId）与权威费用都由
+                        // 注入的处理器自行从 envelope/scope/定义读取；载荷里根本没有这些字段。
+                        // 未注入处理器时保持既有语义：走 fallback（没有 fallback 即以稳定码拒绝），
+                        // 绝不静默接受。
+                        if (WindowCommandHandler == null)
+                        {
+                            rejections.Add(new CommandRejectionRecord(
+                                envelope, FallbackReasonFor(envelope, tick, batchBaseScheduleRevision)));
+                            break;
+                        }
+
+                        string windowError = WindowCommandHandler(envelope, tick);
+                        if (windowError != null)
+                            rejections.Add(new CommandRejectionRecord(envelope, windowError));
                         break;
+                    }
 
                     default:
                         rejections.Add(new CommandRejectionRecord(
@@ -154,6 +183,17 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         private static long ExpectedRevisionOf(CommandScope scope)
             => scope is ScheduleEditScope schedule ? schedule.ExpectedScheduleRevision : long.MinValue;
+
+        /// <summary>
+        /// 从排程 scope 读取 <c>ExpectedWindowId</c>（任务 07「必须产出」4）。
+        ///
+        /// scope 判别不匹配时返回 <c>null</c>（"没有声明窗口"），
+        /// <strong>绝不</strong>回退成"当前窗口"：
+        /// 此时同一条命令的 <c>ExpectedScheduleRevision</c> 已经是哨兵值，
+        /// 一定先以 <c>STALE_SCHEDULE_REVISION</c> 稳定拒绝，因此窗口参数不会被用于任何授权。
+        /// </summary>
+        private static WindowId? ExpectedWindowIdOf(CommandScope scope)
+            => scope is ScheduleEditScope schedule ? schedule.ExpectedWindowId : (WindowId?)null;
 
         /// <summary>诊断文本（不参与逻辑与哈希）。</summary>
         public string Describe()

@@ -127,6 +127,11 @@ namespace ProjectHero.Core.Compatibility.Runtime
             // 因此"首个差异"的既有顺序不被改变。
             if (policy.CompareMovementFacts)
                 Task06MovementFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
+            // 任务 07：TurnWindow / 整数预算 / 并发授权 / 肾上腺素周期 / 跨窗口计划不变性。
+            // 同样**逐用例开启**（默认关闭 ⇒ 既有用例的报告逐字节不变），且刻意排在任务 06 之后，
+            // 因此"首个差异"的既有顺序不被改变。
+            if (policy.CompareTurnWindowFacts)
+                Task07TurnWindowFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
             TemporarilyUncomparableFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
         }
 
@@ -840,6 +845,461 @@ namespace ProjectHero.Core.Compatibility.Runtime
             }
 
             return facts;
+        }
+
+        // -------- 任务 07：TurnWindow / 整数预算 / 并发授权 / 肾上腺素周期 --------
+
+        /// <summary>
+        /// <strong>任务 07 的 Shadow 检查点扩展</strong>（Logic 世界对 Logic 世界通道）。
+        ///
+        /// 覆盖任务包「必须产出」11 的五类事实：
+        /// <list type="number">
+        /// <item><strong>窗口打开/关闭</strong>：<c>currentWindowId</c>/<c>nextWindowTick</c>/
+        /// <c>nextWindowOrdinal</c>/<c>lastClosedWindowId</c>/<c>windows.count</c> 与逐窗口的
+        /// <c>ownerUnitId</c>/<c>openedAtTick</c>/<c>isOpen</c>/<c>isAcceptingSubmissions</c>/
+        /// <c>closeReason</c>；"请求关闭立即停止接受提交、正式关闭在 Tick 末"因此体现为
+        /// <b>IsAcceptingSubmissions 与 IsOpen 两个独立的位</b>，不会被合并成一个布尔；</item>
+        /// <item><strong>整数预算</strong>：逐窗口 <c>total/reserved/spent/available</c> 四项
+        /// （全部为整数 Tick），加上三条<strong>派生不变量</strong>——
+        /// <c>windows[i].budgetIdentity</c>（<c>Reserved + Spent + Available == Total</c> 且无负值）、
+        /// <c>windows[i].reservationSumMatchesReserved</c>（按计划归属的预留明细合计 == <c>Reserved</c>）、
+        /// <c>resources.turnBudgetIdentity</c>（全部窗口聚合，含已关闭窗口的审计账本）；</item>
+        /// <item><strong>并发授权</strong>：<c>concurrentAction.hasActiveAuthorization/windowId/playerUnitId</c>、
+        /// <c>resources.metaResource</c>（权威费用只被消费一次的证据），以及派生不变量
+        /// <c>concurrentAction.authorizationTargetsOpenWindow</c>（授权只能指向仍开放且仍在接受提交的
+        /// 当前窗口，且单位不是窗口拥有者本人）；</item>
+        /// <item><strong>肾上腺素清零</strong>：逐单位 <c>adrenaline[unitId].available/cycleId/
+        /// reservedTotal/reservations</c>，加上单位只读镜像一致性
+        /// <c>adrenaline[unitId].mirrorMatchesLedger</c>——"自己窗口打开时先递增周期再清零、
+        /// 窗口关闭与跨其他单位窗口都不清零"因此可在逐检查点上被证伪；</item>
+        /// <item><strong>跨窗口计划不变性</strong>：逐计划的 <c>budgetCostTicks</c>/
+        /// <c>reservedTurnBudgetTicks</c>/<c>submittedWindowLedger</c>/<c>budgetLedgerLinked</c>，
+        /// 即"计划在窗口切换前后身份、状态、排程与<strong>预算归属</strong>逐字不变，
+        /// 且其来源窗口（可能已关闭）的账本条目与计划投影一致"。</item>
+        /// </list>
+        ///
+        /// <strong>比较面边界</strong>：全部事实只来自 <see cref="LogicSnapshot"/> 的
+        /// <strong>整数</strong>字段（窗口/预算/周期号/预留额），比较器拿不到 Transform、动画进度或
+        /// Unity 帧序号，因此这里比较的时间与预算只可能是整数 Tick。
+        ///
+        /// 差异一律按精确字段路径登记为 <see cref="ShadowDifferenceKind.NewRuleVerifiedFact"/>
+        /// （差异即回归），并先经过逐用例 + RulesVersion 的批准差异匹配；本任务<strong>不批准</strong>
+        /// 任何差异。事实分组顺序固定（窗口管理器 → 逐窗口 → 资源聚合 → 并发授权 → 肾上腺素 →
+        /// 计划预算归属），因此"首个差异"是稳定的。
+        /// </summary>
+        private static void Task07TurnWindowFacts(
+            ShadowComparisonReport report, ShadowCasePolicy policy,
+            LogicSnapshot legacy, LogicSnapshot shadow, string checkpoint, long eventSequence)
+        {
+            if (legacy == null || shadow == null) return;
+            long tick = legacy.Tick;
+
+            TurnWindowManagerSnapshot legacyManager = legacy.WindowManager;
+            TurnWindowManagerSnapshot shadowManager = shadow.WindowManager;
+            BattleResourceSnapshot legacyResources = legacy.Resources;
+            BattleResourceSnapshot shadowResources = shadow.Resources;
+
+            // —— ① 窗口管理器标量事实 ——
+            AddNewRuleFact(report, policy, tick, checkpoint, "currentWindowId",
+                legacyManager.CurrentWindowId, shadowManager.CurrentWindowId,
+                "当前窗口 ID 必须一致：窗口切换只翻转提交权限，不重排或跳过窗口（任务 07）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "nextWindowTick",
+                legacyManager.NextWindowTick, shadowManager.NextWindowTick,
+                "下一个窗口的最早打开 Tick 必须一致（新窗口最早下一 Tick 打开，任务 07）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "nextWindowOrdinal",
+                legacyManager.NextWindowOrdinal, shadowManager.NextWindowOrdinal,
+                "已创建窗口数必须一致：窗口 ID 只由唯一分配器取号，创建失败不消耗（任务 07）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "lastClosedWindowId",
+                legacyManager.LastClosedWindowId, shadowManager.LastClosedWindowId,
+                "最近正式关闭的窗口必须一致（关闭只撤销提交权限，不结算任何计划）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "windows.count",
+                legacyManager.Windows.Count, shadowManager.Windows.Count,
+                "窗口集合必须一致（含已关闭窗口仍保留的可审计账本，任务 07）", eventSequence);
+
+            // —— ② 逐窗口：按 WindowId 升序（稳定键），两侧取并集，缺项即差异 ——
+            var legacyWindows = WindowsById(legacy);
+            var shadowWindows = WindowsById(shadow);
+            foreach (long windowId in UnionOfKeys(legacyWindows, shadowWindows))
+            {
+                string prefix = "windows[" + windowId.ToString(CultureInfo.InvariantCulture) + "]";
+                bool hasLegacy = legacyWindows.TryGetValue(windowId, out TurnWindowSnapshot legacyWindow);
+                bool hasShadow = shadowWindows.TryGetValue(windowId, out TurnWindowSnapshot shadowWindow);
+
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".present",
+                    hasLegacy, hasShadow, "窗口账本集合必须一致（任务 07）", eventSequence);
+                if (!hasLegacy || !hasShadow) continue;
+
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".ownerUnitId",
+                    legacyWindow.OwnerUnitId, shadowWindow.OwnerUnitId,
+                    "窗口拥有者必须一致：拥有者天然持有提交权，非拥有者必须另行激活并发授权", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".openedAtTick",
+                    legacyWindow.OpenedAtTick, shadowWindow.OpenedAtTick,
+                    "窗口打开 Tick 必须一致（只能在该 Tick 的打开阶段、确认战斗未结束后打开）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".isOpen",
+                    legacyWindow.IsOpen, shadowWindow.IsOpen,
+                    "正式关闭位必须一致（Tick 末由管理器翻转，窗口不结算任何计划）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".isAcceptingSubmissions",
+                    legacyWindow.IsAcceptingSubmissions, shadowWindow.IsAcceptingSubmissions,
+                    "接受提交位必须一致：请求关闭后立即为 false（本 Tick 后续命令稳定拒绝）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".closeReason",
+                    legacyWindow.CloseReason, shadowWindow.CloseReason,
+                    "关闭原因必须一致（OwnerRequested/BudgetExhausted/OwnerDied/BattleEnded）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".totalBudgetTicks",
+                    legacyWindow.TotalBudgetTicks, shadowWindow.TotalBudgetTicks,
+                    "窗口总预算（整数 Tick）必须一致", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservedBudgetTicks",
+                    legacyWindow.ReservedBudgetTicks, shadowWindow.ReservedBudgetTicks,
+                    "Editable 预留合计（整数 Tick）必须一致：只有 Startable 原子提交才把它转成 Spent", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".spentBudgetTicks",
+                    legacyWindow.SpentBudgetTicks, shadowWindow.SpentBudgetTicks,
+                    "已消费合计（整数 Tick）必须一致：锁定后任何终态都不退款", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".availableBudgetTicks",
+                    legacyWindow.AvailableBudgetTicks, shadowWindow.AvailableBudgetTicks,
+                    "可用预算（整数 Tick）必须一致（该计划可继续预留的上限）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservations.count",
+                    WindowReservationCount(legacyWindow), WindowReservationCount(shadowWindow),
+                    "按计划归属的预留明细条数必须一致（窗口只保存这份可审计账本）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservations",
+                    DescribeWindowReservations(legacyWindow), DescribeWindowReservations(shadowWindow),
+                    "预留明细必须一致（按 ActionPlanId 升序；与容器枚举顺序无关）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".budgetIdentity",
+                    WindowBudgetIdentityHolds(legacyWindow), WindowBudgetIdentityHolds(shadowWindow),
+                    "窗口预算恒等式必须成立：Reserved + Spent + Available == Total 且三项非负", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservationSumMatchesReserved",
+                    WindowReservationSum(legacyWindow) == legacyWindow.ReservedBudgetTicks,
+                    WindowReservationSum(shadowWindow) == shadowWindow.ReservedBudgetTicks,
+                    "预留明细合计必须等于 Reserved（账本与逐计划明细不允许漂移）", eventSequence);
+            }
+
+            // —— ③ 战斗资源聚合（含已关闭窗口的审计账本）——
+            AddNewRuleFact(report, policy, tick, checkpoint, "resources.metaResource",
+                legacyResources.MetaResource, shadowResources.MetaResource,
+                "局外资源必须一致：并发激活的费用只来自权威定义且恰好消费一次", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "resources.turnBudgetAvailable",
+                legacyResources.TurnBudgetAvailable, shadowResources.TurnBudgetAvailable,
+                "全窗口可用预算聚合必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "resources.turnBudgetReserved",
+                legacyResources.TurnBudgetReserved, shadowResources.TurnBudgetReserved,
+                "全窗口预留聚合必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "resources.turnBudgetSpent",
+                legacyResources.TurnBudgetSpent, shadowResources.TurnBudgetSpent,
+                "全窗口已消费聚合必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "resources.turnBudgetIdentity",
+                ResourceBudgetIdentityHolds(legacyManager.Windows, legacyResources),
+                ResourceBudgetIdentityHolds(shadowManager.Windows, shadowResources),
+                "战斗资源恒等式必须成立：Available + Reserved + Spent == Σ Total（直到战斗结束清理）",
+                eventSequence);
+
+            // —— ④ 并发提交授权 ——
+            ConcurrentActionSnapshot legacyAuthority = legacy.ConcurrentAction;
+            ConcurrentActionSnapshot shadowAuthority = shadow.ConcurrentAction;
+            AddNewRuleFact(report, policy, tick, checkpoint, "concurrentAction.hasActiveAuthorization",
+                legacyAuthority.HasActiveAuthorization, shadowAuthority.HasActiveAuthorization,
+                "并发授权存在性必须一致：窗口关闭即撤销，但已接受计划继续存在", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "concurrentAction.windowId",
+                legacyAuthority.WindowId, shadowAuthority.WindowId,
+                "授权所属窗口必须一致（撤销只对当前窗口生效）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "concurrentAction.playerUnitId",
+                legacyAuthority.PlayerUnitId, shadowAuthority.PlayerUnitId,
+                "授权受控单位必须一致（只有装配显式注入的主角单位可被激活）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint,
+                "concurrentAction.authorizationTargetsOpenWindow",
+                AuthorizationTargetsOpenWindow(legacyAuthority, legacyManager.Windows),
+                AuthorizationTargetsOpenWindow(shadowAuthority, shadowManager.Windows),
+                "授权必须指向仍开放且仍在接受提交的当前窗口，且受控单位不得是该窗口拥有者", eventSequence);
+
+            // —— ⑤ 肾上腺素账本（逐单位，按 UnitId 升序）——
+            var legacyLedgers = AdrenalineByUnit(legacy);
+            var shadowLedgers = AdrenalineByUnit(shadow);
+            AddNewRuleFact(report, policy, tick, checkpoint, "adrenaline.count",
+                legacyLedgers.Count, shadowLedgers.Count,
+                "肾上腺素账本集合必须一致（每单位一份，按 UnitId 升序）", eventSequence);
+            foreach (long unitId in UnionOfKeys(legacyLedgers, shadowLedgers))
+            {
+                string prefix = "adrenaline[" + unitId.ToString(CultureInfo.InvariantCulture) + "]";
+                bool hasLegacy = legacyLedgers.TryGetValue(unitId, out AdrenalineLedgerSnapshot legacyLedger);
+                bool hasShadow = shadowLedgers.TryGetValue(unitId, out AdrenalineLedgerSnapshot shadowLedger);
+
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".present",
+                    hasLegacy, hasShadow, "账本主体集合必须一致（任务 07）", eventSequence);
+                if (!hasLegacy || !hasShadow) continue;
+
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".available",
+                    legacyLedger.AvailableAdrenaline, shadowLedger.AvailableAdrenaline,
+                    "Available 必须一致：不随 Tick 衰减，跨其他单位窗口保留，"
+                    + "只在拥有者自己窗口打开时清零（Task07TurnWindowFacts）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".cycleId",
+                    legacyLedger.CycleId, shadowLedger.CycleId,
+                    "个人周期号必须一致：只在拥有者自己窗口打开时 +1（先递增周期再清零）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservedTotal",
+                    legacyLedger.ReservedTotal, shadowLedger.ReservedTotal,
+                    "反应预留合计必须一致（Available 的扣减与预留同一次原子完成）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservations",
+                    DescribeAdrenalineReservations(legacyLedger), DescribeAdrenalineReservations(shadowLedger),
+                    "逐计划预留明细必须一致（按 ActionPlanId 升序，含 ReservationCycleId）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".reservationSumMatchesReservedTotal",
+                    AdrenalineReservationSum(legacyLedger) == legacyLedger.ReservedTotal,
+                    AdrenalineReservationSum(shadowLedger) == shadowLedger.ReservedTotal,
+                    "预留明细合计必须等于 ReservedTotal（账本与明细不允许漂移）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".mirrorMatchesLedger",
+                    UnitMirrorMatchesLedger(legacy, legacyLedger, unitId),
+                    UnitMirrorMatchesLedger(shadow, shadowLedger, unitId),
+                    "单位只读镜像（Available/AdrenalineCycleId）必须与账本一致："
+                    + "镜像只是投影，任何系统都不得反过来经它修改账本", eventSequence);
+            }
+
+            // —— ⑥ 跨窗口计划不变性：计划的预算投影与其来源窗口账本的联系 ——
+            var legacyPlans = PlansById(legacy);
+            var shadowPlans = PlansById(shadow);
+            foreach (long planId in UnionOfKeys(legacyPlans, shadowPlans))
+            {
+                string prefix = "plans[" + planId.ToString(CultureInfo.InvariantCulture) + "].";
+                bool hasLegacy = legacyPlans.TryGetValue(planId, out ActionPlanSnapshot legacyPlan);
+                bool hasShadow = shadowPlans.TryGetValue(planId, out ActionPlanSnapshot shadowPlan);
+                if (!hasLegacy || !hasShadow) continue;
+
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + "budgetCostTicks",
+                    legacyPlan.BudgetCostTicks, shadowPlan.BudgetCostTicks,
+                    "计划的整数预算成本必须一致（Move 用路径权重 × 基础步长 + 后摇，不用 EdgeCount）",
+                    eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + "reservedTurnBudgetTicks",
+                    legacyPlan.ReservedTurnBudgetTicks, shadowPlan.ReservedTurnBudgetTicks,
+                    "计划当前持有的预留额必须一致：锁定后为 0，Editable 释放后也为 0（任务 07）", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + "submittedWindowLedger",
+                    DescribeSubmittedWindowLedger(legacyPlan, legacyManager.Windows),
+                    DescribeSubmittedWindowLedger(shadowPlan, shadowManager.Windows),
+                    "计划跨窗口切换时其来源窗口账本条目必须逐字不变（已关闭窗口只更新历史账本，不重开、不转移）",
+                    eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, prefix + "budgetLedgerLinked",
+                    PlanBudgetLedgerLinked(legacyPlan, legacyManager.Windows),
+                    PlanBudgetLedgerLinked(shadowPlan, shadowManager.Windows),
+                    "计划预算投影必须与其来源窗口账本条目一致（账本漂移即差异）", eventSequence);
+            }
+        }
+
+        /// <summary>逐窗口快照（按 <c>WindowId</c> 升序使用；同 ID 重复是快照损坏，后写覆盖）。</summary>
+        private static Dictionary<long, TurnWindowSnapshot> WindowsById(LogicSnapshot snapshot)
+        {
+            var map = new Dictionary<long, TurnWindowSnapshot>();
+            if (snapshot == null || snapshot.WindowManager == null || snapshot.WindowManager.Windows == null)
+                return map;
+            IReadOnlyList<TurnWindowSnapshot> windows = snapshot.WindowManager.Windows;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                TurnWindowSnapshot window = windows[i];
+                if (window != null) map[window.WindowId] = window;
+            }
+            return map;
+        }
+
+        /// <summary>逐单位肾上腺素账本（按 <c>UnitId</c> 升序使用）。</summary>
+        private static Dictionary<long, AdrenalineLedgerSnapshot> AdrenalineByUnit(LogicSnapshot snapshot)
+        {
+            var map = new Dictionary<long, AdrenalineLedgerSnapshot>();
+            if (snapshot == null || snapshot.Resources == null || snapshot.Resources.AdrenalineLedgers == null)
+                return map;
+            IReadOnlyList<AdrenalineLedgerSnapshot> ledgers = snapshot.Resources.AdrenalineLedgers;
+            for (int i = 0; i < ledgers.Count; i++)
+            {
+                AdrenalineLedgerSnapshot ledger = ledgers[i];
+                if (ledger != null) map[ledger.UnitId] = ledger;
+            }
+            return map;
+        }
+
+        private static int WindowReservationCount(TurnWindowSnapshot window)
+            => window == null || window.Reservations == null ? 0 : window.Reservations.Count;
+
+        /// <summary>窗口预留明细的规范文本（按 <c>ActionPlanId</c> 升序 ⇒ 与容器顺序无关）。</summary>
+        private static string DescribeWindowReservations(TurnWindowSnapshot window)
+        {
+            if (window == null || window.Reservations == null || window.Reservations.Count == 0) return "<none>";
+            var entries = new List<TurnWindowReservationSnapshot>(window.Reservations);
+            entries.Sort((a, b) => a.ActionPlanId.CompareTo(b.ActionPlanId));
+            var builder = new System.Text.StringBuilder();
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (i > 0) builder.Append(';');
+                builder.Append(entries[i].ActionPlanId.ToString(CultureInfo.InvariantCulture))
+                    .Append(':')
+                    .Append(entries[i].ReservedTicks.ToString(CultureInfo.InvariantCulture));
+            }
+            return builder.ToString();
+        }
+
+        private static int WindowReservationSum(TurnWindowSnapshot window)
+        {
+            if (window == null || window.Reservations == null) return 0;
+            int sum = 0;
+            for (int i = 0; i < window.Reservations.Count; i++)
+            {
+                if (window.Reservations[i] != null) sum += window.Reservations[i].ReservedTicks;
+            }
+            return sum;
+        }
+
+        /// <summary>窗口预算恒等式：<c>Reserved + Spent + Available == Total</c> 且三项非负。</summary>
+        private static bool WindowBudgetIdentityHolds(TurnWindowSnapshot window)
+        {
+            if (window == null) return false;
+            if (window.ReservedBudgetTicks < 0 || window.SpentBudgetTicks < 0 || window.AvailableBudgetTicks < 0)
+                return false;
+            long sum = (long)window.ReservedBudgetTicks + window.SpentBudgetTicks + window.AvailableBudgetTicks;
+            return sum == window.TotalBudgetTicks;
+        }
+
+        /// <summary>全部窗口（含已关闭窗口的审计账本）的总预算合计。</summary>
+        private static long SumWindowTotals(IReadOnlyList<TurnWindowSnapshot> windows)
+        {
+            if (windows == null) return 0L;
+            long total = 0L;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                if (windows[i] != null) total += windows[i].TotalBudgetTicks;
+            }
+            return total;
+        }
+
+        /// <summary>战斗资源恒等式：<c>Available + Reserved + Spent == Σ Total</c>。</summary>
+        private static bool ResourceBudgetIdentityHolds(
+            IReadOnlyList<TurnWindowSnapshot> windows, BattleResourceSnapshot resources)
+        {
+            if (resources == null) return false;
+            if (resources.TurnBudgetAvailable < 0L || resources.TurnBudgetReserved < 0L
+                || resources.TurnBudgetSpent < 0L) return false;
+            long sum = resources.TurnBudgetAvailable + resources.TurnBudgetReserved + resources.TurnBudgetSpent;
+            return sum == SumWindowTotals(windows);
+        }
+
+        /// <summary>
+        /// 授权不变量：未激活时为真；激活时必须指向<strong>仍开放且仍在接受提交</strong>的当前窗口，
+        /// 且受控单位不得是该窗口的拥有者（拥有者天然持有提交权）。
+        /// </summary>
+        private static bool AuthorizationTargetsOpenWindow(
+            ConcurrentActionSnapshot authority, IReadOnlyList<TurnWindowSnapshot> windows)
+        {
+            if (authority == null || !authority.HasActiveAuthorization) return true;
+            if (windows == null) return false;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                TurnWindowSnapshot window = windows[i];
+                if (window == null || window.WindowId != authority.WindowId) continue;
+                return window.IsOpen && window.IsAcceptingSubmissions && window.OwnerUnitId != authority.PlayerUnitId;
+            }
+            return false;
+        }
+
+        private static AdrenalineLedgerSnapshot FindLedger(LogicSnapshot snapshot, long unitId)
+        {
+            if (snapshot == null || snapshot.Resources == null || snapshot.Resources.AdrenalineLedgers == null)
+                return null;
+            IReadOnlyList<AdrenalineLedgerSnapshot> ledgers = snapshot.Resources.AdrenalineLedgers;
+            for (int i = 0; i < ledgers.Count; i++)
+            {
+                if (ledgers[i] != null && ledgers[i].UnitId == unitId) return ledgers[i];
+            }
+            return null;
+        }
+
+        private static int AdrenalineReservationSum(AdrenalineLedgerSnapshot ledger)
+        {
+            if (ledger == null || ledger.Reservations == null) return 0;
+            int sum = 0;
+            for (int i = 0; i < ledger.Reservations.Count; i++)
+            {
+                if (ledger.Reservations[i] != null) sum += ledger.Reservations[i].ReservedAmount;
+            }
+            return sum;
+        }
+
+        /// <summary>逐计划肾上腺素预留的规范文本（按 <c>ActionPlanId</c> 升序，含周期号）。</summary>
+        private static string DescribeAdrenalineReservations(AdrenalineLedgerSnapshot ledger)
+        {
+            if (ledger == null || ledger.Reservations == null || ledger.Reservations.Count == 0) return "<none>";
+            var entries = new List<AdrenalineReservationSnapshot>(ledger.Reservations);
+            entries.Sort((a, b) => a.ActionPlanId.CompareTo(b.ActionPlanId));
+            var builder = new System.Text.StringBuilder();
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (i > 0) builder.Append(';');
+                builder.Append(entries[i].ActionPlanId.ToString(CultureInfo.InvariantCulture))
+                    .Append(':')
+                    .Append(entries[i].ReservedAmount.ToString(CultureInfo.InvariantCulture))
+                    .Append('@')
+                    .Append(entries[i].ReservationCycleId.ToString(CultureInfo.InvariantCulture));
+            }
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// 单位只读镜像（<c>units[i].AvailableAdrenaline</c>/<c>AdrenalineCycleId</c>）
+        /// 是否与账本一致；单位不在快照里时视为不一致（集合漂移本身就是差异）。
+        /// </summary>
+        private static bool UnitMirrorMatchesLedger(LogicSnapshot snapshot, AdrenalineLedgerSnapshot ledger, long unitId)
+        {
+            if (snapshot == null || snapshot.Units == null || ledger == null) return false;
+            for (int i = 0; i < snapshot.Units.Count; i++)
+            {
+                UnitSnapshot unit = snapshot.Units[i];
+                if (unit == null || unit.UnitId != unitId) continue;
+                return unit.AvailableAdrenaline == ledger.AvailableAdrenaline
+                       && unit.AdrenalineCycleId == ledger.CycleId;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 计划来源窗口账本的只读投影：<c>w=&lt;id&gt;;open=..;accepting=..;reserved=..;spent=..</c>
+        /// （窗口已从集合中消失时为显式标记，绝不猜）。
+        /// </summary>
+        private static string DescribeSubmittedWindowLedger(
+            ActionPlanSnapshot plan, IReadOnlyList<TurnWindowSnapshot> windows)
+        {
+            if (plan == null) return "<plan-absent>";
+            if (plan.SubmittedWindowId == 0L) return "<none>";
+            TurnWindowSnapshot window = FindWindowSnapshot(windows, plan.SubmittedWindowId);
+            if (window == null) return "w=" + plan.SubmittedWindowId.ToString(CultureInfo.InvariantCulture) + ";missing";
+            return "w=" + window.WindowId.ToString(CultureInfo.InvariantCulture)
+                   + ";open=" + (window.IsOpen ? "true" : "false")
+                   + ";accepting=" + (window.IsAcceptingSubmissions ? "true" : "false")
+                   + ";reserved=" + window.ReservedBudgetTicks.ToString(CultureInfo.InvariantCulture)
+                   + ";spent=" + window.SpentBudgetTicks.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// 计划预算投影与其来源窗口账本条目是否一致：
+        /// 账本里该计划持有的预留额必须等于计划的 <c>ReservedTurnBudgetTicks</c>
+        /// （锁定后两者都为 0；Editable 释放后同理）。没有来源窗口时要求计划的预留投影为 0。
+        /// </summary>
+        private static bool PlanBudgetLedgerLinked(
+            ActionPlanSnapshot plan, IReadOnlyList<TurnWindowSnapshot> windows)
+        {
+            if (plan == null) return false;
+            if (plan.SubmittedWindowId == 0L) return plan.ReservedTurnBudgetTicks == 0;
+            TurnWindowSnapshot window = FindWindowSnapshot(windows, plan.SubmittedWindowId);
+            if (window == null) return false;
+            return WindowReservedFor(window, plan.ActionPlanId) == plan.ReservedTurnBudgetTicks;
+        }
+
+        private static TurnWindowSnapshot FindWindowSnapshot(IReadOnlyList<TurnWindowSnapshot> windows, long windowId)
+        {
+            if (windows == null) return null;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                if (windows[i] != null && windows[i].WindowId == windowId) return windows[i];
+            }
+            return null;
+        }
+
+        private static int WindowReservedFor(TurnWindowSnapshot window, long planId)
+        {
+            if (window == null || window.Reservations == null) return 0;
+            for (int i = 0; i < window.Reservations.Count; i++)
+            {
+                TurnWindowReservationSnapshot reservation = window.Reservations[i];
+                if (reservation != null && reservation.ActionPlanId == planId) return reservation.ReservedTicks;
+            }
+            return 0;
         }
 
         // -------- Legacy 只读观测 vs 新模拟快照（真实可比较字段） --------

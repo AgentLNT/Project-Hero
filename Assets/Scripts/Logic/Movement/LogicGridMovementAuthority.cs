@@ -70,37 +70,56 @@ namespace ProjectHero.Logic.Movement
     /// <summary>
     /// 单个计划在一次空间整批替换<strong>之前</strong>的形状（段 + 预留 + 待进入格）。
     /// 只用于失败回滚：它不携带计划的排程投影（那由 <c>ScheduleEditor</c> 自己恢复）。
+    ///
+    /// 段与预留必须<strong>成对</strong>快照/恢复：只恢复预留会让"每段都有同键预留、
+    /// 段数 == 预留数"这条自洽性被破坏（那正是"失败零局部写入"要禁止的形状）。
     /// </summary>
     internal readonly struct MovementSpaceSnapshot
     {
         private readonly ActionPlanId _actionPlanId;
         private readonly UnitId _unitId;
         private readonly IReadOnlyList<Reservation> _reservations;
+        private readonly IReadOnlyList<MovementSegment> _segments;
         private readonly bool _hadPendingDestination;
         private readonly GridPoint _pendingDestination;
 
         private MovementSpaceSnapshot(
             ActionPlanId actionPlanId, UnitId unitId, IReadOnlyList<Reservation> reservations,
+            IReadOnlyList<MovementSegment> segments,
             bool hadPendingDestination, GridPoint pendingDestination)
         {
             _actionPlanId = actionPlanId;
             _unitId = unitId;
             _reservations = reservations;
+            _segments = segments;
             _hadPendingDestination = hadPendingDestination;
             _pendingDestination = pendingDestination;
         }
 
-        public static MovementSpaceSnapshot Capture(ActionPlan plan, LogicGrid grid)
+        public IReadOnlyList<Reservation> Reservations => _reservations;
+
+        public static MovementSpaceSnapshot Capture(
+            ActionPlan plan, LogicGrid grid, IReadOnlyList<MovementSegment> segments)
         {
             IReadOnlyList<Reservation> reservations = grid.ReservationsOfPlanOrdered(plan.ActionPlanId);
             bool hasPending = grid.TryGetPendingDestination(plan.OwnerUnitId, out GridPoint pending);
             return new MovementSpaceSnapshot(
-                plan.ActionPlanId, plan.OwnerUnitId, reservations, hasPending, pending);
+                plan.ActionPlanId, plan.OwnerUnitId, reservations,
+                segments ?? Array.Empty<MovementSegment>(), hasPending, pending);
         }
 
-        public void Restore(LogicGrid grid)
+        /// <summary>
+        /// 把快照原样写回权威表（段 + 预留 + 待进入格）。
+        ///
+        /// 预留按 <c>Reservation</c> 自身的稳定空间键顺序逐条重取：同格的多条同单位
+        /// 互不重叠预留会由 <see cref="LogicGrid.TryReserve"/> 的共存判据原样重建，
+        /// 因此"批前形状"（含回程链已经形成的同格共存）可以被逐字恢复。
+        /// </summary>
+        public void Restore(LogicGrid grid, IDictionary<ReservationKey, MovementSegment> segments)
         {
             for (int i = 0; i < _reservations.Count; i++) grid.TryReserve(_reservations[i]);
+            for (int i = 0; i < _segments.Count; i++)
+                segments[new ReservationKey(_segments[i].ActionPlanId, _segments[i].StepIndex)] = _segments[i];
             grid.SetPendingDestination(_unitId, _hadPendingDestination ? _pendingDestination : (GridPoint?)null);
         }
     }
@@ -254,6 +273,10 @@ namespace ProjectHero.Logic.Movement
         /// 与 <see cref="EstablishMovement(ActionPlan, IReadOnlyList{GridPoint}, long)"/> 同义的**纯数据**入口：
         /// 显式给出 <c>(ActionPlanId, UnitId, 基准每权重 Tick, 目的格)</c>，因此本事务可以在
         /// 没有任何 <c>ActionPlan</c> 实例的情况下被独立验证（也是只读候选预览的入口形态）。
+        ///
+        /// <paramref name="expectedOrigin"/> 缺席时的额外语义由 <see cref="LogicGrid.TryReserve"/> 承担：
+        /// 同一条链内同一单位"稍后重新经过先前的格"允许同格共存（时间窗互不重叠），
+        /// 其他一切冲突——包括同一时间窗、其他单位、静止占位——仍然整批拒绝。
         /// </summary>
         public MovementReplacementResult EstablishMovement(
             ActionPlanId actionPlanId,
@@ -261,7 +284,8 @@ namespace ProjectHero.Logic.Movement
             IReadOnlyList<GridPoint> path,
             long startTick,
             int resolvedBaseStepTicks,
-            GridPoint? destination = null)
+            GridPoint? destination = null,
+            GridPoint? expectedOrigin = null)
         {
             if (path == null || path.Count < 2)
                 return MovementReplacementResult.Rejected(MovementCodes.MOVEMENT_SEGMENT_CHAIN_DISCONTINUOUS);
@@ -269,7 +293,11 @@ namespace ProjectHero.Logic.Movement
                 return MovementReplacementResult.Rejected(MovementCodes.MOVEMENT_SEGMENT_INTERVAL_INVALID);
             if (!_grid.TryGetAnchor(unitId, out GridPoint anchor))
                 return MovementReplacementResult.Rejected(LogicGridCodes.LOGIC_GRID_UNIT_UNKNOWN);
-            if (anchor.X != path[0].X || anchor.Y != path[0].Y)
+            // 排队的 Move 链（任务 07 裁定 B：首版**支持**链）中，第二条及以后的计划其合法起点
+            // 是"前一条链内计划的终点"，而不是单位当前锚点。调用方必须把**算路径时用的同一个起点**
+            // 显式传进来；不传时保持既有语义（锚点校验）。
+            GridPoint validatedOrigin = expectedOrigin ?? anchor;
+            if (validatedOrigin.X != path[0].X || validatedOrigin.Y != path[0].Y)
                 return MovementReplacementResult.Rejected(MovementCodes.MOVEMENT_SEGMENT_ORIGIN_MISMATCH);
 
             // —— 1. 构造候选段（溢出/非规范方向在这里整体拒绝，绝不 clamp）——
@@ -404,12 +432,23 @@ namespace ProjectHero.Logic.Movement
 
         /// <summary>
         /// <see cref="IEditableMovementSpacePort"/> 的生产实现：
-        /// <strong>整批替换</strong>工作集内每个 Editable Move 计划的未来段与 Reservation，
-        /// 并在写入前对"批次内两个计划抢占同一个格"做整批预检。
+        /// <strong>整批原子替换</strong>工作集内每个 Editable Move 计划的未来段与 Reservation。
         ///
-        /// 原子性：任何一个计划建立失败（或批次内互相冲突）⇒ 立即回滚
-        /// <strong>本批次已经写入的全部段与预留</strong>并把它们恢复成各自事务前的形状，
-        /// 返回稳定失败码；调用方据此放弃整批排程提交。因此"失败无局部写入"在空间侧成立。
+        /// 阶段固定（任务 07 裁定 B）：
+        /// <list type="number">
+        /// <item><strong>只读解析</strong>工作集（<see cref="ResolveEditableMovementWorkingSet"/>，
+        /// 链内预测起点与链序在这一步定死，不改写任何状态）；</item>
+        /// <item><strong>整批快照</strong>工作集全部计划的旧段 + 旧预留 + 待进入格
+        /// （在任何写入之前，因此快照就是事务前形状）；</item>
+        /// <item><strong>整批释放</strong>工作集的旧段与旧预留——本批次的新预留因此绝不会被
+        /// 同批次其他计划的<strong>旧</strong>预留阻塞（排队 Move 链的第一半修复）；</item>
+        /// <item><strong>按链序建立</strong>新段与新预留（<see cref="CompareByChainOrder"/> +
+        /// <see cref="ProjectedChainOriginOf"/>）；同一单位稍后重新经过自己先前的格由
+        /// <see cref="LogicGrid.TryReserve"/> 的时间窗不相交共存判据放行（第二半修复）；</item>
+        /// <item>任一步失败 ⇒ <strong>回滚</strong>：先释放本批次已经写入的新段/新预留，
+        /// 再把<strong>每一个</strong>快照（含未及建立者）恢复成事务前形状，返回稳定失败码。</item>
+        /// </list>
+        /// 因此"失败零局部写入"在空间侧成立：调用方据此放弃整批排程提交即可。
         /// </summary>
         public string RebuildMovementSpace(
             IReadOnlyList<ActionPlan> candidatePlans, long scheduleRevision, long tick)
@@ -417,23 +456,35 @@ namespace ProjectHero.Logic.Movement
             IReadOnlyList<ActionPlan> working = ResolveEditableMovementWorkingSet(candidatePlans);
             if (working.Count == 0) return null;
 
+            // —— 1. 整批快照（必须早于任何写入）——
             var snapshots = new List<MovementSpaceSnapshot>(working.Count);
+            for (int i = 0; i < working.Count; i++)
+            {
+                ActionPlan plan = working[i];
+                snapshots.Add(MovementSpaceSnapshot.Capture(
+                    plan, _grid, SegmentsOfPlanOrdered(plan.ActionPlanId)));
+            }
+
+            // —— 2. 整批释放旧状态：本批次的新预留不再与同批次计划的旧预留互相阻塞 ——
+            for (int i = 0; i < working.Count; i++) ReleasePlanMovement(working[i].ActionPlanId);
+
+            // —— 3. 按链序建立新段与新预留 ——
             var established = new List<ActionPlan>(working.Count);
             for (int i = 0; i < working.Count; i++)
             {
                 ActionPlan plan = working[i];
-                PathSearchResult path = TryFindPath(ProjectedChainOriginOf(working, i), plan);
+                GridPoint chainOrigin = ProjectedChainOriginOf(working, i);
+                PathSearchResult path = TryFindPath(chainOrigin, plan);
                 if (path == null || !path.Succeeded)
                 {
+                    string pathError = path?.FailureCode ?? PathSearchCodes.PATH_INVALID_START;
                     RollbackSpace(snapshots, established);
-                    return path?.FailureCode ?? PathSearchCodes.PATH_INVALID_START;
+                    return pathError;
                 }
 
-                // 快照必须在真正写入之前取：只对本批次真正改写过的计划做恢复。
-                snapshots.Add(MovementSpaceSnapshot.Capture(plan, _grid));
                 MovementReplacementResult replacement = EstablishMovement(
                     plan.ActionPlanId, plan.OwnerUnitId, path.Path, plan.StartTick,
-                    plan.ResolvedBaseStepTicks, plan.Destination);
+                    plan.ResolvedBaseStepTicks, plan.Destination, chainOrigin);
                 if (!replacement.Succeeded)
                 {
                     RollbackSpace(snapshots, established);
@@ -455,6 +506,14 @@ namespace ProjectHero.Logic.Movement
             return working[index - 1].Destination ?? default;
         }
 
+        /// <summary>
+        /// 失败回滚（<strong>唯一</strong>的空间回滚路径，与 <see cref="MovementSpaceSnapshot"/> 配对）：
+        /// 先释放本批次已经写入的新段/新预留，再把快照逐个恢复成事务前形状。
+        ///
+        /// 未及建立的计划也在快照里（它们的旧状态已在整批释放阶段被释放），因此"失败零局部写入"
+        /// 不依赖失败发生在链的哪一环。恢复顺序与建立顺序无关：恢复走的是
+        /// <see cref="MovementSpaceSnapshot.Restore"/> 里按稳定空间键逐条重取的路径。
+        /// </summary>
         private void RollbackSpace(
             IReadOnlyList<MovementSpaceSnapshot> snapshots, IReadOnlyList<ActionPlan> established)
         {
@@ -462,7 +521,7 @@ namespace ProjectHero.Logic.Movement
             {
                 ReleasePlanMovement(established[i].ActionPlanId);
             }
-            for (int i = 0; i < snapshots.Count; i++) snapshots[i].Restore(_grid);
+            for (int i = 0; i < snapshots.Count; i++) snapshots[i].Restore(_grid, _segments);
         }
 
         /// <summary>

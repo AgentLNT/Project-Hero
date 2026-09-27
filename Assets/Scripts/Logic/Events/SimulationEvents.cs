@@ -3,7 +3,9 @@ using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Resources;
 using ProjectHero.Logic.Simulation;
+using ProjectHero.Logic.Turns;
 using ProjectHero.Logic.Units;
 
 namespace ProjectHero.Logic.Events
@@ -50,6 +52,63 @@ namespace ProjectHero.Logic.Events
     /// <summary>窗口关闭。关闭不清零既有肾上腺素预留，也不取消任何计划。</summary>
     public sealed record TurnWindowClosedEvent(
         long Tick, long Sequence, WindowId WindowId, UnitId OwnerUnitId, TurnWindowCloseReason Reason)
+        : LogicEvent(Tick, Sequence);
+
+    /// <summary>
+    /// TurnBudget 账本变化（任务 07「必须产出」8）。
+    ///
+    /// <see cref="ChangeKind"/> 区分 <c>Reserved</c>/<c>ReservationAdjusted</c>/
+    /// <c>ConsumedAtLock</c>/<c>ReleasedBeforeLock</c>/<c>BattleEndCleared</c>；
+    /// <see cref="Source"/> 再区分显式 <c>ScheduleEdit</c> 与 <c>SystemAutoDeferral</c>。
+    /// <c>ConsumedAtLock</c> 只会在任务 05 的原子启动提交成功时出现。
+    /// 事件记录 <c>WindowId</c>、<c>PlanId</c> 与 Available/Reserved/Spent 的前后值。
+    /// </summary>
+    public sealed record TurnBudgetChangedEvent(
+        long Tick,
+        long Sequence,
+        WindowId WindowId,
+        UnitId OwnerUnitId,
+        long ActionPlanId,
+        TurnBudgetChangeKind ChangeKind,
+        ResourceChangeSource Source,
+        int AvailableBefore,
+        int AvailableAfter,
+        int ReservedBefore,
+        int ReservedAfter,
+        int SpentBefore,
+        int SpentAfter) : LogicEvent(Tick, Sequence);
+
+    /// <summary>
+    /// 肾上腺素账本变化（任务 07「必须产出」8）。
+    ///
+    /// <see cref="ChangeKind"/> 区分 <c>Accrued</c>/<c>Reserved</c>/<c>Consumed</c>/
+    /// <c>Refunded</c>/<c>CycleReset</c>/<c>BattleEndCleared</c>（另有
+    /// <c>StaleCycleReservationRemoved</c> 表示"旧周期预留只删除、不注入新周期"）。
+    /// 事件记录 <c>Cycle</c>、Available 前后值、可选计划 ID 与预留量。
+    /// </summary>
+    public sealed record AdrenalineLedgerChangedEvent(
+        long Tick,
+        long Sequence,
+        UnitId UnitId,
+        long CycleId,
+        AdrenalineChangeKind ChangeKind,
+        int AvailableBefore,
+        int AvailableAfter,
+        long ReservationPlanId,
+        int ReservationAmount) : LogicEvent(Tick, Sequence);
+
+    /// <summary>
+    /// 并发行动授权激活（任务 07「必须产出」5）。窗口关闭即撤销，但已接受计划继续存在。
+    /// </summary>
+    public sealed record ConcurrentActionActivatedEvent(
+        long Tick, long Sequence, WindowId WindowId, UnitId PlayerUnitId, UnitId WindowOwnerUnitId)
+        : LogicEvent(Tick, Sequence);
+
+    /// <summary>
+    /// 并发行动授权撤销（窗口关闭、战斗结束或拥有者死亡）。它<strong>不</strong>取消任何已接受计划。
+    /// </summary>
+    public sealed record ConcurrentActionDeactivatedEvent(
+        long Tick, long Sequence, WindowId WindowId, UnitId PlayerUnitId)
         : LogicEvent(Tick, Sequence);
 
     /// <summary>

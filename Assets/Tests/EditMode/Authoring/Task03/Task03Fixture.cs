@@ -13,6 +13,7 @@ using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Snapshots;
+using ProjectHero.Logic.Turns;
 
 namespace ProjectHero.Authoring.Tests.Task03
 {
