@@ -32,6 +32,17 @@ namespace ProjectHero.Authoring.Tests
         /// <summary>真实资产集合（全部 16 个资产；顺序会被归一化）。</summary>
         public static LegacyAssetSet Assets => LegacyAssetResolver.LoadAllFromResources();
 
+        /// <summary>
+        /// Authoring 侧<strong>库 ↔ 体积显式绑定</strong>的条数（任务 02B 定义哈希修订新增的
+        /// <c>definition.library_volume_binding_count</c> 分量）。
+        ///
+        /// 它由 <see cref="BattleDefinitionBuilder.BuildMainBattleDefinition"/> 从
+        /// <see cref="LegacyIdMigrationManifest.LibraryVolumes"/> 原样读取并写入哈希；
+        /// 生产路径与测试重算必须传入<strong>同一个</strong>值，否则"重算 == 定义摘要"
+        /// 的断言会失败——这正是该分量参与哈希的可失败证据。
+        /// </summary>
+        public static int LibraryVolumeBindingCount => LegacyIdMigrationManifest.LibraryVolumes.Count;
+
         /// <summary>构建主战斗定义（结果按资产内容缓存）。</summary>
         public static BattleDefinitionBuildResult Build()
             => BattleDefinitionBuilder.BuildMainBattleDefinition(Assets, UnitSource);

@@ -101,12 +101,20 @@ namespace ProjectHero.Logic.Combat
         /// 规则版本与 TicksPerSecond、BattleRules（含 PathCost/PathSearch/强制位移协议与停止原因编码、
         /// MaxAutomaticDeferralsPerPlan、最大排程视野）、并发行动定义（MetaResourceCost）、
         /// ReactionRules、AdrenalineRules、Faction 关系矩阵、伤害通道目录、冲击 Profile 目录、
-        /// 单位定义、动作定义（含每个攻击的 AllowedTargetRelations 与 12 向最终整数表）、
+        /// 单位定义（含任务 02B 修订新增的 <c>unit.volume_spec_id</c> 单位→体积表绑定）、
+        /// 动作定义（含每个攻击的 AllowedTargetRelations 与 12 向最终整数表）、
         /// AttackPattern / Volume / MovementPattern 规范表、动作集合、状态效果、Encounter
-        /// （含规范网格边界、槽位、控制者绑定、Victory 分组与显式结果码）、动态生成阵营策略。
+        /// （含规范网格边界、槽位、控制者绑定、Victory 分组与显式结果码）、动态生成阵营策略，
+        /// 以及 Authoring 侧<strong>库↔体积显式绑定</strong>的条数
+        /// <c>definition.library_volume_binding_count</c>。
         ///
         /// 不参与哈希：显示名、Asset 路径、导入/发现顺序、资产内点的原始排列、对象地址、
         /// Builder 实现细节。因此改写 Builder 但产生相同的规范表时哈希保持不变。
+        /// <paramref name="legacyLibraryVolumeBindingCount"/> 只写入条数，
+        /// <strong>不</strong>写入任何资产 GUID：库↔体积绑定对玩法结果的全部影响已经通过
+        /// <c>unit.volume_spec_id</c> 与 <c>volume.id</c> 两个 Logic ID 分量表达，
+        /// 这里写入条数是为了让"显式配置事实本身"也进入摘要（少一条绑定 ⇒ 摘要改变），
+        /// 而不是为了引入资产身份。
         ///
         /// 调用方必须传入已经规范化排序的集合（Authoring 的 Builder 负责），
         /// 本方法不做二次排序，以保证"同一规范输入必得同一哈希"。
@@ -114,6 +122,7 @@ namespace ProjectHero.Logic.Combat
         public static string Compute(
             string rulesVersion,
             int ticksPerSecond,
+            int legacyLibraryVolumeBindingCount,
             BattleRules rules,
             Definitions.ConcurrentActionDefinition concurrentAction,
             ReactionRules reactionRules,
@@ -135,6 +144,9 @@ namespace ProjectHero.Logic.Combat
 
             writer.Write("definition.rules_version", rulesVersion ?? string.Empty);
             writer.Write("definition.ticks_per_second", ticksPerSecond);
+
+            // —— 任务 02B 定义哈希修订：库↔体积的显式绑定事实（只写条数，不写资产 GUID）——
+            writer.Write("definition.library_volume_binding_count", legacyLibraryVolumeBindingCount);
 
             // —— 版本化规则常量 ——
             rules?.WriteHashComponents(writer);

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.1708756">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="456" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.170876" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1341" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="308" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.161442" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="32560" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1342" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="308" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.156045" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1343" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="308" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.149512" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1344" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="308" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.147476" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1345" name="Task06" fullname="ProjectHero.Authoring.Tests.Task06" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.145309" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1096" name="Task06CommitTerminalSemanticsTests" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.144256" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1100" name="BudgetReleaseSinkRunsBeforeAnyRelocationMutationAndThrowingSinkLeavesNoPartialCommit" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests.BudgetReleaseSinkRunsBeforeAnyRelocationMutationAndThrowingSinkLeavesNoPartialCommit" methodname="BudgetReleaseSinkRunsBeforeAnyRelocationMutationAndThrowingSinkLeavesNoPartialCommit" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" seed="422650405" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.123814" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1099" name="DodgeCommitInvariantViolationBranchKeepsReservationAndIsStructurallyUnreachable" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests.DodgeCommitInvariantViolationBranchKeepsReservationAndIsStructurallyUnreachable" methodname="DodgeCommitInvariantViolationBranchKeepsReservationAndIsStructurallyUnreachable" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" seed="733153786" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.001115" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1097" name="DodgeCommitTerminalFailureReleasesItsOwnReservationAndNeverMovesUnit" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests.DodgeCommitTerminalFailureReleasesItsOwnReservationAndNeverMovesUnit" methodname="DodgeCommitTerminalFailureReleasesItsOwnReservationAndNeverMovesUnit" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" seed="1441823387" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.003881" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1098" name="DodgeCommitTerminalFailureWithoutPlanContextReleasesReservationOnlyAndRetryIsRejected" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests.DodgeCommitTerminalFailureWithoutPlanContextReleasesReservationOnlyAndRetryIsRejected" methodname="DodgeCommitTerminalFailureWithoutPlanContextReleasesReservationOnlyAndRetryIsRejected" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" seed="1275055317" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.000766" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1102" name="SourceThreatCancellationPutsReleaseOnQueueInProductionWiringAndStillReleasesWithoutParticipant" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests.SourceThreatCancellationPutsReleaseOnQueueInProductionWiringAndStillReleasesWithoutParticipant" methodname="SourceThreatCancellationPutsReleaseOnQueueInProductionWiringAndStillReleasesWithoutParticipant" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" seed="575731416" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.002648" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1101" name="SourceThreatCancellationReleasesReservationEvenWhenBoundPlanIsAlreadyTerminal" fullname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests.SourceThreatCancellationReleasesReservationEvenWhenBoundPlanIsAlreadyTerminal" methodname="SourceThreatCancellationReleasesReservationEvenWhenBoundPlanIsAlreadyTerminal" classname="ProjectHero.Authoring.Tests.Task06.Task06CommitTerminalSemanticsTests" runstate="Runnable" seed="1091671823" result="Passed" start-time="2026-09-24 07:06:04Z" end-time="2026-09-24 07:06:04Z" duration="0.000879" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

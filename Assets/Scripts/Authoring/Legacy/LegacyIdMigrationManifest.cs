@@ -212,6 +212,49 @@ namespace ProjectHero.Authoring.Legacy
         };
 
         /// <summary>
+        /// <strong>库资产 → 体积资产</strong>的显式绑定（任务 06：单位→体积规范表的生产路径）。
+        ///
+        /// 旧工程把"该库的单位体格"放在 UnitVolume 资产上，而任务 02B 的迁移清单此前只把
+        /// 两份清单分别保留、没有记录它们的对应关系，导致 Logic 侧在装配期无法还原绑定。
+        /// 本表就是那个被补上的对应关系：它是<strong>配置事实</strong>，不是命名约定推导
+        /// （不按 "Radius_1"/"ForRadius1" 之类的字符串猜）。
+        /// </summary>
+        public static IReadOnlyList<LibraryVolumeBinding> LibraryVolumes { get; } =
+            new List<LibraryVolumeBinding>
+            {
+                new LibraryVolumeBinding(ForRadius1Guid, VolumeRadius1Guid),
+                new LibraryVolumeBinding(ForRadius2Guid, VolumeRadius2Guid)
+            };
+
+        /// <summary>库资产 GUID → 该库单位应绑定的 <c>VolumeSpec</c> 最终 ID；未绑定返回 null。</summary>
+        public static string FinalVolumeSpecIdForLibrary(string libraryGuid)
+        {
+            if (string.IsNullOrEmpty(libraryGuid)) return null;
+            for (int i = 0; i < LibraryVolumes.Count; i++)
+            {
+                LibraryVolumeBinding binding = LibraryVolumes[i];
+                if (!string.Equals(binding.LibraryGuid, libraryGuid, System.StringComparison.Ordinal)) continue;
+                VolumeIdMigration volume = FindVolume(binding.VolumeGuid);
+                return volume?.FinalVolumeSpecId;
+            }
+            return null;
+        }
+
+        /// <summary>一条"库资产 ↔ 体积资产"绑定。</summary>
+        public sealed class LibraryVolumeBinding
+        {
+            public LibraryVolumeBinding(string libraryGuid, string volumeGuid)
+            {
+                LibraryGuid = libraryGuid;
+                VolumeGuid = volumeGuid;
+            }
+
+            public string LibraryGuid { get; }
+
+            public string VolumeGuid { get; }
+        }
+
+        /// <summary>
         /// 迁移清单中被正式消费的资产 GUID 集合（14 个：2 库 + 10 Pattern + 2 Volume）。
         /// 未列入的资产（ForRadius3 空库、Radius_3）仍在清单中保留最终 ID，
         /// 但不被任何 Encounter 引用。

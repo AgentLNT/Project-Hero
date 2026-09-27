@@ -245,6 +245,13 @@ namespace ProjectHero.UI
             TimelineUI = root.AddComponent<TimelineEditorUI>();
             TimelineUI.Canvas = canvas;
 
+            // 任务 03B：TimelineEditorUI 由本方法在运行时创建，因此必须在创建点登记为
+            // Legacy 从属写入者，Bootstrap 才能按模式门控它（New 模式禁用；未分类则拒绝启动）。
+            ProjectHero.Core.Compatibility.Runtime.LegacyWriterRegistry.Register(
+                TimelineUI,
+                ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.DescribePath(TimelineUI),
+                "每帧（含鼠标输入轮询）");
+
             if (MainFont != null)
             {
                 TimelineUI.UiFont = MainFont;

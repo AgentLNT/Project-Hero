@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="36" result="Passed" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.8873812">
+  <test-suite type="TestSuite" id="1045" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.887381" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1038" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.876128" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="29168" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1039" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.875668" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1040" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.875524" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1041" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.875372" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="RuntimeOwnershipTests" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:57Z" duration="25.874200" total="36" passed="36" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1037" name="ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference" methodname="ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1827490533" result="Passed" start-time="2026-09-24 05:13:31Z" end-time="2026-09-24 05:13:32Z" duration="0.256786" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1026" name="BroadDifferenceAllowlistIsRejected" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.BroadDifferenceAllowlistIsRejected" methodname="BroadDifferenceAllowlistIsRejected" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1773960067" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.048045" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1006" name="CombatDemoNoLongerOwnsAutonomousUpdate" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.CombatDemoNoLongerOwnsAutonomousUpdate" methodname="CombatDemoNoLongerOwnsAutonomousUpdate" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1790866447" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.048888" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1019" name="DestroyingBattleStopsActiveAdaptersExactlyOnce" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DestroyingBattleStopsActiveAdaptersExactlyOnce" methodname="DestroyingBattleStopsActiveAdaptersExactlyOnce" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1276819582" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.044408" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1004" name="DuplicateRuntimeBootstrapFailsFast" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DuplicateRuntimeBootstrapFailsFast" methodname="DuplicateRuntimeBootstrapFailsFast" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1643180297" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.043682" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+
+IgnoreFailingMessages:true
+[BattleRuntimeBootstrap] BATTLE_RUNTIME_BOOTSTRAP_DUPLICATE|at=Awake|sceneInstances=2|owner=HiddenRuntimeValidation/CombatDemo|this=HiddenRuntimeValidation/DuplicateBootstrapHost|path=HiddenRuntimeValidation/CombatDemo|path=HiddenRuntimeValidation/DuplicateBootstrapHost
+
+IgnoreFailingMessages:false
+]]></output>
+              </test-case>
+              <test-case id="1027" name="EquivalentShadowScenarioUsesLogicalCheckpointAlignment" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.EquivalentShadowScenarioUsesLogicalCheckpointAlignment" methodname="EquivalentShadowScenarioUsesLogicalCheckpointAlignment" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="428623571" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.049063" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1005" name="HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap" methodname="HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1285348681" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.043393" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1003" name="HiddenValidationSceneProvidesResolvableLegacyGateTargets" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneProvidesResolvableLegacyGateTargets" methodname="HiddenValidationSceneProvidesResolvableLegacyGateTargets" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="405723879" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.033983" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1009" name="LegacyAndShadowModesEnableTheRecordedLegacyWriterSet" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyAndShadowModesEnableTheRecordedLegacyWriterSet" methodname="LegacyAndShadowModesEnableTheRecordedLegacyWriterSet" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1623347863" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.041120" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1007" name="LegacyLogicCallbacksAreClassifiedBeforeNewCanStart" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyLogicCallbacksAreClassifiedBeforeNewCanStart" methodname="LegacyLogicCallbacksAreClassifiedBeforeNewCanStart" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="387208472" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.044128" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1010" name="LegacyModeNeverCallsBattleSimulationStep" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyModeNeverCallsBattleSimulationStep" methodname="LegacyModeNeverCallsBattleSimulationStep" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1550841676" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.040275" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1028" name="LegacyUsesScaledDeltaTimeAndNewUsesUnscaledDeltaTime" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyUsesScaledDeltaTimeAndNewUsesUnscaledDeltaTime" methodname="LegacyUsesScaledDeltaTimeAndNewUsesUnscaledDeltaTime" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1485883333" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.041546" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1034" name="MainSceneBattleDefinitionMatchesTask02BFrozenHash" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash" methodname="MainSceneBattleDefinitionMatchesTask02BFrozenHash" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1671879992" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:32Z" duration="0.199024" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1033" name="MainSceneRunsLegacyThroughBootstrapWithoutVisibleChange" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneRunsLegacyThroughBootstrapWithoutVisibleChange" methodname="MainSceneRunsLegacyThroughBootstrapWithoutVisibleChange" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1523915926" result="Passed" start-time="2026-09-24 05:13:32Z" end-time="2026-09-24 05:13:33Z" duration="0.205829" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1008" name="NewModeDisablesEveryRegisteredLegacyLogicWriter" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeDisablesEveryRegisteredLegacyLogicWriter" methodname="NewModeDisablesEveryRegisteredLegacyLogicWriter" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="399774208" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.047452" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1011" name="NewModeNeverCallsLegacyAdvanceTime" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime" methodname="NewModeNeverCallsLegacyAdvanceTime" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1595708423" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.040149" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1031" name="PausedBootstrapDoesNotAdvanceEitherSide" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.PausedBootstrapDoesNotAdvanceEitherSide" methodname="PausedBootstrapDoesNotAdvanceEitherSide" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1583312485" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.037478" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1029" name="ReopeningBattleAdvancesLegacyClockInBothModes" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleAdvancesLegacyClockInBothModes" methodname="ReopeningBattleAdvancesLegacyClockInBothModes" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="759325276" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.040967" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1030" name="ReopeningBattleKeepsUserPauseButClearsSystemPause" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleKeepsUserPauseButClearsSystemPause" methodname="ReopeningBattleKeepsUserPauseButClearsSystemPause" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="78808623" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.038528" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1018" name="RuntimeModeCannotChangeDuringActiveBattle" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.RuntimeModeCannotChangeDuringActiveBattle" methodname="RuntimeModeCannotChangeDuringActiveBattle" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1475081917" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.038534" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1002" name="SceneHasExactlyOneBattleRuntimeBootstrap" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.SceneHasExactlyOneBattleRuntimeBootstrap" methodname="SceneHasExactlyOneBattleRuntimeBootstrap" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="535038165" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.078376" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1025" name="ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy" methodname="ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="877120968" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.038707" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1020" name="ShadowComparisonRunsAfterEveryRegisteredLegacyWriter" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonRunsAfterEveryRegisteredLegacyWriter" methodname="ShadowComparisonRunsAfterEveryRegisteredLegacyWriter" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="407729758" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.042297" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1014" name="ShadowComparisonStaysBoundedAndComparableOverLongBattle" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonStaysBoundedAndComparableOverLongBattle" methodname="ShadowComparisonStaysBoundedAndComparableOverLongBattle" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1348452550" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.253511" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1021" name="ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock" methodname="ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1962992923" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.039268" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1012" name="ShadowModeKeepsLegacyAsOnlyAuthority" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority" methodname="ShadowModeKeepsLegacyAsOnlyAuthority" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1884993519" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.040303" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1013" name="ShadowProductionComparisonHasRealContentAndCanFail" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowProductionComparisonHasRealContentAndCanFail" methodname="ShadowProductionComparisonHasRealContentAndCanFail" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1711521606" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.041361" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1023" name="ShadowReportClassifiesExpectedAndUnexpectedDifferences" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportClassifiesExpectedAndUnexpectedDifferences" methodname="ShadowReportClassifiesExpectedAndUnexpectedDifferences" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="222785973" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.042847" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1022" name="ShadowReportFindsFirstUnexpectedDifference" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportFindsFirstUnexpectedDifference" methodname="ShadowReportFindsFirstUnexpectedDifference" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1727912826" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.039343" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1016" name="ShadowSimulationCannotBindViewsOrPlayFeedback" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotBindViewsOrPlayFeedback" methodname="ShadowSimulationCannotBindViewsOrPlayFeedback" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1581036275" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:33Z" duration="0.046316" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1017" name="ShadowSimulationCannotMutateLegacyOrUnityState" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotMutateLegacyOrUnityState" methodname="ShadowSimulationCannotMutateLegacyOrUnityState" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="776362391" result="Passed" start-time="2026-09-24 05:13:33Z" end-time="2026-09-24 05:13:34Z" duration="0.042863" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1036" name="ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail" methodname="ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1557312987" result="Passed" start-time="2026-09-24 05:13:34Z" end-time="2026-09-24 05:13:34Z" duration="0.041838" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1015" name="ShadowWriteWallRejectsForbiddenWritesAndCountsThem" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowWriteWallRejectsForbiddenWritesAndCountsThem" methodname="ShadowWriteWallRejectsForbiddenWritesAndCountsThem" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1717567289" result="Passed" start-time="2026-09-24 05:13:34Z" end-time="2026-09-24 05:13:57Z" duration="23.046765" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+[03B-R1] ShadowWriteWall.TryWrite 生产调用点 = 1 → ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AttemptForbiddenShadowWriteForTests
+]]></output>
+              </test-case>
+              <test-case id="1035" name="StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference" methodname="StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1494020480" result="Passed" start-time="2026-09-24 05:13:57Z" end-time="2026-09-24 05:13:57Z" duration="0.299406" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1024" name="TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate" methodname="TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="870915976" result="Passed" start-time="2026-09-24 05:13:57Z" end-time="2026-09-24 05:13:57Z" duration="0.192146" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1032" name="VisualTimeScaleIsolationDoesNotLeakIntoNewSimulation" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.VisualTimeScaleIsolationDoesNotLeakIntoNewSimulation" methodname="VisualTimeScaleIsolationDoesNotLeakIntoNewSimulation" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="25164335" result="Passed" start-time="2026-09-24 05:13:57Z" end-time="2026-09-24 05:13:57Z" duration="0.189778" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.1903182">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="449" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.190318" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1332" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="301" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.181488" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="27872" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1333" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="301" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.179331" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1334" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="301" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.177488" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1335" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="301" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.172370" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1336" name="Task06" fullname="ProjectHero.Authoring.Tests.Task06" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.165746" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1096" name="Task06ScheduleSpaceTests" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.161215" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1102" name="AutoDeferralAtomicallyReplacesEditableSegmentsAndReservations" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.AutoDeferralAtomicallyReplacesEditableSegmentsAndReservations" methodname="AutoDeferralAtomicallyReplacesEditableSegmentsAndReservations" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="1367140943" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.120700" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1104" name="AutoDeferralCannotMoveLockedOrReactionReservation" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.AutoDeferralCannotMoveLockedOrReactionReservation" methodname="AutoDeferralCannotMoveLockedOrReactionReservation" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="449809577" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.003883" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1101" name="AutoDeferralReusesMovePathAndReservationEvaluator" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.AutoDeferralReusesMovePathAndReservationEvaluator" methodname="AutoDeferralReusesMovePathAndReservationEvaluator" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="771209535" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.000726" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1099" name="DuplicateProducerOrdinalCannotChooseReservationWinner" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.DuplicateProducerOrdinalCannotChooseReservationWinner" methodname="DuplicateProducerOrdinalCannotChooseReservationWinner" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="1468325315" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.010279" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1105" name="EditableMoveReorderAtomicallyReplacesSegmentsAndReservations" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.EditableMoveReorderAtomicallyReplacesSegmentsAndReservations" methodname="EditableMoveReorderAtomicallyReplacesSegmentsAndReservations" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="33226559" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.001585" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1103" name="FailedAutoDeferralLeavesNoPartialReservationReplacement" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.FailedAutoDeferralLeavesNoPartialReservationReplacement" methodname="FailedAutoDeferralLeavesNoPartialReservationReplacement" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="2035795193" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.001327" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1106" name="FailedEditableDependencyRecalculationRollsBackWholeScheduleBatch" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.FailedEditableDependencyRecalculationRollsBackWholeScheduleBatch" methodname="FailedEditableDependencyRecalculationRollsBackWholeScheduleBatch" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="1356703177" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.003992" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1098" name="ReservationConflictIgnoresRawBatchEnumerationOrder" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.ReservationConflictIgnoresRawBatchEnumerationOrder" methodname="ReservationConflictIgnoresRawBatchEnumerationOrder" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="1917190987" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.003137" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1097" name="ReservationConflictWinnerFollowsCanonicalCommandOrder" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.ReservationConflictWinnerFollowsCanonicalCommandOrder" methodname="ReservationConflictWinnerFollowsCanonicalCommandOrder" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="1927407765" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.000724" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1100" name="WindowSwitchDoesNotChangeMovementOrReservation" fullname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests.WindowSwitchDoesNotChangeMovementOrReservation" methodname="WindowSwitchDoesNotChangeMovementOrReservation" classname="ProjectHero.Authoring.Tests.Task06.Task06ScheduleSpaceTests" runstate="Runnable" seed="1427844044" result="Passed" start-time="2026-09-24 05:53:31Z" end-time="2026-09-24 05:53:31Z" duration="0.002317" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

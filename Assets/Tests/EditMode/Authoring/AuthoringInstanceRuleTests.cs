@@ -33,11 +33,18 @@ namespace ProjectHero.Authoring.Tests
         /// 主战斗定义哈希的冻结锚点（<c>02B-配置迁移记录.md</c> §11 / <c>02B-交接记录.md</c> §7）。
         /// 仅由 <see cref="MainEncounterDefinitionHashMatchesFrozenAnchor"/> 消费；
         /// 改动此常量等于宣布一次<b>有意的</b>玩法定义变更。
+        ///
+        /// <b>任务 02B 定义哈希修订</b>：单位 → 体积规范表的绑定
+        /// （<c>UnitDefinition.WriteHashComponents</c> 的 <c>unit.volume_spec_id</c>）与
+        /// 库↔体积显式绑定的条数（<c>definition.library_volume_binding_count</c>）
+        /// 纳入定义哈希后，本摘要由旧值 <c>d9324383b2622148</c> 更新为
+        /// <c>a10fcfb98357418c</c>。新值来自真实资产重新构建的<b>实测</b>结果
+        /// （见 <c>06-r4-hashprobe.xml</c> 的探测运行），不是手工推算。
         /// </summary>
         private const string FrozenRulesVersion = "battle-def-v1";
 
         /// <inheritdoc cref="FrozenRulesVersion"/>
-        private const string FrozenMainEncounterHash = "d9324383b2622148";
+        private const string FrozenMainEncounterHash = "a10fcfb98357418c";
 
         // ============================================================
         // 1. ControllerBinding
@@ -568,7 +575,8 @@ namespace ProjectHero.Authoring.Tests
 
             // ① 自动延期上限进哈希。
             string baseline = BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, definition.Rules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
                 definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
                 definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles,
                 definition.Units, definition.Actions, definition.AttackPatterns, definition.Volumes,
@@ -577,7 +585,8 @@ namespace ProjectHero.Authoring.Tests
 
             var mutatedRules = definition.Rules with { MaxAutomaticDeferralsPerPlan = 9 };
             string mutatedHash = BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, mutatedRules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, mutatedRules,
                 definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
                 definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles,
                 definition.Units, definition.Actions, definition.AttackPatterns, definition.Volumes,
@@ -923,7 +932,8 @@ namespace ProjectHero.Authoring.Tests
                     : c)
                 .ToList();
             string mutated = BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, definition.Rules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
                 definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
                 definition.FactionModel, mutatedChannels, definition.ImpactProfiles,
                 definition.Units, definition.Actions, definition.AttackPatterns, definition.Volumes,
@@ -1290,6 +1300,95 @@ namespace ProjectHero.Authoring.Tests
                 Is.EqualTo(FrozenMainEncounterHash), "重复构建必须复现冻结哈希");
         }
 
+        /// <summary>
+        /// 任务 02B <b>定义哈希修订</b>的<strong>可失败</strong>证据：单位的
+        /// <c>VolumeSpecId</c>（单位 → 体积规范表绑定）<b>进入</b> <c>BattleDefinitionHash</c>，
+        /// 因此"两个定义只有体积绑定不同"必须得到不同摘要。
+        ///
+        /// 同时给出该绑定与 Authoring 显式配置事实
+        /// （<see cref="LegacyIdMigrationManifest.LibraryVolumes"/>）的一致性：
+        /// 每个绑定（库 GUID → 体积 GUID）的最终 <c>VolumeSpecId</c> 必须真的出现在定义里，
+        /// 且每个单位定义绑定的就是它所属库对应的那一张表。
+        ///
+        /// 负控制（本用例可失败的方式）：把 <c>UnitDefinition.WriteHashComponents</c> 里的
+        /// <c>unit.volume_spec_id</c> 一行删掉，第一处断言立刻失败——哈希将不再随绑定变化。
+        /// </summary>
+        [Test]
+        public void UnitVolumeBindingParticipatesInDefinitionHashAndMatchesLibraryManifest()
+        {
+            BattleDefinition definition = BattleDefinitionFixture.Definition;
+
+            // ① 前置条件：真实定义里两个单位都绑定了"库 → 体积"清单给出的最终 VolumeSpecId，
+            //    并且两张表都存在于定义的 Volumes 目录里（不是悬空引用）。
+            Assert.That(definition.Units.Count, Is.EqualTo(2), "主战斗定义的单位数");
+            foreach (LegacyIdMigrationManifest.LibraryVolumeBinding binding in
+                     LegacyIdMigrationManifest.LibraryVolumes)
+            {
+                string expectedVolumeSpecId =
+                    LegacyIdMigrationManifest.FinalVolumeSpecIdForLibrary(binding.LibraryGuid);
+                Assert.That(expectedVolumeSpecId, Is.Not.Null.And.Not.Empty,
+                    "库↔体积绑定必须给出最终 VolumeSpecId：" + binding.LibraryGuid);
+                Assert.That(definition.Volumes.Any(v => v.VolumeSpecId.Value == expectedVolumeSpecId), Is.True,
+                    "绑定指向的体积表必须真的出现在定义里：" + expectedVolumeSpecId);
+            }
+
+            UnitDefinition hero = definition.FindUnit(new UnitDefinitionId(LegacyIdMigrationManifest.UnitHeroRadius1));
+            UnitDefinition monster = definition.FindUnit(new UnitDefinitionId(LegacyIdMigrationManifest.UnitMonsterRadius2));
+            Assert.That(hero, Is.Not.Null);
+            Assert.That(monster, Is.Not.Null);
+            Assert.That(hero.VolumeSpecId.Value, Is.EqualTo(
+                LegacyIdMigrationManifest.FinalVolumeSpecIdForLibrary(LegacyIdMigrationManifest.ForRadius1Guid)));
+            Assert.That(monster.VolumeSpecId.Value, Is.EqualTo(
+                LegacyIdMigrationManifest.FinalVolumeSpecIdForLibrary(LegacyIdMigrationManifest.ForRadius2Guid)));
+            Assert.That(hero.VolumeSpecId.Value, Is.Not.EqualTo(monster.VolumeSpecId.Value),
+                "两个单位绑定的是不同的规范表（否则本用例失去区分力）");
+            Assert.That(definition.VolumeDirectionsOf(hero.UnitDefinitionId), Is.Not.Null,
+                "定义级绑定必须能解析出规范 12 向表");
+            Assert.That(definition.VolumeDirectionsOf(monster.UnitDefinitionId), Is.Not.Null);
+
+            // ② 核心：只改一个单位的 VolumeSpecId ⇒ 定义摘要必须改变。
+            string swapped = BattleDefinitionHash.Compute(
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
+                definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
+                definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles,
+                new List<UnitDefinition>
+                {
+                    hero with { VolumeSpecId = monster.VolumeSpecId },
+                    monster
+                },
+                definition.Actions, definition.AttackPatterns, definition.Volumes,
+                definition.MovementPatterns, definition.ActionSets, definition.StatusEffects,
+                definition.Encounters, definition.DefaultDynamicSpawnPolicy);
+
+            Assert.That(swapped, Is.Not.EqualTo(definition.BattleDefinitionHashValue),
+                "改变某单位的 VolumeSpecId 必须改变定义哈希（unit.volume_spec_id 参与哈希）");
+
+            // ③ 同一输入必须复现同一摘要（确定性），且与定义摘要一致（重算 == 构建）。
+            Assert.That(BattleDefinitionHash.Compute(
+                    definition.RulesVersion, definition.TicksPerSecond,
+                    BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
+                    definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
+                    definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles,
+                    definition.Units, definition.Actions, definition.AttackPatterns, definition.Volumes,
+                    definition.MovementPatterns, definition.ActionSets, definition.StatusEffects,
+                    definition.Encounters, definition.DefaultDynamicSpawnPolicy),
+                Is.EqualTo(definition.BattleDefinitionHashValue),
+                "用定义自身的单位表重算必须得到构建时写入的同一摘要");
+
+            // ④ 显式配置事实本身进入哈希：库↔体积绑定少一条 ⇒ 摘要改变。
+            Assert.That(BattleDefinitionHash.Compute(
+                    definition.RulesVersion, definition.TicksPerSecond,
+                    BattleDefinitionFixture.LibraryVolumeBindingCount - 1, definition.Rules,
+                    definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
+                    definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles,
+                    definition.Units, definition.Actions, definition.AttackPatterns, definition.Volumes,
+                    definition.MovementPatterns, definition.ActionSets, definition.StatusEffects,
+                    definition.Encounters, definition.DefaultDynamicSpawnPolicy),
+                Is.Not.EqualTo(definition.BattleDefinitionHashValue),
+                "库↔体积显式绑定条数必须参与哈希（definition.library_volume_binding_count）");
+        }
+
         [Test]
         public void RenamingDisplayNameDoesNotChangeLogicIdOrHash()
         {
@@ -1380,7 +1479,8 @@ namespace ProjectHero.Authoring.Tests
             Assert.That(writerB.ToDigestHex(), Is.Not.EqualTo(writerA.ToDigestHex()));
 
             string mutated = BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, definition.Rules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
                 new ConcurrentActionDefinition(definition.ConcurrentAction.MetaResourceCost + 1),
                 definition.ReactionRules, definition.AdrenalineRules, definition.FactionModel,
                 definition.DamageChannels, definition.ImpactProfiles, definition.Units, definition.Actions,
@@ -1451,7 +1551,8 @@ namespace ProjectHero.Authoring.Tests
         private static string HashWithAdrenaline(
             BattleDefinition definition, AdrenalineRules adrenaline, ReactionRules reactionRules)
             => BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, definition.Rules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
                 definition.ConcurrentAction, reactionRules, adrenaline, definition.FactionModel,
                 definition.DamageChannels, definition.ImpactProfiles, definition.Units, definition.Actions,
                 definition.AttackPatterns, definition.Volumes, definition.MovementPatterns,
@@ -1462,7 +1563,8 @@ namespace ProjectHero.Authoring.Tests
             BattleDefinition definition, IReadOnlyList<ActionSpec> actions,
             AdrenalineRules adrenaline, ReactionRules reactionRules)
             => BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, definition.Rules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
                 definition.ConcurrentAction, reactionRules, adrenaline, definition.FactionModel,
                 definition.DamageChannels, definition.ImpactProfiles, definition.Units, actions,
                 definition.AttackPatterns, definition.Volumes, definition.MovementPatterns,
@@ -1471,7 +1573,8 @@ namespace ProjectHero.Authoring.Tests
 
         private static string Rehash(BattleDefinition source, IReadOnlyList<ActionSpec> actions)
             => BattleDefinitionHash.Compute(
-                source.RulesVersion, source.TicksPerSecond, source.Rules, source.ConcurrentAction,
+                source.RulesVersion, source.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, source.Rules, source.ConcurrentAction,
                 source.ReactionRules, source.AdrenalineRules, source.FactionModel, source.DamageChannels,
                 source.ImpactProfiles, source.Units, actions, source.AttackPatterns, source.Volumes,
                 source.MovementPatterns, source.ActionSets, source.StatusEffects, source.Encounters,

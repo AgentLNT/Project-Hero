@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Passed" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.0717649">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="238" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.071765" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1277" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.062921" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="34312" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1278" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.058964" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1279" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.058486" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1280" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.058021" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1262" name="UnitStateMachineTests" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.052432" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1268" name="AutomaticAndExplicitTransitionsEmitEquivalentEvents" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.AutomaticAndExplicitTransitionsEmitEquivalentEvents" methodname="AutomaticAndExplicitTransitionsEmitEquivalentEvents" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="2116598489" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.023054" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1273" name="ControlStatesRejectDirectHitByInitialRules" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.ControlStatesRejectDirectHitByInitialRules" methodname="ControlStatesRejectDirectHitByInitialRules" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1204705616" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000368" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1269" name="DeadIsTerminal" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.DeadIsTerminal" methodname="DeadIsTerminal" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="2133470289" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.001337" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1274" name="DefenseStateAloneDoesNotMitigateOrInvalidateContact" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.DefenseStateAloneDoesNotMitigateOrInvalidateContact" methodname="DefenseStateAloneDoesNotMitigateOrInvalidateContact" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1641667414" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.002282" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1275" name="FiniteControlStateExposesAuthoritativeBlockingUntilTick" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.FiniteControlStateExposesAuthoritativeBlockingUntilTick" methodname="FiniteControlStateExposesAuthoritativeBlockingUntilTick" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1609339885" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.001448" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1272" name="GuardingBlockingAndDodgingRemainDirectHitEligibleStates" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.GuardingBlockingAndDodgingRemainDirectHitEligibleStates" methodname="GuardingBlockingAndDodgingRemainDirectHitEligibleStates" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="637686558" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000184" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1276" name="RecoverySlotIsDeclaredButNotDefaultTarget" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.RecoverySlotIsDeclaredButNotDefaultTarget" methodname="RecoverySlotIsDeclaredButNotDefaultTarget" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1239905473" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000366" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1264" name="SelfTransitionAndTerminalSourceAreRejectedWithStableCodes" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.SelfTransitionAndTerminalSourceAreRejectedWithStableCodes" methodname="SelfTransitionAndTerminalSourceAreRejectedWithStableCodes" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="121410207" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000226" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1270" name="StateMachineDoesNotExposeSubmissionAuthority" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.StateMachineDoesNotExposeSubmissionAuthority" methodname="StateMachineDoesNotExposeSubmissionAuthority" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1957981823" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.001309" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1271" name="StateMachineExposesDirectHitEligibilityNotInteractionParticipation" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.StateMachineExposesDirectHitEligibilityNotInteractionParticipation" methodname="StateMachineExposesDirectHitEligibilityNotInteractionParticipation" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1551694660" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000267" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1263" name="StateTransitionMatrixAcceptsOnlyDeclaredTransitions" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.StateTransitionMatrixAcceptsOnlyDeclaredTransitions" methodname="StateTransitionMatrixAcceptsOnlyDeclaredTransitions" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1466629958" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.007764" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1265" name="TimedTransitionUsesHalfOpenInterval" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.TimedTransitionUsesHalfOpenInterval" methodname="TimedTransitionUsesHalfOpenInterval" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="160804409" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000538" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1267" name="TimedTransitionWithoutExplicitNextOnExpireIsRejected" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.TimedTransitionWithoutExplicitNextOnExpireIsRejected" methodname="TimedTransitionWithoutExplicitNextOnExpireIsRejected" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1566915234" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000238" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1266" name="UnlimitedTransitionHasNoFiniteEndTickAndNeverAutoExpires" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests.UnlimitedTransitionHasNoFiniteEndTickAndNeverAutoExpires" methodname="UnlimitedTransitionHasNoFiniteEndTickAndNeverAutoExpires" classname="ProjectHero.Logic.Tests.UnitStateMachineTests" runstate="Runnable" seed="1966990593" result="Passed" start-time="2026-09-23 14:52:02Z" end-time="2026-09-23 14:52:02Z" duration="0.000247" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

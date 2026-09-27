@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Passed" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.0435419">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="358" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.043542" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1405" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.035422" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="13544" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1406" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.034834" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1407" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.034495" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1408" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="67" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.034157" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1367" name="PathRulesTests" fullname="ProjectHero.Logic.Tests.PathRulesTests" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.032725" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1373" name="LegacyPerEdgeDurationClampIsNotANewTimingRule" fullname="ProjectHero.Logic.Tests.PathRulesTests.LegacyPerEdgeDurationClampIsNotANewTimingRule" methodname="LegacyPerEdgeDurationClampIsNotANewTimingRule" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="1986117521" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.013095" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1374" name="MoveMaxPathWeightCannotExceedSearchRuleLimit" fullname="ProjectHero.Logic.Tests.PathRulesTests.MoveMaxPathWeightCannotExceedSearchRuleLimit" methodname="MoveMaxPathWeightCannotExceedSearchRuleLimit" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="1638366841" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.004092" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1370" name="MoveReferenceSpeedIsFrozenAtTwenty" fullname="ProjectHero.Logic.Tests.PathRulesTests.MoveReferenceSpeedIsFrozenAtTwenty" methodname="MoveReferenceSpeedIsFrozenAtTwenty" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="295725667" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.000593" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1371" name="MoveSpeedIsNotAPathCostInput" fullname="ProjectHero.Logic.Tests.PathRulesTests.MoveSpeedIsNotAPathCostInput" methodname="MoveSpeedIsNotAPathCostInput" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="1331706668" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.002717" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1372" name="PathCostAndSearchRulesParticipateInDefinitionHash" fullname="ProjectHero.Logic.Tests.PathRulesTests.PathCostAndSearchRulesParticipateInDefinitionHash" methodname="PathCostAndSearchRulesParticipateInDefinitionHash" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="1025801909" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.001299" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1368" name="PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo" fullname="ProjectHero.Logic.Tests.PathRulesTests.PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo" methodname="PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="255785847" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.000304" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1369" name="PathSearchRulesRejectNonPositiveLimits" fullname="ProjectHero.Logic.Tests.PathRulesTests.PathSearchRulesRejectNonPositiveLimits" methodname="PathSearchRulesRejectNonPositiveLimits" classname="ProjectHero.Logic.Tests.PathRulesTests" runstate="Runnable" seed="1473607747" result="Passed" start-time="2026-09-24 04:20:29Z" end-time="2026-09-24 04:20:29Z" duration="0.000546" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

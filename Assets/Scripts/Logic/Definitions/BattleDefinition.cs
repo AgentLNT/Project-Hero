@@ -101,5 +101,32 @@ namespace ProjectHero.Logic.Definitions
             }
             return null;
         }
+
+        /// <summary>按 ID 查找体积规范表（任务 06 的单位→体积绑定）。不存在返回 null。</summary>
+        public VolumeSpec FindVolume(Ids.VolumeSpecId id)
+        {
+            if (Volumes == null || string.IsNullOrEmpty(id.Value)) return null;
+            foreach (var volume in Volumes)
+            {
+                if (volume != null && string.Equals(volume.VolumeSpecId.Value, id.Value, System.StringComparison.Ordinal))
+                    return volume;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 单位定义绑定的<strong>规范 12 向体积表</strong>（任务 06 生产路径的唯一入口）。
+        ///
+        /// 返回 null = 该单位未绑定体积规范表，或绑定指向不存在的表（悬空引用在 Builder 边界
+        /// 已被拒绝；运行时再次返回 null 只是 fail-closed，不伪造表）。返回的表已由
+        /// 任务 02B 预展开为规范整数表，消费端只允许按方向索引 + 整数平移。
+        /// </summary>
+        public IReadOnlyList<DirectionalTriangleSet> VolumeDirectionsOf(Ids.UnitDefinitionId unitDefinitionId)
+        {
+            UnitDefinition unit = FindUnit(unitDefinitionId);
+            if (unit == null) return null;
+            VolumeSpec volume = FindVolume(unit.VolumeSpecId);
+            return volume?.Directions;
+        }
     }
 }

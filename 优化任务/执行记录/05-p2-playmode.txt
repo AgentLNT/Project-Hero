@@ -1,0 +1,74 @@
+任务 05 P2 收口轮 —— PlayMode 全量实测证据
+=============================================
+
+工具：harness 原生 unity_command（run_tests / test_status），宿主执行；**未**用 pwsh 启动 Unity。
+命令与操作序列（可复现）：
+
+  1) unity_command run_tests --mode playmode --timeout 1800
+     → 同步模式被明确拒绝：
+       "PlayMode tests cannot run synchronously over HTTP: entering play mode triggers a
+        domain reload that drops the request."
+  2) unity_command run_tests --mode playmode --async_tests true --timeout 1800
+     → { success: true, result: "running", StatusPath: "Temp/pipeline_test_status.json" }
+  3) 等待约 100 秒后 unity_command test_status
+
+实测结果（test_status 原始摘要，逐字）
+--------------------------------------
+status   : completed
+duration : 27.88 s
+summary  : { "total": 36, "passed": 36, "failed": 0, "skipped": 0, "inconclusive": 0 }
+
+即：**PlayMode 全量 36/36 通过、0 失败**。
+上一轮基线 35 项 + 本轮新增 1 项（任务 05 的 Shadow 检查点扩展用例）= 36 ⇒ **零回归**。
+
+逐用例（Name | Status | Duration）
+----------------------------------
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference | Passed | 0.2739165   ← 本轮新增（必需测试清单第 98 项）
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.BroadDifferenceAllowlistIsRejected | Passed | 0.0718896
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.CombatDemoNoLongerOwnsAutonomousUpdate | Passed | 0.079566
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DestroyingBattleStopsActiveAdaptersExactlyOnce | Passed | 0.0723662
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DuplicateRuntimeBootstrapFailsFast | Passed | 0.0762673
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.EquivalentShadowScenarioUsesLogicalCheckpointAlignment | Passed | 0.0715417
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap | Passed | 0.0771983
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneProvidesResolvableLegacyGateTargets | Passed | 0.0620871
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyAndShadowModesEnableTheRecordedLegacyWriterSet | Passed | 0.0669722
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyLogicCallbacksAreClassifiedBeforeNewCanStart | Passed | 0.0799904
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyModeNeverCallsBattleSimulationStep | Passed | 0.0644826
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyUsesScaledDeltaTimeAndNewUsesUnscaledDeltaTime | Passed | 0.0668154
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash | Passed | 0.4087919
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneRunsLegacyThroughBootstrapWithoutVisibleChange | Passed | 1.081009
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeDisablesEveryRegisteredLegacyLogicWriter | Passed | 0.0790683
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime | Passed | 0.0622871
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.PausedBootstrapDoesNotAdvanceEitherSide | Passed | 0.0648648
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleAdvancesLegacyClockInBothModes | Passed | 0.0674882
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleKeepsUserPauseButClearsSystemPause | Passed | 0.0644046
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.RuntimeModeCannotChangeDuringActiveBattle | Passed | 0.0659427
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.SceneHasExactlyOneBattleRuntimeBootstrap | Passed | 0.1353345
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy | Passed | 0.0665193
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonRunsAfterEveryRegisteredLegacyWriter | Passed | 0.0729932
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonStaysBoundedAndComparableOverLongBattle | Passed | 0.2719023
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock | Passed | 0.0983619
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority | Passed | 0.0685445
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowProductionComparisonHasRealContentAndCanFail | Passed | 0.0669823
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportClassifiesExpectedAndUnexpectedDifferences | Passed | 0.0695691
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportFindsFirstUnexpectedDifference | Passed | 0.0670061
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotBindViewsOrPlayFeedback | Passed | 0.0703824
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotMutateLegacyOrUnityState | Passed | 0.0705398
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail | Passed | 0.0667193
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowWriteWallRejectsForbiddenWritesAndCountsThem | Passed | 23.109896
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference | Passed | 0.2396952
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate | Passed | 0.2005656
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.VisualTimeScaleIsolationDoesNotLeakIntoNewSimulation | Passed | 0.2001086
+
+补充（同一工具族的定向运行）
+----------------------------
+unity_command run_tests --mode playmode --filter ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference
+  → { total: 1, passed: 1, failed: 0, skipped: 0, inconclusive: 0 }，用例 0.278 s
+
+说明（不夸大）
+--------------
+* 本轮新增用例走的是 **Logic 对 Logic** 的 Shadow 比较通道（`ShadowCasePolicy.CompareScheduleFacts = true` 逐用例开启）；
+  既有 35 项用例使用默认策略（`false`），报告逐字节不变 ⇒ 零回归是结构性的，而不是"恰好没触发"。
+* 任务 03B 的**写点级监控限制**在本轮**依旧成立**：`ShadowWrites.* == 0` 证明的是
+  "没有调用方持有已发放令牌"（fail-closed 结构）+ "计数器可以失败"（探针可证伪），
+  **不是**"某个真实写入点没有写"。本文件不宣称写入点级监控。

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.1262942">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="301" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.126294" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1259" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.118016" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="39092" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1260" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.116030" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1261" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.114303" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1262" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.109420" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1263" name="Task05" fullname="ProjectHero.Authoring.Tests.Task05" runstate="Runnable" testcasecount="63" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.103563" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1142" name="Task05StartGateAndTerminalTests" fullname="ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests" classname="ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests" runstate="Runnable" testcasecount="18" result="Failed" site="Child" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.102251" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1146" name="InvalidPrimaryTargetTerminatesAsTargetInvalidWithoutRetargeting" fullname="ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests.InvalidPrimaryTargetTerminatesAsTargetInvalidWithoutRetargeting" methodname="InvalidPrimaryTargetTerminatesAsTargetInvalidWithoutRetargeting" classname="ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests" runstate="Runnable" seed="544703065" result="Failed" start-time="2026-09-23 17:49:41Z" end-time="2026-09-23 17:49:42Z" duration="0.090674" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Retryable(1,START_BLOCKER_TIMED_CONTROL_STATE,110)
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests.InvalidPrimaryTargetTerminatesAsTargetInvalidWithoutRetargeting () [0x00212] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05StartGateAndTerminalTests.cs:160
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

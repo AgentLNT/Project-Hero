@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Failed(Child)" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.1756948">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="321" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.175695" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1280" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="253" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.167247" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="46712" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1281" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="253" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.165643" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1282" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="253" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.164220" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1283" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="253" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.162812" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1284" name="Task05" fullname="ProjectHero.Authoring.Tests.Task05" runstate="Runnable" testcasecount="83" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.161138" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1120" name="Task05ReactionOpportunityTests" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.159665" total="20" passed="14" failed="6" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1140" name="ActionPlanAutoDeferredEventContainsCanonicalRippleAndRevision" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ActionPlanAutoDeferredEventContainsCanonicalRippleAndRevision" methodname="ActionPlanAutoDeferredEventContainsCanonicalRippleAndRevision" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1848584813" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.110278" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1125" name="AreaOpportunityCandidatesUseSameFactionRelationMaskAsAttack" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.AreaOpportunityCandidatesUseSameFactionRelationMaskAsAttack" methodname="AreaOpportunityCandidatesUseSameFactionRelationMaskAsAttack" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="203864049" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.004264" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1121" name="AttackCannotOpenReactionOpportunityBeforeTelegraphTick" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.AttackCannotOpenReactionOpportunityBeforeTelegraphTick" methodname="AttackCannotOpenReactionOpportunityBeforeTelegraphTick" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1423903038" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000330" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1138" name="DodgeTriggeredRequiresSwapTransactionSeam" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.DodgeTriggeredRequiresSwapTransactionSeam" methodname="DodgeTriggeredRequiresSwapTransactionSeam" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="990729871" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.003398" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1131" name="EachReactionOptionEmitsExpiryOnceAndLastOptionClosesOpportunity" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.EachReactionOptionEmitsExpiryOnceAndLastOptionClosesOpportunity" methodname="EachReactionOptionEmitsExpiryOnceAndLastOptionClosesOpportunity" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1250400802" result="Failed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.005587" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 1
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.EachReactionOptionEmitsExpiryOnceAndLastOptionClosesOpportunity () [0x00085] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:336
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1122" name="EditableAttackCannotOpenReactionOpportunityBeforeLockAndStart" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.EditableAttackCannotOpenReactionOpportunityBeforeLockAndStart" methodname="EditableAttackCannotOpenReactionOpportunityBeforeLockAndStart" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1817897382" result="Failed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000750" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: null
+  But was:  "REACTION_NO_REACHABLE_OPTION"
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.EditableAttackCannotOpenReactionOpportunityBeforeLockAndStart () [0x00084] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:137
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1126" name="ExplicitFriendlyFireCanCreateFriendlyReactionOpportunity" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ExplicitFriendlyFireCanCreateFriendlyReactionOpportunity" methodname="ExplicitFriendlyFireCanCreateFriendlyReactionOpportunity" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="403291330" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000735" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1137" name="LockedReactionCannotAutoDefer" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.LockedReactionCannotAutoDefer" methodname="LockedReactionCannotAutoDefer" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1178628104" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000621" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1124" name="OpportunityCandidatesDoNotDependOnPlayerOrAiControllerKind" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.OpportunityCandidatesDoNotDependOnPlayerOrAiControllerKind" methodname="OpportunityCandidatesDoNotDependOnPlayerOrAiControllerKind" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="482038669" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.002603" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1133" name="ReactionCommandCannotProvideTriggerTick" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionCommandCannotProvideTriggerTick" methodname="ReactionCommandCannotProvideTriggerTick" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1880701361" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000859" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1135" name="ReactionFixedIntervalCannotBeShiftedByLaneTail" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionFixedIntervalCannotBeShiftedByLaneTail" methodname="ReactionFixedIntervalCannotBeShiftedByLaneTail" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1882956376" result="Failed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000726" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  固定区间与 Lane 投影重叠必须稳定拒绝，绝不平移反应区间
+  Expected: "REACTION_LANE_INTERVAL_OCCUPIED"
+  But was:  null
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionFixedIntervalCannotBeShiftedByLaneTail () [0x000c8] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:451
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1132" name="ReactionOpportunityLeavesOpenAndEmitsCloseOnlyOnce" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOpportunityLeavesOpenAndEmitsCloseOnlyOnce" methodname="ReactionOpportunityLeavesOpenAndEmitsCloseOnlyOnce" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="657295879" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000850" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1139" name="ReactionOpportunityStateAndNextIdAppearInCanonicalSnapshot" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOpportunityStateAndNextIdAppearInCanonicalSnapshot" methodname="ReactionOpportunityStateAndNextIdAppearInCanonicalSnapshot" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="146840608" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.001833" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1127" name="ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup" methodname="ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="37330629" result="Failed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.001317" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  block 必须排在 dodge 之前（Ordinal）
+  Expected string length 16 but was 20. Strings differ at index 7.
+  Expected: "action.t05.block"
+  But was:  "action.block.default"
+  ------------------^
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup () [0x000d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:247
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1130" name="ReactionOptionDeadlineIsInclusiveAndExpiresAfterCommandPhase" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionDeadlineIsInclusiveAndExpiresAfterCommandPhase" methodname="ReactionOptionDeadlineIsInclusiveAndExpiresAfterCommandPhase" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="778588793" result="Failed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000624" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  截止 Tick 的命令阶段尚未结束，不得过期
+  Expected: 0
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionDeadlineIsInclusiveAndExpiresAfterCommandPhase () [0x00151] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:318
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1129" name="ReactionOptionsRequireCompatibleSourceTags" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionsRequireCompatibleSourceTags" methodname="ReactionOptionsRequireCompatibleSourceTags" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="138915924" result="Failed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000385" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: 1
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionsRequireCompatibleSourceTags () [0x0003c] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:274
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1128" name="ReactionOptionWithoutCommandIngressLeadIsNotPublished" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionOptionWithoutCommandIngressLeadIsNotPublished" methodname="ReactionOptionWithoutCommandIngressLeadIsNotPublished" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="2017038028" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000396" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1134" name="ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept" methodname="ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="1545983141" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.004048" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1136" name="SourceThreatCancelledTerminatesBoundReactionAndRequestsReservationRelease" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.SourceThreatCancelledTerminatesBoundReactionAndRequestsReservationRelease" methodname="SourceThreatCancelledTerminatesBoundReactionAndRequestsReservationRelease" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="585607136" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.002602" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1123" name="UnreactableAttackDoesNotOpenReactionOpportunity" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests.UnreactableAttackDoesNotOpenReactionOpportunity" methodname="UnreactableAttackDoesNotOpenReactionOpportunity" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityTests" runstate="Runnable" seed="58128722" result="Passed" start-time="2026-09-23 17:55:41Z" end-time="2026-09-23 17:55:41Z" duration="0.000226" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

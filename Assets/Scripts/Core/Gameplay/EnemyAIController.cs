@@ -9,6 +9,13 @@ using ProjectHero.Core.Timeline;
 
 namespace ProjectHero.Core.Gameplay
 {
+    /// <summary>
+    /// 旧敌人 AI。任务 03B：<c>Update()</c> 保留旧 10Hz think 语义，但被登记为
+    /// <strong>Legacy 从属写入者</strong>——它写时间线计划表并依赖顶层时钟推进，
+    /// 由 <c>BattleRuntimeBootstrap</c> 按模式整体门控（New 全部禁用）。
+    /// 迁移到 CommandRequest/AI 属任务 09。
+    /// </summary>
+    [DefaultExecutionOrder(ProjectHero.Core.Compatibility.Runtime.RuntimeCallbackRegistry.LegacyWriterExecutionOrder)]
     public class EnemyAIController : MonoBehaviour
     {
         [Header("Refs")]

@@ -195,7 +195,7 @@ namespace ProjectHero.Authoring
             // —— ⑨ 交叉校验 ——
             BattleDefinitionValidator.ValidateFactionModel(factionModel.Factions, factionModel.Relations, errors);
             BattleDefinitionValidator.ValidateActionSets(actionSets, actions, errors);
-            BattleDefinitionValidator.ValidateUnits(units, actionSets, errors);
+            BattleDefinitionValidator.ValidateUnits(units, actionSets, errors, volumeSpecs);
             BattleDefinitionValidator.ValidateReferences(actions, patternSpecs, volumeSpecs, ToMovementDictionary(movementPatterns), errors);
             BattleDefinitionValidator.ValidateEncounter(encounter, factionModel, errors);
             BattleDefinitionValidator.ValidateReactionClosure(actions, actionSets, adrenalineRules, reactionRules, errors);
@@ -217,6 +217,7 @@ namespace ProjectHero.Authoring
             string hash = BattleDefinitionHash.Compute(
                 RulesVersionV1,
                 rules.TicksPerSecond,
+                LegacyIdMigrationManifest.LibraryVolumes.Count,
                 rules,
                 concurrentAction,
                 reactionRules,
@@ -506,8 +507,23 @@ namespace ProjectHero.Authoring
         {
             try
             {
-                units[unitDefinitionId] =
+                UnitDefinition definition =
                     LegacyTypeConversion.BuildUnitDefinition(unitDefinitionId, stats, actionSetId);
+
+                // 任务 06：补上"单位 → 体积规范表"的绑定。绑定来自显式的库↔体积清单，
+                // 绝不按资产名/半径字符串推导。缺失即悬空引用（fail-closed，不静默降级）。
+                string volumeSpecId = LegacyIdMigrationManifest.FinalVolumeSpecIdForLibrary(libraryGuid);
+                if (string.IsNullOrEmpty(volumeSpecId))
+                {
+                    errors.Add(DefinitionCodes.DEFINITION_REFERENCE_DANGLING,
+                        "library:" + libraryGuid + " -> volume", unitDefinitionId);
+                    return;
+                }
+
+                units[unitDefinitionId] = definition with
+                {
+                    VolumeSpecId = new ProjectHero.Logic.Ids.VolumeSpecId(volumeSpecId)
+                };
             }
             catch (LogicDefinitionException ex)
             {

@@ -707,7 +707,8 @@ namespace ProjectHero.Authoring.Tests
             var rebuilt = CanonicalizeAllTables(definition);
 
             string originalHash = BattleDefinitionHash.Compute(
-                definition.RulesVersion, definition.TicksPerSecond, definition.Rules,
+                definition.RulesVersion, definition.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, definition.Rules,
                 definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
                 definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles,
                 definition.Units, definition.Actions, definition.AttackPatterns, definition.Volumes,
@@ -715,7 +716,8 @@ namespace ProjectHero.Authoring.Tests
                 definition.Encounters, definition.DefaultDynamicSpawnPolicy);
 
             string rebuiltHash = BattleDefinitionHash.Compute(
-                rebuilt.RulesVersion, rebuilt.TicksPerSecond, rebuilt.Rules,
+                rebuilt.RulesVersion, rebuilt.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, rebuilt.Rules,
                 rebuilt.ConcurrentAction, rebuilt.ReactionRules, rebuilt.AdrenalineRules,
                 rebuilt.FactionModel, rebuilt.DamageChannels, rebuilt.ImpactProfiles,
                 rebuilt.Units, rebuilt.Actions, rebuilt.AttackPatterns, rebuilt.Volumes,
@@ -919,7 +921,8 @@ namespace ProjectHero.Authoring.Tests
             IReadOnlyList<ProjectHero.Logic.Grid.VolumeSpec> volumes)
         {
             string hash = BattleDefinitionHash.Compute(
-                source.RulesVersion, source.TicksPerSecond, source.Rules, source.ConcurrentAction,
+                source.RulesVersion, source.TicksPerSecond,
+                BattleDefinitionFixture.LibraryVolumeBindingCount, source.Rules, source.ConcurrentAction,
                 source.ReactionRules, source.AdrenalineRules, source.FactionModel, source.DamageChannels,
                 source.ImpactProfiles, source.Units, actions, patterns, volumes,
                 source.MovementPatterns, source.ActionSets, source.StatusEffects, source.Encounters,

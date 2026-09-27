@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Failed(Child)" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.1676623">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="262" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.167662" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1218" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="194" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.159717" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2624" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1219" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="194" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.154950" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1220" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="194" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.149745" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1221" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="194" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.148514" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1222" name="Task05" fullname="ProjectHero.Authoring.Tests.Task05" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.147121" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1095" name="Task05ActionPlanAndLaneTests" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.146004" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1103" name="AcceptedAttackTimingDoesNotChangeAfterSpeedMutation" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.AcceptedAttackTimingDoesNotChangeAfterSpeedMutation" methodname="AcceptedAttackTimingDoesNotChangeAfterSpeedMutation" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1961714225" result="Passed" start-time="2026-09-23 14:58:22Z" end-time="2026-09-23 14:58:23Z" duration="0.094906" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1100" name="ActionSpeedChangesWindupButNotRecovery" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.ActionSpeedChangesWindupButNotRecovery" methodname="ActionSpeedChangesWindupButNotRecovery" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1227690616" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000437" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1101" name="AttackImpactOccursAtResolvedWindupEndAndBudgetEqualsWindupPlusRecovery" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.AttackImpactOccursAtResolvedWindupEndAndBudgetEqualsWindupPlusRecovery" methodname="AttackImpactOccursAtResolvedWindupEndAndBudgetEqualsWindupPlusRecovery" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="993986816" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000322" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1099" name="AttackRelativeTimingResolvesOnceWhenPlanBecomesEditable" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.AttackRelativeTimingResolvesOnceWhenPlanBecomesEditable" methodname="AttackRelativeTimingResolvesOnceWhenPlanBecomesEditable" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="400469292" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.006614" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1108" name="DifferentActorPlansMayOverlap" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.DifferentActorPlansMayOverlap" methodname="DifferentActorPlansMayOverlap" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1273387463" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001326" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1104" name="GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce" methodname="GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="999066621" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001499" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1114" name="InvalidPrimaryTargetRelationIsNeverRetargeted" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.InvalidPrimaryTargetRelationIsNeverRetargeted" methodname="InvalidPrimaryTargetRelationIsNeverRetargeted" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1868447711" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001089" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1109" name="LockedAndReactionIntervalsRemainFixedObstacles" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.LockedAndReactionIntervalsRemainFixedObstacles" methodname="LockedAndReactionIntervalsRemainFixedObstacles" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1257508218" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.004729" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1105" name="MoveStepTicksResolveOnceButEditablePathCountCanRecompute" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.MoveStepTicksResolveOnceButEditablePathCountCanRecompute" methodname="MoveStepTicksResolveOnceButEditablePathCountCanRecompute" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1460479559" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001885" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1102" name="MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed" methodname="MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="808533645" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000283" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1111" name="NonIdleStateDoesNotByItselfRejectFuturePlan" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.NonIdleStateDoesNotByItselfRejectFuturePlan" methodname="NonIdleStateDoesNotByItselfRejectFuturePlan" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="473217067" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001981" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1096" name="OrdinaryPlanUsesSingleIdentityAcrossEditableLockedAndRunning" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.OrdinaryPlanUsesSingleIdentityAcrossEditableLockedAndRunning" methodname="OrdinaryPlanUsesSingleIdentityAcrossEditableLockedAndRunning" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="297917907" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001835" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1115" name="PlanAndLaneAppearInCanonicalSnapshot" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.PlanAndLaneAppearInCanonicalSnapshot" methodname="PlanAndLaneAppearInCanonicalSnapshot" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="486657171" result="Failed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.006165" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  计划快照必须按 ActionPlanId 升序
+  Expected and actual are both <System.Int64[3]>
+  Values differ at index [0]
+  Expected: 2
+  But was:  1
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.PlanAndLaneAppearInCanonicalSnapshot () [0x00089] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:657
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1117" name="PlanEditAndLockTickFieldsAppearInCanonicalSnapshot" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.PlanEditAndLockTickFieldsAppearInCanonicalSnapshot" methodname="PlanEditAndLockTickFieldsAppearInCanonicalSnapshot" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1978376219" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000737" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1116" name="PlanTimingAppearsInCanonicalSnapshot" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.PlanTimingAppearsInCanonicalSnapshot" methodname="PlanTimingAppearsInCanonicalSnapshot" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1843241872" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.002289" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1113" name="PrimaryTargetMustSatisfyAllowedRelationAtAddAndStartGate" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.PrimaryTargetMustSatisfyAllowedRelationAtAddAndStartGate" methodname="PrimaryTargetMustSatisfyAllowedRelationAtAddAndStartGate" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1617648182" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000799" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1097" name="ReactionPlanIsCreatedLockedWithoutEditablePhase" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.ReactionPlanIsCreatedLockedWithoutEditablePhase" methodname="ReactionPlanIsCreatedLockedWithoutEditablePhase" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="342883557" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000230" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1098" name="ReactionPlanUsesOpportunityBindingAndNullSubmittedWindowId" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.ReactionPlanUsesOpportunityBindingAndNullSubmittedWindowId" methodname="ReactionPlanUsesOpportunityBindingAndNullSubmittedWindowId" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1447449199" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000433" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1106" name="SameActorPlansAreSerializedByLane" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.SameActorPlansAreSerializedByLane" methodname="SameActorPlansAreSerializedByLane" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="191889346" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000670" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1107" name="SameActorPlansWithEqualStartTickAreOrderedByPlanId" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.SameActorPlansWithEqualStartTickAreOrderedByPlanId" methodname="SameActorPlansWithEqualStartTickAreOrderedByPlanId" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="760420716" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000266" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1118" name="StepEndHasNoActiveArtifactReferencingTerminalPlan" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.StepEndHasNoActiveArtifactReferencingTerminalPlan" methodname="StepEndHasNoActiveArtifactReferencingTerminalPlan" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1322127761" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000641" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1112" name="SubmissionLockAppearsInLaneSnapshotWithoutRemovingPlans" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.SubmissionLockAppearsInLaneSnapshotWithoutRemovingPlans" methodname="SubmissionLockAppearsInLaneSnapshotWithoutRemovingPlans" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1381014682" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000733" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1110" name="SubmissionLockDoesNotDeleteExistingPlans" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.SubmissionLockDoesNotDeleteExistingPlans" methodname="SubmissionLockDoesNotDeleteExistingPlans" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="2001597495" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.000548" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1119" name="TerminationReasonsAndForcedDisplacementPriorityAreFrozen" fullname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests.TerminationReasonsAndForcedDisplacementPriorityAreFrozen" methodname="TerminationReasonsAndForcedDisplacementPriorityAreFrozen" classname="ProjectHero.Authoring.Tests.Task05.Task05ActionPlanAndLaneTests" runstate="Runnable" seed="1325717218" result="Passed" start-time="2026-09-23 14:58:23Z" end-time="2026-09-23 14:58:23Z" duration="0.001933" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

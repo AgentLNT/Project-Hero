@@ -352,11 +352,16 @@ namespace ProjectHero.Authoring
             }
         }
 
-        /// <summary>单位定义必须合法，且其动作集合引用已定义。</summary>
+        /// <summary>
+        /// 单位定义必须合法，且其动作集合引用已定义。
+        /// <paramref name="volumes"/> 非 null 时，还校验任务 06 的"单位 → 体积规范表"绑定
+        /// 不是悬空引用（空绑定同样被拒绝：体积不能靠命名约定隐式推导）。
+        /// </summary>
         public static void ValidateUnits(
             IReadOnlyDictionary<string, UnitDefinition> units,
             IReadOnlyDictionary<string, ActionSetDefinition> actionSets,
-            DefinitionErrorCollector errors)
+            DefinitionErrorCollector errors,
+            IReadOnlyDictionary<string, VolumeSpec> volumes = null)
         {
             if (units == null) return;
             foreach (var pair in units)
@@ -370,6 +375,12 @@ namespace ProjectHero.Authoring
                 if (actionSets == null || !actionSets.ContainsKey(unit.ActionSetId.Value ?? string.Empty))
                     errors.Add(DefinitionCodes.DEFINITION_REFERENCE_DANGLING,
                         "action_set:" + (unit.ActionSetId.Value ?? "<null>"), origin);
+
+                if (volumes == null) continue;
+                string volumeId = unit.VolumeSpecId.Value ?? string.Empty;
+                if (volumeId.Length == 0 || !volumes.ContainsKey(volumeId))
+                    errors.Add(DefinitionCodes.DEFINITION_REFERENCE_DANGLING,
+                        "volume:" + (volumeId.Length == 0 ? "<null>" : volumeId), origin);
             }
         }
 

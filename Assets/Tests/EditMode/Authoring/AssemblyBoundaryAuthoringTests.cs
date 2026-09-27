@@ -38,11 +38,20 @@ namespace ProjectHero.Authoring.Tests
         /// <summary>Legacy UnitVolume 的 MonoScript GUID（搬迁前后不变）。</summary>
         private const string UnitVolumeScriptGuid = "72c1b722215097e42819e4e1e5ed94a5";
 
-        /// <summary>02B 结束时项目中必须存在的自定义 asmdef 全量集合。</summary>
+        /// <summary>
+        /// 项目当前必须存在的自定义 asmdef 全量集合。
+        ///
+        /// 任务 02B 冻结为 5 个（Grid / Logic / Authoring 三个生产程序集 + 两个测试程序集）；
+        /// 任务 03B 新增 2 个：<c>ProjectHero.Compatibility.Runtime</c>（运行时所有权壳契约程序集，
+        /// 是 PlayMode 测试唯一可见的运行时程序集）与其测试程序集。
+        /// <strong>仍然禁止提前创建 <c>ProjectHero.UnityView</c></strong>（任务 10 才创建）。
+        /// </summary>
         private static readonly string[] ExpectedAssemblyNames =
         {
             "ProjectHero.Authoring",
             "ProjectHero.Authoring.Tests",
+            "ProjectHero.Compatibility.Runtime",
+            "ProjectHero.Compatibility.Runtime.Tests",
             "ProjectHero.Grid",
             "ProjectHero.Logic",
             "ProjectHero.Logic.Tests"
@@ -69,7 +78,10 @@ namespace ProjectHero.Authoring.Tests
 
             var names = infos.Select(i => i.name).OrderBy(n => n, StringComparer.Ordinal).ToArray();
             Assert.That(names, Is.EqualTo(ExpectedAssemblyNames),
-                "任务 02B 只允许 Grid / Logic / Authoring 三个生产 asmdef 与两个测试 asmdef（不得提前创建 UnityView）");
+                "程序集全量集合必须与冻结清单一致（03B 只新增 Compatibility.Runtime 与其测试程序集；"
+                + "不得提前创建 UnityView）");
+            Assert.That(names, Does.Not.Contain("ProjectHero.UnityView"),
+                "UnityView 只在任务 10 创建");
 
             foreach (var info in infos)
             {
@@ -108,8 +120,31 @@ namespace ProjectHero.Authoring.Tests
                 .OrderBy(r => r, StringComparer.Ordinal)
                 .ToArray();
             Assert.That(authoringTestReferences,
-                Is.EqualTo(new[] { "ProjectHero.Authoring", "ProjectHero.Grid", "ProjectHero.Logic" }),
-                "Authoring.Tests 只能引用 Authoring / Grid / Logic");
+                Is.EqualTo(new[] { "ProjectHero.Authoring", "ProjectHero.Compatibility.Runtime",
+                    "ProjectHero.Grid", "ProjectHero.Logic" }),
+                "Authoring.Tests 只能引用 Authoring / Compatibility.Runtime / Grid / Logic");
+
+            // ---- 任务 03B 新增：运行时所有权壳契约程序集与其 PlayMode 测试程序集 ----
+
+            var compatibilityRuntime = infos.Single(i => i.name == "ProjectHero.Compatibility.Runtime");
+            var compatibilityReferences = (compatibilityRuntime.references ?? new string[0])
+                .Where(r => !r.StartsWith("UnityEngine.") && !r.StartsWith("UnityEditor."))
+                .OrderBy(r => r, StringComparer.Ordinal)
+                .ToArray();
+            Assert.That(compatibilityReferences, Is.EqualTo(new[] { "ProjectHero.Logic" }),
+                "Compatibility.Runtime 只允许引用 Logic：不得依赖 Authoring 或任何 Legacy 具体类型");
+            Assert.That(compatibilityRuntime.noEngineReferences, Is.False,
+                "Compatibility.Runtime 需要 UnityEngine（MonoBehaviour 契约与只读检查点）");
+
+            var playModeTests = infos.Single(i => i.name == "ProjectHero.Compatibility.Runtime.Tests");
+            var playModeReferences = (playModeTests.references ?? new string[0])
+                .Where(r => !r.StartsWith("UnityEngine.") && !r.StartsWith("UnityEditor.")
+                            && r != "UnityEngine.TestRunner" && r != "UnityEditor.TestRunner")
+                .OrderBy(r => r, StringComparer.Ordinal)
+                .ToArray();
+            Assert.That(playModeReferences,
+                Is.EqualTo(new[] { "ProjectHero.Compatibility.Runtime", "ProjectHero.Logic" }),
+                "PlayMode 测试只允许引用契约程序集与 Logic（不得引用 Assembly-CSharp 或 Authoring）");
         }
 
         [Test]

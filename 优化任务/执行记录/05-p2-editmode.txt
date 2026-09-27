@@ -1,0 +1,59 @@
+任务 05 P2 收口轮 —— EditMode 全量实测证据
+=============================================
+
+工具：harness 原生 unity_command（run_tests），宿主执行；**未**用 pwsh 启动 Unity。
+为什么不走批处理 `unity test <project>`：运行中的 Editor 占用工程，批处理入口会以
+"该项目已在运行中的编辑器中打开" 拒绝执行（实测错误文本）。因此统一使用编辑器内的
+`run_tests`（同一工具族、同一套 Unity Test Runner），并在 `Logs/Editor.log` 中核对编译结果。
+
+命令与结果（可复现）
+--------------------
+1) unity_command run_tests --mode editor --timeout 1800
+   → Summary { Total: 353, Passed: 353, Failed: 0, Skipped: 0, Inconclusive: 0 }，Duration 5.42 s
+
+2) unity_command run_tests --mode editor --filter Task0 --timeout 900
+   → Summary { Total: 205, Passed: 205, Failed: 0 }（任务 03/04/05 合并回归）
+
+3) unity_command run_tests --mode editor --filter Task05 --timeout 1200
+   → Summary { Total: 115, Passed: 115, Failed: 0 }
+
+4) unity_command run_tests --mode editor --filter Task05SimulationWiringTests --timeout 900
+   → Summary { Total: 26, Passed: 26, Failed: 0 }（本轮新增端到端接线 fixture）
+
+5) unity_command run_tests --mode editor --filter Task05DodgeSeamTests --timeout 600
+   → Summary { Total: 6, Passed: 6, Failed: 0 }（本轮新增 Dodge 接缝 fixture）
+
+计数核对
+--------
+上一轮（第三轮 P1）EditMode 基线：321/321。
+本轮新增：26（Task05SimulationWiringTests）+ 6（Task05DodgeSeamTests）= 32。
+321 + 32 = **353** ⇒ 与实测 353/353 逐数吻合 ⇒ **零回归**。
+逐 fixture（本轮 353 项中的任务 05 部分）：
+  Task05ActionPlanAndLaneTests = 24
+  Task05ScheduleEditorTests    = 21
+  Task05StartGateAndTerminalTests = 18
+  Task05ReactionOpportunityTests  = 20
+  Task05SimulationWiringTests     = 26（新增）
+  Task05DodgeSeamTests            = 6（新增）
+  小计 = 115（= 过滤 "Task05" 的实测总数）
+
+过程性失败记录（真实失败，未隐藏）
+----------------------------------
+* 首轮 Task05SimulationWiringTests：15/26 通过，11 项失败。根因逐项已修（全部为**测试断言写错**
+  或对既有规范行为的误解，产品侧只补了 1 处真实缺口 = `SCHEDULE_START_TICK_BEFORE_COMMAND_TICK`）：
+  - 同一 Lane 串行 ⇒ 同批两条 Add 在创建期就已被 ripple（原断言假设可重叠）；
+  - 空 Lane 对象在计划离开后**仍然存在**（`Count == 0`），不是 `FindLane == null`；
+  - 自动延期会把 `LastEditedScheduleRevision` 同步为**提交后**修订号（2），不是 1；
+  - 一个失败事务只产生**一条** `CommandRejectedEvent`（整批拒绝），不是每个操作一条；
+  - 探针必须在目标 Tick 才记录（原实现从 Tick 1 就开始记录）；
+  - 控制状态断言写在了阶段 1 之前。
+* 首轮 Task05DodgeSeamTests：2/6 通过，4 项失败。根因：闭包模型是"起点落在另一个计划的
+  区间内"（同 Lane 的**求值前**重叠），因此断言必须精确到区间事实；另外权威排程事务会把
+  与 Locked 反应区间重叠的计划按规范向右避让，"后续编辑"用投影级 `RebindAbsoluteTicks` 更贴合被测语义。
+* 编译期真实失败（记录在案）：`ActionPlanTerminalCoordinator.TerminalLifecycleSink` 未声明、
+  `DodgeMovementInvalidationSeam` 缺 `using ProjectHero.Logic.Combat`、`ShadowCasePolicy`
+  私有构造函数新增必填参数导致两处 5 参调用 CS7036（由本轮修复，见交接记录 §26.9）。
+
+未验证项
+--------
+* 无（EditMode 全量、PlayMode 全量、任务 03/04/05 合并回归均已实测通过）。

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Failed(Child)" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.2113774">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="358" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.211377" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1320" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="290" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.202343" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="33840" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1321" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="290" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.200340" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1322" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="290" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.198724" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1323" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="290" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.197230" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1324" name="Task05" fullname="ProjectHero.Authoring.Tests.Task05" runstate="Runnable" testcasecount="120" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.195393" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1127" name="Task05ReactionOpportunityIdAllocatorTests" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.193409" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1130" name="ContractAllocatorIsMonotonicFromOneWithoutReuse" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests.ContractAllocatorIsMonotonicFromOneWithoutReuse" methodname="ContractAllocatorIsMonotonicFromOneWithoutReuse" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" runstate="Runnable" seed="2068673753" result="Passed" start-time="2026-09-23 19:31:13Z" end-time="2026-09-23 19:31:14Z" duration="0.016609" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1132" name="OpportunityIdsComeFromTheSingleContractAllocatorAndAuthorityMirrorNeverIssues" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests.OpportunityIdsComeFromTheSingleContractAllocatorAndAuthorityMirrorNeverIssues" methodname="OpportunityIdsComeFromTheSingleContractAllocatorAndAuthorityMirrorNeverIssues" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" runstate="Runnable" seed="679304871" result="Passed" start-time="2026-09-23 19:31:14Z" end-time="2026-09-23 19:31:14Z" duration="0.083218" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1128" name="ReactionOpportunityIdCounterIsIncrementedInExactlyOneMethod" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests.ReactionOpportunityIdCounterIsIncrementedInExactlyOneMethod" methodname="ReactionOpportunityIdCounterIsIncrementedInExactlyOneMethod" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" runstate="Runnable" seed="876750899" result="Failed" start-time="2026-09-23 19:31:14Z" end-time="2026-09-23 19:31:14Z" duration="0.055219" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  机会 ID 的计数状态只允许在一处递增（实测：InstanceIds.cs:137 public ReactionOpportunityId NextReactionOpportunityId() => new ReactionOpportunityId(_nextReactionOpportunityId++); | ActionScheduleAuthority.cs:56 internal long MutationProbeSecondAllocator() => nextReactionOpportunityId++;）
+  Expected: 1
+  But was:  2
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests.ReactionOpportunityIdCounterIsIncrementedInExactlyOneMethod () [0x002f1] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityIdAllocatorTests.cs:114
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1129" name="ReactionOpportunityIdIsConstructedOnlyAtTheSingleAllocator" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests.ReactionOpportunityIdIsConstructedOnlyAtTheSingleAllocator" methodname="ReactionOpportunityIdIsConstructedOnlyAtTheSingleAllocator" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" runstate="Runnable" seed="100383203" result="Passed" start-time="2026-09-23 19:31:14Z" end-time="2026-09-23 19:31:14Z" duration="0.025195" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1131" name="ReactionOpportunitySystemRequiresTheContractAllocator" fullname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests.ReactionOpportunitySystemRequiresTheContractAllocator" methodname="ReactionOpportunitySystemRequiresTheContractAllocator" classname="ProjectHero.Authoring.Tests.Task05.Task05ReactionOpportunityIdAllocatorTests" runstate="Runnable" seed="618589057" result="Passed" start-time="2026-09-23 19:31:14Z" end-time="2026-09-23 19:31:14Z" duration="0.000861" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -8,6 +8,15 @@ using ProjectHero.Core.Entities;
 
 namespace ProjectHero.Core.Timeline
 {
+    /// <summary>
+    /// 旧离散时间线。
+    ///
+    /// 任务 03B 的所有权调整（不变量 21）：本类<strong>没有</strong> <c>Update()</c>，
+    /// <c>AdvanceTime(float)</c> 唯一的调用者是 <c>BattleRuntimeBootstrap</c> 经 Legacy 帧适配器
+    /// （<c>CombatDemo.AdvanceFrame</c>）发起的那一条路径。时间语义完全不变：
+    /// 受 <c>Time.timeScale</c> 缩放的帧时间 + 固定步长累加器 + 暂停即 return。
+    /// </summary>
+    [DefaultExecutionOrder(ProjectHero.Core.Compatibility.Runtime.RuntimeCallbackRegistry.LegacyWriterExecutionOrder)]
     public class BattleTimeline : MonoBehaviour
     {
         // �߼�֡�ʣ�60 Ticks per second
@@ -29,6 +38,44 @@ namespace ProjectHero.Core.Timeline
 
         public bool Paused => _userPaused || _systemPaused;
         public bool SystemPaused => _systemPaused;
+
+        /// <summary>
+        /// 用户暂停（P 键 / UI 的 <see cref="SetPaused"/>）。与 <see cref="SystemPaused"/> 是
+        /// <strong>两个独立来源</strong>：系统暂停由战斗生命周期施加（<c>StopBattle</c> 置位、
+        /// <c>ResetForNewBattle</c> 清除），用户暂停是玩家意图，战斗之间的重开<strong>不得</strong>
+        /// 清除它（恢复语义见 <c>CombatDemo.ResetForNewBattle</c>）。
+        ///
+        /// 只读可观察入口：第三收尾轮 R4 之前只有私有字段 <c>_userPaused</c>，
+        /// "用户暂停不被重开清除"这条语义<strong>没有</strong>可断言入口；
+        /// 本属性只暴露事实，不改变任何暂停语义（<see cref="SetPaused"/> 仍是唯一写入点）。
+        /// </summary>
+        public bool UserPaused => _userPaused;
+
+        /// <summary>
+        /// 旧时间线里当前<strong>尚未执行</strong>的排程条目数（只读可观察入口）。
+        ///
+        /// 用途：让 Shadow 比较能<strong>真读旧运行的排程事实</strong>，而不是用定义槽位等
+        /// 定义派生常量冒充旧侧事实（03B-交接记录 §23.2 的任务 04 前置条件）。
+        /// 它只暴露计数，不暴露条目内容，也不新增任何写入面：<c>Schedule</c> /
+        /// <c>CancelGroup</c> / <c>CancelEvents</c> 仍是唯一写入点。
+        ///
+        /// <strong>语义边界</strong>：旧排程表混合了动作 Intent 与状态改变 Intent，它不是
+        /// 新内核 <c>StatusEffect</c> 或 <c>ActionPlan</c> 的对应物，因此本计数<strong>不</strong>参与
+        /// 两侧必须相等的字段级比较；它只用于旧侧事实确实被读过的可证伪负控制。
+        /// </summary>
+        public int ScheduledEventCount => _events.Count;
+
+        /// <summary>
+        /// 旧顶层推进的累计调用次数与累计帧时间（任务 03B「必须产出」9 的权威计数来源）。
+        ///
+        /// 这两个值只<strong>记录事实</strong>：不参与暂停判断、不改变累加器、不影响 Tick 推进。
+        /// 它们让"New 模式旧 <c>AdvanceTime</c> 调用为 0"可以被直接断言，
+        /// 而不是靠日志文本推断。
+        /// </summary>
+        public int TotalAdvanceTimeCalls { get; private set; }
+
+        /// <summary>累计收到的帧时间（含暂停期间收到的部分）。</summary>
+        public float RecordedAdvanceTimeSeconds { get; private set; }
 
         public System.Action OnScheduleChanged;
         public System.Action<long, System.Collections.Generic.IReadOnlyList<CombatIntent>> OnTickProcessed;
@@ -156,6 +203,9 @@ namespace ProjectHero.Core.Timeline
 
         public void AdvanceTime(float deltaTimeReal)
         {
+            TotalAdvanceTimeCalls++;
+            RecordedAdvanceTimeSeconds += deltaTimeReal;
+
             if (Paused) return;
 
             _timeAccumulator += deltaTimeReal;

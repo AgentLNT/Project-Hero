@@ -1,0 +1,11 @@
+[03 证据] Step 样本=900 归档记录=950 旧历史访问(读/复制/哈希)=0/0/0
+[03 证据] Step 总耗时 ms: P50=0.0100 P95=0.0100 P99=0.0200 max=3.3434
+[03 证据] 每 Tick 分配 bytes: 平均=0 最大=0
+[03 证据] 阶段采样总和(每 Tick 平均)=0.0137ms; 外部 Step P50=0.0100ms
+[03 证据] 阶段 InvariantCheckArchiveAndOutput: 调用=950 平均=0.0100ms 最大=3.1585ms
+[03 证据] 阶段 FrozenBatchMergeAndBaseRevision: 调用=950 平均=0.0006ms 最大=0.0021ms
+[03 证据] 阶段 DeathAndVictory: 调用=950 平均=0.0005ms 最大=0.0026ms
+[03 证据] 阶段 DamageAggregationAndDisplacementRequests: 调用=950 平均=0.0005ms 最大=0.0018ms
+[03 证据] 阶段 StateAndEffectAdvance: 调用=950 平均=0.0003ms 最大=0.0019ms
+[03 证据] 阶段 VictoryReevaluation: 调用=950 平均=0.0003ms 最大=0.0021ms
+[03 证据] 每 Tick 分配：本环境批次运行下 Profiler.GetTotalAllocatedMemoryLong 读数不可靠（0 与 65536 均出现），未取得可用于阈值判定的有效测量；不以全 0 样本伪造通过，§19 的 ≤8KB 每 Tick 分配验收必须在任务 11 的 Development Build + Profiler 中执行。

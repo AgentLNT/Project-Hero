@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="21" result="Failed(Child)" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.205839">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="301" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.205839" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1259" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.196872" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="35288" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1260" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.194958" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1261" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.193019" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1262" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="233" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.183138" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1263" name="Task05" fullname="ProjectHero.Authoring.Tests.Task05" runstate="Runnable" testcasecount="63" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.180926" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1120" name="Task05ScheduleEditorTests" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" testcasecount="21" result="Failed" site="Child" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.178876" total="21" passed="18" failed="3" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1128" name="AddedPlanReceivesIdOnlyAfterTransactionValidation" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.AddedPlanReceivesIdOnlyAfterTransactionValidation" methodname="AddedPlanReceivesIdOnlyAfterTransactionValidation" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="2060304235" result="Failed" start-time="2026-09-23 17:47:23Z" end-time="2026-09-23 17:47:24Z" duration="0.104924" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  SCHEDULE_LANE_SUBMISSION_LOCKED
+  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.AddedPlanReceivesIdOnlyAfterTransactionValidation () [0x00050] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:353
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1140" name="DefaultPathCalculatorDoesNotResamplePath" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.DefaultPathCalculatorDoesNotResamplePath" methodname="DefaultPathCalculatorDoesNotResamplePath" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1783378728" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.017211" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1125" name="DisjointScheduleEditsFromSameFrozenRevisionMayBothSucceed" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.DisjointScheduleEditsFromSameFrozenRevisionMayBothSucceed" methodname="DisjointScheduleEditsFromSameFrozenRevisionMayBothSucceed" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="908672724" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000876" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1136" name="DuplicateOperationOrCyclicInsertionAnchorRejectsWholeBatch" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.DuplicateOperationOrCyclicInsertionAnchorRejectsWholeBatch" methodname="DuplicateOperationOrCyclicInsertionAnchorRejectsWholeBatch" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="58604428" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000749" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1137" name="ExplicitInsertionAnchorAcceptsAcyclicBatch" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.ExplicitInsertionAnchorAcceptsAcyclicBatch" methodname="ExplicitInsertionAnchorAcceptsAcyclicBatch" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1607112338" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.001254" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1123" name="FailedOrPreviewedScheduleEditDoesNotIncrementRevision" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.FailedOrPreviewedScheduleEditDoesNotIncrementRevision" methodname="FailedOrPreviewedScheduleEditDoesNotIncrementRevision" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="407185967" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000681" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1135" name="LaneSubmissionLockBlocksAddButNotExistingEdits" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.LaneSubmissionLockBlocksAddButNotExistingEdits" methodname="LaneSubmissionLockBlocksAddButNotExistingEdits" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="748390300" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000400" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1133" name="LockedPlanCannotBeMovedOrRemoved" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.LockedPlanCannotBeMovedOrRemoved" methodname="LockedPlanCannotBeMovedOrRemoved" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1936163578" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.001017" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1139" name="MoveChainRecomputesProjectedStartPathDurationAndBudget" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.MoveChainRecomputesProjectedStartPathDurationAndBudget" methodname="MoveChainRecomputesProjectedStartPathDurationAndBudget" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="31051026" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.005867" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1132" name="MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed" methodname="MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1831571147" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.001198" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1130" name="OnlyDirectlyMovedPlanMayStartEarlierThanItsOldProjection" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.OnlyDirectlyMovedPlanMayStartEarlierThanItsOldProjection" methodname="OnlyDirectlyMovedPlanMayStartEarlierThanItsOldProjection" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="653925298" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.002738" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1126" name="OverlappingScheduleEditLaterInBatchIsRejectedByCommandOrder" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.OverlappingScheduleEditLaterInBatchIsRejectedByCommandOrder" methodname="OverlappingScheduleEditLaterInBatchIsRejectedByCommandOrder" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="579773445" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.001345" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1141" name="PositionDependencyClosureIsTransitiveAndCrossesNonMovementPlans" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.PositionDependencyClosureIsTransitiveAndCrossesNonMovementPlans" methodname="PositionDependencyClosureIsTransitiveAndCrossesNonMovementPlans" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="412966003" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.005697" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1134" name="ReactionPlanCannotBeMovedOrRemoved" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.ReactionPlanCannotBeMovedOrRemoved" methodname="ReactionPlanCannotBeMovedOrRemoved" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="176782682" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.002857" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1131" name="RemovingEditablePlanDoesNotPullLaterPlansForward" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.RemovingEditablePlanDoesNotPullLaterPlansForward" methodname="RemovingEditablePlanDoesNotPullLaterPlansForward" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1263490467" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.003146" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1127" name="ScheduleEditFailureLeavesNoPartialPlanOrLaneMutation" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.ScheduleEditFailureLeavesNoPartialPlanOrLaneMutation" methodname="ScheduleEditFailureLeavesNoPartialPlanOrLaneMutation" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="2023334327" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.005255" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1138" name="ScheduleLimitsAreEnforcedOnAcceptAndEditDecisions" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.ScheduleLimitsAreEnforcedOnAcceptAndEditDecisions" methodname="ScheduleLimitsAreEnforcedOnAcceptAndEditDecisions" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="338272841" result="Failed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.001420" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.ScheduleLimitsAreEnforcedOnAcceptAndEditDecisions () [0x0001a] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:667
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1121" name="SchedulePreviewAndCommitUseSameCanonicalEvaluator" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.SchedulePreviewAndCommitUseSameCanonicalEvaluator" methodname="SchedulePreviewAndCommitUseSameCanonicalEvaluator" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="240115670" result="Failed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.002451" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Add 的最终位点必须与预览一致
+  Expected: 200
+  But was:  220
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.SchedulePreviewAndCommitUseSameCanonicalEvaluator () [0x003a6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:132
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1129" name="ScheduleRippleMovesOnlyEditablePlansRight" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.ScheduleRippleMovesOnlyEditablePlansRight" methodname="ScheduleRippleMovesOnlyEditablePlansRight" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1157511500" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000814" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1124" name="StaleScheduleRevisionRejectsWholeBatch" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.StaleScheduleRevisionRejectsWholeBatch" methodname="StaleScheduleRevisionRejectsWholeBatch" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="899016690" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000564" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1122" name="SuccessfulScheduleEditIncrementsRevisionExactlyOnce" fullname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests.SuccessfulScheduleEditIncrementsRevisionExactlyOnce" methodname="SuccessfulScheduleEditIncrementsRevisionExactlyOnce" classname="ProjectHero.Authoring.Tests.Task05.Task05ScheduleEditorTests" runstate="Runnable" seed="1712587963" result="Passed" start-time="2026-09-23 17:47:24Z" end-time="2026-09-23 17:47:24Z" duration="0.000547" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -14,6 +14,19 @@ namespace ProjectHero.Logic.Combat
     /// （Constitution × 20）一次性量化得到的首版初始生命：它属于配置数据并进入
     /// BattleDefinitionHash，Logic 侧不得再实现第二套生命派生公式。
     /// <see cref="ActionSetId"/> 指向该单位理论可用的动作集合；它与单位的控制者类型无关。
+    ///
+    /// <see cref="VolumeSpecId"/>（任务 06 补上的绑定）指向该单位参与占位/区域查询时消费的
+    /// 任务 02B 规范 12 向体积表。它是<strong>定义级</strong>绑定：Logic 侧不再从资产 GUID、
+    /// 资产名或旧组件推断体积，装配期只做一次 ID 解析，运行时只按方向索引 + 整数平移。
+    ///
+    /// <strong>哈希参与（任务 02B 定义哈希修订）</strong>：本字段<strong>进入</strong>
+    /// <see cref="WriteHashComponents"/>，组件名 <c>unit.volume_spec_id</c>。
+    /// 理由是它<strong>直接决定</strong>单位占位 footprint 与命中资格，属于"会影响玩法结果的
+    /// 定义"；不进哈希的话，"两个定义只有单位↔体积表绑定不同"就无法被
+    /// <c>BattleDefinitionHash</c> 区分。该修订把主战斗定义摘要从
+    /// <c>d9324383b2622148</c> 更新为 <c>a10fcfb98357418c</c>（同一次修订还把
+    /// 库↔体积显式绑定条数 <c>definition.library_volume_binding_count</c> 纳入哈希），
+    /// 影响面与理由见 <c>06-交接记录.md</c> §10.3 与 <c>02B-配置迁移记录.md</c> §11。
     /// </summary>
     public sealed record UnitDefinition(
         UnitDefinitionId UnitDefinitionId,
@@ -23,7 +36,8 @@ namespace ProjectHero.Logic.Combat
         float MoveSpeed,
         IReadOnlyDictionary<DamageChannelId, int> BaseDamageResistanceQ10,
         float InitialHealth = 200f,
-        Ids.ActionSetId ActionSetId = default)
+        Ids.ActionSetId ActionSetId = default,
+        Ids.VolumeSpecId VolumeSpecId = default)
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
@@ -34,6 +48,12 @@ namespace ProjectHero.Logic.Combat
             writer.Write("unit.move_speed", (double)MoveSpeed);
             writer.Write("unit.initial_health", (double)InitialHealth);
             writer.Write("unit.action_set_id", ActionSetId.Value ?? string.Empty);
+
+            // 任务 02B 定义哈希修订：单位 → 体积规范表的绑定进哈希。
+            // 该绑定直接决定占位 footprint 与命中资格，属"会影响玩法结果的定义"。
+            // 写入的是 Logic ID（不写资产路径/显示名/加载顺序），因此改写 Builder
+            // 但产出同一规范绑定时哈希稳定。
+            writer.Write("unit.volume_spec_id", VolumeSpecId.Value ?? string.Empty);
 
             if (BaseDamageResistanceQ10 != null)
             {
@@ -71,6 +91,9 @@ namespace ProjectHero.Logic.Combat
         public const string UNIT_RESISTANCE_CHANNEL_INVALID = "UNIT_RESISTANCE_CHANNEL_INVALID";
         public const string UNIT_INITIAL_HEALTH_INVALID = "UNIT_INITIAL_HEALTH_INVALID";
         public const string UNIT_ACTION_SET_ID_INVALID = "UNIT_ACTION_SET_ID_INVALID";
+
+        /// <summary>任务 06：体积规范表引用格式非法（空表示"未绑定"，由悬空引用校验负责）。</summary>
+        public const string UNIT_VOLUME_SPEC_ID_INVALID = "UNIT_VOLUME_SPEC_ID_INVALID";
     }
 
     public static class UnitDefinitionValidation
@@ -110,6 +133,12 @@ namespace ProjectHero.Logic.Combat
             if (!string.IsNullOrEmpty(definition.ActionSetId.Value) &&
                 DefinitionIdValidation.ValidateFormat(definition.ActionSetId.Value) != null)
                 return UnitDefinitionCodes.UNIT_ACTION_SET_ID_INVALID;
+
+            // 任务 06：体积规范表引用。空 = 未绑定（由 Builder 的跨定义引用校验拒绝），
+            // 非空必须是合法 ID 格式。
+            if (!string.IsNullOrEmpty(definition.VolumeSpecId.Value) &&
+                DefinitionIdValidation.ValidateFormat(definition.VolumeSpecId.Value) != null)
+                return UnitDefinitionCodes.UNIT_VOLUME_SPEC_ID_INVALID;
 
             return null;
         }
