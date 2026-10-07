@@ -26,7 +26,8 @@ namespace ProjectHero.Logic.Combat
         PathCostRules PathCostRules,
         PathSearchRules PathSearchRules,
         ForcedDisplacementProtocolVersion ForcedDisplacementProtocolVersion,
-        int MaxAutomaticDeferralsPerPlan = BattleRules.FrozenMaxAutomaticDeferralsPerPlan)
+        int MaxAutomaticDeferralsPerPlan = BattleRules.FrozenMaxAutomaticDeferralsPerPlan,
+        ForcedDisplacementRules ForcedDisplacementRules = null)
     {
         public const string TICKS_PER_SECOND_INVALID = "TICKS_PER_SECOND_INVALID";
         public const string REFERENCE_ACTION_SPEED_INVALID = "REFERENCE_ACTION_SPEED_INVALID";
@@ -79,7 +80,16 @@ namespace ProjectHero.Logic.Combat
             PathCostRules: PathCostRules.FrozenV1,
             PathSearchRules: PathSearchRules.FrozenV1,
             ForcedDisplacementProtocolVersion: new ForcedDisplacementProtocolVersion(
-                ForcedDisplacementProtocolVersion.SimultaneousStepV1));
+                ForcedDisplacementProtocolVersion.SimultaneousStepV1),
+            ForcedDisplacementRules: ForcedDisplacementRules.FrozenV1);
+
+        /// <summary>
+        /// 强制位移规则面（任务 08「必须产出」22）。<strong>null</strong> ⇒ 哈希与校验按
+        /// <see cref="Combat.ForcedDisplacementRules.FrozenV1"/> 处理（保持既有
+        /// <c>with { }</c> 与位置构造兼容，同时不给"未声明规则"留缺口）。
+        /// </summary>
+        public ForcedDisplacementRules EffectiveForcedDisplacementRules
+            => ForcedDisplacementRules ?? Combat.ForcedDisplacementRules.FrozenV1;
 
         /// <summary>返回首个校验错误码（null = 通过）。</summary>
         public string Validate()
@@ -92,6 +102,8 @@ namespace ProjectHero.Logic.Combat
             if (KnockdownAutoRecoveryTicks < 0) return KNOCKDOWN_AUTO_RECOVERY_INVALID;
             if (MaxAutomaticDeferralsPerPlan < 0) return MAX_AUTOMATIC_DEFERRALS_INVALID;
             if (!ForcedDisplacementProtocolVersion.IsValid) return FORCED_DISPLACEMENT_PROTOCOL_INVALID;
+            string displacementRulesError = EffectiveForcedDisplacementRules.Validate();
+            if (displacementRulesError != null) return displacementRulesError;
             string pathCostError = PathCostRules == null ? PathCostRules.PATH_COST_WEIGHT_INVALID : PathCostRules.Validate();
             if (pathCostError != null) return pathCostError;
             return PathSearchRules == null ? PathSearchCodes.PATH_SEARCH_RULE_INVALID : PathSearchRules.Validate();
@@ -113,6 +125,8 @@ namespace ProjectHero.Logic.Combat
             PathSearchRules.WriteHashComponents(writer);
             ForcedDisplacementProtocolVersion.WriteHashComponents(writer);
             ForcedDisplacementEncoding.WriteHashComponents(writer);
+            // 方向表 / footprint / 依赖图判定 / Reservation 抢占 / 终态原因优先级 / 阶段顺序（「必须产出」22）。
+            EffectiveForcedDisplacementRules.WriteHashComponents(writer);
         }
     }
 

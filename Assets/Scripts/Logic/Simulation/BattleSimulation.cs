@@ -4,6 +4,7 @@ using System.Globalization;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Combat;
+using ProjectHero.Logic.Damage;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Determinism;
 using ProjectHero.Logic.Encounter;
@@ -12,6 +13,7 @@ using ProjectHero.Logic.Factions;
 using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
+using ProjectHero.Logic.Interactions;
 using ProjectHero.Logic.Movement;
 using ProjectHero.Logic.Replay;
 using ProjectHero.Logic.Resources;
@@ -37,6 +39,12 @@ namespace ProjectHero.Logic.Simulation
         public const string STEP_DISPLACEMENT_REQUEST_DUPLICATE = "STEP_DISPLACEMENT_REQUEST_DUPLICATE";
         public const string STEP_PHASE_BASE_REVISION_CHANGED = "STEP_PHASE_BASE_REVISION_CHANGED";
         public const string STEP_ADVANCE_REQUEST_INVALID = "STEP_ADVANCE_REQUEST_INVALID";
+
+        /// <summary>同一单位被两个不同的控制者绑定 ⇒ 占用投影的审计字段会静默取决于扫描顺序。</summary>
+        public const string STEP_OCCUPANCY_CONTROLLER_CONTRADICTION = "STEP_OCCUPANCY_CONTROLLER_CONTRADICTION";
+
+        /// <summary>单位没有任何控制者绑定 ⇒ 占用投影的审计字段会是空值（"没接线"被当成有效控制者）。</summary>
+        public const string STEP_OCCUPANCY_CONTROLLER_MISSING = "STEP_OCCUPANCY_CONTROLLER_MISSING";
     }
 
     /// <summary>默认战斗结果码（<see cref="VictoryDefinition"/> 的显式结果码优先）。</summary>
@@ -85,7 +93,7 @@ namespace ProjectHero.Logic.Simulation
     /// 阶段 11–13 强制位移"仅在命令前判定为假时成立。</item>
     /// </list>
     /// </summary>
-    public sealed class BattleSimulation : IDisposable
+    public sealed class BattleSimulation : IDisposable, IResolutionDamageApplier
     {
         private sealed class UnitRuntimeState : IStatusEffectHost
         {
@@ -177,6 +185,25 @@ namespace ProjectHero.Logic.Simulation
         private readonly BattleSimulationAssembly _assembly;
         private readonly IFactionRelationResolver _factionResolver;
         private readonly IReadOnlyDictionary<ControllerId, IReadOnlyList<UnitId>> _controllerToUnitIds;
+
+        /// <summary>
+        /// 已验证定义<strong>声明</strong>被某个 <c>ControllerBinding</c> 控制的 UnitId 集合
+        /// （由 <c>ControllerBinding.ControlledSlots</c> ∩ <c>SlotToUnitId</c> 投影，构造期算一次）。
+        ///
+        /// 它唯一的用途是给 <see cref="ControllerOf"/> 提供"缺映射"与"定义本就没声明控制者"的
+        /// <strong>判别依据</strong>：
+        /// <list type="bullet">
+        /// <item>本集合<b>含</b>该单位而 <c>_controllerToUnitIds</c> 查不到 ⇒ 真实的装配缺失 ⇒
+        /// 稳定码 <see cref="SimulationCodes.STEP_OCCUPANCY_CONTROLLER_MISSING"/>（守卫保留原样）；</item>
+        /// <item>本集合<b>不含</b>该单位 ⇒ 定义层面的合法"无控制者"形态（例如目标外阵营槽位：
+        /// 校验器只拒绝悬空/歧义/重复绑定，<strong>不</strong>要求每个槽位都被绑定），
+        /// 审计字段取 <c>default</c>（空字符串是合法 <c>ControllerId</c>）而不是抛异常。</item>
+        /// </list>
+        ///
+        /// 它<strong>不是</strong>第二份控制权权威：唯一的权威仍是定义 + <c>BattleInitializer</c>
+        /// 产出的 <c>ControllerToUnitIds</c>；本集合只回答"定义有没有为该单位声明控制者"。
+        /// </summary>
+        private readonly HashSet<long> _controllerDeclaredUnitIds = new HashSet<long>();
 
         private readonly List<UnitRuntimeState> _units = new List<UnitRuntimeState>();
         private readonly Dictionary<long, UnitRuntimeState> _unitsById = new Dictionary<long, UnitRuntimeState>();
@@ -285,6 +312,56 @@ namespace ProjectHero.Logic.Simulation
         /// <summary>阶段 9 产出的 Dodge 提交报告（提交前快照 + 结果 + 提交后快照；供任务 08 消费）。</summary>
         private DodgeCommitReport _dodgeCommitReport = DodgeCommitReport.Empty(0L);
 
+        /// <summary>
+        /// 阶段 8 冻结的本 Tick 全局 Intent 队列（任务 08「必须产出」4）。
+        /// 它是<strong>只读观察值</strong>：物化与冻结都在同一阶段内一次完成，
+        /// 因此它不会出现"半冻结"状态，也不构成恢复输入（恢复输入是计划集与 RNG/序号快照）。
+        /// </summary>
+        private FrozenIntentQueue _intentQueue = GlobalIntentQueue.Freeze(0L, Array.Empty<CombatIntent>());
+
+        /// <summary>
+        /// 阶段 10 构建的冲突图（任务 08「必须产出」6/7）。合成失败（组超上限）时为 <c>null</c>，
+        /// 失败原因码留在 <see cref="_conflictGraphError"/>。
+        /// </summary>
+        private ConflictGraph _conflictGraph;
+
+        /// <summary>阶段 10 构图失败时的稳定原因码（成功时为 <c>null</c>）。</summary>
+        private string _conflictGraphError;
+
+        /// <summary>
+        /// 阶段 10 产出的<strong>分阶段求解结果</strong>（任务 08「必须产出」8–11）。
+        /// 它是纯值产物：求解器没有写接口，唯一的世界写入发生在阶段 11（伤害提交）与阶段 13/14。
+        /// </summary>
+        private StagedConflictResolution _stagedResolution = StagedConflictResolution.Empty(0L);
+
+        /// <summary>
+        /// 阶段 11 的 Resolution 提交系统（装配注入优先；否则本场真实现）。
+        /// 真实现就是 <see cref="ConflictGroupResolutionCommitSystem"/>：只扣血 + 登记 Clash 终止请求。
+        /// </summary>
+        private readonly IResolutionCommitSystem _resolutionCommit;
+
+        /// <summary>本 Tick 的伤害/合力提交报告（只读观察面；未装配提交系统时为 null）。</summary>
+        private ConflictGroupResolutionCommitSystem _resolutionCommitSystem;
+
+        /// <summary>
+        /// 阶段 11 实际使用的强制位移请求构建器（装配注入优先；否则本场真实现）。
+        /// </summary>
+        private readonly IForcedDisplacementRequestBuilder _displacementRequestBuilder;
+
+        /// <summary>
+        /// 阶段 14 实际使用的肾上腺素入账事实来源（装配注入优先；否则本场真实现）。
+        /// </summary>
+        private readonly IAdrenalineAccrualFactSource _adrenalineAccrualSource;
+
+        /// <summary>
+        /// 本 Tick 的 <c>ActionPlanId → ConflictGroupKey</c> 只读投影（阶段 10 构图后一次性冻结）。
+        ///
+        /// 语义事件的"冲突组"字段、位移请求的组键都取自这份投影；未入图的计划按 <c>0</c> 处理。
+        /// 它在阶段 10 之后<strong>不再变更</strong>：图冻结后计划终态不追溯改写本 Tick 输入。
+        /// </summary>
+        private IReadOnlyDictionary<long, long> _conflictGroupKeyByPlan =
+            new Dictionary<long, long>();
+
         /// <summary>本 Tick 新公开的机会（阶段 7；只用于诊断与测试观察，不参与哈希）。</summary>
         private readonly List<ReactionOpportunityRuntime> _openedOpportunitiesThisTick =
             new List<ReactionOpportunityRuntime>();
@@ -311,6 +388,15 @@ namespace ProjectHero.Logic.Simulation
         private IReadOnlyList<CommandIngressRejection> _pendingIngressRejections = Array.Empty<CommandIngressRejection>();
         private IReadOnlyList<ForcedDisplacementRequest> _displacementRequests = Array.Empty<ForcedDisplacementRequest>();
         private ForcedDisplacementBatch _displacementBatch = ForcedDisplacementBatch.Empty;
+
+        /// <summary>阶段 12 求解器（装配注入优先；否则本场真实现）。</summary>
+        private readonly IForcedDisplacementSolver _displacementSolver;
+
+        /// <summary>阶段 13 前半段提交器（装配注入优先；否则本场真实现）。</summary>
+        private readonly IForcedDisplacementCommitter _displacementCommitter;
+
+        /// <summary>强制位移性能统计（只读计数，绝不进哈希/快照）。</summary>
+        private readonly ForcedDisplacementStats _forcedDisplacementStats = new ForcedDisplacementStats();
         private IReadOnlyList<ActionPlanId> _invalidatedPlanIds = Array.Empty<ActionPlanId>();
 
         private long _batchBaseScheduleRevision;
@@ -368,6 +454,25 @@ namespace ProjectHero.Logic.Simulation
             _encounter = definition.FindEncounter(_encounterId);
             if (_encounter == null)
                 throw new LogicDefinitionException(DefinitionCodes.ENCOUNTER_NOT_FOUND, _encounterId.Value);
+
+            // 控制权声明集（只读投影，见字段注释）：定义声明的槽位 → 初始化器分配的单位。
+            // 装配期一次算完，运行期只查表，不构成第二份控制权权威。
+            if (_encounter.Controllers != null)
+            {
+                for (int i = 0; i < _encounter.Controllers.Count; i++)
+                {
+                    ControllerBinding declared = _encounter.Controllers[i];
+                    if (declared == null || declared.ControlledSlots == null) continue;
+                    for (int s = 0; s < declared.ControlledSlots.Count; s++)
+                    {
+                        if (initialization.SlotToUnitId != null
+                            && initialization.SlotToUnitId.TryGetValue(declared.ControlledSlots[s], out UnitId declaredUnitId))
+                        {
+                            _controllerDeclaredUnitIds.Add(declaredUnitId.Value);
+                        }
+                    }
+                }
+            }
 
             _logicGrid = new LogicGrid(_encounter.GridBoundary);
             _movementAuthority = new LogicGridMovementAuthority(
@@ -516,17 +621,64 @@ namespace ProjectHero.Logic.Simulation
             _dodgeRelocation.BudgetReleaseSink = assembly.BudgetReleaseSink;
             _movementAuthority.DodgeDestinationReservations = _dodgeRelocation;
 
+            // 任务 08（R4，照 MovementPathCalculator 先例）：装配点未显式注入时**绑本场真实现**，
+            // 因此默认装配即生产装配，不存在"默认 = 不工作"。
+            //   求解器：只读本场 LogicGrid + 计划权威 + Dodge 目的格预留；静态障碍来源显式给出
+            //           （基线 LogicGrid 没有地形障碍模型，默认 = 无障碍，不是"障碍规则不存在"）。
+            //   提交器：经**唯一**统一终态协调器提交 MovementOriginInvalidated /
+            //           ReservationPreemptedByForcedDisplacement。
+            // 任务 03/04 的脚本夹具与负控制仍然显式注入优先。
+            _displacementSolver = assembly.DisplacementSolver
+                ?? new Interactions.ForcedDisplacementSolver(
+                    _logicGrid, _scheduleAuthority, _dodgeRelocation, null, _forcedDisplacementStats);
+            _displacementCommitter = assembly.DisplacementCommitter
+                ?? new Interactions.ForcedDisplacementCommitter(_scheduleAuthority, _terminalCoordinator);
+
+            // 任务 08：阶段 11 的 Resolution 提交接缝。装配注入优先；
+            // 未注入时绑**本场真实现**（与 DisplacementSolver/Committer 的先例一致）：
+            // 它只做两件事——按 UnitId 升序把已聚合伤害写入权威生命、把 Clash 终止登记为请求。
+            // 它不持有计划注册表/网格/Lane，因此"提交阶段自己改计划终态"在类型层就不可能。
+            _resolutionCommit = assembly.ResolutionCommit;
+            if (_resolutionCommit == null)
+            {
+                _resolutionCommitSystem =
+                    new ConflictGroupResolutionCommitSystem(() => _stagedResolution, this);
+                _resolutionCommit = _resolutionCommitSystem;
+            }
+
+            // 任务 08（R4 第三/第四装配点，照 DisplacementSolver/Committer 与 ResolutionCommit 先例）：
+            //   阶段 11 的**位移请求构建器**：按本 Tick 的 DamageCommitReport.Units[] 生成每单位
+            //   唯一请求（取该组 GroupKey），不从网格或求解器重算第二次几何。
+            //   阶段 14 的**肾上腺素入账事实来源**：只读分阶段求解产物与伤害提交报告，
+            //   按 UnitId 升序给出每单位至多一条的规范事实（唯一入账入口仍在任务 07 的账本）。
+            // 未注入 ⇒ 绑本场真实现；显式注入优先（任务 03/04/07 夹具、负控制）。
+            _displacementRequestBuilder = assembly.DisplacementRequestBuilder
+                ?? new DisplacementRequestBuilder(() => LastDamageCommitReport);
+            _adrenalineAccrualSource = assembly.AdrenalineAccrualFactSource
+                ?? new AdrenalineAccrualFactSource(() => _stagedResolution, () => LastDamageCommitReport);
+
             // 任务 05：唯一的反应机会系统 + 唯一的终态/生命周期事件发射路径（经 Outbox）。
             //
             // 三个任务 06/07 接缝（区域候选来源 / 资源准备 / 预留释放接收方）由装配注入；
             // 未注入时的默认分别是"没有候选"（fail-closed）、"只校验不冻结"与"请求排队保留"
             // （绝不静默丢弃）。任务 06/07 装配后按同一入口注入，不改变机会状态机。
+            //
+            // 任务 08 收尾裁定：**区域威胁候选来源**改走与位移求解器/提交器同一 R4 先例 ——
+            // 未显式注入时，BattleSimulation 绑定基于本场 LogicGrid 的**真实现**
+            // （GridAreaThreatCandidateSource），不再静默回落到"永远没有候选"。
+            // 理由是 NoAreaThreatCandidateSource 会让**区域攻击永远不公开任何反应机会**
+            // （CollectDefenders 在非 PrimaryTargetOnly 策略下只能向该来源取候选），
+            // 使 AOE 的 Block/Dodge/Guard 覆盖在结构上不可达；任务 05 的 fail-closed 默认口径
+            // 是"任务 06 接入前"的临时态，而 06-交接记录.md:808-810 已把区域威胁来源归属任务 08。
+            // 显式注入仍优先（任务 03/04/05 脚本夹具、负控制 NoAreaThreatCandidateSource）。
             _reactionSystem = new ReactionOpportunitySystem(
                 _scheduleAuthority, _planFactory, definition, _factionResolver,
                 // 任务 05 收尾 R1（缺陷 D2）：机会 ID 的唯一分配器（任务 03 冻结契约的
                 // LogicIdGenerator），必填；缺省回落会重新引入"第二份计数状态"。
                 _idGenerator,
-                assembly.AreaThreatCandidateSource, _terminalCoordinator)
+                assembly.AreaThreatCandidateSource
+                    ?? new GridAreaThreatCandidateSource(definition, _logicGrid, _logicGrid.RegisteredUnitsOrdered),
+                _terminalCoordinator)
             {
                 EventSink = sink => _outbox.Emit(sink),
                 PreparationPort = assembly.ReactionPreparationPort,
@@ -781,6 +933,75 @@ namespace ProjectHero.Logic.Simulation
         public DodgeCommitReport LastDodgeCommitReport => _dodgeCommitReport;
 
         /// <summary>
+        /// 阶段 8 冻结的本 Tick 全局 Intent 队列（任务 08「必须产出」4）。
+        ///
+        /// 只读观察入口：它是"仲裁读取本 Tick 全部有效动作、<strong>不按提交窗口过滤</strong>"
+        /// （不变量 5）的直接证据——<c>Freeze</c> 的签名里没有窗口参数。
+        /// 队列在阶段 8 被整体替换，因此不存在跨 Tick 的残留项。
+        /// </summary>
+        public FrozenIntentQueue IntentQueue => _intentQueue;
+
+        /// <summary>
+        /// 阶段 10 构建的规范化冲突图（任务 08「必须产出」6/7）。
+        /// 构图失败（单组超上限）时为 <c>null</c>，原因码见 <see cref="ConflictGraphBuildError"/>。
+        /// </summary>
+        public ConflictGraph ConflictGraph => _conflictGraph;
+
+        /// <summary>阶段 10 构图失败时的稳定原因码（成功时为 <c>null</c>）；只读诊断，不参与哈希。</summary>
+        public string ConflictGraphBuildError => _conflictGraphError;
+
+        /// <summary>
+        /// 阶段 10 的<strong>分阶段求解结果</strong>（任务 08「必须产出」8–11）：
+        /// Dodge 空间复核 → Block 完全抵抗 → Clash 同时求解 → Move → Remaining Hits 聚合。
+        ///
+        /// 只读观察入口。它就是阶段 11 伤害提交与阶段 14 Clash 终态的<strong>唯一输入</strong>，
+        /// 因此"装配点没接线"（求解结果没人消费）在这条只读面上是可见的。
+        /// 构图失败时它是以失败码整体拒绝的空结果（不丢边、不拆组）。
+        /// </summary>
+        public StagedConflictResolution StagedResolution => _stagedResolution;
+
+        /// <summary>
+        /// 本 Tick 的伤害/合力提交结果（按 <c>UnitId</c> 升序）。
+        /// 未装配本场真实现（显式注入了别的 <see cref="IResolutionCommitSystem"/>）时为
+        /// <see cref="DamageCommitReport.Empty"/>，且 <see cref="ResolutionCommitSystem"/> 为 null。
+        /// </summary>
+        public DamageCommitReport LastDamageCommitReport
+            => _resolutionCommitSystem == null
+                ? DamageCommitReport.Empty(_tick)
+                : _resolutionCommitSystem.LastDamageCommitReport;
+
+        /// <summary>本场真实现的提交系统（显式注入时为 null；只读观察入口）。</summary>
+        public ConflictGroupResolutionCommitSystem ResolutionCommitSystem => _resolutionCommitSystem;
+
+        /// <summary>
+        /// 阶段 11 实际使用的强制位移请求构建器（只读观察入口；未显式注入时是<strong>本场真实现</strong>）。
+        /// </summary>
+        public IForcedDisplacementRequestBuilder DisplacementRequestBuilder => _displacementRequestBuilder;
+
+        /// <summary>
+        /// 阶段 14 实际使用的肾上腺素入账事实来源（只读观察入口；未显式注入时是<strong>本场真实现</strong>）。
+        /// </summary>
+        public IAdrenalineAccrualFactSource AdrenalineAccrualFactSource => _adrenalineAccrualSource;
+
+        /// <summary>
+        /// 最近一次构建出的肾上腺素入账事实（按 <c>UnitId</c> 严格升序、每单位至多一条）。
+        /// 未显式注入时是本场真实现的产物；显式注入别的来源时为<strong>空</strong>（负控制可见）。
+        /// </summary>
+        public IReadOnlyList<AdrenalineAccrualFacts> LastAdrenalineAccrualFacts
+            => _adrenalineAccrualSource as AdrenalineAccrualFactSource != null
+                ? ((AdrenalineAccrualFactSource)_adrenalineAccrualSource).LastFacts
+                : Array.Empty<AdrenalineAccrualFacts>();
+
+        /// <summary>
+        /// 最近一次构建出的强制位移请求（按 <c>TargetUnitId</c> 升序、每单位至多一条）。
+        /// 未显式注入时是本场真实现的产物；显式注入别的构建器时为<strong>空</strong>（负控制可见）。
+        /// </summary>
+        public IReadOnlyList<ForcedDisplacementRequest> LastBuiltDisplacementRequests
+            => _displacementRequestBuilder as DisplacementRequestBuilder != null
+                ? ((DisplacementRequestBuilder)_displacementRequestBuilder).LastRequests
+                : Array.Empty<ForcedDisplacementRequest>();
+
+        /// <summary>
         /// 本场战斗<strong>唯一</strong>的反应机会系统（机会状态机 + <c>ReactionPlanner</c>）。
         /// 只读观察入口：写路径是"阶段 6 的命令处理器 → <c>TryAcceptById</c>"与
         /// "阶段 7 的原子启动 → <c>TryOpenForTelegraph</c>"。
@@ -799,6 +1020,21 @@ namespace ProjectHero.Logic.Simulation
 
         /// <summary>最近一次强制位移清理中被终止的移动计划（审计；任务 05 接入真实计划后才有内容）。</summary>
         public IReadOnlyList<ActionPlanId> LastInvalidatedPlanIds => _invalidatedPlanIds;
+
+        /// <summary>
+        /// 阶段 12 实际使用的强制位移求解器（只读观察入口；未显式注入时是<strong>本场真实现</strong>，
+        /// 见 <c>BattleSimulationAssembly.DisplacementSolver</c> 的 R4 口径）。
+        /// </summary>
+        public IForcedDisplacementSolver ForcedDisplacementSolver => _displacementSolver;
+
+        /// <summary>阶段 13 实际使用的强制位移提交器（只读观察入口）。</summary>
+        public IForcedDisplacementCommitter ForcedDisplacementCommitter => _displacementCommitter;
+
+        /// <summary>
+        /// 强制位移性能统计（任务包「必须产出」22）：请求数、最大请求步数、每轮依赖节点/边、
+        /// footprint 点检查数、批量换位数量。<strong>只读诊断面，绝不参与逻辑输入或哈希。</strong>
+        /// </summary>
+        public ForcedDisplacementStats ForcedDisplacementStatistics => _forcedDisplacementStats;
 
         /// <summary>
         /// 按 <c>UnitId</c> 升序的全部单位状态机（<strong>只读设计视图</strong>）。
@@ -1302,6 +1538,17 @@ namespace ProjectHero.Logic.Simulation
         /// <item>终态 <c>Dead</c> 经统一转换入口（与显式/自动转换同形状）；
         /// <c>IsAlive</c> 在本方法内置假并从最终 footprint 移除，
         /// 通知携带的 <c>FinalPosition</c> 因此是换位后的最终位置。</item>
+        /// <item><strong>网格 footprint 移除（裁定 6.2）</strong>：本方法把死者的 footprint
+        /// 从<strong>唯一空间权威</strong> <see cref="LogicGrid"/> 注销（<c>UnregisterUnit</c>），
+        /// 时机就是本方法被调用的时机——阶段 15（批量换位与位移事件之后）或阶段 2 的补跑。
+        /// 因此不变量 33「同 Tick 死亡在换位及事件之后处理」自动满足：致死单位在本 Tick 的
+        /// 阶段 11–13 强制位移里仍以"在场"身份参与同时求解，注销只发生在换位<strong>之后</strong>。
+        /// 没有这一步，"死亡后不再占格"只是注释承诺，并会与强制位移的"静止单位阻挡"
+        /// 叠加成<strong>幽灵阻挡</strong>（死人永久挡路，且不可能再被任何阶段清除）。</item>
+        /// <item>注销是<strong>幂等</strong>的：单位不在网格里时跳过（不抛）。重复调用本方法
+        /// 由 <c>IsKillable</c> 与 <c>_notifiedLifecycleUnitIds</c> 挡住，因此幂等分支只在
+        /// "装配期未注册该单位"这类形态下可达；反向的"网格里有死者却没注销"才是缺陷，
+        /// 由验收用例与 <c>STEP_INVARIANT_VIOLATION</c> 之外的空间断言钉住。</item>
         /// <item>本方法<strong>不</strong>修改 ActionPlan、Intent、MovementSegment、
         /// Reservation 或 ActorLane；计划从属对象由任务 05 的统一终态协调器按通知清理。</item>
         /// </list>
@@ -1337,6 +1584,32 @@ namespace ProjectHero.Logic.Simulation
                         + "|" + outcome.From + "|" + outcome.RejectionCode);
 
                 _outbox.Emit(sequence => new UnitDiedEvent(tick, sequence, unitId, remaining));
+
+                // —— 裁定 6.2：死亡必须移除网格 footprint（不变量 33：时机就在本方法被调用的时刻）——
+                //
+                // 三条必须一起成立的事实：
+                //   1. **时机**：本方法在阶段 15 被调用 ⇒ 阶段 11–13 的伤害/合力提交、只读同时求解
+                //      与**一次批量换位**都已提交，因此致死单位在本 Tick 的位移依赖图里仍然是
+                //      "在场"的占位者/被推动者，注销发生在换位之后；阶段 2 的补跑分支则整段跳过
+                //      阶段 3–17，本 Tick 根本不存在位移。两种调用点都不违反不变量 33。
+                //   2. **唯一权威**：注销的是 LogicGrid（空间权威），不是运行时镜像。
+                //      镜像 unit.Position 只是"网格 → 单位"的单向投影（SyncGridLogicalPositions），
+                //      不注销网格就等于把死人永久留在唯一权威里 ⇒ 幽灵阻挡。
+                //   3. **幂等**：单位不在网格里时跳过。真实调用点不会命中该分支（单位在构造期
+                //      全部注册，且 IsKillable/_notifiedLifecycleUnitIds 保证每个死者只走到这里一次），
+                //      但"注销两次"必须不是缺陷形态，否则任何一个未来的补注册路径都会炸在这里。
+                //
+                // 注销发生在**死亡事件之后、生命周期通知之前**：事件顺序（位移事件 → 死亡事件）
+                // 不受影响，而"通知携带 FinalPosition"只读 unit.Position，与网格注销无关。
+                if (_logicGrid.Contains(unitId))
+                {
+                    string unregisterError = _logicGrid.UnregisterUnit(unitId);
+                    if (unregisterError != null)
+                    {
+                        throw new LogicDefinitionException(unregisterError,
+                            "death footprint removal unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture));
+                    }
+                }
 
                 // 一次性生命周期清理通知：供任务 05 按 ActionPlanId 经统一终态协调器
                 // 终止死者全部非终态计划。死亡系统自己不动任何计划对象；
@@ -1828,9 +2101,127 @@ namespace ProjectHero.Logic.Simulation
             => _unitsById.TryGetValue(unitId.Value, out UnitRuntimeState unit) && unit.IsAlive;
 
 
+        /// <summary>
+        /// 阶段 8（<see cref="StepPhase.IntentDrain"/>）：<strong>物化</strong>本 Tick 到期的攻击 Intent，
+        /// 再交给全局队列<strong>冻结</strong>（任务 08「必须产出」1 与 4）。
+        ///
+        /// 固定两步顺序：
+        /// <list type="number">
+        /// <item><strong>物化</strong>：对每个 <c>ActionType.Attack</c>、<strong>非终态</strong>、
+        /// 且 <c>ImpactTick == tick</c> 的计划调用一次
+        /// <see cref="CombatIntentFactory.CreateAtImpactTick"/>。唯一性契约由工厂内部
+        /// <see cref="CombatIntentContract.ValidateMaterialization"/> 强制（非攻击 / 已终态 /
+        /// 命中时刻不匹配都以稳定原因码抛出，<strong>不</strong>静默跳过）。</item>
+        /// <item><see cref="GlobalIntentQueue.Freeze"/>：只按 <c>ImpactTick == tick</c> 取到期项并稳定排序
+        /// <c>(Tick, InteractionPriority, IntentSequence)</c>。该 API <strong>没有</strong>窗口参数 ⇒
+        /// 「不按提交窗口过滤」（不变量 5）是<strong>结构性</strong>保证，不是本方法的纪律。</item>
+        /// </list>
+        ///
+        /// 为什么计划按 <see cref="ActionPlanRegistry.ActivePlans"/> 的规范顺序扫描、序号也在扫描中分配：
+        /// <c>IntentSequence</c> 进入稳定排序键与快照哈希，因此它必须是
+        /// <strong>计划集合（多重集合）的纯函数</strong>。注册表的活动视图已经按 <c>ActionPlanId</c> 升序
+        /// 拷贝，扫描顺序与容器内部顺序无关；同一批计划以任何顺序入表都得到同一批序号。
+        ///
+        /// 刻意<strong>不</strong>读取计划的 Recovery/Active 阶段状态、窗口、单位状态或
+        /// <c>CanReceiveDirectHit</c>：计划在 <c>ImpactTick</c> 上可以已经进入 Recovery，
+        /// 合法 Intent 不得因此被过滤（<c>08-多方仲裁与伤害.md:59</c>）。
+        /// </summary>
         private void DrainIntents(long tick)
         {
-            // 任务 08：取出本 Tick 全部到期 Intent（排序键 Tick -&gt; InteractionPriority -&gt; IntentSequence）。
+            IReadOnlyList<ActionPlan> plans = _scheduleAuthority.Registry.ActivePlans;
+            var produced = new List<CombatIntent>();
+
+            for (int i = 0; i < plans.Count; i++)
+            {
+                ActionPlan plan = plans[i];
+                if (plan == null) continue;
+                if (plan.ActionType != ActionType.Attack) continue;
+                if (plan.IsTerminal) continue;
+                if (plan.ImpactTick != tick) continue;
+
+                produced.Add(MaterializeAttackIntent(plan, tick));
+            }
+
+            _intentQueue = GlobalIntentQueue.Freeze(tick, produced);
+        }
+
+        /// <summary>
+        /// 把一个到期攻击计划物化成攻击 Intent（阶段 8 的<strong>唯一</strong>物化点）。
+        ///
+        /// 载荷只来自已验证定义（<see cref="BattleDefinition.FindAction"/> → <see cref="AttackPayloadSpec"/>）
+        /// 与计划自身的固定事实，动量经<strong>唯一一次</strong>量化
+        /// （<see cref="MomentumQuantizer.QuantizePacket"/>）落到整数域；这里不读任何单位运行时状态、
+        /// 不推导命中时刻、不旋转 Pattern。
+        ///
+        /// 交互优先级固定为 <see cref="InteractionPriorities.AttackVsAttack"/>：那是
+        /// <strong>攻击 Intent 节点自身</strong>的矩阵阶段值。矩阵的阶段 1/2/4/5
+        /// （Attack vs Dodge/Block/Move）是同一批节点与<strong>对手计划</strong>形成的接触类别，
+        /// 由候选构建器按对手计划动作族分类，<strong>不得</strong>提前写进节点值
+        /// （否则同一 Intent 在不同对手下会取到不同优先级，稳定排序键与快照哈希都会漂移）。
+        /// </summary>
+        private CombatIntent MaterializeAttackIntent(ActionPlan plan, long tick)
+        {
+            InteractionPlanFacts facts = InteractionPlanFacts.From(plan);
+
+            ActionSpec spec = _definition.FindAction(plan.ActionSpecId);
+            if (spec == null)
+            {
+                throw new LogicDefinitionException(ActionPlanCodes.ACTION_PLAN_SPEC_NOT_FOUND,
+                    plan.ActionSpecId.Value ?? string.Empty);
+            }
+
+            var payload = spec.Payload as AttackPayloadSpec;
+            if (payload == null)
+            {
+                throw new LogicDefinitionException(InteractionCodes.INTENT_NOT_ATTACK,
+                    "plan=" + plan.ActionPlanId.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (!_unitsById.TryGetValue(plan.OwnerUnitId.Value, out UnitRuntimeState owner))
+            {
+                throw new LogicDefinitionException(InteractionCodes.INTENT_IDENTITY_INVALID,
+                    "owner=" + plan.OwnerUnitId.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
+            UnitDefinition unitDefinition = _definition.FindUnit(owner.DefinitionId);
+            if (unitDefinition == null)
+            {
+                throw new LogicDefinitionException(InteractionCodes.INTENT_IDENTITY_INVALID,
+                    "definition=" + owner.DefinitionId.Value ?? string.Empty);
+            }
+
+            // 唯一一次量化（Mass / MomentumSpeed / ForceMultiplier 在此之后不再被读取）。
+            MomentumPacket momentum = MomentumQuantizer.QuantizePacket(
+                plan.Facing, payload.MomentumDirectionOffsetSteps,
+                unitDefinition.Mass, unitDefinition.MomentumSpeed, payload.ForceMultiplier,
+                payload.ImpactProfileId);
+
+            // 锚点/朝向的<strong>唯一</strong>来源是空间权威 LogicGrid 的只读投影。
+            // 这里刻意<strong>不</strong>回落成运行时镜像（unit.Position/Facing）：那个镜像只在权威提交边界
+            // 同步，把它当成"网格查不到时的第二答案"就是把第二份位置真值偷偷放回装配侧。
+            // 活单位在构造期全部注册进 LogicGrid；死亡会在**死亡阶段**把死者注销（裁定 6.2），
+            // 但那时该单位的全部非终态计划已在**下一 Tick 的阶段 0** 经统一终态协调器终止，
+            // 因此本阶段（阶段 8）永远看不到"死者的到期攻击计划"：查不到只可能是装配缺陷 ⇒ 以稳定码抛出。
+            if (!_logicGrid.TryGetAnchor(plan.OwnerUnitId, out GridPoint anchor)
+                || !_logicGrid.TryGetFacing(plan.OwnerUnitId, out GridDirection facing))
+            {
+                throw new LogicDefinitionException(InteractionCodes.INTENT_IDENTITY_INVALID,
+                    "unit not registered in LogicGrid: owner="
+                    + plan.OwnerUnitId.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
+            return CombatIntentFactory.CreateAtImpactTick(
+                facts,
+                plan.ActionSpecId,
+                facing,
+                payload,
+                anchor,
+                tick,
+                InteractionPriorities.AttackVsAttack,
+                _sequences.TakeIntentSequence(),
+                momentum,
+                payload.MomentumDirectionOffsetSteps,
+                plan.SubmittedWindowId);
         }
 
         /// <summary>
@@ -1891,17 +2282,686 @@ namespace ProjectHero.Logic.Simulation
             }
         }
 
+        /// <summary>
+        /// 阶段 10（<see cref="StepPhase.ConflictGraphAndResolution"/>）：
+        /// <strong>规范化冲突图</strong>的构建（任务 08「必须产出」5–7 的构图部分）。
+        ///
+        /// 输入恰好三份只读事实，构图期<strong>不再</strong>访问 LogicGrid、计划索引、
+        /// 单位状态或事件队列：
+        /// <list type="number">
+        /// <item><see cref="_intentQueue"/>：阶段 8 冻结的本 Tick 到期 Intent（<strong>不得</strong>追溯删除）；</item>
+        /// <item><see cref="_dodgeCommitReport"/>：阶段 9 的<b>提交前</b>/<b>提交后</b>统一只读空间快照
+        /// （<see cref="DodgeCommitReport.Before"/>/<see cref="DodgeCommitReport.After"/>），
+        /// 由它投影出"每单位已占用 <see cref="TrianglePoint"/>"的旧格/新格两份；</item>
+        /// <item><see cref="InteractionPlanFacts.From"/> 投影出的活动计划事实表
+        /// （节点资格与对手计划判定的唯一来源）。</item>
+        /// </list>
+        ///
+        /// <strong>只传活动计划是不是会漏掉合法节点？</strong>不会：<c>ImpactTick == tick</c> 的计划
+        /// 在终态之后<strong>立刻</strong>离开活动索引（阶段 7 的终态协调器），而
+        /// <see cref="CombatIntentContract.ValidateMaterialization"/> 已经在阶段 8 把
+        /// "已终态"挡在物化之前；因此冻结队列的每个 Intent 在这里必然能按
+        /// <c>ActionPlanId</c> 找到自己的计划事实。反之若传更窄的子集，
+        /// 候选构建器会以 <see cref="InteractionCodes.CONTACT_INPUT_INVALID"/> 显式拒绝
+        /// （"planFacts missing"），绝不会把"缺计划"静默当成"不成立"。
+        ///
+        /// 构图失败（单组超节点/边/目标上限）<strong>不</strong>在这里抛：
+        /// <see cref="ConflictGraphBuilder.TryBuild"/> 的失败结果被保留在只读字段上，
+        /// 供后续 Resolution 步骤按"整组失败、不丢边不拆组"的口径处理。
+        /// </summary>
         private void BuildConflictGraphAndResolve(long tick)
         {
-            // 任务 08：构建规范化冲突图并按连通分量计算 Resolution。
+            _conflictGraph = null;
+            _conflictGraphError = null;
+            _stagedResolution = StagedConflictResolution.Empty(tick);
+            _conflictGroupKeyByPlan = new Dictionary<long, long>();
+
+            IReadOnlyList<InteractionPlanFacts> planFacts = BuildInteractionPlanFacts();
+            IReadOnlyList<UnitOccupancy> unitsBefore = BuildOccupancy(_dodgeCommitReport.Before);
+            IReadOnlyList<UnitOccupancy> unitsAfter = BuildOccupancy(_dodgeCommitReport.After);
+
+            var input = new ConflictGraphInput(
+                tick,
+                _intentQueue == null ? Array.Empty<CombatIntent>() : _intentQueue.Intents,
+                planFacts,
+                unitsBefore,
+                unitsAfter,
+                _factionResolver);
+
+            ConflictGraphBuildResult result = ConflictGraphBuilder.TryBuild(input, out ConflictGraph graph);
+            if (!result.Succeeded)
+            {
+                // 冻结口径：整组失败（不丢边、不拆组、不截断目标）。失败码继续可观察，
+                // 同时分阶段求解以同一码整体拒绝 ⇒ 本 Tick 不产生任何 Resolution。
+                _conflictGraphError = result.ErrorCode;
+                _stagedResolution = StagedConflictResolver.Resolve(new StagedResolutionContext(
+                    null, result.ErrorCode, result.FailingGroupKey,
+                    planFacts, unitsBefore, unitsAfter, _dodgeCommitReport,
+                    BuildUnitSnapshots(), _definition.Units, BuildPlanSpecEntries(),
+                    BuildBlockPayloadEntries(), BuildGuardPayloadEntries(), BuildClashQuota()));
+                return;
+            }
+
+            _conflictGraph = graph;
+
+            // 分阶段求解（任务 08「必须产出」8–11）：
+            //   1 Dodge 空间复核 → 2 Block 完全抵抗 → 3 Clash 同时求解 → 4 Move → 5 Remaining Hits 聚合。
+            // 求解器是纯函数（没有写接口）⇒ "查询/求解阶段不得修改世界"由类型而不是纪律保证。
+            // 三类 Resolution 的消费者在阶段 11（伤害提交）与阶段 14（经统一终态协调器提交 Clash 终态）。
+            _stagedResolution = StagedConflictResolver.Resolve(new StagedResolutionContext(
+                graph, null, 0L,
+                planFacts, unitsBefore, unitsAfter, _dodgeCommitReport,
+                BuildUnitSnapshots(), _definition.Units, BuildPlanSpecEntries(),
+                BuildBlockPayloadEntries(), BuildGuardPayloadEntries(), BuildClashQuota()));
+
+            // 计划 → 冲突组键的只读投影：图在构图后**不再变更**，因此这份投影在本 Tick
+            // 剩余阶段（11/13/14）里恒等于构图结果；语义事件与位移请求都取它。
+            _conflictGroupKeyByPlan = ConflictGroupKeys.BuildByPlan(graph);
+
+            // 任务包 08「必须产出」15：语义事件族。发射点留在既有阶段上（**不新增 Step 阶段**），
+            // 且只描述**已经求解完成**的事实——事件不改变世界，也不携带任何表现策略（不变量 10）。
+            EmitInteractionResolutionEvents(tick);
+        }
+
+        // =====================================================================
+        // 任务包 08「必须产出」15：语义事件族（阶段 10 发射点）
+        // =====================================================================
+
+        /// <summary>
+        /// 把本 Tick <strong>已经求解完成</strong>的分阶段结果广播为语义事件。
+        ///
+        /// <list type="bullet">
+        /// <item><strong>只描述战斗事实</strong>（不变量 10）：冲突组键、参与计划/单位 ID、
+        /// Raw/被动后/动作后伤害、抵抗前后动量、请求/实际步数、From/To、停止原因、
+        /// 稳定排序的失效计划 ID。没有震屏、顿帧、动画时长或插值；</item>
+        /// <item><strong>不修改世界</strong>：本方法只读 <c>_stagedResolution</c> 与
+        /// <c>_dodgeCommitReport</c>，因此"求解阶段零写入"仍然成立；</item>
+        /// <item><strong>不新增 Step 阶段</strong>：它就在阶段 10 的现有位置里调用，
+        /// 位移最终结果事件仍在阶段 13、Clash 终态请求仍在阶段 14。</item>
+        /// </list>
+        /// </summary>
+        private void EmitInteractionResolutionEvents(long tick)
+        {
+            StagedConflictResolution staged = _stagedResolution;
+            if (staged == null || staged.Failed) return;
+
+            EmitDodgeResolvedEvents(tick, staged);
+            EmitBlockResolvedEvents(tick, staged);
+            EmitGuardResistanceEvents(tick, staged);
+            EmitClashEvents(tick, staged);
+            EmitMoveContactEvents(tick, staged);
+            EmitDamageAndAggregateEvents(tick, staged);
+        }
+
+        /// <summary>
+        /// Dodge 旧/新位置与失效接触（任务包 08:72）。
+        ///
+        /// 每个<strong>实际进入 TriggerTick 提交尝试</strong>的 Dodge 计划恰好一条：
+        /// 提交成功的发 <c>ReactionTriggeredEvent</c> 的语义由任务 05/06 承担，
+        /// 本处只发"求解后的结算事实"。提前终止不伪造触发（没有计划就没有事件）。
+        /// </summary>
+        private void EmitDodgeResolvedEvents(long tick, StagedConflictResolution staged)
+        {
+            for (int p = 0; p < staged.DodgePlans.Count; p++)
+            {
+                DodgePlanResolution plan = staged.DodgePlans[p];
+                if (plan == null) continue;
+
+                var invalidated = new List<ActionPlanId>();
+                var stillHit = new List<ActionPlanId>();
+                var retained = new List<ActionPlanId>();
+                var participating = new List<ActionPlanId>();
+                long groupKey = 0L;
+
+                IReadOnlyList<DodgeContactResolution> contacts = plan.Contacts;
+                for (int c = 0; c < contacts.Count; c++)
+                {
+                    DodgeContactResolution contact = contacts[c];
+                    if (contact == null) continue;
+                    switch (contact.Outcome)
+                    {
+                        case DodgeContactOutcome.Dodged:
+                            invalidated.Add(contact.AttackPlanId);
+                            break;
+                        case DodgeContactOutcome.StillHit:
+                            stillHit.Add(contact.AttackPlanId);
+                            break;
+                        case DodgeContactOutcome.RetainedUndodgeable:
+                            retained.Add(contact.AttackPlanId);
+                            break;
+                    }
+                    participating.Add(contact.AttackPlanId);
+                    if (groupKey == 0L) groupKey = ConflictGroupKeyOf(contact.AttackPlanId);
+                }
+                participating.Add(plan.DodgePlanId);
+
+                bool rewarded = plan.DestinationCommitted && plan.AvoidedAnyContact;
+                bool committed = plan.DestinationCommitted;
+                _outbox.Emit(sequence => new DodgeResolvedEvent(
+                    tick, sequence, groupKey, plan.DodgePlanId, plan.DefenderUnitId,
+                    plan.From, plan.Destination, committed, plan.FailureCode, rewarded,
+                    OrderedPlanIds(invalidated), OrderedPlanIds(stillHit), OrderedPlanIds(retained),
+                    OrderedPlanIds(participating)));
+            }
+        }
+
+        /// <summary>Block 完全/部分载荷抵抗 + 逐计划解析结果（含"无效格挡零奖励"）。</summary>
+        private void EmitBlockResolvedEvents(long tick, StagedConflictResolution staged)
+        {
+            for (int p = 0; p < staged.BlockPlans.Count; p++)
+            {
+                BlockPlanResolution plan = staged.BlockPlans[p];
+                if (plan == null) continue;
+
+                var attacks = new List<ActionPlanId>();
+                bool firstContact = true;
+                BlockContactOutcome firstOutcome = BlockContactOutcome.BlockIneffective;
+
+                for (int c = 0; c < plan.Contacts.Count; c++)
+                {
+                    BlockContactResolution contact = plan.Contacts[c];
+                    if (contact == null) continue;
+
+                    long groupKey = ConflictGroupKeyOf(contact.AttackPlanId);
+                    bool rewards = contact.RewardsBlock;
+                    BlockContactResolution captured = contact;
+                    _outbox.Emit(sequence => new BlockResolvedEvent(
+                        tick, sequence, groupKey, captured.BlockPlanId, captured.DefenderUnitId,
+                        captured.AttackPlanId, captured.AttackerUnitId, captured.Outcome, rewards,
+                        captured.RawDamageQ10, captured.AfterBlockDamageQ10,
+                        captured.IncomingMomentumUnits, captured.AfterBlockMomentumUnits,
+                        OrderedPlanIds(new[] { contact.AttackPlanId, contact.BlockPlanId })));
+
+                    attacks.Add(contact.AttackPlanId);
+                    if (firstContact)
+                    {
+                        firstContact = false;
+                        firstOutcome = contact.Outcome;
+                    }
+                }
+
+                // 逐计划一次（任务包 08:44「每反应计划最多一个成功 Block 键」的事件面）。
+                // RewardsSuccess 与 Kind 的一致性：只有 Blocked/PartiallyBlocked 才可能为 true。
+                bool planRewards = plan.AnyEligibleContact;
+                ReactionResolutionKind kind = firstOutcome == BlockContactOutcome.Blocked
+                    ? ReactionResolutionKind.BlockedFully
+                    : firstOutcome == BlockContactOutcome.PartiallyBlocked
+                        ? ReactionResolutionKind.BlockedPartially
+                        : ReactionResolutionKind.BlockIneffective;
+                string reason = planRewards
+                    ? InteractionEventCodes.CONTACT_FULLY_RESISTED
+                    : InteractionEventCodes.CONTACT_BLOCK_INELIGIBLE;
+                var attackIds = OrderedPlanIds(attacks);
+                ActionPlanId blockPlanId = plan.BlockPlanId;
+                UnitId defenderUnitId = plan.DefenderUnitId;
+                long planGroupKey = GroupKeyOfAny(attacks);
+                _outbox.Emit(sequence => new ReactionPlanResolvedEvent(
+                    tick, sequence, planGroupKey, blockPlanId, defenderUnitId, kind, planRewards,
+                    reason, attackIds, Array.Empty<ActionPlanId>()));
+            }
+        }
+
+        /// <summary>Guard 部分抵抗（不终止来源攻击；只描述抵抗前后载荷与动量）。</summary>
+        private void EmitGuardResistanceEvents(long tick, StagedConflictResolution staged)
+        {
+            for (int i = 0; i < staged.RemainingHits.Count; i++)
+            {
+                RemainingHitResolution hit = staged.RemainingHits[i];
+                if (hit == null || hit.Aggregate == null) continue;
+                if (hit.GuardPlanId.Value <= 0L) continue;
+
+                long raw = 0L;
+                long afterPassive = 0L;
+                long afterGuard = 0L;
+                int incomingMomentum = 0;
+                int afterMomentum = 0;
+                IReadOnlyList<TargetContactResolution> contacts = hit.Aggregate.Contacts;
+                for (int c = 0; c < contacts.Count; c++)
+                {
+                    TargetContactResolution contact = contacts[c];
+                    if (contact == null) continue;
+                    incomingMomentum += contact.IncomingMomentumUnits;
+                    afterMomentum += contact.AfterMomentumResistanceUnits;
+                    for (int k = 0; k < contact.Components.Count; k++)
+                    {
+                        AggregatedContactComponent component = contact.Components[k];
+                        raw += component.RawQ10;
+                        afterPassive += component.AfterPassiveResistanceQ10;
+                        afterGuard += component.AfterActionResistanceQ10;
+                    }
+                }
+
+                long groupKey = ConflictGroupKeyOf(hit.AttackPlanId);
+                ActionPlanId guardPlanId = hit.GuardPlanId;
+                string guardSpecId = hit.GuardSpecId;
+                ActionPlanId attackPlanId = hit.AttackPlanId;
+                UnitId attackerUnitId = hit.AttackerUnitId;
+                UnitId targetUnitId = hit.Aggregate.TargetUnitId;
+                GridDirection incomingDirection = hit.IncomingDirection;
+                _outbox.Emit(sequence => new GuardPartiallyResistedEvent(
+                    tick, sequence, groupKey, guardPlanId, targetUnitId, guardSpecId,
+                    attackPlanId, attackerUnitId, incomingDirection,
+                    raw, afterPassive, afterGuard, raw - afterGuard, incomingMomentum, afterMomentum,
+                    OrderedPlanIds(new[] { attackPlanId, guardPlanId })));
+            }
+        }
+
+        /// <summary>拼刀：逐参与者结算 + ClashResidualImpact（同一连通块共用一个组键）。</summary>
+        private void EmitClashEvents(long tick, StagedConflictResolution staged)
+        {
+            for (int g = 0; g < staged.Clashes.Count; g++)
+            {
+                ClashComponentResolution clash = staged.Clashes[g];
+                if (clash == null || clash.Clash == null) continue;
+
+                long groupKey = clash.ConflictGroupKey;
+                MomentumClashResolution resolution = clash.Clash;
+                IReadOnlyList<ActionPlanId> participating = resolution.TerminatedActionPlanIds;
+
+                for (int p = 0; p < resolution.Participants.Count; p++)
+                {
+                    ClashParticipantResolution participant = resolution.Participants[p];
+                    if (participant == null) continue;
+                    _outbox.Emit(sequence => new ClashParticipantResolvedEvent(
+                        tick, sequence, groupKey, participant.ActionPlanId, participant.OwnerUnitId,
+                        participant.Direction, participant.OriginalMomentumUnits,
+                        participant.TotalOppositionLossUnits, participant.RemainingMomentumUnits,
+                        participant.Losses ?? Array.Empty<ClashOppositionLoss>(), participating));
+                }
+
+                for (int r = 0; r < resolution.ResidualImpacts.Count; r++)
+                {
+                    ClashResidualImpact residual = resolution.ResidualImpacts[r];
+                    if (residual == null) continue;
+                    _outbox.Emit(sequence => new ClashResidualImpactResolvedEvent(
+                        tick, sequence, groupKey,
+                        residual.RecipientUnitId, residual.RecipientActionPlanId,
+                        residual.SourceUnitId, residual.SourceActionPlanId, residual.SourceDirection,
+                        residual.ResidualMomentumUnits,
+                        resolution.TotalRemainingMomentumUnits, resolution.TotalResidualAllocatedUnits));
+                }
+            }
+        }
+
+        /// <summary>移动拦截/逃脱（旧格/新格覆盖标记由求解器给出，本处不复核几何）。</summary>
+        private void EmitMoveContactEvents(long tick, StagedConflictResolution staged)
+        {
+            for (int i = 0; i < staged.Moves.Count; i++)
+            {
+                MoveContactResolution move = staged.Moves[i];
+                if (move == null) continue;
+                long groupKey = ConflictGroupKeyOf(move.AttackPlanId);
+                _outbox.Emit(sequence => new MoveContactResolvedEvent(
+                    tick, sequence, groupKey, move.AttackPlanId, move.AttackerUnitId,
+                    move.MovePlanId, move.MovingUnitId, move.CoveredBefore, move.CoveredAfter, move.Outcome));
+            }
+        }
+
+        /// <summary>
+        /// 分通道伤害明细 + 目标聚合冲击（任务包 08:39/43）。
+        ///
+        /// 一个目标单位在本 Tick 的聚合结果<strong>只发一条</strong>冲击事件；
+        /// 逐接触的分通道明细各发一条（多条接触共享同一聚合对象）。
+        /// </summary>
+        private void EmitDamageAndAggregateEvents(long tick, StagedConflictResolution staged)
+        {
+            for (int i = 0; i < staged.RemainingHits.Count; i++)
+            {
+                RemainingHitResolution hit = staged.RemainingHits[i];
+                if (hit == null || hit.Aggregate == null) continue;
+                TargetAggregateResolution aggregate = hit.Aggregate;
+
+                var channels = new List<DamageChannelEntry>();
+                IReadOnlyList<AggregatedChannelDamage> totals = aggregate.ChannelTotals;
+                for (int c = 0; c < totals.Count; c++)
+                {
+                    AggregatedChannelDamage total = totals[c];
+                    if (total == null) continue;
+                    channels.Add(new DamageChannelEntry(total.ChannelId, total.RawQ10,
+                        total.AfterPassiveResistanceQ10, total.AfterActionResistanceQ10,
+                        0, 0, default(DamageTagMask)));
+                }
+
+                // 逐分量补齐抵抗参数与标签（聚合面只在**分量**上携带它们；按分量出现的
+                // 规范顺序取首个同通道分量，因此同一通道的多分量配置不同时也不会静默挑最大/最小）。
+                var componentResistance = new List<AggregatedContactComponent>();
+                for (int c = 0; c < aggregate.Contacts.Count; c++)
+                {
+                    TargetContactResolution contact = aggregate.Contacts[c];
+                    if (contact == null) continue;
+                    for (int k = 0; k < contact.Components.Count; k++)
+                        componentResistance.Add(contact.Components[k]);
+                }
+                for (int c = 0; c < channels.Count; c++)
+                {
+                    DamageChannelEntry entry = channels[c];
+                    for (int k = 0; k < componentResistance.Count; k++)
+                    {
+                        AggregatedContactComponent component = componentResistance[k];
+                        if (!string.Equals(component.ChannelId.Value ?? string.Empty,
+                                entry.ChannelId.Value ?? string.Empty, StringComparison.Ordinal)) continue;
+                        channels[c] = entry with
+                        {
+                            PassiveResistanceQ10 = component.PassiveResistanceQ10,
+                            ActionResistanceQ10 = component.ActionResistanceQ10,
+                            Tags = component.Tags
+                        };
+                        break;
+                    }
+                }
+                int afterMomentum = 0;
+                for (int c = 0; c < aggregate.Contacts.Count; c++)
+                {
+                    if (aggregate.Contacts[c] != null) afterMomentum += aggregate.Contacts[c].AfterMomentumResistanceUnits;
+                }
+
+                long groupKey = ConflictGroupKeyOf(hit.AttackPlanId);
+                // 停止原因只描述**已提交事实**：状态抑制 ⇒ 抑制码；动作抵抗后载荷严格为 0
+                // 且原载荷非 0 ⇒ 完全抵抗；否则按原载荷命中。
+                long rawTotal = 0L;
+                for (int c = 0; c < channels.Count; c++) rawTotal += channels[c].RawQ10;
+                string stopReason = hit.IsDirectHitSuppressed
+                    ? InteractionEventCodes.CONTACT_SUPPRESSED_BY_STATE
+                    : rawTotal > 0L && aggregate.TotalDamageQ10 == 0L
+                        ? InteractionEventCodes.CONTACT_FULLY_RESISTED
+                        : InteractionEventCodes.CONTACT_UNRESISTED;
+
+                var orderedChannels = channels.AsReadOnly();
+                long afterBlockDamage = aggregate.TotalDamageQ10;
+
+                ActionPlanId attackPlanId = hit.AttackPlanId;
+                UnitId attackerUnitId = hit.AttackerUnitId;
+                ActionPlanId guardPlanId = hit.GuardPlanId;
+                UnitId targetUnitId = aggregate.TargetUnitId;
+                GridDirection incomingDirection = hit.IncomingDirection;
+                int incomingMomentumUnits = hit.IncomingMomentumUnits;
+                _outbox.Emit(sequence => new DamageChannelResolvedEvent(
+                    tick, sequence, groupKey, targetUnitId, attackPlanId, attackerUnitId, guardPlanId,
+                    incomingDirection, incomingMomentumUnits, afterMomentum, orderedChannels,
+                    aggregate.TotalDamageQ10, afterBlockDamage, stopReason,
+                    OrderedPlanIds(new[] { attackPlanId, guardPlanId })));
+            }
+
+            // 逐目标一条聚合冲击事件（按聚合结果的稳定顺序 = UnitId 升序）。
+            IReadOnlyList<TargetAggregateResolution> aggregations = staged.Aggregations;
+            for (int i = 0; i < aggregations.Count; i++)
+            {
+                TargetAggregateResolution aggregate = aggregations[i];
+                if (aggregate == null) continue;
+                long groupKey = GroupKeyOfTarget(staged, aggregate.TargetUnitId);
+                string stopReason = aggregate.TotalDamageQ10 == 0L
+                    ? InteractionEventCodes.CONTACT_FULLY_RESISTED
+                    : InteractionEventCodes.CONTACT_UNRESISTED;
+                AggregatedChannelDamage[] channels = new AggregatedChannelDamage[aggregate.ChannelTotals.Count];
+                for (int c = 0; c < aggregate.ChannelTotals.Count; c++) channels[c] = aggregate.ChannelTotals[c];
+                _outbox.Emit(sequence => new TargetAggregateResolvedEvent(
+                    tick, sequence, groupKey, aggregate.TargetUnitId, channels,
+                    aggregate.TotalDamageQ10, aggregate.TotalImpactUnits, aggregate.IncomingMomentumUnits,
+                    aggregate.ResultantMomentumUnits, aggregate.ResultantDirection,
+                    aggregate.ControlResistanceUnits, aggregate.IsStaggered, aggregate.IsKnockedDown,
+                    aggregate.KnockbackSteps, stopReason));
+            }
+        }
+
+        /// <summary>计划 → 本 Tick 冲突组键（未入图 ⇒ <c>0</c>，与既有事件口径一致）。</summary>
+        private long ConflictGroupKeyOf(ActionPlanId planId)
+            => ConflictGroupKeys.Of(_conflictGroupKeyByPlan, planId);
+
+        /// <summary>一组计划里第一个已入图的组键（全未入图 ⇒ <c>0</c>）。</summary>
+        private long GroupKeyOfAny(IReadOnlyList<ActionPlanId> planIds)
+        {
+            if (planIds == null) return 0L;
+            for (int i = 0; i < planIds.Count; i++)
+            {
+                long key = ConflictGroupKeyOf(planIds[i]);
+                if (key != 0L) return key;
+            }
+            return 0L;
+        }
+
+        /// <summary>某目标单位在本 Tick 归属的冲突组键（取该目标全部命中的攻击计划所属组）。</summary>
+        private long GroupKeyOfTarget(StagedConflictResolution staged, UnitId targetUnitId)
+        {
+            long found = 0L;
+            for (int i = 0; i < staged.RemainingHits.Count; i++)
+            {
+                RemainingHitResolution hit = staged.RemainingHits[i];
+                if (hit == null || hit.Aggregate == null || hit.Aggregate.TargetUnitId != targetUnitId) continue;
+                long key = ConflictGroupKeyOf(hit.AttackPlanId);
+                if (key == 0L) continue;
+                if (found != 0L && found != key)
+                    throw new LogicDefinitionException(ConflictGroupKeys.CONFLICT_GRAPH_INCONSISTENT,
+                        "target=" + targetUnitId.Value.ToString(CultureInfo.InvariantCulture));
+                found = key;
+            }
+            return found;
+        }
+
+        /// <summary>稳定排序 + 去重的计划 ID 列表（事件载荷的唯一顺序契约）。</summary>
+        private static IReadOnlyList<ActionPlanId> OrderedPlanIds(IReadOnlyList<ActionPlanId> planIds)
+        {
+            if (planIds == null || planIds.Count == 0) return Array.Empty<ActionPlanId>();
+            var ordered = new List<ActionPlanId>(planIds.Count);
+            for (int i = 0; i < planIds.Count; i++)
+            {
+                ActionPlanId planId = planIds[i];
+                if (planId.Value <= 0L) continue;
+                bool duplicate = false;
+                for (int k = 0; k < ordered.Count; k++)
+                {
+                    if (ordered[k] == planId) { duplicate = true; break; }
+                }
+                if (!duplicate) ordered.Add(planId);
+            }
+            ordered.Sort((a, b) => a.Value.CompareTo(b.Value));
+            return ordered.AsReadOnly();
+        }
+
+        /// <summary>
+        /// 计划 → 动作定义 ID 的只读投影（Block/Guard 抵抗配置的解析入口）。
+        /// 只含活动计划：求解器只会向它索取"图里出现过的计划"，而图里的计划必然非终态。
+        /// </summary>
+        private IReadOnlyList<PlanSpecEntry> BuildPlanSpecEntries()        {
+            IReadOnlyList<ActionPlan> active = _scheduleAuthority.Registry.ActivePlans;
+            var entries = new List<PlanSpecEntry>(active.Count);
+            for (int i = 0; i < active.Count; i++)
+            {
+                ActionPlan plan = active[i];
+                if (plan == null) continue;
+                entries.Add(new PlanSpecEntry(plan.ActionPlanId, plan.ActionSpecId.Value ?? string.Empty));
+            }
+            return entries;
+        }
+
+        /// <summary>Block 载荷的只读投影（只含 <see cref="ActionType.Block"/> 的已验证动作定义）。</summary>
+        private IReadOnlyList<BlockPayloadEntry> BuildBlockPayloadEntries()
+        {
+            var entries = new List<BlockPayloadEntry>();
+            IReadOnlyList<ActionSpec> specs = _definition.Actions;
+            for (int i = 0; i < specs.Count; i++)
+            {
+                ActionSpec spec = specs[i];
+                if (spec == null || spec.Type != ActionType.Block) continue;
+                var payload = spec.Payload as BlockPayloadSpec;
+                if (payload == null) continue;
+                entries.Add(new BlockPayloadEntry(spec.ActionSpecId.Value ?? string.Empty, payload));
+            }
+            return entries;
+        }
+
+        /// <summary>Guard 载荷的只读投影（只含 <see cref="ActionType.Guard"/> 的已验证动作定义）。</summary>
+        private IReadOnlyList<GuardPayloadEntry> BuildGuardPayloadEntries()
+        {
+            var entries = new List<GuardPayloadEntry>();
+            IReadOnlyList<ActionSpec> specs = _definition.Actions;
+            for (int i = 0; i < specs.Count; i++)
+            {
+                ActionSpec spec = specs[i];
+                if (spec == null || spec.Type != ActionType.Guard) continue;
+                var payload = spec.Payload as GuardPayloadSpec;
+                if (payload == null) continue;
+                entries.Add(new GuardPayloadEntry(spec.ActionSpecId.Value ?? string.Empty, payload));
+            }
+            return entries;
+        }
+
+        /// <summary>
+        /// Clash 配额：数值与错误码都由<strong>构图侧</strong>持有（冲突组是它的概念），
+        /// 动量求解只接收（照 <see cref="MomentumClashQuota"/> 的归属裁定）。
+        /// </summary>
+        private static MomentumClashQuota BuildClashQuota()
+            => new MomentumClashQuota(
+                InteractionCodes.CONFLICT_GROUP_LIMIT_EXCEEDED,
+                ConflictGraphLimits.MaxConflictGroupNodes,
+                ConflictGraphLimits.MaxConflictGroupEdges);
+
+        /// <summary>
+        /// 阶段 11 的扣血端口（<see cref="IResolutionDamageApplier"/>）：唯一写入点是权威生命字段。
+        ///
+        /// 它<strong>不</strong>碰状态机、不碰网格、不碰计划：负伤害是不可能的（聚合器只产生非负值），
+        /// 越界（超过 <c>int</c> 域）以稳定码拒绝而不是钳制/饱和/回绕（任务包 08:105）。
+        /// </summary>
+        void IResolutionDamageApplier.ApplyDamageQ10(UnitId unitId, long damageQ10)
+        {
+            if (damageQ10 < 0L || damageQ10 > int.MaxValue)
+            {
+                throw new LogicDefinitionException(StagedResolutionCodes.STAGED_RESOLUTION_COMMIT_RANGE,
+                    "unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture)
+                    + " damageQ10=" + damageQ10.ToString(CultureInfo.InvariantCulture));
+            }
+            if (!_unitsById.TryGetValue(unitId.Value, out UnitRuntimeState unit)) return;
+
+            unit.HealthQ10 -= (int)damageQ10;
+            unit.HealthDirty = true;
+        }
+
+        /// <summary>
+        /// 活动计划的只读事实表（按 <c>ActionPlanId</c> 升序，与
+        /// <see cref="ActionPlanRegistry.ActivePlans"/> 的规范视图同源）。
+        /// </summary>
+        private IReadOnlyList<InteractionPlanFacts> BuildInteractionPlanFacts()
+        {
+            IReadOnlyList<ActionPlan> active = _scheduleAuthority.Registry.ActivePlans;
+            var facts = new List<InteractionPlanFacts>(active.Count);
+            for (int i = 0; i < active.Count; i++)
+            {
+                if (active[i] == null) continue;
+                facts.Add(InteractionPlanFacts.From(active[i]));
+            }
+            return facts;
+        }
+
+        /// <summary>
+        /// 把一个<strong>统一只读空间快照</strong>投影成 <see cref="ConflictGraphInput"/> 需要的
+        /// "每单位已占用 <see cref="TrianglePoint"/>"（任务 08 占用投影）。
+        ///
+        /// <strong>为什么用快照里的点集而不是重算 footprint</strong>：快照条目
+        /// （<see cref="DodgeSpaceUnitEntry.Triangles"/>）就是空间权威在那一刻的只读投影，
+        /// 直接取用既不会引入第二份空间权威，也不可能与 <see cref="DodgeCommitReport.Before"/> 的
+        /// 冻结语义漂移（提交后的旧快照仍然只反映提交前的位置）。
+        ///
+        /// <strong>为什么还要取控制者</strong>：
+        /// <see cref="UnitOccupancy"/> 必须携带审计用的 <see cref="ControllerId"/>
+        /// （它只标识"谁下命令"，与阵营正交，任何过滤、连边、共享目标判定与稳定键都<strong>不得</strong>读取它，
+        /// 08-多方仲裁与伤害.md:62/:409；不变量 30）。控制者映射的唯一来源是已验证定义的
+        /// <c>ControllerBinding</c>：定义<b>声明</b>了控制者却查不到映射 ⇒ 稳定码显式拒绝；
+        /// 定义<b>没有</b>为该单位声明控制者 ⇒ 合法的"无控制者"，审计字段取 <c>default</c>
+        /// （判别依据见 <see cref="ControllerOf"/>，两种形态都不静默"猜一个控制者"）。
+        ///
+        /// <strong>输入来自空间权威的注册集</strong>：<c>snapshot.Units</c> 由
+        /// <c>LogicGrid.RegisteredUnitsOrdered()</c> 产出 ⇒ 已被注销的死者在结构上不可能出现在这里
+        /// （裁定 6.2 的 footprint 移除与"死者不占格"因此与本投影自动一致，不需要第二套存活过滤）。
+        ///
+        /// 输出按 <c>UnitId</c> 升序（<see cref="InteractionCandidateBuilder"/> 会再按同一键规范化，
+        /// 因此这里的顺序不是判定依据，只是让投影结果本身可比较）。
+        /// </summary>
+        private IReadOnlyList<UnitOccupancy> BuildOccupancy(DodgeSpaceSnapshot snapshot)
+        {
+            if (snapshot == null || snapshot.Units == null || snapshot.Units.Count == 0)
+            {
+                return Array.Empty<UnitOccupancy>();
+            }
+
+            var entries = new List<DodgeSpaceUnitEntry>(snapshot.Units.Count);
+            for (int i = 0; i < snapshot.Units.Count; i++)
+            {
+                DodgeSpaceUnitEntry entry = snapshot.Units[i];
+                if (entry == null || !entry.UnitId.IsValid) continue;
+                entries.Add(entry);
+            }
+            entries.Sort((a, b) => a.UnitId.Value.CompareTo(b.UnitId.Value));
+
+            var occupancy = new List<UnitOccupancy>(entries.Count);
+            for (int i = 0; i < entries.Count; i++)
+            {
+                DodgeSpaceUnitEntry entry = entries[i];
+                occupancy.Add(new UnitOccupancy(
+                    entry.UnitId, entry.Triangles, ControllerOf(entry.UnitId)));
+            }
+            return occupancy;
+        }
+
+        /// <summary>
+        /// 单位的控制者（审计字段）：唯一来源是已验证定义的 <c>ControllerBinding</c>。
+        ///
+        /// 三条判定（都不静默回退到"猜一个控制者"）：
+        /// <list type="bullet">
+        /// <item>一个单位被两个不同控制者绑定 ⇒
+        /// <see cref="SimulationCodes.STEP_OCCUPANCY_CONTROLLER_CONTRADICTION"/>
+        /// （"第二份控制权真值"会让审计字段静默取决于扫描顺序）；</item>
+        /// <item><strong>定义声明了该单位、映射却没给出绑定</strong> ⇒
+        /// <see cref="SimulationCodes.STEP_OCCUPANCY_CONTROLLER_MISSING"/>
+        /// （这是真实的装配缺失：<c>BattleInitializer</c> 会把定义声明过的槽位全部映进
+        /// <c>ControllerToUnitIds</c>，所以"声明了却查不到"只可能是装配链被截断）；</item>
+        /// <item><strong>定义根本没为该单位声明控制者</strong> ⇒ 返回 <c>default</c>。
+        /// 这是<b>合法</b>形态而不是缺陷：<c>EncounterDefinition</c> 的校验只拒绝悬空 / 歧义 /
+        /// 重复绑定，<strong>不</strong>要求每个槽位都被绑定（例如任务 04 的
+        /// <c>Task04OutsiderVariant</c>：目标外阵营单位"不被任何外部入口控制"是它的<b>设计事实</b>）。
+        /// 空字符串是合法 <c>ControllerId</c>（裁定 6.4），而 <see cref="UnitOccupancy.ControllerId"/>
+        /// 只是审计字段——任何过滤、连边、共享目标判定与稳定键都<b>不得</b>读取它
+        /// （08-多方仲裁与伤害.md:62/:409；不变量 30）⇒ 取 <c>default</c> 不影响任何判定结果，
+        /// 把它当异常抛出反而会让合法定义无法推进一步。</item>
+        /// </list>
+        /// </summary>
+        private ControllerId ControllerOf(UnitId unitId)
+        {
+            ControllerId found = default;
+            bool any = false;
+            foreach (KeyValuePair<ControllerId, IReadOnlyList<UnitId>> binding in _controllerToUnitIds)
+            {
+                IReadOnlyList<UnitId> controlled = binding.Value;
+                if (controlled == null) continue;
+                for (int i = 0; i < controlled.Count; i++)
+                {
+                    if (controlled[i] != unitId) continue;
+                    if (any && found != binding.Key)
+                    {
+                        throw new LogicDefinitionException(
+                            SimulationCodes.STEP_OCCUPANCY_CONTROLLER_CONTRADICTION,
+                            "unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture)
+                            + " controllers=" + (found.Value ?? string.Empty) + "," + (binding.Key.Value ?? string.Empty));
+                    }
+                    found = binding.Key;
+                    any = true;
+                }
+            }
+
+            if (any) return found;
+
+            // 定义没有为该单位声明控制者 ⇒ 合法的"无控制者"审计值（见方法注释第 3 条）。
+            if (!_controllerDeclaredUnitIds.Contains(unitId.Value)) return default;
+
+            throw new LogicDefinitionException(
+                SimulationCodes.STEP_OCCUPANCY_CONTROLLER_MISSING,
+                "unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture));
         }
 
         private void CommitDamageAndBuildForcedDisplacementRequests(long tick)
         {
-            _assembly.ResolutionCommit.CommitDamageAndAggregationOrdered(tick, BuildUnitSnapshots());
+            _resolutionCommit.CommitDamageAndAggregationOrdered(tick, BuildUnitSnapshots());
 
             IReadOnlyList<ForcedDisplacementRequest> requests =
-                _assembly.DisplacementRequestBuilder.BuildOrdered(tick, BuildUnitSnapshots());
+                _displacementRequestBuilder.BuildOrdered(tick, BuildUnitSnapshots());
             if (requests == null || requests.Count == 0)
             {
                 _displacementRequests = Array.Empty<ForcedDisplacementRequest>();
@@ -1913,13 +2973,15 @@ namespace ProjectHero.Logic.Simulation
             {
                 if (requests[i] != null) ordered.Add(requests[i]);
             }
-            ordered.Sort((a, b) => a.TargetUnitId.CompareTo(b.TargetUnitId));
+            ordered.Sort((a, b) => a.TargetUnitId.Value.CompareTo(b.TargetUnitId.Value));
 
+            // 每 Tick 每 UnitId 至多一个请求：重复键是 InvariantViolation，
+            // 绝不按 ConflictGroupKey / MomentumUnits / UnitId / 枚举顺序挑一个。
             for (int i = 1; i < ordered.Count; i++)
             {
                 if (ordered[i - 1].TargetUnitId == ordered[i].TargetUnitId)
                     throw new LogicDefinitionException(SimulationCodes.STEP_DISPLACEMENT_REQUEST_DUPLICATE,
-                        ordered[i].TargetUnitId.ToString(CultureInfo.InvariantCulture));
+                        ordered[i].TargetUnitId.Value.ToString(CultureInfo.InvariantCulture));
             }
 
             _displacementRequests = ordered;
@@ -1934,7 +2996,7 @@ namespace ProjectHero.Logic.Simulation
             }
 
             // 只读快照 + 临时占位空间：本阶段不修改世界，也不调用普通移动/寻路/Reservation 仲裁。
-            _displacementBatch = _assembly.DisplacementSolver.ResolveAll(
+            _displacementBatch = _displacementSolver.ResolveAll(
                 _displacementRequests, BuildUnitSnapshots(), _encounter.GridBoundary, tick)
                 ?? ForcedDisplacementBatch.Empty;
         }
@@ -1945,64 +3007,89 @@ namespace ProjectHero.Logic.Simulation
             if (batch == null || batch.IsEmpty) return;
 
             // 先经统一终态协调器终止被破坏的移动计划与 Reservation。
-            _invalidatedPlanIds = _assembly.DisplacementCommitter
+            _invalidatedPlanIds = _displacementCommitter
                 .TerminateInvalidatedMovementPlansOrdered(batch, tick) ?? Array.Empty<ActionPlanId>();
 
-            // 再一次批量验证 + 一次批量换位：任一批量验证失败都是 InvariantViolation，
-            // 禁止退化为逐单位提交。
+            // 再一次批量验证 + 一次批量换位（只收 From != To 的条目）：任一批量验证失败都是
+            // InvariantViolation，禁止退化为逐单位提交。
             ApplyBatchRelocation(batch);
 
-            var ordered = new List<ForcedDisplacementRelocation>(batch.Relocations);
-            ordered.Sort((a, b) => a.TargetUnitId.CompareTo(b.TargetUnitId));
-            for (int i = 0; i < ordered.Count; i++)
+            // 批量位置成功提交之后才发射规范位移事件（阶段 13），按 TargetUnitId 升序；
+            // 即使 AppliedSteps == 0 也要发射以说明停止原因（任务包 :234）。
+            // 这就是任务包「必须产出」15 的「强制位移最终结果」事件：From/To、请求/实际步数、
+            // 方向、动量、冲突组键、停止原因与稳定排序的失效计划 ID 都在载荷里（不变量 10：无表现参数）。
+            for (int i = 0; i < batch.Resolutions.Count; i++)
             {
-                ForcedDisplacementRelocation relocation = ordered[i];
+                ForcedDisplacementResolution resolution = batch.Resolutions[i];
+                ForcedDisplacementRequest request = FindDisplacementRequest(resolution.TargetUnitId);
                 _outbox.Emit(sequence => new ForcedDisplacementResolvedEvent(
-                    tick, sequence, new UnitId(relocation.TargetUnitId),
-                    new GridPoint(relocation.FromX, relocation.FromY),
-                    new GridPoint(relocation.ToX, relocation.ToY),
-                    relocation.Direction, relocation.RequestedSteps, relocation.AppliedSteps,
-                    relocation.MomentumUnits, relocation.ConflictGroupKey, relocation.StopReason,
-                    relocation.InvalidatedPlanIds ?? Array.Empty<ActionPlanId>()));
+                    tick, sequence, resolution.TargetUnitId,
+                    resolution.From, resolution.To,
+                    request.Direction, resolution.RequestedSteps, resolution.AppliedSteps,
+                    request.MomentumUnits, request.ConflictGroupKey, resolution.StopReason,
+                    resolution.InvalidatedPlanIds ?? Array.Empty<ActionPlanId>()));
             }
+        }
+
+        /// <summary>
+        /// 把结果关联回本 Tick 的请求：<c>Direction</c> / <c>MomentumUnits</c> / <c>ConflictGroupKey</c>
+        /// 只存在于请求侧（任务包冻结的 Resolution 形状不含这三项），因此这里是<strong>唯一</strong>的
+        /// 关联点。找不到请求说明求解器违反了"结果必须来自本 Tick 请求"的契约 ⇒ InvariantViolation。
+        /// 关联按 <see cref="UnitId"/> 精确匹配，与容器枚举顺序无关。
+        /// </summary>
+        private ForcedDisplacementRequest FindDisplacementRequest(UnitId unitId)
+        {
+            for (int i = 0; i < _displacementRequests.Count; i++)
+            {
+                if (_displacementRequests[i].TargetUnitId == unitId) return _displacementRequests[i];
+            }
+            throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
+                "resolution without request unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture));
         }
 
         private void ApplyBatchRelocation(ForcedDisplacementBatch batch)
         {
+            // —— 全批预检（覆盖含零步在内的全部结果）——
             var destinations = new HashSet<long>();
             var moving = new HashSet<long>();
-
-            for (int i = 0; i < batch.Relocations.Count; i++)
+            for (int i = 0; i < batch.Resolutions.Count; i++)
             {
-                ForcedDisplacementRelocation relocation = batch.Relocations[i];
-                if (!_unitsById.TryGetValue(relocation.TargetUnitId, out UnitRuntimeState unit))
+                ForcedDisplacementResolution resolution = batch.Resolutions[i];
+                if (!_unitsById.TryGetValue(resolution.TargetUnitId.Value, out UnitRuntimeState unit))
                     throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
-                        "unknown unit " + relocation.TargetUnitId.ToString(CultureInfo.InvariantCulture));
+                        "unknown unit " + resolution.TargetUnitId.Value.ToString(CultureInfo.InvariantCulture));
 
-                if (unit.Position.X != relocation.FromX || unit.Position.Y != relocation.FromY)
+                // 唯一空间权威是 LogicGrid：From 必须等于网格锚点（镜像陈旧不得被静默接受）。
+                if (!_logicGrid.TryGetAnchor(resolution.TargetUnitId, out GridPoint anchor) ||
+                    anchor != resolution.From)
                     throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
-                        "from mismatch unit=" + relocation.TargetUnitId.ToString(CultureInfo.InvariantCulture));
+                        "from mismatch (grid anchor) unit=" +
+                        resolution.TargetUnitId.Value.ToString(CultureInfo.InvariantCulture));
 
-                if (!GridPoint.IsValidParity(relocation.ToX, relocation.ToY))
+                if (unit.Position != resolution.From)
                     throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
-                        "invalid parity unit=" + relocation.TargetUnitId.ToString(CultureInfo.InvariantCulture));
+                        "from mismatch (runtime mirror) unit=" +
+                        resolution.TargetUnitId.Value.ToString(CultureInfo.InvariantCulture));
 
-                var destination = new GridPoint(relocation.ToX, relocation.ToY);
-                if (!_encounter.GridBoundary.Contains(destination))
+                if (resolution.AppliedSteps < 0 || resolution.AppliedSteps > resolution.RequestedSteps)
                     throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
-                        "out of boundary unit=" + relocation.TargetUnitId.ToString(CultureInfo.InvariantCulture));
+                        "applied steps unit=" +
+                        resolution.TargetUnitId.Value.ToString(CultureInfo.InvariantCulture));
 
-                if (relocation.AppliedSteps < 0 || relocation.AppliedSteps > relocation.RequestedSteps)
+                if (!resolution.IsRelocating) continue;
+
+                if (!_encounter.GridBoundary.Contains(resolution.To))
                     throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
-                        "applied steps unit=" + relocation.TargetUnitId.ToString(CultureInfo.InvariantCulture));
+                        "out of boundary unit=" +
+                        resolution.TargetUnitId.Value.ToString(CultureInfo.InvariantCulture));
 
-                long destinationKey = ((long)relocation.ToX << 32) ^ (uint)relocation.ToY;
+                long destinationKey = ((long)resolution.To.X << 32) ^ (uint)resolution.To.Y;
                 if (!destinations.Add(destinationKey))
                     throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
-                        "duplicate destination " + relocation.ToX.ToString(CultureInfo.InvariantCulture) + "," +
-                        relocation.ToY.ToString(CultureInfo.InvariantCulture));
+                        "duplicate destination " + resolution.To.X.ToString(CultureInfo.InvariantCulture) + "," +
+                        resolution.To.Y.ToString(CultureInfo.InvariantCulture));
 
-                moving.Add(relocation.TargetUnitId);
+                moving.Add(resolution.TargetUnitId.Value);
             }
 
             // 静止单位阻挡：目的地不得被不在本批中的存活单位占据。
@@ -2016,44 +3103,76 @@ namespace ProjectHero.Logic.Simulation
                         "destination occupied by stationary unit " + unit.UnitId.Value.ToString(CultureInfo.InvariantCulture));
             }
 
+            // 全零步批次不是"空提交"：它连网格入口都不该调用（网格对空输入返回 BATCH_INVALID）。
+            if (batch.Relocations.Count == 0) return;
+
             // 任务 06：同一次批量换位必须**也**提交到唯一空间权威（LogicGrid）。
             // 在此之前这里只写 unit.Position，会让网格锚点与运行时位置分叉，
             // 而阶段 0 的"网格 → 单位"镜像就会在下一 Tick 把换位回退掉。
             // 网格侧做的是与上面同一套全批预检（ExpectedFrom / 目标 footprint / 静止单位 / 待抢占预留），
             // 因此这里不是"第二条验证路径"，而是把同一次提交写到唯一权威上。
-            var gridRelocations = new List<BatchRelocation>(batch.Relocations.Count);
-            for (int i = 0; i < batch.Relocations.Count; i++)
-            {
-                ForcedDisplacementRelocation relocation = batch.Relocations[i];
-                gridRelocations.Add(new BatchRelocation(
-                    new UnitId(relocation.TargetUnitId),
-                    new GridPoint(relocation.FromX, relocation.FromY),
-                    new GridPoint(relocation.ToX, relocation.ToY)));
-            }
-            string gridError = _logicGrid.ApplyBatchRelocation(gridRelocations);
+            // 入参只来自 batch.Relocations（仅 From != To），符合任务包 :234。
+            string gridError = _logicGrid.ApplyBatchRelocation(batch.Relocations);
             if (gridError != null)
                 throw new LogicDefinitionException(gridError, "forced-displacement batch");
 
-            // 全部验证通过后一次性写入新 footprint，并在写入前统一移除旧 footprint。
-            for (int i = 0; i < batch.Relocations.Count; i++)
+            // 全部验证通过后一次性写入新位置（网格已统一写入新 footprint）。
+            for (int i = 0; i < batch.Resolutions.Count; i++)
             {
-                ForcedDisplacementRelocation relocation = batch.Relocations[i];
-                UnitRuntimeState unit = _unitsById[relocation.TargetUnitId];
-                unit.Position = new GridPoint(relocation.ToX, relocation.ToY);
+                ForcedDisplacementResolution resolution = batch.Resolutions[i];
+                if (!resolution.IsRelocating) continue;
+                _unitsById[resolution.TargetUnitId.Value].Position = resolution.To;
             }
         }
 
         private void CommitStateControlAndAdrenalineAccrual(long tick)
         {
             // 阶段 14 只能读取批量换位<em>之后</em>的最终位置。
-            _assembly.ResolutionCommit.CommitStateControlAndRemainingTerminalsOrdered(tick, BuildUnitSnapshots());
+            _resolutionCommit.CommitStateControlAndRemainingTerminalsOrdered(tick, BuildUnitSnapshots());
+
+            // —— 参与 Clash 的攻击必须在**本阶段**（状态/控制与其后终态）终止 ——
+            //
+            // 提交顺序（任务包 08「必须产出」13）：先伤害/合力并完成强制位移，再提交状态/控制及其余终态，
+            // 最后处理死亡。因此 Clash 终态在这里才提交，而**不是**在阶段 11。
+            //
+            // 唯一通道是**统一终态协调器**：本方法不碰 ActionPlan 对象、不删未来 Intent/Segment/Reservation
+            // （那些由协调器的清理参与者完成）；违反的可观察后果是 Step 末
+            // STEP_INVARIANT_VIOLATION: active-plan-missing-from-lane。
+            // 聚合结果里的 TotalImpactUnits / KnockbackSteps 是"控制结果"的判定面
+            // （硬直/击倒阈值的比较已在聚合器内完成）。
+            IReadOnlyList<ClashTerminalRequest> clashTerminals = _resolutionCommitSystem == null
+                ? Array.Empty<ClashTerminalRequest>()
+                : _resolutionCommitSystem.PendingClashTerminals;
+            for (int i = 0; i < clashTerminals.Count; i++)
+            {
+                ClashTerminalRequest request = clashTerminals[i];
+                ActionPlan plan = _scheduleAuthority.Registry.Find(request.ActionPlanId);
+                if (plan == null || plan.IsTerminal) continue;   // 幂等：第一次成功请求胜出
+                _terminalCoordinator.EnterTerminal(plan, request.Reason, tick);
+            }
+
+            // 任务包 08「必须产出」15：动作终止（拼刀）的语义事件。
+            // 载荷里只有计划/单位 ID 与稳定原因——**没有**任何计划对象、Lane、Intent、
+            // MovementSegment 或 Reservation，因为真正的清理是协调器参与者的职责。
+            for (int i = 0; i < clashTerminals.Count; i++)
+            {
+                ClashTerminalRequest request = clashTerminals[i];
+                ActionPlan plan = _scheduleAuthority.Registry.Find(request.ActionPlanId);
+                if (plan == null) continue;
+                long groupKey = ConflictGroupKeyOf(request.ActionPlanId);
+                UnitId ownerUnitId = plan.OwnerUnitId;
+                ActionPlanId planId = request.ActionPlanId;
+                ActionTerminationReason reason = request.Reason;
+                _outbox.Emit(sequence => new ActionPlanTerminationRequestedEvent(
+                    tick, sequence, groupKey, planId, ownerUnitId, reason));
+            }
 
             // 任务 07：肾上腺素 Available 的唯一入账入口。它只接受任务 08 在全部 Resolution
             // 提交后提供的规范聚合事实（每单位每 Tick 至多一条、按 UnitId 严格升序）；
             // 其他系统一律不得逐接触直接加 Available（不变量 27）。
-            IAdrenalineAccrualFactSource accrualSource = _assembly.AdrenalineAccrualFactSource;
-            if (accrualSource != null)
-                _adrenaline.ApplyTickEndAccrual(accrualSource.BuildAccrualFactsOrdered(tick));
+            // 默认装配即**本场真实现**（AdrenalineAccrualFactSource，只读 _stagedResolution 与
+            // LastDamageCommitReport）；显式注入优先（负控制 NoAdrenalineAccrualFacts）。
+            _adrenaline.ApplyTickEndAccrual(_adrenalineAccrualSource.BuildAccrualFactsOrdered(tick));
         }
 
         /// <summary>
@@ -2413,6 +3532,16 @@ namespace ProjectHero.Logic.Simulation
                 _windowManager.LastClosedWindowId,
                 windows);
 
+            // 任务 08 快照契约：快照取"本 Tick 冻结后的队列"（阶段 8 的 _intentQueue）与
+            // "本 Tick 的构图产物"（阶段 10 的 _conflictGraph），二者都是**只读入口**的投影，
+            // 不重新读取计划/单位/网格，也不重新推导任何东西。
+            // 构造期（Tick 0）没有队列与图、以及"本 Tick 无到期 Intent / 构图失败"，
+            // 都是**合法**的空集合状态（投影对 null 输入返回空集合，绝不抛）。
+            IReadOnlyList<IntentSnapshot> intentSnapshots = InteractionSnapshotProjection.Intents(_intentQueue);
+            IReadOnlyList<ConflictGroupSnapshot> conflictGroups =
+                InteractionSnapshotProjection.ConflictGroups(_conflictGraph);
+            IReadOnlyList<ContactSnapshot> contacts = InteractionSnapshotProjection.Contacts(_conflictGraph);
+
             return new LogicSnapshot(
                 tick,
                 _definition.RulesVersion,
@@ -2430,7 +3559,7 @@ namespace ProjectHero.Logic.Simulation
                 BuildActionPlanSnapshots(),
                 _reactionSystem.BuildSnapshots(),
                 _scheduleAuthority.BuildLaneSnapshots(),
-                Array.Empty<IntentSnapshot>(),
+                intentSnapshots,
                 BuildMovementSegmentSnapshots(),
                 BuildReservationSnapshots(),
                 Array.Empty<AiControllerSnapshot>(),
@@ -2456,7 +3585,10 @@ namespace ProjectHero.Logic.Simulation
                 _scheduleAuthority.BuildTerminalSummary().Digest,
                 // 兼容镜像：与上面的 NextReactionOpportunityId 同源（同一唯一分配器），
                 // 不存在第二个可自行取号的计数器（任务 05 收尾 R1 / 缺陷 D2）。
-                _idGenerator.NextReactionOpportunityIdValue);
+                _idGenerator.NextReactionOpportunityIdValue,
+                // 任务 08：同一个冻结产物的另外两个面（组划分 / 接触键集合）。
+                conflictGroups,
+                contacts);
         }
 
         // —— 校验与量化 ——

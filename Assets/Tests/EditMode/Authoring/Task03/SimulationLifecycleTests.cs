@@ -30,8 +30,15 @@ namespace ProjectHero.Authoring.Tests.Task03
             Assert.That(sim.RulesVersion, Is.EqualTo(Task03.Definition.RulesVersion));
             Assert.That(sim.BattleDefinitionHash, Is.EqualTo(Task03.Definition.BattleDefinitionHashValue));
             Assert.That(sim.EncounterId, Is.EqualTo(Task03.EncounterId));
-            Assert.That(Task03.Definition.BattleDefinitionHashValue, Is.EqualTo("a10fcfb98357418c"),
+            Assert.That(Task03.Definition.BattleDefinitionHashValue, Is.EqualTo("d997b13b18573e15"),
                 "任务 02B 的主战斗定义哈希未漂移");
+
+            // 任务 08 重基线（断言刻意留在原行号 33，便于既有文档交叉引用）：
+            // 动量域规则分量进入 BattleDefinitionHash.Compute
+            // （MomentumRuleTable.WriteHashComponents，BattleDefinitionHash.cs:181）
+            // ⇒ a10fcfb98357418c 更新为 d997b13b18573e15。新值取自 Unity EditMode 权威跑的实测输出
+            // （08-editmode-results.xml），与 AuthoringInstanceRuleTests.FrozenMainEncounterHash
+            // 及 02B-配置迁移记录.md §11/§16 是同一次修订。
 
             // 唯一公开创建入口只接受 (BattleDefinition, EncounterDefinitionId, BattleRuntimeInputs)。
             MethodInfo create = typeof(BattleSimulation).GetMethod(

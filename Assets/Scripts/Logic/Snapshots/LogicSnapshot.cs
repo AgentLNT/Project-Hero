@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Determinism;
+using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Turns;
@@ -293,8 +294,121 @@ namespace ProjectHero.Logic.Snapshots
     /// <summary>ActorLane 快照（任务 05 扩展队列内容）。</summary>
     public sealed record ActorLaneSnapshot(long UnitId, int PendingPlanCount, bool Locked);
 
-    /// <summary>Intent 快照（任务 08 扩展载荷；排序键 Tick -&gt; Priority -&gt; IntentSequence）。</summary>
-    public sealed record IntentSnapshot(long IntentSequence, long SourceUnitId, long TargetUnitId);
+    /// <summary>
+    /// 分通道伤害分量的快照（任务 08 快照契约；与 <c>DamageComponentSpec</c> 一一对应）。
+    ///
+    /// <see cref="RawAmountBits"/> 是 <c>DamageComponentSpec.RawAmount</c> 的
+    /// <strong>二进制位</strong>（<c>BitConverter.SingleToInt32Bits</c>）：
+    /// 归一化快照与哈希<strong>只搬运</strong>它，从不做算术或浮点比较，
+    /// 因此浮点既不参与任何判定，也不可能因区域设置或舍入改变摘要。
+    /// </summary>
+    public sealed record DamageComponentSnapshot(string ChannelId, int RawAmountBits, int Tags);
+
+    /// <summary>
+    /// Intent 动量载荷的快照：<strong>方向</strong> + <strong>已量化的整数动量</strong>
+    /// + 冲击 Profile 的审计引用（Profile 在量化完成后不再参与求解，但它是 Intent 的冻结输入事实，
+    /// 因此一并进快照；缺失时为空串）。
+    /// </summary>
+    public sealed record IntentMomentumSnapshot(int Direction, int Units, string ImpactProfileId);
+
+    /// <summary>
+    /// Intent 快照（任务 08 扩展为完整载荷，替换首版的
+    /// <c>(IntentSequence, SourceUnitId, TargetUnitId)</c> 三字段形态）。
+    ///
+    /// <strong>它是"本 Tick 冻结后的队列"的规范化投影</strong>：全部字段都是 Intent 自身携带的
+    /// 不可变事实，不含任何"从当前状态重新推导"的量（不读动作速度、不推导命中时刻、不旋转 Pattern）。
+    ///
+    /// <list type="bullet">
+    /// <item>排序键 = <see cref="IntentSequence"/>（全局唯一 ⇒ 全序，与插入顺序无关）；</item>
+    /// <item><see cref="PrimaryTargetUnitId"/> 与 <see cref="SubmittedWindowId"/> 的"无"
+    /// 写成 <c>0</c>（两者的 ID 分配器都保留 <c>0</c> 为无效值）；</item>
+    /// <item><see cref="AreaPoints"/> 是已规范排序去重的三角点集，按 <c>(X, Y, T)</c> 升序进哈希；</item>
+    /// <item><see cref="DamageComponents"/> 按 Intent 自身的规范存储顺序进哈希
+    /// （与 <c>CombatIntent.CanonicalText</c> 同序）：<strong>不</strong>排序是因为
+    /// 唯一可用的额外键是 <c>RawAmount</c> 的浮点值，而浮点比较被冻结规则禁止；
+    /// 该顺序由定义（Authoring）唯一决定，不随任何运行时插入顺序变化；</item>
+    /// <item>全部整数/字符串，<strong>无浮点</strong>（见 <see cref="DamageComponentSnapshot"/>）。</item>
+    /// </list>
+    /// </summary>
+    public sealed record IntentSnapshot(
+        long IntentSequence,
+        long ActionPlanId,
+        long OwnerUnitId,
+        string ActionSpecId,
+        int TargetPolicy,
+        long PrimaryTargetUnitId,
+        int AllowedTargetRelations,
+        int Tags,
+        int Facing,
+        long ImpactTick,
+        int InteractionPriority,
+        int MomentumDirectionOffsetSteps,
+        long SubmittedWindowId,
+        IntentMomentumSnapshot Momentum,
+        IReadOnlyList<TrianglePoint> AreaPoints,
+        IReadOnlyList<DamageComponentSnapshot> DamageComponents);
+
+    /// <summary>
+    /// 规范化接触键的快照（<c>ContactKey</c> 的六个分量；
+    /// 类型数值即 <c>ContactType</c> 的冻结整数值）。
+    ///
+    /// <strong>不含</strong>发现顺序、节点下标与 <c>CoveredBefore/After</c> 空间标记：
+    /// 前者是遍历产物（排列相关，进哈希会把顺序带进摘要），
+    /// 后者是求解器输入的空间事实，不属于"接触键集合"这一冻结结构面。
+    ///
+    /// <see cref="CompareTo"/> <strong>逐字段复刻</strong> <c>ContactKey.CompareTo</c> 的全序，
+    /// 两者必须同时改；它是快照侧接触集合唯一允许的排序键。
+    /// </summary>
+    public sealed record ContactSnapshot(
+        int Type,
+        long FirstUnitId,
+        long FirstPlanId,
+        long SecondUnitId,
+        long SecondPlanId,
+        long TargetUnitId) : IComparable<ContactSnapshot>
+    {
+        /// <summary>规范全序：类型 → 双方单位 → 双方计划 → 目标单位（全部整数比较）。</summary>
+        public int CompareTo(ContactSnapshot other)
+        {
+            if (other == null) return 1;
+
+            int byType = Type.CompareTo(other.Type);
+            if (byType != 0) return byType;
+
+            int byFirstUnit = FirstUnitId.CompareTo(other.FirstUnitId);
+            if (byFirstUnit != 0) return byFirstUnit;
+
+            int byFirstPlan = FirstPlanId.CompareTo(other.FirstPlanId);
+            if (byFirstPlan != 0) return byFirstPlan;
+
+            int bySecondUnit = SecondUnitId.CompareTo(other.SecondUnitId);
+            if (bySecondUnit != 0) return bySecondUnit;
+
+            int bySecondPlan = SecondPlanId.CompareTo(other.SecondPlanId);
+            if (bySecondPlan != 0) return bySecondPlan;
+
+            return TargetUnitId.CompareTo(other.TargetUnitId);
+        }
+    }
+
+    /// <summary>
+    /// 冲突组快照（任务 08 快照契约）：冲突图的<strong>组划分</strong>。
+    ///
+    /// 这是"冻结输入"而不是"求解结果摘要"——同一冲突组的 Intent、接触边与目标集合
+    /// 任意排列都必须得到逐字节相同的快照哈希，因此组划分必须进哈希；
+    /// 而分阶段求解的聚合数值（RemainingHits 等）是已入哈希状态的纯函数，
+    /// 只留在只读诊断面，重复哈希会制造"两份必须同步的真值"。
+    ///
+    /// 排序键：<see cref="GroupKey"/>（= 组内最小 <c>IntentSequence</c>）；
+    /// <see cref="NodeIntentSequences"/>/<see cref="TargetUnitIds"/> 升序、
+    /// <see cref="ContactKeys"/> 按 <see cref="ContactSnapshot.CompareTo"/> 升序。
+    /// </summary>
+    public sealed record ConflictGroupSnapshot(
+        long GroupKey,
+        IReadOnlyList<long> NodeIntentSequences,
+        IReadOnlyList<ContactSnapshot> ContactKeys,
+        IReadOnlyList<long> TargetUnitIds,
+        int EdgeCount);
 
     /// <summary>MovementSegment 快照；以 (ActionPlanId, StepIndex) 定位，没有独立 SegmentId。</summary>
     public sealed record MovementSegmentSnapshot(long ActionPlanId, int StepIndex, int FromX, int FromY, int ToX, int ToY, long EndTick);
@@ -357,7 +471,12 @@ namespace ProjectHero.Logic.Snapshots
             string commandSourcePriorityMappingVersion,
             long terminalPlanRecordCount = 0L,
             string terminalPlanDigest = null,
-            long nextReactionOptionSequence = 0L)
+            long nextReactionOptionSequence = 0L,
+            // 任务 08：冲突图的组划分与接触键集合。刻意放在签名末尾并带默认值——
+            // 它们与 intents 同属"本 Tick 冻结输入"的快照面，但末尾追加可以让
+            // 既有位置参数调用点（含 Unity 侧测试夹具）零改动继续编译。
+            IReadOnlyList<ConflictGroupSnapshot> conflictGroups = null,
+            IReadOnlyList<ContactSnapshot> contacts = null)
         {
             Tick = tick;
             RulesVersion = rulesVersion ?? string.Empty;
@@ -394,6 +513,8 @@ namespace ProjectHero.Logic.Snapshots
             TerminalPlanRecordCount = terminalPlanRecordCount;
             TerminalPlanDigest = terminalPlanDigest ?? CanonicalHash.ToHex(ReplayFormat.HistorySeedDigest());
             NextReactionOptionSequence = nextReactionOptionSequence;
+            ConflictGroups = Freeze(conflictGroups);
+            Contacts = Freeze(contacts);
         }
 
         /// <summary>只读冻结：拷贝成独立数组并包装为不可变集合，杜绝别名改写。</summary>
@@ -403,6 +524,29 @@ namespace ProjectHero.Logic.Snapshots
             var copy = new T[source.Count];
             for (int i = 0; i < source.Count; i++) copy[i] = source[i];
             return Array.AsReadOnly(copy);
+        }
+
+        /// <summary>
+        /// 接触集合的<strong>唯一</strong>排序键：<see cref="ContactSnapshot.CompareTo"/>
+        /// （逐字段复刻 <c>ContactKey.CompareTo</c>）。空值安全，便于对调用方直接构造的集合做规范排序。
+        /// </summary>
+        private static int CompareContacts(ContactSnapshot left, ContactSnapshot right)
+        {
+            if (ReferenceEquals(left, right)) return 0;
+            if (left == null) return -1;
+            if (right == null) return 1;
+            return left.CompareTo(right);
+        }
+
+        /// <summary>写一条接触键（六个整数分量，无字符串、无浮点、无发现顺序）。</summary>
+        private static void WriteContact(CanonicalEncoder encoder, ContactSnapshot contact)
+        {
+            encoder.WriteInt32(contact == null ? 0 : contact.Type);
+            encoder.WriteInt64(contact == null ? 0L : contact.FirstUnitId);
+            encoder.WriteInt64(contact == null ? 0L : contact.FirstPlanId);
+            encoder.WriteInt64(contact == null ? 0L : contact.SecondUnitId);
+            encoder.WriteInt64(contact == null ? 0L : contact.SecondPlanId);
+            encoder.WriteInt64(contact == null ? 0L : contact.TargetUnitId);
         }
 
         public long Tick { get; }
@@ -459,6 +603,22 @@ namespace ProjectHero.Logic.Snapshots
 
         /// <summary>下一个将被分配的 <c>ReactionOptionSequence</c>（反应选项内部排序键）。</summary>
         public long NextReactionOptionSequence { get; }
+
+        /// <summary>
+        /// 本 Tick 冻结队列所构成的冲突图<strong>组划分</strong>（任务 08；按 <see cref="ConflictGroupSnapshot.GroupKey"/> 升序）。
+        ///
+        /// 来源是阶段 10 构图产物 <c>BattleSimulation.ConflictGraph</c>（只读入口）：
+        /// 构造期（Tick 0）、本 Tick 无到期 Intent、或本 Tick 构图失败时是<strong>空集合</strong>——
+        /// "没有图"是合法状态，不是错误。
+        /// </summary>
+        public IReadOnlyList<ConflictGroupSnapshot> ConflictGroups { get; }
+
+        /// <summary>
+        /// 本 Tick 冲突图的<strong>全部接触键</strong>（任务 08；按 <see cref="ContactSnapshot.CompareTo"/> 升序、按键去重）。
+        ///
+        /// 与 <see cref="ConflictGroups"/> 同源同生命周期：没有图时为空集合。
+        /// </summary>
+        public IReadOnlyList<ContactSnapshot> Contacts { get; }
 
         public ulong ComputeHash() => ComputeHash(ReplayFormat.Version);
 
@@ -693,15 +853,96 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteBool(lanes[i].Locked);
             }
 
+            // —— 本 Tick 冻结队列的完整载荷（任务 08）：排序键 = IntentSequence（全局唯一 ⇒ 全序）——
             var intents = new List<IntentSnapshot>(Intents);
             intents.Sort((a, b) => a.IntentSequence.CompareTo(b.IntentSequence));
             encoder.WriteCount(intents.Count);
             for (int i = 0; i < intents.Count; i++)
             {
-                encoder.WriteInt64(intents[i].IntentSequence);
-                encoder.WriteInt64(intents[i].SourceUnitId);
-                encoder.WriteInt64(intents[i].TargetUnitId);
+                IntentSnapshot intent = intents[i];
+                encoder.WriteInt64(intent.IntentSequence);
+                encoder.WriteInt64(intent.ActionPlanId);
+                encoder.WriteInt64(intent.OwnerUnitId);
+                encoder.WriteString(intent.ActionSpecId);
+                encoder.WriteInt32(intent.TargetPolicy);
+                encoder.WriteInt64(intent.PrimaryTargetUnitId);
+                encoder.WriteInt32(intent.AllowedTargetRelations);
+                encoder.WriteInt32(intent.Tags);
+                encoder.WriteInt32(intent.Facing);
+                encoder.WriteInt64(intent.ImpactTick);
+                encoder.WriteInt32(intent.InteractionPriority);
+                encoder.WriteInt32(intent.MomentumDirectionOffsetSteps);
+                encoder.WriteInt64(intent.SubmittedWindowId);
+
+                // 动量载荷：方向 + 已量化整数动量 + 冲击 Profile 审计引用（无浮点）。
+                IntentMomentumSnapshot momentum = intent.Momentum;
+                encoder.WriteInt32(momentum == null ? 0 : momentum.Direction);
+                encoder.WriteInt32(momentum == null ? 0 : momentum.Units);
+                encoder.WriteString(momentum == null ? string.Empty : momentum.ImpactProfileId);
+
+                // 区域点集：按 (X, Y, T) 升序（唯一稳定键），写前重新规范排序。
+                var areaPoints = new List<TrianglePoint>(
+                    intent.AreaPoints ?? (IReadOnlyList<TrianglePoint>)Array.Empty<TrianglePoint>());
+                areaPoints.Sort((a, b) => a.CompareTo(b));
+                encoder.WriteCount(areaPoints.Count);
+                for (int p = 0; p < areaPoints.Count; p++)
+                {
+                    encoder.WriteInt32(areaPoints[p].X);
+                    encoder.WriteInt32(areaPoints[p].Y);
+                    encoder.WriteInt32(areaPoints[p].T);
+                }
+
+                // 分通道伤害：浮点只按二进制位写入，绝不参与算术或比较。
+                // 顺序 = Intent 自身的规范存储顺序（不排序，理由见 IntentSnapshot 文档：
+                // 唯一可用的额外键是 RawAmount 的浮点值，而浮点比较被冻结规则禁止）。
+                var damageComponents = new List<DamageComponentSnapshot>(
+                    intent.DamageComponents ?? (IReadOnlyList<DamageComponentSnapshot>)Array.Empty<DamageComponentSnapshot>());
+                encoder.WriteCount(damageComponents.Count);
+                for (int c = 0; c < damageComponents.Count; c++)
+                {
+                    DamageComponentSnapshot component = damageComponents[c];
+                    encoder.WriteString(component == null ? string.Empty : component.ChannelId);
+                    encoder.WriteInt32(component == null ? 0 : component.RawAmountBits);
+                    encoder.WriteInt32(component == null ? 0 : component.Tags);
+                }
             }
+
+            // —— 冲突图的组划分（任务 08）：组键 → 节点集合 → 接触键 → 目标集合 → 边数 ——
+            // 这是"同组任意排列 ⇒ 快照哈希一致"所依赖的冻结结构面；求解聚合数值不进这里。
+            var conflictGroups = new List<ConflictGroupSnapshot>(ConflictGroups);
+            conflictGroups.Sort((a, b) => a.GroupKey.CompareTo(b.GroupKey));
+            encoder.WriteCount(conflictGroups.Count);
+            for (int g = 0; g < conflictGroups.Count; g++)
+            {
+                ConflictGroupSnapshot group = conflictGroups[g];
+                encoder.WriteInt64(group.GroupKey);
+
+                var groupSequences = new List<long>(
+                    group.NodeIntentSequences ?? (IReadOnlyList<long>)Array.Empty<long>());
+                groupSequences.Sort();
+                encoder.WriteCount(groupSequences.Count);
+                for (int n = 0; n < groupSequences.Count; n++) encoder.WriteInt64(groupSequences[n]);
+
+                var groupContacts = new List<ContactSnapshot>(
+                    group.ContactKeys ?? (IReadOnlyList<ContactSnapshot>)Array.Empty<ContactSnapshot>());
+                groupContacts.Sort((a, b) => CompareContacts(a, b));
+                encoder.WriteCount(groupContacts.Count);
+                for (int c = 0; c < groupContacts.Count; c++) WriteContact(encoder, groupContacts[c]);
+
+                var groupTargets = new List<long>(
+                    group.TargetUnitIds ?? (IReadOnlyList<long>)Array.Empty<long>());
+                groupTargets.Sort();
+                encoder.WriteCount(groupTargets.Count);
+                for (int t = 0; t < groupTargets.Count; t++) encoder.WriteInt64(groupTargets[t]);
+
+                encoder.WriteInt32(group.EdgeCount);
+            }
+
+            // —— 冲突图的全部接触键（同一冻结产物的另一投影面）——
+            var contacts = new List<ContactSnapshot>(Contacts);
+            contacts.Sort((a, b) => CompareContacts(a, b));
+            encoder.WriteCount(contacts.Count);
+            for (int i = 0; i < contacts.Count; i++) WriteContact(encoder, contacts[i]);
 
             var segments = new List<MovementSegmentSnapshot>(MovementSegments);
             segments.Sort((a, b) =>

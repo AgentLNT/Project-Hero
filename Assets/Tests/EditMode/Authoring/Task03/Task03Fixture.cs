@@ -255,7 +255,11 @@ namespace ProjectHero.Authoring.Tests.Task03
         public IReadOnlyList<ForcedDisplacementRequest> BuildOrdered(long tick, IReadOnlyList<UnitSnapshot> units)
             => TargetUnitId < 0
                 ? Array.Empty<ForcedDisplacementRequest>()
-                : new[] { new ForcedDisplacementRequest(TargetUnitId, Steps, Direction, MomentumUnits, ConflictGroupKey) };
+                : new[]
+                {
+                    new ForcedDisplacementRequest(
+                        new UnitId(TargetUnitId), Direction, Steps, MomentumUnits, ConflictGroupKey)
+                };
     }
 
     /// <summary>
@@ -282,30 +286,30 @@ namespace ProjectHero.Authoring.Tests.Task03
 
             if (requests == null || requests.Count == 0) return ForcedDisplacementBatch.Empty;
 
-            var relocations = new List<ForcedDisplacementRelocation>(requests.Count);
+            var resolutions = new List<ForcedDisplacementResolution>(requests.Count);
             for (int i = 0; i < requests.Count; i++)
             {
                 ForcedDisplacementRequest request = requests[i];
                 UnitSnapshot source = null;
                 for (int u = 0; u < immutableUnitSnapshot.Count; u++)
                 {
-                    if (immutableUnitSnapshot[u].UnitId == request.TargetUnitId) source = immutableUnitSnapshot[u];
+                    if (immutableUnitSnapshot[u].UnitId == request.TargetUnitId.Value) source = immutableUnitSnapshot[u];
                 }
                 if (source == null) continue;
 
                 int toX = source.X + Dx;
                 int toY = source.Y + Dy;
                 int applied = Math.Min(AppliedSteps, request.RequestedSteps);
-                relocations.Add(new ForcedDisplacementRelocation(
-                    request.TargetUnitId, source.X, source.Y, toX, toY, request.Direction,
-                    request.RequestedSteps, applied, request.MomentumUnits, request.ConflictGroupKey,
+                resolutions.Add(new ForcedDisplacementResolution(
+                    request.TargetUnitId, new GridPoint(source.X, source.Y), new GridPoint(toX, toY),
+                    request.RequestedSteps, applied,
                     applied == request.RequestedSteps
                         ? ForcedDisplacementStopReason.Completed
                         : ForcedDisplacementStopReason.Boundary,
                     Array.Empty<ActionPlanId>()));
             }
 
-            return new ForcedDisplacementBatch(relocations, requests);
+            return ForcedDisplacementBatch.FromResolutions(resolutions);
         }
     }
 

@@ -583,7 +583,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.Ledger.AdvanceCalls(RuntimeAdvancePath.NewSimulationStep),
                 Is.GreaterThan(0), "New 模式必须真正调用新模拟 Step");
             Assert.That(Bootstrap.NewDriver.TicksAdvanced, Is.GreaterThan(0));
-            Assert.That(Bootstrap.NewDriver.BattleDefinitionHash, Is.EqualTo("a10fcfb98357418c"),
+            Assert.That(Bootstrap.NewDriver.BattleDefinitionHash, Is.EqualTo("d997b13b18573e15"),
                 "New 模拟必须来自真实 02B 定义");
 
             Bootstrap.StopBattle("new-never-legacy");
@@ -643,7 +643,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(reports.Count, Is.EqualTo(frames), "每个只读检查点必须产出一份比较报告");
             var last = reports[reports.Count - 1];
             Assert.That(last.Mode, Is.EqualTo(BattleRuntimeMode.Shadow));
-            Assert.That(last.BattleDefinitionHash, Is.EqualTo("a10fcfb98357418c"),
+            Assert.That(last.BattleDefinitionHash, Is.EqualTo("d997b13b18573e15"),
                 "报告必须记录 BattleDefinitionHash");
             Assert.That(last.Encounter, Is.EqualTo("encounter.combat_sample_scene"),
                 "报告必须记录 Encounter");
@@ -2167,7 +2167,7 @@ namespace ProjectHero.Tests.PlayMode
 
             var seed = source.BuildSeed();
             Assert.That(seed.Validate(), Is.Null);
-            Assert.That(seed.BattleDefinitionHash, Is.EqualTo("a10fcfb98357418c"),
+            Assert.That(seed.BattleDefinitionHash, Is.EqualTo("d997b13b18573e15"),
                 "主战斗定义哈希必须与 02B 冻结锚点一致");
             Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v1"));
             Assert.That(seed.EncounterId.Value, Is.EqualTo("encounter.combat_sample_scene"));

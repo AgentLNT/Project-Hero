@@ -16,8 +16,27 @@ namespace ProjectHero.Logic.Initialization
     /// <c>ConcurrentActionDefinition.MetaResourceCost</c>，这里的数值是"开局持有量"）。</item>
     /// </list>
     /// 它们都<strong>不得</strong>由外部 Singleton、命令载荷或调用方参数在战斗中改写。
-    /// 单位的初始生命、阵营、初始肾上腺素与周期 ID 全部来自已验证的
-    /// <c>UnitDefinition</c> 与 <c>EncounterUnitSlot</c>，不在这里重复声明。
+    ///
+    /// 单位的初始生命、阵营与初始位置/朝向来自已验证的
+    /// <c>UnitDefinition</c> 与 <c>EncounterUnitSlot</c>；它们的产物是
+    /// <see cref="BattleInitializer"/> 构造的 <c>UnitInitialSnapshot</c>（权威初始快照），
+    /// 不在这里重复声明。
+    ///
+    /// <strong>开局肾上腺素（任务 08 裁定 8 修订，2026-xx）</strong>：该快照里的
+    /// <c>AvailableAdrenaline</c> 与 <c>AdrenalineCycleId</c> <strong>恒为 0</strong>，
+    /// 且<strong>没有</strong>任何定义/Encounter 入参能给出非零开局值 —— <c>UnitDefinition</c>
+    /// 与 <c>EncounterUnitSlot</c> 都不含肾上腺素字段。这不是"缺省补洞"：
+    /// <list type="bullet">
+    /// <item>主方案 3.1.1 的单位资源就是 <c>public int AvailableAdrenaline = 0;</c>（默认 0）；</item>
+    /// <item>00 号规则 / <c>02-程序集边界与纯数据.md</c> 第 9 条要求的措辞是
+    /// "在 Logic <strong>单位定义或初始快照</strong>中提供 <c>AvailableAdrenaline</c> 与
+    /// <c>AdrenalineCycleId</c>"——本类型的 <c>UnitInitialSnapshot</c> 就是该"初始快照"；</item>
+    /// <item>旧实现同样从 0 开局（<c>CombatUnit.CurrentAdrenaline = 0f</c>）。</item>
+    /// </list>
+    /// 运行时唯一写入通道仍是任务 07 的 <c>AdrenalineLedger</c>：额度只经
+    /// <c>AdrenalineLedgerRegistry.ApplyTickEndAccrual</c>（真实造成/承受伤害 + 成功反应奖励）获得，
+    /// 并在该单位<strong>自己的窗口打开时</strong>先递增个人周期、再清零 Available。
+    /// 因此"开局即可用 Block/Dodge"不在本版语义内：反应额度必须先通过战斗挣得。
     /// </summary>
     public sealed record BattleRuntimeInputs(ulong InitialRngSeed, int InitialMetaResource)
     {

@@ -47,8 +47,20 @@ namespace ProjectHero.Logic.Determinism
     /// </summary>
     public static class ReplayFormat
     {
-        /// <summary>当前回放/归档数据与哈希编码版本。</summary>
-        public const int Version = 1;
+        /// <summary>
+        /// 当前回放/归档数据与哈希编码版本。
+        ///
+        /// <list type="bullet">
+        /// <item><strong>1</strong>：首版（任务 03 冻结）。</item>
+        /// <item><strong>2</strong>（任务 08 快照契约）：<c>LogicSnapshot</c> 的<strong>快照载荷字段集</strong>扩展——
+        /// <c>IntentSnapshot</c> 由三字段扩为完整 Intent 载荷，并新增冲突图的
+        /// <c>ConflictGroupSnapshot</c> / <c>ContactSnapshot</c> 两个集合。
+        /// 快照域里的字段集与字段顺序变了，旧回放资产若按同一版本号读取会被<strong>静默错读</strong>，
+        /// 因此必须提升格式版本；这不涉及玩法规则，<c>RulesVersion</c> 与
+        /// <c>BattleDefinitionHash</c> 都不因此改变。</item>
+        /// </list>
+        /// </summary>
+        public const int Version = 2;
 
         public const string HashAlgorithmId = "fnv1a64";
         public const int DigestHexWidth = 16;

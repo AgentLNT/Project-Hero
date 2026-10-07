@@ -6,6 +6,7 @@ using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Events;
 using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Movement;
 using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Status;
 using ProjectHero.Logic.Timeline;
@@ -198,49 +199,111 @@ namespace ProjectHero.Logic.Simulation
         }
     }
 
-    /// <summary>每 Tick 每单位唯一的强制位移请求（阶段 11 产出）。</summary>
+    /// <summary>
+    /// 每 Tick 每单位唯一的强制位移请求（阶段 11 产出）。
+    ///
+    /// 冻结形状（任务包「同时强制位移协议 · 数据模型与请求唯一性」，任务 08 工作流落地）：
+    /// 分量顺序即 <c>(TargetUnitId, Direction, RequestedSteps, MomentumUnits, ConflictGroupKey)</c>，
+    /// 其中 <see cref="TargetUnitId"/> 是<strong>强类型</strong> <see cref="UnitId"/>。
+    /// <see cref="MomentumUnits"/> 与 <see cref="ConflictGroupKey"/> 只用于阈值、审计与事件，
+    /// <strong>不</strong>用于空间冲突选赢家。
+    ///
+    /// 唯一性由阶段 11 的装配点强制：同一 Tick 同一 <see cref="UnitId"/> 出现两条请求是
+    /// <c>InvariantViolation</c>（稳定码 <c>STEP_DISPLACEMENT_REQUEST_DUPLICATE</c>），
+    /// 绝不按 ConflictGroupKey / MomentumUnits / UnitId / 枚举顺序挑一个。
+    /// </summary>
     public sealed record ForcedDisplacementRequest(
-        long TargetUnitId,
-        int RequestedSteps,
+        UnitId TargetUnitId,
         GridDirection Direction,
+        int RequestedSteps,
         long MomentumUnits,
         long ConflictGroupKey);
 
-    /// <summary>阶段 12 求解出的单个换位（只读值）。</summary>
-    public sealed record ForcedDisplacementRelocation(
-        long TargetUnitId,
-        int FromX,
-        int FromY,
-        int ToX,
-        int ToY,
-        GridDirection Direction,
+    /// <summary>
+    /// 阶段 12 同时求解出的单个单位结果（只读值，含零步结果）。
+    ///
+    /// 冻结形状（任务包「同时强制位移协议 · 数据模型与请求唯一性」）：
+    /// <c>(TargetUnitId, From, To, RequestedSteps, AppliedSteps, StopReason, InvalidatedPlanIds)</c>。
+    /// <see cref="From"/>/<see cref="To"/> 是锚点，朝向<strong>不</strong>在位移中改变。
+    ///
+    /// <see cref="InvalidatedPlanIds"/> 是求解器在<strong>最终 footprint 确定后</strong>判定的候选
+    /// （按 <see cref="ActionPlanId"/> 去重升序）；原因分类由阶段 13 的提交器按冻结优先级决定。
+    /// 即使 <see cref="AppliedSteps"/> == 0 也存在一条结果（用于发射带停止原因的规范事件）。
+    /// </summary>
+    public sealed record ForcedDisplacementResolution(
+        UnitId TargetUnitId,
+        GridPoint From,
+        GridPoint To,
         int RequestedSteps,
         int AppliedSteps,
-        long MomentumUnits,
-        long ConflictGroupKey,
         ForcedDisplacementStopReason StopReason,
-        IReadOnlyList<ActionPlanId> InvalidatedPlanIds);
+        IReadOnlyList<ActionPlanId> InvalidatedPlanIds)
+    {
+        /// <summary>该结果是否真的换位（<c>ApplyBatchRelocation</c> 只接收这一类条目）。</summary>
+        public bool IsRelocating => From != To;
+    }
 
-    /// <summary>一次同时求解得到的完整强制位移批次。</summary>
+    /// <summary>
+    /// 一次同时求解得到的<strong>唯一</strong>全局强制位移批次。
+    ///
+    /// 两个集合的分工是结构性约束，不是约定（任务包 :234）：
+    /// <list type="bullet">
+    /// <item><see cref="Resolutions"/>：<strong>全量</strong>结果（含 <c>AppliedSteps == 0</c>），
+    /// 用于按 <see cref="UnitId"/> 发射 <c>ForcedDisplacementResolvedEvent</c>；</item>
+    /// <item><see cref="Relocations"/>：只含 <c>From != To</c> 的条目，
+    /// 是 <c>LogicGrid.ApplyBatchRelocation</c> 的<strong>唯一</strong>输入。
+    /// 只经 <see cref="FromResolutions"/> 构造 ⇒ 零步条目在类型层面就不可能进入网格提交。</item>
+    /// </list>
+    /// 任务包禁止把全局批次拆成多个世界提交，因此这里<strong>没有</strong>第二个批次类型。
+    /// </summary>
     public sealed class ForcedDisplacementBatch
     {
         public static readonly ForcedDisplacementBatch Empty = new ForcedDisplacementBatch(
-            Array.Empty<ForcedDisplacementRelocation>(), Array.Empty<ForcedDisplacementRequest>());
+            Array.Empty<ForcedDisplacementResolution>(), Array.Empty<BatchRelocation>());
 
         public ForcedDisplacementBatch(
-            IReadOnlyList<ForcedDisplacementRelocation> relocations,
-            IReadOnlyList<ForcedDisplacementRequest> originalRequests)
+            IReadOnlyList<ForcedDisplacementResolution> resolutions,
+            IReadOnlyList<BatchRelocation> relocations)
         {
-            Relocations = relocations ?? Array.Empty<ForcedDisplacementRelocation>();
-            OriginalRequests = originalRequests ?? Array.Empty<ForcedDisplacementRequest>();
+            Resolutions = resolutions ?? Array.Empty<ForcedDisplacementResolution>();
+            Relocations = relocations ?? Array.Empty<BatchRelocation>();
         }
 
-        public IReadOnlyList<ForcedDisplacementRelocation> Relocations { get; }
+        public IReadOnlyList<ForcedDisplacementResolution> Resolutions { get; }
 
-        /// <summary>本批对应的原始请求（按 TargetUnitId 升序），用于审计。</summary>
-        public IReadOnlyList<ForcedDisplacementRequest> OriginalRequests { get; }
+        /// <summary>仅 <c>From != To</c> 的条目，按 <c>TargetUnitId</c> 升序。</summary>
+        public IReadOnlyList<BatchRelocation> Relocations { get; }
 
-        public bool IsEmpty => Relocations.Count == 0;
+        /// <summary>无任何结果（含零步结果）时为 true。</summary>
+        public bool IsEmpty => Resolutions.Count == 0;
+
+        /// <summary>
+        /// 由结果集合构造批次：按 <c>TargetUnitId</c> 升序规范化，并<strong>派生</strong>
+        /// <see cref="Relocations"/>（只取 <c>From != To</c>）。求解器与测试夹具共用本入口，
+        /// 因此"零步条目不进网格提交"是构造期事实。
+        /// </summary>
+        public static ForcedDisplacementBatch FromResolutions(
+            IReadOnlyList<ForcedDisplacementResolution> resolutions)
+        {
+            if (resolutions == null || resolutions.Count == 0) return Empty;
+
+            var ordered = new List<ForcedDisplacementResolution>(resolutions.Count);
+            for (int i = 0; i < resolutions.Count; i++)
+            {
+                if (resolutions[i] != null) ordered.Add(resolutions[i]);
+            }
+            ordered.Sort((a, b) => a.TargetUnitId.Value.CompareTo(b.TargetUnitId.Value));
+
+            var relocations = new List<BatchRelocation>(ordered.Count);
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                ForcedDisplacementResolution resolution = ordered[i];
+                if (!resolution.IsRelocating) continue;
+                relocations.Add(new BatchRelocation(
+                    resolution.TargetUnitId, resolution.From, resolution.To));
+            }
+            return new ForcedDisplacementBatch(ordered, relocations);
+        }
     }
 
     /// <summary>
@@ -258,6 +321,22 @@ namespace ProjectHero.Logic.Simulation
 
         public IReadOnlyList<ForcedDisplacementRequest> BuildOrdered(long tick, IReadOnlyList<UnitSnapshot> units)
             => Array.Empty<ForcedDisplacementRequest>();
+    }
+
+    /// <summary>
+    /// 负控制用的空肾上腺素事实来源：<strong>一个事实都不提供</strong>（本 Tick 不入账）。
+    ///
+    /// 它存在的唯一理由是让"是否真的有人消费了 Resolution 结果"可被<strong>负控制</strong>证伪：
+    /// 显式注入它之后 <c>Available</c> 必须一动不动。
+    /// 默认装配<strong>不</strong>使用它（默认绑本场真实现，见
+    /// <c>BattleSimulationAssembly.AdrenalineAccrualFactSource</c> 的 R4 口径）。
+    /// </summary>
+    public sealed class NoAdrenalineAccrualFacts : Resources.IAdrenalineAccrualFactSource
+    {
+        public static readonly NoAdrenalineAccrualFacts Instance = new NoAdrenalineAccrualFacts();
+
+        public IReadOnlyList<Resources.AdrenalineAccrualFacts> BuildAccrualFactsOrdered(long tick)
+            => Array.Empty<Resources.AdrenalineAccrualFacts>();
     }
 
     /// <summary>
@@ -432,10 +511,19 @@ namespace ProjectHero.Logic.Simulation
             VictoryEvaluator = victoryEvaluator ?? FactionEliminationVictoryEvaluator.Instance;
             TurnWindowSchedule = turnWindowSchedule ?? Turns.NoTurnWindowSchedule.Instance;
             CommandProcessor = commandProcessor ?? PendingImplementationCommandProcessor.Instance;
-            DisplacementRequestBuilder = displacementRequestBuilder ?? NoForcedDisplacementRequests.Instance;
-            DisplacementSolver = displacementSolver ?? NoForcedDisplacementSolver.Instance;
-            DisplacementCommitter = displacementCommitter ?? NoForcedDisplacementCommitter.Instance;
-            ResolutionCommit = resolutionCommit ?? NoResolutionCommitSystem.Instance;
+            DisplacementRequestBuilder = displacementRequestBuilder;            // 任务 08（R4，照 MovementPathCalculator 先例）：这两个槽位**保持 null**，
+            // 由 BattleSimulation 绑定它自己基于本场 LogicGrid / ActionScheduleAuthority /
+            // ActionTerminalCoordinator 构造的**真实现**。因此"未注入"在装配层不是"默认不工作"：
+            // 只有显式注入 NoForcedDisplacementSolver / NoForcedDisplacementCommitter（负控制）
+            // 或任务 03/04 的脚本夹具才会替换它。
+            DisplacementSolver = displacementSolver;
+            DisplacementCommitter = displacementCommitter;
+            // 任务 08：阶段 11 的 Resolution 提交槽位**保持 null**（与上面两个位移槽位同一先例），
+            // 由 BattleSimulation 绑定它自己基于本场分阶段求解结果的**真实现**
+            // （ConflictGroupResolutionCommitSystem：只扣血 + 登记 Clash 终止请求）。
+            // 因此"未注入"不是"默认不工作"；只有显式注入 NoResolutionCommitSystem（负控制）
+            // 或任务 03/04 的脚本夹具才会替换它。
+            ResolutionCommit = resolutionCommit;
             PayloadAuthorizer = payloadAuthorizer ?? PermissivePayloadAuthorizer.Instance;
             InvariantChecks = invariantChecks ?? Array.Empty<IStepInvariantCheck>();
             ArchiveCandidateSources = archiveCandidateSources ?? Array.Empty<IHistoryArchiveCandidateSource>();
@@ -466,9 +554,40 @@ namespace ProjectHero.Logic.Simulation
         public IVictoryEvaluator VictoryEvaluator { get; }
         public Turns.ITurnWindowSchedule TurnWindowSchedule { get; }
         public IFrozenCommandProcessor CommandProcessor { get; }
+
+        /// <summary>
+        /// 阶段 11 的强制位移请求构建器（任务包「必须产出」18）。
+        /// <strong>默认 null</strong> ⇒ <c>BattleSimulation</c> 绑定本场真实现
+        /// （<c>Logic.Simulation.DisplacementRequestBuilder</c>：按本 Tick 的
+        /// <c>DamageCommitReport.Units[]</c> 生成每单位唯一请求，取该组 <c>GroupKey</c>）；
+        /// 显式注入优先（任务 03/04 夹具、负控制 <see cref="NoForcedDisplacementRequests"/>）。
+        ///
+        /// 与 <see cref="DisplacementSolver"/> / <see cref="DisplacementCommitter"/> /
+        /// <see cref="ResolutionCommit"/> 同一 R4 先例：装配层默认 null <strong>不是</strong>
+        /// "默认不工作"，而是"由模拟绑定它自己的真实现"。
+        /// </summary>
         public IForcedDisplacementRequestBuilder DisplacementRequestBuilder { get; }
+
+        /// <summary>
+        /// 阶段 12 求解器。<strong>默认 null</strong> ⇒ <c>BattleSimulation</c> 绑定本场真实现
+        /// （<c>Logic.Interactions.ForcedDisplacementSolver</c>，消费本场 <c>LogicGrid</c> 只读面）；
+        /// 显式注入优先（任务 03/04 夹具、负控制）。
+        /// </summary>
         public IForcedDisplacementSolver DisplacementSolver { get; }
+
+        /// <summary>
+        /// 阶段 13 前半段提交器。<strong>默认 null</strong> ⇒ <c>BattleSimulation</c> 绑定本场真实现
+        /// （<c>Logic.Interactions.ForcedDisplacementCommitter</c>，经统一终态协调器提交原因）。
+        /// </summary>
         public IForcedDisplacementCommitter DisplacementCommitter { get; }
+
+        /// <summary>
+        /// 阶段 11（伤害/合力提交）与阶段 14（状态、控制与其余终态提交）。
+        /// <strong>默认 null</strong> ⇒ <c>BattleSimulation</c> 绑定本场真实现
+        /// （<c>ConflictGroupResolutionCommitSystem</c>：按 <c>UnitId</c> 升序把分阶段求解的
+        /// 聚合伤害写入权威生命，并把 Clash 终止登记为**请求**）；
+        /// 显式注入优先（任务 03/04 夹具、负控制）。
+        /// </summary>
         public IResolutionCommitSystem ResolutionCommit { get; }
         public ICommandPayloadAuthorizer PayloadAuthorizer { get; }
         public IReadOnlyList<IStepInvariantCheck> InvariantChecks { get; }
@@ -508,9 +627,15 @@ namespace ProjectHero.Logic.Simulation
         public UnitId? ConcurrentHeroUnitId { get; }
 
         /// <summary>
-        /// 任务 07 冻结的 Tick 末肾上腺素入账事实来源（任务 08 在全部 Resolution 提交后提供；
-        /// 默认 null = 本 Tick 不入账）。它是 Available 增长的<strong>唯一</strong>入口，
-        /// 其他系统不得逐接触直接加 Available。
+        /// 任务 07 冻结的 Tick 末肾上腺素入账事实来源（任务 08 在全部 Resolution 提交后提供）。
+        ///
+        /// <strong>默认 null</strong> ⇒ <c>BattleSimulation</c> 绑定本场真实现
+        /// （<c>Logic.Simulation.AdrenalineAccrualFactSource</c>：只读本 Tick 的分阶段求解产物与
+        /// 伤害提交报告，按 <c>UnitId</c> 升序、每单位至多一条地给出规范事实）；
+        /// 显式注入优先（任务 03/04/07 夹具、负控制）。
+        ///
+        /// 它是 Available 增长的<strong>唯一</strong>入口，其他系统不得逐接触直接加 Available。
+        /// 与其余 R4 装配点同一先例：装配层默认 null <strong>不是</strong>"默认不入账"。
         /// </summary>
         public Resources.IAdrenalineAccrualFactSource AdrenalineAccrualFactSource { get; }
 

@@ -305,7 +305,11 @@ namespace ProjectHero.Authoring.Tests.Task04
         {
             BuildCalls++;
             if (TargetUnitId < 0) return System.Array.Empty<ForcedDisplacementRequest>();
-            return new[] { new ForcedDisplacementRequest(TargetUnitId, Steps, Direction, MomentumUnits, ConflictGroupKey) };
+            return new[]
+            {
+                new ForcedDisplacementRequest(
+                    new UnitId(TargetUnitId), Direction, Steps, MomentumUnits, ConflictGroupKey)
+            };
         }
     }
 
@@ -331,30 +335,30 @@ namespace ProjectHero.Authoring.Tests.Task04
 
             if (requests == null || requests.Count == 0) return ForcedDisplacementBatch.Empty;
 
-            var relocations = new List<ForcedDisplacementRelocation>(requests.Count);
+            var resolutions = new List<ForcedDisplacementResolution>(requests.Count);
             for (int i = 0; i < requests.Count; i++)
             {
                 ForcedDisplacementRequest request = requests[i];
                 UnitSnapshot source = null;
                 for (int u = 0; u < immutableUnitSnapshot.Count; u++)
                 {
-                    if (immutableUnitSnapshot[u].UnitId == request.TargetUnitId)
+                    if (immutableUnitSnapshot[u].UnitId == request.TargetUnitId.Value)
                         source = immutableUnitSnapshot[u];
                 }
                 if (source == null) continue;
 
                 int applied = System.Math.Min(AppliedSteps, request.RequestedSteps);
-                relocations.Add(new ForcedDisplacementRelocation(
-                    request.TargetUnitId, source.X, source.Y, source.X + Dx, source.Y + Dy,
-                    request.Direction, request.RequestedSteps, applied,
-                    request.MomentumUnits, request.ConflictGroupKey,
+                resolutions.Add(new ForcedDisplacementResolution(
+                    request.TargetUnitId,
+                    new GridPoint(source.X, source.Y), new GridPoint(source.X + Dx, source.Y + Dy),
+                    request.RequestedSteps, applied,
                     applied == request.RequestedSteps
                         ? ForcedDisplacementStopReason.Completed
                         : ForcedDisplacementStopReason.Boundary,
                     System.Array.Empty<ActionPlanId>()));
             }
 
-            return new ForcedDisplacementBatch(relocations, requests);
+            return ForcedDisplacementBatch.FromResolutions(resolutions);
         }
     }
 
@@ -392,11 +396,11 @@ namespace ProjectHero.Authoring.Tests.Task04
             if (requests == null || requests.Count == 0 || follower == null)
                 return ForcedDisplacementBatch.Empty;
 
-            var relocations = new List<ForcedDisplacementRelocation>(requests.Count);
+            var resolutions = new List<ForcedDisplacementResolution>(requests.Count);
             for (int i = 0; i < requests.Count; i++)
             {
                 ForcedDisplacementRequest request = requests[i];
-                UnitSnapshot source = request.TargetUnitId == FollowerUnitId ? follower : null;
+                UnitSnapshot source = request.TargetUnitId.Value == FollowerUnitId ? follower : null;
                 if (source == null) continue;
 
                 bool blocked = blocker != null && blocker.IsAlive;
@@ -405,16 +409,16 @@ namespace ProjectHero.Authoring.Tests.Task04
                 // 被阻挡时应用 0 步：目的地等于起点，批次验证因此可以通过。
                 int applied = blocked ? 0 : System.Math.Min(Steps, request.RequestedSteps);
 
-                relocations.Add(new ForcedDisplacementRelocation(
-                    source.UnitId, source.X, source.Y, source.X, source.Y,
-                    request.Direction, request.RequestedSteps, applied,
-                    request.MomentumUnits, request.ConflictGroupKey,
+                resolutions.Add(new ForcedDisplacementResolution(
+                    request.TargetUnitId,
+                    new GridPoint(source.X, source.Y), new GridPoint(source.X, source.Y),
+                    request.RequestedSteps, applied,
                     blocked ? ForcedDisplacementStopReason.StaticObstacle
                             : ForcedDisplacementStopReason.Completed,
                     System.Array.Empty<ActionPlanId>()));
             }
 
-            return new ForcedDisplacementBatch(relocations, requests);
+            return ForcedDisplacementBatch.FromResolutions(resolutions);
         }
     }
 

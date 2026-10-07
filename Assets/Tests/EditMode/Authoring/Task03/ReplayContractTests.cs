@@ -32,7 +32,10 @@ namespace ProjectHero.Authoring.Tests.Task03
             Assert.That(Task03.Definition.RulesVersion, Is.EqualTo("battle-def-v1"));
 
             // 两个版本互不派生：只改玩法规则版本不改变格式版本，反之亦然。
-            Assert.That(ReplayFormat.Version, Is.EqualTo(1));
+            // 任务 08 快照契约（IntentSnapshot 完整载荷 + ConflictGroup/Contact 集合）改变了
+            // LogicSnapshot 的字段集与字段顺序 ⇒ 格式版本按冻结约定提升到 2（旧回放资产必须被拒绝，
+            // 不得静默错读）。RulesVersion 与 BattleDefinitionHash 不因此改变。
+            Assert.That(ReplayFormat.Version, Is.EqualTo(2));
             var ruleChanged = header with { RulesVersion = "battle-def-v2" };
             Assert.That(ruleChanged.ReplayFormatVersion, Is.EqualTo(header.ReplayFormatVersion));
 

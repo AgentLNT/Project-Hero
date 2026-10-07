@@ -30,7 +30,7 @@ namespace ProjectHero.Authoring.Tests
             BattleDefinitionBuilder.BuildDefaultFactionModel(new DefinitionErrorCollector());
 
         /// <summary>
-        /// 主战斗定义哈希的冻结锚点（<c>02B-配置迁移记录.md</c> §11 / <c>02B-交接记录.md</c> §7）。
+        /// 主战斗定义哈希的冻结锚点（<c>02B-配置迁移记录.md</c> §11 / §16 / <c>02B-交接记录.md</c> §7）。
         /// 仅由 <see cref="MainEncounterDefinitionHashMatchesFrozenAnchor"/> 消费；
         /// 改动此常量等于宣布一次<b>有意的</b>玩法定义变更。
         ///
@@ -40,11 +40,22 @@ namespace ProjectHero.Authoring.Tests
         /// 纳入定义哈希后，本摘要由旧值 <c>d9324383b2622148</c> 更新为
         /// <c>a10fcfb98357418c</c>。新值来自真实资产重新构建的<b>实测</b>结果
         /// （见 <c>06-r4-hashprobe.xml</c> 的探测运行），不是手工推算。
+        ///
+        /// <b>任务 08 定义哈希修订</b>：任务 08 把动量域规则分量
+        /// （<c>MomentumRuleTable.WriteHashComponents</c>：Q10 方向向量表、
+        /// <c>OppositionFactorQ10</c> 表、单位换算常量与动量上限）插入
+        /// <c>BattleDefinitionHash.Compute</c>（位置在 <c>grid.direction_count</c> 之后、
+        /// <c>factionModel</c> 之前，见 <c>BattleDefinitionHash.cs:181</c>）⇒
+        /// 本摘要由旧值 <c>a10fcfb98357418c</c> 更新为 <c>d997b13b18573e15</c>。
+        /// 新值同样是<b>实测</b>值（不是手工推算）：Unity EditMode 权威跑
+        /// （<c>08-editmode-results.xml</c>）的失败信息逐字给出
+        /// <c>Expected: "a10fcfb98357418c" / But was: "d997b13b18573e15"</c>。
+        /// 本次重基线与 <c>02B-配置迁移记录.md</c> §16 是同一次修订。
         /// </summary>
         private const string FrozenRulesVersion = "battle-def-v1";
 
         /// <inheritdoc cref="FrozenRulesVersion"/>
-        private const string FrozenMainEncounterHash = "a10fcfb98357418c";
+        private const string FrozenMainEncounterHash = "d997b13b18573e15";
 
         // ============================================================
         // 1. ControllerBinding

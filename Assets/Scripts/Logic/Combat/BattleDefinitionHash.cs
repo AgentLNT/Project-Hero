@@ -95,6 +95,19 @@ namespace ProjectHero.Logic.Combat
         }
 
         /// <summary>
+        /// 任务 08 动量域规则分量<strong>独立可调用</strong>的规范摘要（方向向量表、对立系数表、
+        /// 单位换算常量与动量上限）。它是 <see cref="Compute"/> 内同一组件的可单独审计入口：
+        /// 表值改动 ⇒ 本摘要改变 ⇒ 全量 <c>BattleDefinitionHash</c> 也改变
+        /// （任务包「必须产出」3 与「验收标准」:392 要求方向表与动量比例进入配置哈希）。
+        /// </summary>
+        public static string OfMomentumRules()
+        {
+            var writer = new CanonicalHashWriter();
+            MomentumRuleTable.WriteHashComponents(writer);
+            return writer.ToDigestHex();
+        }
+
+        /// <summary>
         /// 完整 <c>BattleDefinitionHash</c> 的组装（任务 02B「必须产出」5）。
         ///
         /// 覆盖范围（全部会改变玩法结果的定义、规则常量与显式初始配置）：
@@ -160,6 +173,12 @@ namespace ProjectHero.Logic.Combat
                 writer.Write("grid.direction", direction.ToString() + ":" + (int)direction);
             }
             writer.Write("grid.direction_count", Grid.GridDirectionInfo.DirectionCount);
+
+            // —— 任务 08 动量规则：Q10 方向向量表、OppositionFactorQ10 表、
+            //    单位换算常量（100 / 5000 / 1000 / 100）与动量上限（任务包「必须产出」3/22；
+            //    父代理裁定：必须插入，且全量摘要重基线由集成方负责）。
+            //    组件名见 MomentumRuleTable.WriteHashComponents。
+            MomentumRuleTable.WriteHashComponents(writer);
 
             // —— 阵营模型 ——
             factionModel?.WriteHashComponents(writer);
