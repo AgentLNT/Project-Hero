@@ -1,4 +1,5 @@
 using System;
+using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Replay;
@@ -69,6 +70,19 @@ namespace ProjectHero.Logic.Commands
 
             return SubmitAuthorized(request);
         }
+
+        /// <summary>
+        /// <strong>设备输入 / AI 的默认投递</strong>（任务 09「必须产出」5）：
+        /// 目标 Tick 由入口按 <see cref="CommandIngressRegistry.NextDefaultTargetTick"/> 决定
+        /// （= 已冻结的最高 Tick + <see cref="CommandIngressRegistry.CommandIngressLeadTicks"/>，
+        /// 正常推进下即 <c>CurrentTick + 1</c>），生产者<strong>不</strong>声明目标 Tick。
+        ///
+        /// 它与 <see cref="Submit(CommandRequest)"/> 走完全相同的入口校验、分桶、冻结与拒绝路径；
+        /// 区别只有一处：目标 Tick 来自注册表的默认口径而不是调用方参数，
+        /// 因此"设备输入默认投递下一 Tick、批次冻结后只能目标再下一 Tick"在类型上不可绕过。
+        /// </summary>
+        public CommandIngressRejection SubmitAtDefaultTick(CommandScope scope, ICommandPayload payload)
+            => Submit(new CommandRequest(_registry.NextDefaultTargetTick, scope, payload));
 
         /// <summary>
         /// 仅限 Logic 内部稳定系统的提交路径（任务 05+ 的系统事务使用）。

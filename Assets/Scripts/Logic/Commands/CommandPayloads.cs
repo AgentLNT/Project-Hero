@@ -96,6 +96,13 @@ namespace ProjectHero.Logic.Commands
     ///
     /// 边界仍然成立：这些操作<strong>不</strong>携带 ControllerId、来源种类、优先级、
     /// ProducerOrdinal、CommandSequence、规则费用或反应 TriggerTick。
+    ///
+    /// 任务 09 A 流补齐（产出 1）：<see cref="AddOrdinaryPlanOperation"/> 的
+    /// <c>RequestedStartTick</c> 为<strong>可空</strong>（<c>null</c> = 本次事务该 Lane 的尾部，
+    /// 由排程事务解析，生产者不声明绝对排程）。可空插入锚点仍用
+    /// <c>default(ActionPlanId)</c> 哨兵表达（<c>IsValid</c> 为 false = 无锚点，
+    /// <c>HasAnchor</c> 是唯一判据）；Facing / Destination / PrimaryTargetUnitId 为判别载荷字段，
+    /// 不含费用、不含反应 TriggerTick、不含任何身份或顺序。
     /// <see cref="ScheduleEditOperation.PlanId"/> 对 Add 恒为
     /// <c>default</c>（无效值）：正式 <c>ActionPlanId</c> 由 Logic 在事务校验通过后分配。
     /// </summary>
@@ -103,7 +110,7 @@ namespace ProjectHero.Logic.Commands
         long TemporaryPlanKey,
         UnitId OwnerUnitId,
         ActionSpecId ActionSpecId,
-        long RequestedStartTick,
+        long? RequestedStartTick = null,
         ActionPlanId AnchorAfterPlanId = default,
         UnitId? PrimaryTargetUnitId = null,
         GridDirection Facing = GridDirection.East,
@@ -116,6 +123,16 @@ namespace ProjectHero.Logic.Commands
 
         /// <summary>是否存在显式插入锚点（把新计划插到该计划之后）。</summary>
         public bool HasAnchor => AnchorAfterPlanId.IsValid;
+
+        /// <summary>
+        /// 是否显式声明了请求起点。
+        ///
+        /// <c>false</c>（<c>RequestedStartTick == null</c>）表示<strong>本次事务该 Lane 的尾部</strong>：
+        /// 由排程事务按"生产者不能声明绝对排程"的同一条口径解析成
+        /// <c>max(目标 Tick, 该 Lane 的 LaneTailTick)</c>，绝不回退成"当前 Tick"以外的隐式默认值，
+        /// 也不允许越过启动门禁或把新计划排进过去。
+        /// </summary>
+        public bool HasRequestedStartTick => RequestedStartTick.HasValue;
     }
 
     /// <summary>移动仍为 Editable 的普通计划；可选把目标位置锚定在另一个计划之后。</summary>

@@ -23,8 +23,18 @@ namespace ProjectHero.Logic.Timeline
     /// </list>
     ///
     /// 它<strong>不</strong>启动计划：启动门禁是阶段 7，相位顺序不可合并。
+    ///
+    /// <para>
+    /// <strong>任务 09 A 流（产出 6）</strong>：本类现在是统一入口
+    /// <see cref="BattleCommandProcessor"/> 的<strong>排程端口</strong>——一个薄适配器，
+    /// 只保留任务 05/06/07 冻结的公开面（构造签名、<c>ProcessOrdered</c>、三个端口属性、
+    /// <c>ClaimedPlanIds</c>、<c>BeginTick</c>）。载荷路由与<strong>控制权校验</strong>的唯一实现
+    /// 在 <see cref="ProcessAuthorized"/> 里，因此不存在第二套分派逻辑：
+    /// 所有来源（玩家 / AI / 旧壳 / 系统）经同一入口、同一 `ControllerId -&gt; UnitId` 校验，
+    /// 排程写入仍然只经同一个 <c>ScheduleEditor</c>。
+    /// </para>
     /// </summary>
-    public sealed class ActionPlanCommandProcessor : IFrozenCommandProcessor
+    public sealed class ActionPlanCommandProcessor : IAuthorityRoutedCommandProcessor
     {
         private readonly ActionScheduleAuthority _authority;
         private readonly ScheduleEditor _editor;
@@ -94,80 +104,81 @@ namespace ProjectHero.Logic.Timeline
             {
                 CommandEnvelope envelope = envelopes[i];
                 if (envelope == null) continue;
-
-                switch (envelope.Request.Payload)
-                {
-                    case ScheduleEditPayload schedule:
-                    {
-                        long expectedRevision = ExpectedRevisionOf(envelope.Request.Scope);
-                        // 任务 07「必须产出」4 / 00 号规则 18：新增或增加预算时窗口必填，
-                        // 且发行者身份只能来自命令网关绑定的 CommandEnvelope.ControllerId
-                        // （绝不来自命令载荷、scope 或调用参数）。
-                        ScheduleEditTransactionResult result = _editor.Apply(
-                            schedule.Operations, tick, batchBaseScheduleRevision, expectedRevision,
-                            preview: false,
-                            expectedWindowId: ExpectedWindowIdOf(envelope.Request.Scope),
-                            issuer: envelope.ControllerId);
-                        if (!result.Succeeded)
-                        {
-                            rejections.Add(new CommandRejectionRecord(envelope, result.RejectionCode));
-                            break;
-                        }
-
-                        CommittedTransactionCount++;
-                        for (int e = 0; e < result.Evaluations.Count; e++)
-                        {
-                            _claimedPlans.Add(result.Evaluations[e].PlanId.Value);
-                        }
-                        CommittedTransactionSink?.Invoke(result, tick);
-                        break;
-                    }
-
-                    case ReactionCommandPayload _:
-                    {
-                        string reactionError = _reactionCommandHandler == null
-                            ? ReactionCodes.OPPORTUNITY_NOT_OPEN
-                            : _reactionCommandHandler(envelope, tick);
-                        if (reactionError != null)
-                            rejections.Add(new CommandRejectionRecord(envelope, reactionError));
-                        break;
-                    }
-
-                    case WindowCommandPayload _:
-                    {
-                        // 任务 07：关窗与并发行动激活的权威入口。
-                        // 身份（ControllerId）、目标窗口（ExpectedWindowId）与权威费用都由
-                        // 注入的处理器自行从 envelope/scope/定义读取；载荷里根本没有这些字段。
-                        // 未注入处理器时保持既有语义：走 fallback（没有 fallback 即以稳定码拒绝），
-                        // 绝不静默接受。
-                        if (WindowCommandHandler == null)
-                        {
-                            rejections.Add(new CommandRejectionRecord(
-                                envelope, FallbackReasonFor(envelope, tick, batchBaseScheduleRevision)));
-                            break;
-                        }
-
-                        string windowError = WindowCommandHandler(envelope, tick);
-                        if (windowError != null)
-                            rejections.Add(new CommandRejectionRecord(envelope, windowError));
-                        break;
-                    }
-
-                    default:
-                        rejections.Add(new CommandRejectionRecord(
-                            envelope, FallbackReasonFor(envelope, tick, batchBaseScheduleRevision)));
-                        break;
-                }
+                string error = ProcessAuthorized(envelope, tick, batchBaseScheduleRevision);
+                if (error != null) rejections.Add(new CommandRejectionRecord(envelope, error));
             }
-
             return rejections;
+        }
+
+        /// <summary>
+        /// <strong>载荷路由的唯一实现</strong>（任务 09「必须产出」6/7）。控制权校验发生在
+        /// <see cref="BattleCommandProcessor"/>（统一入口）里，本方法只处理"已授权的载荷"：
+        /// 因此直接调用本方法的调用方（任务 06 的既有夹具、任务 10 的装配）与生产路径
+        /// 共享同一份载荷语义，而生产路径额外多一道控制权门。
+        /// </summary>
+        public string ProcessAuthorized(CommandEnvelope envelope, long tick, long batchBaseScheduleRevision)
+        {
+            if (envelope?.Request == null) return CommandCodes.COMMAND_REQUEST_NULL;
+
+            switch (envelope.Request.Payload)
+            {
+                case ScheduleEditPayload schedule:
+                {
+                    long expectedRevision = ExpectedRevisionOf(envelope.Request.Scope);
+                    // 任务 07「必须产出」4 / 00 号规则 18：新增或增加预算时窗口必填，
+                    // 且发行者身份只能来自命令网关绑定的 CommandEnvelope.ControllerId
+                    // （绝不来自命令载荷、scope 或调用参数）。
+                    ScheduleEditTransactionResult result = _editor.Apply(
+                        schedule.Operations, tick, batchBaseScheduleRevision, expectedRevision,
+                        preview: false,
+                        expectedWindowId: ExpectedWindowIdOf(envelope.Request.Scope),
+                        issuer: envelope.ControllerId);
+                    if (!result.Succeeded) return result.RejectionCode;
+
+                    CommittedTransactionCount++;
+                    for (int e = 0; e < result.Evaluations.Count; e++)
+                    {
+                        _claimedPlans.Add(result.Evaluations[e].PlanId.Value);
+                    }
+                    CommittedTransactionSink?.Invoke(result, tick);
+                    return null;
+                }
+
+                case ReactionCommandPayload _:
+                {
+                    // 反应 scope 必须精确匹配：反应载荷配窗口/排程 scope 一律稳定拒绝，
+                    // 绝不回退到"当前窗口"或临时猜一个机会。
+                    if (!(envelope.Request.Scope is ReactionCommandScope))
+                        return CommandCodes.SCOPE_PAYLOAD_MISMATCH;
+                    string reactionError = _reactionCommandHandler == null
+                        ? ReactionCodes.OPPORTUNITY_NOT_OPEN
+                        : _reactionCommandHandler(envelope, tick);
+                    return reactionError;
+                }
+
+                case WindowCommandPayload _:
+                {
+                    // 任务 07：关窗与并发行动激活的权威入口。
+                    // 身份（ControllerId）、目标窗口（ExpectedWindowId）与权威费用都由
+                    // 注入的处理器自行从 envelope/scope/定义读取；载荷里根本没有这些字段。
+                    // 未注入处理器时保持既有语义：走 fallback（没有 fallback 即以稳定码拒绝），
+                    // 绝不静默接受。
+                    if (WindowCommandHandler == null)
+                        return FallbackReasonFor(envelope, tick, batchBaseScheduleRevision);
+
+                    return WindowCommandHandler(envelope, tick);
+                }
+
+                default:
+                    return FallbackReasonFor(envelope, tick, batchBaseScheduleRevision);
+            }
         }
 
         /// <summary>
         /// 把不归本任务管的载荷交给装配里的委托处理器；没有委托时以
         /// <c>COMMAND_PROCESSOR_NOT_IMPLEMENTED</c> 稳定拒绝（绝不静默接受或忽略）。
         /// </summary>
-        private string FallbackReasonFor(CommandEnvelope envelope, long tick, long batchBaseScheduleRevision)
+        public string FallbackReasonFor(CommandEnvelope envelope, long tick, long batchBaseScheduleRevision)
         {
             if (_fallback == null) return CommandCodes.COMMAND_PROCESSOR_NOT_IMPLEMENTED;
             IReadOnlyList<CommandRejectionRecord> records =

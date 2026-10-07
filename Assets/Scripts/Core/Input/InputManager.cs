@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems; // Added for UI check
 using System;
+using ProjectHero.Core.Compatibility.Runtime.Input;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Entities;
 
@@ -30,8 +31,24 @@ namespace ProjectHero.Core.Input
         public Camera _mainCamera;
         private Vector3 _lastHoveredPoint;
 
-        // New: Flag to ignore unit clicks (e.g. when targeting an action)
-        public bool IgnoreUnitClicks { get; set; } = false;
+        // ─────────────────────────────────────────────────────────────────────
+        // 任务 09：输入模式状态机取代旧布尔通信。
+        //
+        // 旧 `IgnoreUnitClicks` 布尔量已删除：它曾经让"当前是否在选目标"这一类
+        // **表现层**事实直接控制点击路由，从而与战斗逻辑混在一起。
+        // 现在"单位点击是否生效 / 世界点击是否生效"由注入的
+        // `ViewInputController` 的当前模式推导（纯视图判断），
+        // 未注入时不吞任何点击（保持旧外部行为），并且**不再影响任何逻辑路径**。
+        // ─────────────────────────────────────────────────────────────────────
+        [Header("Task 09 输入模式（可空）")]
+        [Tooltip("注入后：单位/世界点击是否生效由输入模式状态机决定；本组件只做转发。")]
+        public ViewInputController InputController;
+
+        /// <summary>由输入模式状态机推得的"当前是否吞掉单位点击"（纯视图路由）。</summary>
+        public bool SuppressUnitClicks => InputController != null && InputController.SuppressesUnitClicks;
+
+        /// <summary>由输入模式状态机推得的"当前是否吞掉世界点击"（纯视图路由）。</summary>
+        public bool SuppressWorldClicks => InputController != null && InputController.SuppressesWorldClicks;
 
         private void Awake()
         {
@@ -138,8 +155,9 @@ namespace ProjectHero.Core.Input
             if (groundLayer.value == 0) groundLayer = LayerMask.GetMask("Default");
 
             // 1. Check for Unit Click (Higher Priority)
-            // Only perform if NOT ignoring unit clicks
-            if (!IgnoreUnitClicks && UnityEngine.Physics.Raycast(ray, out RaycastHit unitHit, 100f, unitLayer))
+            // 任务 09：是否吞掉单位点击**只**由输入模式状态机决定（纯视图路由），
+            // 与战斗逻辑权限无关；Logic 会在命令采纳时重新校验控制权。
+            if (!SuppressUnitClicks && UnityEngine.Physics.Raycast(ray, out RaycastHit unitHit, 100f, unitLayer))
             {
                 var unit = unitHit.collider.GetComponentInParent<CombatUnit>();
                 if (unit != null)
@@ -150,6 +168,8 @@ namespace ProjectHero.Core.Input
             }
 
             // 2. Check for Ground Click
+            if (SuppressWorldClicks) return;
+
             if (UnityEngine.Physics.Raycast(ray, out RaycastHit groundHit, 100f, groundLayer))
             {
                 OnGroundClick?.Invoke(groundHit.point);

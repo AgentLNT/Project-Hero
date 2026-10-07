@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ProjectHero.Logic.Actions;
+using ProjectHero.Logic.AI;
 using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Damage;
@@ -184,7 +185,18 @@ namespace ProjectHero.Logic.Simulation
         private readonly BattleRuntimeInputs _runtimeInputs;
         private readonly BattleSimulationAssembly _assembly;
         private readonly IFactionRelationResolver _factionResolver;
-        private readonly IReadOnlyDictionary<ControllerId, IReadOnlyList<UnitId>> _controllerToUnitIds;
+
+        /// <summary>
+        /// <c>ControllerId -&gt; UnitId 集合</c>的<strong>唯一事实</strong>（构造期由
+        /// <c>BattleInitializer.ControllerToUnitIds</c> 填入）。
+        ///
+        /// 它<strong>不</strong>是只读的容器：装配方可以经
+        /// <see cref="RegisterControllerBinding"/> 追加一条绑定，但那条路径
+        /// <strong>只复制</strong>同一份映射（不新建第二份控制权真值）——
+        /// 命令入口（<see cref="CommandAuthority"/>）、窗口提交授权（<c>TurnWindowManager</c>）
+        /// 与审计视图（<see cref="ControllerOf"/>）读的都是这里。
+        /// </summary>
+        private readonly Dictionary<ControllerId, IReadOnlyList<UnitId>> _controllerToUnitIds;
 
         /// <summary>
         /// 已验证定义<strong>声明</strong>被某个 <c>ControllerBinding</c> 控制的 UnitId 集合
@@ -267,6 +279,29 @@ namespace ProjectHero.Logic.Simulation
         private readonly IActionPlanStartCommitPort _startCommitPort;
         private readonly ActionPlanTerminalArchiveSource _terminalArchiveSource;
         private readonly ActionPlanCommandProcessor _planCommandProcessor;
+
+        /// <summary>
+        /// 任务 09（产出 6）：<strong>唯一</strong>的命令入口处理器。阶段 6 只调用它，
+        /// 所有来源（玩家 / AI / 旧壳 / 系统）先经 <see cref="CommandAuthority"/> 的
+        /// <c>ControllerId -&gt; UnitId</c> 控制权校验，再路由到排程 / 反应 / 窗口端口。
+        /// 它<strong>不</strong>是第二套排程实现：三个端口都指向本场既有的权威对象。
+        /// </summary>
+        private readonly BattleCommandProcessor _commandProcessor;
+
+        /// <summary>任务 09（产出 6/7）：控制权校验的唯一入口。</summary>
+        private readonly CommandAuthority _commandAuthority;
+
+        /// <summary>任务 09（产出 4）：UI/AI 共用的唯一目标资格查询面。</summary>
+        private readonly TargetCandidateQuery _targetCandidateQuery;
+
+        /// <summary>
+        /// 任务 09（产出 6）：<c>ControllerId -&gt; UnitId</c> 集合的权威投影
+        /// （唯一装配路径 = 已验证定义里的 <c>ControllerBinding</c>）。
+        /// </summary>
+        private readonly ControllerUnitAuthority _controllerUnitAuthority;
+
+        /// <summary>任务 09（产出 7）：反应命令的唯一处理路径（任务 05 的 <c>ReactionPlanner</c> 命令面）。</summary>
+        private readonly ReactionCommandPlanner _reactionCommandPlanner;
 
         /// <summary>
         /// 任务 05：机会绑定的终态清理参与者。它在统一协调器里<strong>唯一</strong>负责
@@ -432,7 +467,14 @@ namespace ProjectHero.Logic.Simulation
             _runtimeInputs = initialization.RuntimeInputs;
             _assembly = assembly;
             _factionResolver = initialization.FactionResolver;
-            _controllerToUnitIds = initialization.ControllerToUnitIds;
+            // 任务 09（产出 4）：UI/AI 共用的唯一目标资格查询面 —— 直接引用整场唯一的
+            // 关系解析器实例（与决策快照上的那个是同一个），绝不复制关系矩阵。
+            _targetCandidateQuery = new TargetCandidateQuery(_factionResolver);
+            // 复制的唯一理由：装配方可能经 RegisterControllerBinding 追加绑定（见方法注释），
+            // 而 initialization 的结果是只读集合。这不是"第二份控制权真值"——
+            // 它是同一份映射的唯一可变容器，命令入口/窗口授权/审计视图都只读它。
+            _controllerToUnitIds = new Dictionary<ControllerId, IReadOnlyList<UnitId>>(
+                initialization.ControllerToUnitIds);
             _idGenerator = initialization.IdGenerator;
             _rng = new DeterministicRng(runtimeInputs.InitialRngSeed);
             _gateway = new CommandGateway(_sequences, assembly.PayloadAuthorizer);
@@ -584,9 +626,15 @@ namespace ProjectHero.Logic.Simulation
             // 控制权注册：唯一来源是已验证定义里的 ControllerBinding（与阵营/胜负/目标资格正交）。
             // 没有这一步，窗口的提交授权与并发激活都会以 WINDOW_ISSUER_CANNOT_CONTROL_UNIT
             // 拒绝一切带账本效果的显式排程编辑——那是"没接线"，不是"权限模型生效"。
+            //
+            // 任务 09（产出 6）：同一份投影同时填入命令入口的**唯一**控制权权威
+            // （ControllerId -> UnitId 集合）。它是"载荷里的单位 ID 只表达意图目标、不证明权限"
+            // 的执行点：发行者身份只来自入口绑定。
+            _controllerUnitAuthority = new ControllerUnitAuthority();
             foreach (KeyValuePair<ControllerId, IReadOnlyList<UnitId>> controllerBinding in _controllerToUnitIds)
             {
                 IReadOnlyList<UnitId> controlled = controllerBinding.Value;
+                _controllerUnitAuthority.Register(controllerBinding.Key, controlled);
                 if (controlled == null) continue;
                 for (int i = 0; i < controlled.Count; i++)
                     _windowManager.RegisterControllerBinding(controllerBinding.Key, controlled[i]);
@@ -706,7 +754,23 @@ namespace ProjectHero.Logic.Simulation
             };
 
             // 反应命令是阶段 6 的一部分：处理器只把已冻结命令转给系统，绝不重建机会或推导 Tick。
-            _planCommandProcessor.ReactionCommandHandler = HandleReactionCommand;
+            // 任务 09（产出 7）：唯一实现改由 ReactionCommandPlanner 承担——它同时是
+            // CommandAuthority 的 IReactionCommandUnitSource（用同一个权威机会解析防御者），
+            // 因此"控制权校验"与"计划创建"读的是**同一个**机会对象，不存在两份机会视图。
+            _reactionCommandPlanner = new ReactionCommandPlanner(_reactionSystem, definition)
+            {
+                PlanCreatedSink = (plan, tick) => _reactionSystem.EmitPlanCreated(plan, tick)
+            };
+            // 兼容面：直接调用 ActionPlanCommandProcessor 的既有装配（任务 05/06 夹具）仍能路由反应，
+            // 且路由到**同一个** planner —— 不存在第二份反应载荷解析实现。
+            _planCommandProcessor.ReactionCommandHandler =
+                (envelope, tick) => _reactionCommandPlanner.ProcessAuthorized(envelope, tick, _batchBaseScheduleRevision);
+
+            // 任务 09（产出 9/10）：AI 的两个**只读**端口。
+            // 它们只投影公开事实与只读查询，不暴露机会系统/注册表的任何写入面；
+            // 装配方把它们注入 AiControllerLogic 即可让 AI 观察已公开机会与权威计划。
+            AiReactionOpportunities = new ReactionOpportunityPort(_reactionSystem, _logicGrid);
+            AiActionPlanLookup = new ActionPlanLookupPort(_scheduleAuthority);
 
             // 窗口命令（关窗 / 并发行动激活）走同一条冻结命令批处理路径：
             // 身份来自命令网关绑定的 ControllerId，窗口来自 scope 的 ExpectedWindowId，
@@ -719,6 +783,41 @@ namespace ProjectHero.Logic.Simulation
             {
                 EmitPlanCreatedEvents(result, tick);
                 TerminateRemovedPlans(result, tick);
+            };
+
+            // —— 任务 09（产出 6/7）：唯一命令入口的装配 ——
+            //
+            // 阶段 6 从此只调用 _commandProcessor；控制权校验的唯一实现是 CommandAuthority，
+            // 它读的是本场**已验证定义**里的 ControllerBinding 投影（与阵营关系正交）。
+            // 三个端口都指向本场既有权威对象，因此不存在"按来源分叉的第二套处理路径"：
+            //   排程 ⇒ 同一个 ActionPlanCommandProcessor（内部仍是唯一的 ScheduleEditor 事务）
+            //   窗口 ⇒ 同一个 ActionPlanCommandProcessor（内部仍是任务 07 的窗口权威）
+            //   反应 ⇒ 同一个 ReactionCommandPlanner（内部仍是唯一的 ReactionOpportunitySystem）
+            _commandAuthority = new CommandAuthority(_controllerUnitAuthority, _reactionCommandPlanner);
+            // 计划所有者解析端口：Move/Remove 的控制权判据是"计划自己的所有者"，
+            // 因此"用别人的计划 ID 顶替自己单位的编辑"在控制权这一步就被拦住。
+            _commandAuthority.PlanOwnerResolver = planId =>
+            {
+                ActionPlan plan = _scheduleAuthority.Registry.Find(planId);
+                return plan == null ? (UnitId?)null : plan.OwnerUnitId;
+            };
+            // 并发行动的作用单位由装配方给出的权威主角唯一决定（未配置 ⇒ 保持任务 07 的
+            // INVALID_CONCURRENT_ACTOR 语义，本类不替它猜一个"玩家单位"）。
+            if (assembly.ConcurrentHeroUnitId.HasValue)
+                _commandAuthority.ConcurrentActionUnitResolver = () => _concurrentAction.HeroUnitId;
+
+            _commandProcessor = new BattleCommandProcessor(_commandAuthority)
+            {
+                // 三个端口都是按载荷判别分派的适配器：反应载荷不可能被窗口端口二次解释，
+                // 窗口载荷也不可能落进排程端口。前两者绑定**同一个**
+                // ActionPlanCommandProcessor 实例（方法组绑定，因此端口的 Target 就是那个实例），
+                // 因此"排程与窗口只有一套实现"是可观察事实而不是注释承诺。
+                ScheduleEditSink = new PayloadRoutedCommandPort(
+                    CommandScopeKind.ScheduleEdit, _planCommandProcessor.ProcessAuthorized),
+                WindowSink = new PayloadRoutedCommandPort(
+                    CommandScopeKind.Window, _planCommandProcessor.ProcessAuthorized),
+                ReactionSink = new PayloadRoutedCommandPort(
+                    CommandScopeKind.Reaction, _reactionCommandPlanner.ProcessAuthorized)
             };
 
             // Dodge 终态接缝：只读闭包查询 + 统一终态提交；换位事务端口由任务 06/08 注入。
@@ -812,6 +911,101 @@ namespace ProjectHero.Logic.Simulation
 
         // —— 只读观察面（不含任何写接口）——
 
+        /// <summary>
+        /// 任务 09（产出 6）：<strong>唯一</strong>的命令入口处理器（只读暴露；诊断与测试用）。
+        /// 它在阶段 6 被调用，是所有来源的唯一处理路径。
+        /// </summary>
+        public BattleCommandProcessor CommandProcessor => _commandProcessor;
+
+        /// <summary>
+        /// 任务 09（产出 6）：控制权校验的唯一入口（只读暴露）。
+        /// 玩家 / AI / 旧壳 / 系统走<strong>同一条</strong>判定。
+        /// </summary>
+        public CommandAuthority CommandAuthority => _commandAuthority;
+
+        /// <summary>
+        /// 任务 09（产出 7）：反应命令的<strong>唯一</strong>处理路径（只读暴露）。
+        /// 它同时实现 <see cref="IReactionCommandUnitSource"/>，因此控制权校验与计划创建
+        /// 读的是同一个权威机会对象。
+        /// </summary>
+        public ReactionCommandPlanner ReactionCommandPlanner => _reactionCommandPlanner;
+
+        /// <summary>
+        /// 任务 09（产出 4）：UI 与 AI 共用的**唯一**目标资格查询面。
+        /// 它引用整场唯一的 <see cref="IFactionRelationResolver"/> 实例
+        /// （与 <see cref="LastDecisionSnapshot"/> 上的那个是同一个），不复制任何关系矩阵。
+        /// </summary>
+        public TargetCandidateQuery TargetCandidates => _targetCandidateQuery;
+
+        /// <summary>
+        /// <strong>控制权绑定的追加装配点</strong>：把一条
+        /// <c>ControllerId -&gt; UnitId 集合</c>绑定登记进本场<strong>同一份</strong>控制权事实。
+        ///
+        /// 为什么需要它（而不是"再挂一个 WindowManager 的登记"）：
+        /// <list type="bullet">
+        /// <item>控制权有两个消费者，且<strong>必须</strong>读同一份事实——命令入口的
+        /// <see cref="CommandAuthority"/>（"发行者能否控制载荷涉及的单位"，任务 09 产出 6）
+        /// 与窗口的提交授权（<c>TurnWindowManager.CanControl</c>，任务 07）。</item>
+        /// <item>只登记其中之一会让两条授权面<strong>漂移</strong>：命令被入口拒绝、
+        /// 或窗口放行而入口不放行，两种都是"没接线"，不是"权限模型生效"。</item>
+        /// <item>已验证定义（<c>ControllerBinding</c>）是生产装配的唯一来源，但
+        /// <strong>它不是唯一可能的来源</strong>：装配方可以用一个定义变体把新单位带进战场
+        /// （例如任务 04 的目标外阵营槽位——"不被任何外部入口控制"是该变体的显式设计事实），
+        /// 然后为它声明一个新的控制事实。定义对象本身不可变，因此需要这个显式端口。</item>
+        /// </list>
+        ///
+        /// 它与 <c>CommandIngress.RegisterExternalEntry</c>（"为某入口注册"）配对：
+        /// 本方法是"为某控制者登记它控制的单位"，二者都不允许外部自封
+        /// <c>System</c> 来源、都拒绝非法 <c>ControllerId</c>。
+        ///
+        /// <strong>重复调用 = 并集（幂等）</strong>，与
+        /// <c>TurnWindowManager.RegisterControllerBinding</c> 的既有契约一致：
+        /// 已登记的控制者可以<b>追加</b>新单位（例如某入口先控制槽位 A、稍后接管槽位 B），
+        /// 每个单位只登记一次、最终集合按 <c>UnitId</c> 升序，因此"重复登记"不会产生
+        /// 第二份真值或顺序分歧。空集合不覆盖已登记的非空集合（防手滑清空权威）。
+        ///
+        /// <strong>不变量</strong>：同一个单位不得被两个不同控制者绑定
+        /// （<c>STEP_OCCUPANCY_CONTROLLER_CONTRADICTION</c> 仍由 <see cref="ControllerOf"/>
+        /// 在 Step 时抛出，因此调用方无法用本方法绕过该判定）。
+        /// </summary>
+        /// <param name="controllerId">发行者身份（必须通过定义 ID 格式校验）。</param>
+        /// <param name="unitIds">该控制者新增控制的单位集合（null / 空集合 = 不新增）。</param>
+        public void RegisterControllerBinding(ControllerId controllerId, IReadOnlyList<UnitId> unitIds)
+        {
+            // 与 CommandIngress.Register / BattleInitializer 完全相同的两道前置校验：
+            // "外部不得自封系统来源"与"ControllerId 必须合法"。
+            if (controllerId.Value == SystemControllerId)
+            {
+                throw new LogicDefinitionException(
+                    CommandCodes.EXTERNAL_INGRESS_SYSTEM_SOURCE_REJECTED, controllerId.Value);
+            }
+            if (DefinitionIdValidation.ValidateFormat(controllerId.Value) != null)
+            {
+                throw new LogicDefinitionException(
+                    CommandCodes.COMMAND_INGRESS_CONTROLLER_INVALID, controllerId.Value ?? "<null>");
+            }
+
+            IReadOnlyList<UnitId> existing = _controllerUnitAuthority.ControlledUnitsOf(controllerId);
+            if (existing.Count == 0 && (unitIds == null || unitIds.Count == 0)) return;
+
+            var union = new List<UnitId>(existing.Count + (unitIds?.Count ?? 0));
+            for (int i = 0; i < existing.Count; i++) union.Add(existing[i]);
+            if (unitIds != null)
+            {
+                for (int i = 0; i < unitIds.Count; i++) union.Add(unitIds[i]);
+            }
+            union.Sort((a, b) => a.Value.CompareTo(b.Value));
+
+            // 三处写的是同一份事实：命令入口的控制权权威、窗口的提交授权、审计视图的映射。
+            _controllerUnitAuthority.Register(controllerId, union);
+            for (int i = 0; i < union.Count; i++)
+            {
+                _windowManager.RegisterControllerBinding(controllerId, union[i]);
+                _controllerDeclaredUnitIds.Add(union[i].Value);
+            }
+            _controllerToUnitIds[controllerId] = union.ToArray();
+        }
+
         /// <summary>首个 Step 之前的初始规范化哈希（在创建时冻结，之后不再变化）。</summary>
         public ulong InitialStateHash { get; }
 
@@ -872,6 +1066,14 @@ namespace ProjectHero.Logic.Simulation
         public long BatchBaseScheduleRevision => _batchBaseScheduleRevision;
 
         /// <summary>
+        /// 本场<strong>已验证</strong>的战斗定义（只读；唯一权威动作表与规则值的来源）。
+        ///
+        /// 任务 09（产出 17）：决策快照通过它暴露"与命令层同一个 <c>ActionSet</c>"，
+        /// 因此 AI 与玩家的理论动作可用性不可能来自两份动作表。
+        /// </summary>
+        public BattleDefinition Definition => _definition;
+
+        /// <summary>
         /// 本场战斗<strong>唯一</strong>的全局动作排程权威（注册表 + 全部 Lane + <c>ScheduleRevision</c>）。
         /// 它是只读观察入口：写入口全部是 <c>internal</c>，只能在 <c>ProjectHero.Logic</c> 内调用。
         /// </summary>
@@ -895,7 +1097,26 @@ namespace ProjectHero.Logic.Simulation
         /// </summary>
         public TurnWindowManager WindowManager => _windowManager;
 
-        /// <summary>任务 07：当前窗口（未打开时为 null）；只读观察用。</summary>
+        /// <summary>
+        /// 任务 09（产出 9/10）：<strong>AI 的反应候选观察面</strong>——把本场唯一机会系统的
+        /// <strong>已公开且仍开放</strong>的选项投影成 AI 层自己的只读值对象。
+        ///
+        /// 它<strong>只</strong>投影公开事实（开放状态、公开标志、逐选项截止、Dodge 的已公布逻辑
+        /// 目的格），<strong>不</strong>暴露机会系统本身，因此 AI 无法用它创建机会、推导 TriggerTick
+        /// 或直接调 <c>TryAcceptById</c>。装配方把它注入 <c>AiControllerLogic</c> 即可。
+        /// </summary>
+        public AI.IAiReactionOpportunitySource AiReactionOpportunities { get; }
+
+        /// <summary>
+        /// 任务 09（产出 9）：<strong>AI 的只读计划检索面</strong>——只暴露权威计划的只读查询
+        /// （<c>FindPlan</c> / <c>ActivePlansOf</c>），<strong>不</strong>暴露注册表的写入与生命周期方法。
+        /// <c>Move</c> 候选靠它取得 <c>IMovementPathCalculator.Recompute</c> 的输入。
+        /// </summary>
+        public AI.IAiActionPlanLookup AiActionPlanLookup { get; }
+
+        /// <summary>
+        /// 任务 07：当前窗口（未打开时为 null）；只读观察用。
+        /// </summary>
         public TurnWindow CurrentTurnWindow => _windowManager.CurrentWindow;
 
         /// <summary>任务 07：该单位当前的肾上腺素账本（不存在时为 null）；只读观察用。</summary>
@@ -1290,6 +1511,10 @@ namespace ProjectHero.Logic.Simulation
             // 19. 只读不变量检查 → 归档 → 增量摘要 → EventBatch 与规范化 Snapshot
             _trace.Enter(StepPhase.InvariantCheckArchiveAndOutput);
             _tick = tick;
+            // 任务 09 A 流（产出 5）：命令入口的"当前 Tick"只由唯一模拟入口推进，
+            // 因此设备输入/AI 的默认投递目标（CurrentTick + CommandIngressLeadTicks）
+            // 不可能落到一个已经被冻结过的 Tick 上。
+            _ingress.AdvanceCurrentTick(tick);
             // 排程修订号的镜像只在 Step 收尾同步：阶段 5 的基线断言要求阶段 0–4
             // 观察到的是本 Tick 冻结时的值，而阶段 6/7 的提交必须对快照可见。
             SyncScheduleRevision();
@@ -1772,10 +1997,14 @@ namespace ProjectHero.Logic.Simulation
             }
 
             // 处理器严格按 CommandSequence 执行（Envelopes 已是规范顺序）。
-            // 任务 05 起：排程编辑由权威 ScheduleEditor 事务处理，其余载荷委托给装配处理器。
+            // 任务 09（产出 6）：阶段 6 只有**一个**入口 —— BattleCommandProcessor。
+            // 它在任何载荷处理之前先用权威 ControllerId -> UnitId 集合校验发行者能控制
+            // 其涉及的单位，然后把已授权的载荷路由到排程 / 反应 / 窗口三个端口；
+            // 排程仍由唯一的 ScheduleEditor 事务写入，不存在第二套排程路径。
             _planCommandProcessor.BeginTick();
+            _commandProcessor.BeginTick();
             IReadOnlyList<CommandRejectionRecord> processorRejections =
-                _planCommandProcessor.ProcessOrdered(set.Envelopes, tick, _batchBaseScheduleRevision);
+                _commandProcessor.ProcessOrdered(set.Envelopes, tick, _batchBaseScheduleRevision);
 
             // 阶段 6 末：反应选项截止。判定条件是 tick > ResponseDeadlineTick，因此
             // "截止 Tick 的命令阶段仍然可以接受"（含端点），过期事件恰好在命令阶段之后、
@@ -2040,28 +2269,14 @@ namespace ProjectHero.Logic.Simulation
             }
         }
 
+        /// <summary>
+        /// 反应命令的处理入口已唯一化为 <see cref="ReactionCommandPlanner"/>
+        /// （任务 09 产出 7）：本类<strong>不再</strong>保留第二份反应载荷解析实现。
+        /// 控制权校验用的 <see cref="IReactionCommandUnitSource"/> 与计划创建读的是
+        /// <strong>同一个</strong>权威机会对象。
+        /// </summary>
         private string HandleReactionCommand(CommandEnvelope envelope, long tick)
-        {
-            if (envelope?.Request == null) return CommandCodes.COMMAND_REQUEST_NULL;
-            if (!(envelope.Request.Scope is ReactionCommandScope scope)) return CommandCodes.SCOPE_PAYLOAD_MISMATCH;
-            if (!(envelope.Request.Payload is ReactionCommandPayload payload)) return CommandCodes.SCOPE_PAYLOAD_MISMATCH;
-
-            // 载荷种类必须与动作定义一致（Dodge 只能提交 Dodge，Block 只能提交 Block）。
-            ActionSpec spec = _definition.FindAction(payload.ReactionActionSpecId);
-            if (spec == null) return ActionPlanCodes.ACTION_PLAN_SPEC_NOT_FOUND;
-            bool isDodge = spec.Type == ActionType.Dodge;
-            if (spec.Type != ActionType.Block && !isDodge) return ReactionCodes.REACTION_ACTION_NOT_BLOCK_OR_DODGE;
-            if (isDodge != (payload.ReactionKind == ReactionCommandKind.Dodge))
-                return ReactionCodes.REACTION_ACTION_NOT_BLOCK_OR_DODGE;
-
-            string error = _reactionSystem.TryAcceptByIdWithCommandSequence(
-                scope.ReactionOpportunityId, payload.ReactionActionSpecId, envelope.CommandSequence, tick,
-                isDodge ? payload.DodgeDestination : null, out ActionPlan plan);
-            if (error != null) return error;
-
-            _reactionSystem.EmitPlanCreated(plan, tick);
-            return null;
-        }
+            => _reactionCommandPlanner.ProcessAuthorized(envelope, tick, _batchBaseScheduleRevision);
 
         /// <summary>按 <c>UnitId -&gt; StartTick -&gt; ActionPlanId</c> 稳定枚举本 Tick 到期、仍为 Editable 的普通计划。</summary>
         private List<ActionPlan> CollectDueEditablePlans(long tick)
@@ -3212,18 +3427,66 @@ namespace ProjectHero.Logic.Simulation
             _windowManager.FinalizeRequestedClose(tick);
         }
 
+        /// <summary>
+        /// 阶段 18：把<strong>按 Controller 过滤</strong>的只读决策快照投递给每个观察者。
+        ///
+        /// 任务 09（产出 17）冻结的投递口径：
+        /// <list type="number">
+        /// <item>Canonical 快照只构建一次（它<strong>不</strong>是给某个 Controller 看的视图，
+        /// 而是全部权威状态的投影；开发者哈希面仍由 <see cref="LogicSnapshot"/> 承担）；</item>
+        /// <item><see cref="IDecisionObserver.ObserverControllerId"/> 声明本观察者代表的受信
+        /// Controller；为 <c>null</c> 的诊断观察者收到 Canonical 实例（<strong>同一实例</strong>，
+        /// 因此既有"观察者与模拟读数是同一个快照"的断言不变）；</item>
+        /// <item>为具体 Controller 的观察者（AI 与任务 10 的玩家 UI）收到
+        /// <see cref="DecisionSnapshot.ForController"/> 的过滤结果——
+        /// 其他 Controller 尚未按玩法公开的 <c>Editable</c> 普通计划被整条剔除。</item>
+        /// </list>
+        /// </summary>
         private void DeliverDecisionSnapshot(long tick)
         {
             IReadOnlyList<IDecisionObserver> observers = _assembly.DecisionObservers;
             if (observers.Count == 0) return;
 
-            DecisionSnapshot snapshot = BuildDecisionSnapshot(tick);
-            _lastDecisionSnapshot = snapshot;
+            DecisionSnapshot canonical = BuildDecisionSnapshot(tick).WithDefinition(_definition);
             long nextTick = checked(tick + 1L);
             for (int i = 0; i < observers.Count; i++)
             {
-                observers[i]?.ObserveOrdered(snapshot, _ingress, nextTick);
+                IDecisionObserver observer = observers[i];
+                if (observer == null) continue;
+                DecisionSnapshot delivered = ResolveDecisionSnapshotFor(observer, canonical);
+                _lastDecisionSnapshot = delivered;
+                observer.ObserveOrdered(delivered, _ingress, nextTick);
             }
+        }
+
+        /// <summary>
+        /// 某个观察者应当收到的决策快照：诊断观察者（未声明 Controller）拿 Canonical 实例，
+        /// 受信 Controller 拿它自己的过滤视图。过滤只读，因此这里不可能写出任何权威状态。
+        /// </summary>
+        private DecisionSnapshot ResolveDecisionSnapshotFor(IDecisionObserver observer, DecisionSnapshot canonical)
+        {
+            Ids.ControllerId controllerId = observer.ObserverControllerId(canonical);
+            if (controllerId.Value == null) return canonical;
+
+            return canonical.ForController(
+                controllerId,
+                _controllerUnitAuthority.ControlledUnitsOf(controllerId),
+                OwnWindowSnapshotOf(controllerId));
+        }
+
+        /// <summary>
+        /// 该控制者当前窗口的<strong>只读快照</strong>（<c>null</c> = 它现在没有窗口）。
+        ///
+        /// 判据只有一条：当前窗口的拥有者单位<strong>属于该控制者</strong>。窗口何时打开、何时停止
+        /// 接收提交都是任务 07 的权威事实，这里只做投影，<strong>不</strong>据此放行任何命令。
+        /// </summary>
+        private TurnWindowSnapshot OwnWindowSnapshotOf(Ids.ControllerId controllerId)
+        {
+            TurnWindow window = _windowManager.CurrentWindow;
+            if (window == null) return null;
+            return _controllerUnitAuthority.CanControl(controllerId, window.OwnerUnitId)
+                ? ToWindowSnapshot(window)
+                : null;
         }
 
         // —— 唯一终态清理（幂等、固定顺序，不建第二套计划清理路径）——
@@ -3273,6 +3536,9 @@ namespace ProjectHero.Logic.Simulation
 
             _trace.Enter(StepPhase.InvariantCheckArchiveAndOutput);
             _tick = tick;
+            // 任务 09 A 流（产出 12）：战斗结束也是"本 Tick 已完成"，
+            // 入口的当前 Tick 必须同步前进，此后新命令一律在入口以 BATTLE_ALREADY_ENDED 稳定拒绝。
+            _ingress.AdvanceCurrentTick(tick);
             SyncScheduleRevision();
             StepResult result = BuildStepResult(tick, status);
             _finalSnapshot = result.Snapshot;
@@ -3467,6 +3733,37 @@ namespace ProjectHero.Logic.Simulation
                 _factionResolver);
 
         /// <summary>
+        /// 任务 09（产出 15）：<strong>AI 未来决策状态</strong>的规范化投影。
+        ///
+        /// 它是装配端口 <see cref="BattleSimulationAssembly.AiRuntimeStates"/> 的<strong>只读</strong>转发：
+        /// 未装配（本场没有 AI 控制者）时返回空集合——那是合法状态，不是"AI 没接线"。
+        /// 全部字段进哈希见 <c>LogicSnapshot</c> 的 <c>AiControllers</c> 段。
+        /// </summary>
+        private IReadOnlyList<AiControllerSnapshot> BuildAiControllerSnapshots()
+        {
+            IAiRuntimeStateSource source = _assembly.AiRuntimeStates;
+            if (source == null) return Array.Empty<AiControllerSnapshot>();
+
+            IReadOnlyList<AiControllerRuntimeState> states = source.CaptureRuntimeStatesOrdered();
+            if (states == null || states.Count == 0) return Array.Empty<AiControllerSnapshot>();
+
+            var projected = new List<AiControllerSnapshot>(states.Count);
+            for (int i = 0; i < states.Count; i++)
+            {
+                AiControllerRuntimeState state = states[i];
+                if (state == null) continue;
+                projected.Add(new AiControllerSnapshot(
+                    state.ControllerId ?? string.Empty,
+                    state.NextThinkTick,
+                    state.DecisionCount,
+                    state.LastDecisionTick,
+                    state.Rng));
+            }
+            projected.Sort((a, b) => string.CompareOrdinal(a.ControllerId, b.ControllerId));
+            return projected;
+        }
+
+        /// <summary>
         /// 任务 05：活动计划的规范化快照。<strong>唯一</strong>映射点在
         /// <c>ActionPlanSnapshot.From</c>；这里必须传入权威
         /// <see cref="IFactionRelationResolver"/>，否则 <c>PrimaryTargetRelation</c> 会退化为
@@ -3562,7 +3859,7 @@ namespace ProjectHero.Logic.Simulation
                 intentSnapshots,
                 BuildMovementSegmentSnapshots(),
                 BuildReservationSnapshots(),
-                Array.Empty<AiControllerSnapshot>(),
+                BuildAiControllerSnapshots(),
                 _ingress.CaptureSnapshot(),
                 _rng.CaptureSnapshot(),
                 _idGenerator.NextUnitIdValue,
@@ -3662,6 +3959,144 @@ namespace ProjectHero.Logic.Simulation
                     unitDefinition.ActionSetId,
                     state.IsAlive);
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// 任务 09（产出 9/10）：<strong>机会系统 → AI 只读投影</strong>的唯一适配器。
+        ///
+        /// 它<strong>只</strong>读机会的公开事实（开放/公开/逐选项截止），
+        /// 且<strong>不</strong>把机会系统本身交给 AI——因此"AI 直接调 <c>TryAcceptById</c>"
+        /// 或"AI 自己创建一个机会"在类型上不可达。
+        ///
+        /// Dodge 目的格的<strong>公布</strong>口径（首版，必须逐字遵守）：
+        /// <list type="number">
+        /// <item>候选格 = 权威 <c>LogicGrid.GetNeighborsOrdered(anchor)</c> 的规范序列
+        /// （<see cref="GridDirection"/> 0 → 11，已按边界与占位过滤）。</item>
+        /// <item>它是<strong>候选面</strong>而不是授权：目的格是否合法（占位、边界、目的格预留、
+        /// 位移允许、肾上腺素）的<strong>最终</strong>判定仍由命令处理时任务 06 的目的格预留权威
+        /// 与任务 07 的资源权威执行。</item>
+        /// <item>它<strong>不</strong>做距离/速度/权重估算——候选只来自规范邻居序列；</item>
+        /// <item>锚点不可得或邻居序列为空 ⇒ 公布<strong>空列表</strong>（fail-closed：
+        /// AI 于是不会提 Dodge，而不是随便挑一格）。</item>
+        /// </list>
+        /// </summary>
+        private sealed class ReactionOpportunityPort : AI.IAiReactionOpportunitySource
+        {
+            private readonly ReactionOpportunitySystem _opportunities;
+            private readonly LogicGrid _grid;
+
+            public ReactionOpportunityPort(ReactionOpportunitySystem opportunities, LogicGrid grid)
+            {
+                _opportunities = opportunities;
+                _grid = grid;
+            }
+
+            public IReadOnlyList<AI.AiOpportunityView> PublishedOpportunitiesFor(UnitId defenderUnitId, long tick)
+            {
+                var views = new List<AI.AiOpportunityView>();
+                if (_opportunities == null || !defenderUnitId.IsValid) return views;
+
+                IReadOnlyList<ReactionOpportunityRuntime> all = _opportunities.ActiveOpportunities;
+                for (int i = 0; i < all.Count; i++)
+                {
+                    ReactionOpportunityRuntime opportunity = all[i];
+                    if (opportunity == null) continue;
+                    if (opportunity.DefenderUnitId.Value != defenderUnitId.Value) continue;
+                    if (!opportunity.IsOpen) continue;
+
+                    AI.AiDodgeDestinationView dodge = null;
+                    var options = new List<AI.AiReactionOptionView>(opportunity.Options.Count);
+                    for (int o = 0; o < opportunity.Options.Count; o++)
+                    {
+                        ReactionOptionRuntime option = opportunity.Options[o];
+                        if (option == null || !option.IsPublished || !option.IsOpen) continue;
+                        bool isDodge = option.ReactionType == ActionType.Dodge;
+                        if (isDodge && dodge == null)
+                        {
+                            dodge = PublishDodgeDestinations(defenderUnitId);
+                        }
+                        // Block 绝不带目的格；Dodge 的目的格只能来自上面的公布列表。
+                        bool hasDestinations = dodge != null && dodge.Candidates.Count > 0;
+                        var view = new AI.AiReactionOptionView(
+                            opportunity.Id, option.ReactionActionSpecId,
+                            isDodge ? ReactionCommandKind.Dodge : ReactionCommandKind.Block,
+                            option.ResponseDeadlineTick, option.IsPublished, option.IsOpen,
+                            dodge?.Candidates ?? (IReadOnlyList<GridPoint>)Array.Empty<GridPoint>())
+                        {
+                            DestinationEligibility = isDodge
+                                ? (hasDestinations
+                                    ? AI.AiReactionDestinationEligibility.Eligible
+                                    : AI.AiReactionDestinationEligibility.Contradicted)
+                                : AI.AiReactionDestinationEligibility.NotApplicable
+                        };
+                        options.Add(view);
+                    }
+                    if (options.Count == 0) continue;
+                    options.Sort((a, b) => a.CompareStableKeyTo(b));
+                    views.Add(new AI.AiOpportunityView(
+                        opportunity.Id, opportunity.DefenderUnitId, opportunity.SourceAttackPlanId,
+                        opportunity.TriggerTick, options)
+                    {
+                        DodgeDestinations = dodge
+                    });
+                }
+
+                views.Sort((a, b) => a.ReactionOpportunityId.Value.CompareTo(b.ReactionOpportunityId.Value));
+                return views;
+            }
+
+            /// <summary>
+            /// 公布该防御者的 Dodge 目的格候选：权威 <c>LogicGrid.GetNeighborsOrdered(anchor)</c>
+            /// 的规范 12 向序列（已按边界与占位过滤）。它只读网格，零写入，
+            /// 也<strong>不</strong>做任何距离/速度/权重估算。
+            /// </summary>
+            private AI.AiDodgeDestinationView PublishDodgeDestinations(UnitId defenderUnitId)
+            {
+                if (_grid == null) return null;
+                if (!_grid.TryGetAnchor(defenderUnitId, out GridPoint anchor)) return null;
+
+                IReadOnlyList<GridPoint> neighbors = _grid.GetNeighborsOrdered(anchor);
+                var candidates = new List<GridPoint>(neighbors?.Count ?? 0);
+                for (int i = 0; i < (neighbors?.Count ?? 0); i++)
+                {
+                    GridPoint cell = neighbors[i];
+                    if (!_grid.Boundary.Contains(cell)) continue;
+                    candidates.Add(cell);
+                }
+
+                return new AI.AiDodgeDestinationView(anchor, candidates);
+            }
+        }
+
+        /// <summary>
+        /// 任务 09（产出 9）：<strong>权威计划注册表 → AI 只读检索面</strong>的唯一适配器。
+        /// 它只暴露 <c>Find</c> 与 <c>ActivePlans</c> 两个只读查询，因此 AI 无法经它写终态、
+        /// 删计划或推进修订号。
+        /// </summary>
+        private sealed class ActionPlanLookupPort : AI.IAiActionPlanLookup
+        {
+            private readonly ActionScheduleAuthority _authority;
+
+            public ActionPlanLookupPort(ActionScheduleAuthority authority) => _authority = authority;
+
+            public ActionPlan FindPlan(ActionPlanId actionPlanId)
+                => _authority?.Registry.Find(actionPlanId);
+
+            public IReadOnlyList<ActionPlan> ActivePlansOf(UnitId ownerUnitId)
+            {
+                var owned = new List<ActionPlan>();
+                if (_authority == null || !ownerUnitId.IsValid) return owned;
+
+                IReadOnlyList<ActionPlan> active = _authority.Registry.ActivePlans;
+                for (int i = 0; i < active.Count; i++)
+                {
+                    ActionPlan plan = active[i];
+                    if (plan == null) continue;
+                    if (plan.OwnerUnitId.Value != ownerUnitId.Value) continue;
+                    owned.Add(plan);
+                }
+                return owned;
             }
         }
     }

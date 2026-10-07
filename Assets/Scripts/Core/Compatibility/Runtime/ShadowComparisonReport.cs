@@ -285,6 +285,25 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public const string ShadowCheckpointTickMismatch = "SHADOW_CHECKPOINT_TICK_MISMATCH";
 
         public const string ShadowCheckpointWithoutCheckpointRun = "SHADOW_CHECKPOINT_WITHOUT_CHECKPOINT_RUN";
+
+        /// <summary>
+        /// 逐用例策略的开关与登记项自相矛盾（任务 09/C2b）。
+        ///
+        /// 触发条件：调用方在 <c>temporarilyUncomparable</c> 里传入了任务 08 画像的登记项
+        /// （<c>intents[…]</c> / <c>conflictGroups[…]</c> / <c>contacts[…]</c> /
+        /// <c>aiControllers[…]</c> / <c>stagedResolution.*</c>）却<strong>没有</strong>打开
+        /// <c>compareTask08ProfileFacts</c>。
+        ///
+        /// 为什么必须显式拒绝而不是"自动开启"或"静默退化"：
+        /// <list type="bullet">
+        /// <item>自动开启 = 用字符串 ID 猜调用方意图，"静默开启"与"静默关闭"是同一类缺陷；</item>
+        /// <item>静默退化 = 报告里出现 08 的登记项，却根本没有做 08 的逐条比较 ——
+        /// 这正是"用宽泛/空洞的登记制造假绿"的一种形态。</item>
+        /// </list>
+        /// 拒绝后策略进入既有拒绝通道（<c>report.Rejections</c>），因此
+        /// <c>CanClaimEquivalence</c> 恒为 false，等价声明不可能建立在自相矛盾的策略上。
+        /// </summary>
+        public const string ShadowPolicySwitchInconsistent = "SHADOW_POLICY_SWITCH_INCONSISTENT";
     }
 
     /// <summary>

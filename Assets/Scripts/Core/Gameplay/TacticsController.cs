@@ -1,5 +1,6 @@
 using UnityEngine;
 using ProjectHero.Authoring.Legacy;
+using ProjectHero.Core.Compatibility.Runtime.Input;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
@@ -9,6 +10,7 @@ using ProjectHero.Core.Input;
 using ProjectHero.Visuals;
 using ProjectHero.UI; // Added UI namespace
 using ProjectHero.UI.Timeline;
+using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Core.Gameplay
 {
@@ -32,6 +34,32 @@ namespace ProjectHero.Core.Gameplay
         public float BlockDuration = 1.0f; // Block window duration
         public float DodgeDuration = 0.5f; // Dodge window duration
 
+        // ─────────────────────────────────────────────────────────────────────
+        // 任务 09：本组件降级为**转发/适配**壳（裁定 R-9）。
+        //
+        // * 输入模式由 `ViewInputController` 持有：选择单位、选择动作、选择方向/目标、
+        //   取消手势、时间线放置/重排都是**视图状态**。
+        // * 本组件不再写旧 `InputManager.IgnoreUnitClicks` 布尔量；旧布尔量已删除。
+        // * 注入命令端口后（`InputController.HasPorts`），本组件**禁用**全部直接写逻辑的
+        //   旧捷径（旧时间线排程、直接 `unit.SetGridPosition`、直接改 `IsActing`）：
+        //   那些写入必须改为经唯一入口提交 `CommandRequest`（由任务 10 接线）。
+        // ─────────────────────────────────────────────────────────────────────
+        [Header("Task 09 输入模式（可空）")]
+        [Tooltip("注入后：选择/取消只是视图状态；未注入命令端口时保持旧 Legacy 行为（AssetScheduler 快捷路径）。")]
+        public ViewInputController InputController;
+
+        /// <summary>旧"直接写逻辑"的捷径是否仍然启用（仅当没有注入命令端口时为 true）。</summary>
+        public bool LegacyImmediateWritesEnabled => InputController == null || !InputController.HasPorts;
+
+        private void EnsureInputController()
+        {
+            if (InputController == null) InputController = new ViewInputController();
+            var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
+            if (timelineUI != null && timelineUI.InputController != null)
+                InputController.BindPorts(timelineUI.InputPorts);
+            if (InputManager.Instance != null) InputManager.Instance.InputController = InputController;
+        }
+
         private CombatUnit _selectedUnit;
         private Action _selectedAction; // New: Track selected action
         private bool _isMoveMode;
@@ -45,6 +73,8 @@ namespace ProjectHero.Core.Gameplay
 
         private void Start()
         {
+            EnsureInputController();
+
             if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
             if (Timeline == null)
             {
@@ -91,9 +121,16 @@ namespace ProjectHero.Core.Gameplay
             _isMoveMode = false;
             _planStep = PlanStep.Targeting;
             Debug.Log($"[Tactics] Selected Action: {action.Name}");
-            
-            // Enable targeting mode (ignore unit clicks)
-            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+
+            // 任务 09：进入"选择动作"模式（纯视图状态；不再写旧布尔量）。
+            //
+            // 这里**不**把旧 CombatUnit 映射成 UnitId：旧组件当前没有稳定的 Logic 单位标识，
+            // 而 GetInstanceID()/GetEntityId() 属于"对象地址/注册顺序"一类不稳定键
+            // （00 号规则 16 明确禁止其进入任何参与决策的路径）。
+            // 旧→Logic 的显式单位映射随任务 10 的适配器注入，
+            // 届时改为 InputController.SelectUnit(unitId)。
+            EnsureInputController();
+            InputController.SelectAction(action != null ? action.Name : string.Empty);
         }
 
         // Public API for UI to select Move mode
@@ -104,9 +141,8 @@ namespace ProjectHero.Core.Gameplay
             _isMoveMode = true;
             _planStep = PlanStep.Targeting;
             Debug.Log("[Tactics] Selected Move Mode");
-            
-            // Enable targeting mode (ignore unit clicks) to allow moving to tiles occupied by units
-            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+
+            EnsureInputController();
         }
 
         // Public API for UI to execute Block
@@ -267,7 +303,8 @@ namespace ProjectHero.Core.Gameplay
             if (_selectedAction != null || _isMoveMode)
             {
                 _planStep = PlanStep.Targeting;
-                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = true;
+                EnsureInputController();
+                InputController.EnterDirectionTargetSelection();
             }
             else
             {
@@ -283,9 +320,7 @@ namespace ProjectHero.Core.Gameplay
                 InputManager.Instance.OnGroundClick -= HandleGroundClick;
                 InputManager.Instance.OnGroundHover -= HandleGroundHover;
                 InputManager.Instance.OnCancel -= HandleCancel;
-                
-                // Reset flag
-                InputManager.Instance.IgnoreUnitClicks = false;
+                InputManager.Instance.InputController = null;
             }
         }
 
@@ -318,7 +353,8 @@ namespace ProjectHero.Core.Gameplay
                 _selectedAction = null;
                 _planStep = PlanStep.None;
 
-                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+                EnsureInputController();
+                InputController.CancelGesture();
                 return;
             }
 
@@ -327,7 +363,8 @@ namespace ProjectHero.Core.Gameplay
                 Debug.Log("[Tactics] Cancelled Move Mode");
                 _isMoveMode = false;
                 _planStep = PlanStep.None;
-                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+                EnsureInputController();
+                InputController.CancelGesture();
                 return;
             }
 
@@ -339,7 +376,9 @@ namespace ProjectHero.Core.Gameplay
 
                 if (UIManager.Instance != null) UIManager.Instance.OnUnitDeselected();
 
-                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+                // 任务 09：取消/清除选择只是视图状态——不写逻辑、不暂停执行。
+                EnsureInputController();
+                InputController.ClearSelection();
             }
         }
         private void HandleGroundHover(Vector3 worldPos)
@@ -412,6 +451,11 @@ namespace ProjectHero.Core.Gameplay
             ResetPlanningFlow(clearPlacement: true);
             Debug.Log($"[Tactics] Selected Unit: {unit.name}");
 
+            // 任务 09：把"选中"同步给输入模式状态机（纯视图状态）。
+            // 单位标识的显式映射随任务 10 注入（见 SelectAction 处的说明），
+            // 此处不构造任何不稳定键。
+            EnsureInputController();
+
             // Notify UI (this also sets PlayerUnit on the timeline UI)
             if (UIManager.Instance != null)
             {
@@ -444,7 +488,9 @@ namespace ProjectHero.Core.Gameplay
                 }
             }
 
-            if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+            // 任务 09：清除规划流是纯视图回退（不再写旧布尔量）。
+            EnsureInputController();
+            InputController.CancelGesture();
             if (Cursor != null) Cursor.Hide();
         }
 
@@ -480,6 +526,15 @@ namespace ProjectHero.Core.Gameplay
                 var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
                 if (timelineUI == null)
                 {
+                    // 任务 09：注入命令端口后**禁止**直接排程逻辑动作。
+                    // 攻击计划必须经 ScheduleEdit 的 AddOrdinaryPlanOperation 提交（任务 10 接线）。
+                    if (!LegacyImmediateWritesEnabled)
+                    {
+                        Debug.LogWarning(
+                            "[Tactics] 已注入命令端口：拒绝直接排程攻击。请经 CommandRequest(ScheduleEdit/AddOrdinaryPlan) 提交。");
+                        return;
+                    }
+
                     Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Attack.");
                     var dirNow = GridMath.GetDirection(_selectedUnit.GridPosition, targetGridPos);
                     ActionScheduler.ScheduleAttack(Timeline, _selectedUnit, _selectedAction, 0f, dirNow);
@@ -519,9 +574,10 @@ namespace ProjectHero.Core.Gameplay
 
                 // Do not clear selection here; clearing happens on placement commit.
                 if (Cursor != null) Cursor.Hide();
-                
-                // Reset targeting mode
-                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+
+                // Reset targeting mode（纯视图状态）
+                EnsureInputController();
+                InputController.EnterDirectionTargetSelection();
             }
             else
             {
@@ -536,8 +592,9 @@ namespace ProjectHero.Core.Gameplay
                 _plannedTarget = targetGridPos;
                 IssueMoveCommand(_selectedUnit, targetGridPos);
 
-                // Reset targeting mode
-                if (InputManager.Instance != null) InputManager.Instance.IgnoreUnitClicks = false;
+                // Reset targeting mode（纯视图状态）
+                EnsureInputController();
+                InputController.EnterDirectionTargetSelection();
             }
         }
 
@@ -562,8 +619,15 @@ namespace ProjectHero.Core.Gameplay
 
             if (_isDodgeCounterMode)
             {
-                int distX = Mathf.Abs(unit.GridPosition.X - targetGridPos.X);
-                int distY = Mathf.Abs(unit.GridPosition.Y - targetGridPos.Y);
+                // 任务 09：注入命令端口后**禁止**直接写逻辑位置。
+                // Dodge 的换位只能由 Logic 在 TriggerTick 经统一事务提交
+                // （ReactionCommand(Dodge, 目的格) -> ReactionPlanner -> DodgeRelocationAuthority）。
+                if (!LegacyImmediateWritesEnabled)
+                {
+                    Debug.LogWarning(
+                        "[Tactics] 已注入命令端口：拒绝直接写单位位置。Dodge 换位必须由 Logic 在 TriggerTick 提交。");
+                    return;
+                }
 
                 var pathfinder = new Pathfinder();
                 var dodgePath = pathfinder.FindPath(unit.GridPosition, targetGridPos, unit.UnitVolumeDefinition, null);
@@ -601,6 +665,15 @@ namespace ProjectHero.Core.Gameplay
                 var timelineUI = UIManager.Instance != null ? UIManager.Instance.TimelineUI : null;
                 if (timelineUI == null)
                 {
+                    // 任务 09：注入命令端口后**禁止**直接置 IsActing 或直接排程移动。
+                    // 普通 Move 计划必须经 ScheduleEdit 的 AddOrdinaryPlanOperation 提交。
+                    if (!LegacyImmediateWritesEnabled)
+                    {
+                        Debug.LogWarning(
+                            "[Tactics] 已注入命令端口：拒绝直接排程移动。请经 CommandRequest(ScheduleEdit/AddOrdinaryPlan) 提交。");
+                        return;
+                    }
+
                     Debug.LogWarning("[Tactics] Timeline UI missing; falling back to immediate Move.");
                     unit.IsActing = true;
                     ActionScheduler.ScheduleMove(Timeline, unit, path);

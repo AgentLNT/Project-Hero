@@ -65,7 +65,32 @@ namespace ProjectHero.Logic.Timeline
 
         public const string SCHEDULE_PRIMARY_TARGET_REQUIRED = "SCHEDULE_PRIMARY_TARGET_REQUIRED";
         public const string SCHEDULE_PRIMARY_TARGET_DEAD = "SCHEDULE_PRIMARY_TARGET_DEAD";
-        public const string SCHEDULE_PRIMARY_TARGET_RELATION_REJECTED = "SCHEDULE_PRIMARY_TARGET_RELATION_REJECTED";
+
+        /// <summary>
+        /// <strong>唯一 <c>FactionRelationResolver</c> 给出的分类不在该 Attack 的
+        /// <c>AllowedTargetRelations</c> 内</strong>时的固定拒绝码（任务 09「必须产出」4）。
+        ///
+        /// 冻结口径：
+        /// <list type="bullet">
+        /// <item>三种失败<strong>分别</strong>以稳定原因拒绝——缺少目标 =
+        /// <see cref="SCHEDULE_PRIMARY_TARGET_REQUIRED"/>、目标不存在 =
+        /// <c>FACTION_RELATION_UNKNOWN_ID</c>、目标已死 = <see cref="SCHEDULE_PRIMARY_TARGET_DEAD"/>、
+        /// 关系不允许 = 本码；</item>
+        /// <item>它<strong>不</strong>做自动换目标：拒绝就是拒绝，绝不改选另一个"更像敌人"的单位；</item>
+        /// <item>它只由 <c>ActionPlanFactory.ValidatePrimaryTarget</c> 这一处实现产出
+        /// （创建、排程候选、启动门禁三处共用），因此不存在第二套关系判定。</item>
+        /// </list>
+        /// </summary>
+        public const string TARGET_RELATION_NOT_ALLOWED = "TARGET_RELATION_NOT_ALLOWED";
+
+        /// <summary>
+        /// <strong>已废弃别名</strong>：任务 05 冻结期的旧名，值已收敛到
+        /// <see cref="TARGET_RELATION_NOT_ALLOWED"/>（任务 09「必须产出」4 明确要求固定用该码）。
+        /// 保留常量只为不破坏 05/08 既有测试的编译；<strong>新代码一律使用</strong>
+        /// <see cref="TARGET_RELATION_NOT_ALLOWED"/>，两者恒等，不存在第二个关系判定。
+        /// </summary>
+        public const string SCHEDULE_PRIMARY_TARGET_RELATION_REJECTED = TARGET_RELATION_NOT_ALLOWED;
+
         public const string SCHEDULE_ACTION_NOT_IN_ACTION_SET = "SCHEDULE_ACTION_NOT_IN_ACTION_SET";
 
         // —— 锚点 ——

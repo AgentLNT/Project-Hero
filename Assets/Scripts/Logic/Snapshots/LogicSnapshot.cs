@@ -416,8 +416,32 @@ namespace ProjectHero.Logic.Snapshots
     /// <summary>Reservation 快照；归属于 ActionPlanId，没有独立 ReservationId。</summary>
     public sealed record ReservationSnapshot(long ActionPlanId, int X, int Y);
 
-    /// <summary>AI 决策时钟快照（任务 09 扩展 nextThinkTick 等未来决策状态）。</summary>
-    public sealed record AiControllerSnapshot(string ControllerId, long NextThinkTick);
+    /// <summary>
+    /// AI 决策者<strong>未来决策状态</strong>快照（任务 09「必须产出」15）。
+    ///
+    /// 冻结语义：
+    /// <list type="bullet">
+    /// <item>回放时 AI <strong>不</strong>载入记录的命令：它由相同初始输入与 RNG 从 Tick 0
+    /// <strong>重新生成</strong>。因此凡是"会影响未来 AI 决策"的状态都必须在这里，
+    /// 否则重演就会分叉。</item>
+    /// <item><see cref="ControllerId"/> 是<strong>权威身份</strong>（入口绑定的同一个字符串），
+    /// 集合按它做 Ordinal 升序排序；它不是可变计量。</item>
+    /// <item><see cref="NextThinkTick"/> 是"下一次允许决策的 Tick"；到点才决策，
+    /// 因此它同时证明"AI 不在同一 Tick 内重复抢跑"。</item>
+    /// <item><see cref="LastDecisionTick"/> 是最后一次<strong>已完成</strong>决策所属的快照 Tick
+    /// （从未决策 = <c>-1</c>），<see cref="DecisionCount"/> 是累计决策次数——
+    /// 两者共同让"本 Tick 是否已决策"可观察。</item>
+    /// <item><see cref="Rng"/> 是该 AI <strong>自己</strong>的版本化确定性 RNG 状态
+    /// （与模拟主 RNG 相互独立）；它是决策序列的直接输入，必须进哈希。</item>
+    /// <item>全部字段<strong>都</strong>参与规范化哈希：任一字段变化都改变摘要。</item>
+    /// </list>
+    /// </summary>
+    public sealed record AiControllerSnapshot(
+        string ControllerId,
+        long NextThinkTick,
+        long DecisionCount = 0L,
+        long LastDecisionTick = -1L,
+        RngSnapshot Rng = null);
 
     /// <summary>
     /// 规范化 <see cref="LogicSnapshot"/>（主方案 3.11.1 + 3.11.2）：覆盖<strong>全部会影响未来结果</strong>
@@ -983,8 +1007,16 @@ namespace ProjectHero.Logic.Snapshots
             encoder.WriteCount(aiControllers.Count);
             for (int i = 0; i < aiControllers.Count; i++)
             {
-                encoder.WriteString(aiControllers[i].ControllerId);
-                encoder.WriteInt64(aiControllers[i].NextThinkTick);
+                AiControllerSnapshot controller = aiControllers[i];
+                encoder.WriteString(controller.ControllerId);
+                encoder.WriteInt64(controller.NextThinkTick);
+                // 任务 09（产出 15）：AI 的未来决策状态整组进哈希——
+                // 决策计数、最后决策 Tick 与它自己的版本化 RNG 状态都直接决定后续决策，
+                // 少写一个就会让"相同初始输入 ⇒ 相同摘要"失效。
+                encoder.WriteInt64(controller.DecisionCount);
+                encoder.WriteInt64(controller.LastDecisionTick);
+                encoder.WriteInt32(controller.Rng?.AlgorithmVersion ?? 0);
+                encoder.WriteUInt64(controller.Rng?.State ?? 0UL);
             }
 
             // —— 命令入口（注册、每入口下一个/已冻结 ProducerOrdinal、未来 Tick 桶）——

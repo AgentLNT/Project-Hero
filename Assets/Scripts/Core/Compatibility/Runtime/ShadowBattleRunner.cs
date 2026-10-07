@@ -5,6 +5,7 @@ using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Events;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
+using ProjectHero.Logic.Replay;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Snapshots;
 using UnityEngine;
@@ -66,17 +67,23 @@ namespace ProjectHero.Core.Compatibility.Runtime
     /// <c>ControllerId</c>。它<strong>不含</strong>来源优先级、ProducerOrdinal、CommandSequence、
     /// 规则费用或反应 TriggerTick——那些只能由 Logic 侧的入口注册表派生
     /// （不变量 18、任务 03 §3.2）。
+    ///
+    /// 任务 09「必须产出」16 追加 <see cref="SubmittedAtTick"/>：镜像的是
+    /// 「入口接受的 <strong>Player</strong> 可信请求<strong>及其原始提交 Tick</strong>」，
+    /// 该 Tick 等于冻结批次的 Tick，是回放侧唯一的注入对齐键。
     /// </summary>
     public sealed class ShadowMirroredRequest
     {
         public ShadowMirroredRequest(
             Logic.Ids.ControllerId producerControllerId,
             Logic.Commands.CommandRequest request,
-            string origin)
+            string origin,
+            long submittedAtTick = -1L)
         {
             ProducerControllerId = producerControllerId;
             Request = request;
             Origin = origin ?? string.Empty;
+            SubmittedAtTick = submittedAtTick;
         }
 
         /// <summary>镜像自哪个已注册入口（注册表按 <c>ControllerId</c> 索引）。</summary>
@@ -85,6 +92,12 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public Logic.Commands.CommandRequest Request { get; }
 
         public string Origin { get; }
+
+        /// <summary>
+        /// 该请求的<strong>原始提交 Tick</strong>（= 记录它的冻结批次 Tick）；
+        /// <c>-1</c> 表示镜像来源没有提供这条事实（非权威镜像路径）。
+        /// </summary>
+        public long SubmittedAtTick { get; }
     }
 
     /// <summary>空输入镜像：只有空 Tick（03B 的基线等价性用例）。</summary>
@@ -119,6 +132,12 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public const int MaxCatchUpStepsPerFrame = 4096;
 
         /// <summary>
+        /// 同一条入口事实被镜像<strong>两次</strong>（任务 09「必须产出」16 的"恰好一次"违规：
+        /// 同一玩家请求被注入两次会让新世界在同 Tick 抢跑并与重建结果分叉）。
+        /// </summary>
+        public const string SHADOW_MIRROR_DUPLICATE_INJECTION = "SHADOW_MIRROR_DUPLICATE_INJECTION";
+
+        /// <summary>
         /// 固定逻辑 Tick 时长（60 Tick/秒，与任务 03 的固定步长一致）。
         ///
         /// 只用于 <see cref="AdvanceByDelta"/> 这条**退化路径**（旧侧观测来源不可用时）；
@@ -135,6 +154,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private BattleRuntimeContext _context;
         private BattleSimulationSeed _seed;
         private IShadowMirroredInputSource _mirror;
+        private ReplayAuthorityInput _authorityInput;
+        private readonly HashSet<string> _mirroredFactKeys = new HashSet<string>(StringComparer.Ordinal);
         private ShadowComparisonConfig _configuration = ShadowComparisonConfig.Default();
         private BattleSimulation _simulation;
         private float _accumulator;
@@ -233,6 +254,48 @@ namespace ProjectHero.Core.Compatibility.Runtime
             BudgetCheckpointLimit = _configuration.MaxCheckpoints;
         }
 
+        /// <summary>
+        /// 任务 09「必须产出」16：显式注入<b>回放权威输入记录器</b>。
+        ///
+        /// 注入之后每一步都在<strong>唯一模拟入口</strong>内按同一口径收口：
+        /// <c>Step</c> 之前冻结批次之后记录权威事实、<c>Step</c> 之后按
+        /// 「登记 Envelope → 折叠事件 → 对未被拒者 <c>RecordAccepted</c>」三步收口
+        /// （见 <see cref="ShadowAuthorityProtocol"/>）。这样"镜像源"与"记录器"共享同一个事实来源，
+        /// 而不是由镜像源自己猜哪些请求是可信的。
+        /// </summary>
+        public void ConfigureAuthorityInput(ReplayAuthorityInput authorityInput)
+        {
+            _authorityInput = authorityInput;
+        }
+
+        /// <summary>
+        /// 本 runner 的权威输入记录器（未注入时为 <c>null</c>：独立世界中没有任何事实被记录）。
+        ///
+        /// 它与 <see cref="AttachMirror(ShadowPlayerRequestMirror)"/> 是交付物 16 的一对：
+        /// 记录器产出事实，镜像源消费事实。
+        /// </summary>
+        public ReplayAuthorityInput AuthorityInput => _authorityInput;
+
+        /// <summary>
+        /// 把「真实请求镜像」接到本 runner 上（交付物 16 的生产装配点）。
+        ///
+        /// 只接受 <see cref="ShadowPlayerRequestMirror"/>——它是唯一只含 Player 权威事实的
+        /// <see cref="IShadowMirroredInputSource"/>；AI/System 没有任何可传进来的形态
+        /// （它们的请求由新模拟按相同初始输入与 RNG 从 Tick 0 重建）。
+        /// </summary>
+        public void AttachMirror(ShadowPlayerRequestMirror mirror)
+        {
+            _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
+        }
+
+        /// <summary>
+        /// 当前镜像输入来源是不是「真实请求镜像」（生产路径装配证据；空镜像是 03B 基线）。
+        /// </summary>
+        public bool MirrorIsAuthorityMirror => _mirror is ShadowPlayerRequestMirror;
+
+        /// <summary>被镜像注入的入口事实条数（"恰好一次"的可观察读数；重复注入会直接失败）。</summary>
+        public int MirroredRequestCount => _mirroredFactKeys.Count;
+
         public void ConfigureCheckpoints(ShadowComparisonConfig configuration)
         {
             _configuration = configuration ?? ShadowComparisonConfig.Default();
@@ -245,6 +308,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             if (_mirror == null) _mirror = EmptyShadowMirroredInputSource.Instance;
+
+            // 权威输入记录器随上下文注入：本场每一次 Step 都由本 runner 在唯一模拟入口里收口。
+            _authorityInput = context.AuthorityInput;
 
             // 与 Bootstrap 共享同一份写入计数器：越界写入的拦截事实只有一个来源。
             _sharedWrites = context.ShadowWrites;
@@ -364,6 +430,11 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// <summary>
         /// 单个逻辑 Tick 的推进：镜像可信请求 → 冻结批次 → <c>Step</c> → 记录事件绑定与账本。
         /// 绝不读取旧对象、Unity 对象或表现反馈。
+        ///
+        /// 任务 09「必须产出」16：<strong>镜像面只含 Player</strong>（由
+        /// <see cref="ShadowPlayerRequestMirror"/> 从 <c>ReplayAuthorityInput.AuthorityCommands</c>
+        /// 交出）；AI/System 的请求不经过本方法——它们由新世界按相同初始输入与 RNG 从 Tick 0 重建。
+        /// 每条入口事实在整场战斗里<strong>只注入一次</strong>：同一规范键第二次出现即显式失败。
         /// </summary>
         private void StepOnce(long nextTick)
         {
@@ -379,12 +450,32 @@ namespace ProjectHero.Core.Compatibility.Runtime
                         throw new LogicDefinitionException(
                             "SHADOW_MIRROR_ENTRY_UNKNOWN",
                             request.ProducerControllerId.Value ?? "<null>");
-                    entry.Submit(request.Request);
+
+                    var rejection = entry.Submit(request.Request);
+                    if (rejection != null) continue;
+
+                    // "恰好一次"：入口接受 ⇒ 该事实占用一个 ProducerOrdinal。
+                    // 同一个 (ControllerId|ProducerOrdinal) 再次注入必然抢跑，直接失败而不是静默跳过。
+                    long producerOrdinal = entry.NextProducerOrdinal - 1L;
+                    string factKey = (request.ProducerControllerId.Value ?? string.Empty) + "|"
+                        + producerOrdinal.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    if (!_mirroredFactKeys.Add(factKey))
+                        throw new LogicDefinitionException(
+                            SHADOW_MIRROR_DUPLICATE_INJECTION,
+                            factKey + "@tick=" + nextTick.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 }
             }
 
             var batch = _simulation.CommandIngress.FreezeTick(nextTick);
+
+            // 权威输入收口（第一步，Step 之前）：记录本 Tick 冻结出的 Player 权威事实。
+            if (_authorityInput != null) ShadowAuthorityProtocol.RecordFrozenBatch(_authorityInput, batch);
+
             StepResult result = _simulation.Step(nextTick, batch);
+
+            // 权威输入收口（第二、三步，Step 之后）。
+            if (_authorityInput != null)
+                ShadowAuthorityProtocol.RecordOutcomes(_authorityInput, _simulation, nextTick, result);
 
             CaptureEventBinding(nextTick, result);
 
@@ -523,6 +614,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
             _stopped = false;
             _seed = null;
             _mirror = null;
+            _authorityInput = null;
+            _mirroredFactKeys.Clear();
             _simulation = null;
             _accumulator = 0f;
             LastStepDeficit = 0;

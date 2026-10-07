@@ -132,18 +132,34 @@ namespace ProjectHero.Authoring.Tests.Task05
         ///
         /// 变体定义<strong>故意</strong>不给第三槽位任何 <c>ControllerBinding</c>
         /// （"目标外单位不被任何外部入口控制"是 Task04 的显式契约），
-        /// 但本文件唯一使用它的用例需要一个"经玩家入口提交、且死亡不结束战斗"的计划拥有者，
-        /// 因此夹具<strong>显式</strong>把该单位的控制权登记给 player 入口，并为它打开脚本窗口
-        /// （窗口拥有者必须等于计划拥有者，否则该单位没有提交权）。
+        /// 但本文件唯一使用它的用例需要一个"有自己的窗口、且死亡不结束战斗"的计划拥有者，
+        /// 因此夹具<strong>显式</strong>把该单位的控制权登记给 <c>controller.enemy_ai</c>
+        /// 入口，并为它打开脚本窗口（窗口拥有者必须等于计划拥有者，否则该单位没有提交权）。
         /// 这是本用例的装配事实，不是对生产定义的修改。
+        ///
+        /// 【任务 09 口径】控制权登记必须与<strong>发行者身份</strong>一致：任务 09 的唯一命令入口
+        /// （<c>BattleCommandProcessor</c> → <c>CommandAuthority</c>）要求发行者能控制载荷涉及的单位。
+        /// 目标外单位（<c>UnitId(3)</c>）在变体定义里没有被任何入口控制，而本变体保留的
+        /// AI 入口（<c>controller.enemy_ai</c>）在其自身定义里只控制敌人槽位 ⇒ 把 outsider
+        /// 登记给它，就得到"一个控制者 = 一组互不冲突的单位"，本用例的提交因此合法。
+        /// 这<strong>不</strong>触碰任何冻结断言：作用单位、时序、事件与终态判据逐字未动，
+        /// 改变的只是"谁有权发行这条命令"。
         /// </summary>
         private static BattleSimulation NewOutsiderSim(BattleSimulationAssembly assembly)
         {
             BattleSimulation sim = Task04OutsiderVariant.NewSim(assembly);
             _fixtureSim = sim;
+            // 定义里声明的两个绑定：命令入口与窗口管理器在构造期已读到它们
+            // （见 BattleSimulation 的控制权注册），这里只为"未注册的入口"补登记，
+            // 因此只调窗口管理器的既有登记面（与前一版本逐字相同）。
             RegisterDefinitionControllerBindings(sim, Task04OutsiderVariant.EncounterWithOutsider());
-            sim.WindowManager.RegisterControllerBinding(
-                new ControllerId(T03.PlayerController), Task04OutsiderVariant.OutsiderUnitId);
+            // 目标外单位（UnitId(3)）在变体定义里没有被任何入口控制，本用例为它声明控制事实。
+            // 必须走 BattleSimulation.RegisterControllerBinding 这一条装配端口（窗口管理器的
+            // RegisterControllerBinding 本身是幂等的并集登记）：
+            // 它同时写入命令入口的控制权权威、窗口的提交授权与审计视图，
+            // 因此"命令阶段的控制权校验"与"窗口的提交授权"读的是同一份事实。
+            sim.RegisterControllerBinding(
+                new ControllerId(T03.EnemyAiController), new[] { Task04OutsiderVariant.OutsiderUnitId });
             OpenScriptWindow(sim, Task04OutsiderVariant.OutsiderUnitId);
             return sim;
         }
@@ -244,6 +260,24 @@ namespace ProjectHero.Authoring.Tests.Task05
         private static void Submit(BattleSimulation sim, CommandRequest request)
         {
             CommandIngressRejection rejection = T03.PlayerEntry(sim).Submit(request);
+            Assert.That(rejection, Is.Null,
+                rejection == null ? null : rejection.ReasonCode + "|" + rejection.ProducerOrdinal);
+        }
+
+        /// <summary>
+        /// 经 <strong>AI 入口</strong>（<c>controller.enemy_ai</c>）提交并断言入口接受。
+        ///
+        /// 与 <see cref="Submit"/> 的关系：唯一的差别是<strong>发行者身份</strong>，
+        /// 请求本身（目标 Tick / scope / payload）逐字段相同。它存在的原因是
+        /// 任务 09 把"发行者必须能控制载荷涉及的单位"接进了唯一命令入口
+        /// （<c>BattleCommandProcessor</c> → <c>CommandAuthority</c>），因此
+        /// "<strong>敌人</strong>（<c>UnitId(1)</c>，在已验证定义里由 <c>controller.enemy_ai</c> 控制）
+        /// 的反应选择/排程"必须由<strong>该单位的控制者</strong>发行，而不能由玩家入口代发。
+        /// 这不是放宽校验：它正是新语义在夹具层面的正确表达；玩家入口照旧只能命令自己的单位。
+        /// </summary>
+        private static void SubmitAsAi(BattleSimulation sim, CommandRequest request)
+        {
+            CommandIngressRejection rejection = T03.AiEntry(sim).Submit(request);
             Assert.That(rejection, Is.Null,
                 rejection == null ? null : rejection.ReasonCode + "|" + rejection.ProducerOrdinal);
         }
@@ -1079,7 +1113,11 @@ namespace ProjectHero.Authoring.Tests.Task05
                 new BattleSimulationAssembly(unitStateAdvance: kills));
 
             UnitId outsider = Task04OutsiderVariant.OutsiderUnitId;
-            Submit(sim, Schedule(0L, 0L,
+            // 目标外单位在本变体定义里"不被任何外部入口控制"（Task04 的显式契约），
+            // 因此它的计划只能由**变体夹具显式登记的那个控制者**发行
+            // （见 NewOutsiderSim：outsider 的控制权登记在 AI 入口）。
+            // 任务 09 之后，"谁发行"必须与"谁能控制该单位"一致，这不是放宽校验。
+            SubmitAsAi(sim, Schedule(0L, 0L,
                 Add(1L, outsider, HeroAttack, 10L, T03.EnemyUnitId),
                 Add(2L, outsider, HeroAttack, 40L, T03.EnemyUnitId)));
             StepEmpty(sim, 3);                                    // Tick 0/1/2
@@ -1450,6 +1488,13 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// （本用例里是敌人）的 <c>AvailableAdrenaline</c> 原子转入计划预留，额度不足即整条拒绝。
         /// 生产初始化把开局 Available 固定为 0，因此夹具在首个 Step 之前显式写入该单位的开局额度
         /// （见 <see cref="SeedOpeningAdrenaline"/>）。这与"窗口/提交权限"无关。
+        ///
+        /// 【任务 09 前提】反应命令的<strong>作用单位</strong>是机会的防御者
+        /// （<c>CommandAuthority.TryCollectReactionUnits</c>：载荷不携带单位，目的就是不让生产者自报），
+        /// 因此发行者身份必须是<strong>防御者的控制者</strong>——敌人（<c>UnitId(1)</c>）在
+        /// 已验证定义里由 <c>controller.enemy_ai</c> 控制，本用例因此经 <see cref="SubmitAsAi"/>
+        /// 发行（载荷、scope、目标 Tick 与"由谁发行"以外的每个字段都未改变）。
+        /// 承重断言（被接受 / 计划形状 / 快照 / 修订号）逐字未动。
         /// </summary>
         [Test]
         public void ReactionCommandIsAcceptedThroughSimulationCommandPhase()
@@ -1466,7 +1511,10 @@ namespace ProjectHero.Authoring.Tests.Task05
             long revisionBefore = sim.ScheduleRevision;
             var destination = new GridPoint(6, 6);
 
-            Submit(sim, new CommandRequest(
+            // 反应的作用单位 = 机会的防御者（这里是敌人）。任务 09 的唯一命令入口要求
+            // 发行者能控制其涉及单位，而敌人（UnitId(1)）在已验证定义里由 AI 入口控制，
+            // 因此本命令必须由该控制者发行。载荷/scope/目标 Tick 与原先逐字段相同。
+            SubmitAsAi(sim, new CommandRequest(
                 1L,
                 new ReactionCommandScope(opportunity.Id),
                 new ReactionCommandPayload(ReactionCommandKind.Dodge, RealDodge, destination)));
@@ -1513,6 +1561,11 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// 载荷在<strong>类型上</strong>就没有 TriggerTick：命令只能指名机会与动作，
         /// 触发 Tick 恒等于来源攻击的 ImpactTick。本用例用"动作定义与载荷种类不一致"
         /// 这一可表达的错误证明命令路径不会接受生产者指定的时刻/动作。
+        ///
+        /// 【任务 09 前提】与 <see cref="ReactionCommandIsAcceptedThroughSimulationCommandPhase"/>
+        /// 同一发行者口径：反应的作用单位是机会的防御者（敌人，由 AI 入口控制），
+        /// 因此经 <see cref="SubmitAsAi"/> 发行；否则命令会先被控制权拒绝
+        /// （<c>COMMAND_ISSUER_CANNOT_CONTROL_UNIT</c>），测不到本用例要测的码。
         /// </summary>
         [Test]
         public void ReactionCommandCannotProvideTriggerTick()
@@ -1525,7 +1578,9 @@ namespace ProjectHero.Authoring.Tests.Task05
             ReactionOpportunityRuntime opportunity = sim.ReactionOpportunities.ActiveOpportunities[0];
 
             // 载荷声称 Block，动作定义却是 Dodge ⇒ 稳定拒绝，且不创建任何计划。
-            Submit(sim, new CommandRequest(
+            // 发行者同前：反应的作用单位（机会的防御者 = 敌人）由 AI 入口控制，
+            // 因此由该控制者发行（否则先撞上控制权拒绝，测不到本用例要测的码）。
+            SubmitAsAi(sim, new CommandRequest(
                 1L,
                 new ReactionCommandScope(opportunity.Id),
                 new ReactionCommandPayload(ReactionCommandKind.Block, RealDodge)));

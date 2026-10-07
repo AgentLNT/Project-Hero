@@ -72,7 +72,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             string caseId, string rulesVersion, List<TemporarilyUncomparableField> temporarilyUncomparable,
             List<ShadowComparisonApproval> approvals, List<string> rejections,
             bool compareScheduleFacts = false, bool compareMovementFacts = false,
-            bool compareTurnWindowFacts = false)
+            bool compareTurnWindowFacts = false, bool compareTask08ProfileFacts = false)
         {
             CaseId = caseId;
             RulesVersion = rulesVersion;
@@ -82,6 +82,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             CompareScheduleFacts = compareScheduleFacts;
             CompareMovementFacts = compareMovementFacts;
             CompareTurnWindowFacts = compareTurnWindowFacts;
+            CompareTask08ProfileFacts = compareTask08ProfileFacts;
         }
 
         public string CaseId { get; }
@@ -150,6 +151,34 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public bool CompareTurnWindowFacts { get; }
 
         /// <summary>
+        /// <strong>逐用例开启</strong>的任务 08 多方仲裁与伤害画像检查点（默认 <c>false</c>）。
+        ///
+        /// 为 <c>true</c> 时：报告额外比较以下四类逐条事实（Logic 世界对 Logic 世界通道）——
+        /// <list type="bullet">
+        /// <item><c>intents[…]</c>：冻结 Intent 的<strong>完整载荷</strong>（序号、计划、拥有者、动作、
+        /// 目标策略、主目标、关系掩码、标签、朝向、ImpactTick、交互优先级、动量偏移、提交窗口、
+        /// 动量三元组、区域点集、伤害分量根数）——任务 05/06/07 只比较计划/Lane/机会与移动、
+        /// 窗口账本，从未比较过 Intent 载荷本身；任务 08 的 AOE/夹击/聚合伤害差异<strong>只能</strong>
+        /// 从 Intent 载荷看出来，因此这里逐字段比较；</item>
+        /// <item><c>conflictGroups[…]</c>：本 Tick 冲突图的<strong>组划分</strong>
+        /// （组键、组内节点 Intent 序号集合、组内接触键集合、目标单位集合、Intent↔Intent 边数）；</item>
+        /// <item><c>contacts[…]</c>：本 Tick 冲突图的<strong>全部接触键</strong>
+        /// （类型 + 双方单位/计划 + 目标单位）；</item>
+        /// <item><c>aiControllers[…]</c>：任务 09 新增的 AI <strong>未来决策状态</strong>
+        /// （<c>NextThinkTick</c>/<c>DecisionCount</c>/<c>LastDecisionTick</c>/<c>Rng</c>）——
+        /// 这是"Command<strong>AndAi</strong>ShadowProfile"里 AI 那一半的直接对象。</item>
+        /// </list>
+        ///
+        /// 同时额外登记本任务在<strong>生产旧侧观测通道</strong>上无法采样的字段：
+        /// 旧权威里没有"冻结 Intent 队列""冲突图/冲突组""接触键"这三类对象，
+        /// 也没有"AI 未来决策状态"（旧 AI 是 MonoBehaviour 上的即时行为，
+        /// 没有决策计数/下一次思考 Tick/独立 RNG 状态可采样）。
+        ///
+        /// 既有用例使用默认值 ⇒ 它们的报告逐字节不变（不引入任何新差异类别）。
+        /// </summary>
+        public bool CompareTask08ProfileFacts { get; }
+
+        /// <summary>
         /// 任务 03B 的冻结用例策略。
         ///
         /// 暂不可比较字段逐条给出对象路径/字段/原因/负责任务/最迟清零门槛。
@@ -158,7 +187,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public static ShadowCasePolicy CreateDefault(
             string caseId, string rulesVersion,
             bool compareScheduleFacts = false, bool compareMovementFacts = false,
-            bool compareTurnWindowFacts = false)
+            bool compareTurnWindowFacts = false, bool compareTask08ProfileFacts = false)
         {
             var temporarilyUncomparable = new List<TemporarilyUncomparableField>();
             var approvals = new List<ShadowComparisonApproval>();
@@ -371,9 +400,27 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 RegisterTask07TurnWindowRegistrations(temporarilyUncomparable, rejections);
             }
 
+            // —— 任务 08：冻结 Intent 载荷 / 冲突组 / 接触键 / AI 决策状态的生产通道
+            //    （旧侧观测）登记项 ——
+            //
+            // 为什么必须登记而不是"转成批准差异"或"塞进可比较字段"：
+            // 旧权威里根本没有"冻结 Intent 队列""冲突图/冲突组""接触键"这三类对象
+            // （旧侧只有 BattleTimeline 的排程条目与逐帧 Transform 位置），也没有"AI 未来决策状态"
+            // （旧 AI 是 MonoBehaviour 上的即时行为：没有决策计数、下一次思考 Tick、
+            // 也没有属于该 AI 自己的版本化 RNG 状态）——它们**不可能**经
+            // BattleSimulationSourceFactory.Observe() 真读。
+            // 按 03B 观测契约，这类字段必须逐条声明"暂不可比较 + 负责任务 + 清零门槛"，
+            // 绝不允许用定义派生常量冒充旧侧事实，也绝不允许整体忽略。
+            // 真正的逐 Intent/逐组/逐接触/逐 AI 决策者比较在 Logic 对 Logic 通道上完成
+            // （见 ShadowDifferenceDetector.Task08AiAndArbitrationFacts，逐用例由本开关开启）。
+            if (compareTask08ProfileFacts)
+            {
+                RegisterTask08ProfileRegistrations(temporarilyUncomparable, rejections);
+            }
+
             return new ShadowCasePolicy(caseId ?? string.Empty, rulesVersion ?? string.Empty,
                 temporarilyUncomparable, approvals, rejections, compareScheduleFacts, compareMovementFacts,
-                compareTurnWindowFacts);
+                compareTurnWindowFacts, compareTask08ProfileFacts);
         }
 
         /// <summary>
@@ -627,12 +674,65 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 owner, gate);
         }
 
+        /// <summary>
+        /// 任务 08 的登记项：本任务在<strong>两条通道上都不能做字段级比较</strong>的那一项事实。
+        ///
+        /// <para>
+        /// <strong>为什么这里只有一条（这是刻意的结构决定，不是登记不全）</strong>：
+        /// 策略级不变量是「<strong>「登记为暂不可比较」与「已真的在比较」不能同时成立</strong>」
+        /// （见本类 <c>RegisterTemporarilyUncomparable</c> 上方的说明与
+        /// <c>ShadowComparisonDetector.Task08AiAndArbitrationFacts</c>）。
+        /// <c>intents[…]</c> / <c>conflictGroups[…]</c> / <c>contacts[…]</c> / <c>aiControllers[…]</c>
+        /// 这四族在<strong>快照对快照通道</strong>上由 <c>Task08AiAndArbitrationFacts</c> 逐字段真比较
+        /// （篡改探针可证伪）；把它们同时登记成"暂不可比较"就等于用一个登记把真比较掩盖掉。
+        /// 因此四族**不**在这里登记——它们的"旧侧无对应对象"这一覆盖边界由
+        /// <c>Task07</c> 的既有 <c>intents.count</c> 登记项与
+        /// <c>Task08AiAndArbitrationFacts</c> 的类注释共同披露。
+        /// </para>
+        ///
+        /// <para>
+        /// 反过来，<c>StagedResolution</c>（<c>RemainingHits</c> /
+        /// <c>Aggregate.TotalDamageQ10</c>）是<strong>只读诊断面、不进快照哈希</strong>
+        /// （08 交接 §4.5），因此它<strong>在两条通道上都不进可比面</strong>：
+        /// 快照里根本没有它，旧侧也没有对应对象 ⇒ 必须逐条登记，绝不允许整体忽略。
+        /// </para>
+        /// </summary>
+        private static void RegisterTask08ProfileRegistrations(
+            List<TemporarilyUncomparableField> fields, List<string> rejections)
+        {
+            const string owner = "08";
+            const string gate = "任务 10 切换主场景到 New 之前";
+            // 旧侧唯一的"伤害"事实：CombatUnit 的活动生命（没有"按目标聚合的分阶段求解结果"）。
+            const string legacyUnits = "CombatSampleScene/Player#CombatUnit.CurrentHealth";
+
+            RegisterTemporarilyUncomparable(fields, rejections, legacyUnits, "stagedResolution.remainingHits",
+                "旧权威里没有「按目标聚合的分阶段求解结果」这一对象：伤害在旧实现里逐次直接扣减"
+                + "CombatUnit 生命，没有「同 Tick 多个来源指向同一目标后按通道聚合」的可采样中间事实。"
+                + "新侧的 StagedResolution 是**只读诊断面、不进快照哈希**（08 交接 §4.5），"
+                + "因此它同样不进快照对快照通道的可比面——两条通道都不比较，故必须逐条登记："
+                + "不是「被忽略」，也不是「被批准」。"
+                + "四类真事实（Intent 载荷 / 冲突组 / 接触键 / AI 决策状态）**不在此登记**，"
+                + "因为它们在快照通道上已被 Task08AiAndArbitrationFacts 逐字段真比较。",
+                owner, gate);
+
+            // 防回归不变量：本方法登记的任何字段都**不得**属于 Task08AiAndArbitrationFacts 的比较面
+            // （否则策略自相矛盾：同一 CaseId 上既比较又登记）。
+            for (int i = 0; i < fields.Count; i++)
+            {
+                if (fields[i] == null) continue;
+                if (!IsTask08ProfileField(fields[i].Field)) continue;
+                rejections.Add(ShadowComparisonCodes.ShadowPolicySwitchInconsistent
+                    + "|registered-but-compared|" + fields[i].Id);
+            }
+        }
+
         /// <summary>用显式给出的暂不可比较字段、批准差异与既有拒绝项构造策略。</summary>
         public static ShadowCasePolicy CreateWithApprovals(
             string caseId, string rulesVersion,
             IReadOnlyList<TemporarilyUncomparableField> temporarilyUncomparable,
             IReadOnlyList<ShadowComparisonApproval> approvals,
-            IReadOnlyList<string> rejections)
+            IReadOnlyList<string> rejections,
+            bool compareTask08ProfileFacts = false)
         {
             var fields = new List<TemporarilyUncomparableField>();
             if (temporarilyUncomparable != null)
@@ -647,6 +747,19 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 for (int i = 0; i < rejections.Count; i++) rejected.Add(rejections[i]);
             }
 
+            // 开关与登记项自相矛盾 ⇒ 显式拒绝（fail-closed，绝不静默开启或静默退化）。
+            // 详见 ShadowComparisonCodes.ShadowPolicySwitchInconsistent 的注释。
+            if (!compareTask08ProfileFacts)
+            {
+                for (int i = 0; i < fields.Count; i++)
+                {
+                    TemporarilyUncomparableField candidate = fields[i];
+                    if (candidate == null || !IsTask08ProfileField(candidate.Field)) continue;
+                    rejected.Add(ShadowComparisonCodes.ShadowPolicySwitchInconsistent
+                        + "|compareTask08ProfileFacts=false|" + candidate.Id);
+                }
+            }
+
             if (approvals != null)
             {
                 for (int i = 0; i < approvals.Count; i++)
@@ -659,7 +772,31 @@ namespace ProjectHero.Core.Compatibility.Runtime
             }
 
             return new ShadowCasePolicy(caseId ?? string.Empty, rulesVersion ?? string.Empty,
-                fields, accepted, rejected);
+                fields, accepted, rejected, compareTask08ProfileFacts: compareTask08ProfileFacts);
+        }
+
+        /// <summary>
+        /// 该字段名是否属于任务 08 画像的登记项族（唯一权威 = <see cref="RegisterTask08ProfileRegistrations"/>）。
+        ///
+        /// 它只用于 <see cref="CreateWithApprovals"/> 的"开关与登记项自相矛盾"判据，
+        /// <strong>不</strong>参与任何比较或忽略判定：比较面由
+        /// <c>ShadowDifferenceDetector.Task08AiAndArbitrationFacts</c> 的显式字段清单决定。
+        /// </summary>
+        private static bool IsTask08ProfileField(string field)
+        {
+            if (string.IsNullOrEmpty(field)) return false;
+            // **只**覆盖"在快照通道上被 Task08AiAndArbitrationFacts 逐字段真比较"的四族：
+            // 它们**不得**出现在暂不可比较登记里（否则同一 CaseId 上既比较又登记 ⇒ 自相矛盾）。
+            //
+            // ⚠️ `stagedResolution.` **不在**此列（这是一处真实缺陷的修正）：它是**唯一两条通道
+            // 都不比较**的只读诊断面，因此**必须**被逐条登记；把它算进"已比较族"会让
+            // `RegisterTask08ProfileRegistrations` 末尾那道防回归循环**拒绝它自己的合法登记**
+            // （实测：`SHADOW_POLICY_SWITCH_INCONSISTENT|registered-but-compared|
+            // CombatSampleScene/Player#CombatUnit.CurrentHealth#stagedResolution.remainingHits`）。
+            return field.StartsWith("intents[", StringComparison.Ordinal)
+                || field.StartsWith("conflictGroups", StringComparison.Ordinal)
+                || field.StartsWith("contacts[", StringComparison.Ordinal)
+                || field.StartsWith("aiControllers", StringComparison.Ordinal);
         }
 
         private static bool IsUsableApproval(

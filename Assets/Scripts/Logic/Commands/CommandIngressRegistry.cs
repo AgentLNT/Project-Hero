@@ -106,6 +106,14 @@ namespace ProjectHero.Logic.Commands
             public CommandRequest Request;
         }
 
+        /// <summary>
+        /// 设备输入与 AI 的<strong>默认投递提前量</strong>（整数 Tick，首版冻结为 1）。
+        ///
+        /// 它与来源类型无关：玩家设备输入与 AI 决策使用<strong>同一</strong>提前量，
+        /// 因此不存在"AI 比玩家多看一眼"的抢跑空间（任务 09「核心命令语义」）。
+        /// </summary>
+        public const int CommandIngressLeadTicks = 1;
+
         private readonly List<CommandIngressEntry> _entries = new List<CommandIngressEntry>();
         private readonly Dictionary<string, CommandIngressEntry> _entriesByController =
             new Dictionary<string, CommandIngressEntry>(StringComparer.Ordinal);
@@ -116,6 +124,7 @@ namespace ProjectHero.Logic.Commands
         private readonly object _registryStamp = new object();
 
         private long _frozenThroughTick = -1L;
+        private long _currentTick = -1L;
         private bool _battleEnded;
 
         /// <summary>
@@ -126,6 +135,35 @@ namespace ProjectHero.Logic.Commands
 
         /// <summary>已冻结的最高 Tick；-1 表示尚未冻结任何批次。</summary>
         public long FrozenThroughTick => _frozenThroughTick;
+
+        /// <summary>
+        /// 最近一次<strong>已完成</strong> <c>Step</c> 的 Tick（-1 = 尚未推进任何 Tick）的只读镜像。
+        /// 由 <see cref="AdvanceCurrentTick"/> 唯一推进；它不参与任何授权判定，
+        /// 只是"当前 Tick"这一事实的可观察读数。
+        /// </summary>
+        public long CurrentTick => _currentTick;
+
+        /// <summary>
+        /// <strong>设备输入与 AI 的默认投递目标 Tick</strong>（任务 09「必须产出」5）。
+        ///
+        /// 唯一判据是"已经冻结过输入的最高 Tick"（它已经在规范化快照与哈希里）：
+        /// 目标 = <see cref="FrozenThroughTick"/> + <see cref="CommandIngressLeadTicks"/>。
+        /// 在正常推进下 <c>FrozenThroughTick == CurrentTick</c>（每个 Step 都恰好冻结它自己的 Tick），
+        /// 因此它就是"<c>CurrentTick + 1</c>"；批次冻结之后它自动变成 <c>N + 2</c>，
+        /// 从而"冻结后的输入只能目标下一 Tick"是结构事实而不是调用方约定。
+        ///
+        /// 它<strong>永不</strong>返回一个已经被冻结过的 Tick：默认投递不可能被静默修正回本 Tick。
+        /// </summary>
+        public long NextDefaultTargetTick => checked(_frozenThroughTick + CommandIngressLeadTicks);
+
+        /// <summary>
+        /// 由唯一模拟入口在<strong>提交</strong>一个 Tick 之后调用（<c>BattleSimulation.Step</c> 的两条收尾路径）。
+        /// 它只前进、不回退，且不改变任何授权判定。
+        /// </summary>
+        internal void AdvanceCurrentTick(long tick)
+        {
+            if (tick > _currentTick) _currentTick = tick;
+        }
 
         public IReadOnlyList<CommandIngressEntry> Entries => _entries;
 

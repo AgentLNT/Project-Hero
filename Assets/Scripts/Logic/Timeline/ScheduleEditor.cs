@@ -761,16 +761,20 @@ namespace ProjectHero.Logic.Timeline
             WindowId? currentWindowId)
         {
             if (!add.OwnerUnitId.IsValid) return ActionPlanCodes.ACTION_PLAN_OWNER_INVALID;
-            if (add.RequestedStartTick < 0L) return ScheduleCodes.SCHEDULE_OPERATION_INVALID;
+            // 任务 09 A 流（产出 1）：RequestedStartTick 可空，null = 本次事务该 Lane 的尾部。
+            // 解析口径与"生产者不声明绝对排程"一致：只按只读 Lane 事实给出放置提示，
+            // 真正的位点仍由 ScheduleEvaluator 统一求值（只向右避让），失败即稳定码整批拒绝。
+            long requestedStartTick = add.RequestedStartTick ?? ResolveLaneTailStartTick(add.OwnerUnitId, currentTick);
+            if (requestedStartTick < 0L) return ScheduleCodes.SCHEDULE_OPERATION_INVALID;
             // 不允许把新计划排进过去：它永远到不了自己的到期门禁（见 ScheduleCodes 的说明）。
-            if (add.RequestedStartTick < currentTick)
+            if (requestedStartTick < currentTick)
                 return ScheduleCodes.SCHEDULE_START_TICK_BEFORE_COMMAND_TICK;
             if (temporaryKeys.ContainsKey(add.TemporaryPlanKey)) return ScheduleCodes.SCHEDULE_OPERATION_DUPLICATE;
 
             ActionPlanCreationResult created = _factory.TryCreateOrdinary(
                 new OrdinaryPlanRequest(
                     add.OwnerUnitId, add.ActionSpecId, add.Facing, add.PrimaryTargetUnitId,
-                    add.Destination, currentWindowId, add.RequestedStartTick),
+                    add.Destination, currentWindowId, requestedStartTick),
                 currentTick,
                 allocated);
             if (!created.Succeeded) return created.RejectionCode;
@@ -778,10 +782,29 @@ namespace ProjectHero.Logic.Timeline
             ActionPlan plan = created.Plan;
             temporaryKeys[add.TemporaryPlanKey] = plan;
             addedPlans.Add(plan);
-            intents.Add(new ScheduleOperationIntent(plan, add.RequestedStartTick, IsDirectMove: false, add.AnchorAfterPlanId));
+            intents.Add(new ScheduleOperationIntent(plan, requestedStartTick, IsDirectMove: false, add.AnchorAfterPlanId));
             appliedEdits.Add(new AppliedScheduleEdit(
-                ScheduleEditOperationKind.Add, allocated, add.OwnerUnitId, add.RequestedStartTick, add.RequestedStartTick));
+                ScheduleEditOperationKind.Add, allocated, add.OwnerUnitId, requestedStartTick, requestedStartTick));
             return null;
+        }
+
+        /// <summary>
+        /// <c>AddOrdinaryPlanOperation.RequestedStartTick == null</c> 时的唯一解析口径：
+        /// <strong>本次事务该 Lane 的尾部</strong>。
+        ///
+        /// 取 <c>max(本次事务目标 Tick, Lane 的 LaneTailTick)</c>：
+        /// <list type="bullet">
+        /// <item>Lane 尚不存在（该单位首个计划）或 Lane 为空 ⇒ 尾部为 0 ⇒ 回到目标 Tick；</item>
+        /// <item>已有计划 ⇒ 取该 Lane 全部计划的最大 <c>EndTick</c>，因此新计划被追加在尾部；</item>
+        /// <item>它<strong>不</strong>读取窗口、不读取计划属性、不重采样任何时长，
+        /// 也不构成"下一个可提交 Tick"的权威判据——权威判据仍是 <c>ScheduleEvaluator</c> 的求值结果。</item>
+        /// </list>
+        /// </summary>
+        private long ResolveLaneTailStartTick(UnitId ownerUnitId, long currentTick)
+        {
+            ActorLane lane = _authority.FindLane(ownerUnitId);
+            long tail = lane == null ? 0L : lane.LaneTailTick;
+            return tail > currentTick ? tail : currentTick;
         }
 
         private string ResolveMove(
@@ -1171,6 +1194,7 @@ namespace ProjectHero.Logic.Timeline
         private readonly struct SpaceProjectionSnapshot
         {
             private readonly ActionPlan _plan;
+            private readonly Actions.ActionType _actionType;
             private readonly long _startTick;
             private readonly int _edgeCount;
             private readonly int _weightUnits;
@@ -1181,6 +1205,7 @@ namespace ProjectHero.Logic.Timeline
             public SpaceProjectionSnapshot(ActionPlan plan)
             {
                 _plan = plan;
+                _actionType = plan.ActionType;
                 _startTick = plan.StartTick;
                 _edgeCount = plan.ResolvedPathEdgeCount;
                 _weightUnits = plan.ResolvedPathWeightUnits;
@@ -1191,8 +1216,20 @@ namespace ProjectHero.Logic.Timeline
 
             public void Restore()
             {
+                // 起点重绑会按动作族重算 EndTick / BudgetCostTicks（Attack = 前摇 + 后摇）。
                 _plan.RebindAbsoluteTicks(_startTick);
-                _plan.SetPathProjection(_edgeCount, _weightUnits);
+
+                // 任务 09 A 流（R-A1-D1，最小修复）：只有**路径型**动作（Move/Dodge）才有路径投影。
+                // 原先这里无条件调用 SetPathProjection，会把 Move 的时长公式
+                // （MoveDuration + Recovery）套到 Attack/Guard 上：被拒绝的事务一旦求值覆盖到
+                // 一个既有攻击计划，它的 EndTick 与 BudgetCostTicks 就会被静默改写成
+                // "StartTick + RecoveryTicks"，与窗口账本里仍然持有的预留额不再相等，
+                // 于是该计划在到期门禁处必定以 RESOURCE_COMMIT_ERROR 失败。
+                // 这与 00 号规则 28「失败事务零局部写入」以及
+                // ActionPlanFactory（只对 Move/Dodge 建路径投影）的口径都矛盾。
+                if (_actionType == Actions.ActionType.Move || _actionType == Actions.ActionType.Dodge)
+                    _plan.SetPathProjection(_edgeCount, _weightUnits);
+
                 _plan.LastRequestedStartTick = _lastRequestedStartTick;
                 _plan.LastEditedScheduleRevision = _lastEditedScheduleRevision;
                 _plan.ReservedTurnBudgetTicks = _reservedTurnBudgetTicks;

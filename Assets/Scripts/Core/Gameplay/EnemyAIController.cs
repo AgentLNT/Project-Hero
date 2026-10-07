@@ -2,6 +2,7 @@ using UnityEngine;
 using ProjectHero.Authoring.Legacy;
 using System.Collections.Generic;
 using ProjectHero.Core.Actions;
+using ProjectHero.Core.Compatibility.Runtime.Input;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Pathfinding;
@@ -33,6 +34,25 @@ namespace ProjectHero.Core.Gameplay
         public bool EnableDebugLogs = false;
         public string DebugState = "Init";
 
+        // ─────────────────────────────────────────────────────────────────────
+        // 任务 09：本组件是 Legacy 从属写入者，只做**转发/适配**（裁定 R-9）。
+        //
+        // * New 模式下 AI 决策的唯一生产者是 Logic 的 AIControllerLogic（任务 09 产出 9/10，
+        //   由架构师流实现在 `Assets/Scripts/Logic/AI/**`）。
+        // * 一旦宿主注入新 AI 决策端口（任务 10 接线），本组件的旧 `Update()` 决策路径
+        //   立即**整体停用**：它不再写旧时间线计划表，也不再自建第二套权威状态。
+        // * 未注入端口时保持旧行为，供 Legacy 模式与既有 PlayMode 用例使用。
+        // ─────────────────────────────────────────────────────────────────────
+        [Header("Task 09 AI 决策端口（可空，由任务 10 注入）")]
+        [Tooltip("注入后：旧决策路径整体停用；AI 命令只能由 Logic 的 AIControllerLogic 经命令入口产生。")]
+        public IViewLogicPort DecisionPort;
+
+        /// <summary>旧决策写入路径是否仍然启用（仅在未注入新 AI 端口时为 true）。</summary>
+        public bool LegacyDecisionWritesEnabled => DecisionPort == null;
+
+        /// <summary>宿主注入新 AI 决策端口（任务 10）。</summary>
+        public void BindDecisionPort(IViewLogicPort port) => DecisionPort = port;
+
         private float _nextThinkTimeReal;
         private float _nextAvailableTickTime;
         private const float THINK_HZ = 0.1f;
@@ -49,6 +69,15 @@ namespace ProjectHero.Core.Gameplay
 
         private void Update()
         {
+            // 任务 09：注入新 AI 决策端口后，旧决策路径整体停用。
+            // AI 的命令只能由 Logic 的 AIControllerLogic 在 Step N 完成后按 TargetTick = N+1
+            // 经已注册入口提交；表现层/旧壳不得自建第二套决策或直接写计划表。
+            if (!LegacyDecisionWritesEnabled)
+            {
+                DebugState = "NewAiDriven";
+                return;
+            }
+
             if (Timeline == null) Timeline = FindFirstObjectByType<BattleTimeline>();
 
             if (TargetUnit == null)

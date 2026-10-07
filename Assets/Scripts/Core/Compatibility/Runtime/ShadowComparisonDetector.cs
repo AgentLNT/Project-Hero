@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using ProjectHero.Logic;
+using ProjectHero.Logic.Determinism;
+using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Snapshots;
 
 namespace ProjectHero.Core.Compatibility.Runtime
@@ -132,6 +135,11 @@ namespace ProjectHero.Core.Compatibility.Runtime
             // 因此"首个差异"的既有顺序不被改变。
             if (policy.CompareTurnWindowFacts)
                 Task07TurnWindowFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
+            // 任务 08：冻结 Intent 完整载荷 / 冲突组划分 / 接触键集合 / AI 未来决策状态。
+            // 同样**逐用例开启**（默认关闭 ⇒ 既有用例的报告逐字节不变），且刻意排在任务 07 之后，
+            // 因此"首个差异"的既有顺序不被改变。
+            if (policy.CompareTask08ProfileFacts)
+                Task08AiAndArbitrationFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
             TemporarilyUncomparableFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
         }
 
@@ -1561,6 +1569,15 @@ namespace ProjectHero.Core.Compatibility.Runtime
                             unit.FacingLive, shadowUnit.Facing,
                             "旧活动 CombatUnit.FacingDirection vs 新内核朝向", relatedEventSequence);
                         break;
+                    default:
+                        // **未知的 `units[i].*` 路径必须显式失败**：`units[i].` 是一个字段族前缀，
+                        // 不是"任何后缀都算已实现"。此前该 switch **没有 default 分支**，于是
+                        // 未登记的族内路径会被静默跳过 —— 那正是"零未分类差异"口径要禁止的
+                        // 失败模式（比较看起来完成了，实际没人比较它）。
+                        // 反射变异探针（`units[i].temporarilyUnregisteredProbeField`）就是它的
+                        // 可失败证据：删掉这个 default，探针立刻红。
+                        throw new LogicDefinitionException(
+                            "SHADOW_COMPARABLE_FIELD_NOT_IMPLEMENTED", fieldPath);
                 }
             }
         }
@@ -1775,6 +1792,449 @@ namespace ProjectHero.Core.Compatibility.Runtime
                     "存活状态按新规则验证；任务 04 扩展检查点", eventSequence);
             }
         }
+
+        // -------- 任务 08：冻结 Intent / 冲突组 / 接触键 / AI 决策状态的逐条事实 --------
+
+        /// <summary>
+        /// <strong>任务 08 的 Shadow 检查点扩展</strong>（Logic 世界对 Logic 世界通道）
+        /// ＋ 任务 09 的 AI 决策状态（<c>AiControllers</c>）。
+        ///
+        /// 为什么需要它（本轮之前的三个结构缺口，全部在此闭合）：
+        /// <list type="number">
+        /// <item><c>Intents</c> 此前<strong>只比较集合计数</strong>（见本文件 <c>InfrastructureFacts</c> 的
+        /// "Intent 数必须相等"），而任务 08 的 AOE / 夹击 / 聚合伤害 / Clash 差异
+        /// <strong>只能</strong>从 Intent 载荷（目标策略、关系掩码、有效区域点集、伤害分量、动量）看出来 ⇒
+        /// 这里逐字段比较完整载荷；</item>
+        /// <item><c>ConflictGroups</c> / <c>Contacts</c> 此前在检测器里<strong>零命中</strong> ⇒
+        /// 这里逐组、逐接触键比较；</item>
+        /// <item><c>AiControllers</c>（任务 09 产出 15 新增的 5 字段）此前零命中 ⇒
+        /// 这里逐控制者比较 <c>NextThinkTick</c>/<c>DecisionCount</c>/<c>LastDecisionTick</c>/<c>Rng</c>。</item>
+        /// </list>
+        ///
+        /// <strong>配对规则（不使用任何容器下标猜配对）</strong>：
+        /// <list type="bullet">
+        /// <item>Intent 按 <c>IntentSequence</c> 唯一键配对；</item>
+        /// <item>冲突组按 <c>GroupKey</c>（= 组内最小 <c>IntentSequence</c>）配对；</item>
+        /// <item>接触按六元规范化键（类型 + 双方单位/计划 + 目标单位）配对；</item>
+        /// <item>AI 控制者按 <c>ControllerId</c>（Ordinal）配对。</item>
+        /// </list>
+        /// 每一族的"只在一侧存在"都是**明确差异**（<c>.present</c>），不是静默跳过；
+        /// 每一族的集合计数也**额外**比较一次（与既有计数事实重叠是刻意的：计数相等不能替代逐条比较，
+        /// 逐条比较也不应假设计数已经相等）。
+        ///
+        /// <strong>边界（如实登记）</strong>：本方法只在 Logic 快照对 Logic 快照通道上生效；
+        /// 生产旧侧观测通道（<c>CompareObservedLegacyCheckpoints</c>）上没有 <c>LogicSnapshot</c>，
+        /// 那三族字段由 <c>ShadowCasePolicy.RegisterTask08ProfileRegistrations</c> 逐条登记为
+        /// "旧侧无对应事实 + 负责任务 + 清零门槛"，绝不冒充已比较。
+        /// <c>StagedResolution</c> 是只读诊断面、不进快照哈希（08 交接 §4.5），
+        /// 因此它<strong>不</strong>进入本方法的比较面。
+        /// </summary>
+        private static void Task08AiAndArbitrationFacts(
+            ShadowComparisonReport report, ShadowCasePolicy policy,
+            LogicSnapshot legacy, LogicSnapshot shadow, string checkpoint, long eventSequence)
+        {
+            CompareIntentPayloadFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
+            CompareConflictGroupFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
+            CompareContactKeyFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
+            CompareAiControllerFacts(report, policy, legacy, shadow, checkpoint, eventSequence);
+        }
+
+        /// <summary>冻结 Intent <strong>完整载荷</strong>的逐字段比较（按 <c>IntentSequence</c> 配对）。</summary>
+        private static void CompareIntentPayloadFacts(
+            ShadowComparisonReport report, ShadowCasePolicy policy,
+            LogicSnapshot legacy, LogicSnapshot shadow, string checkpoint, long eventSequence)
+        {
+            long logicalTick = legacy.Tick;
+            AddNewRuleFact(report, policy, logicalTick, checkpoint, "intents.count",
+                legacy.Intents.Count, shadow.Intents.Count,
+                "冻结 Intent 队列条数必须相等（本方法另外逐条比较完整载荷）", eventSequence);
+
+            Dictionary<long, IntentSnapshot> legacyByKey = IntentsBySequence(legacy);
+            Dictionary<long, IntentSnapshot> shadowByKey = IntentsBySequence(shadow);
+
+            foreach (long key in UnionKeys(legacyByKey.Keys, shadowByKey.Keys))
+            {
+                IntentSnapshot legacyIntent = ValueOrNull(legacyByKey, key);
+                IntentSnapshot shadowIntent = ValueOrNull(shadowByKey, key);
+                string prefix = "intents[intentSequence=" + key.ToString(CultureInfo.InvariantCulture) + "]";
+                if (legacyIntent == null || shadowIntent == null)
+                {
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".present",
+                        Present(legacyIntent), Present(shadowIntent),
+                        "该 IntentSequence 只在一侧存在 ⇒ 冻结队列不同（不是可忽略的枚举差异）",
+                        eventSequence);
+                    continue;
+                }
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".actionPlanId",
+                    legacyIntent.ActionPlanId, shadowIntent.ActionPlanId,
+                    "Intent 归属的 ActionPlanId 必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".ownerUnitId",
+                    legacyIntent.OwnerUnitId, shadowIntent.OwnerUnitId,
+                    "Intent 拥有者必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".actionSpecId",
+                    legacyIntent.ActionSpecId, shadowIntent.ActionSpecId,
+                    "Intent 动作标识必须相等（目标策略与命中判定的输入）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".targetPolicy",
+                    legacyIntent.TargetPolicy, shadowIntent.TargetPolicy,
+                    "目标策略（主目标 / 区域全部目标）必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".primaryTargetUnitId",
+                    legacyIntent.PrimaryTargetUnitId, shadowIntent.PrimaryTargetUnitId,
+                    "主目标单位必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".allowedTargetRelations",
+                    legacyIntent.AllowedTargetRelations, shadowIntent.AllowedTargetRelations,
+                    "关系掩码决定「哪些单位可被命中」，必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".tags",
+                    legacyIntent.Tags, shadowIntent.Tags,
+                    "攻击标签（可反应/可格挡/可闪避）必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".facing",
+                    legacyIntent.Facing, shadowIntent.Facing,
+                    "结算朝向必须相等（有效区域由其派生）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".impactTick",
+                    legacyIntent.ImpactTick, shadowIntent.ImpactTick,
+                    "ImpactTick 是「同 Tick 聚合」的唯一时间键，必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".interactionPriority",
+                    legacyIntent.InteractionPriority, shadowIntent.InteractionPriority,
+                    "交互判定优先级必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".momentumDirectionOffsetSteps",
+                    legacyIntent.MomentumDirectionOffsetSteps, shadowIntent.MomentumDirectionOffsetSteps,
+                    "动量方向偏移步数必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".submittedWindowId",
+                    legacyIntent.SubmittedWindowId, shadowIntent.SubmittedWindowId,
+                    "提交窗口归属必须相等", eventSequence);
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".momentum.direction",
+                    MomentumDirection(legacyIntent), MomentumDirection(shadowIntent),
+                    "动量方向必须相等（合力求解的输入）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".momentum.units",
+                    MomentumUnits(legacyIntent), MomentumUnits(shadowIntent),
+                    "动量单位数必须相等（合力强度的整数度量）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".momentum.impactProfileId",
+                    MomentumImpactProfileId(legacyIntent), MomentumImpactProfileId(shadowIntent),
+                    "冲击剖面标识必须相等（强制位移的输入）", eventSequence);
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".areaPoints.count",
+                    AreaPointCount(legacyIntent), AreaPointCount(shadowIntent),
+                    "有效区域点集根数必须相等", eventSequence);
+                for (int p = 0; p < Math.Min(AreaPointCount(legacyIntent), AreaPointCount(shadowIntent)); p++)
+                {
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint,
+                        prefix + ".areaPoints[" + p.ToString(CultureInfo.InvariantCulture) + "]",
+                        AreaPointText(legacyIntent, p), AreaPointText(shadowIntent, p),
+                        "有效区域三角点必须逐点相等（AOE 命中判定的唯一几何输入）", eventSequence);
+                }
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".damageComponents.count",
+                    DamageComponentCount(legacyIntent), DamageComponentCount(shadowIntent),
+                    "伤害分量根数必须相等", eventSequence);
+                for (int d = 0; d < Math.Min(DamageComponentCount(legacyIntent), DamageComponentCount(shadowIntent)); d++)
+                {
+                    string componentPrefix = prefix + ".damageComponents["
+                        + d.ToString(CultureInfo.InvariantCulture) + "]";
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, componentPrefix + ".channelId",
+                        DamageChannelOf(legacyIntent, d), DamageChannelOf(shadowIntent, d),
+                        "伤害通道必须相等（按通道聚合抗性的输入）", eventSequence);
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, componentPrefix + ".rawAmountBits",
+                        DamageRawAmountBits(legacyIntent, d), DamageRawAmountBits(shadowIntent, d),
+                        "原始伤害的二进制位必须相等（浮点不得参与比较，故按位比较）", eventSequence);
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, componentPrefix + ".tags",
+                        DamageTagsOf(legacyIntent, d), DamageTagsOf(shadowIntent, d),
+                        "伤害分量标签必须相等（部分防御/抵抗的判定输入）", eventSequence);
+                }
+            }
+        }
+
+        /// <summary>冲突组<strong>划分</strong>的逐字段比较（按 <c>GroupKey</c> 配对）。</summary>
+        private static void CompareConflictGroupFacts(
+            ShadowComparisonReport report, ShadowCasePolicy policy,
+            LogicSnapshot legacy, LogicSnapshot shadow, string checkpoint, long eventSequence)
+        {
+            long logicalTick = legacy.Tick;
+            AddNewRuleFact(report, policy, logicalTick, checkpoint, "conflictGroups.count",
+                legacy.ConflictGroups.Count, shadow.ConflictGroups.Count,
+                "本 Tick 冲突组个数必须相等（组划分是冻结输入，不是求解结果摘要）", eventSequence);
+
+            Dictionary<long, ConflictGroupSnapshot> legacyByKey = GroupsByKey(legacy);
+            Dictionary<long, ConflictGroupSnapshot> shadowByKey = GroupsByKey(shadow);
+
+            foreach (long key in UnionKeys(legacyByKey.Keys, shadowByKey.Keys))
+            {
+                ConflictGroupSnapshot legacyGroup = ValueOrNull(legacyByKey, key);
+                ConflictGroupSnapshot shadowGroup = ValueOrNull(shadowByKey, key);
+                string prefix = "conflictGroups[groupKey=" + key.ToString(CultureInfo.InvariantCulture) + "]";
+
+                if (legacyGroup == null || shadowGroup == null)
+                {
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".present",
+                        Present(legacyGroup), Present(shadowGroup),
+                        "该冲突组只在一侧存在 ⇒ 组划分不同", eventSequence);
+                    continue;
+                }
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".nodeIntentSequences",
+                    JoinLongs(legacyGroup.NodeIntentSequences), JoinLongs(shadowGroup.NodeIntentSequences),
+                    "组内节点（Intent 序号，升序）必须逐条相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".targetUnitIds",
+                    JoinLongs(legacyGroup.TargetUnitIds), JoinLongs(shadowGroup.TargetUnitIds),
+                    "组内目标单位（升序去重）必须逐条相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".edgeCount",
+                    legacyGroup.EdgeCount, shadowGroup.EdgeCount,
+                    "Intent↔Intent 边数必须相等（Clash 候选的计量对象）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".contacts",
+                    ContactKeysText(legacyGroup.ContactKeys), ContactKeysText(shadowGroup.ContactKeys),
+                    "组内接触键集合（按 ContactSnapshot.CompareTo 升序）必须逐条相等", eventSequence);
+            }
+        }
+
+        /// <summary>冲突图<strong>全部接触键</strong>的逐字段比较（按六元规范化键配对，全集）。</summary>
+        private static void CompareContactKeyFacts(
+            ShadowComparisonReport report, ShadowCasePolicy policy,
+            LogicSnapshot legacy, LogicSnapshot shadow, string checkpoint, long eventSequence)
+        {
+            long logicalTick = legacy.Tick;
+            AddNewRuleFact(report, policy, logicalTick, checkpoint, "contacts.count",
+                legacy.Contacts.Count, shadow.Contacts.Count,
+                "本 Tick 冲突图接触键总数必须相等", eventSequence);
+
+            Dictionary<string, ContactSnapshot> legacyByKey = ContactsByKey(legacy);
+            Dictionary<string, ContactSnapshot> shadowByKey = ContactsByKey(shadow);
+
+            foreach (string key in UnionKeys(legacyByKey.Keys, shadowByKey.Keys))
+            {
+                ContactSnapshot legacyContact = ValueOrNull(legacyByKey, key);
+                ContactSnapshot shadowContact = ValueOrNull(shadowByKey, key);
+                string prefix = "contacts[" + key + "]";
+
+                if (legacyContact == null || shadowContact == null)
+                {
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".present",
+                        Present(legacyContact), Present(shadowContact),
+                        "该接触键只在一侧存在 ⇒ 接触集合不同", eventSequence);
+                    continue;
+                }
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".type",
+                    legacyContact.Type, shadowContact.Type,
+                    "接触类型（判定阶段序）必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".firstUnitId",
+                    legacyContact.FirstUnitId, shadowContact.FirstUnitId,
+                    "规范化第一侧单位必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".firstPlanId",
+                    legacyContact.FirstPlanId, shadowContact.FirstPlanId,
+                    "规范化第一侧计划必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".secondUnitId",
+                    legacyContact.SecondUnitId, shadowContact.SecondUnitId,
+                    "规范化第二侧单位必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".secondPlanId",
+                    legacyContact.SecondPlanId, shadowContact.SecondPlanId,
+                    "规范化第二侧计划必须相等", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".targetUnitId",
+                    legacyContact.TargetUnitId, shadowContact.TargetUnitId,
+                    "目标单位必须相等", eventSequence);
+            }
+        }
+
+        /// <summary>
+        /// AI <strong>未来决策状态</strong>的逐字段比较（按 <c>ControllerId</c> Ordinal 配对）。
+        ///
+        /// 这是"Command<strong>AndAi</strong>ShadowProfile"里 AI 那一半：
+        /// 回放要求 AI 由相同初始输入与自己的 RNG 从 Tick 0 重新生成决策，
+        /// 因此这四项（下一次思考 Tick、累计决策数、最后决策 Tick、独立 RNG 状态）
+        /// 逐 Tick 一致是"AI 重建一致"的可验证判据。
+        /// </summary>
+        private static void CompareAiControllerFacts(
+            ShadowComparisonReport report, ShadowCasePolicy policy,
+            LogicSnapshot legacy, LogicSnapshot shadow, string checkpoint, long eventSequence)
+        {
+            long logicalTick = legacy.Tick;
+            AddNewRuleFact(report, policy, logicalTick, checkpoint, "aiControllers.count",
+                legacy.AiControllers.Count, shadow.AiControllers.Count,
+                "已注册 AI 决策者个数必须相等（本方法另外逐控制者比较未来决策状态）", eventSequence);
+
+            Dictionary<string, AiControllerSnapshot> legacyByKey = AiControllersById(legacy);
+            Dictionary<string, AiControllerSnapshot> shadowByKey = AiControllersById(shadow);
+
+            foreach (string key in UnionKeys(legacyByKey.Keys, shadowByKey.Keys))
+            {
+                AiControllerSnapshot legacyController = ValueOrNull(legacyByKey, key);
+                AiControllerSnapshot shadowController = ValueOrNull(shadowByKey, key);
+                string prefix = "aiControllers[" + key + "]";
+
+                if (legacyController == null || shadowController == null)
+                {
+                    AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".present",
+                        Present(legacyController), Present(shadowController),
+                        "该 AI 控制者只在一侧存在 ⇒ 决策者集合不同", eventSequence);
+                    continue;
+                }
+
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".nextThinkTick",
+                    legacyController.NextThinkTick, shadowController.NextThinkTick,
+                    "下一次允许决策的 Tick 必须相等（到点才决策 ⇒ 它同时证明 AI 不抢跑）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".decisionCount",
+                    legacyController.DecisionCount, shadowController.DecisionCount,
+                    "累计决策次数必须相等（AI 决策未被镜像而是被重建的证据）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".lastDecisionTick",
+                    legacyController.LastDecisionTick, shadowController.LastDecisionTick,
+                    "最后一次已完成决策所属 Tick 必须相等（-1 = 从未决策）", eventSequence);
+                AddNewRuleFact(report, policy, logicalTick, checkpoint, prefix + ".rng.state",
+                    RngText(legacyController.Rng), RngText(shadowController.Rng),
+                    "该 AI 自己的版本化确定性 RNG 状态必须相等（未来决策序列的直接输入）", eventSequence);
+            }
+        }
+
+        private static Dictionary<long, IntentSnapshot> IntentsBySequence(LogicSnapshot snapshot)
+        {
+            var map = new Dictionary<long, IntentSnapshot>(snapshot.Intents.Count);
+            for (int i = 0; i < snapshot.Intents.Count; i++)
+            {
+                IntentSnapshot intent = snapshot.Intents[i];
+                if (intent != null) map[intent.IntentSequence] = intent;
+            }
+            return map;
+        }
+
+        private static Dictionary<long, ConflictGroupSnapshot> GroupsByKey(LogicSnapshot snapshot)
+        {
+            var map = new Dictionary<long, ConflictGroupSnapshot>(snapshot.ConflictGroups.Count);
+            for (int i = 0; i < snapshot.ConflictGroups.Count; i++)
+            {
+                ConflictGroupSnapshot group = snapshot.ConflictGroups[i];
+                if (group != null) map[group.GroupKey] = group;
+            }
+            return map;
+        }
+
+        private static Dictionary<string, ContactSnapshot> ContactsByKey(LogicSnapshot snapshot)
+        {
+            var map = new Dictionary<string, ContactSnapshot>(snapshot.Contacts.Count, StringComparer.Ordinal);
+            for (int i = 0; i < snapshot.Contacts.Count; i++)
+            {
+                ContactSnapshot contact = snapshot.Contacts[i];
+                if (contact != null) map[ContactSnapshotKey(contact)] = contact;
+            }
+            return map;
+        }
+
+        private static Dictionary<string, AiControllerSnapshot> AiControllersById(LogicSnapshot snapshot)
+        {
+            var map = new Dictionary<string, AiControllerSnapshot>(snapshot.AiControllers.Count, StringComparer.Ordinal);
+            for (int i = 0; i < snapshot.AiControllers.Count; i++)
+            {
+                AiControllerSnapshot controller = snapshot.AiControllers[i];
+                if (controller != null) map[controller.ControllerId ?? string.Empty] = controller;
+            }
+            return map;
+        }
+
+        /// <summary>接触键的稳定文本键（六元，全部整数；不含发现顺序、不含节点下标）。</summary>
+        private static string ContactSnapshotKey(ContactSnapshot contact)
+            => contact.Type.ToString(CultureInfo.InvariantCulture)
+               + "|" + contact.FirstUnitId.ToString(CultureInfo.InvariantCulture)
+               + "|" + contact.FirstPlanId.ToString(CultureInfo.InvariantCulture)
+               + "|" + contact.SecondUnitId.ToString(CultureInfo.InvariantCulture)
+               + "|" + contact.SecondPlanId.ToString(CultureInfo.InvariantCulture)
+               + "|" + contact.TargetUnitId.ToString(CultureInfo.InvariantCulture);
+
+        /// <summary>两个键集合的并集，按稳定键升序（长键按数值、字符串键按 Ordinal）。</summary>
+        private static List<long> UnionKeys(IEnumerable<long> first, IEnumerable<long> second)
+        {
+            var set = new SortedSet<long>();
+            foreach (long key in first) set.Add(key);
+            foreach (long key in second) set.Add(key);
+            return new List<long>(set);
+        }
+
+        private static List<string> UnionKeys(IEnumerable<string> first, IEnumerable<string> second)
+        {
+            var set = new SortedSet<string>(StringComparer.Ordinal);
+            foreach (string key in first) set.Add(key);
+            foreach (string key in second) set.Add(key);
+            return new List<string>(set);
+        }
+
+        private static TValue ValueOrNull<TValue>(Dictionary<long, TValue> map, long key) where TValue : class
+        {
+            TValue value;
+            return map.TryGetValue(key, out value) ? value : null;
+        }
+
+        private static TValue ValueOrNull<TValue>(Dictionary<string, TValue> map, string key) where TValue : class
+        {
+            TValue value;
+            return map.TryGetValue(key, out value) ? value : null;
+        }
+
+        private static string Present(object value) => value == null ? "<absent>" : "<present>";
+
+        private static string JoinLongs(IReadOnlyList<long> values)
+        {
+            if (values == null || values.Count == 0) return "<empty>";
+            var builder = new StringBuilder();
+            for (int i = 0; i < values.Count; i++)
+            {
+                if (i > 0) builder.Append(',');
+                builder.Append(values[i].ToString(CultureInfo.InvariantCulture));
+            }
+            return builder.ToString();
+        }
+
+        private static string ContactKeysText(IReadOnlyList<ContactSnapshot> keys)
+        {
+            if (keys == null || keys.Count == 0) return "<empty>";
+            var builder = new StringBuilder();
+            for (int i = 0; i < keys.Count; i++)
+            {
+                if (i > 0) builder.Append(';');
+                builder.Append(ContactSnapshotKey(keys[i]));
+            }
+            return builder.ToString();
+        }
+
+        private static int MomentumDirection(IntentSnapshot intent)
+            => intent.Momentum == null ? 0 : intent.Momentum.Direction;
+
+        private static int MomentumUnits(IntentSnapshot intent)
+            => intent.Momentum == null ? 0 : intent.Momentum.Units;
+
+        private static string MomentumImpactProfileId(IntentSnapshot intent)
+            => intent.Momentum == null ? string.Empty : intent.Momentum.ImpactProfileId;
+
+        private static int AreaPointCount(IntentSnapshot intent)
+            => intent.AreaPoints == null ? 0 : intent.AreaPoints.Count;
+
+        private static string AreaPointText(IntentSnapshot intent, int index)
+        {
+            TrianglePoint point = intent.AreaPoints[index];
+            return point.X.ToString(CultureInfo.InvariantCulture) + "/"
+                   + point.Y.ToString(CultureInfo.InvariantCulture) + "/"
+                   + point.T.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static int DamageComponentCount(IntentSnapshot intent)
+            => intent.DamageComponents == null ? 0 : intent.DamageComponents.Count;
+
+        private static string DamageChannelOf(IntentSnapshot intent, int index)
+            => intent.DamageComponents[index].ChannelId ?? string.Empty;
+
+        /// <summary>
+        /// 原始伤害的<strong>二进制位</strong>（十六进制逐字节比较）。
+        ///
+        /// 为什么按位而不是按浮点：任务 03 的冻结规则禁止浮点参与比较与哈希
+        /// （<c>DamageComponentSnapshot</c> 正是为此只暴露位模式），
+        /// 因此这里原样比较位模式——它既精确又不引入任何浮点容差。
+        /// </summary>
+        private static string DamageRawAmountBits(IntentSnapshot intent, int index)
+            => "0x" + intent.DamageComponents[index].RawAmountBits.ToString("X8", CultureInfo.InvariantCulture);
+
+        private static string DamageTagsOf(IntentSnapshot intent, int index)
+            => intent.DamageComponents[index].Tags.ToString(CultureInfo.InvariantCulture);
+
+        private static string RngText(RngSnapshot rng)
+            => rng == null
+                ? "<null>"
+                : rng.AlgorithmVersion.ToString(CultureInfo.InvariantCulture)
+                  + "/" + rng.State.ToString(CultureInfo.InvariantCulture);
 
         // -------- 限期清零的暂不可比较字段 --------
 

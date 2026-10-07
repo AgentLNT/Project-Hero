@@ -434,6 +434,17 @@ namespace ProjectHero.Logic.Simulation
     public interface IDecisionObserver
     {
         void ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, long nextTick);
+
+        /// <summary>
+        /// 本观察者代表的<strong>受信 Controller</strong>；<c>null</c> = 不按 Controller 过滤
+        /// （只读诊断观察者，收到 Canonical 视角的决策快照）。
+        ///
+        /// 任务 09（产出 17）：装配方按它给每个观察者投递<strong>已过滤</strong>的
+        /// <see cref="Snapshots.DecisionSnapshot"/>，因此"某个 Controller 的 UI/AI 看到别人
+        /// 未公开的 Editable 计划"在投递路径上就不可能发生。默认实现返回 <c>null</c>，
+        /// 因此既有观察者零改动继续编译。
+        /// </summary>
+        Ids.ControllerId ObserverControllerId(DecisionSnapshot snapshot) => default;
     }
 
     /// <summary>
@@ -505,7 +516,11 @@ namespace ProjectHero.Logic.Simulation
             IUnitVolumeTableSource unitVolumeTables = null,
             Action<IReadOnlyList<ActionPlanId>> budgetReleaseSink = null,
             UnitId? concurrentHeroUnitId = null,
-            Resources.IAdrenalineAccrualFactSource adrenalineAccrualFactSource = null)
+            Resources.IAdrenalineAccrualFactSource adrenalineAccrualFactSource = null,
+            // 任务 09 A 流（产出 15）：AI 未来决策状态的只读来源。刻意放在签名末尾并带默认值，
+            // 让全部既有位置参数调用点（含 Unity 侧夹具）零改动继续编译。
+            // 默认 null = 本场没有 AI 控制者 ⇒ 快照的 AiControllers 为空集合（合法状态）。
+            AI.IAiRuntimeStateSource aiRuntimeStates = null)
         {
             UnitStateAdvance = unitStateAdvance ?? NoUnitStateAdvanceSystem.Instance;
             VictoryEvaluator = victoryEvaluator ?? FactionEliminationVictoryEvaluator.Instance;
@@ -544,6 +559,7 @@ namespace ProjectHero.Logic.Simulation
             BudgetReleaseSink = budgetReleaseSink;
             ConcurrentHeroUnitId = concurrentHeroUnitId;
             AdrenalineAccrualFactSource = adrenalineAccrualFactSource;
+            AiRuntimeStates = aiRuntimeStates;
             // 阶段 2 的判据扩展点：显式给出的优先；否则若评估器同时实现了它
             // （测试用的同类夹具常常同时实现两处钩子），自动采用同一实例，
             // 避免"评估器被推迟但命令前判据没被推迟"这类装配歧义。
@@ -593,6 +609,16 @@ namespace ProjectHero.Logic.Simulation
         public IReadOnlyList<IStepInvariantCheck> InvariantChecks { get; }
         public IReadOnlyList<IHistoryArchiveCandidateSource> ArchiveCandidateSources { get; }
         public IReadOnlyList<IDecisionObserver> DecisionObservers { get; }
+
+        /// <summary>
+        /// 任务 09（产出 15）：<strong>AI 未来决策状态</strong>的只读来源。
+        ///
+        /// <strong>默认 null</strong> ⇒ 快照里的 <c>AiControllers</c> 是空集合，
+        /// 这是"本场没有 AI 控制者"的合法状态，而不是"AI 状态没接线"：
+        /// 任务 09 的 AI 接入点是一个 <see cref="IDecisionObserver"/>（阶段 18 的既有接缝），
+        /// 装配方把同一个 <c>AiControllerLogic</c> 同时注入这里，快照就能观察到它。
+        /// </summary>
+        public AI.IAiRuntimeStateSource AiRuntimeStates { get; }
 
         /// <summary>可选的阶段计时采样器（默认 null = 不采样；计时结果绝不进入逻辑输入或哈希）。</summary>
         public StepPhaseTimingRecorder PhaseTiming { get; }

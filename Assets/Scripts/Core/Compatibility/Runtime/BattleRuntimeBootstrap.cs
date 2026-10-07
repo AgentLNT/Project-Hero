@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 using ProjectHero.Logic;
 using ProjectHero.Logic.Definitions;
+using ProjectHero.Logic.Replay;
 using UnityEngine;
 
 namespace ProjectHero.Core.Compatibility.Runtime
@@ -80,6 +81,15 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         private readonly RuntimeCallLedger _ledger = new RuntimeCallLedger();
         private readonly ShadowWriteCounters _shadowWrites = new ShadowWriteCounters();
+
+        /// <summary>
+        /// 本场的回放权威输入记录器（任务 09「必须产出」11 / 16）。
+        ///
+        /// 它是<strong>唯一</strong>的权威事实出口：Shadow runner 在唯一模拟入口里按
+        /// <see cref="ShadowAuthorityProtocol"/> 往这里收口，真实请求镜像再从这里取
+        /// 只含 <c>Player</c> 的事实。每场战斗重建一次，避免上一场的事实残留。
+        /// </summary>
+        private ReplayAuthorityInput _shadowAuthorityInput = new ReplayAuthorityInput();
         private readonly FrameAdapterSet _adapters = new FrameAdapterSet();
         private readonly UnityBattleDriver _newDriver = new UnityBattleDriver();
         private readonly List<LegacyWriterRegistration> _legacyWriters = new List<LegacyWriterRegistration>();
@@ -109,6 +119,16 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         /// <summary>可观察调用计数账本。</summary>
         public RuntimeCallLedger Ledger => _ledger;
+
+        /// <summary>
+        /// 本场的<strong>回放权威输入记录器</strong>（任务 09「必须产出」11 / 16）。
+        ///
+        /// 只含入口绑定之后的 <c>Player</c> 事实（Issuer / ProducerOrdinal / Request / 原始提交 Tick）
+        /// 与它们的接受/拒绝处置；AI/System 由新模拟按相同初始输入与 RNG 从 Tick 0 重建，
+        /// 因此在这里<strong>连载荷都不保存</strong>（只累加
+        /// <see cref="ReplayAuthorityInput.ExcludedNonAuthoritativeFactCount"/>）。
+        /// </summary>
+        public ReplayAuthorityInput ShadowAuthorityInput => _shadowAuthorityInput;
 
         /// <summary>Shadow 新模拟写入计数器（Shadow 模式必须全 0）。</summary>
         public ShadowWriteCounters ShadowWrites => _shadowWrites;
@@ -579,11 +599,16 @@ namespace ProjectHero.Core.Compatibility.Runtime
             _shadowReports.Clear();
             _lastShadowReport = null;
 
+            // 权威输入记录器**就地**复位（不替换对象）：真实请求镜像持有的就是本对象，
+            // 替换会让镜像读到上一场的事实。
+            _shadowAuthorityInput.Reset();
+
             // 每场战斗重新装配参与者，并<b>显式复位</b>本场参与者：
             // 适配器是场景组件/长期对象，"上一场已停止"的状态会残留，不复位就会出现
             // "新战斗开局即停止"（Adapters.Legacy.IsStopped == true）。
             ResetAdaptersForNewBattle(factoryAdapters.Legacy);
-            _context = new BattleRuntimeContext(mode, Ledger, ShadowWrites, _simulationSource);
+            _context = new BattleRuntimeContext(
+                mode, Ledger, ShadowWrites, _simulationSource, _shadowAuthorityInput);
 
             // 定义侧槽位顺序（SlotId Ordinal 升序 ⇒ UnitId）：Shadow 比较用它独立解析槽位映射。
             // 只使用任务 02B 的只读纯数据入口；构建失败时留空（比较器据此报告槽位不可解析）。
@@ -1063,13 +1088,34 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private ShadowBattleRunner EnsureShadowRunner()
         {
             var existing = _adapters.Shadow;
-            if (existing != null) return existing;
+            if (existing != null)
+            {
+                // 幂等：真实请求镜像与权威输入记录器必须在**每场**战斗上都在位
+                // （重用同一 runner 重开一局时，上一场的镜像游标不能继续生效）。
+                RebindShadowAuthority(existing);
+                return existing;
+            }
 
             var runner = new ShadowBattleRunner();
             runner.Sink = this;
             runner.ConfigureCheckpoints(BuildComparisonConfig());
+            RebindShadowAuthority(runner);
             _adapters.SetShadow(runner);
             return runner;
+        }
+
+        /// <summary>
+        /// 把「回放权威输入记录器」与「真实请求镜像」接到 Shadow runner 上（产出 16 的生产装配点）。
+        ///
+        /// 两者是同一份事实的产出侧与消费侧，必须指向<strong>同一批对象</strong>：
+        /// 记录器（<see cref="ReplayAuthorityInput"/>）在唯一模拟入口内收口，
+        /// 镜像（<see cref="ShadowPlayerRequestMirror"/>）只从它的
+        /// <c>AuthorityCommands</c> 取证 —— 因此镜像面在类型上就取不到 AI/System 载荷。
+        /// </summary>
+        private void RebindShadowAuthority(ShadowBattleRunner runner)
+        {
+            runner.ConfigureAuthorityInput(_shadowAuthorityInput);
+            runner.AttachMirror(new ShadowPlayerRequestMirror(_shadowAuthorityInput));
         }
 
         private void CollectLegacyWriters()

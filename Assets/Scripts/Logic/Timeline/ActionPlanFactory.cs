@@ -277,7 +277,7 @@ namespace ProjectHero.Logic.Timeline
 
             return _factions.Allows(attack.AllowedTargetRelations, ownerUnitId, target)
                 ? null
-                : ScheduleCodes.SCHEDULE_PRIMARY_TARGET_RELATION_REJECTED;
+                : ScheduleCodes.TARGET_RELATION_NOT_ALLOWED;
         }
 
         /// <summary>

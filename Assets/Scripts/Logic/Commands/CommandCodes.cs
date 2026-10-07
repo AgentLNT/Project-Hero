@@ -65,6 +65,37 @@ namespace ProjectHero.Logic.Commands
         /// 既不静默丢弃，也不进入命令处理器（主方案 3.4.3 的对应分支）。
         /// </summary>
         public const string COMMAND_BATTLE_ENDED_BEFORE_COMMAND_PHASE = "BATTLE_ENDED_BEFORE_COMMAND_PHASE";
+
+        // —— 任务 09 A 流（产出 6/7）：统一处理器与载荷控制权 ——
+
+        /// <summary>
+        /// <strong>发行者不能控制该载荷涉及的单位</strong>（任务 09「必须产出」6 第二段）。
+        ///
+        /// 它是<strong>处理器级</strong>拒绝码（命令已获得 <c>CommandSequence</c>），
+        /// 玩家、AI、旧壳与系统走同一条判定：发行者身份只来自入口绑定，
+        /// 载荷里的单位 ID 只表达意图目标、不证明权限。
+        /// 一条命令只产生<strong>一个</strong>该码的拒绝事件，绝不逐单位刷屏。
+        /// </summary>
+        public const string COMMAND_ISSUER_CANNOT_CONTROL_UNIT = "COMMAND_ISSUER_CANNOT_CONTROL_UNIT";
+
+        /// <summary>
+        /// 载荷的控制权<strong>无法被证明</strong>：发行人没有解析出作用单位所需的权威事实。
+        /// <list type="bullet">
+        /// <item>Move/Remove：<c>PlanId</c> 在权威注册表里查不到（不存在或已终态注销）；</item>
+        /// <item>反应：<c>ReactionOpportunityId</c> 解析不出防御者
+        /// （机会不存在 / 作用单位来源未装配）。</item>
+        /// </list>
+        /// 它与 <see cref="COMMAND_ISSUER_CANNOT_CONTROL_UNIT"/> 刻意分开：
+        /// 前者是"系统不知道你说的是谁"，后者是"我们知道，但你不许动它"。
+        /// 两者都<strong>不得</strong>被静默跳过——跳过等于绕过控制权校验。
+        /// </summary>
+        public const string COMMAND_ISSUER_UNIT_UNRESOLVABLE = "COMMAND_ISSUER_UNIT_UNRESOLVABLE";
+
+        /// <summary>排程操作的目标计划解析不出所有者（与 <c>COMMAND_ISSUER_UNIT_UNRESOLVABLE</c> 同族）。</summary>
+        public const string COMMAND_PLAN_OWNER_UNRESOLVABLE = "COMMAND_PLAN_OWNER_UNRESOLVABLE";
+
+        /// <summary>控制权判定的诊断原因（进入异常/日志文本，不单独构成拒绝事件）。</summary>
+        public const string COMMAND_UNIT_PERMISSION_DENIED = "COMMAND_UNIT_PERMISSION_DENIED";
     }
 
     /// <summary>

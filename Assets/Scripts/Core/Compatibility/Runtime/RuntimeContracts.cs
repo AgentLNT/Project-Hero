@@ -68,7 +68,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
     /// <summary>
     /// Bootstrap 交给适配器的只读运行上下文。
-    /// 只含模式、调用账本与纯数据来源，<strong>不含 Legacy 类型</strong>。
+    /// 只含模式、调用账本、权威输入记录器与纯数据来源，<strong>不含 Legacy 类型</strong>。
     /// </summary>
     public sealed class BattleRuntimeContext
     {
@@ -76,12 +76,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
             BattleRuntimeMode mode,
             RuntimeCallLedger ledger,
             ShadowWriteCounters shadowWrites,
-            IBattleSimulationSource simulationSource)
+            IBattleSimulationSource simulationSource,
+            Logic.Replay.ReplayAuthorityInput authorityInput = null)
         {
             Mode = mode;
             Ledger = ledger;
             ShadowWrites = shadowWrites;
             SimulationSource = simulationSource;
+            AuthorityInput = authorityInput;
         }
 
         /// <summary>本场战斗创建之前已固定的模式。</summary>
@@ -95,6 +97,16 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         /// <summary>纯数据战斗来源；Legacy 模式可以为 null。</summary>
         public IBattleSimulationSource SimulationSource { get; }
+
+        /// <summary>
+        /// 本场战斗的回放权威输入记录器（任务 09「必须产出」11 / 16）。
+        ///
+        /// 它由 Bootstrap 持有并注入；<see cref="ShadowBattleRunner"/> 在唯一模拟入口里
+        /// 按 <see cref="ShadowAuthorityProtocol"/> 收口，镜像面再从这个记录器取
+        /// <strong>只含 Player</strong> 的权威事实。为 <c>null</c> 表示本场不记录权威输入
+        /// （旧行为，不改变任何授权判定）。
+        /// </summary>
+        public Logic.Replay.ReplayAuthorityInput AuthorityInput { get; }
     }
 
     /// <summary>
