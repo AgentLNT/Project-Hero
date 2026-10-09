@@ -463,7 +463,7 @@ namespace ProjectHero.UI.Timeline
         /// 旧行为逐字保留（PlayMode 38 条与旧场景零回归）。</item>
         /// </list>
         /// </summary>
-        public bool LegacyTimelineWritesEnabled => !IsInputPortsBound;
+        public bool LegacyTimelineWritesEnabled => ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed && !IsInputPortsBound;
 
         public bool SuppressBlockClicks => Time.unscaledTime < _suppressBlockClicksUntilUnscaled;
 

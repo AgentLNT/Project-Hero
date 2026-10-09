@@ -50,11 +50,11 @@ namespace ProjectHero.Authoring.Tests
         {
             "ProjectHero.Authoring",
             "ProjectHero.Authoring.Tests",
-            "ProjectHero.Compatibility.Runtime",
             "ProjectHero.Compatibility.Runtime.Tests",
             "ProjectHero.Grid",
             "ProjectHero.Logic",
-            "ProjectHero.Logic.Tests"
+            "ProjectHero.Logic.Tests",
+            "ProjectHero.UnityView"
         };
 
         [Serializable]
@@ -80,8 +80,8 @@ namespace ProjectHero.Authoring.Tests
             Assert.That(names, Is.EqualTo(ExpectedAssemblyNames),
                 "程序集全量集合必须与冻结清单一致（03B 只新增 Compatibility.Runtime 与其测试程序集；"
                 + "不得提前创建 UnityView）");
-            Assert.That(names, Does.Not.Contain("ProjectHero.UnityView"),
-                "UnityView 只在任务 10 创建");
+            Assert.That(names, Does.Not.Contain("ProjectHero.Compatibility.Runtime"),
+                "任务10迁移后只保留一个运行时契约程序集");
 
             foreach (var info in infos)
             {
@@ -120,13 +120,12 @@ namespace ProjectHero.Authoring.Tests
                 .OrderBy(r => r, StringComparer.Ordinal)
                 .ToArray();
             Assert.That(authoringTestReferences,
-                Is.EqualTo(new[] { "ProjectHero.Authoring", "ProjectHero.Compatibility.Runtime",
-                    "ProjectHero.Grid", "ProjectHero.Logic" }),
+                Is.EqualTo(new[] { "ProjectHero.Authoring", "ProjectHero.Grid", "ProjectHero.Logic", "ProjectHero.UnityView" }),
                 "Authoring.Tests 只能引用 Authoring / Compatibility.Runtime / Grid / Logic");
 
             // ---- 任务 03B 新增：运行时所有权壳契约程序集与其 PlayMode 测试程序集 ----
 
-            var compatibilityRuntime = infos.Single(i => i.name == "ProjectHero.Compatibility.Runtime");
+            var compatibilityRuntime = infos.Single(i => i.name == "ProjectHero.UnityView");
             var compatibilityReferences = (compatibilityRuntime.references ?? new string[0])
                 .Where(r => !r.StartsWith("UnityEngine.") && !r.StartsWith("UnityEditor."))
                 .OrderBy(r => r, StringComparer.Ordinal)
@@ -143,7 +142,7 @@ namespace ProjectHero.Authoring.Tests
                 .OrderBy(r => r, StringComparer.Ordinal)
                 .ToArray();
             Assert.That(playModeReferences,
-                Is.EqualTo(new[] { "ProjectHero.Compatibility.Runtime", "ProjectHero.Logic" }),
+                Is.EqualTo(new[] { "ProjectHero.Logic", "ProjectHero.UnityView" }),
                 "PlayMode 测试只允许引用契约程序集与 Logic（不得引用 Assembly-CSharp 或 Authoring）");
         }
 

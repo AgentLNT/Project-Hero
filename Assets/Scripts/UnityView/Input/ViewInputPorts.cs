@@ -43,6 +43,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
         /// <summary>战斗是否已进入终态。终态后 UI 不再产生新命令（入口也会稳定拒绝）。</summary>
         bool IsBattleEnded { get; }
+        bool IsPaused => false;
 
         /// <summary>
         /// 唯一写入口。返回 null 表示已被入口接受并占用一个 ProducerOrdinal；

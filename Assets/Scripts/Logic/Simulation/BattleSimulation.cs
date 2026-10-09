@@ -438,6 +438,7 @@ namespace ProjectHero.Logic.Simulation
         private long _batchBaseScheduleRevision;
         private long _scheduleRevision;
         private long _tick = -1L;
+        private long _eventTick = -1L;
         private string _resolvedResultCode;
         private BattleEndSnapshot _battleEnd = BattleEndSnapshot.Active();
         private string _pendingStopResultCode;
@@ -566,7 +567,7 @@ namespace ProjectHero.Logic.Simulation
                         ? change.ReservationPlanId.Value.Value
                         : 0L;
                     _outbox.Emit(sequence => new AdrenalineLedgerChangedEvent(
-                        _tick, sequence, change.UnitId, change.CycleId, change.ChangeKind,
+                        _eventTick, sequence, change.UnitId, change.CycleId, change.ChangeKind,
                         change.AvailableBefore, change.AvailableAfter,
                         reservationPlanId, change.ReservationAmount));
                 }
@@ -602,9 +603,9 @@ namespace ProjectHero.Logic.Simulation
                 HeroUnitId = assembly.ConcurrentHeroUnitId,
                 ActivatedSink = (windowId, playerUnitId, ownerUnitId) =>
                     _outbox.Emit(sequence => new ConcurrentActionActivatedEvent(
-                        _tick, sequence, windowId, playerUnitId, ownerUnitId)),
+                        _eventTick, sequence, windowId, playerUnitId, ownerUnitId)),
                 DeactivatedSink = (windowId, playerUnitId) =>
-                    _outbox.Emit(sequence => new ConcurrentActionDeactivatedEvent(_tick, sequence, windowId, playerUnitId))
+                    _outbox.Emit(sequence => new ConcurrentActionDeactivatedEvent(_eventTick, sequence, windowId, playerUnitId))
             };
             _concurrentAction.BindMetaResource(() => _metaResource, value => _metaResource = value);
 
@@ -612,7 +613,7 @@ namespace ProjectHero.Logic.Simulation
             // 装配显式注入的端口优先（任务 05 的既有测试夹具），否则用本任务的真实实现。
             _budgetAuthority = new TurnWindowBudgetAuthority(_windowManager, _concurrentAction);
             _budgetAuthority.ChangedSink = change => _outbox.Emit(sequence => new TurnBudgetChangedEvent(
-                _tick, sequence, change.WindowId, change.OwnerUnitId,
+                _eventTick, sequence, change.WindowId, change.OwnerUnitId,
                 change.ActionPlanId.HasValue ? change.ActionPlanId.Value.Value : 0L,
                 change.ChangeKind, change.Source,
                 change.AvailableBefore, change.AvailableAfter,
@@ -1061,6 +1062,11 @@ namespace ProjectHero.Logic.Simulation
         /// <summary>最近一次投递给决策观察者的只读决策快照（AI 与玩家共用同一实例）。</summary>
         public DecisionSnapshot LastDecisionSnapshot => _lastDecisionSnapshot;
 
+        /// <summary>UI read projection, filtered by the same control authority used for AI and commands.</summary>
+        public DecisionSnapshot DecisionSnapshotFor(ControllerId controllerId)
+            => BuildDecisionSnapshot(_tick).WithDefinition(_definition).ForController(controllerId,
+                _controllerUnitAuthority.ControlledUnitsOf(controllerId), OwnWindowSnapshotOf(controllerId));
+
         /// <summary>唯一终态清理的审计报告（未结束时为 null）。</summary>
         public BattleEndFinalizerReport FinalizerReport => _finalizerReport;
 
@@ -1385,6 +1391,7 @@ namespace ProjectHero.Logic.Simulation
                     " lastCompletedTick=" + _tick.ToString(CultureInfo.InvariantCulture));
 
             ValidateBatch(tick, externalBatch);
+            _eventTick = tick;
 
             _trace.Begin(tick, _assembly.PhaseTiming != null);
             _frozenBatch = externalBatch;

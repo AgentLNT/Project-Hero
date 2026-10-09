@@ -34,6 +34,7 @@ namespace ProjectHero.Logic.AI
     /// </summary>
     public sealed class AiControllerLogic : IDecisionObserver, IAiRuntimeStateSource
     {
+        public const int MaximumDiagnosticDecisions = 512;
         private readonly ulong _battleSeed;
         private readonly List<string> _registrationOrder = new List<string>(4);
         private readonly Dictionary<string, AiRuntimeState> _states =
@@ -190,6 +191,7 @@ namespace ProjectHero.Logic.AI
                 state.NextThinkTick = nextTick;
                 state.LastDecision = decision;
                 _decisions.Add(decision);
+                if (_decisions.Count > MaximumDiagnosticDecisions) _decisions.RemoveAt(0);
             }
         }
 
@@ -208,6 +210,7 @@ namespace ProjectHero.Logic.AI
         }
 
         /// <summary>全部已作出的决策（决策顺序；只读诊断面）。</summary>
+        /// <summary>Recent diagnostic decisions, capped at 512; authoritative DecisionCount remains complete.</summary>
         public IReadOnlyList<AiDecision> Decisions => _decisions;
 
         /// <summary>入口级拒绝（只读诊断面；入口拒绝<strong>不</strong>消耗 <c>ProducerOrdinal</c>）。</summary>

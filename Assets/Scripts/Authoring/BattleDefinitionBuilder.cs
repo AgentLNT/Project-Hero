@@ -35,6 +35,7 @@ namespace ProjectHero.Authoring
     public static class BattleDefinitionBuilder
     {
         public const string RulesVersionV1 = "battle-def-v1";
+        public const string MainRulesVersion = "battle-def-v2-turn180";
 
         /// <summary>
         /// 主战斗场景的设计网格边界（顶点包围盒，偶数坐标，包含两个初始站位）。
@@ -215,7 +216,7 @@ namespace ProjectHero.Authoring
                 return BattleDefinitionBuildResult.Failed(errors, warnings);
 
             string hash = BattleDefinitionHash.Compute(
-                RulesVersionV1,
+                MainRulesVersion,
                 rules.TicksPerSecond,
                 LegacyIdMigrationManifest.LibraryVolumes.Count,
                 rules,
@@ -236,7 +237,7 @@ namespace ProjectHero.Authoring
                 dynamicSpawnPolicy);
 
             var definition = new BattleDefinition(
-                RulesVersionV1,
+                MainRulesVersion,
                 rules.TicksPerSecond,
                 rules,
                 concurrentAction,
@@ -492,7 +493,8 @@ namespace ProjectHero.Authoring
                 boundary,
                 BattleDefinitionAssembler.CanonicalizeSlots(slots),
                 BattleDefinitionAssembler.CanonicalizeControllers(controllers),
-                victory);
+                victory,
+                new TurnSubmissionDefinition(180, new EncounterSlotId(LegacyIdMigrationManifest.SlotHero)));
         }
 
         // ================= 私有助手 =================

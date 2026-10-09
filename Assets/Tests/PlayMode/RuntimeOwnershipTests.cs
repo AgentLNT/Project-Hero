@@ -583,7 +583,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.Ledger.AdvanceCalls(RuntimeAdvancePath.NewSimulationStep),
                 Is.GreaterThan(0), "New 模式必须真正调用新模拟 Step");
             Assert.That(Bootstrap.NewDriver.TicksAdvanced, Is.GreaterThan(0));
-            Assert.That(Bootstrap.NewDriver.BattleDefinitionHash, Is.EqualTo("d997b13b18573e15"),
+            Assert.That(Bootstrap.NewDriver.BattleDefinitionHash, Is.EqualTo("ed4c3e21b1488e60"),
                 "New 模拟必须来自真实 02B 定义");
 
             Bootstrap.StopBattle("new-never-legacy");
@@ -643,11 +643,11 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(reports.Count, Is.EqualTo(frames), "每个只读检查点必须产出一份比较报告");
             var last = reports[reports.Count - 1];
             Assert.That(last.Mode, Is.EqualTo(BattleRuntimeMode.Shadow));
-            Assert.That(last.BattleDefinitionHash, Is.EqualTo("d997b13b18573e15"),
+            Assert.That(last.BattleDefinitionHash, Is.EqualTo("ed4c3e21b1488e60"),
                 "报告必须记录 BattleDefinitionHash");
             Assert.That(last.Encounter, Is.EqualTo("encounter.combat_sample_scene"),
                 "报告必须记录 Encounter");
-            Assert.That(last.RulesVersion, Is.EqualTo("battle-def-v1"));
+            Assert.That(last.RulesVersion, Is.EqualTo("battle-def-v2-turn180"));
             Assert.That(last.ComparisonConfigVersion, Is.EqualTo(1),
                 "报告必须记录比较配置版本");
             Assert.That(last.InputSummary, Is.Not.Empty, "报告必须记录输入摘要");
@@ -2167,9 +2167,9 @@ namespace ProjectHero.Tests.PlayMode
 
             var seed = source.BuildSeed();
             Assert.That(seed.Validate(), Is.Null);
-            Assert.That(seed.BattleDefinitionHash, Is.EqualTo("d997b13b18573e15"),
+            Assert.That(seed.BattleDefinitionHash, Is.EqualTo("ed4c3e21b1488e60"),
                 "主战斗定义哈希必须与 02B 冻结锚点一致");
-            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v1"));
+            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v2-turn180"));
             Assert.That(seed.EncounterId.Value, Is.EqualTo("encounter.combat_sample_scene"));
             Assert.That(seed.Definition.FindEncounter(seed.EncounterId), Is.Not.Null);
             Assert.That(seed.InputSummary, Is.Not.Empty);
@@ -2986,7 +2986,7 @@ namespace ProjectHero.Tests.PlayMode
             }
 
             // 对照证据：真实定义 + 真实场景确实被用于本用例。
-            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v1"));
+            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v2-turn180"));
             Assert.That(Bootstrap.LegacyObservations.Count, Is.GreaterThan(0),
                 "必须采集到旧侧只读观测（否则比较空转）");
             Assert.That(Bootstrap.LegacyObservations[0].Units.Count, Is.EqualTo(2));
@@ -3535,7 +3535,7 @@ namespace ProjectHero.Tests.PlayMode
                 "逐用例策略必须自洽（缺责任任务/门槛、宽泛批准都会被拒）：" + report.Describe());
             Assert.That(report.RulesVersion, Is.EqualTo(seed.RulesVersion),
                 "报告必须记录本用例的策略规则版本（逐用例登记的组成部分）");
-            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v1"),
+            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v2-turn180"),
                 "对照证据：真实定义（02B）的规则版本");
             Assert.That(report.CanClaimEquivalence, Is.True, report.Describe());
             Assert.That(report.EquivalenceClaim, Is.EqualTo("EQUIVALENT"), report.Describe());
@@ -4476,7 +4476,7 @@ namespace ProjectHero.Tests.PlayMode
                 "逐用例策略必须自洽（缺责任任务/门槛、宽泛批准都会被拒）：" + report.Describe());
             Assert.That(report.RulesVersion, Is.EqualTo(seed.RulesVersion),
                 "报告必须记录本用例的策略规则版本（逐差异登记的组成部分）");
-            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v1"),
+            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v2-turn180"),
                 "对照证据：真实定义（02B）的规则版本");
             Assert.That(report.CanClaimEquivalence, Is.True, report.Describe());
             Assert.That(report.EquivalenceClaim, Is.EqualTo("EQUIVALENT"), report.Describe());

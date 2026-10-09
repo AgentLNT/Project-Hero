@@ -109,11 +109,18 @@ namespace ProjectHero.Logic.Definitions
         GridBoundaryDefinition GridBoundary,
         IReadOnlyList<EncounterUnitSlot> Slots,
         IReadOnlyList<ControllerBinding> Controllers,
-        VictoryDefinition Victory)
+        VictoryDefinition Victory,
+        TurnSubmissionDefinition TurnSubmission = null)
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
             writer.Write("encounter.id", EncounterId.Value ?? string.Empty);
+            if (TurnSubmission != null)
+            {
+                writer.Write("encounter.turn_budget_ticks", TurnSubmission.BudgetTicks);
+                writer.Write("encounter.concurrent_hero_slot", TurnSubmission.ConcurrentHeroSlot.Value);
+                writer.Write("encounter.turn_order", "player-first-action-speed-desc-unit-id-v1");
+            }
             GridBoundary.WriteHashComponents(writer);
 
             if (Slots != null)
@@ -153,6 +160,27 @@ namespace ProjectHero.Logic.Definitions
                 writer.Write("victory.result_code.defeat", Victory.DefeatResultCode ?? string.Empty);
                 writer.Write("victory.result_code.draw", Victory.DrawResultCode ?? string.Empty);
             }
+        }
+    }
+
+    public sealed record TurnSubmissionDefinition(int BudgetTicks, EncounterSlotId ConcurrentHeroSlot)
+    {
+        public string Validate(EncounterDefinition encounter)
+        {
+            if (BudgetTicks <= 0) return "ENCOUNTER_TURN_BUDGET_INVALID";
+            if (Ids.DefinitionIdValidation.ValidateFormat(ConcurrentHeroSlot.Value) != null)
+                return "ENCOUNTER_CONCURRENT_HERO_SLOT_INVALID";
+            if (encounter?.Slots == null) return "ENCOUNTER_CONCURRENT_HERO_SLOT_UNKNOWN";
+            bool exists = false;
+            foreach (var slot in encounter.Slots)
+                if (slot.SlotId == ConcurrentHeroSlot) exists = true;
+            if (!exists) return "ENCOUNTER_CONCURRENT_HERO_SLOT_UNKNOWN";
+            if (encounter.Controllers == null) return "ENCOUNTER_CONCURRENT_HERO_UNCONTROLLED";
+            foreach (var binding in encounter.Controllers)
+                if (binding.ControlledSlots != null)
+                    foreach (var slot in binding.ControlledSlots)
+                        if (slot == ConcurrentHeroSlot) return null;
+            return "ENCOUNTER_CONCURRENT_HERO_UNCONTROLLED";
         }
     }
 }

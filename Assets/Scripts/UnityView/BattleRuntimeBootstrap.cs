@@ -62,6 +62,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
         [Tooltip("纯数据战斗来源：由 Assembly-CSharp 的真实 02B 初始化链实现 IBattleSimulationSource。")]
         [SerializeField] private MonoBehaviour _simulationSourceSlot;
 
+        [Tooltip("New 模式显式只读视图消费者；必须实现 IBattleViewConsumer。")]
+        [SerializeField] private MonoBehaviour _viewConsumerSlot;
+
         [Header("自动启动")]
         [Tooltip("Start() 时立即创建战斗（主战斗场景为 true；隐藏验证场景由测试显式驱动时为 false）。")]
         [SerializeField] private bool _autoStart = true;
@@ -141,6 +144,16 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         /// <summary>最小 New Driver。</summary>
         public UnityBattleDriver NewDriver => _newDriver;
+
+        /// <summary>Compatibility callbacks fail closed in New, even before their UI ports are bound.</summary>
+        public static bool LegacyWritesAllowed
+        {
+            get
+            {
+                var owner = FirstClockOwner();
+                return owner == null || owner._battleMode != BattleRuntimeMode.New;
+            }
+        }
 
         /// <summary>Shadow runner（可能为 null；由 <see cref="EnsureShadowRunner"/> 创建）。</summary>
         public ShadowBattleRunner Shadow => _adapters.Shadow;
@@ -616,6 +629,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 BuildLegacySlotOrder(_simulationSource.BuildSeed());
 
             _newDriver.Initialize(_context);
+            _newDriver.SetPaused(IsPaused);
 
             if (mode == BattleRuntimeMode.Legacy || mode == BattleRuntimeMode.Shadow)
             {
@@ -649,6 +663,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
             {
                 try
                 {
+                    if (_viewConsumerSlot != null && !(_viewConsumerSlot is IBattleViewConsumer))
+                        throw new LogicDefinitionException("VIEW_CONSUMER_SLOT_INVALID", DescribePath(_viewConsumerSlot));
+                    _newDriver.BindView(_viewConsumerSlot as IBattleViewConsumer);
                     _newDriver.CreateSimulation(_simulationSource);
                 }
                 catch (LogicDefinitionException exception)
@@ -719,12 +736,17 @@ namespace ProjectHero.Core.Compatibility.Runtime
             // 释放后不再持有任何适配器引用：下一场战斗（可以是另一模式）重新装配，
             // 因此"每个活动适配器恰好停止一次"在跨战斗序列上仍然成立。
             _adapters.Clear();
+            _newDriver.ReleaseSimulation();
             return true;
         }
 
-        public void SetPaused(bool paused) => IsPaused = paused;
+        public void SetPaused(bool paused)
+        {
+            IsPaused = paused;
+            _newDriver.SetPaused(paused);
+        }
 
-        public void TogglePaused() => IsPaused = !IsPaused;
+        public void TogglePaused() => SetPaused(!IsPaused);
 
         /// <summary>
         /// 由测试或工具显式推进一步（不经过 Unity 帧循环）。

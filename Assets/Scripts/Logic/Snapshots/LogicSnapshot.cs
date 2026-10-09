@@ -1052,6 +1052,10 @@ namespace ProjectHero.Logic.Snapshots
             {
                 encoder.WriteInt64(ingressBuckets[i].TargetTick);
                 encoder.WriteInt32(ingressBuckets[i].PendingCount);
+                var requests = ingressBuckets[i].CanonicalRequests;
+                encoder.WriteCount(requests?.Count ?? 0);
+                if (requests != null)
+                    foreach (var request in requests) encoder.WriteString(request);
             }
             encoder.WriteInt64(ingresses?.FrozenThroughTick ?? -1L);
             encoder.WriteInt32(ingresses?.PendingRejectionCount ?? 0);

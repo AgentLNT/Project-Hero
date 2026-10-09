@@ -214,6 +214,10 @@ namespace ProjectHero.Authoring.Tests.Task05
                 for (int l = 0; l < lines.Length; l++)
                 {
                     if (!lines[l].Contains(construction)) continue;
+                    // Task11 decodes an existing historical ID, without allocating a new opportunity.
+                    // This exact read-only decoder site is allowed; simulation construction sites remain forbidden.
+                    if (name == "ReplayFile.cs" && lines[l].Contains(
+                        "new ReactionCommandScope(new ReactionOpportunityId(r.ReadInt64()))")) continue;
                     offenders.Add(name + ":" +
                         (l + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 }

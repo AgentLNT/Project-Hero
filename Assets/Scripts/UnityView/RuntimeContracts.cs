@@ -162,6 +162,13 @@ namespace ProjectHero.Core.Compatibility.Runtime
         Logic.Simulation.BattleSimulationAssembly BuildShadowAssembly(BattleSimulationSeed seed);
     }
 
+    /// <summary>Explicit production assembly hook. Legacy implementation remains outside UnityView.</summary>
+    public interface INewBattleAssemblySource
+    {
+        Logic.Simulation.BattleSimulationAssembly BuildNewAssembly(BattleSimulationSeed seed);
+        void AttachNewSimulation(Logic.Simulation.BattleSimulation simulation);
+    }
+
     /// <summary>
     /// <see cref="IBattleSimulationSource"/> 的纯数据产物。全部成员都是任务 02B/03 的公开只读类型。
     /// </summary>

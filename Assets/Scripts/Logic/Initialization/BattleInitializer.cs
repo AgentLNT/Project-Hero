@@ -55,6 +55,8 @@ namespace ProjectHero.Logic.Initialization
 
             if (encounter.Slots == null || encounter.Slots.Count == 0)
                 throw new LogicDefinitionException(DefinitionCodes.ENCOUNTER_EMPTY, encounterId.Value);
+            string turnError = encounter.TurnSubmission?.Validate(encounter);
+            if (turnError != null) throw new LogicDefinitionException(turnError, encounterId.Value);
 
             string slotError = EncounterSlotValidation.ValidateSlots(encounter.Slots);
             if (slotError != null)

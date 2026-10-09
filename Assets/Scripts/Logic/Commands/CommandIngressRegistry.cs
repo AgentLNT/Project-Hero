@@ -68,7 +68,8 @@ namespace ProjectHero.Logic.Commands
         long FrozenProducerOrdinal);
 
     /// <summary>规范化快照里的未来 Tick 桶（只读；只暴露目标 Tick 与待处理数量）。</summary>
-    public sealed record CommandIngressTickBucketSnapshot(long TargetTick, int PendingCount);
+    public sealed record CommandIngressTickBucketSnapshot(long TargetTick, int PendingCount,
+        IReadOnlyList<string> CanonicalRequests = null);
 
     /// <summary>
     /// 命令入口注册表的规范化观察快照（只读）。
@@ -104,6 +105,7 @@ namespace ProjectHero.Logic.Commands
             public long FrozenWatermarkBefore;
             public bool IsRecordedFactReplay;
             public CommandRequest Request;
+            public long SubmittedAtTick;
         }
 
         /// <summary>
@@ -169,6 +171,27 @@ namespace ProjectHero.Logic.Commands
 
         /// <summary>本场最近一次冻结批次中的 Player 可信事实（Tick 0 重演契约的输入记录源）。</summary>
         public IReadOnlyList<RecordedCommandRequest> LastFrozenPlayerFacts => _lastFrozenPlayerFacts;
+
+        // Recording observes accepted facts before FreezeTick removes the current bucket.
+        // Future requests retain their original submission boundary, including pre-Step (-1).
+        internal IReadOnlyList<ReplaySubmission> CapturePendingPlayerSubmissions()
+        {
+            var result = new List<ReplaySubmission>();
+            foreach (var bucket in _buckets.Values)
+                foreach (var fact in bucket)
+                    if (fact.SourceKind == CommandSourceKind.Player)
+                        result.Add(new ReplaySubmission(fact.SubmittedAtTick,
+                            new RecordedCommandRequest(fact.ControllerId, fact.SourceKind,
+                                fact.ProducerOrdinal, fact.Request)));
+            result.Sort((a, b) =>
+            {
+                int tick = a.SubmittedAtTick.CompareTo(b.SubmittedAtTick);
+                if (tick != 0) return tick;
+                int controller = StringComparer.Ordinal.Compare(a.Fact.Issuer.Value, b.Fact.Issuer.Value);
+                return controller != 0 ? controller : a.Fact.ProducerOrdinal.CompareTo(b.Fact.ProducerOrdinal);
+            });
+            return result.AsReadOnly();
+        }
 
         /// <summary>
         /// 外部入口注册。拒绝 <c>CommandSourceKind.System</c>
@@ -342,7 +365,19 @@ namespace ProjectHero.Logic.Commands
             var buckets = new List<CommandIngressTickBucketSnapshot>(ticks.Count);
             for (int i = 0; i < ticks.Count; i++)
             {
-                buckets.Add(new CommandIngressTickBucketSnapshot(ticks[i], _buckets[ticks[i]].Count));
+                var facts = new List<PendingFact>(_buckets[ticks[i]]);
+                facts.Sort((a, b) =>
+                {
+                    int controller = StringComparer.Ordinal.Compare(a.ControllerId.Value, b.ControllerId.Value);
+                    return controller != 0 ? controller : a.ProducerOrdinal.CompareTo(b.ProducerOrdinal);
+                });
+                var requests = new List<string>(facts.Count);
+                foreach (var fact in facts)
+                    requests.Add(fact.ControllerId.Value + "|" + ((int)fact.SourceKind).ToString(CultureInfo.InvariantCulture)
+                        + "|" + fact.ProducerOrdinal.ToString(CultureInfo.InvariantCulture) + "|"
+                        + fact.FrozenWatermarkBefore.ToString(CultureInfo.InvariantCulture) + "|"
+                        + ReplayEventComparison.CanonicalValue(fact.Request));
+                buckets.Add(new CommandIngressTickBucketSnapshot(ticks[i], facts.Count, requests.AsReadOnly()));
             }
 
             // 只读冻结：规范化快照不得暴露可写集合别名。
@@ -437,6 +472,7 @@ namespace ProjectHero.Logic.Commands
                 ProducerOrdinal = producerOrdinal,
                 FrozenWatermarkBefore = frozenWatermarkBefore,
                 IsRecordedFactReplay = isRecordedFactReplay,
+                SubmittedAtTick = _currentTick,
                 Request = request
             });
         }

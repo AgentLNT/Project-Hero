@@ -63,22 +63,41 @@ namespace ProjectHero.Logic.Replay
         IReadOnlyList<LogicEvent> Events,
         ulong SnapshotHash);
 
+    /// <summary>Accepted Player fact at the completed-Tick boundary; -1 is before Step 0.</summary>
+    public sealed record ReplaySubmission(long SubmittedAtTick, RecordedCommandRequest Fact);
+
     /// <summary>
     /// 一份从 Tick 0 重演的开发者回放数据（主方案 3.11）。任务 03 只冻结数据边界；
     /// 录制管理、播放控制与产品 UI 属于任务 11。
     /// </summary>
     public sealed class BattleReplay
     {
-        public BattleReplay(ReplayHeader header, IReadOnlyList<ReplayTickRecord> records)
+        public BattleReplay(ReplayHeader header, IReadOnlyList<ReplayTickRecord> records,
+            IReadOnlyList<ReplaySubmission> submissions = null)
         {
             Header = header;
-            Records = records ?? System.Array.Empty<ReplayTickRecord>();
+            var copied = new List<ReplayTickRecord>();
+            if (records != null)
+                foreach (var record in records)
+                    copied.Add(record == null ? null : record with {
+                        Events = Freeze(record.Events), ReplayInputRequests = Freeze(record.ReplayInputRequests) });
+            Records = copied.AsReadOnly();
+            Submissions = Freeze(submissions);
+        }
+
+        private static IReadOnlyList<T> Freeze<T>(IReadOnlyList<T> values)
+        {
+            if (values == null) return System.Array.Empty<T>();
+            var copy = new T[values.Count];
+            for (int i = 0; i < copy.Length; i++) copy[i] = values[i];
+            return System.Array.AsReadOnly(copy);
         }
 
         public ReplayHeader Header { get; }
 
         /// <summary>按 Tick 升序（包含空 Tick）。Tick 0 表示首个 Step 之前的初始状态。</summary>
         public IReadOnlyList<ReplayTickRecord> Records { get; }
+        public IReadOnlyList<ReplaySubmission> Submissions { get; }
     }
 
     /// <summary>

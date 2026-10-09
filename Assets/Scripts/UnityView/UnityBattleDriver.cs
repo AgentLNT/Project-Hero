@@ -4,6 +4,9 @@ using ProjectHero.Logic;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Events;
 using ProjectHero.Logic.Simulation;
+using ProjectHero.Logic.Initialization;
+using ProjectHero.Logic.Replay;
+using ProjectHero.Logic.Snapshots;
 using UnityEngine;
 
 namespace ProjectHero.Core.Compatibility.Runtime
@@ -35,13 +38,48 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private BattleRuntimeContext _context;
         private BattleSimulationSeed _seed;
         private BattleSimulation _simulation;
-        private float _accumulator;
+        private double _accumulator;
         private bool _initialized;
         private bool _stopped;
         private int _advanceCallCount;
         private int _stopCallCount;
         private int _ticksAdvanced;
         private StepStatus? _lastStatus;
+        private IBattleViewConsumer _view;
+        private ReplayRecorder _recorder;
+        private bool _paused;
+        private BattleReplay _releasedReplay;
+        private string _replayRecordingError;
+
+        public LogicSnapshot CurrentSnapshot => _simulation?.CurrentSnapshot;
+        public ReplayHeader ReplayHeader => _recorder?.Header ?? _releasedReplay?.Header;
+        public string ReplayRecordingError => _replayRecordingError;
+        public BattleReplay RecordedReplay => _replayRecordingError == null
+            ? _recorder?.BuildReplay() ?? _releasedReplay : null;
+
+        public void ReleaseSimulation()
+        {
+            _releasedReplay = _replayRecordingError == null ? _recorder?.BuildReplay() : null;
+            _recorder = null;
+            _simulation?.Dispose();
+            _simulation = null;
+        }
+
+        public Input.ViewInputPorts CreatePlayerInputPorts(ProjectHero.Logic.Ids.ControllerId controller)
+        {
+            if (_simulation == null) throw new LogicDefinitionException("VIEW_SIMULATION_NOT_CREATED", AdapterName);
+            var port = new Input.RuntimeViewLogicPort(_simulation, controller, () => _paused || _stopped);
+            return new Input.ViewInputPorts(port, new Input.ViewCommandFactory(port));
+        }
+
+        // Binding is explicit and can only happen before initialization. Shadow has no such capability.
+        public void BindView(IBattleViewConsumer view)
+        {
+            if (_simulation != null) throw new LogicDefinitionException("VIEW_BINDING_AFTER_BATTLE_START", AdapterName);
+            _view = view;
+        }
+
+        public void SetPaused(bool paused) => _paused = paused;
 
         public string AdapterName => "UnityBattleDriver";
 
@@ -104,7 +142,24 @@ namespace ProjectHero.Core.Compatibility.Runtime
             if (seedError != null)
                 throw new LogicDefinitionException(seedError, source.SourceName);
 
-            _simulation = BattleSimulation.Create(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs);
+            var assemblySource = source as INewBattleAssemblySource;
+            _simulation = assemblySource == null
+                ? (_seed.Definition.FindEncounter(_seed.EncounterId).TurnSubmission != null
+                    ? ProductionBattleComposition.Create(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs)
+                    : BattleSimulation.Create(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs))
+                : BattleSimulation.Create(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs, assemblySource.BuildNewAssembly(_seed));
+            assemblySource?.AttachNewSimulation(_simulation);
+            _recorder = new ReplayRecorder(_simulation);
+            try
+            {
+                _view?.Bind(BattleInitializer.BuildInitialState(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs),
+                    _simulation.CurrentSnapshot);
+            }
+            catch
+            {
+                _simulation.Dispose(); _simulation = null; _recorder = null;
+                throw;
+            }
         }
 
         public void AdvanceFrame(BattleFrameDelta delta)
@@ -120,37 +175,53 @@ namespace ProjectHero.Core.Compatibility.Runtime
             if (!delta.TimeScaleIsolated)
                 throw new LogicDefinitionException("NEW_DRIVER_REQUIRES_UNSCALED_DELTA_TIME", delta.ToString());
 
-            if (delta.IsPaused) return;
+            _paused = delta.IsPaused;
+            if (_paused) return;
+            if (float.IsNaN(delta.DeltaTime) || float.IsInfinity(delta.DeltaTime) || delta.DeltaTime < 0)
+                throw new LogicDefinitionException("NEW_DRIVER_FRAME_TIME_INVALID", delta.ToString());
 
             _accumulator += delta.DeltaTime;
-            const float secondsPerTick = 1f / TicksPerSecond;
+            const double secondsPerTick = 1d / TicksPerSecond;
 
             int advancedThisFrame = 0;
-            while (_accumulator >= secondsPerTick && advancedThisFrame < MaxTicksPerFrame)
+            while (_accumulator + 1e-9 >= secondsPerTick && advancedThisFrame < MaxTicksPerFrame)
             {
-                _accumulator -= secondsPerTick;
+                _accumulator = Math.Max(0, _accumulator - secondsPerTick);
                 advancedThisFrame++;
 
                 long tick = _simulation.Tick + 1;
+                _recorder.CaptureBeforeStep();
                 var batch = _simulation.CommandIngress.FreezeTick(tick);
+                if (_context.AuthorityInput != null)
+                    ShadowAuthorityProtocol.RecordFrozenBatch(_context.AuthorityInput, batch);
                 StepResult result = _simulation.Step(tick, batch);
                 _lastStatus = result.Status;
+                if (result.Status == StepStatus.AlreadyEnded)
+                {
+                    _stopped = true;
+                    _accumulator = 0;
+                    break;
+                }
                 _ticksAdvanced++;
+                _recorder.RecordCommittedStep(result);
+                if (_context.AuthorityInput != null)
+                    ShadowAuthorityProtocol.RecordOutcomes(_context.AuthorityInput, _simulation, tick, result);
                 CaptureEventNames(result);
+                _view?.Consume(result.Events, result.Snapshot);
 
                 // 调用计数只记录"真的推进过一次"的 Step；暂停时不进入本循环。
                 if (!delta.IsPaused && _context != null && _context.Ledger != null)
                     _context.Ledger.RecordNewSimulationStep(result.Status);
+                if (result.Status == StepStatus.BattleEnded)
+                {
+                    _stopped = true;
+                    _accumulator = 0;
+                    break;
+                }
             }
 
-            if (advancedThisFrame >= MaxTicksPerFrame && _accumulator >= secondsPerTick)
-            {
-                // 不丢 Tick：保留在累加器里，下一帧继续（旧时间线同样不丢 Tick）。
-                _accumulator = Math.Min(_accumulator, TicksPerFrameAccumulatorCap);
-            }
+            // Retain all accumulated time. Limiting work per frame must not discard elapsed ticks.
         }
-
-        private const float TicksPerFrameAccumulatorCap = MaxTicksPerFrame * (1f / TicksPerSecond);
 
         private void CaptureEventNames(StepResult result)
         {
@@ -169,19 +240,28 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         public void StopBattle(string reason)
         {
+            if (_stopCallCount > 0) return;
             _stopCallCount++;
-            if (_stopped) return;
-
             _stopped = true;
-            if (_simulation != null)
+            if (_simulation != null && !_simulation.IsEnded)
             {
+                // Teardown is an external lifecycle request, not a recorded Player command or regenerated AI fact.
+                // Keep consuming the final result, but never export a file whose last Tick cannot be reproduced.
+                _replayRecordingError = "REPLAY_EXTERNAL_LIFECYCLE_STOP_UNRECORDED";
                 _simulation.RequestStop(reason);
                 // 请求停止只登记意图；终止由下一个 Step 的阶段 2/16 原子提交。
                 long tick = _simulation.Tick + 1;
+                _recorder.CaptureBeforeStep();
                 var batch = _simulation.CommandIngress.FreezeTick(tick);
-                _simulation.Step(tick, batch);
-                _simulation.Dispose();
-                _simulation = null;
+                if (_context.AuthorityInput != null)
+                    ShadowAuthorityProtocol.RecordFrozenBatch(_context.AuthorityInput, batch);
+                var result = _simulation.Step(tick, batch);
+                _lastStatus = result.Status;
+                _recorder.RecordCommittedStep(result);
+                if (_context.AuthorityInput != null)
+                    ShadowAuthorityProtocol.RecordOutcomes(_context.AuthorityInput, _simulation, tick, result);
+                CaptureEventNames(result);
+                _view?.Consume(result.Events, result.Snapshot);
             }
         }
 
@@ -196,6 +276,10 @@ namespace ProjectHero.Core.Compatibility.Runtime
             _initialized = false;
             _stopped = false;
             _seed = null;
+            _recorder = null;
+            _releasedReplay = null;
+            _replayRecordingError = null;
+            _paused = false;
             if (_simulation != null)
             {
                 _simulation.Dispose();

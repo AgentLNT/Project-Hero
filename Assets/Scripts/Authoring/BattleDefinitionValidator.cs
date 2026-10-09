@@ -189,6 +189,8 @@ namespace ProjectHero.Authoring
             }
 
             string origin = encounter.EncounterId.Value ?? "<null>";
+            string turnError = encounter.TurnSubmission?.Validate(encounter);
+            if (turnError != null) errors.Add(turnError, "turn submission", origin);
             string idError = DefinitionIdValidation.ValidateFormat(encounter.EncounterId.Value);
             if (idError != null)
                 errors.Add(DefinitionCodes.DEFINITION_ID_INVALID, encounter.EncounterId.Value ?? "<null>", "encounter");

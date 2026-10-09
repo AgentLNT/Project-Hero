@@ -60,7 +60,9 @@ namespace ProjectHero.Logic.Determinism
         /// <c>BattleDefinitionHash</c> 都不因此改变。</item>
         /// </list>
         /// </summary>
-        public const int Version = 2;
+        // v3: future ingress buckets include full canonical requests; recordings preserve
+        // original submission boundaries independently of target Tick. Rules remain unchanged.
+        public const int Version = 3;
 
         public const string HashAlgorithmId = "fnv1a64";
         public const int DigestHexWidth = 16;

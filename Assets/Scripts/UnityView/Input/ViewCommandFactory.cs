@@ -37,7 +37,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
         public CommandRequest CreateScheduleEdit(ScheduleEditPayload payload)
         {
-            if (_logic == null || payload == null) return null;
+            if (_logic == null || _logic.IsPaused || _logic.IsBattleEnded || payload == null) return null;
             return new CommandRequest(
                 NextTargetTick,
                 new ScheduleEditScope(_logic.ScheduleRevision, _logic.OpenWindowId),
@@ -46,7 +46,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
         public CommandRequest CreateReaction(ReactionOpportunityId opportunityId, ReactionCommandPayload payload)
         {
-            if (payload == null || !opportunityId.IsValid) return null;
+            if (_logic == null || _logic.IsPaused || _logic.IsBattleEnded || payload == null || !opportunityId.IsValid) return null;
 
             // 反应 scope 与窗口 scope 严格互斥：反应权不查当前窗口或并发授权（不变量 26 / R-6）。
             return new CommandRequest(
@@ -57,7 +57,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
         public CommandRequest CreateCloseWindow(WindowId windowId)
         {
-            if (!windowId.IsValid) return null;
+            if (_logic == null || _logic.IsPaused || _logic.IsBattleEnded || !windowId.IsValid) return null;
             return new CommandRequest(
                 NextTargetTick,
                 new WindowCommandScope(windowId),
@@ -66,7 +66,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
         public CommandRequest CreateActivateConcurrent(WindowId windowId)
         {
-            if (!windowId.IsValid) return null;
+            if (_logic == null || _logic.IsPaused || _logic.IsBattleEnded || !windowId.IsValid) return null;
             return new CommandRequest(
                 NextTargetTick,
                 new WindowCommandScope(windowId),
