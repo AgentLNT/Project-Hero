@@ -166,6 +166,22 @@ namespace ProjectHero.Logic.Timeline
                 _evaluator.QueryPositionDependencyClosure(seeds, movementOnly: true);
 
             var result = new List<ActionPlan>(closure.Count);
+            // A future Move's origin is projected from the last committed position even across gaps
+            // and non-spatial actions. An actual Dodge changes that origin; interval overlap alone
+            // cannot discover the first dependent Move, or any of its following moves.
+            for (int s = 0; s < seeds.Count; s++)
+            {
+                ActionPlan seed = seeds[s];
+                if (seed == null || seed.ActionType != ActionType.Dodge) continue;
+                ActorLane lane = _authority.FindLane(seed.OwnerUnitId);
+                if (lane == null) continue;
+                for (int p = 0; p < lane.Plans.Count; p++)
+                {
+                    ActionPlan plan = lane.Plans[p];
+                    if (plan.IsEditable && plan.IsMovementFamily && plan.StartTick >= seed.StartTick
+                        && !result.Contains(plan)) result.Add(plan);
+                }
+            }
             for (int i = 0; i < closure.Count; i++)
             {
                 ActionPlan plan = _authority.Registry.Find(closure[i].PlanId);
@@ -174,8 +190,12 @@ namespace ProjectHero.Logic.Timeline
                 // 已经消费了预留，不能因为一次 Dodge 被回退（规格：Locked 后不退款、不回卷）。
                 if (!plan.IsEditable) continue;
                 if (!plan.IsMovementFamily) continue;
-                result.Add(plan);
+                if (!result.Contains(plan)) result.Add(plan);
             }
+            if (result.Count > _evaluator.Limits.MaxDependencyClosurePlans)
+                throw new LogicDefinitionException(ScheduleCodes.SCHEDULE_DEPENDENCY_CLOSURE_TOO_LARGE,
+                    "dodge dependent moves=" + result.Count);
+            result.Sort((a, b) => a.ActionPlanId.Value.CompareTo(b.ActionPlanId.Value));
             return result;
         }
 

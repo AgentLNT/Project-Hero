@@ -1,0 +1,699 @@
+{
+  "Required": 113,
+  "Named": 113,
+  "Passed": 113,
+  "Runs": [
+    {
+      "File": "08-completion-editmode-results.xml",
+      "Total": 786,
+      "Passed": 786,
+      "Failed": 0
+    },
+    {
+      "File": "08-completion-playmode-results.xml",
+      "Total": 44,
+      "Passed": 44,
+      "Failed": 0
+    }
+  ],
+  "Tests": [
+    {
+      "Name": "DodgeRelocationInvalidatesDependentMovesBeforeContactGraphBuild",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeStillHitByAreaAttackInvalidatesOldOriginMovesWithoutSuccessReward",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "LegacyHeadOnPairKeepsScalarSubtractionAndTerminatesBothPlans",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+    },
+    {
+      "Name": "AttackIntentExistsOnlyAtImpactTick",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "AttackAreaUsesCanonicalPreExpandedPatternForEveryDirection",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "AttackAreaOnlyIndexesAndTranslatesIntegerPoints",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ArbitrationHasNoLegacyPatternRotationDependency",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "AttackImpactTickEntersRecoveryAndStillArbitrates",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "PreImpactTerminationProducesNoAttackContact",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ImpactTickClashTerminatesAfterIntentParticipates",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "TerminalResolutionDoesNotRetroactivelyRemoveFrozenCurrentTickIntent",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "DirectionAndOppositionTablesMatchCanonicalQ10Values",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+    },
+    {
+      "Name": "LargeMomentumAndConflictGroupCannotOverflowOrWrap",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+    },
+    {
+      "Name": "MomentumQuantizationOccursOnceBeforeArbitration",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+    },
+    {
+      "Name": "MomentumQuantizationMatchesLegacyImpactProfileScaleAndHalfUp",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+    },
+    {
+      "Name": "NormalAndResidualDamageUseFrozenDivisors",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+    },
+    {
+      "Name": "DamageChannelDoesNotChangeMomentumProfileAndViceVersa",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+    },
+    {
+      "Name": "PassiveAndActionResistanceMultiplyInDeclaredOrder",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+    },
+    {
+      "Name": "TrueDamageBypassesPassiveGuardAndBlockResistance",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+    },
+    {
+      "Name": "DamageAggregationUsesContactThenChannelCanonicalOrder",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+    },
+    {
+      "Name": "ControlThresholdsAndKnockbackUseQuantizedResistance",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+    },
+    {
+      "Name": "ConflictGroupLimitsFailWithStableReasonCodes",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ConflictGroupsAreIndependentOfNodeAndEdgeInsertionOrder",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ThreeWayClashUsesAllOriginalMomentaSimultaneously",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+    },
+    {
+      "Name": "ClashResidualMomentumIsDistributedWithoutLossOrDuplication",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+    },
+    {
+      "Name": "ClashingAttackCannotAlsoHitUnrelatedAoeTarget",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+    },
+    {
+      "Name": "ThreeWayAttackResultIsIndependentOfAllIntentPermutations",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+    },
+    {
+      "Name": "TwoAttackersFlankingOneTargetBothDealDamage",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+    },
+    {
+      "Name": "EqualOppositeImpulsesCancelKnockbackButNotDamageOrImpact",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+    },
+    {
+      "Name": "DodgeInvalidatesOnlyDodgeableContactsMissingCommittedDestination",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeStillGetsHitWhenAttackCoversCommittedDestination",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "UndodgeableRetainsPreDodgeContactOutsideNewArea",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "UndodgeableDoesNotTrackTargetsAbsentFromBothContactSets",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "OrdinaryMoveOutsideAreaBeforeDodgeDoesNotCreateTrackingContact",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeIntoAnotherAttackAreaCreatesNewContact",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "OldAndNewContactForSameAttackAndTargetResolvesOnce",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "AllDodgesUseSamePreCommitContactSnapshot",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "RetainedUndodgeableContactStillObeysClashAndResistanceRules",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeCommitEmitsOneTriggerEvenWithoutSuccessfulAvoidance",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "FailedDodgeCommitEmitsResolutionButNoTriggerOrReward",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeWithoutContactsEmitsOneResolutionWithNullGroup",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeCancelledBeforeTriggerDoesNotEmitTriggerOrResolution",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeContactSetsEventsAndRewardsArePermutationInvariant",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "DodgingStateWithoutTriggerCommitProvidesNoAvoidance",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "DodgeAgainstMultipleAttacksGrantsOneStableCounterWindow",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "BlockZeroesAllEligibleDamageAndMomentumOnTriggerTick",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "BlockHandlesAllSameTickEligibleContactsIndependentOfOrder",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "PartiallyBlockedContactKeepsBypassComponents",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "FullyUnblockableContactIsIneffectiveHitAndDoesNotRewardBlock",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "BlockingStateOutsideTriggerTickProvidesNoResistance",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "GuardPartiallyReducesEligibleDamageAndMomentumOnlyWhileActive",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "GuardDoesNotInvalidateContact",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "BlockedAoeTargetDoesNotProtectOtherTargets",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08AoeTargetPolicyIntegrationTests.cs"
+    },
+    {
+      "Name": "DodgedAoeTargetDoesNotProtectOtherTargets",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "BlockOrDodgeDoesNotTerminateAttackingPlan",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "DefenseEffectsComeFromPlanTickAndPayloadNotStateEligibility",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "DirectHitEligibilityIsCheckedOnlyAfterSpecialInteractionStages",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "AreaAttackKeepsHitsOnTargetsThatDidNotBlockOrDodge",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08AoeTargetPolicyIntegrationTests.cs"
+    },
+    {
+      "Name": "HostileOnlyAreaAttackExcludesSelfAlliedAndNeutralUnits",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ExplicitFriendlyFireMaskIncludesAlliedButNotNeutralTargets",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "NeutralTargetRequiresExplicitNeutralRelationBit",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "PrimaryAndAreaPoliciesUseSameFactionRelationResolver",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ControllerChangesDoNotChangeAttackContactCandidates",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "AttackAttackClashDoesNotInferEligibilityFromControllerKind",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "ResolveAllDoesNotMutateWorldBeforeCommit",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "TargetDamageAndImpulseCommitOnceInStableOrder",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "DuplicateForcedDisplacementRequestForUnitIsInvariantViolation",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementStepUsesCanonicalDirectionDeltaNotPathWeight",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementTranslatesCurrentFootprintWithoutChangingFacing",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementStopsAtBoundaryOnFirstOrLaterStep",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementStopsAtStaticObstacleOnFirstOrLaterStep",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "StationaryUnitHardBlocksForcedDisplacement",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "SameAnchorContentionFailsAllProposalsWithoutWinner",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "OverlappingMultiCellDestinationFootprintsFailAllProposals",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "TwoUnitSwapStopsBothAsDependencyCycle",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "DependencyChainEndingInEmptyCellMovesSimultaneously",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "BranchingDependencyMovesOnlyWhenEveryBranchSucceeds",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ThreeUnitPositionCycleStopsAllParticipants",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "MultiCellUnitCannotMoveWhenAnyFootprintPointIsIllegal",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementDoesNotImplicitlyPushUnitWithoutOwnRequest",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementKeepsSuccessfulPrefixWhenLaterStepFails",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "CompletedShorterDisplacementBecomesStationaryBlockerForLaterRounds",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementIgnoresReservationDuringSpatialSolve",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "OnlyFinalFootprintReservationConflictsArePreempted",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "ReservationPreemptionTerminatesPlansInActionPlanIdOrder",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "ReservationPreemptionReleasesAllFutureSegmentsAndReservations",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "DisplacedUnitsOldOriginMovePlansTerminateAsMovementOriginInvalidated",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "MovementOriginInvalidatedWinsWhenSamePlanAlsoOwnsConflictingReservation",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementPlanInvalidationPrecedesLaterInterceptTerminalRequest",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "NonSpatialAttackGuardAndBlockPlansSurviveOwnerDisplacement",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "ConflictingDodgeDestinationReservationIsPreemptedButPassThroughIsNot",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementBatchCommitsBeforeEventsStateControlAndDeath",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementInputAndResolutionPermutationsProduceIdenticalResults",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+    },
+    {
+      "Name": "ForcedDisplacementEventContainsCanonicalStopReasonAndInvalidatedPlans",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "ZeroAppliedStepsStillEmitsForcedDisplacementResolutionEvent",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+    },
+    {
+      "Name": "SimultaneousLethalHitsAllowMutualDeath",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "LethalTargetIsDisplacedBeforeDeathRemovesFinalFootprint",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "PastWindowAttackInteractsWithCurrentWindowDefense",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "WindowAPlanHitsDuringWindowC",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+    },
+    {
+      "Name": "AttackUsesMovementSegmentInsteadOfVisualPosition",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "InterruptedPlanLeavesLaneGapAndDoesNotRefundBudget",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "ActionTerminalResolutionUsesUnifiedLifecycleEntry",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "ClashTerminationRemovesUnfrozenAndFutureIntents",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "InterceptedMovementReleasesReservationAndNeverCommitsFormerDestination",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task0108LifecycleRegressionTests.cs"
+    },
+    {
+      "Name": "LethalHitTerminatesVictimsEditableLockedAndRunningPlans",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "GuardBlockOrDodgeDoesNotTerminateSourceAttackPlan",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs"
+    },
+    {
+      "Name": "DamageEventContainsPerChannelAndMomentumBeforeAfterValues",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "AdrenalineAccrualUsesCommittedFinalDamageAggregatedOncePerUnit",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "ClashAndSuccessfulReactionAccrualKeysCannotDuplicate",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "FailedBlockOrDodgeProducesNoSuccessAccrualFact",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "ResolutionCommitLeavesNoActiveArtifactReferencingTerminalPlan",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs"
+    },
+    {
+      "Name": "DamageEventContainsConflictGroupPlanAndUnitIds",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs"
+    },
+    {
+      "Name": "ArbitrationDamageAndDefenseShadowProfileHasNoUnclassifiedDifference",
+      "Named": true,
+      "Passed": true,
+      "Source": "Assets/Tests/PlayMode/Task08SceneCoverageTests.cs"
+    }
+  ]
+}

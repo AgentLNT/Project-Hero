@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.8491572">
+  <test-suite type="TestSuite" id="1056" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.849157" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1049" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.842525" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="32784" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1050" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.841839" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1051" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.841374" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1052" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.840961" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1040" name="Task08SceneCoverageTests" fullname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests" classname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.839723" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1041" name="ActualScenePlayerConfirmationEntersShadowExactlyOnce" fullname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.ActualScenePlayerConfirmationEntersShadowExactlyOnce" methodname="ActualScenePlayerConfirmationEntersShadowExactlyOnce" classname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests" runstate="Runnable" seed="2108860672" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:54Z" duration="0.277430" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1044" name="ArbitrationDamageAndDefenseShadowProfileHasNoUnclassifiedDifference" fullname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.ArbitrationDamageAndDefenseShadowProfileHasNoUnclassifiedDifference" methodname="ArbitrationDamageAndDefenseShadowProfileHasNoUnclassifiedDifference" classname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests" runstate="Runnable" seed="1855151955" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:54Z" duration="0.302857" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+TASK08_GOLDEN|dodge|tick=11|events=8|fields=35
+TASK08_GOLDEN|still-hit|tick=11|events=14|fields=35
+TASK08_GOLDEN|block-partial|tick=11|events=12|fields=35
+TASK08_GOLDEN|aoe|tick=11|events=17|fields=38
+TASK08_GOLDEN|aoe-block|tick=11|events=18|fields=38
+TASK08_GOLDEN|guard|tick=14|events=10|fields=35
+TASK08_GOLDEN|clash|tick=16|events=20|fields=35
+TASK08_GOLDEN|clash-residual|tick=16|events=25|fields=35
+TASK08_GOLDEN|three-way-clash|tick=20|events=33|fields=35
+TASK08_GOLDEN|flanking|tick=20|events=17|fields=35
+TASK08_GOLDEN|reservation|tick=11|events=13|fields=35
+TASK08_GOLDEN|mutual-death|tick=16|events=26|fields=29
+TASK08_GOLDEN|simultaneous-displacement|tick=16|events=22|fields=35
+TASK08_GOLDEN|intercept|tick=11|events=14|fields=35
+TASK08_GOLDEN|lethal-displacement|tick=11|events=16|fields=35
+TASK08_GOLDEN|dodge-dependency|tick=11|events=12|fields=35
+]]></output>
+              </test-case>
+              <test-case id="1043" name="MainSceneKeepsLegacyAndExplicitShadowBindings" fullname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.MainSceneKeepsLegacyAndExplicitShadowBindings" methodname="MainSceneKeepsLegacyAndExplicitShadowBindings" classname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests" runstate="Runnable" seed="1264882300" result="Passed" start-time="2026-10-09 10:24:54Z" end-time="2026-10-09 10:24:55Z" duration="0.201733" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+              <test-case id="1042" name="SceneShadowInputDropsPauseAndExcludesLegacyAiRequests" fullname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.SceneShadowInputDropsPauseAndExcludesLegacyAiRequests" methodname="SceneShadowInputDropsPauseAndExcludesLegacyAiRequests" classname="ProjectHero.Tests.PlayMode.Task08SceneCoverageTests" runstate="Runnable" seed="317978517" result="Passed" start-time="2026-10-09 10:24:55Z" end-time="2026-10-09 10:24:55Z" duration="0.046801" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

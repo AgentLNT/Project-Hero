@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 155113198}
   - component: {fileID: 155113197}
   - component: {fileID: 155113196}
+  - component: {fileID: 155113204}
   m_Layer: 0
   m_Name: CombatDemo
   m_TagString: Untagged
@@ -178,6 +179,7 @@ MonoBehaviour:
   _enemyUnit: {fileID: 599212357}
   _initialRngSeed: 20260922
   _initialMetaResource: 10
+  _shadowInitialWindowBudgetTicks: 600
 --- !u!114 &155113198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,6 +271,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &155113204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155113195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbf0e2a427a75744d8c40b584c8cda3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.ShadowSceneInputBridge
+  _bootstrap: {fileID: 155113196}
+  _source: {fileID: 155113197}
 --- !u!1 &599212356
 GameObject:
   m_ObjectHideFlags: 0

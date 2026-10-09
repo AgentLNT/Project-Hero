@@ -798,9 +798,9 @@ namespace ProjectHero.Logic.Tests
             Assert.That(dependent.StartTick, Is.LessThan(dodge.EndTick),
                 "夹具事实：Move.StartTick 必须落在 Dodge 固定区间内（半开区间右端不包含）");
 
-            // 只读闭包必须恰好包含那条依赖 Move（独立 Move 与来源攻击都不得进入）。
+            // 只读闭包包含重叠与远期的依赖Move，来源攻击不进入。
             IReadOnlyList<ActionPlan> closure = rig.Seam.QueryInvalidatedMoves(dodge);
-            Assert.That(closure.Count, Is.EqualTo(1), "DIAG " + LaneDump(rig, Hero, dodge, dependent));
+            Assert.That(closure.Count, Is.EqualTo(2), "DIAG " + LaneDump(rig, Hero, dodge, dependent));
             Assert.That(closure[0].ActionPlanId, Is.EqualTo(dependent.ActionPlanId));
 
             long revisionBefore = rig.Schedule.ScheduleRevision;
@@ -809,9 +809,9 @@ namespace ProjectHero.Logic.Tests
             DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, opportunityId, TriggerTick);
 
             Assert.That(outcome.Committed, Is.True, outcome.RejectionCode);
-            Assert.That(outcome.InvalidatedCandidates.Count, Is.EqualTo(1));
-            Assert.That(outcome.NewlyTerminatedPlans.Count, Is.EqualTo(1),
-                "唯一终态协调器必须恰好终止一次依赖 Move");
+            Assert.That(outcome.InvalidatedCandidates.Count, Is.EqualTo(2));
+            Assert.That(outcome.NewlyTerminatedPlans.Count, Is.EqualTo(2),
+                "唯一终态协调器对每条依赖Move各终止一次");
             Assert.That(outcome.NewlyTerminatedPlans[0], Is.EqualTo(dependent.ActionPlanId));
             Assert.That(rig.Schedule.ScheduleRevision, Is.EqualTo(revisionBefore),
                 "Dodge 终态清理不是排程编辑事务，不得推进修订号");
@@ -819,18 +819,18 @@ namespace ProjectHero.Logic.Tests
             Assert.That(dependent.State, Is.EqualTo(ActionPlanState.Terminated));
             Assert.That(dependent.TerminationReason,
                 Is.EqualTo(ActionTerminationReason.MovementOriginInvalidatedByDodge));
-            Assert.That(independent.IsEditable, Is.True, "独立 Move 不得被本次 Dodge 触及");
+            Assert.That(independent.TerminationReason, Is.EqualTo(ActionTerminationReason.MovementOriginInvalidatedByDodge), "后续Move仍依赖旧起点，时间间隙不切断位置依赖");
             Assert.That(independent.StartTick, Is.EqualTo(IndependentMoveStartTick));
 
             // —— 释放恰好一次，且按计划自己的 SubmittedWindowId 回到原账本 ——
             TurnWindow source = rig.Windows.FindWindow(dependent.SubmittedWindowId.Value);
             Assert.That(source, Is.SameAs(window), "释放必须回到计划自己的来源窗口");
             Assert.That(window.ReservedFor(dependent.ActionPlanId), Is.Zero);
-            Assert.That(window.ReservedFor(independent.ActionPlanId), Is.EqualTo(independentReserved),
-                "同窗口的其他计划预留不得被顺带调整");
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(reservedBefore - dependentReserved));
+            Assert.That(window.ReservedFor(independent.ActionPlanId), Is.Zero,
+                "后续依赖移动的预留也必须释放");
+            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(reservedBefore - dependentReserved - independentReserved));
             Assert.That(window.SpentBudgetTicks, Is.EqualTo(spentBefore), "Editable 阶段终止不产生消费");
-            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(availableBefore + dependentReserved),
+            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(availableBefore + dependentReserved + independentReserved),
                 "释放额只回到它原来的窗口账本");
 
             var releases = new List<TurnBudgetChange>();
@@ -839,7 +839,7 @@ namespace ProjectHero.Logic.Tests
                 if (rig.Ledger[i].ChangeKind == TurnBudgetChangeKind.ReleasedBeforeLock)
                     releases.Add(rig.Ledger[i]);
             }
-            Assert.That(releases.Count, Is.EqualTo(1), "每条被失效的 Move 只允许一次 ReleasedBeforeLock");
+            Assert.That(releases.Count, Is.EqualTo(2), "每条被失效的 Move 只允许一次 ReleasedBeforeLock");
             Assert.That(releases[0].ActionPlanId, Is.EqualTo(dependent.ActionPlanId));
             Assert.That(releases[0].WindowId, Is.EqualTo(window.WindowId));
             Assert.That(releases[0].Source, Is.EqualTo(ResourceChangeSource.TerminalCleanup),
@@ -849,12 +849,12 @@ namespace ProjectHero.Logic.Tests
             // 幂等：重复提交不得第二次释放。
             DodgeRelocationOutcome repeated = rig.Seam.TryCommit(dodge, opportunityId, TriggerTick);
             Assert.That(repeated.Committed, Is.True);
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(reservedBefore - dependentReserved));
-            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(availableBefore + dependentReserved));
+            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(reservedBefore - dependentReserved - independentReserved));
+            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(availableBefore + dependentReserved + independentReserved));
 
             Assert.That(rig.Dodge.BudgetReleaseSink, Is.Not.Null);
             Assert.That(rig.ReleaseSinkCalls.Count, Is.EqualTo(1), "换位只发生一次 ⇒ 接缝只被调用一次");
-            Assert.That(rig.ReleaseSinkCalls[0].Count, Is.EqualTo(1));
+            Assert.That(rig.ReleaseSinkCalls[0].Count, Is.EqualTo(2));
             Assert.That(rig.ReleaseSinkCalls[0][0], Is.EqualTo(dependent.ActionPlanId));
 
             AssertLedgerIdentity(AllWindows(rig));
@@ -904,7 +904,7 @@ namespace ProjectHero.Logic.Tests
 
             DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, opportunityId, TriggerTick);
             Assert.That(outcome.Committed, Is.True, outcome.RejectionCode);
-            Assert.That(outcome.NewlyTerminatedPlans.Count, Is.EqualTo(1));
+            Assert.That(outcome.NewlyTerminatedPlans.Count, Is.EqualTo(2));
 
             // —— 已关闭窗口只更新历史账本 ——
             Assert.That(closed.IsAcceptingSubmissions, Is.False, "释放不得重开提交权限");
@@ -919,9 +919,9 @@ namespace ProjectHero.Logic.Tests
                 Is.EqualTo(closedTotal), "关闭窗口的恒等式继续成立");
 
             // —— 释放额不得转移给当前窗口 ——
-            Assert.That(current.ReservedBudgetTicks, Is.EqualTo(currentReservedBefore),
-                "当前窗口账本不得因别处释放而变化");
-            Assert.That(current.AvailableBudgetTicks, Is.EqualTo(currentAvailableBefore));
+            Assert.That(current.ReservedBudgetTicks, Is.EqualTo(currentReservedBefore - nextMoveReserved),
+                "当前窗口只释放自己下一条移动的预留");
+            Assert.That(current.AvailableBudgetTicks, Is.EqualTo(currentAvailableBefore + nextMoveReserved));
             Assert.That(current.ReservedFor(dependent.ActionPlanId), Is.Zero,
                 "已关闭窗口的计划预算不得挂到当前窗口");
             Assert.That(rig.Windows.FindWindow(dependent.SubmittedWindowId.Value), Is.SameAs(closed),
@@ -930,11 +930,12 @@ namespace ProjectHero.Logic.Tests
             for (int i = 0; i < rig.Ledger.Count; i++)
             {
                 if (rig.Ledger[i].ChangeKind != TurnBudgetChangeKind.ReleasedBeforeLock) continue;
-                Assert.That(rig.Ledger[i].WindowId, Is.EqualTo(closed.WindowId));
+                var releasedPlan = rig.Ledger[i].ActionPlanId == dependent.ActionPlanId ? dependent : nextMove;
+                Assert.That(rig.Ledger[i].WindowId, Is.EqualTo(releasedPlan.SubmittedWindowId.Value));
             }
 
             // —— 不前移后续计划：释放不是排程编辑 ——
-            Assert.That(nextMove.IsEditable, Is.True);
+            Assert.That(nextMove.TerminationReason, Is.EqualTo(ActionTerminationReason.MovementOriginInvalidatedByDodge));
             Assert.That(nextMove.StartTick, Is.EqualTo(nextMoveStart));
             Assert.That(nextMove.EndTick, Is.EqualTo(nextMoveEnd));
             Assert.That(rig.Schedule.ScheduleRevision, Is.EqualTo(revisionBeforeCommit),

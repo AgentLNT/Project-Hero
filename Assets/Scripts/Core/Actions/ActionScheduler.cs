@@ -11,6 +11,7 @@ namespace ProjectHero.Core.Actions
 {
     public static class ActionScheduler
     {
+        public static event System.Action<LegacyScheduledAction> ActionScheduled;
         private static int SecToTick(float seconds) => Mathf.Max(1, Mathf.RoundToInt(seconds * BattleTimeline.TicksPerSecond));
         private static float TickToSec(int ticks) => ticks * BattleTimeline.SecondsPerTick;
 
@@ -61,6 +62,7 @@ namespace ProjectHero.Core.Actions
             float endTime = impactTime + recoveryDurationRaw;
             var recoveryIntent = new StateChangeIntent(attacker, "Idle");
             timeline.Schedule(endTime, recoveryIntent, $"{attacker.name} recovers", groupId, TimelinePriority.State);
+            ActionScheduled?.Invoke(new LegacyScheduledAction(timeline, attacker, ProjectHero.Logic.Actions.ActionType.Attack, action, startTime, targetDirection ?? attacker.FacingDirection, null));
         }
 
         public static void ScheduleMove(BattleTimeline timeline, CombatUnit unit, List<GridPoint> path, float startTime = 0f, long groupId = 0)
@@ -97,6 +99,7 @@ namespace ProjectHero.Core.Actions
 
             var plan = new PlanMoveIntent(unit, destination, timeline, groupId);
             timeline.Schedule(startTime, plan, "Plan Move", groupId, TimelinePriority.State - 1);
+            ActionScheduled?.Invoke(new LegacyScheduledAction(timeline, unit, ProjectHero.Logic.Actions.ActionType.Move, null, startTime, unit.FacingDirection, destination));
         }
 
         public static void ScheduleDodge(BattleTimeline timeline, CombatUnit unit, float startTime, float duration = 0.5f, float focusCost = 1f, long groupId = 0)
@@ -116,6 +119,7 @@ namespace ProjectHero.Core.Actions
 
             var endIntent = new StateChangeIntent(unit, "Idle");
             timeline.Schedule(startTime + duration, endIntent, "Dodge End", groupId, TimelinePriority.State);
+            ActionScheduled?.Invoke(new LegacyScheduledAction(timeline, unit, ProjectHero.Logic.Actions.ActionType.Dodge, null, startTime, unit.FacingDirection, null));
         }
 
         public static void ScheduleBlock(BattleTimeline timeline, CombatUnit unit, float startTime, float duration = 1.0f, float focusCost = 2f, long groupId = 0)
@@ -134,6 +138,7 @@ namespace ProjectHero.Core.Actions
 
             var endIntent = new StateChangeIntent(unit, "Idle");
             timeline.Schedule(startTime + duration, endIntent, "Block End", groupId, TimelinePriority.State);
+            ActionScheduled?.Invoke(new LegacyScheduledAction(timeline, unit, ProjectHero.Logic.Actions.ActionType.Block, null, startTime, unit.FacingDirection, null));
         }
 
         public static void ScheduleKnockback(BattleTimeline timeline, CombatUnit unit, GridDirection direction, int distance, float impactSpeed, long groupId = 0)

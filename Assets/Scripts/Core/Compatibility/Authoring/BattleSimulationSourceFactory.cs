@@ -39,7 +39,7 @@ namespace ProjectHero.Core.Compatibility.Authoring
     /// </list>
     /// </summary>
     public sealed class BattleSimulationSourceFactory : MonoBehaviour, IBattleSimulationSource,
-        ILegacyLogicObservationSource
+        ILegacyLogicObservationSource, IShadowScenarioSource
     {
         private const string ENCOUNTER_NOT_FOUND = "SIMULATION_SOURCE_ENCOUNTER_NOT_FOUND";
 
@@ -56,6 +56,9 @@ namespace ProjectHero.Core.Compatibility.Authoring
 
         [Tooltip("本场局外资源开局持有量（非负）。")]
         [SerializeField] private int _initialMetaResource = BattleDefinitionBuilder.MainEncounterInitialMetaResource;
+        [SerializeField] private int _shadowInitialWindowBudgetTicks = 600;
+        private LegacyAssetSet _assets;
+        private BattleInitializationResult _initialBindings;
 
         private BattleDefinition _definition;
         private EncounterDefinitionId _encounterId;
@@ -122,6 +125,60 @@ namespace ProjectHero.Core.Compatibility.Authoring
             return new BattleSimulationSeed(_definition, _encounterId, _runtimeInputs, _inputSummary);
         }
 
+        public bool TryResolvePlayerUnit(CombatUnit view, out UnitId id, out ControllerId controller)
+        {
+            EnsureBuilt(); id = default; controller = default;
+            if (_definition == null || view == null) return false;
+            string slotId = view == _heroUnit ? LegacyIdMigrationManifest.SlotHero
+                : view == _enemyUnit ? LegacyIdMigrationManifest.SlotEnemy : null;
+            var encounter = _definition.FindEncounter(_encounterId);
+            if (slotId == null) return false;
+            _initialBindings ??= BattleInitializer.BuildInitialState(_definition, _encounterId, _runtimeInputs);
+            if (!_initialBindings.SlotToUnitId.TryGetValue(new EncounterSlotId(slotId), out var mappedId)) return false;
+            foreach (ControllerBinding binding in encounter.Controllers)
+            {
+                if (binding.SourceKind != ProjectHero.Logic.Definitions.CommandSourceKind.Player) continue;
+                foreach (EncounterSlotId controlled in binding.ControlledSlots)
+                    if (controlled.Value == slotId) { id = mappedId; controller = binding.ControllerId; return true; }
+            }
+            return false;
+        }
+
+        public bool TryResolveAttack(CombatUnit view, ProjectHero.Core.Actions.Action action, out ActionSpecId id)
+        {
+            EnsureBuilt(); id = default;
+            if (_assets == null || view == null || view.ActionLibrary == null || action == null) return false;
+            foreach (var pair in _assets.LibrariesByGuid)
+            {
+                if (pair.Value != view.ActionLibrary) continue;
+                foreach (var entry in pair.Value.Actions)
+                {
+                    if (!ReferenceEquals(entry.Data, action)) continue;
+                    var migration = LegacyIdMigrationManifest.FindAction(pair.Key, entry.ID);
+                    if (migration == null) return false;
+                    id = new ActionSpecId(migration.FinalActionSpecId);
+                    return _definition.FindAction(id) != null;
+                }
+            }
+            return false;
+        }
+
+        public ProjectHero.Logic.Simulation.BattleSimulationAssembly BuildShadowAssembly(BattleSimulationSeed seed)
+        {
+            if (_shadowInitialWindowBudgetTicks <= 0 || !TryResolvePlayerUnit(_heroUnit, out var hero, out _))
+                throw new ProjectHero.Logic.LogicDefinitionException("SHADOW_SCENE_WINDOW_INVALID", name);
+            return new ProjectHero.Logic.Simulation.BattleSimulationAssembly(
+                turnWindowSchedule: new InitialShadowWindow(hero, _shadowInitialWindowBudgetTicks));
+        }
+        private sealed class InitialShadowWindow : ProjectHero.Logic.Turns.ITurnWindowSchedule
+        {
+            private readonly UnitId _owner; private readonly int _budget;
+            public InitialShadowWindow(UnitId owner, int budget) { _owner = owner; _budget = budget; }
+            public ProjectHero.Logic.Turns.WindowOpenRequest TryOpenDue(long tick)
+                => tick == 0 ? new ProjectHero.Logic.Turns.WindowOpenRequest(_owner, _budget) : null;
+            public bool ShouldCloseCurrentWindow(long tick) => false;
+        }
+
         private void EnsureBuilt()
         {
             if (_built) return;
@@ -149,6 +206,7 @@ namespace ProjectHero.Core.Compatibility.Authoring
             try
             {
                 assets = LegacyAssetResolver.LoadAllFromResources();
+                _assets = assets;
                 unitsSource = LegacyCombatUnitStatsReader.ReadFromActiveScene(_heroUnit, _enemyUnit);
             }
             catch (System.Exception exception)

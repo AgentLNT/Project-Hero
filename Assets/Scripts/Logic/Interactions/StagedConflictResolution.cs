@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Damage;
@@ -210,7 +211,17 @@ namespace ProjectHero.Logic.Interactions
         string GuardSpecId,
         bool CanReceiveDirectHit,
         bool IsDirectHitSuppressed,
-        TargetAggregateResolution Aggregate);
+        TargetAggregateResolution Aggregate,
+        string BlockSpecId = null,
+        ActionPlanId BlockPlanId = default,
+        TargetContactType ContactKind = TargetContactType.DirectHit,
+        ActionPlanId RecipientPlanId = default);
+
+    // Counter windows are reaction facts, not TurnWindows; ordinary command authority still applies.
+    public sealed record DodgeCounterWindowResolution(
+        long ConflictGroupKey, UnitId DefenderUnitId, ActionPlanId DodgePlanId,
+        UnitId CounterTargetUnitId, ActionPlanId CounterTargetPlanId,
+        IReadOnlyList<ActionPlanId> AvoidedAttackPlanIds);
 
     /// <summary>
     /// 分阶段求解的不可变结果（任务包 08「必须产出」8–11）。
@@ -238,6 +249,30 @@ namespace ProjectHero.Logic.Interactions
 
         /// <summary>构图失败 ⇒ 整组失败（不丢边、不拆组），本 Tick 不产生任何 Resolution。</summary>
         public bool Failed => GraphErrorCode != null;
+
+        public IReadOnlyList<DodgeCounterWindowResolution> CounterWindows
+        {
+            get
+            {
+                var result = new List<DodgeCounterWindowResolution>();
+                if (Graph == null) return result.AsReadOnly();
+                foreach (ConflictGroup group in Graph.Groups)
+                {
+                    var contacts = DodgeContacts.Where(c => c.Invalidated && group.ContactKeys.Contains(c.Key));
+                    foreach (var defender in contacts.GroupBy(c => c.DefenderUnitId).OrderBy(g => g.Key.Value))
+                    {
+                        var avoided = defender.Select(c => c.AttackPlanId).Distinct().OrderBy(p => p.Value).ToArray();
+                        var selected = Graph.Nodes.Select(n => n.Intent).Where(i => avoided.Contains(i.ActionPlanId))
+                            .OrderByDescending(i => i.Momentum.MomentumUnits).ThenBy(i => i.OwnerUnitId.Value)
+                            .ThenBy(i => i.ActionPlanId.Value).First();
+                        result.Add(new DodgeCounterWindowResolution(group.GroupKey, defender.Key,
+                            defender.Select(c => c.DodgePlanId).OrderBy(p => p.Value).First(), selected.OwnerUnitId,
+                            selected.ActionPlanId, Array.AsReadOnly(avoided)));
+                    }
+                }
+                return result.AsReadOnly();
+            }
+        }
 
         /// <summary>参与 Clash 并因此终止的全部攻击计划（按 <c>ActionPlanId</c> 升序、已去重）。</summary>
         public IReadOnlyList<ActionPlanId> ClashTerminatedPlanIds
@@ -270,6 +305,7 @@ namespace ProjectHero.Logic.Interactions
                     seen.Add(aggregate.TargetUnitId.Value);
                     result.Add(aggregate);
                 }
+                result.Sort((a, b) => a.TargetUnitId.Value.CompareTo(b.TargetUnitId.Value));
                 return result.AsReadOnly();
             }
         }

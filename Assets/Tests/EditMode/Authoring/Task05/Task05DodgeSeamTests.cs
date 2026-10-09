@@ -176,7 +176,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             // 依赖关系确实存在（否则本用例证明不了"接受不改动它们"）。
             // inside 起点落在 Dodge 固定区间内 ⇒ 直接依赖；after 起点 320 不在任何受影响区间内
             // ⇒ 它不是依赖计划（Dodge 区间右端是 310）。
-            Assert.That(rig.QueryIds(dodge), Is.EqualTo(new[] { inside.ActionPlanId.Value }));
+            Assert.That(rig.QueryIds(dodge), Is.EqualTo(new[] { inside.ActionPlanId.Value, after.ActionPlanId.Value }));
             Assert.That(after.StartTick, Is.GreaterThanOrEqualTo(DodgeEnd));
 
             // 接受本身没有终止任何计划，也没有把它们移出 Lane。
@@ -247,12 +247,12 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             long[] ids = rig.QueryIds(dodge);
 
-            Assert.That(ids, Is.EqualTo(new[] { near.ActionPlanId.Value, through.ActionPlanId.Value }),
+            Assert.That(ids, Is.EqualTo(new[] { near.ActionPlanId.Value, through.ActionPlanId.Value, independent.ActionPlanId.Value }),
                 "结果 = 直接依赖的移动 + 跨过 Attack 才可达的移动，且按 ActionPlanId 升序");
             Assert.That(Array.IndexOf(ids, attack.ActionPlanId.Value), Is.LessThan(0),
                 "非移动计划本身不属于'会失效的移动'");
-            Assert.That(Array.IndexOf(ids, independent.ActionPlanId.Value), Is.LessThan(0),
-                "独立计划不得进入闭包");
+            Assert.That(Array.IndexOf(ids, independent.ActionPlanId.Value), Is.GreaterThanOrEqualTo(0),
+                "隔着时间间隙的后续Move仍依赖旧起点");
             Assert.That(Array.IndexOf(ids, dodge.ActionPlanId.Value), Is.LessThan(0),
                 "来源自身不属于它的依赖闭包");
 
@@ -297,12 +297,12 @@ namespace ProjectHero.Authoring.Tests.Task05
             // 后续编辑：把 first 移出固定区间（投影级编辑，保持区间长度不变）。
             // 说明：权威排程事务会把"与 Locked 反应区间重叠"的计划按规范向右避让，
             // 因此这里刻意在<strong>投影</strong>层面改动起点，只观察查询是否读取当前排程。
-            first.RebindAbsoluteTicks(400L);
-            Assert.That(first.StartTick, Is.EqualTo(400L));
-            Assert.That(first.EndTick, Is.EqualTo(430L));
+            first.RebindAbsoluteTicks(200L);
+            Assert.That(first.StartTick, Is.EqualTo(200L));
+            Assert.That(first.EndTick, Is.EqualTo(230L));
 
             Assert.That(rig.QueryIds(dodge), Is.EqualTo(new[] { through.ActionPlanId.Value }),
-                "编辑之后闭包按当前排程重算：first 离开区间即离开闭包，through 仍依赖 attack");
+                "编辑之后闭包按当前排程重算：first移到Dodge之前才离开闭包，through 仍依赖 attack");
             Assert.That(attack.IsTerminal, Is.False);
 
             long revision = rig.S.Revision;
@@ -407,7 +407,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             ActionPlan dodge = rig.AcceptDodge(110L, null);
 
             ActionPlan dependent = rig.Register(Task05Farm.MoveId, 275L, pathWeightUnits: 4);
-            ActionPlan independent = rig.Register(Task05Farm.MoveId, 900L, pathWeightUnits: 2);
+            ActionPlan independent = rig.Register(Task05Farm.GuardId, 900L);
             ActionPlan lockedDependent = rig.Register(Task05Farm.MoveId, 280L, pathWeightUnits: 2);
             Task05Scheduler.Lock(lockedDependent, 110L);
             // 另一个 Lane（hero）上的计划必须完全不受影响。

@@ -995,7 +995,7 @@ namespace ProjectHero.Logic.Tests
                 expectedWindow: heroWindow.WindowId);
             Assert.That(tolerated.IsEditable, Is.True);
 
-            // 另加一条远在任何受影响区间之外的 Move 作为负控制（它必须不出现在闭包里）。
+            // 另加一条隔着时间间隙的后续Move；它仍依赖旧起点，必须进入闭包。
             ActionPlan independent = AddMove(rig, 1L, 900L, 4, 0, expectedWindow: heroWindow.WindowId);
             Assert.That(independent.StartTick, Is.GreaterThan(DodgeIntervalEnd()));
 
@@ -1011,8 +1011,8 @@ namespace ProjectHero.Logic.Tests
             // 接受之后（移动仍在 Editable、尚未被失效）闭包必须已经包含那条被容忍的 Move。
             Assert.That(tolerated.IsEditable, Is.True);
             IReadOnlyList<ActionPlan> closure = rig.Seam.QueryInvalidatedMoves(dodge);
-            Assert.That(closure.Count, Is.EqualTo(1),
-                "闭包必须恰好包含被容忍的那一条 Move。 " + LaneDump(rig, Hero));
+            Assert.That(closure.Count, Is.EqualTo(2),
+                "闭包必须包含重叠Move与隔着时间间隙的后续依赖Move。 " + LaneDump(rig, Hero));
             Assert.That(closure[0].ActionPlanId, Is.EqualTo(tolerated.ActionPlanId));
             Assert.That(closure[0].IsEditable, Is.True);
             Assert.That(closure[0].IsMovementFamily, Is.True);

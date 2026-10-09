@@ -231,6 +231,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             bool autoStart, BattleRuntimeMode mode, StringBuilder report)
         {
             var serialized = new SerializedObject(bootstrap);
+            Task08SceneWiring.WireBridge(bootstrap, factory);
             SetEnum(serialized, "_requestedMode", (int)mode);
             SetBool(serialized, "_autoStart", autoStart);
             SetObject(serialized, "_legacyFrameAdapterSlot", demo);

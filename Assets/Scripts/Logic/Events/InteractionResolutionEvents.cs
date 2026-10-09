@@ -9,6 +9,10 @@ using ProjectHero.Logic.Simulation;
 
 namespace ProjectHero.Logic.Events
 {
+    public sealed record DodgeCounterWindowOpenedEvent(
+        long Tick, long Sequence, long ConflictGroupKey, UnitId DefenderUnitId,
+        ActionPlanId DodgePlanId, UnitId CounterTargetUnitId, ActionPlanId CounterTargetPlanId,
+        IReadOnlyList<ActionPlanId> AvoidedAttackPlanIds) : LogicEvent(Tick, Sequence);
     /// <summary>
     /// 任务 08「必须产出」15 的<strong>语义事件族</strong>（交互与 Resolution 段）。
     ///
@@ -36,6 +40,7 @@ namespace ProjectHero.Logic.Events
     {
         /// <summary>接触两侧按 1024 完全抵抗（Block）⇒ 该接触最终载荷严格为 0。</summary>
         public const string CONTACT_FULLY_RESISTED = "INTERACTION_CONTACT_FULLY_RESISTED";
+        public const string CONTACT_PARTIALLY_RESISTED = "INTERACTION_CONTACT_PARTIALLY_RESISTED";
 
         /// <summary>接触两侧都无可降低载荷/无抵抗来源 ⇒ 按原载荷命中。</summary>
         public const string CONTACT_UNRESISTED = "INTERACTION_CONTACT_UNRESISTED";

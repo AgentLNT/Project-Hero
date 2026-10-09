@@ -145,7 +145,7 @@ namespace ProjectHero.Logic.Interactions
 
             // —— 阶段 5：Remaining Hits 中应用 Guard/被动抵抗并聚合 ——
             ResolveRemainingHitsStage(context, graph, factsByPlan, intentsByPlan, unitSnapshotByUnit,
-                definitionById, dodgedKeys, blockedKeys, clashTerminated, moveContacts, remaining);
+                definitionById, dodgedKeys, blockedKeys, clashTerminated, clashes, moveContacts, remaining);
             var remainingHits = CanonicalizeRemainingHits(remaining);
 
             dodgeContacts.Sort(CompareDodgeContacts);
@@ -383,7 +383,7 @@ namespace ProjectHero.Logic.Interactions
                     outcome = BlockContactOutcome.PartiallyBlocked;
                 }
 
-                if (outcome != BlockContactOutcome.BlockIneffective)
+                if (outcome == BlockContactOutcome.Blocked)
                 {
                     blockedKeys.Add(ContactKeyText(attackPlanId, defenderUnitId));
                 }
@@ -609,20 +609,21 @@ namespace ProjectHero.Logic.Interactions
             HashSet<string> dodgedKeys,
             HashSet<string> blockedKeys,
             HashSet<long> clashTerminated,
+            IReadOnlyList<ClashComponentResolution> clashes,
             List<MoveContactResolution> moveContacts,
             List<RemainingHitResolution> results)
         {
             // 目标单位 → 其接触列表（先全部收集，再一次性聚合；"一次量化"只发生在聚合器内部）。
             var byTarget = new List<long>();
             var contactsByTarget = new List<List<RemainingHitResolution>>();
-            var suppressedByTarget = new List<bool>();
 
             for (int i = 0; i < graph.Contacts.Count; i++)
             {
                 InteractionContact contact = graph.Contacts[i];
                 ContactType type = contact.Key.Type;
                 if (type != ContactType.AttackTarget && type != ContactType.AttackGuard
-                    && type != ContactType.AttackMove) continue;
+                    && type != ContactType.AttackMove && type != ContactType.AttackDodge
+                    && type != ContactType.AttackBlock) continue;
 
                 ActionPlanId attackPlanId = ResolveAttackPlanId(contact.Key, factsByPlan);
                 ActionPlanId counterpartyPlanId = ResolveCounterpartyPlanId(contact.Key, attackPlanId);
@@ -643,6 +644,15 @@ namespace ProjectHero.Logic.Interactions
                 GuardPayloadSpec guard = null;
                 ActionPlanId guardPlanId = default(ActionPlanId);
                 string guardSpecId = null;
+                string blockSpecId = null;
+                ActionPlanId blockPlanId = default;
+                if (type == ContactType.AttackBlock && counterpartyPlanId.IsValid
+                    && factsByPlan.TryGetValue(counterpartyPlanId.Value, out InteractionPlanFacts blockFacts)
+                    && blockFacts.TriggerTick == graph.Tick)
+                {
+                    blockSpecId = RequireSpecId(context, counterpartyPlanId);
+                    blockPlanId = counterpartyPlanId;
+                }
                 if (type == ContactType.AttackGuard && counterpartyPlanId.Value > 0L
                     && factsByPlan.TryGetValue(counterpartyPlanId.Value, out InteractionPlanFacts guardFacts)
                     && guardFacts.IsActiveAt(graph.Tick))
@@ -659,18 +669,41 @@ namespace ProjectHero.Logic.Interactions
                     RequireSpecId(context, attackPlanId),
                     intent.Momentum.Direction, intent.Momentum.MomentumUnits, intent.DamageComponents, intent.Tags,
                     guardPlanId, guardSpecId, targetSnapshot.CanReceiveDirectHit,
-                    !targetSnapshot.CanReceiveDirectHit, null);
+                    !targetSnapshot.CanReceiveDirectHit, null, blockSpecId, blockPlanId);
 
                 int index = byTarget.IndexOf(targetUnitId.Value);
                 if (index < 0)
                 {
                     byTarget.Add(targetUnitId.Value);
-                    suppressedByTarget.Add(resolution.IsDirectHitSuppressed);
                     contactsByTarget.Add(new List<RemainingHitResolution> { resolution });
                 }
                 else
                 {
                     contactsByTarget[index].Add(resolution);
+                }
+            }
+
+            // Residual impact is a distinct contact payload. Participating attacks lose all direct
+            // hits, but their positive remainder must still reach the same aggregate/commit path.
+            foreach (ClashComponentResolution component in clashes)
+            {
+                foreach (ClashResidualImpact residual in component.Clash.ResidualImpacts)
+                {
+                    if (!unitSnapshotByUnit.TryGetValue(residual.RecipientUnitId.Value, out var target) || !target.IsAlive) continue;
+                    var key = ContactKey.Create(ContactType.AttackAttack, residual.SourceUnitId, residual.SourceActionPlanId,
+                        residual.RecipientUnitId, residual.RecipientActionPlanId, residual.RecipientUnitId);
+                    var resolution = new RemainingHitResolution(key, residual.SourceActionPlanId, residual.SourceUnitId,
+                        RequireSpecId(context, residual.SourceActionPlanId), residual.SourceDirection, residual.ResidualMomentumUnits,
+                        new[] { MomentumQuantizer.ClashResidualComponent(residual.ResidualMomentumUnits) }, AttackTagMask.None,
+                        default, null, target.CanReceiveDirectHit, false, null, ContactKind: TargetContactType.ClashResidualImpact,
+                        RecipientPlanId: residual.RecipientActionPlanId);
+                    int index = byTarget.IndexOf(residual.RecipientUnitId.Value);
+                    if (index < 0)
+                    {
+                        byTarget.Add(residual.RecipientUnitId.Value);
+                        contactsByTarget.Add(new List<RemainingHitResolution> { resolution });
+                    }
+                    else contactsByTarget[index].Add(resolution);
                 }
             }
 
@@ -682,7 +715,7 @@ namespace ProjectHero.Logic.Interactions
                 {
                     for (int b = a + 1; b < own.Count; b++)
                     {
-                        if (own[a].AttackPlanId == own[b].AttackPlanId)
+                        if (own[a].AttackPlanId == own[b].AttackPlanId && own[a].ContactKind == own[b].ContactKind)
                         {
                             throw new LogicDefinitionException(
                                 StagedResolutionCodes.STAGED_RESOLUTION_DUPLICATE_DIRECT_HIT,
@@ -697,32 +730,31 @@ namespace ProjectHero.Logic.Interactions
             for (int t = 0; t < contactsByTarget.Count; t++)
             {
                 List<RemainingHitResolution> own = contactsByTarget[t];
-                bool suppressed = suppressedByTarget[t];
                 UnitSnapshot targetSnapshot = unitSnapshotByUnit[byTarget[t]];
 
                 var targetUnitId = new UnitId(targetSnapshot.UnitId);
 
                 var inputs = new List<TargetContact>(own.Count);
-                if (!suppressed)
+                foreach (RemainingHitResolution hit in own)
                 {
-                    for (int i = 0; i < own.Count; i++)
-                    {
-                        RemainingHitResolution hit = own[i];
-                        GuardPayloadSpec guardPayload = hit.GuardSpecId == null
-                            ? null
-                            : FindGuardPayloadBySpecId(context, hit.GuardSpecId);
-                        inputs.Add(TargetAggregator.BuildDefendedContact(
-                            new TargetContactKey(TargetContactType.DirectHit, hit.AttackerUnitId,
-                                hit.AttackPlanId, targetUnitId, hit.GuardPlanId),
-                            hit.IncomingDirection, hit.IncomingMomentumUnits,
-                            hit.DamageComponents, hit.AttackTags, guardPayload, null));
-                    }
+                    if (hit.IsDirectHitSuppressed) continue;
+                    GuardPayloadSpec guardPayload = hit.GuardSpecId == null
+                        ? null
+                        : FindGuardPayloadBySpecId(context, hit.GuardSpecId);
+                    BlockPayloadSpec blockPayload = hit.BlockSpecId == null ? null
+                        : RequireBlockPayload(new Dictionary<string, BlockPayloadSpec>(StringComparer.Ordinal), context, hit.BlockPlanId);
+                    inputs.Add(TargetAggregator.BuildDefendedContact(
+                        new TargetContactKey(hit.ContactKind, hit.AttackerUnitId,
+                            hit.AttackPlanId, targetUnitId, hit.RecipientPlanId.IsValid ? hit.RecipientPlanId
+                                : hit.BlockPlanId.IsValid ? hit.BlockPlanId : hit.GuardPlanId),
+                        hit.IncomingDirection, hit.IncomingMomentumUnits,
+                        hit.DamageComponents, hit.AttackTags, guardPayload, blockPayload));
                 }
 
                 TargetAggregateResolution aggregate = TargetAggregator.Aggregate(new TargetAggregationInput(
                     targetUnitId,
-                    suppressed ? EmptyResistance() : PassiveResistanceOf(definitionById, targetSnapshot),
-                    suppressed ? 1 : ControlResistanceOf(definitionById, targetSnapshot),
+                    PassiveResistanceOf(definitionById, targetSnapshot),
+                    ControlResistanceOf(definitionById, targetSnapshot),
                     inputs));
 
                 for (int i = 0; i < own.Count; i++)

@@ -2657,6 +2657,10 @@ namespace ProjectHero.Logic.Simulation
             if (staged == null || staged.Failed) return;
 
             EmitDodgeResolvedEvents(tick, staged);
+            foreach (DodgeCounterWindowResolution window in staged.CounterWindows)
+                _outbox.Emit(sequence => new DodgeCounterWindowOpenedEvent(tick, sequence, window.ConflictGroupKey,
+                    window.DefenderUnitId, window.DodgePlanId, window.CounterTargetUnitId,
+                    window.CounterTargetPlanId, window.AvoidedAttackPlanIds));
             EmitBlockResolvedEvents(tick, staged);
             EmitGuardResistanceEvents(tick, staged);
             EmitClashEvents(tick, staged);
@@ -2725,8 +2729,7 @@ namespace ProjectHero.Logic.Simulation
                 if (plan == null) continue;
 
                 var attacks = new List<ActionPlanId>();
-                bool firstContact = true;
-                BlockContactOutcome firstOutcome = BlockContactOutcome.BlockIneffective;
+                bool allBlocked = true;
 
                 for (int c = 0; c < plan.Contacts.Count; c++)
                 {
@@ -2744,24 +2747,16 @@ namespace ProjectHero.Logic.Simulation
                         OrderedPlanIds(new[] { contact.AttackPlanId, contact.BlockPlanId })));
 
                     attacks.Add(contact.AttackPlanId);
-                    if (firstContact)
-                    {
-                        firstContact = false;
-                        firstOutcome = contact.Outcome;
-                    }
+                    allBlocked &= contact.Outcome == BlockContactOutcome.Blocked;
                 }
 
                 // 逐计划一次（任务包 08:44「每反应计划最多一个成功 Block 键」的事件面）。
                 // RewardsSuccess 与 Kind 的一致性：只有 Blocked/PartiallyBlocked 才可能为 true。
                 bool planRewards = plan.AnyEligibleContact;
-                ReactionResolutionKind kind = firstOutcome == BlockContactOutcome.Blocked
-                    ? ReactionResolutionKind.BlockedFully
-                    : firstOutcome == BlockContactOutcome.PartiallyBlocked
-                        ? ReactionResolutionKind.BlockedPartially
-                        : ReactionResolutionKind.BlockIneffective;
-                string reason = planRewards
-                    ? InteractionEventCodes.CONTACT_FULLY_RESISTED
-                    : InteractionEventCodes.CONTACT_BLOCK_INELIGIBLE;
+                ReactionResolutionKind kind = !planRewards ? ReactionResolutionKind.BlockIneffective
+                    : allBlocked ? ReactionResolutionKind.BlockedFully : ReactionResolutionKind.BlockedPartially;
+                string reason = !planRewards ? InteractionEventCodes.CONTACT_BLOCK_INELIGIBLE
+                    : allBlocked ? InteractionEventCodes.CONTACT_FULLY_RESISTED : InteractionEventCodes.CONTACT_PARTIALLY_RESISTED;
                 var attackIds = OrderedPlanIds(attacks);
                 ActionPlanId blockPlanId = plan.BlockPlanId;
                 UnitId defenderUnitId = plan.DefenderUnitId;
@@ -2790,7 +2785,7 @@ namespace ProjectHero.Logic.Simulation
                 for (int c = 0; c < contacts.Count; c++)
                 {
                     TargetContactResolution contact = contacts[c];
-                    if (contact == null) continue;
+                    if (contact == null || contact.Key.SourceActionPlanId != hit.AttackPlanId.Value || contact.Key.SourceUnitId != hit.AttackerUnitId.Value) continue;
                     incomingMomentum += contact.IncomingMomentumUnits;
                     afterMomentum += contact.AfterMomentumResistanceUnits;
                     for (int k = 0; k < contact.Components.Count; k++)
@@ -2883,49 +2878,22 @@ namespace ProjectHero.Logic.Simulation
                 TargetAggregateResolution aggregate = hit.Aggregate;
 
                 var channels = new List<DamageChannelEntry>();
-                IReadOnlyList<AggregatedChannelDamage> totals = aggregate.ChannelTotals;
-                for (int c = 0; c < totals.Count; c++)
+                int afterMomentum = 0;
+                long contactDamage = 0;
+                foreach (TargetContactResolution contact in aggregate.Contacts)
                 {
-                    AggregatedChannelDamage total = totals[c];
-                    if (total == null) continue;
-                    channels.Add(new DamageChannelEntry(total.ChannelId, total.RawQ10,
-                        total.AfterPassiveResistanceQ10, total.AfterActionResistanceQ10,
-                        0, 0, default(DamageTagMask)));
-                }
-
-                // 逐分量补齐抵抗参数与标签（聚合面只在**分量**上携带它们；按分量出现的
-                // 规范顺序取首个同通道分量，因此同一通道的多分量配置不同时也不会静默挑最大/最小）。
-                var componentResistance = new List<AggregatedContactComponent>();
-                for (int c = 0; c < aggregate.Contacts.Count; c++)
-                {
-                    TargetContactResolution contact = aggregate.Contacts[c];
-                    if (contact == null) continue;
-                    for (int k = 0; k < contact.Components.Count; k++)
-                        componentResistance.Add(contact.Components[k]);
-                }
-                for (int c = 0; c < channels.Count; c++)
-                {
-                    DamageChannelEntry entry = channels[c];
-                    for (int k = 0; k < componentResistance.Count; k++)
+                    if (contact.Key.SourceActionPlanId != hit.AttackPlanId.Value
+                        || contact.Key.SourceUnitId != hit.AttackerUnitId.Value) continue;
+                    afterMomentum = checked(afterMomentum + contact.AfterMomentumResistanceUnits);
+                    foreach (AggregatedContactComponent component in contact.Components)
                     {
-                        AggregatedContactComponent component = componentResistance[k];
-                        if (!string.Equals(component.ChannelId.Value ?? string.Empty,
-                                entry.ChannelId.Value ?? string.Empty, StringComparison.Ordinal)) continue;
-                        channels[c] = entry with
-                        {
-                            PassiveResistanceQ10 = component.PassiveResistanceQ10,
-                            ActionResistanceQ10 = component.ActionResistanceQ10,
-                            Tags = component.Tags
-                        };
-                        break;
+                        // Keep distinct component tags/resistance values; merging them would hide bypass payloads.
+                        channels.Add(new DamageChannelEntry(component.ChannelId, component.RawQ10,
+                            component.AfterPassiveResistanceQ10, component.AfterActionResistanceQ10,
+                            component.PassiveResistanceQ10, component.ActionResistanceQ10, component.Tags));
+                        contactDamage = checked(contactDamage + component.AfterActionResistanceQ10);
                     }
                 }
-                int afterMomentum = 0;
-                for (int c = 0; c < aggregate.Contacts.Count; c++)
-                {
-                    if (aggregate.Contacts[c] != null) afterMomentum += aggregate.Contacts[c].AfterMomentumResistanceUnits;
-                }
-
                 long groupKey = ConflictGroupKeyOf(hit.AttackPlanId);
                 // 停止原因只描述**已提交事实**：状态抑制 ⇒ 抑制码；动作抵抗后载荷严格为 0
                 // 且原载荷非 0 ⇒ 完全抵抗；否则按原载荷命中。
@@ -2933,12 +2901,12 @@ namespace ProjectHero.Logic.Simulation
                 for (int c = 0; c < channels.Count; c++) rawTotal += channels[c].RawQ10;
                 string stopReason = hit.IsDirectHitSuppressed
                     ? InteractionEventCodes.CONTACT_SUPPRESSED_BY_STATE
-                    : rawTotal > 0L && aggregate.TotalDamageQ10 == 0L
+                    : rawTotal > 0L && contactDamage == 0L
                         ? InteractionEventCodes.CONTACT_FULLY_RESISTED
                         : InteractionEventCodes.CONTACT_UNRESISTED;
 
                 var orderedChannels = channels.AsReadOnly();
-                long afterBlockDamage = aggregate.TotalDamageQ10;
+                long afterBlockDamage = contactDamage;
 
                 ActionPlanId attackPlanId = hit.AttackPlanId;
                 UnitId attackerUnitId = hit.AttackerUnitId;
@@ -2949,8 +2917,8 @@ namespace ProjectHero.Logic.Simulation
                 _outbox.Emit(sequence => new DamageChannelResolvedEvent(
                     tick, sequence, groupKey, targetUnitId, attackPlanId, attackerUnitId, guardPlanId,
                     incomingDirection, incomingMomentumUnits, afterMomentum, orderedChannels,
-                    aggregate.TotalDamageQ10, afterBlockDamage, stopReason,
-                    OrderedPlanIds(new[] { attackPlanId, guardPlanId })));
+                    contactDamage, afterBlockDamage, stopReason,
+                    OrderedPlanIds(new[] { attackPlanId, guardPlanId, hit.BlockPlanId, hit.RecipientPlanId })));
             }
 
             // 逐目标一条聚合冲击事件（按聚合结果的稳定顺序 = UnitId 升序）。
@@ -3458,6 +3426,7 @@ namespace ProjectHero.Logic.Simulation
                 bool hit = false;
                 foreach (RemainingHitResolution remaining in _stagedResolution.RemainingHits)
                     if (remaining.AttackPlanId == move.AttackPlanId && remaining.Key.TargetUnitId == move.MovingUnitId
+                        && remaining.ContactKind == TargetContactType.DirectHit
                         && !remaining.IsDirectHitSuppressed) { hit = true; break; }
                 if (!hit) continue;
                 ActionPlan plan = _scheduleAuthority.Registry.Find(move.MovePlanId);

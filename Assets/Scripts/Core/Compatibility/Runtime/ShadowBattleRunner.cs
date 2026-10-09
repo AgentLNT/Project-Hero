@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using ProjectHero.Logic;
+using ProjectHero.Logic.Commands;
+using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Events;
 using ProjectHero.Logic.Ids;
@@ -206,6 +208,18 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         /// <summary>独立新模拟的当前逻辑 Tick（-1 = 尚未创建）。</summary>
         public long SimulationTick => _simulation != null ? _simulation.Tick : -1L;
+        public LogicSnapshot CurrentSnapshot => _simulation?.CurrentSnapshot;
+        public int LivePlayerRequestCount { get; private set; }
+        public string SubmitLivePlayerRequest(ControllerId controller, CommandRequest request)
+        {
+            if (_simulation == null || _stopped || _simulation.IsEnded) return "SHADOW_INPUT_NOT_ACTIVE";
+            var entry = _simulation.CommandIngress.FindEntry(controller);
+            if (entry == null || entry.SourceKind != CommandSourceKind.Player) return "SHADOW_INPUT_PLAYER_REQUIRED";
+            var rejection = entry.Submit(request);
+            if (rejection != null) return rejection.ReasonCode;
+            LivePlayerRequestCount++;
+            return null;
+        }
 
         /// <summary>
         /// 上一次推进未能追上的 Tick 数（0 = 已与旧时间线对齐）。
@@ -331,7 +345,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 throw new LogicDefinitionException(seedError, _seed.InputSummary);
 
             // 独立 Logic 世界：与 Legacy 的唯一共享物是"同一定义 + 同一初始输入"。
-            _simulation = BattleSimulation.Create(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs);
+            var assembly = (context.SimulationSource as IShadowScenarioSource)?.BuildShadowAssembly(_seed);
+            _simulation = BattleSimulation.Create(_seed.Definition, _seed.EncounterId, _seed.RuntimeInputs,
+                assembly ?? BattleSimulationAssembly.Standard());
             _eventBindings.Clear();
             _initialized = true;
             _stopped = false;
@@ -616,6 +632,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             _mirror = null;
             _authorityInput = null;
             _mirroredFactKeys.Clear();
+            LivePlayerRequestCount = 0;
             _simulation = null;
             _accumulator = 0f;
             LastStepDeficit = 0;
