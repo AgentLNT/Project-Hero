@@ -286,6 +286,24 @@ namespace ProjectHero.Authoring.Tests.Task04
         }
     }
 
+    /// <summary>在真实伤害提交阶段安排致死，区别于命令前状态/持续效果致死。</summary>
+    internal sealed class KillDuringResolution : IResolutionCommitSystem
+    {
+        public long Tick;
+        public long[] Kills;
+        public IResolutionDamageApplier DamageApplier;
+
+        public void CommitDamageAndAggregationOrdered(long tick, IReadOnlyList<UnitSnapshot> units)
+        {
+            if (tick != Tick) return;
+            foreach (long id in Kills)
+                foreach (UnitSnapshot unit in units)
+                    if (unit.UnitId == id) DamageApplier.ApplyDamageQ10(new UnitId(id), unit.HealthQ10);
+        }
+
+        public void CommitStateControlAndRemainingTerminalsOrdered(long tick, IReadOnlyList<UnitSnapshot> units) { }
+    }
+
     /// <summary>
     /// 阶段 11 夹具：为单个单位产生一次强制位移请求（带只读诊断计数）。
     /// </summary>

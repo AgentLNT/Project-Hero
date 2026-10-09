@@ -409,6 +409,7 @@ namespace ProjectHero.Logic.Simulation
         /// 死亡系统唯一的对外产物；任务 05 消费它锁定 Lane 并终止死者全部非终态计划。
         /// </summary>
         private readonly List<UnitLifecycleCleanupNotice> _lifecycleNotices = new List<UnitLifecycleCleanupNotice>();
+        private readonly List<UnitLifecycleCleanupNotice> _pendingLifecycleCleanup = new List<UnitLifecycleCleanupNotice>();
         private readonly HashSet<long> _notifiedLifecycleUnitIds = new HashSet<long>();
 
         /// <summary>最近一次死亡处理中实际移除的最终 footprint（与通知一一对应，按 UnitId 升序）。</summary>
@@ -749,6 +750,7 @@ namespace ProjectHero.Logic.Simulation
             // 终态事件只在"第一次请求胜出"时发射一次（协调器是唯一判定点）。
             _terminalCoordinator.TerminalLifecycleSink = (plan, reason, tick) =>
             {
+                ResetActorPhaseAfterTerminal(plan, tick);
                 if (reason == ActionTerminationReason.None) _reactionSystem.EmitPlanCompleted(plan, tick);
                 else _reactionSystem.EmitPlanTerminated(plan, tick);
             };
@@ -1403,23 +1405,14 @@ namespace ProjectHero.Logic.Simulation
 
             // 2. 命令前的死亡与胜负检查（任务包「必须产出」6 的第一段）。
             //
-            // 本阶段只回答一个问题：**在本 Tick 打开窗口之前战斗是否已经结束？**
+            // 状态/效果阶段的死亡先于窗口和命令；Resolution 造成的死亡仍在阶段15处理。
             // 判据来自 <see cref="BattleSimulationAssembly.PreCommandVictoryGate"/>；
             // 未装配该扩展点时回落到配置判据 <see cref="EvaluateConfiguredResultCode"/>
             // （只读 FactionId / IsCombatEffective 与 VictoryDefinition 的 Allied/Hostile 目标组）。
             //
-            // 冻结结论（修订轮 R1，以代码真实行为为唯一权威）——阶段 2 是**二选一**，
-            // 不存在"部分提交"的中间态：
-            //   · 判据返回 null（战斗继续）⇒ 阶段 2 **完全不提交**任何死亡事实，
-            //     死亡提交留给阶段 15（批量换位与位移事件之后），
-            //     因此"位移事件先于死亡事件"在这条路径上成立，
-            //     致死单位在该 Tick 的阶段 11–13 强制位移中仍以"在场"身份参与同时求解。
-            //   · 判据非 null（战斗已决定）⇒ 阶段 2 立刻用 <see cref="ProcessDeaths"/>
-            //     按与阶段 15 **完全相同**的语义**完整提交**死亡（终态 Dead、UnitDiedEvent、
-            //     一次性通知、最终 footprint 移除，IsAlive 与 DeathProcessed 在同一处成对写入），
-            //     再设 _resolvedResultCode、拒绝已冻结批次并直接进入唯一 Finalizer：
-            //     **阶段 3–17 全部不执行**（位移阶段也不会执行）。
             _trace.Enter(StepPhase.DeathAndVictory);
+            ProcessDeaths(tick);
+            ConsumeLifecycleCleanup(tick);
             string preCommandResult = _assembly.PreCommandVictoryGate != null
                 ? _assembly.PreCommandVictoryGate.EvaluatePreCommandResult()
                 : EvaluateConfiguredResultCode();
@@ -1427,8 +1420,6 @@ namespace ProjectHero.Logic.Simulation
             {
                 // 先把本 Tick 的致死单位按阶段 15 的完整语义提交（终态、事件、通知、占位移除），
                 // 再关闭窗口与命令路径：这样"命令阶段之前结束"不会让死亡事实丢失。
-                _trace.Enter(StepPhase.PostDisplacementDeath);
-                ProcessDeaths(tick);
 
                 // 结果码必须来自权威 <see cref="VictoryDefinition"/> 的配置项
                 // （胜/败/平三选一），而不是默认的"停止"码——否则"胜负只读 FactionId"
@@ -1495,6 +1486,7 @@ namespace ProjectHero.Logic.Simulation
             //     **换位后的最终位置**移除 footprint（不改写已提交的换位结果）。
             _trace.Enter(StepPhase.PostDisplacementDeath);
             ProcessDeaths(tick);
+            ConsumeLifecycleCleanup(tick);
 
             // 16. 再评估胜负
             _trace.Enter(StepPhase.VictoryReevaluation);
@@ -1539,19 +1531,12 @@ namespace ProjectHero.Logic.Simulation
         /// </summary>
         private void ApplyPreCommandBoundaries(long tick)
         {
+            _lastFinalFootprintRemovals.Clear();
             _claimedThisTick.Clear();
             _terminalCoordinator.BeginTick(tick);
 
             // —— 死亡清理（不依赖窗口）——
-            for (int i = 0; i < _lifecycleNotices.Count; i++)
-            {
-                UnitLifecycleCleanupNotice notice = _lifecycleNotices[i];
-                if (notice.ReasonCode != UnitLifecycleNoticeReasons.Death) continue;
-
-                _scheduleAuthority.LockLaneSubmissions(notice.UnitId, LaneLockReasonOwnerDied);
-                _terminalCoordinator.TerminateAllPlansOfUnit(
-                    notice.UnitId, ActionTerminationReason.OwnerDied, tick);
-            }
+            ConsumeLifecycleCleanup(tick);
 
             // —— 命令前边界：移动位置提交（任务 05/06 接入）——
             //
@@ -1565,17 +1550,29 @@ namespace ProjectHero.Logic.Simulation
             SyncGridLogicalPositions();
 
             // —— 自然完成：Running 且到达 EndTick（半开区间右端）——
-            for (int laneIndex = 0; laneIndex < _scheduleAuthority.Lanes.Count; laneIndex++)
+            CompleteDuePlans(tick, beforeResolution: true);
+        }
+
+        private void ConsumeLifecycleCleanup(long tick)
+        {
+            foreach (UnitLifecycleCleanupNotice notice in _pendingLifecycleCleanup)
             {
-                ActorLane lane = _scheduleAuthority.Lanes[laneIndex];
-                IReadOnlyList<ActionPlan> plans = lane.Plans;
-                for (int p = 0; p < plans.Count; p++)
-                {
-                    ActionPlan plan = plans[p];
-                    if (!plan.IsRunning) continue;
-                    if (plan.EndTick > tick) continue;
-                    _terminalCoordinator.EnterCompletion(plan, tick);
-                }
+                _windowManager.RequestCloseForOwnerDeath(notice.UnitId);
+                _scheduleAuthority.LockLaneSubmissions(notice.UnitId, LaneLockReasonOwnerDied);
+                _terminalCoordinator.TerminateAllPlansOfUnit(notice.UnitId, ActionTerminationReason.OwnerDied, tick);
+            }
+            _pendingLifecycleCleanup.Clear();
+        }
+
+        private void CompleteDuePlans(long tick, bool beforeResolution)
+        {
+            // ActivePlans is a stable copy; terminal cleanup removes entries from the live Lane.
+            foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
+            {
+                if (!plan.IsRunning || plan.EndTick > tick) continue;
+                if (beforeResolution && ((plan.ActionType == ActionType.Attack && plan.ImpactTick == tick)
+                    || (plan.IsReaction && plan.TriggerTick == tick))) continue;
+                _terminalCoordinator.EnterCompletion(plan, tick);
             }
         }
 
@@ -1734,53 +1731,13 @@ namespace ProjectHero.Logic.Simulation
         }
 
         /// <summary>
-        /// 死亡系统（<strong>唯一</strong>死亡提交点；终态、事件、一次性通知与 footprint 移除的
-        /// 唯一实现，见修订轮 R1：不存在"部分提交"的第二个写点）。
-        ///
-        /// 冻结契约：
-        /// <list type="bullet">
-        /// <item><strong>调用点恰好两个</strong>：阶段 15（<c>PostDisplacementDeath</c>，
-        /// 即"伤害 → 合力聚合 → 强制位移批量换位 → 位移事件 → 状态/控制"全部提交之后）；
-        /// 以及阶段 2 判定"命令前已经决定"时按<strong>完全相同语义</strong>的补跑
-        /// （该分支随后直接进入唯一 Finalizer，阶段 3–17 不执行）。两个调用点共享同一段代码，
-        /// 因此"每单位恰好一次"由本方法内部保证，不依赖调用次数。</item>
-        /// <item><strong>原子提交</strong>：<c>IsAlive = false</c>、<c>DeathProcessed = true</c>、
-        /// 终态 <c>Dead</c> 转换、<c>UnitDiedEvent</c>、一次性通知与最终 footprint 移除
-        /// 在同一次单位迭代里成对/连续完成 ⇒ 恒有 <c>DeathProcessed == !IsAlive</c>，
-        /// 绝不出现"已提交死亡却仍在场"的状态。</item>
-        /// <item>死亡事件与同 Tick 位移事件的先后：本方法在阶段 15 被调用时，
-        /// 阶段 11–13 的强制位移与位移事件<strong>已经</strong>提交，因此死亡事件严格晚于位移事件；
-        /// 若本方法是在阶段 2 被判据命中后被调用，则阶段 3–17（含位移阶段）全部不执行，
-        /// 该 Tick 根本不存在位移事件（"致死单位参与同 Tick 位移"仅在命令前判定为假时成立）。</item>
-        /// <item>按 <c>UnitId</c> <strong>升序</strong>处理：注册表顺序即 UnitId 升序，
-        /// 这里再显式排序一次，使顺序来自契约而不是容器实现。</item>
-        /// <item>每个单位整场<strong>只发一次</strong>死亡事件与生命周期清理通知
-        /// （<see cref="UnitLifecycleCleanupNotice"/>，供任务 05 消费）：重复调用由
-        /// <c>IsKillable</c>（<c>IsAlive &amp;&amp; !DeathProcessed &amp;&amp; HealthQ10 &lt;= 0</c>）
-        /// 与整场不清空的 <c>_notifiedLifecycleUnitIds</c> 双重保护，且
-        /// <c>_lastFinalFootprintRemovals</c> 每次调用先清空 ⇒ 重入时它是空列表，
-        /// 不会重复报告上一 Tick 的移除。</item>
-        /// <item>终态 <c>Dead</c> 经统一转换入口（与显式/自动转换同形状）；
-        /// <c>IsAlive</c> 在本方法内置假并从最终 footprint 移除，
-        /// 通知携带的 <c>FinalPosition</c> 因此是换位后的最终位置。</item>
-        /// <item><strong>网格 footprint 移除（裁定 6.2）</strong>：本方法把死者的 footprint
-        /// 从<strong>唯一空间权威</strong> <see cref="LogicGrid"/> 注销（<c>UnregisterUnit</c>），
-        /// 时机就是本方法被调用的时机——阶段 15（批量换位与位移事件之后）或阶段 2 的补跑。
-        /// 因此不变量 33「同 Tick 死亡在换位及事件之后处理」自动满足：致死单位在本 Tick 的
-        /// 阶段 11–13 强制位移里仍以"在场"身份参与同时求解，注销只发生在换位<strong>之后</strong>。
-        /// 没有这一步，"死亡后不再占格"只是注释承诺，并会与强制位移的"静止单位阻挡"
-        /// 叠加成<strong>幽灵阻挡</strong>（死人永久挡路，且不可能再被任何阶段清除）。</item>
-        /// <item>注销是<strong>幂等</strong>的：单位不在网格里时跳过（不抛）。重复调用本方法
-        /// 由 <c>IsKillable</c> 与 <c>_notifiedLifecycleUnitIds</c> 挡住，因此幂等分支只在
-        /// "装配期未注册该单位"这类形态下可达；反向的"网格里有死者却没注销"才是缺陷，
-        /// 由验收用例与 <c>STEP_INVARIANT_VIOLATION</c> 之外的空间断言钉住。</item>
-        /// <item>本方法<strong>不</strong>修改 ActionPlan、Intent、MovementSegment、
-        /// Reservation 或 ActorLane；计划从属对象由任务 05 的统一终态协调器按通知清理。</item>
-        /// </list>
+        /// 唯一死亡提交点。阶段2处理状态/效果致死，阶段15处理Resolution致死。
+        /// 按UnitId提交Dead、死亡事件、最终footprint移除和一次性通知；调用方在同一阶段
+        /// 经统一终态协调器消费通知。阶段11造成的致死仍先完成位移、事件和控制提交。
+        /// 同一Tick两次调用共同累积占位移除读数，下一Step边界才清空。
         /// </summary>
         private void ProcessDeaths(long tick)
         {
-            _lastFinalFootprintRemovals.Clear();
             if (_units.Count == 0) return;
 
             var ordered = new List<UnitRuntimeState>(_units);
@@ -1844,6 +1801,7 @@ namespace ProjectHero.Logic.Simulation
                 var notice = new UnitLifecycleCleanupNotice(
                     tick, unitId, UnitLifecycleNoticeReasons.Death, unit.Position, remaining);
                 _lifecycleNotices.Add(notice);
+                _pendingLifecycleCleanup.Add(notice);
                 _assembly.LifecycleNoticeSink?.OnUnitLifecycleNoticeOrdered(notice);
             }
         }
@@ -2048,8 +2006,8 @@ namespace ProjectHero.Logic.Simulation
         private void EvaluateStartGatesAndReactionTriggers(long tick)
         {
             _openedOpportunitiesThisTick.Clear();
+            InterruptControlledRunningPlans(tick);
             List<ActionPlan> due = CollectDueEditablePlans(tick);
-            if (due.Count == 0) return;
 
             // 任务 06：把本 Tick 到期 Move 的声明的目的格登记为"待进入格"，
             // 供空间门禁查询区分 Free / RetryableTimedBlock / TerminalOrUnknownBlock。
@@ -2103,6 +2061,103 @@ namespace ProjectHero.Logic.Simulation
                             ScheduleCodes.SCHEDULE_START_GATE_COMMIT_INCONSISTENT, "unknown gate result");
                 }
             }
+            AdvanceFixedReactions(tick);
+            foreach (ActionPlan running in _scheduleAuthority.Registry.ActivePlans)
+                if (running.IsRunning) StartActorPhase(running, tick);
+        }
+
+        private static bool IsControlState(UnitState state)
+            => state == UnitState.Staggered || state == UnitState.KnockedDown || state == UnitState.Recovering;
+
+        private void InterruptControlledRunningPlans(long tick)
+        {
+            foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
+            {
+                if (!plan.IsRunning) continue;
+                if (IsControlState(FindUnitStateMachine(plan.OwnerUnitId).CurrentState))
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByControl, tick);
+            }
+        }
+
+        private void AdvanceFixedReactions(long tick)
+        {
+            foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
+            {
+                if (!plan.IsReaction || plan.StartTick > tick) continue;
+                if (!IsUnitAlive(plan.OwnerUnitId))
+                {
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.OwnerDied, tick);
+                    continue;
+                }
+                if (IsControlState(FindUnitStateMachine(plan.OwnerUnitId).CurrentState))
+                {
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByControl, tick);
+                    continue;
+                }
+                ActionPlan source = _scheduleAuthority.Registry.Find(plan.SourceThreatPlanId.Value);
+                if (tick <= plan.TriggerTick && (source == null || source.IsTerminal))
+                {
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.SourceThreatCancelled, tick);
+                    continue;
+                }
+                if (plan.IsLocked)
+                {
+                    plan.State = ActionPlanState.Running;
+                    StartActorPhase(plan, tick);
+                }
+                if (plan.ActionType == ActionType.Block && plan.TriggerTick == tick)
+                {
+                    string error = _reactionSystem.ConfirmTrigger(plan.ReactionOpportunityId.Value, tick);
+                    if (error != null) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION, error);
+                }
+            }
+        }
+
+        private void StartActorPhase(ActionPlan plan, long tick)
+        {
+            if (tick >= plan.EndTick) return;
+            UnitState state = UnitState.Recovery;
+            long phaseEnd = plan.EndTick;
+            switch (plan.ActionType)
+            {
+                case ActionType.Attack:
+                    if (tick < plan.ImpactTick) { state = UnitState.Windup; phaseEnd = plan.ImpactTick; }
+                    break;
+                case ActionType.Guard:
+                    if (tick < plan.ActiveStartTick) { state = UnitState.Windup; phaseEnd = plan.ActiveStartTick; }
+                    else if (tick < plan.ActiveEndTick) { state = UnitState.Guarding; phaseEnd = plan.ActiveEndTick; }
+                    break;
+                case ActionType.Move:
+                    long moveEnd = checked(plan.StartTick + plan.MoveDurationTicks);
+                    if (tick < moveEnd) { state = UnitState.Moving; phaseEnd = moveEnd; }
+                    break;
+                case ActionType.Block:
+                case ActionType.Dodge:
+                    if (tick < plan.TriggerTick)
+                    {
+                        state = plan.ActionType == ActionType.Block ? UnitState.Blocking : UnitState.Dodging;
+                        phaseEnd = plan.TriggerTick;
+                    }
+                    break;
+            }
+            UnitStateMachine machine = FindUnitStateMachine(plan.OwnerUnitId);
+            if (machine.CurrentState == state) return;
+            var outcome = machine.TryTransition(StateTransitionSpec.Timed(state,
+                checked((int)(phaseEnd - tick)), UnitState.Idle), tick, UnitStateTransitionReasons.Explicit);
+            if (!outcome.Applied) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION,
+                "action-phase|" + plan.ActionPlanId + "|" + outcome.RejectionCode);
+        }
+        private void ResetActorPhaseAfterTerminal(ActionPlan plan, long tick)
+        {
+            if (plan.LockedAtTick < 0 || plan.StartTick > tick) return;
+            UnitStateMachine machine = FindUnitStateMachine(plan.OwnerUnitId);
+            if (machine == null || machine.CurrentState == UnitState.Idle || machine.IsTerminal
+                || IsControlState(machine.CurrentState)) return;
+            foreach (ActionPlan other in _scheduleAuthority.Registry.ActivePlans)
+                if (other.OwnerUnitId == plan.OwnerUnitId && other.IsRunning) return;
+            var reset = machine.TryTransition(StateTransitionSpec.Open(UnitState.Idle), tick,
+                UnitStateTransitionReasons.Explicit);
+            if (!reset.Applied) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION, reset.RejectionCode);
         }
 
         /// <summary>
@@ -2145,6 +2200,7 @@ namespace ProjectHero.Logic.Simulation
 
             // 语义事件：锁定/启动事件与原子提交同一次发生，且只在此处发射。
             _reactionSystem.EmitPlanLocked(plan, tick);
+            StartActorPhase(plan, tick);
         }
 
         /// <summary>
@@ -2428,7 +2484,7 @@ namespace ProjectHero.Logic.Simulation
             return CombatIntentFactory.CreateAtImpactTick(
                 facts,
                 plan.ActionSpecId,
-                facing,
+                plan.Facing,
                 payload,
                 anchor,
                 tick,
@@ -3382,12 +3438,52 @@ namespace ProjectHero.Logic.Simulation
                     tick, sequence, groupKey, planId, ownerUnitId, reason));
             }
 
+            CommitResolvedControlsAndIntercepts(tick);
+
             // 任务 07：肾上腺素 Available 的唯一入账入口。它只接受任务 08 在全部 Resolution
             // 提交后提供的规范聚合事实（每单位每 Tick 至多一条、按 UnitId 严格升序）；
             // 其他系统一律不得逐接触直接加 Available（不变量 27）。
             // 默认装配即**本场真实现**（AdrenalineAccrualFactSource，只读 _stagedResolution 与
             // LastDamageCommitReport）；显式注入优先（负控制 NoAdrenalineAccrualFacts）。
             _adrenaline.ApplyTickEndAccrual(_adrenalineAccrualSource.BuildAccrualFactsOrdered(tick));
+            CompleteDuePlans(tick, beforeResolution: false);
+        }
+
+        private void CommitResolvedControlsAndIntercepts(long tick)
+        {
+            if (_stagedResolution == null || _stagedResolution.Failed || _stagedResolution.Tick != tick) return;
+            foreach (MoveContactResolution move in _stagedResolution.Moves)
+            {
+                if (move.Outcome != MoveContactOutcome.Intercepted) continue;
+                bool hit = false;
+                foreach (RemainingHitResolution remaining in _stagedResolution.RemainingHits)
+                    if (remaining.AttackPlanId == move.AttackPlanId && remaining.Key.TargetUnitId == move.MovingUnitId
+                        && !remaining.IsDirectHitSuppressed) { hit = true; break; }
+                if (!hit) continue;
+                ActionPlan plan = _scheduleAuthority.Registry.Find(move.MovePlanId);
+                if (plan != null && !plan.IsTerminal)
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByIntercept, tick);
+            }
+            foreach (TargetAggregateResolution aggregate in _stagedResolution.Aggregations)
+            {
+                if (!aggregate.IsStaggered && !aggregate.IsKnockedDown) continue;
+                UnitStateMachine machine = FindUnitStateMachine(aggregate.TargetUnitId);
+                if (machine == null || machine.IsTerminal) continue;
+                UnitState control = aggregate.IsKnockedDown ? UnitState.KnockedDown : UnitState.Staggered;
+                int duration = aggregate.IsKnockedDown ? _definition.Rules.KnockdownAutoRecoveryTicks
+                    : _definition.Rules.StaggerAutoRecoveryTicks;
+                if (duration > 0 && machine.CurrentState != control
+                    && !(machine.CurrentState == UnitState.KnockedDown && control == UnitState.Staggered))
+                {
+                    var outcome = machine.TryTransition(StateTransitionSpec.Timed(control, duration, UnitState.Idle),
+                        tick, UnitStateTransitionReasons.Explicit);
+                    if (!outcome.Applied) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION,
+                        "resolved-control|" + aggregate.TargetUnitId + "|" + outcome.RejectionCode);
+                }
+                foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
+                    if (plan.OwnerUnitId == aggregate.TargetUnitId && plan.IsRunning)
+                        _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByControl, tick);
+            }
         }
 
         /// <summary>

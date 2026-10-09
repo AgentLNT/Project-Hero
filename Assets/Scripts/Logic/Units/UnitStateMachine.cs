@@ -265,13 +265,13 @@ namespace ProjectHero.Logic.Units
             switch (from)
             {
                 case UnitState.Idle:
-                    declared = to == UnitState.Windup || to == UnitState.Moving
+                    declared = to == UnitState.Windup || to == UnitState.Recovery || to == UnitState.Moving
                         || to == UnitState.Guarding || to == UnitState.Blocking
                         || to == UnitState.Dodging || to == UnitState.Staggered
                         || to == UnitState.KnockedDown;
                     break;
                 case UnitState.Windup:
-                    declared = to == UnitState.Recovery || to == UnitState.Staggered
+                    declared = to == UnitState.Idle || to == UnitState.Recovery || to == UnitState.Staggered
                         || to == UnitState.KnockedDown;
                     break;
                 case UnitState.Recovery:
@@ -298,7 +298,7 @@ namespace ProjectHero.Logic.Units
                     // 首版：硬直到期直接回 Idle（30 Tick）；Recovering 槽位保留、
                     // 默认不启用（01B 决策 B2）。转换矩阵里保留 Recovering 的合法声明，
                     // 使任务 05+ 可以显式启用它而不必改矩阵。
-                    declared = to == UnitState.Recovering || to == UnitState.Idle;
+                    declared = to == UnitState.Recovering || to == UnitState.Idle || to == UnitState.KnockedDown;
                     break;
                 case UnitState.KnockedDown:
                     declared = to == UnitState.Recovering || to == UnitState.Idle;
@@ -341,6 +341,7 @@ namespace ProjectHero.Logic.Units
         public static readonly IReadOnlyList<TransitionPair> DeclaredTransitions = new[]
         {
             new TransitionPair(UnitState.Idle, UnitState.Windup),
+            new TransitionPair(UnitState.Idle, UnitState.Recovery),
             new TransitionPair(UnitState.Idle, UnitState.Moving),
             new TransitionPair(UnitState.Idle, UnitState.Guarding),
             new TransitionPair(UnitState.Idle, UnitState.Blocking),
@@ -348,6 +349,7 @@ namespace ProjectHero.Logic.Units
             new TransitionPair(UnitState.Idle, UnitState.Staggered),
             new TransitionPair(UnitState.Idle, UnitState.KnockedDown),
             new TransitionPair(UnitState.Windup, UnitState.Recovery),
+            new TransitionPair(UnitState.Windup, UnitState.Idle),
             new TransitionPair(UnitState.Windup, UnitState.Staggered),
             new TransitionPair(UnitState.Windup, UnitState.KnockedDown),
             new TransitionPair(UnitState.Recovery, UnitState.Idle),
@@ -369,6 +371,7 @@ namespace ProjectHero.Logic.Units
             // Recovering 槽位保留：它的转换仍被声明，但首版默认不使用（时长未指定）。
             new TransitionPair(UnitState.Staggered, UnitState.Idle),
             new TransitionPair(UnitState.Staggered, UnitState.Recovering),
+            new TransitionPair(UnitState.Staggered, UnitState.KnockedDown),
             new TransitionPair(UnitState.KnockedDown, UnitState.Idle),
             new TransitionPair(UnitState.KnockedDown, UnitState.Recovering),
             new TransitionPair(UnitState.Recovering, UnitState.Idle),

@@ -862,7 +862,8 @@ namespace ProjectHero.Logic.Grid
                     if (!_reservationHolders.TryGetValue(cells[c], out List<ReservationKey> holders)) continue;
                     for (int h = 0; h < holders.Count; h++)
                     {
-                        if (holders[h].ActionPlanId.Value != row.UnitId.Value)
+                        if (!_reservations.TryGetValue(holders[h], out Reservation remaining)
+                            || remaining.UnitId != row.UnitId)
                             return LogicGridCodes.LOGIC_GRID_BATCH_RESERVATION_NOT_CLEARED + ":cell=" + cells[c];
                     }
                 }

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="1" testcasecount="9" result="Failed" total="9" passed="0" failed="9" skipped="0" inconclusive="0" engine="T06Runner-reflect">
+  <test-case id="2" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackAreaAndMomentumUseFrozenPlanFacing" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackAreaAndMomentumUseFrozenPlanFacing" result="Failed" duration="0.184075">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: West
+  But was:  East
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackAreaAndMomentumUseFrozenPlanFacing () [0x0015b] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="3" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackPhaseStateAdvancesFromWindupThroughRecoveryToIdle" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackPhaseStateAdvancesFromWindupThroughRecoveryToIdle" result="Failed" duration="0.002028">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: Windup
+  But was:  Idle
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackPhaseStateAdvancesFromWindupThroughRecoveryToIdle () [0x0003e] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="4" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BlockStartsConsumesAtTriggerAndCompletesThroughProductionStep" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BlockStartsConsumesAtTriggerAndCompletesThroughProductionStep" result="Failed" duration="0.008973">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: True
+  But was:  False
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BlockStartsConsumesAtTriggerAndCompletesThroughProductionStep () [0x0004a] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="5" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ControlInvalidatesLockedReactionAsInterruptedByControl" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ControlInvalidatesLockedReactionAsInterruptedByControl" result="Failed" duration="0.005000">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: InterruptedByControl
+  But was:  None
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ControlInvalidatesLockedReactionAsInterruptedByControl () [0x00081] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="6" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.DeathTerminatesOwnersPlansBeforeReturningTheSameStep" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.DeathTerminatesOwnersPlansBeforeReturningTheSameStep" result="Failed" duration="0.001000">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: OwnerDied
+  But was:  None
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.DeathTerminatesOwnersPlansBeforeReturningTheSameStep () [0x00075] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="7" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.PreCommandDeathWithoutVictoryCannotOpenWindowOrAcceptDeadOwnersCommand" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.PreCommandDeathWithoutVictoryCannotOpenWindowOrAcceptDeadOwnersCommand" result="Failed" duration="0.001001">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: False
+  But was:  True
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.PreCommandDeathWithoutVictoryCannotOpenWindowOrAcceptDeadOwnersCommand () [0x00108] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="8" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ResolutionControlIsCommittedAfterDamageAndExpiresAtConfiguredTick" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ResolutionControlIsCommittedAfterDamageAndExpiresAtConfiguredTick" result="Failed" duration="0.000999">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: Staggered
+  But was:  Idle
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ResolutionControlIsCommittedAfterDamageAndExpiresAtConfiguredTick () [0x00088] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="9" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.RunningReactionInterruptedBeforeTriggerNeverBlocksOrRefunds" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.RunningReactionInterruptedBeforeTriggerNeverBlocksOrRefunds" result="Failed" duration="0.001007">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: True
+  But was:  False
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.RunningReactionInterruptedBeforeTriggerNeverBlocksOrRefunds () [0x00066] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="10" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.SuccessfulDodgeConsumesAndCompletesWithoutCancellingSourceAttack" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.SuccessfulDodgeConsumesAndCompletesWithoutCancellingSourceAttack" result="Failed" duration="0.010978">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: True
+  But was:  False
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0
+  at ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.SuccessfulDodgeConsumesAndCompletesWithoutCancellingSourceAttack () [0x000dd] in <b264f357a6ec45a6b78bc1998d16dcda>:0
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-suite type="TestFixture" id="11" name="ProjectHero.Logic.Tests.ActionDefinitionTests" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests" result="Passed" />
+  <test-suite type="TestFixture" id="12" name="ProjectHero.Logic.Tests.AssemblyBoundaryTests" fullname="ProjectHero.Logic.Tests.AssemblyBoundaryTests" result="Passed" />
+  <test-suite type="TestFixture" id="13" name="ProjectHero.Logic.Tests.DefinitionIdTests" fullname="ProjectHero.Logic.Tests.DefinitionIdTests" result="Passed" />
+  <test-suite type="TestFixture" id="14" name="ProjectHero.Logic.Tests.EncounterAndFactionTests" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests" result="Passed" />
+  <test-suite type="TestFixture" id="15" name="ProjectHero.Logic.Tests.ForcedDisplacementTests" fullname="ProjectHero.Logic.Tests.ForcedDisplacementTests" result="Passed" />
+  <test-suite type="TestFixture" id="16" name="ProjectHero.Logic.Tests.GridGeometryTests" fullname="ProjectHero.Logic.Tests.GridGeometryTests" result="Passed" />
+  <test-suite type="TestFixture" id="17" name="ProjectHero.Logic.Tests.HashParticipationTests" fullname="ProjectHero.Logic.Tests.HashParticipationTests" result="Passed" />
+  <test-suite type="TestFixture" id="18" name="ProjectHero.Logic.Tests.PathRulesTests" fullname="ProjectHero.Logic.Tests.PathRulesTests" result="Passed" />
+  <test-suite type="TestFixture" id="19" name="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" result="Passed" />
+  <test-suite type="TestFixture" id="20" name="ProjectHero.Logic.Tests.StatusEffectKernelTests" fullname="ProjectHero.Logic.Tests.StatusEffectKernelTests" result="Passed" />
+  <test-suite type="TestFixture" id="21" name="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests" fullname="ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests" result="Failed" />
+  <test-suite type="TestFixture" id="22" name="ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests" fullname="ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="23" name="ProjectHero.Logic.Tests.Task06DodgeRelocationTests" fullname="ProjectHero.Logic.Tests.Task06DodgeRelocationTests" result="Passed" />
+  <test-suite type="TestFixture" id="24" name="ProjectHero.Logic.Tests.Task06LogicGridTests" fullname="ProjectHero.Logic.Tests.Task06LogicGridTests" result="Passed" />
+  <test-suite type="TestFixture" id="25" name="ProjectHero.Logic.Tests.Task06PathfinderTests" fullname="ProjectHero.Logic.Tests.Task06PathfinderTests" result="Passed" />
+  <test-suite type="TestFixture" id="26" name="ProjectHero.Logic.Tests.Task07BudgetTransactionTests" fullname="ProjectHero.Logic.Tests.Task07BudgetTransactionTests" result="Passed" />
+  <test-suite type="TestFixture" id="27" name="ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests" fullname="ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests" result="Passed" />
+  <test-suite type="TestFixture" id="28" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests" result="Passed" />
+  <test-suite type="TestFixture" id="29" name="ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests" fullname="ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests" result="Passed" />
+  <test-suite type="TestFixture" id="30" name="ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests" fullname="ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests" result="Passed" />
+  <test-suite type="TestFixture" id="31" name="ProjectHero.Logic.Tests.Task08AoeDefenseIntegrationTests" fullname="ProjectHero.Logic.Tests.Task08AoeDefenseIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="32" name="ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests" fullname="ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="33" name="ProjectHero.Logic.Tests.Task08AreaThreatCandidateWiringTests" fullname="ProjectHero.Logic.Tests.Task08AreaThreatCandidateWiringTests" result="Passed" />
+  <test-suite type="TestFixture" id="34" name="ProjectHero.Logic.Tests.Task08ConflictGraphTests" fullname="ProjectHero.Logic.Tests.Task08ConflictGraphTests" result="Passed" />
+  <test-suite type="TestFixture" id="35" name="ProjectHero.Logic.Tests.Task08DeathFootprintRemovalTests" fullname="ProjectHero.Logic.Tests.Task08DeathFootprintRemovalTests" result="Passed" />
+  <test-suite type="TestFixture" id="36" name="ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests" fullname="ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="37" name="ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests" fullname="ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests" result="Passed" />
+  <test-suite type="TestFixture" id="38" name="ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests" fullname="ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests" result="Passed" />
+  <test-suite type="TestFixture" id="39" name="ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests" fullname="ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="40" name="ProjectHero.Logic.Tests.Task08MomentumAggregationTests" fullname="ProjectHero.Logic.Tests.Task08MomentumAggregationTests" result="Passed" />
+  <test-suite type="TestFixture" id="41" name="ProjectHero.Logic.Tests.Task08MomentumClashTests" fullname="ProjectHero.Logic.Tests.Task08MomentumClashTests" result="Passed" />
+  <test-suite type="TestFixture" id="42" name="ProjectHero.Logic.Tests.Task08MomentumTests" fullname="ProjectHero.Logic.Tests.Task08MomentumTests" result="Passed" />
+  <test-suite type="TestFixture" id="43" name="ProjectHero.Logic.Tests.Task08OpeningAdrenalineContractTests" fullname="ProjectHero.Logic.Tests.Task08OpeningAdrenalineContractTests" result="Passed" />
+  <test-suite type="TestFixture" id="44" name="ProjectHero.Logic.Tests.Task08RealBlockIntegrationTests" fullname="ProjectHero.Logic.Tests.Task08RealBlockIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="45" name="ProjectHero.Logic.Tests.Task08SnapshotContractTests" fullname="ProjectHero.Logic.Tests.Task08SnapshotContractTests" result="Passed" />
+  <test-suite type="TestFixture" id="46" name="ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests" fullname="ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="47" name="ProjectHero.Logic.Tests.Task09AiDecisionTests" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests" result="Passed" />
+  <test-suite type="TestFixture" id="48" name="ProjectHero.Logic.Tests.Task09AiSnapshotTests" fullname="ProjectHero.Logic.Tests.Task09AiSnapshotTests" result="Passed" />
+  <test-suite type="TestFixture" id="49" name="ProjectHero.Logic.Tests.Task09CommandIngressTests" fullname="ProjectHero.Logic.Tests.Task09CommandIngressTests" result="Passed" />
+  <test-suite type="TestFixture" id="50" name="ProjectHero.Logic.Tests.Task09CommandSurfaceTests" fullname="ProjectHero.Logic.Tests.Task09CommandSurfaceTests" result="Passed" />
+  <test-suite type="TestFixture" id="51" name="ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests" fullname="ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests" result="Passed" />
+  <test-suite type="TestFixture" id="52" name="ProjectHero.Logic.Tests.Task09ReactionCommandTests" fullname="ProjectHero.Logic.Tests.Task09ReactionCommandTests" result="Passed" />
+  <test-suite type="TestFixture" id="53" name="ProjectHero.Logic.Tests.Task09RemovalSemanticsTests" fullname="ProjectHero.Logic.Tests.Task09RemovalSemanticsTests" result="Passed" />
+  <test-suite type="TestFixture" id="54" name="ProjectHero.Logic.Tests.Task09ReplayInputTests" fullname="ProjectHero.Logic.Tests.Task09ReplayInputTests" result="Passed" />
+  <test-suite type="TestFixture" id="55" name="ProjectHero.Logic.Tests.Task09ScheduleCommandTests" fullname="ProjectHero.Logic.Tests.Task09ScheduleCommandTests" result="Passed" />
+  <test-suite type="TestFixture" id="56" name="ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests" fullname="ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests" result="Passed" />
+  <test-suite type="TestFixture" id="57" name="ProjectHero.Logic.Tests.UnitStateMachineTests" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests" result="Passed" />
+</test-run>

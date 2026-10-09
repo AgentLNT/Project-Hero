@@ -1041,6 +1041,10 @@ namespace ProjectHero.Logic.Tests
                         Assert.That(error, Is.Null, "真实 Block 接受不得被肾上腺素拒绝：" + error);
                         Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Accepted));
                         blockPlanId = blockPlan.ActionPlanId;
+                        Assert.That(blockPlan.IsLocked, Is.True, "接受时直接Locked，StartTick才启动");
+                        var acceptedReservation = ledger.ReservationOf(blockPlanId);
+                        Assert.That(acceptedReservation.ReservedAmount, Is.EqualTo(FrozenDesignValues.BlockAdrenalineCost));
+                        Assert.That(acceptedReservation.ReservationCycleId, Is.EqualTo(adrenalineCycleBefore));
                     });
 
             // ④ 接受事务的账本后果：Available 原子转入该计划的预留（含个人周期号）。
@@ -1048,14 +1052,9 @@ namespace ProjectHero.Logic.Tests
                 Task08AoeTargetPolicyIntegrationTests.Monster);
             Assert.That(blockPlan, Is.Not.Null, "夹具前提：真实 Block 计划已创建");
             Assert.That(blockPlan.IsReaction, Is.True);
-            Assert.That(blockPlan.IsLocked, Is.True, "反应计划接受后直接 Locked");
+            Assert.That(blockPlan.IsRunning, Is.True, "TriggerTick已到，固定反应必须已启动");
             AdrenalineReservationEntry reservation = blockLedger.ReservationOf(blockPlanId);
-            Assert.That(reservation, Is.Not.Null, "被扣除的费用必须成为该计划的预留");
-            Assert.That(reservation.ReservedAmount,
-                Is.EqualTo(FrozenDesignValues.BlockAdrenalineCost),
-                "预留额度必须等于权威费用 ActionSpec.AdrenalineCost");
-            Assert.That(reservation.ReservationCycleId, Is.EqualTo(adrenalineCycleBefore),
-                "预留必须携带接受时的个人周期号");
+            Assert.That(reservation, Is.Null, "TriggerTick必须消费接受时按权威费用生成的预留");
 
             // ⑤ 求解面：被 Block 的接触写出 Blocked 结论。
             Assert.That(sim.StagedResolution.BlockPlans.Count, Is.EqualTo(1),
@@ -1206,8 +1205,7 @@ namespace ProjectHero.Logic.Tests
                 "没有接受反应的单位不得存在任何预留");
             Assert.That(sim.AdrenalineLedgerOf(
                 Task08AoeTargetPolicyIntegrationTests.Monster)
-                .ReservationOf(blockPlanId).ReservedAmount,
-                Is.EqualTo(FrozenDesignValues.BlockAdrenalineCost));
+                .ReservationOf(blockPlanId), Is.Null, "Block触发已消费其预留");
         }
     }
 }

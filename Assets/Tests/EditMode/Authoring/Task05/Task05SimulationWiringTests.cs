@@ -1133,17 +1133,15 @@ namespace ProjectHero.Authoring.Tests.Task05
             StepResult deathTick = T03.StepNext(sim);           // Tick 3：死亡提交
             Assert.That(EventsOf<UnitDiedEvent>(deathTick).Count, Is.EqualTo(1));
             Assert.That(sim.IsEnded, Is.False, "战斗必须继续（目标外阵营不影响胜负判据）");
-            Assert.That(first.IsEditable, Is.True,
-                "死亡清理在下一个 Tick 的阶段 0 才消费通知，本 Tick 计划尚未被终止");
-
-            StepResult cleanupTick = T03.StepNext(sim);         // Tick 4：阶段 0 消费通知
+            Assert.That(first.IsTerminated, Is.True, "死亡所在Step返回前必须消费清理通知");
+            StepResult cleanupTick = deathTick;
 
             Assert.That(first.IsTerminated, Is.True);
             Assert.That(second.IsTerminated, Is.True);
             Assert.That(first.TerminationReason, Is.EqualTo(ActionTerminationReason.OwnerDied));
             Assert.That(second.TerminationReason, Is.EqualTo(ActionTerminationReason.OwnerDied));
-            Assert.That(first.TerminalTick, Is.EqualTo(4L));
-            Assert.That(second.TerminalTick, Is.EqualTo(4L));
+            Assert.That(first.TerminalTick, Is.EqualTo(3L));
+            Assert.That(second.TerminalTick, Is.EqualTo(3L));
 
             List<ActionPlanTerminatedEvent> terminated = EventsOf<ActionPlanTerminatedEvent>(cleanupTick);
             Assert.That(terminated.Count, Is.EqualTo(2));

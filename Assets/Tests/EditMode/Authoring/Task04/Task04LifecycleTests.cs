@@ -212,10 +212,10 @@ namespace ProjectHero.Authoring.Tests.Task04
             StepResult ended = Task04Farm.StepNext(sim);
 
             Assert.That(ended.Status, Is.EqualTo(StepStatus.BattleEnded));
-            // 同一 Tick 内死亡阶段被调用了两次（阶段 2 提交 + 阶段 15 补跑），两次都必须幂等。
+            // 命令前已经结束时不再进入Resolution/位移后的死亡阶段。
             Assert.That(sim.LastStepExecuted(StepPhase.DeathAndVictory), Is.True);
-            Assert.That(sim.LastStepExecuted(StepPhase.PostDisplacementDeath), Is.True,
-                "阶段 2 提交死亡后仍进入阶段 15：第二次处理必须是纯无操作");
+            Assert.That(sim.LastStepExecuted(StepPhase.PostDisplacementDeath), Is.False,
+                "命令前胜负已定，应直接Finalizer而不补跑阶段15");
 
             Assert.That(sim.LifecycleNotices.Count, Is.EqualTo(1), "同一 Tick 二次处理不得追加通知");
             Assert.That(sink.Notices.Count, Is.EqualTo(1));
@@ -326,7 +326,7 @@ namespace ProjectHero.Authoring.Tests.Task04
             };
             // 一次位移 1 步 = 沿 East 前进 2 个 x 单位（doubled 坐标：合法格保持 x+y 偶数）。
             var solver = new DisplacementSolverForTask04 { AppliedSteps = 1, Dx = 2, Dy = 0 };
-            var kill = new KillBatchAtTick
+            var kill = new KillDuringResolution
             {
                 Tick = 1L,
                 Kills = new[] { Task04Farm.EnemyUnitId.Value }
@@ -335,10 +335,11 @@ namespace ProjectHero.Authoring.Tests.Task04
             deferred.DeferredTicks.Add(1L);
 
             var sim = Task04Farm.NewSim(new BattleSimulationAssembly(
-                unitStateAdvance: kill,
+                resolutionCommit: kill,
                 displacementRequestBuilder: displacement,
                 displacementSolver: solver,
                 victoryEvaluator: deferred));
+            kill.DamageApplier = sim;
 
             Task04Farm.StepEmpty(sim); // Tick 0：正常推进
             var initial = Task04Farm.UnitOf(sim.CurrentSnapshot, Task04Farm.EnemyUnitId);
@@ -400,7 +401,7 @@ namespace ProjectHero.Authoring.Tests.Task04
                 MomentumUnits = 5L,
                 ConflictGroupKey = 21L
             };
-            var kill = new KillBatchAtTick
+            var kill = new KillDuringResolution
             {
                 Tick = 1L,
                 Kills = new[] { Task04Farm.EnemyUnitId.Value }
@@ -411,10 +412,11 @@ namespace ProjectHero.Authoring.Tests.Task04
             deferred.DeferredTicks.Add(1L);
 
             var sim = Task04Farm.NewSim(new BattleSimulationAssembly(
-                unitStateAdvance: kill,
+                resolutionCommit: kill,
                 displacementRequestBuilder: displacement,
                 displacementSolver: solver,
                 victoryEvaluator: deferred));
+            kill.DamageApplier = sim;
 
             Task04Farm.StepEmpty(sim); // Tick 0：正常推进
             StepResult result = Task04Farm.StepNext(sim);

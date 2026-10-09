@@ -339,7 +339,7 @@ namespace ProjectHero.Logic.Turns
         /// </summary>
         public void RequestClose(TurnWindowCloseReason reason)
         {
-            if (!IsOpen || !IsAcceptingSubmissions) return;
+            if (!IsOpen || (!IsAcceptingSubmissions && reason != TurnWindowCloseReason.BattleEnded)) return;
             IsAcceptingSubmissions = false;
             CloseReason = reason;
         }

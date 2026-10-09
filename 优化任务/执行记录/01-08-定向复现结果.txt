@@ -1,0 +1,11 @@
+﻿ATTACK_START ownerState=Idle
+BLOCK tick=10 start=10 trigger=11 end=12 plan=Locked opportunity=Accepted reservations=1 blockResults=0
+BLOCK tick=11 start=10 trigger=11 end=12 plan=Locked opportunity=Accepted reservations=1 blockResults=1
+BLOCK tick=12 start=10 trigger=11 end=12 plan=Locked opportunity=Accepted reservations=1 blockResults=0
+BLOCK tick=14 start=10 trigger=11 end=12 plan=Locked opportunity=Accepted reservations=1 blockResults=0
+ATTACK_START ownerState=Idle
+CONTROL tick=11 defenderState=Staggered reactionPlan=Locked termination=None blockResults=1
+IMPACT tick=11 stagger=True knockdown=False actualState=Idle
+PRECOMMAND_DEATH tick=1 monsterAlive=False openedDeadOwnersWindow=True battleEnded=False deadOwnersActivePlans=1 rejectedCommands=0
+DEATH_CLEANUP tick=2 deadOwnersActivePlans=0
+FACING tick=11 requestedPlanFacing=West intentFacing=East momentumFacing=West

@@ -1,0 +1,3526 @@
+{
+  "Date": "2026-10-09",
+  "Head": "ba24f6e58e0c34ec21888623b3905f063cc266ef",
+  "Semantics": "Exact-name inventory only; alternative tests require manual review",
+  "Runs": [
+    {
+      "Path": "优化任务/执行记录/09-recheck-editmode-results.xml",
+      "Total": 718,
+      "Passed": 718,
+      "Failed": 0,
+      "Skipped": 0,
+      "Inconclusive": 0
+    },
+    {
+      "Path": "优化任务/执行记录/09-recheck-playmode-results.xml",
+      "Total": 40,
+      "Passed": 40,
+      "Failed": 0,
+      "Skipped": 0,
+      "Inconclusive": 0
+    },
+    {
+      "Path": "优化任务/执行记录/01-08-audit-logic-results.xml",
+      "Total": 405,
+      "Passed": 405,
+      "Failed": 0,
+      "Skipped": 0,
+      "Inconclusive": 0
+    }
+  ],
+  "Tasks": [
+    {
+      "Task": "01-基线与不变量.md",
+      "Required": 0,
+      "Named": 0,
+      "Passed": 0,
+      "Tests": []
+    },
+    {
+      "Task": "02-程序集边界与纯数据.md",
+      "Required": 47,
+      "Named": 46,
+      "Passed": 46,
+      "Tests": [
+        {
+          "Name": "LogicAssemblyHasNoUnityEngineReference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/AssemblyBoundaryTests.cs"
+        },
+        {
+          "Name": "LegacyAdapterConvertsAttackWindupAndRecoverySecondsExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/LegacyAdapterTests.cs"
+        },
+        {
+          "Name": "LegacyAttackWithoutRecoveryUsesThirtyTickDefault",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/LegacyAdapterTests.cs"
+        },
+        {
+          "Name": "AttackTimingRejectsNonPositiveWindupOrRecovery",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "AttackTimingRejectsNonPositiveOrNonFiniteActionSpeed",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "AttackTimingRulesParticipateInBattleDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/HashParticipationTests.cs"
+        },
+        {
+          "Name": "GuardTimingRequiresPositiveWindupActiveAndRecovery",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "MoveTimingAndReferenceSpeedParticipateInDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/HashParticipationTests.cs"
+        },
+        {
+          "Name": "MoveReferenceSpeedIsFrozenAtTwenty",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "PathCostAndSearchRulesParticipateInDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "PathSearchRulesRejectNonPositiveLimits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "GridPointRejectsOddCoordinateParity",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs"
+        },
+        {
+          "Name": "MoveSpeedIsNotAPathCostInput",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "MoveMaxPathWeightCannotExceedSearchRuleLimit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementProtocolAndStopReasonEncodingParticipateInDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/HashParticipationTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementStopReasonEncodingIsStableAndUnique",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/HashParticipationTests.cs"
+        },
+        {
+          "Name": "LegacyPerEdgeDurationClampIsNotANewTimingRule",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/PathRulesTests.cs"
+        },
+        {
+          "Name": "GuardEligibleResistanceMustBePartial",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "BlockEligibleResistanceIsFixedFull",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "OrdinaryActionsCannotDeclareAdrenalineCost",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "ReactionTimingAndMinimumLeadParticipateInDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/HashParticipationTests.cs"
+        },
+        {
+          "Name": "AdrenalineRulesRejectBlockOrDodgeRewardAtOrAboveCost",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ReactionAndAdrenalineTests.cs"
+        },
+        {
+          "Name": "AdrenalineRulesRejectCostAboveCycleMaximum",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ReactionAndAdrenalineTests.cs"
+        },
+        {
+          "Name": "AuthoringRejectsInvalidMomentumOrDamageInputs",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/LegacyAdapterTests.cs"
+        },
+        {
+          "Name": "LegacyStatsAdapterMapsArmorToExplicitPhysicalChannels",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/LegacyAdapterTests.cs"
+        },
+        {
+          "Name": "DamageChannelAndImpactProfileIdsCannotBeInterchanged",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/DefinitionIdTests.cs"
+        },
+        {
+          "Name": "ActionPayloadKeepsDamageComponentsSeparateFromMomentumProfile",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "TrueDamageBypassesPassiveAndActionResistance",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ReactionAndAdrenalineTests.cs"
+        },
+        {
+          "Name": "ContradictoryDamageEligibilityAndBypassTagsAreRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ReactionAndAdrenalineTests.cs"
+        },
+        {
+          "Name": "ResistanceRejectsValuesOutsideQ10Range",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs"
+        },
+        {
+          "Name": "LogicDefinitionContainsNoUnityObjectReference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/AssemblyBoundaryTests.cs"
+        },
+        {
+          "Name": "TrianglePointRejectsInvalidOrientationOrParity",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs"
+        },
+        {
+          "Name": "IntegerSixtyDegreeExpansionPreservesTriangleLattice",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs"
+        },
+        {
+          "Name": "SixIntegerRotationsReturnOriginalTriangle",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs"
+        },
+        {
+          "Name": "DirectionalTriangleTableRequiresCanonicalTwelveDirections",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs"
+        },
+        {
+          "Name": "LegacyPatternAndVolumeSliceExpandEvenAndOddBasesWithoutFloat",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/LegacyGeometrySliceTests.cs"
+        },
+        {
+          "Name": "LogicDirectionalGeometryHasNoRuntimeRotationDependency",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs"
+        },
+        {
+          "Name": "DefinitionIdRejectsEmptyOrInvalidFormat",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/DefinitionIdTests.cs"
+        },
+        {
+          "Name": "DefinitionIdRejectsDuplicateWithinNamespace",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/DefinitionIdTests.cs"
+        },
+        {
+          "Name": "DistinctIdTypesCannotBeInterchanged",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/DefinitionIdTests.cs"
+        },
+        {
+          "Name": "EncounterSlotOrderingUsesStringComparerOrdinal",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/EncounterAndFactionTests.cs"
+        },
+        {
+          "Name": "EncounterRejectsDuplicateSlotId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/EncounterAndFactionTests.cs"
+        },
+        {
+          "Name": "TargetRelationMaskUsesStableExplicitBitValues",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/EncounterAndFactionTests.cs"
+        },
+        {
+          "Name": "FactionDispositionAndUnitRelationUseStableExplicitValues",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/EncounterAndFactionTests.cs"
+        },
+        {
+          "Name": "EncounterSlotRequiresFactionId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/EncounterAndFactionTests.cs"
+        },
+        {
+          "Name": "CustomAssemblyDoesNotReferenceAssemblyCSharp",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        }
+      ]
+    },
+    {
+      "Task": "02B-完整配置与战斗初始化.md",
+      "Required": 61,
+      "Named": 61,
+      "Passed": 61,
+      "Tests": [
+        {
+          "Name": "AuthoringAssemblyDoesNotReferenceAssemblyCSharp",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AssemblyBoundaryAuthoringTests.cs"
+        },
+        {
+          "Name": "EveryReferencedLegacyDefinitionHasExplicitStableId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "LegacyLocalIdIsNotImplicitlyTreatedAsGlobalId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "AmbiguousLegacyLocalIdRequiresExplicitMapping",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "SameFinalIdWithDifferentContentIsRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "AllReferencedActionLibrariesConvert",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "AllReferencedPatternsAndVolumesConvert",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "LegacyEvenAndOddBasesExpandToCanonicalTwelveDirections",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "MissingEvenOrOddDirectionalBaseStopsDefinitionBuild",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "InvalidTriangleOrientationOrParityStopsDefinitionBuild",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "DirectionalExpansionOverflowStopsDefinitionBuild",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "DirectionalExpansionDeduplicatesAndSortsCanonicalPoints",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "CurrentPatternAndVolumeAssetsMatchLegacyOutputInAllDirections",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "ExplicitLegacyDirectionMustMatchCanonicalExpansion",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "DirectionalExpansionIgnoresAssetAndPointEnumerationOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "ExpandedPatternAndVolumeTablesAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "EquivalentCanonicalTablesKeepHashAcrossBuilderImplementationChanges",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "BuilderOutputContainsNoRuntimeRotationRecipe",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsDanglingDefinitionReference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsInvalidOrDuplicateDefinitionId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "DefinitionAndHashIgnoreAssetDiscoveryOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "DefinitionHashChangesWhenGameplayDefinitionChanges",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs"
+        },
+        {
+          "Name": "EncounterInitializationUsesOrdinalSlotOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/BattleInitializationTests.cs"
+        },
+        {
+          "Name": "EncounterInitializationIgnoresSceneRegistrationOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/BattleInitializationTests.cs"
+        },
+        {
+          "Name": "ControllerBindingsMapSlotsToDeterministicUnitIds",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/BattleInitializationTests.cs"
+        },
+        {
+          "Name": "EncounterSlotsMapFactionIdsToRuntimeUnits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/BattleInitializationTests.cs"
+        },
+        {
+          "Name": "FactionMappingDoesNotDependOnControllerKind",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/BattleInitializationTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsMissingOrUnknownSlotFaction",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "FactionMatrixCanonicalizesEveryUnorderedPair",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "FactionMatrixHashIgnoresInputEnumerationOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsMissingDuplicateReverseDuplicateOrDanglingFactionRelation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "SameUnitIsSelfAndSameFactionOtherUnitIsAllied",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "FactionResolverReturnsConfiguredAlliedNeutralAndHostile",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsEmptyOrUnknownTargetRelationMaskBits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "AttackTargetRelationMasksAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "DynamicSpawnFactionComesOnlyFromFixedOrExplicitInheritancePolicy",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsEmptyOverlappingOrDanglingVictoryFactions",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsVictoryGroupsContradictingFactionMatrix",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "VictoryDefinitionAndAutomaticDeferralLimitAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "PathCostRulesPreserveLegacyOneTwoWeights",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "PathSearchRulesUseFrozen4096Node256Weight192EdgeLimits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "PathSearchLimitsAllowEqualityAndRejectOnlyGreaterValues",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "PathRulesAndEncounterGridBoundaryAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementProtocolVersionAndStopReasonsAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsUnsupportedForcedDisplacementProtocolVersion",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BuilderRejectsMoveSpeedAsPathCostCoefficient",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "DuplicateOrDanglingControllerBindingIsRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ExternalSystemControllerBindingIsRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "RenamingDisplayNameDoesNotChangeLogicIdOrHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "RuntimeInputsProvideMetaResourceWithoutExternalSingleton",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ConcurrentActionCostIsDefinedAndAffectsDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "DamageChannelsImpactProfilesAndResistanceMapsAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "LegacyImpactTypeMigratesToExplicitDamageAndMomentumFields",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "AmbiguousLegacyDamageTypeStopsDefinitionBuild",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ReactableAttackRequiresMinimumReactionLead",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "UnreactableAttackDoesNotRequireReactionLead",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ReactionCostsTimingsTagsAndAdrenalineRulesAffectDefinitionHash",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "BlockAndDodgeRewardsMustBeLowerThanEveryCorrespondingCost",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ReactionCostCannotExceedCycleMaximum",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "ActionSetReactionAvailabilityDoesNotDependOnControllerKind",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        },
+        {
+          "Name": "MainEncounterBuildsWithoutFallbackOrSkippedAsset",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "03-确定性内核.md",
+      "Required": 57,
+      "Named": 57,
+      "Passed": 57,
+      "Tests": [
+        {
+          "Name": "StepRejectsNonCurrentTickRequest",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "EmptyTickReturnsEmptyEventBatchAndSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "EventSequenceDoesNotResetBetweenTicks",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "CommandOrderUsesStableKeys",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "RawRequestPermutationProducesSameCanonicalCommandOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "DuplicateProducerOrdinalRejectsEntireCollisionGroup",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "ProducerOrdinalRegressionIsRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "CommandSequenceIsUniqueAndMonotonic",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "ProducerCannotProvideSourcePriorityOrCommandSequence",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "CommandRequestUsesDiscriminatedScheduleWindowOrReactionScope",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "ProducerCannotProvideReactionTriggerTickOrRuleCost",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "ScopePayloadMismatchIsRejectedDeterministically",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "ExternalIngressCannotRegisterSystemSource",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "CommandIngressStateAppearsInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "RngStateAppearsInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "CanonicalSnapshotIgnoresInsertionOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "IncrementalHistoryDigestMatchesIndependentFullRecomputation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "HistoryArchiveOrderIgnoresCandidateEnumerationOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "HistoryArchivesOnlyAfterCleanupAndInvariantChecks",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "ArchivedRecordsHaveNoMutableAliasesAndRejectDuplicateAppend",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "MutableWindowLedgerCannotBeArchivedWhileReservationsRemain",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "EmptyArchiveBatchDoesNotReadCopyOrHashOldHistory",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "NewArchiveBatchProcessesOnlyNewRecords",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "OldSnapshotHistoryPrefixRemainsUnchangedAfterAppend",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "DiagnosticRecomputationDetectsAlteredOrMissingHistoryRecords",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "BattleEndArchivesFinalRecordsAndAlreadyEndedDoesNotAppend",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "HistoryEncodingChangeRequiresReplayFormatVersionChange",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "SameSeedAndCommandsProduceSameHashOneHundredTimes",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "TimeScaleOrFrameTimingIsNotPartOfLogicInput",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "ScheduledWindowOpenRunsAfterPreCommandDeathAndVictory",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "TickTargetedScheduleEditPhasePrecedesDuePlanStartGatePhase",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "StateExpiryPhasePrecedesDuePlanStartGatePhase",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "DuePlanStartGatePhasePrecedesIntentDrain",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "LateInputAfterBatchFreezeCannotMutateCurrentTickSchedule",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "ScheduleRevisionAppearsInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs"
+        },
+        {
+          "Name": "ScheduleEditsCompareExpectedRevisionToFrozenBatchBase",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs"
+        },
+        {
+          "Name": "AlreadyEndedStepReturnsEmptyEventsAndSameFinalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "AlreadyEndedStepDoesNotAdvanceTickRngIdsOrSequences",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "FixedUnitsReceiveIdsInOrdinalEncounterSlotOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "RuntimeIdsStartAtOneAndAreNeverReused",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "ReactionOpportunityIdsHaveIndependentMonotonicGenerator",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "IdGeneratorNextValuesAppearInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "FreshSimulationsFromSameInitialInputsProduceSameCanonicalHashes",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "InitialStateHashMatchesFreshSimulationBeforeFirstStep",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "ReplayFormatVersionIsIndependentFromRulesVersion",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/ReplayContractTests.cs"
+        },
+        {
+          "Name": "SequenceCountersAreIndependentFromObjectIds",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs"
+        },
+        {
+          "Name": "StepInvariantChecksRunBeforeSnapshotAndDoNotMutateState",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "StepProvidesDistinctGlobalForcedDisplacementSolveAndBatchCommitPhases",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementBatchCommitPrecedesStateControlAndDeathPhases",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs"
+        },
+        {
+          "Name": "StepCanBeDrivenByExplicitCallerWithoutUnityLifecycle",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "StepResultExposesOnlyImmutableEventsAndSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "SimulationCreationUsesTask02BDefinitionAndRuntimeInputs",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "SimulationCreatesOneImmutableFactionRelationResolverFromDefinition",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "DecisionSnapshotFactionQueriesMatchCanonicalDefinition",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "ControllerRegistrationCannotMutateUnitFactionOrRelations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "DisposeIsIdempotentAndStepAfterDisposeIsRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        },
+        {
+          "Name": "SimulationHasNoUnityTimeOrViewWritebackDependency",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "03B-运行时所有权与影子验证.md",
+      "Required": 22,
+      "Named": 22,
+      "Passed": 22,
+      "Tests": [
+        {
+          "Name": "SceneHasExactlyOneBattleRuntimeBootstrap",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "DuplicateRuntimeBootstrapFailsFast",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "CombatDemoNoLongerOwnsAutonomousUpdate",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "LegacyLogicCallbacksAreClassifiedBeforeNewCanStart",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "NewModeDisablesEveryRegisteredLegacyLogicWriter",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "LegacyAndShadowModesEnableTheRecordedLegacyWriterSet",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "LegacyModeNeverCallsBattleSimulationStep",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "NewModeNeverCallsLegacyAdvanceTime",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowModeKeepsLegacyAsOnlyAuthority",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowSimulationCannotBindViewsOrPlayFeedback",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowSimulationCannotMutateLegacyOrUnityState",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "RuntimeModeCannotChangeDuringActiveBattle",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "DestroyingBattleStopsActiveAdaptersExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowReportFindsFirstUnexpectedDifference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowReportClassifiesExpectedAndUnexpectedDifferences",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowComparisonRunsAfterEveryRegisteredLegacyWriter",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "BroadDifferenceAllowlistIsRejected",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        },
+        {
+          "Name": "EquivalentShadowScenarioUsesLogicalCheckpointAlignment",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "04-单位状态与生命周期.md",
+      "Required": 29,
+      "Named": 29,
+      "Passed": 29,
+      "Tests": [
+        {
+          "Name": "StateTransitionMatrixAcceptsOnlyDeclaredTransitions",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "TimedTransitionUsesHalfOpenInterval",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "AutomaticAndExplicitTransitionsEmitEquivalentEvents",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "DeadIsTerminal",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "DeathNotifiesLifecycleCleanupHooksInUnitIdOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "RepeatedDeathProcessingDoesNotDuplicateLifecycleNotice",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "StateMachineDoesNotExposeSubmissionAuthority",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "StateMachineExposesDirectHitEligibilityNotInteractionParticipation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "GuardingBlockingAndDodgingRemainDirectHitEligibleStates",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "DefenseStateAloneDoesNotMitigateOrInvalidateContact",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "ControlStatesRejectDirectHitByInitialRules",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "FiniteControlStateExposesAuthoritativeBlockingUntilTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs"
+        },
+        {
+          "Name": "ControlStateExpiringAtTickIsAdvancedBeforeStartGate",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "ExpiredEffectDoesNotTickAtEndTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/StatusEffectKernelTests.cs"
+        },
+        {
+          "Name": "EffectMutationDuringIterationIsDeferredAndOrdered",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/StatusEffectKernelTests.cs"
+        },
+        {
+          "Name": "EffectIdIsUniqueAndAppearsInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "DamageOverTimeDeathOccursBeforeNewCommands",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "LethalForcedDisplacementCommitsBeforeDeathRemovesFinalOccupancy",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "LethalUnitStillParticipatesInSameTickDisplacementDependencyGraph",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "VictoryIsEvaluatedBeforeWindowAdvance",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "PreCommandDeathAndVictoryRunBeforeScheduledWindowOpen",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "VictoryDeclaresResultWithoutEmittingBattleEndedBeforeFinalization",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "VictoryUsesFactionIdNotControllerOrPlayerFlag",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "VictoryUsesConfiguredObjectiveGroupsNotRuntimeDispositionScan",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "AlliedEliminatedProducesConfiguredDefeat",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "HostileEliminatedProducesConfiguredVictory",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "SimultaneousFactionEliminationProducesConfiguredDraw",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "OutOfObjectiveFactionDoesNotBlockEliminationVictoryOrLoseItsDisposition",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs"
+        },
+        {
+          "Name": "StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "05-ActionPlan与ActorLane.md",
+      "Required": 98,
+      "Named": 84,
+      "Passed": 84,
+      "Tests": [
+        {
+          "Name": "DodgeAcceptanceDoesNotTerminateFutureMoves",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05DodgeSeamTests.cs"
+        },
+        {
+          "Name": "DodgeOriginInvalidationFindsTransitiveMovesAcrossNonMovementPlans",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05DodgeSeamTests.cs"
+        },
+        {
+          "Name": "DodgeOriginInvalidationUsesCurrentScheduleIncludingLaterEdits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05DodgeSeamTests.cs"
+        },
+        {
+          "Name": "DodgeMovementTerminalIsIdempotentAndDoesNotIncrementScheduleRevision",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05DodgeSeamTests.cs"
+        },
+        {
+          "Name": "DodgeOriginInvalidationPreservesIndependentPlansAndTheirTicks",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05DodgeSeamTests.cs"
+        },
+        {
+          "Name": "SameActorPlansAreSerializedByLane",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "DifferentActorPlansMayOverlap",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "OrdinaryPlanUsesSingleIdentityAcrossEditableLockedAndRunning",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "ReactionPlanIsCreatedLockedWithoutEditablePhase",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "AttackRelativeTimingResolvesOnceWhenPlanBecomesEditable",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "ActionSpeedChangesWindupButNotRecovery",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "MovingEditableAttackRebindsAbsoluteTicksWithoutResamplingSpeed",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "AttackImpactOccursAtResolvedWindupEnd",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AttackBudgetCostEqualsResolvedWindupPlusRecovery",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "MoveStepTicksResolveOnceButEditablePathCountCanRecompute",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "MoveChainRecomputesProjectedStartPathDurationAndBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "AcceptedAttackTimingDoesNotChangeAfterSpeedMutation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "AttackInterruptedBeforeImpactEmitsNoIntent",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "PrimaryTargetMustSatisfyAllowedRelationAtAddAndStartGate",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "InvalidPrimaryTargetRelationTerminatesAsTargetInvalidWithoutRetargeting",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ImpactTickTransitionsToRecoveryAndStillEmitsIntent",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "RemovingEditablePlanDoesNotPullLaterPlansForward",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "ScheduleEditTargetsFutureTickAndRunsBeforeDuePlanStartGate",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "RequestedStartBeforeCommandTargetTickRejectsWholeBatch",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "TickNPlusOnePlanRemainsEditableUntilTickNPlusOneCommandPhase",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "InputAfterBatchFreezeCannotEditPlanLockedThisTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "ControlExpiringAtStartTickAllowsPlanToStartWithoutDelay",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "TimedControlBlockerAutoDefersDueEditablePlan",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "NoFiniteRetryTickTerminatesPlanAsActorUnavailableAtStart",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "AutoDeferralLimitOrHorizonTerminatesWithExplicitReason",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "AutoDeferralRipplesOnlyEditableDependencyClosureRight",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AutoDeferralNeverMovesLockedRunningOrReactionPlan",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AutoDeferralPreservesLastRequestedStartTick",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AutoDeferralReusesCanonicalScheduleEvaluator",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "SuccessfulSystemAutoDeferralIncrementsRevisionExactlyOnce",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "FailedSystemAutoDeferralDoesNotIncrementRevision",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "FailedAutoDeferralTerminatesEditableAndReleasesPreLockArtifacts",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AutomaticDeferralCountAppearsInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "ActionPlanAutoDeferredEventContainsCanonicalRippleAndRevision",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "StartGateLockAndRunningCommitIsAtomic",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "ActionStateLaneDivergenceIsInvariantViolation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "LockedPlanCannotBeMovedOrRemoved",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "ReactionPlanCannotBeMovedOrRemoved",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "ScheduleRippleMovesOnlyEditablePlansRight",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "OnlyDirectlyMovedPlanMayStartEarlierThanItsOldProjection",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "LockedAndReactionIntervalsRemainFixedObstacles",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "SchedulePreviewAndCommitUseSameCanonicalEvaluator",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "SuccessfulScheduleEditIncrementsRevisionExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "DisjointScheduleEditsFromSameFrozenRevisionMayBothSucceed",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "OverlappingScheduleEditLaterInBatchIsRejectedByCommandOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "FailedOrPreviewedScheduleEditDoesNotIncrementRevision",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "StaleScheduleRevisionRejectsWholeBatch",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "DuplicateOperationOrCyclicInsertionAnchorRejectsWholeBatch",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "ScheduleEditFailureLeavesNoPartialPlanOrLaneMutation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "AddedPlanReceivesIdOnlyAfterTransactionValidation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs"
+        },
+        {
+          "Name": "AllTerminalTransitionsUseSingleLifecycleEntry",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "TerminalPlanCannotEmitUnfrozenOrFutureIntent",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "FrozenCurrentTickIntentResolvesBeforeTerminalCleanup",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "TerminalCleanupIsIdempotentAndFirstReasonWins",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "TerminalCleanupDoesNotRewindIdsOrSequences",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "TerminalCleanupEmitsLifecycleEventOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementPlanInvalidationUsesSingleLifecycleEntry",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "MovementOriginInvalidatedWinsOverReservationPreemptionForSamePlan",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementTerminationDoesNotPullLaterPlansForward",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs"
+        },
+        {
+          "Name": "SubmissionLockDoesNotDeleteExistingPlans",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "NonIdleStateDoesNotByItselfRejectFuturePlan",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "SubmittedWindowIdDoesNotFilterPlanExecution",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "ReactionPlanUsesOpportunityBindingAndNullSubmittedWindowId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs"
+        },
+        {
+          "Name": "AttackCannotOpenReactionOpportunityBeforeTelegraphTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "EditableAttackCannotOpenReactionOpportunityBeforeLockAndStart",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "UnreactableAttackDoesNotOpenReactionOpportunity",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "OpportunityCandidatesDoNotDependOnPlayerOrAiControllerKind",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "AreaOpportunityCandidatesUseSameFactionRelationMaskAsAttack",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ExplicitFriendlyFireCanCreateFriendlyReactionOpportunity",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionOptionWithoutCommandIngressLeadIsNotPublished",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionOptionsRequireCompatibleSourceTags",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionOptionDeadlineIsInclusiveAndExpiresAfterCommandPhase",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "EachReactionOptionEmitsExpiryOnceAndLastOptionClosesOpportunity",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionOpportunityLeavesOpenAndEmitsCloseOnlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionCommandCannotProvideTriggerTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "ReactionFixedIntervalCannotBeShiftedByLaneTail",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionLaneOverlapIsRejectedWithoutPreemption",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "LockedReactionCannotAutoDefer",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ControlInvalidatesLockedReactionAsInterruptedByControl",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "SourceThreatCancelledTerminatesBoundReactionAndRequestsReservationRelease",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "ReactionOpportunityStateAndNextIdAppearInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs"
+        },
+        {
+          "Name": "DeathLocksLaneAndTerminatesAllNonTerminalPlansInActionPlanIdOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "PlanAndLaneAppearInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "PlanTimingAppearsInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "ScheduleRevisionAndPlanEditLockTicksAppearInCanonicalSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "SchedulingFailureRollsBackPlanAndLane",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "BattleEndTerminatesPlansInActionPlanIdOrderAndLocksAllLanes",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "BattleEndUsesSamePlanTerminalCoordinator",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "BattleEndedPlansRemainInHistoryButLeaveActiveIndexes",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "StepEndHasNoActiveArtifactReferencingTerminalPlan",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs"
+        },
+        {
+          "Name": "ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "06-LogicGrid与移动段.md",
+      "Required": 85,
+      "Named": 85,
+      "Passed": 85,
+      "Tests": [
+        {
+          "Name": "AreaQueryReturnsUnitsOrderedByUnitId",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "LogicGridUsesCanonicalVolumeTableForEveryDirection",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "VolumeOccupancyOnlyIndexesAndTranslatesIntegerPoints",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "RuntimeGridHasNoLegacyFloatRotationDependency",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "NeighborEnumerationUsesCanonicalGridDirectionOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "EvenGridDirectionsHaveOneWeightUnit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "OddGridDirectionsHaveTwoWeightUnits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathWeightEqualsCheckedSumOfEdgeWeights",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "IntegerHeuristicMatchesUnobstructedOneTwoCostLowerBound",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathfinderUsesNoFloatingPointCostOrHeuristic",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "EqualCostPathUsesCanonicalNeighborOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "EqualFAndHPathUsesGridPointLexicographicOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "OpenSetTieDoesNotDependOnInsertionSequence",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "EqualTentativeGKeepsFirstCanonicalParent",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "MoveSpeedDoesNotChangeChosenPath",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "MoveSpeedOnlyChangesResolvedBaseStepTicks",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathfinderSearchesOnlyInsideEncounterGridBoundary",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "InvalidStartIsRejectedBeforeInvalidDestinationAndSearch",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "InvalidDestinationIsDistinctFromPathNotFound",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathSearchAllowsExactly4096ExpandedNodes",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathSearchNodeLimitReturnsStableFailure",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathSearchAllowsExactly256WeightUnits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathWeightLimitReturnsStableFailure",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathSearchAllowsExactly192Edges",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathEdgeLimitReturnsStableFailure",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathCostOverflowReturnsStableFailureWithoutMutation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "PathFailurePriorityIsOverflowThenEdgeThenWeight",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "NoPathIsDistinctFromSearchLimitFailure",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs"
+        },
+        {
+          "Name": "MovingUnitOccupiesFromUntilEndTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "MovementCommitsToDestinationAtEndTickBeforeCommands",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "DestinationRemainsReservedDuringMovementSegment",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "MultiStepPathUsesIndependentSegments",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "ReservationConflictWinnerFollowsCanonicalCommandOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "ReservationConflictIgnoresRawBatchEnumerationOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "DuplicateProducerOrdinalCannotChooseReservationWinner",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "LaterCommandCannotPreemptCommittedReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "FailedPathReservationRollsBackAllSegments",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "WindowSwitchDoesNotChangeMovementOrReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "GridStateAppearsCanonicallyInSnapshot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "FactionRelationDoesNotImplicitlyDisableOccupancyOrReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "PlanTerminalBeforeMovementEndKeepsLastCommittedCell",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "TerminalPlanNeverCommitsDestinationAtFormerEndTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "PlanTerminalReleasesAllOwnedReservations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "PlanTerminalRemovesActiveAndFutureMovementSegments",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "RepeatedPlanTerminalCleanupIsIdempotent",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "VisualInterpolationDoesNotAffectInterruptedMovementResult",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "NoActiveMovementArtifactReferencesTerminalPlanAtStepEnd",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "BattleEndReleasesReservationsAndRemovesActiveMovementSegmentsInStableOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "MoveSegmentsUsePlanResolvedBaseStepTicksWithoutRecalculation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "WeightTwoSegmentTakesTwiceWeightOneSegmentTicks",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "MoveEndTickAndBudgetUsePathWeightNotEdgeCount",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "MoveTimingOverflowRejectsWholeCandidateWithoutClamp",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "NewMoveTimingDoesNotApplyLegacyPointTwoToFourSecondEdgeClamp",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "EditableMoveChainRecomputesPathCountFromProjectedPredecessorPosition",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "EditableMoveReorderAtomicallyReplacesSegmentsAndReservations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "FailedEditableDependencyRecalculationRollsBackWholeScheduleBatch",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "TimedReservationBlockerExposesFiniteReleaseTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "StaticOrUnknownSpatialBlockerIsNotRetryable",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "AutoDeferralReusesMovePathAndReservationEvaluator",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "AutoDeferralAtomicallyReplacesEditableSegmentsAndReservations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "FailedAutoDeferralLeavesNoPartialReservationReplacement",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "AutoDeferralCannotMoveLockedOrReactionReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs"
+        },
+        {
+          "Name": "LockedMovePathAndSegmentsCannotBeRecomputed",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "MoveSegmentCountMatchesLockedPlanResolvedPathEdgeCount",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "MoveSegmentWeightSumMatchesLockedPlanResolvedPathWeightUnits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs"
+        },
+        {
+          "Name": "DodgeDestinationIsReservedForDerivedTriggerTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeCommitsDestinationAtomicallyBeforeContactRecheck",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeRelocationAndDependentMoveCleanupCommitAtomically",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeCommitFailureLeavesDependentMovesReservationsAndBudgetsUnchanged",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "CancelledDodgePreservesFutureMovementChain",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeWithoutPositionChangeDoesNotInvalidateMoves",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeDependencyPreviewIsReadOnlyAndUsesCommitDependencyQuery",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeDoesNotCreateContinuousMovementOrInvulnerability",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "SourceThreatCancellationReleasesDodgeDestinationReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "DodgeDestinationConflictFollowsCanonicalCommandOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "InvalidDodgeDestinationTerminatesReactionWithoutMovingUnit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "AreaAttackCanStillHitCommittedDodgeDestination",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs"
+        },
+        {
+          "Name": "BatchRelocationValidatesAllSourcesBeforeMutation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "BatchRelocationValidatesWholeMultiCellFootprint",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "BatchRelocationRemovesAllOldFootprintsBeforeAddingNewFootprints",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "BatchRelocationRejectsOverlapWithStationaryOccupancy",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "BatchRelocationFailureLeavesGridUnchanged",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "BatchRelocationRequiresPreemptedReservationsToBeCleared",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "BatchRelocationDoesNotUsePathfinderSegmentsOrReservationArbitration",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs"
+        },
+        {
+          "Name": "LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "07-TurnWindow与提交权限.md",
+      "Required": 57,
+      "Named": 56,
+      "Passed": 56,
+      "Tests": [
+        {
+          "Name": "DodgeMoveInvalidationReleasesReservedToEachOriginalWindowExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs"
+        },
+        {
+          "Name": "DodgeMoveInvalidationDoesNotReopenClosedWindowOrTransferBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs"
+        },
+        {
+          "Name": "DodgeRelocationFailureDoesNotReleaseFutureMoveBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs"
+        },
+        {
+          "Name": "EditablePlanReservesBudgetWithoutSpendingIt",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "StartableCommitConvertsReservedBudgetToSpentExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "StartableCommitAtomicallyIncludesSpentLockedAndRunning",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "FailedStartableCommitLeavesBudgetReservedAndRaisesInvariant",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "SystemAutoDeferralKeepsBudgetReserved",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "SystemAutoDeferralAdjustsBudgetWithScheduleAndReservationAtomically",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "AutoDeferralCannotIncreaseCostFromClosedSourceWindow",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "FailedAutoDeferralTerminalReleasesReservationExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "SystemAutoDeferralDoesNotReopenClosedWindow",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "RejectedCommandDoesNotReserveOrSpendBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "ScheduleEditFailureRollsBackBudgetLanePlanAndReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "RemovingEditablePlanReleasesUnspentBudgetReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "PreLockTerminalReleasesUnspentBudgetReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "LockedOrRunningTerminalDoesNotRefundSpentBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "ClosedWindowLedgerPersistsUntilEditableReservationsSettle",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ReleasingClosedWindowReservationDoesNotReopenSubmissions",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "EditableMoveCostDeltaAdjustsReservationAtomically",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "MoveBudgetUsesPathWeightUnitsInsteadOfEdgeCount",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "CostIncreaseRequiresValidOpenWindowAndAuthority",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "CostIncreaseCannotTransferPlanBudgetToAnotherWindow",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "BudgetNeverBecomesNegative",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "CloseRequestRejectsLaterCommandsInSameTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "NextWindowOpensNoEarlierThanNextTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ScheduledWindowOwnerDiesBeforeOpenDoesNotOpenWindow",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "WindowSwitchDoesNotMutatePlanLaneIntentOrReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "PlanFromWindowAStartsAndEndsDuringLaterWindows",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "ConcurrentAuthorityEndsWithWindowButScheduledPlanSurvives",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ConcurrentActivationRejectsStaleWindow",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "IssuerCannotActivateForUncontrolledUnit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ConcurrentActivationRejectsControlledNonHeroUnit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ConcurrentCostComesFromAbilityDefinition",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "RejectedConcurrentActivationDoesNotSpendMetaResource",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ConcurrentAuthorityCannotSubmitBlockOrDodge",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ReactionAcceptanceDoesNotRequireWindowOrConcurrentAuthority",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "AdrenalinePersistsAcrossOtherUnitsWindowsAndOwnWindowClose",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "OwnersNextWindowOpenClearsAvailableAdrenalineBeforeCommands",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ReactionAcceptanceReservesAdrenalineExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "ReactionTriggerConsumesReservationExactlyOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "SourceThreatCancellationRefundsOnlyCurrentCycleReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "OldCycleReservationSurvivesToTriggerButCannotRefundIntoNewCycle",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "InterruptedOrInvalidReactionDoesNotRefundAdrenaline",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "SuccessfulDodgeRewardIsLowerThanCostAndCannotSelfLoop",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "SuccessfulBlockRewardIsLowerThanCostAndCannotSelfLoop",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "AdrenalineDamageGainAggregatesOncePerUnitPerTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "AdrenalineOutcomeRewardOccursOncePerPlanOrConflictGroup",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "AvailableAdrenalineIsCappedWithoutChangingReservations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs"
+        },
+        {
+          "Name": "AllLockedPlanTerminalReasonsPreserveSpentBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementDoesNotRefundSpentMoveBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementReleasesOnlyUnconsumedEditableReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementReservationReleaseDoesNotReopenOrTransferWindowBudget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs"
+        },
+        {
+          "Name": "RepeatedEditableTerminalCleanupCannotReleaseReservationTwice",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "RepeatedLockedTerminalCleanupCannotInvokeBudgetRollback",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs"
+        },
+        {
+          "Name": "BattleEndClosesWindowRevokesAuthorityAndClearsFutureScheduleWithoutRefund",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs"
+        }
+      ]
+    },
+    {
+      "Task": "08-多方仲裁与伤害.md",
+      "Required": 113,
+      "Named": 68,
+      "Passed": 68,
+      "Tests": [
+        {
+          "Name": "DodgeRelocationInvalidatesDependentMovesBeforeContactGraphBuild",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeStillHitByAreaAttackInvalidatesOldOriginMovesWithoutSuccessReward",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "LegacyHeadOnPairKeepsScalarSubtractionAndTerminatesBothPlans",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+        },
+        {
+          "Name": "AttackIntentExistsOnlyAtImpactTick",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "AttackAreaUsesCanonicalPreExpandedPatternForEveryDirection",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "AttackAreaOnlyIndexesAndTranslatesIntegerPoints",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ArbitrationHasNoLegacyPatternRotationDependency",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "AttackImpactTickEntersRecoveryAndStillArbitrates",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "PreImpactTerminationProducesNoAttackContact",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ImpactTickClashTerminatesAfterIntentParticipates",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "TerminalResolutionDoesNotRetroactivelyRemoveFrozenCurrentTickIntent",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "DirectionAndOppositionTablesMatchCanonicalQ10Values",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+        },
+        {
+          "Name": "LargeMomentumAndConflictGroupCannotOverflowOrWrap",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+        },
+        {
+          "Name": "MomentumQuantizationOccursOnceBeforeArbitration",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+        },
+        {
+          "Name": "MomentumQuantizationMatchesLegacyImpactProfileScaleAndHalfUp",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+        },
+        {
+          "Name": "NormalAndResidualDamageUseFrozenDivisors",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+        },
+        {
+          "Name": "DamageChannelDoesNotChangeMomentumProfileAndViceVersa",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs"
+        },
+        {
+          "Name": "PassiveAndActionResistanceMultiplyInDeclaredOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+        },
+        {
+          "Name": "TrueDamageBypassesPassiveGuardAndBlockResistance",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+        },
+        {
+          "Name": "DamageAggregationUsesContactThenChannelCanonicalOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+        },
+        {
+          "Name": "ControlThresholdsAndKnockbackUseQuantizedResistance",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+        },
+        {
+          "Name": "ConflictGroupLimitsFailWithStableReasonCodes",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ConflictGroupsAreIndependentOfNodeAndEdgeInsertionOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ThreeWayClashUsesAllOriginalMomentaSimultaneously",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+        },
+        {
+          "Name": "ClashResidualMomentumIsDistributedWithoutLossOrDuplication",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+        },
+        {
+          "Name": "ClashingAttackCannotAlsoHitUnrelatedAoeTarget",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+        },
+        {
+          "Name": "ThreeWayAttackResultIsIndependentOfAllIntentPermutations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs"
+        },
+        {
+          "Name": "TwoAttackersFlankingOneTargetBothDealDamage",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+        },
+        {
+          "Name": "EqualOppositeImpulsesCancelKnockbackButNotDamageOrImpact",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs"
+        },
+        {
+          "Name": "DodgeInvalidatesOnlyDodgeableContactsMissingCommittedDestination",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeStillGetsHitWhenAttackCoversCommittedDestination",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "UndodgeableRetainsPreDodgeContactOutsideNewArea",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "UndodgeableDoesNotTrackTargetsAbsentFromBothContactSets",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "OrdinaryMoveOutsideAreaBeforeDodgeDoesNotCreateTrackingContact",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeIntoAnotherAttackAreaCreatesNewContact",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "OldAndNewContactForSameAttackAndTargetResolvesOnce",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "AllDodgesUseSamePreCommitContactSnapshot",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "RetainedUndodgeableContactStillObeysClashAndResistanceRules",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeCommitEmitsOneTriggerEvenWithoutSuccessfulAvoidance",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "FailedDodgeCommitEmitsResolutionButNoTriggerOrReward",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeWithoutContactsEmitsOneResolutionWithNullGroup",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeCancelledBeforeTriggerDoesNotEmitTriggerOrResolution",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeContactSetsEventsAndRewardsArePermutationInvariant",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgingStateWithoutTriggerCommitProvidesNoAvoidance",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DodgeAgainstMultipleAttacksGrantsOneStableCounterWindow",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "BlockZeroesAllEligibleDamageAndMomentumOnTriggerTick",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "BlockHandlesAllSameTickEligibleContactsIndependentOfOrder",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "PartiallyBlockedContactKeepsBypassComponents",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "FullyUnblockableContactIsIneffectiveHitAndDoesNotRewardBlock",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "BlockingStateOutsideTriggerTickProvidesNoResistance",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "GuardPartiallyReducesEligibleDamageAndMomentumOnlyWhileActive",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "GuardDoesNotInvalidateContact",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "BlockedAoeTargetDoesNotProtectOtherTargets",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08AoeTargetPolicyIntegrationTests.cs"
+        },
+        {
+          "Name": "DodgedAoeTargetDoesNotProtectOtherTargets",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "BlockOrDodgeDoesNotTerminateAttackingPlan",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DefenseEffectsComeFromPlanTickAndPayloadNotStateEligibility",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DirectHitEligibilityIsCheckedOnlyAfterSpecialInteractionStages",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AreaAttackKeepsHitsOnTargetsThatDidNotBlockOrDodge",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08AoeTargetPolicyIntegrationTests.cs"
+        },
+        {
+          "Name": "HostileOnlyAreaAttackExcludesSelfAlliedAndNeutralUnits",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ExplicitFriendlyFireMaskIncludesAlliedButNotNeutralTargets",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "NeutralTargetRequiresExplicitNeutralRelationBit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "PrimaryAndAreaPoliciesUseSameFactionRelationResolver",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ControllerChangesDoNotChangeAttackContactCandidates",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "AttackAttackClashDoesNotInferEligibilityFromControllerKind",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "ResolveAllDoesNotMutateWorldBeforeCommit",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "TargetDamageAndImpulseCommitOnceInStableOrder",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DuplicateForcedDisplacementRequestForUnitIsInvariantViolation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementStepUsesCanonicalDirectionDeltaNotPathWeight",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementTranslatesCurrentFootprintWithoutChangingFacing",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementStopsAtBoundaryOnFirstOrLaterStep",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementStopsAtStaticObstacleOnFirstOrLaterStep",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "StationaryUnitHardBlocksForcedDisplacement",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "SameAnchorContentionFailsAllProposalsWithoutWinner",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "OverlappingMultiCellDestinationFootprintsFailAllProposals",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "TwoUnitSwapStopsBothAsDependencyCycle",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "DependencyChainEndingInEmptyCellMovesSimultaneously",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "BranchingDependencyMovesOnlyWhenEveryBranchSucceeds",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ThreeUnitPositionCycleStopsAllParticipants",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "MultiCellUnitCannotMoveWhenAnyFootprintPointIsIllegal",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementDoesNotImplicitlyPushUnitWithoutOwnRequest",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementKeepsSuccessfulPrefixWhenLaterStepFails",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "CompletedShorterDisplacementBecomesStationaryBlockerForLaterRounds",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementIgnoresReservationDuringSpatialSolve",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "OnlyFinalFootprintReservationConflictsArePreempted",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "ReservationPreemptionTerminatesPlansInActionPlanIdOrder",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "ReservationPreemptionReleasesAllFutureSegmentsAndReservations",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "DisplacedUnitsOldOriginMovePlansTerminateAsMovementOriginInvalidated",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "MovementOriginInvalidatedWinsWhenSamePlanAlsoOwnsConflictingReservation",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementPlanInvalidationPrecedesLaterInterceptTerminalRequest",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "NonSpatialAttackGuardAndBlockPlansSurviveOwnerDisplacement",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "ConflictingDodgeDestinationReservationIsPreemptedButPassThroughIsNot",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementBatchCommitsBeforeEventsStateControlAndDeath",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ForcedDisplacementInputAndResolutionPermutationsProduceIdenticalResults",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs"
+        },
+        {
+          "Name": "ForcedDisplacementEventContainsCanonicalStopReasonAndInvalidatedPlans",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "ZeroAppliedStepsStillEmitsForcedDisplacementResolutionEvent",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs"
+        },
+        {
+          "Name": "SimultaneousLethalHitsAllowMutualDeath",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "LethalTargetIsDisplacedBeforeDeathRemovesFinalFootprint",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "PastWindowAttackInteractsWithCurrentWindowDefense",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "WindowAPlanHitsDuringWindowC",
+          "Named": true,
+          "Passed": true,
+          "Source": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs"
+        },
+        {
+          "Name": "AttackUsesMovementSegmentInsteadOfVisualPosition",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "InterruptedPlanLeavesLaneGapAndDoesNotRefundBudget",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ActionTerminalResolutionUsesUnifiedLifecycleEntry",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ClashTerminationRemovesUnfrozenAndFutureIntents",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "InterceptedMovementReleasesReservationAndNeverCommitsFormerDestination",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "LethalHitTerminatesVictimsEditableLockedAndRunningPlans",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "GuardBlockOrDodgeDoesNotTerminateSourceAttackPlan",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DamageEventContainsPerChannelAndMomentumBeforeAfterValues",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "AdrenalineAccrualUsesCommittedFinalDamageAggregatedOncePerUnit",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ClashAndSuccessfulReactionAccrualKeysCannotDuplicate",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "FailedBlockOrDodgeProducesNoSuccessAccrualFact",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ResolutionCommitLeavesNoActiveArtifactReferencingTerminalPlan",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "DamageEventContainsConflictGroupPlanAndUnitIds",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        },
+        {
+          "Name": "ArbitrationDamageAndDefenseShadowProfileHasNoUnclassifiedDifference",
+          "Named": false,
+          "Passed": false,
+          "Source": null
+        }
+      ]
+    }
+  ]
+}
