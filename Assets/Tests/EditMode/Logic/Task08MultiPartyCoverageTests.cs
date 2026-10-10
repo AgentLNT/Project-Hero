@@ -19,7 +19,7 @@ namespace ProjectHero.Logic.Tests
             => d with { Encounters = d.Encounters.Select(e => e with { Controllers = e.Controllers.Select(b =>
                 b.ControllerId == Task09A2Fixture.PlayerId ? b with { ControlledSlots = b.ControlledSlots.Concat(new[] { new EncounterSlotId(slot) }).ToArray() } : b).ToArray() }).ToArray() };
 
-        internal static Task08DefenseCoverageTests.Rig Multi(bool clash)
+        internal static BattleDefinition MultiDefinition(bool clash)
         {
             var d = Grant(Task08DefenseCoverageTests.Definition(), "d_ally");
             var pattern = new AttackPatternSpec(new AttackPatternId("attack.pattern.t08.multi"), Enumerable.Range(0, 12).Select(f =>
@@ -35,7 +35,12 @@ namespace ProjectHero.Logic.Tests
                 d = d with { Volumes = d.Volumes.Concat(new[] { volume }).ToArray(), Units = d.Units.Select((u, i) =>
                     i == 1 ? u with { VolumeSpecId = volume.VolumeSpecId } : u).ToArray() };
             }
-            var r = new Task08DefenseCoverageTests.Rig { Sim = Task09A2Fixture.NewSim(d) };
+            return d;
+        }
+
+        internal static Task08DefenseCoverageTests.Rig Multi(bool clash)
+        {
+            var r = new Task08DefenseCoverageTests.Rig { Sim = Task09A2Fixture.NewSim(MultiDefinition(clash)) };
             var sim = r.Sim;
             var owners = clash ? new[] { Task09A2Fixture.Hero, Task09A2Fixture.Monster, Task09A2Fixture.Ally }
                 : new[] { Task09A2Fixture.Hero, Task09A2Fixture.Ally };

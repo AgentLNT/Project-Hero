@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.2148595">
+  <test-suite type="TestSuite" id="1070" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.214860" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1063" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.208080" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="29728" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1064" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.207367" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1065" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.206866" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1066" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.206382" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1051" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.204837" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1059" name="MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" methodname="MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="560159183" result="Failed" start-time="2026-10-10 08:40:17Z" end-time="2026-10-10 08:40:18Z" duration="1.194799" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  AI reaction required; tick=553; submissions=59; units=UnitSnapshot { UnitId = 1, DefinitionId = unit.monster.radius_2, FactionId = monster, X = 5, Y = 5, Facing = 0, HealthQ10 = 0, IsAlive = False, AvailableAdrenaline = 0, AdrenalineCycleId = 2, State = 10, StateStartTick = 553, StateEndTick = 9223372036854775807, CanReceiveDirectHit = False, StateValue = Dead };UnitSnapshot { UnitId = 2, DefinitionId = unit.hero.radius_1, FactionId = hero, X = -5, Y = -1, Facing = 0, HealthQ10 = 204800, IsAlive = True, AvailableAdrenaline = 0, AdrenalineCycleId = 3, State = 0, StateStartTick = 553, StateEndTick = 9223372036854775807, CanReceiveDirectHit = True, StateValue = Idle }; damage=DamageChannelResolvedEvent { Tick = 329, Sequence = 142, ConflictGroupKey = 3, TargetUnitId = 1, AttackPlanId = 17, AttackerUnitId = 2, GuardPlanId = 0, IncomingDirection = NorthEast, IncomingMomentumUnits = 1, AfterMomentumResistanceUnits = 1, Channels = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Events.DamageChannelEntry], TotalDamageQ10 = 40960, AfterBlockDamageQ10 = 40960, StopReasonCode = INTERACTION_CONTACT_UNRESISTED, ParticipatingPlanIds = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Ids.ActionPlanId] };DamageChannelResolvedEvent { Tick = 482, Sequence = 441, ConflictGroupKey = 4, TargetUnitId = 1, AttackPlanId = 58, AttackerUnitId = 2, GuardPlanId = 0, IncomingDirection = NorthEast, IncomingMomentumUnits = 1, AfterMomentumResistanceUnits = 1, Channels = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Events.DamageChannelEntry], TotalDamageQ10 = 40960, AfterBlockDamageQ10 = 40960, StopReasonCode = INTERACTION_CONTACT_UNRESISTED, ParticipatingPlanIds = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Ids.ActionPlanId] };DamageChannelResolvedEvent { Tick = 553, Sequence = 454, ConflictGroupKey = 5, TargetUnitId = 1, AttackPlanId = 59, AttackerUnitId = 2, GuardPlanId = 0, IncomingDirection = NorthEast, IncomingMomentumUnits = 1, AfterMomentumResistanceUnits = 1, Channels = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Events.DamageChannelEntry], TotalDamageQ10 = 40960, AfterBlockDamageQ10 = 40960, StopReasonCode = INTERACTION_CONTACT_UNRESISTED, ParticipatingPlanIds = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Ids.ActionPlanId] }
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts>d__13.MoveNext () [0x00666] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:466
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+Fixture reactions=ActionSpec { ActionSpecId = action.block.default, Type = Block, Timing = BlockReactionTimingSpec { ReactionWindupTicks = 1, RecoveryTicks = 30 }, Payload = BlockPayloadSpec { EligibleTags = Blockable, Guardable }, AdrenalineCost = 2 };ActionSpec { ActionSpecId = action.dodge.default, Type = Dodge, Timing = DodgeReactionTimingSpec { ReactionWindupTicks = 1, RecoveryTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 2, Pattern = MovementPatternSpec { MovementPatternId = movement.identity, Directions = System.Collections.Generic.List`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 1 }; rules=ReactionRules { CommandIngressLeadTicks = 1, MinimumReactionLeadTicks = 1 }
+Fixture units=UnitDefinition { UnitDefinitionId = unit.hero.radius_1, Mass = 100, MomentumSpeed = 10, ActionSpeed = 20, MoveSpeed = 10, BaseDamageResistanceQ10 = System.Collections.Generic.Dictionary`2[ProjectHero.Logic.Ids.DamageChannelId,System.Int32], InitialHealth = 200, ActionSetId = action_set.radius_1, VolumeSpecId = unit_volume.hex.radius_1 };UnitDefinition { UnitDefinitionId = unit.monster.radius_2, Mass = 100, MomentumSpeed = 10, ActionSpeed = 20, MoveSpeed = 10, BaseDamageResistanceQ10 = System.Collections.Generic.Dictionary`2[ProjectHero.Logic.Ids.DamageChannelId,System.Int32], InitialHealth = 200, ActionSetId = action_set.task11.ai_reactions_only, VolumeSpecId = unit_volume.hex.radius_2 }; sets=action_set.radius_1:action.block.default,action.dodge.default,action.guard.default,action.heavy_smash.radius_1,action.move.default,action.quick_slash.radius_1,action.spear_thrust.radius_1,action.whirlwind.radius_1,action.wide_cleave.radius_1;action_set.radius_2:action.block.default,action.dodge.default,action.guard.default,action.heavy_smash.radius_2,action.move.default,action.quick_slash.radius_2,action.spear_thrust.radius_2,action.whirlwind.radius_2,action.wide_cleave.radius_2;action_set.task11.ai_reactions_only:action.block.default,action.dodge.default
+AI decisions count=512: 550:normal=0 reaction=0 selected=<none:NO_ELIGIBLE_CANDIDATE>;551:normal=0 reaction=0 selected=<none:NO_ELIGIBLE_CANDIDATE>;552:normal=0 reaction=0 selected=<none:NO_ELIGIBLE_CANDIDATE>
+Opportunities: 
+Command rejections: 
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

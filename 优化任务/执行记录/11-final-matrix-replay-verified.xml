@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Failed(Child)" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.510456">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="891" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.510456" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1998" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="535" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.490696" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="36952" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1999" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="535" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.487376" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2000" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="535" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.483947" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2001" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="535" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.473009" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1920" name="Task11FinalMatrixReplayTests" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.466785" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1935" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:23Z" duration="13.461909" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1921" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Block&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Block&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1103792811" result="Passed" start-time="2026-10-10 08:48:10Z" end-time="2026-10-10 08:48:11Z" duration="1.368899" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Block: file restarts=100; ticks=210; events=50; bytes=20334; definition=bafeb80f4a0a1fdb
+]]></output>
+                </test-case>
+                <test-case id="1922" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;PartialBlock&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;PartialBlock&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1701861142" result="Passed" start-time="2026-10-10 08:48:11Z" end-time="2026-10-10 08:48:12Z" duration="1.057707" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[PartialBlock: file restarts=100; ticks=210; events=53; bytes=23207; definition=d921ba7d884843c2
+]]></output>
+                </test-case>
+                <test-case id="1923" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Dodge&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Dodge&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="783456831" result="Passed" start-time="2026-10-10 08:48:12Z" end-time="2026-10-10 08:48:13Z" duration="1.103251" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Dodge: file restarts=100; ticks=210; events=49; bytes=20037; definition=bafeb80f4a0a1fdb
+]]></output>
+                </test-case>
+                <test-case id="1924" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AoeDodge&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AoeDodge&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1227522512" result="Passed" start-time="2026-10-10 08:48:13Z" end-time="2026-10-10 08:48:14Z" duration="1.176620" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[AoeDodge: file restarts=100; ticks=210; events=64; bytes=26071; definition=bd49c92e04a08d86
+]]></output>
+                </test-case>
+                <test-case id="1925" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DodgeChain&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DodgeChain&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1069131170" result="Passed" start-time="2026-10-10 08:48:14Z" end-time="2026-10-10 08:48:16Z" duration="1.274778" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[DodgeChain: file restarts=100; ticks=210; events=68; bytes=26465; definition=bafeb80f4a0a1fdb
+]]></output>
+                </test-case>
+                <test-case id="1926" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Guard&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Guard&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1063420128" result="Passed" start-time="2026-10-10 08:48:16Z" end-time="2026-10-10 08:48:17Z" duration="1.001563" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Guard: file restarts=100; ticks=210; events=40; bytes=17503; definition=bafeb80f4a0a1fdb
+]]></output>
+                </test-case>
+                <test-case id="1927" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Clash3&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Clash3&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="354361473" result="Passed" start-time="2026-10-10 08:48:17Z" end-time="2026-10-10 08:48:18Z" duration="1.056587" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Clash3: file restarts=100; ticks=210; events=62; bytes=25697; definition=954b261ba5ba4d32
+]]></output>
+                </test-case>
+                <test-case id="1928" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Flank&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Flank&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="2053053193" result="Passed" start-time="2026-10-10 08:48:18Z" end-time="2026-10-10 08:48:19Z" duration="0.982432" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Flank: file restarts=100; ticks=210; events=45; bytes=18898; definition=53680b611f938071
+]]></output>
+                </test-case>
+                <test-case id="1929" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DisplacementDeath&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DisplacementDeath&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="622928709" result="Passed" start-time="2026-10-10 08:48:19Z" end-time="2026-10-10 08:48:19Z" duration="0.187703" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[DisplacementDeath: file restarts=100; ticks=12; events=35; bytes=11359; definition=9d3f37765cac1cf8
+]]></output>
+                </test-case>
+                <test-case id="1930" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Reservation&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Reservation&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="626281055" result="Passed" start-time="2026-10-10 08:48:19Z" end-time="2026-10-10 08:48:20Z" duration="1.043407" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Reservation: file restarts=100; ticks=210; events=35; bytes=15928; definition=07b5670c86a9be60
+]]></output>
+                </test-case>
+                <test-case id="1931" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AutoDeferral&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AutoDeferral&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="358773004" result="Passed" start-time="2026-10-10 08:48:20Z" end-time="2026-10-10 08:48:21Z" duration="1.052438" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[AutoDeferral: file restarts=100; ticks=210; events=43; bytes=18099; definition=a26a87da22346eda
+]]></output>
+                </test-case>
+                <test-case id="1932" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;MixedDodge&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;MixedDodge&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1216488985" result="Failed" start-time="2026-10-10 08:48:21Z" end-time="2026-10-10 08:48:21Z" duration="0.012926" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00823] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:147
+at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:170
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1933" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;FriendlyAoe&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;FriendlyAoe&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="2139607404" result="Passed" start-time="2026-10-10 08:48:21Z" end-time="2026-10-10 08:48:22Z" duration="1.099830" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[FriendlyAoe: file restarts=100; ticks=210; events=49; bytes=21812; definition=c6bc34ddea42a165
+]]></output>
+                </test-case>
+                <test-case id="1934" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;FacingAoe&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;FacingAoe&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1960076471" result="Passed" start-time="2026-10-10 08:48:22Z" end-time="2026-10-10 08:48:23Z" duration="1.033864" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[FacingAoe: file restarts=100; ticks=210; events=35; bytes=16086; definition=19477f9cca546849
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

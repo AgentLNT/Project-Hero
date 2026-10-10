@@ -16,6 +16,7 @@ using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Replay;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Events;
+using ProjectHero.Logic.Definitions;
 using System.IO;
 
 namespace ProjectHero.Tests.PlayMode
@@ -423,14 +424,83 @@ namespace ProjectHero.Tests.PlayMode
         [UnityTest] public IEnumerator MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat()
         { yield return MainSceneReaction(ActionType.Dodge); }
 
-        private IEnumerator MainSceneReaction(ActionType kind)
+        [UnityTest] public IEnumerator MainCanvasDodgeCancelsFutureMoveChainAndReleasesClosedOriginalWindow()
+        { yield return MainSceneReaction(ActionType.Dodge, true); }
+
+        [UnityTest] public IEnumerator MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts()
         {
-            yield return LoadMainScene(); Bootstrap.StopBattle("reaction-prepare"); Bootstrap.ReleaseBattle();
+            yield return LoadMainScene(); Bootstrap.StopBattle("ai-reaction-prepare"); Bootstrap.ReleaseBattle();
+            var original = ((IBattleSimulationSource)Field(Bootstrap, "_simulationSourceSlot")).BuildSeed();
+            var source = NewGameObject("Task11AiReactionScenario").AddComponent<Task11SceneScenarioSource>();
+            source.Seed = Task11SceneScenarioSource.Configure(original, true);
+            TestContext.WriteLine(source.Seed.InputSummary);
+            Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(Bootstrap, source);
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
             Bootstrap.DriveFrameForTests(0, 1f / 60);
             var presentation = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(root => root.GetComponentsInChildren<BattlePresentationView>(true)).Single();
             var model = presentation.Model; var hero = model.Decision.ControlledUnitIds.Single();
+            var enemy = new UnitId(model.Decision.VisibleUnits.Single(u => u.UnitId != hero.Value).UnitId);
+            var facts = new System.Collections.Generic.List<LogicEvent>();
+            presentation.Registry.Feedback.FeedbackRequested += cue => facts.Add(cue.Fact);
+            Assert.That(model.Decision.VisibleUnits.Single(u => u.UnitId == enemy.Value).AvailableAdrenaline, Is.Zero);
+            long oldAdvance = LegacyTimelineAdvanceTimeCalls();
+            for (int tick = 0; tick < 6000 && !model.Decision.BattleEnd.IsEnded
+                && !facts.OfType<ReactionTriggeredEvent>().Any(e => e.DefenderUnitId == enemy.Value); tick++)
+            {
+                if (model.Window?.OwnerUnitId == hero.Value && !model.Decision.OwnPlans.Any())
+                {
+                    if (DraftCombatAction(model)) { Click(Field(presentation, "_confirm")); }
+                    else Assert.That(model.CloseWindow(), Is.Null);
+                }
+                Bootstrap.DriveFrameForTests(0, 1f / 60);
+            }
+            Assert.That(facts.OfType<ReactionTriggeredEvent>().Any(e => e.DefenderUnitId == enemy.Value), Is.True,
+                "AI reaction required; tick=" + model.Decision.Tick + "; submissions=" + model.SubmittedCommands
+                + "; units=" + string.Join(";", model.Decision.VisibleUnits) + "; damage=" + string.Join(";", facts.OfType<DamageChannelResolvedEvent>().TakeLast(3)));
+            var triggered = facts.OfType<ReactionTriggeredEvent>().Single(e => e.DefenderUnitId == enemy.Value);
+            Assert.That(facts.OfType<DamageChannelResolvedEvent>().Any(e => e.TargetUnitId == enemy && e.Tick < triggered.Tick), Is.True);
+            Assert.That(facts.Any(e => e is DodgeResolvedEvent || e is BlockResolvedEvent), Is.True);
+            Assert.That(LegacyTimelineAdvanceTimeCalls(), Is.EqualTo(oldAdvance));
+            var replay = Bootstrap.NewDriver.RecordedReplay;
+            Assert.That(replay.Submissions.All(s => s.Fact.SourceKind == CommandSourceKind.Player), Is.True, "AI is rebuilt by production composition, never injected from a recording.");
+            using (var file = new MemoryStream())
+            {
+                ReplayFile.Save(file, replay);
+                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/11-scene-ai-reaction.heroReplay"), file.ToArray());
+                file.Position = 0; var loaded = ReplayFile.Load(file, source.Seed.Definition);
+                using var player = new ReplayPlayer(source.Seed.Definition,
+                    h => ProductionBattleComposition.Create(source.Seed.Definition, h.EncounterId, h.RuntimeInputs)); player.Load(loaded);
+                for (int run = 0; run < 100; run++)
+                {
+                    if (run > 0) player.Restart(); player.Play();
+                    while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
+                    Assert.That(player.Deviation, Is.Null, "AI scene replay run=" + run); Assert.That(player.IsComplete, Is.True);
+                }
+                TestContext.WriteLine("Actual Canvas / AI reaction fixture: damage-funded, one feedback trigger, 100 Tick-0 file restarts; ticks=" + replay.Records.Count + "; bytes=" + file.Length + "; definition=" + source.Seed.BattleDefinitionHash);
+            }
+            Bootstrap.StopBattle("ai-reaction-complete"); Bootstrap.ReleaseBattle(); yield return null;
+        }
+
+        private IEnumerator MainSceneReaction(ActionType kind, bool futureChain = false)
+        {
+            yield return LoadMainScene(); Bootstrap.StopBattle("reaction-prepare"); Bootstrap.ReleaseBattle();
+            if (futureChain)
+            {
+                var original = ((IBattleSimulationSource)Field(Bootstrap, "_simulationSourceSlot")).BuildSeed();
+                var configured = Task11SceneScenarioSource.Configure(original, false);
+                var source = NewGameObject("Task11MinimumMomentumScenario").AddComponent<Task11SceneScenarioSource>();
+                source.Seed = configured;
+                Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(Bootstrap, source);
+                TestContext.WriteLine("Canvas combination fixture definition=" + configured.Definition.BattleDefinitionHashValue + "; uniform per-direction pattern union; forceMultiplier=0.000001; attack timing=60/30; reaction timing=1/30; unchanged grid/body/180 Tick/hero; not the unchanged formal encounter.");
+            }
+            Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
+            Bootstrap.DriveFrameForTests(0, 1f / 60);
+            var presentation = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<BattlePresentationView>(true)).Single();
+            var model = presentation.Model; var hero = model.Decision.ControlledUnitIds.Single();
+            if (futureChain) Assert.That(model.Decision.Definition.Actions.Where(a => a.Type == ActionType.Attack)
+                .All(a => ((AttackPayloadSpec)a.Payload).ForceMultiplier == 0.000001f), Is.True, "The explicit fixture definition must reach the actual Canvas/driver.");
             var owner = model.Decision.VisibleUnits.Single(u => u.UnitId == hero.Value);
             var enemy = model.Decision.VisibleUnits.Single(u => u.UnitId != hero.Value);
             var feedbackFacts = new System.Collections.Generic.List<LogicEvent>();
@@ -488,6 +558,33 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(new GridPoint(owner.X, owner.Y), Is.EqualTo(goal), "Every leg uses the formal 180 Tick window.");
             Assert.That(model.CloseWindow(), Is.Null);
             long handledWindow = 0, acceptedOpportunity = 0; bool concurrent = false;
+            long chainWindow = 0, chainBudget = 0, guardId = 0, guardStart = 0;
+            long[] chainIds = Array.Empty<long>();
+            void PlaceChain()
+            {
+                var current = model.Decision.VisibleUnits.Single(u => u.UnitId == hero.Value);
+                var guard = model.Decision.ActionSetOf(hero).Single(id => model.Decision.FindAction(id).Type == ActionType.Guard);
+                bool placed = false; long start = model.Decision.Tick + 800;
+                foreach (var delta in new[] { new GridPoint(2, 0), new GridPoint(-2, 0), new GridPoint(0, 2), new GridPoint(0, -2) })
+                {
+                    var first = new GridPoint(current.X + delta.X, current.Y + delta.Y);
+                    var second = new GridPoint(current.X + 2 * delta.X, current.Y + 2 * delta.Y);
+                    if (!model.SetDraft(new ScheduleEditOperation[] {
+                        new AddOrdinaryPlanOperation(101, hero, move, start, Destination: first),
+                        new AddOrdinaryPlanOperation(102, hero, guard, start + 100),
+                        new AddOrdinaryPlanOperation(103, hero, move, start + 250, Destination: second) }).Succeeded) continue;
+                    placed = true; break;
+                }
+                Assert.That(placed, Is.True, "Real Move / Guard / Move chain: " + model.LastRejection);
+                chainWindow = model.Window.WindowId;
+                Click(Field(presentation, "_confirm")); Bootstrap.DriveFrameForTests(0, 1f / 60);
+                var added = model.Decision.OwnPlans.Where(p => p.StartTick >= start).ToArray();
+                chainIds = added.Where(p => p.ActionSpecId == move.Value).Select(p => p.ActionPlanId).OrderBy(id => id).ToArray();
+                Assert.That(chainIds.Length, Is.EqualTo(2));
+                var heldGuard = added.Single(p => p.ActionSpecId == guard.Value); guardId = heldGuard.ActionPlanId; guardStart = heldGuard.StartTick;
+                chainBudget = added.Where(p => chainIds.Contains(p.ActionPlanId)).Sum(p => p.ReservedTurnBudgetTicks);
+                Assert.That(chainBudget, Is.GreaterThan(0));
+            }
             var buttonType = Type.GetType("UnityEngine.UI.Button, UnityEngine.UI", true);
             var textType = Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true);
             for (frames = 0; frames < 3000 && acceptedOpportunity == 0 && !model.Decision.BattleEnd.IsEnded; frames++)
@@ -501,9 +598,13 @@ namespace ProjectHero.Tests.PlayMode
                 }
                 // Keep a hero window open until a real incoming hit has earned the reaction cost;
                 // closing it preserves the personal-cycle resource through the following AI window.
-                if (model.Adrenaline.Single().AvailableAdrenaline >= 2 && model.Window?.OwnerUnitId == hero.Value
+                if (model.Adrenaline.Single().AvailableAdrenaline >= (futureChain ? 1 : 2) && model.Window?.OwnerUnitId == hero.Value
                     && model.Window.WindowId != handledWindow)
-                { handledWindow = model.Window.WindowId; Assert.That(model.CloseWindow(), Is.Null); }
+                {
+                    if (futureChain && chainWindow == 0) PlaceChain();
+                    handledWindow = model.Window.WindowId; Assert.That(model.CloseWindow(), Is.Null);
+                    Bootstrap.DriveFrameForTests(0, 1f / 60);
+                }
                 var buttons = ((IList)Field(presentation, "_reactionButtons")).Cast<GameObject>().ToArray();
                 var label = kind.ToString();
                 foreach (var go in buttons)
@@ -511,6 +612,8 @@ namespace ProjectHero.Tests.PlayMode
                     var textComponent = go.GetComponentInChildren(textType);
                     var text = (string)textType.GetProperty("text").GetValue(textComponent);
                     if (!text.StartsWith(label + " ", StringComparison.Ordinal)) continue;
+                    if (futureChain && model.Adrenaline.Single().AvailableAdrenaline < model.Decision.ActionSetOf(hero)
+                        .Select(model.Decision.FindAction).Single(s => s.Type == kind).AdrenalineCost) continue;
                     long before = model.SubmittedCommands;
                     Click(go.GetComponent(buttonType));
                     if (kind == ActionType.Dodge)
@@ -518,6 +621,16 @@ namespace ProjectHero.Tests.PlayMode
                         Assert.That(model.SubmittedCommands, Is.EqualTo(before), "Dodge destination selection only previews.");
                         var preview = Field(presentation, "_selectedDodgePreview") as ProjectHero.Logic.Movement.DodgeCancellationPreview;
                         if (preview?.RejectionCode != null) continue;
+                        if (futureChain)
+                        {
+                            Assert.That(chainWindow, Is.GreaterThan(0), "The chain must be created by a preceding real hero window.");
+                            Assert.That(preview.AffectedPlanIds.Select(id => id.Value), Is.EqualTo(chainIds));
+                            var release = preview.ReleasesByWindow.Single(r => r.WindowId.Value == chainWindow);
+                            Assert.That(release.BudgetTicks, Is.EqualTo(chainBudget)); Assert.That(release.WindowIsOpen, Is.False);
+                            var labelComponent = Field(presentation, "_previewText");
+                            Assert.That((string)textType.GetProperty("text").GetValue(labelComponent), Does.Contain("historical ticks released (closed turn)"));
+                            Assert.That(chainIds.All(id => model.Decision.OwnPlans.Any(p => p.ActionPlanId == id)), Is.True, "Preview preserves both future Moves.");
+                        }
                         Click(Field(presentation, "_confirm")); Click(Field(presentation, "_confirm"));
                     }
                     if (model.SubmittedCommands != before + 1) continue;
@@ -545,12 +658,32 @@ namespace ProjectHero.Tests.PlayMode
                 + string.Join(";", facts.Where(e => e.Tick >= trigger - 60)));
             Assert.That(facts.OfType<DamageChannelResolvedEvent>().Any(e => e.TargetUnitId == hero), Is.True, "Resource came from real damage.");
             Assert.That(concurrent, Is.True, "The real main-scene Concurrent button must activate hero authorization in an AI window.");
+            if (futureChain)
+            {
+                var terminated = model.Timeline.Where(p => chainIds.Contains(p.ActionPlanId)).OrderBy(p => p.ActionPlanId).ToArray();
+                Assert.That(terminated.Select(e => e.ActionPlanId), Is.EqualTo(chainIds));
+                Assert.That(terminated.All(e => e.State == (int)ActionPlanState.Terminated
+                    && e.TerminationReason == (int)ActionTerminationReason.MovementOriginInvalidatedByDodge && e.TerminalTick == trigger), Is.True);
+                foreach (var id in chainIds)
+                    Assert.That(replay.Records.SelectMany(r => r.Events).Select(ReplayEventComparison.Canonical).Count(text =>
+                        text.StartsWith(typeof(ActionPlanTerminatedEvent).FullName + "{", StringComparison.Ordinal)
+                        && text.Contains("ActionPlanId=" + id + ";")), Is.EqualTo(1), "One authoritative terminal event per cancelled Move.");
+                Assert.That(model.Decision.OwnPlans.Single(p => p.ActionPlanId == guardId).StartTick, Is.EqualTo(guardStart));
+                var snapshot = Bootstrap.NewDriver.CurrentSnapshot;
+                Assert.That(snapshot.MovementSegments.Any(s => chainIds.Contains(s.ActionPlanId)), Is.False);
+                Assert.That(snapshot.Reservations.Any(s => chainIds.Contains(s.ActionPlanId)), Is.False);
+                Assert.That(snapshot.WindowManager.Windows.Single(w => w.WindowId == chainWindow).IsOpen, Is.False);
+                Assert.That(snapshot.WindowManager.Windows.Single(w => w.WindowId == chainWindow).ReservedBudgetTicks,
+                    Is.EqualTo(model.Decision.OwnPlans.Single(p => p.ActionPlanId == guardId).ReservedTurnBudgetTicks));
+                TestContext.WriteLine("Closed original window=" + chainWindow + "; released=" + chainBudget + "; invalidated=" + string.Join(",", chainIds) + "; unrelated Guard preserved.");
+            }
             if (kind == ActionType.Block)
                 Assert.That(facts.OfType<BlockResolvedEvent>().Any(e => e.DefenderUnitId == hero
                     && e.AfterBlockDamageQ10 == 0 && e.AfterBlockMomentumUnits == 0), Is.True);
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay); file.Position = 0;
+                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/11-scene-dodge-chain.heroReplay"), file.ToArray());
                 var loaded = ReplayFile.Load(file, model.Decision.Definition);
                 using (var player = new ReplayPlayer(model.Decision.Definition,
                     h => ProductionBattleComposition.Create(model.Decision.Definition, h.EncounterId, h.RuntimeInputs)))
@@ -564,9 +697,9 @@ namespace ProjectHero.Tests.PlayMode
                         Assert.That(player.IsComplete, Is.True);
                     }
                 }
-                TestContext.WriteLine("Actual main " + kind + " file replay restarts=100; ticks=" + replay.Records.Count + "; bytes=" + file.Length);
+                TestContext.WriteLine((futureChain ? "Canvas fixture " : "Actual main ") + kind + " file replay restarts=100; ticks=" + replay.Records.Count + "; bytes=" + file.Length);
             }
-            TestContext.WriteLine("Real main " + kind + ": damage-earned resource, published opportunity, Player UI input, one trigger, hero concurrent authorization; tick=" + model.Decision.Tick);
+            TestContext.WriteLine((futureChain ? "Canvas fixture " : "Real main ") + kind + ": damage-earned resource, published opportunity, Player UI input, one trigger, hero concurrent authorization; tick=" + model.Decision.Tick);
             Bootstrap.StopBattle("reaction-complete"); Bootstrap.ReleaseBattle(); yield return null;
         }
     }

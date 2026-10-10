@@ -1,0 +1,648 @@
+scene=CombatSampleScene
+mode=Shadow
+frames=120
+legacyAdvanceDelta=120
+newDriverAdvance=0
+shadowWrites=0
+observations=64
+shadow-report hash=ed4c3e21b1488e60 encounter=encounter.combat_sample_scene mode=Shadow rules=battle-def-v2-turn180 cfg=1 checkpoints=64 comparedFields=1344 dropped=0 unaligned=0 infra=0 newRule=0 temp=640 approved=0 firstUnexpected=<none> firstInfra=<none> claim=EQUIVALENT
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=58 @LateUpdate@58 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=59 @LateUpdate@59 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=60 @LateUpdate@60 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=61 @LateUpdate@61 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=62 @LateUpdate@62 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=63 @LateUpdate@63 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=64 @LateUpdate@64 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=65 @LateUpdate@65 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=66 @LateUpdate@66 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=67 @LateUpdate@67 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=68 @LateUpdate@68 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=69 @LateUpdate@69 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=70 @LateUpdate@70 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=71 @LateUpdate@71 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=72 @LateUpdate@72 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=73 @LateUpdate@73 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=74 @LateUpdate@74 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=75 @LateUpdate@75 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=76 @LateUpdate@76 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=77 @LateUpdate@77 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=78 @LateUpdate@78 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=79 @LateUpdate@79 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=80 @LateUpdate@80 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=81 @LateUpdate@81 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=82 @LateUpdate@82 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=83 @LateUpdate@83 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=84 @LateUpdate@84 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=85 @LateUpdate@85 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=86 @LateUpdate@86 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=87 @LateUpdate@87 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=88 @LateUpdate@88 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=89 @LateUpdate@89 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=90 @LateUpdate@90 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=91 @LateUpdate@91 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=92 @LateUpdate@92 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=93 @LateUpdate@93 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=94 @LateUpdate@94 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=95 @LateUpdate@95 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=96 @LateUpdate@96 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=97 @LateUpdate@97 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=98 @LateUpdate@98 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=99 @LateUpdate@99 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=100 @LateUpdate@100 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=101 @LateUpdate@101 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=102 @LateUpdate@102 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=103 @LateUpdate@103 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=104 @LateUpdate@104 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=105 @LateUpdate@105 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=106 @LateUpdate@106 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=107 @LateUpdate@107 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=108 @LateUpdate@108 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=109 @LateUpdate@109 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=110 @LateUpdate@110 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=111 @LateUpdate@111 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=112 @LateUpdate@112 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=113 @LateUpdate@113 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=114 @LateUpdate@114 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=115 @LateUpdate@115 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=116 @LateUpdate@116 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=117 @LateUpdate@117 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=118 @LateUpdate@118 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=119 @LateUpdate@119 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
+TemporarilyUncomparable tick=120 @LateUpdate@120 CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Failed(Child)" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.7323698">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="888" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.732370" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1995" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="532" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.719659" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="28212" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1996" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="532" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.712394" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1997" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="532" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.702853" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1998" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="532" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.699579" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1920" name="Task11FinalMatrixReplayTests" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" testcasecount="11" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.690511" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1932" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" testcasecount="11" result="Failed" site="Child" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:19Z" duration="4.686835" total="11" passed="5" failed="6" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1921" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Block&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Block&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1982630567" result="Failed" label="Error" start-time="2026-10-10 05:21:14Z" end-time="2026-10-10 05:21:15Z" duration="0.198566" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : MOMENTUM_OUT_OF_RANGE: forceMultiplier=0]]></message>
+                    <stack-trace><![CDATA[  at ProjectHero.Logic.Combat.MomentumQuantizer.RequireFinitePositive (System.Single value, System.String label) [0x00018] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:187 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizeMomentumUnits (System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00016] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:65 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizePacket (ProjectHero.Logic.Grid.GridDirection facing, System.Int32 momentumDirectionOffsetSteps, System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00007] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:166 
+  at ProjectHero.Logic.Simulation.BattleSimulation.MaterializeAttackIntent (ProjectHero.Logic.Actions.ActionPlan plan, System.Int64 tick) [0x00104] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2474 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DrainIntents (System.Int64 tick) [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2422 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x001d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1465 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00450] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:102 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:122 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1922" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;PartialBlock&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;PartialBlock&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="788319361" result="Failed" label="Error" start-time="2026-10-10 05:21:15Z" end-time="2026-10-10 05:21:15Z" duration="0.001529" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : MOMENTUM_OUT_OF_RANGE: forceMultiplier=0]]></message>
+                    <stack-trace><![CDATA[  at ProjectHero.Logic.Combat.MomentumQuantizer.RequireFinitePositive (System.Single value, System.String label) [0x00018] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:187 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizeMomentumUnits (System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00016] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:65 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizePacket (ProjectHero.Logic.Grid.GridDirection facing, System.Int32 momentumDirectionOffsetSteps, System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00007] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:166 
+  at ProjectHero.Logic.Simulation.BattleSimulation.MaterializeAttackIntent (ProjectHero.Logic.Actions.ActionPlan plan, System.Int64 tick) [0x00104] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2474 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DrainIntents (System.Int64 tick) [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2422 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x001d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1465 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00450] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:102 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:122 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1923" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Dodge&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Dodge&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="194065411" result="Failed" label="Error" start-time="2026-10-10 05:21:15Z" end-time="2026-10-10 05:21:15Z" duration="0.001753" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : MOMENTUM_OUT_OF_RANGE: forceMultiplier=0]]></message>
+                    <stack-trace><![CDATA[  at ProjectHero.Logic.Combat.MomentumQuantizer.RequireFinitePositive (System.Single value, System.String label) [0x00018] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:187 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizeMomentumUnits (System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00016] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:65 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizePacket (ProjectHero.Logic.Grid.GridDirection facing, System.Int32 momentumDirectionOffsetSteps, System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00007] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:166 
+  at ProjectHero.Logic.Simulation.BattleSimulation.MaterializeAttackIntent (ProjectHero.Logic.Actions.ActionPlan plan, System.Int64 tick) [0x00104] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2474 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DrainIntents (System.Int64 tick) [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2422 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x001d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1465 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00450] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:102 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:122 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1924" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AoeDodge&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AoeDodge&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1036401249" result="Failed" label="Error" start-time="2026-10-10 05:21:15Z" end-time="2026-10-10 05:21:15Z" duration="0.004022" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : MOMENTUM_OUT_OF_RANGE: forceMultiplier=0]]></message>
+                    <stack-trace><![CDATA[  at ProjectHero.Logic.Combat.MomentumQuantizer.RequireFinitePositive (System.Single value, System.String label) [0x00018] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:187 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizeMomentumUnits (System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00016] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:65 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizePacket (ProjectHero.Logic.Grid.GridDirection facing, System.Int32 momentumDirectionOffsetSteps, System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00007] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:166 
+  at ProjectHero.Logic.Simulation.BattleSimulation.MaterializeAttackIntent (ProjectHero.Logic.Actions.ActionPlan plan, System.Int64 tick) [0x00104] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2474 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DrainIntents (System.Int64 tick) [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2422 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x001d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1465 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00450] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:102 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:122 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1925" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DodgeChain&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DodgeChain&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1255709604" result="Failed" label="Error" start-time="2026-10-10 05:21:15Z" end-time="2026-10-10 05:21:15Z" duration="0.028225" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : MOMENTUM_OUT_OF_RANGE: forceMultiplier=0]]></message>
+                    <stack-trace><![CDATA[  at ProjectHero.Logic.Combat.MomentumQuantizer.RequireFinitePositive (System.Single value, System.String label) [0x00018] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:187 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizeMomentumUnits (System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00016] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:65 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizePacket (ProjectHero.Logic.Grid.GridDirection facing, System.Int32 momentumDirectionOffsetSteps, System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00007] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:166 
+  at ProjectHero.Logic.Simulation.BattleSimulation.MaterializeAttackIntent (ProjectHero.Logic.Actions.ActionPlan plan, System.Int64 tick) [0x00104] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2474 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DrainIntents (System.Int64 tick) [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2422 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x001d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1465 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00450] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:102 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:122 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1926" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Guard&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Guard&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1547398719" result="Failed" label="Error" start-time="2026-10-10 05:21:15Z" end-time="2026-10-10 05:21:15Z" duration="0.021136" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : MOMENTUM_OUT_OF_RANGE: forceMultiplier=0]]></message>
+                    <stack-trace><![CDATA[  at ProjectHero.Logic.Combat.MomentumQuantizer.RequireFinitePositive (System.Single value, System.String label) [0x00018] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:187 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizeMomentumUnits (System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00016] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:65 
+  at ProjectHero.Logic.Combat.MomentumQuantizer.QuantizePacket (ProjectHero.Logic.Grid.GridDirection facing, System.Int32 momentumDirectionOffsetSteps, System.Single mass, System.Single momentumSpeed, System.Single forceMultiplier, ProjectHero.Logic.Ids.ImpactProfileId impactProfileId) [0x00007] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Combat\MomentumQuantizer.cs:166 
+  at ProjectHero.Logic.Simulation.BattleSimulation.MaterializeAttackIntent (ProjectHero.Logic.Actions.ActionPlan plan, System.Int64 tick) [0x00104] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2474 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DrainIntents (System.Int64 tick) [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:2422 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x001d6] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1465 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.Record (System.String kind, ProjectHero.Logic.Definitions.BattleDefinition d) [0x00450] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:102 
+  at ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero (System.String kind) [0x00012] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task11FinalMatrixReplayTests.cs:122 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1927" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Clash3&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Clash3&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="744962785" result="Passed" start-time="2026-10-10 05:21:15Z" end-time="2026-10-10 05:21:16Z" duration="1.157477" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Clash3: file restarts=100; ticks=210; events=62; bytes=25697; definition=954b261ba5ba4d32
+]]></output>
+                </test-case>
+                <test-case id="1928" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Flank&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Flank&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1394245776" result="Passed" start-time="2026-10-10 05:21:16Z" end-time="2026-10-10 05:21:17Z" duration="0.961502" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Flank: file restarts=100; ticks=210; events=45; bytes=18898; definition=53680b611f938071
+]]></output>
+                </test-case>
+                <test-case id="1929" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DisplacementDeath&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;DisplacementDeath&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="419966362" result="Passed" start-time="2026-10-10 05:21:17Z" end-time="2026-10-10 05:21:17Z" duration="0.185079" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[DisplacementDeath: file restarts=100; ticks=12; events=35; bytes=11359; definition=9d3f37765cac1cf8
+]]></output>
+                </test-case>
+                <test-case id="1930" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Reservation&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;Reservation&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1381629508" result="Passed" start-time="2026-10-10 05:21:17Z" end-time="2026-10-10 05:21:18Z" duration="1.081059" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Reservation: file restarts=100; ticks=210; events=35; bytes=15928; definition=07b5670c86a9be60
+]]></output>
+                </test-case>
+                <test-case id="1931" name="FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AutoDeferral&quot;)" fullname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(&quot;AutoDeferral&quot;)" methodname="FinalCombatClassFileReplaysOneHundredTimesFromTickZero" classname="ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests" runstate="Runnable" seed="1546858549" result="Passed" start-time="2026-10-10 05:21:18Z" end-time="2026-10-10 05:21:19Z" duration="1.036710" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[AutoDeferral: file restarts=100; ticks=210; events=43; bytes=18099; definition=a26a87da22346eda
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

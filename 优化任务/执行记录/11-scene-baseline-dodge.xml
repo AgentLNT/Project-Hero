@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.1296293">
+  <test-suite type="TestSuite" id="1066" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="52" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.129629" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1059" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="52" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.122502" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="15884" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1060" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="52" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.121667" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1061" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="52" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.121121" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1062" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="52" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.120657" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1051" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.119420" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1057" name="MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" methodname="MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="1019967511" result="Passed" start-time="2026-10-10 05:09:22Z" end-time="2026-10-10 05:09:29Z" duration="7.109935" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+Actual main Dodge file replay restarts=100; ticks=525; bytes=56336
+Real main Dodge: damage-earned resource, published opportunity, Player UI input, one trigger, hero concurrent authorization; tick=524
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

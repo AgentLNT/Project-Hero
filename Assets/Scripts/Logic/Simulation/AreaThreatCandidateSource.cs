@@ -95,9 +95,9 @@ namespace ProjectHero.Logic.Simulation
 
             // 空间权威查不到拥有者 ⇒ fail-closed 空候选（不猜几何，见类型注释）。
             if (!_grid.TryGetAnchor(sourcePlan.OwnerUnitId, out GridPoint anchor)) return Array.Empty<UnitId>();
-            if (!_grid.TryGetFacing(sourcePlan.OwnerUnitId, out GridDirection facing)) return Array.Empty<UnitId>();
-
-            TrianglePoint[] area = CombatIntentFactory.TranslatePatternArea(attack.Pattern, facing, anchor);
+            // Attack facing is frozen in the plan. Unit facing may still describe
+            // an earlier action and must not change the telegraphed attack area.
+            TrianglePoint[] area = CombatIntentFactory.TranslatePatternArea(attack.Pattern, sourcePlan.Facing, anchor);
             if (area.Length == 0)
             {
                 throw new LogicDefinitionException(AREA_THREAT_AREA_INVALID,

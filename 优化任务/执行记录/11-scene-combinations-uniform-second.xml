@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 05:37:58Z" end-time="2026-10-10 05:38:02Z" duration="3.8096635">
+  <test-suite type="TestSuite" id="1070" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 05:37:58Z" end-time="2026-10-10 05:38:02Z" duration="3.809664" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1063" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:38:02Z" duration="3.802930" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="44132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1064" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:38:02Z" duration="3.802262" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1065" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:38:02Z" duration="3.801805" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1066" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:38:02Z" duration="3.801295" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1051" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:38:00Z" duration="1.589867" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1058" name="MainCanvasDodgeCancelsFutureMoveChainAndReleasesClosedOriginalWindow" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainCanvasDodgeCancelsFutureMoveChainAndReleasesClosedOriginalWindow" methodname="MainCanvasDodgeCancelsFutureMoveChainAndReleasesClosedOriginalWindow" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="287775172" result="Failed" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:37:59Z" duration="0.792908" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected is <System.Int64[2]>, actual is <System.Linq.EmptyPartition`1[System.Int64]>
+  Values differ at index [0]
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneReaction>d__14.MoveNext () [0x016c3] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:658
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+Canvas combination fixture definition=09fe73ab469812fb; forceMultiplier=0.000001; minimum quantized momentum; this is not the unchanged formal main encounter.
+]]></output>
+              </test-case>
+              <test-case id="1059" name="MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" methodname="MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="342388368" result="Failed" label="Error" start-time="2026-10-10 05:37:59Z" end-time="2026-10-10 05:38:00Z" duration="0.785552" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.InvalidOperationException : Sequence contains no matching element]]></message>
+                  <stack-trace><![CDATA[  at System.Linq.Enumerable.Single[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] predicate) [0x00070] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts>d__13.MoveNext () [0x00336] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:457 
+  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52 ]]></stack-trace>
+                </failure>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1060" name="Task11ShadowClassificationTests" fullname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" classname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-10 05:38:00Z" end-time="2026-10-10 05:38:02Z" duration="2.209650" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1061" name="EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence" fullname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence" methodname="EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence" classname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" runstate="Runnable" seed="197757439" result="Passed" start-time="2026-10-10 05:38:00Z" end-time="2026-10-10 05:38:02Z" duration="1.951119" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Classification rows=60; approvals=0; production temporary registrations retained=60; this audit does not claim Legacy/New equivalence.
+]]></output>
+              </test-case>
+              <test-case id="1062" name="MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation" fullname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation" methodname="MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation" classname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" runstate="Runnable" seed="259417711" result="Passed" start-time="2026-10-10 05:38:02Z" end-time="2026-10-10 05:38:02Z" duration="0.256625" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+shadow-report hash=ed4c3e21b1488e60 encounter=encounter.combat_sample_scene mode=Shadow rules=battle-def-v2-turn180 cfg=1 checkpoints=64 comparedFields=1344 dropped=0 unaligned=0 infra=0 newRule=0 temp=640 approved=0 firstUnexpected=<none> firstInfra=<none> claim=EQUIVALENT
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
