@@ -70,10 +70,7 @@ namespace ProjectHero.Logic.Timeline
         {
             defenderUnitId = default;
             if (!opportunityId.IsValid) return false;
-            ReactionOpportunityRuntime opportunity = _opportunities.FindOpportunity(opportunityId);
-            if (opportunity == null) return false;
-            defenderUnitId = opportunity.DefenderUnitId;
-            return defenderUnitId.IsValid;
+            return _opportunities.TryGetDefenderUnitId(opportunityId, out defenderUnitId);
         }
 
         /// <inheritdoc />

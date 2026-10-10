@@ -95,6 +95,9 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
         /// 返回 null 表示可选；否则返回稳定原因码（越界/太远/方向不被 Pattern 覆盖/被占位/被预留）。
         /// </summary>
         string DescribeDodgeDestinationRejection(UnitId defenderUnitId, ActionSpecId dodgeSpecId, GridPoint destination);
+        string DescribeDodgeDestinationRejectionForOpportunity(ReactionOpportunityId opportunityId,
+            UnitId defenderUnitId, ActionSpecId dodgeSpecId, GridPoint destination)
+            => DescribeDodgeDestinationRejection(defenderUnitId, dodgeSpecId, destination);
 
         /// <summary>当前决策快照（与 AI 同时公开的同一个只读实例；可为 null）。</summary>
         DecisionSnapshot DecisionSnapshot { get; }

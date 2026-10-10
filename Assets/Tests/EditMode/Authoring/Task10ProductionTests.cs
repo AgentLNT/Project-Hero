@@ -18,6 +18,28 @@ namespace ProjectHero.Authoring.Tests
 {
     public class Task10ProductionTests
     {
+        [Test] public void RuntimePlayerProjectionIsCachedOnlyUntilTheNextCommittedSnapshot()
+        {
+            var driver = new UnityBattleDriver(); var source = new Source();
+            driver.Initialize(new BattleRuntimeContext(BattleRuntimeMode.New, new RuntimeCallLedger(), new ShadowWriteCounters(), source));
+            driver.CreateSimulation(source);
+            try
+            {
+                driver.AdvanceFrame(new BattleFrameDelta(1f / 60, false, true));
+                var ports = driver.CreatePlayerInputPorts(new ControllerId("controller.player"));
+                var first = ports.Logic.DecisionSnapshot;
+                Assert.That(ports.Logic.DecisionSnapshot, Is.SameAs(first));
+                var preview = (ProjectHero.Core.Compatibility.Runtime.Input.IViewPreviewPort)ports.Logic;
+                var adrenaline = preview.OwnAdrenaline;
+                Assert.That(preview.OwnAdrenaline, Is.SameAs(adrenaline));
+                Assert.That(ports.Logic.SubmitCommand(ports.Commands.CreateCloseWindow(ports.Logic.OpenWindowId.Value)), Is.Null);
+                driver.AdvanceFrame(new BattleFrameDelta(1f / 60, false, true));
+                Assert.That(ports.Logic.DecisionSnapshot, Is.Not.SameAs(first));
+                Assert.That(ports.Logic.DecisionSnapshot.Tick, Is.EqualTo(1));
+                Assert.That(preview.CurrentWindow, Is.Null);
+            }
+            finally { driver.ResetForNewBattle(); }
+        }
         private sealed class Source : IBattleSimulationSource
         {
             public string SourceName => "real-definition";

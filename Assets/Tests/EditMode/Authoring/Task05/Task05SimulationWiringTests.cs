@@ -1016,15 +1016,11 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(opportunity.IsOpen, Is.False, "来源攻击已终态：机会必须已关闭");
             Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.SourceCancelled));
             Assert.That(opportunity.CloseReason, Is.EqualTo(ReactionCloseReasons.SourceThreatCancelled));
-            // 关闭的机会仍然作为审计记录留在活动机会列表与快照里（状态 + 关闭原因可读），
-            // 但不再接收命令、不再产生过期事件。
-            for (int i = 0; i < sim.CurrentSnapshot.ReactionOpportunities.Count; i++)
-            {
-                Assert.That(sim.CurrentSnapshot.ReactionOpportunities[i].State,
-                    Is.EqualTo((int)ReactionOpportunityState.SourceCancelled));
-                Assert.That(sim.CurrentSnapshot.ReactionOpportunities[i].CloseReason,
-                    Is.EqualTo(ReactionCloseReasons.SourceThreatCancelled));
-            }
+            Assert.That(sim.CurrentSnapshot.ReactionOpportunities, Is.Empty);
+            var frozen = sim.ReactionOpportunities.FindFrozenOpportunity(opportunity.Id);
+            Assert.That(frozen, Is.Not.Null, "Closed bindings must remain auditable after leaving the active projection.");
+            Assert.That(frozen.State, Is.EqualTo((int)ReactionOpportunityState.SourceCancelled));
+            Assert.That(frozen.CloseReason, Is.EqualTo(ReactionCloseReasons.SourceThreatCancelled));
         }
 
         // ————————————————————————————————————————————————————————————
@@ -1310,13 +1306,16 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(ended.Snapshot.Plans.Count, Is.EqualTo(0));
             Assert.That(ended.Snapshot.TerminalPlanRecordCount, Is.EqualTo(2));
             Assert.That(ended.Snapshot.TerminalPlanDigest, Is.Not.Empty);
-            Assert.That(sim.History.RecordCount, Is.EqualTo(2));
+            Assert.That(sim.History.RecordCount, Is.EqualTo(3), "Two terminal plans plus the finalized closed window ledger.");
 
             // 归档明细仍然可读（诊断路径），且逐 Tick 快照不读取旧记录。
             IReadOnlyList<ArchivedRecord> records = sim.ReadHistoryForDiagnostics();
-            Assert.That(records.Count, Is.EqualTo(2));
+            Assert.That(records.Count, Is.EqualTo(3));
             Assert.That(records[0].Kind, Is.EqualTo(HistoryRecordKind.ActionPlanTerminal));
             Assert.That(records[1].Kind, Is.EqualTo(HistoryRecordKind.ActionPlanTerminal));
+            Assert.That(records[2].Kind, Is.EqualTo(HistoryRecordKind.WindowLedger));
+            foreach (var record in records) Assert.That(record.PayloadLength, Is.GreaterThan(0), "Complete finalized payloads must be retained.");
+            Assert.That(CanonicalHash.ToHex(sim.RecomputeHistoryDigestForDiagnostics()), Is.EqualTo(sim.History.Digest));
             Assert.That(records[0].StableKey, Is.EqualTo(first.ActionPlanId.Value.ToString()));
             Assert.That(records[1].StableKey, Is.EqualTo(second.ActionPlanId.Value.ToString()));
             Assert.That(records[0].ArchivedAtTick, Is.EqualTo(3L));

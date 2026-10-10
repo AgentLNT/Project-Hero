@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.7694221">
+  <test-suite type="TestSuite" id="1065" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="51" result="Failed" site="Child" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.769422" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1058" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="51" result="Failed" site="Child" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.762670" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="42416" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1059" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="51" result="Failed" site="Child" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.761870" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1060" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="51" result="Failed" site="Child" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.761348" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1061" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="51" result="Failed" site="Child" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.760812" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1051" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.759499" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1056" name="MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline" methodname="MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="1972793761" result="Failed" start-time="2026-10-10 03:39:04Z" end-time="2026-10-10 03:39:05Z" duration="0.748558" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#1/6 (1, 1)->(2, 2)[145,169)w1
+TearDown : Unhandled log message: '[Exception] LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: 
+ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: 
+ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></output>
+              </test-case>
+              <test-case id="1057" name="MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" methodname="MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="891141552" result="Failed" start-time="2026-10-10 03:39:05Z" end-time="2026-10-10 03:39:05Z" duration="0.001362" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[SetUp : Unhandled log message: '[Exception] LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: '. Use UnityEngine.TestTools.LogAssert.Expect
+TearDown : Unhandled log message: '[Exception] LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: '. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: 
+ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: 
+ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+LogicDefinitionException: REPLAY_STEP_RESULT_MISSING: 
+ProjectHero.Logic.Replay.ReplayRecorder.CaptureBeforeStep () (at Assets/Scripts/Logic/Replay/ReplayRecorder.cs:34)
+ProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta delta) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:195)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.AdvanceOneFrame (System.Single deltaTime, System.Single unscaledDeltaTime) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:941)
+ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.Update () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:503)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

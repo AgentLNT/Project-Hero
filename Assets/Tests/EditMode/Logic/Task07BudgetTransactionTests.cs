@@ -844,14 +844,17 @@ namespace ProjectHero.Logic.Tests
             Assert.That(window.ReservedFor(x.ActionPlanId), Is.EqualTo(x.BudgetCostTicks),
                 "账本里的预留必须与新成本一致（否则就是排程与预算分叉）");
             Assert.That(window.ReservedFor(y.ActionPlanId), Is.EqualTo(y.BudgetCostTicks));
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(90));
-            Assert.That(window.AvailableBudgetTicks, Is.Zero);
+            // Reordering also changes Y's predecessor: anchor -> (0,-4) costs 25, not the stale X -> Y cost 45.
+            Assert.That(y.ResolvedPathWeightUnits, Is.EqualTo(4));
+            Assert.That(y.BudgetCostTicks, Is.EqualTo(25));
+            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(70));
+            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(20));
             Assert.That(window.SpentBudgetTicks, Is.Zero, "自动延期绝不允许消费");
             Assert.That(x.AutomaticDeferralCount, Is.EqualTo(1));
 
-            // 恰好一条 ReservationAdjusted，来源必须是 SystemAutoDeferral（不是显式编辑）。
-            Assert.That(rig.Ledger.Count, Is.EqualTo(ledgerCount + 1));
-            TurnBudgetChange adjusted = rig.Ledger[rig.Ledger.Count - 1];
+            // Both members of the position dependency chain adjust, in stable PlanId order.
+            Assert.That(rig.Ledger.Count, Is.EqualTo(ledgerCount + 2));
+            TurnBudgetChange adjusted = rig.Ledger[ledgerCount];
             Assert.That(adjusted.ChangeKind, Is.EqualTo(TurnBudgetChangeKind.ReservationAdjusted));
             Assert.That(adjusted.Source, Is.EqualTo(ResourceChangeSource.SystemAutoDeferral));
             Assert.That(adjusted.ActionPlanId, Is.EqualTo(x.ActionPlanId));
@@ -861,6 +864,12 @@ namespace ProjectHero.Logic.Tests
             Assert.That(adjusted.ReservedAfter, Is.EqualTo(90));
             Assert.That(adjusted.SpentBefore, Is.Zero);
             Assert.That(adjusted.SpentAfter, Is.Zero);
+            var successorAdjusted = rig.Ledger[ledgerCount + 1];
+            Assert.That(successorAdjusted.ActionPlanId, Is.EqualTo(y.ActionPlanId));
+            Assert.That(successorAdjusted.Source, Is.EqualTo(ResourceChangeSource.SystemAutoDeferral));
+            Assert.That(successorAdjusted.ChangeKind, Is.EqualTo(TurnBudgetChangeKind.ReservationAdjusted));
+            Assert.That(successorAdjusted.ReservedBefore, Is.EqualTo(90));
+            Assert.That(successorAdjusted.ReservedAfter, Is.EqualTo(70));
             Assert.That(CountKind(rig, TurnBudgetChangeKind.ConsumedAtLock, x.ActionPlanId), Is.Zero);
             Assert.That(CountKind(rig, TurnBudgetChangeKind.ReleasedBeforeLock, x.ActionPlanId), Is.Zero);
             Assert.That(rig.Schedule.ScheduleRevision, Is.EqualTo(3L));
@@ -1322,13 +1331,15 @@ namespace ProjectHero.Logic.Tests
             Assert.That(x.ReservedTurnBudgetTicks, Is.EqualTo(45));
             Assert.That(window.ReservedFor(x.ActionPlanId), Is.EqualTo(45));
             Assert.That(window.ReservedFor(y.ActionPlanId), Is.EqualTo(y.BudgetCostTicks));
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(90));
-            Assert.That(window.AvailableBudgetTicks, Is.Zero);
+            Assert.That(y.ResolvedPathWeightUnits, Is.EqualTo(4), "Reordered Y now starts from the authoritative anchor.");
+            Assert.That(y.BudgetCostTicks, Is.EqualTo(25));
+            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(70));
+            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(20));
             Assert.That(window.SpentBudgetTicks, Is.Zero, "成本上升仍然是 Reserved，绝不是 Spent");
             Assert.That(x.IsEditable, Is.True, "成本差额调整不改变计划生命周期");
 
-            Assert.That(rig.Ledger.Count, Is.EqualTo(ledgerCount + 1));
-            TurnBudgetChange adjusted = rig.Ledger[rig.Ledger.Count - 1];
+            Assert.That(rig.Ledger.Count, Is.EqualTo(ledgerCount + 2));
+            TurnBudgetChange adjusted = rig.Ledger[ledgerCount];
             Assert.That(adjusted.ChangeKind, Is.EqualTo(TurnBudgetChangeKind.ReservationAdjusted));
             Assert.That(adjusted.Source, Is.EqualTo(ResourceChangeSource.ExplicitScheduleEdit));
             Assert.That(adjusted.ActionPlanId, Is.EqualTo(x.ActionPlanId));
@@ -1338,6 +1349,12 @@ namespace ProjectHero.Logic.Tests
             Assert.That(adjusted.ReservedAfter, Is.EqualTo(90));
             Assert.That(adjusted.SpentBefore, Is.Zero);
             Assert.That(adjusted.SpentAfter, Is.Zero);
+            var successorAdjusted = rig.Ledger[ledgerCount + 1];
+            Assert.That(successorAdjusted.ActionPlanId, Is.EqualTo(y.ActionPlanId));
+            Assert.That(successorAdjusted.Source, Is.EqualTo(ResourceChangeSource.ExplicitScheduleEdit));
+            Assert.That(successorAdjusted.ChangeKind, Is.EqualTo(TurnBudgetChangeKind.ReservationAdjusted));
+            Assert.That(successorAdjusted.ReservedBefore, Is.EqualTo(90));
+            Assert.That(successorAdjusted.ReservedAfter, Is.EqualTo(70));
             Assert.That(rig.Schedule.ScheduleRevision, Is.EqualTo(3L), "成功事务恰好 +1");
             AssertLedgerIdentity(rig);
         }

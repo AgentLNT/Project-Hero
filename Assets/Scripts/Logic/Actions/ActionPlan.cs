@@ -240,6 +240,15 @@ namespace ProjectHero.Logic.Actions
 
         public ActionPlanId ActionPlanId { get; }
 
+        // Preview candidates share immutable definitions/trigger bindings and copy only value fields.
+        // They are never registered, allocated an identity, or exposed through the View API.
+        internal ActionPlan CopyForPreview()
+        {
+            var copy = (ActionPlan)MemberwiseClone();
+            copy.ProjectionCommittedSink = null;
+            return copy;
+        }
+
         public ActionPlanOrigin Origin { get; }
 
         /// <summary>普通计划用于预算来源与审计；高阶反应恒为 <c>null</c>。</summary>

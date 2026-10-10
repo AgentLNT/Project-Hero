@@ -9,6 +9,8 @@ using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Resources;
 using ProjectHero.Logic.Turns;
+using ProjectHero.Logic.Snapshots;
+using ProjectHero.Logic.Movement;
 
 namespace ProjectHero.Logic.Timeline
 {
@@ -45,7 +47,8 @@ namespace ProjectHero.Logic.Timeline
         IReadOnlyList<ScheduleOperationEvaluation> Evaluations,
         IReadOnlyList<ActionPlanId> AddedPlanIds,
         IReadOnlyList<ActionPlanId> RemovedPlanIds,
-        IReadOnlyList<ActionPlanId> RipplePlanIds)
+        IReadOnlyList<ActionPlanId> RipplePlanIds,
+        IReadOnlyList<SchedulePlanPreview> PreviewPlans = null)
     {
         public bool Succeeded => RejectionCode == null;
 
@@ -515,7 +518,7 @@ namespace ProjectHero.Logic.Timeline
             }
 
             // —— 阶段 5：求值（纯函数；预览与提交共用）——
-            ScheduleEvaluationResult evaluation = _evaluator.Evaluate(intents, touchedLanes);
+            ScheduleEvaluationResult evaluation = _evaluator.Evaluate(intents, touchedLanes, removedPlans);
             if (!evaluation.Succeeded)
                 return ScheduleEditTransactionResult.Rejected(evaluation.RejectionCode, baseRevision);
 
@@ -528,6 +531,77 @@ namespace ProjectHero.Logic.Timeline
 
             if (preview)
             {
+                var candidateLookup = new Dictionary<long, ActionPlan>();
+                var originals = new Dictionary<long, int>();
+                var candidateAdded = new List<ActionPlan>();
+                var candidateEvaluated = new List<ActionPlan>();
+                foreach (var candidate in addedPlans)
+                {
+                    var copy = candidate.CopyForPreview();
+                    candidateLookup.Add(copy.ActionPlanId.Value, copy);
+                    originals[copy.ActionPlanId.Value] = 0;
+                    candidateAdded.Add(copy);
+                }
+                foreach (var item in evaluation.Evaluations)
+                {
+                    if (!candidateLookup.TryGetValue(item.PlanId.Value, out var copy))
+                    {
+                        var original = _authority.Registry.Find(item.PlanId);
+                        copy = original.CopyForPreview();
+                        originals[copy.ActionPlanId.Value] = original.ReservedTurnBudgetTicks;
+                        candidateLookup.Add(copy.ActionPlanId.Value, copy);
+                    }
+                    candidateEvaluated.Add(copy);
+                }
+                foreach (var removed in removedPlans) originals[removed.ActionPlanId.Value] = removed.ReservedTurnBudgetTicks;
+                ApplyEvaluatedProjections(evaluation, baseRevision, explicitRequestPlanIds, candidateLookup);
+                var spaceCandidates = new List<ActionPlan>(candidateAdded);
+                var spaceSeen = new HashSet<long>();
+                foreach (var candidate in candidateAdded) spaceSeen.Add(candidate.ActionPlanId.Value);
+                var previewRemovedIds = new HashSet<long>();
+                foreach (var removed in removedPlans) previewRemovedIds.Add(removed.ActionPlanId.Value);
+                foreach (var lane in _authority.Lanes)
+                {
+                    if (!evaluation.CoversLane(lane.UnitId)) continue;
+                    foreach (var original in evaluation.OrderingOf(lane.UnitId))
+                    {
+                        if (previewRemovedIds.Contains(original.ActionPlanId.Value) || !spaceSeen.Add(original.ActionPlanId.Value)) continue;
+                        if (!candidateLookup.TryGetValue(original.ActionPlanId.Value, out var candidate)) candidate = original.CopyForPreview();
+                        spaceCandidates.Add(candidate);
+                    }
+                }
+                var previewChanges = BuildBudgetChanges(budgetContext, candidateAdded, candidateEvaluated, removedPlans, originals);
+                if (budgetContext != null && budgetContext.HasAuthority)
+                {
+                    foreach (var change in previewChanges)
+                    {
+                        if (!change.IsNewReservation && change.Delta <= 0) continue;
+                        var owner = candidateLookup[change.PlanId.Value];
+                        string permission = budgetContext.Authority.ValidateSubmissionAuthority(
+                            budgetContext.Issuer, owner.OwnerUnitId, owner.ActionType, change.WindowId);
+                        if (permission != null) return ScheduleEditTransactionResult.Rejected(permission, baseRevision);
+                    }
+                    string budgetError = budgetContext.Authority.ValidateBudget(previewChanges, budgetContext);
+                    if (budgetError != null) return ScheduleEditTransactionResult.Rejected(budgetError, baseRevision);
+                }
+                var projections = new List<SchedulePlanPreview>();
+                if (MovementSpacePort is IEditableMovementSpacePreviewPort spacePreview)
+                {
+                    string spaceError = spacePreview.ValidateMovementSpacePreview(spaceCandidates, baseRevision, currentTick);
+                    if (spaceError != null) return ScheduleEditTransactionResult.Rejected(spaceError, baseRevision);
+                }
+                foreach (var item in evaluation.Evaluations)
+                {
+                    var copy = candidateLookup[item.PlanId.Value];
+                    IReadOnlyList<GridPoint> path = Array.Empty<GridPoint>();
+                    if (copy.IsOrdinaryMove && _evaluator.PathCalculator is LogicGridMovementPathCalculator calculator)
+                    {
+                        var result = calculator.FindPathFor(copy, copy.StartTick, spaceCandidates);
+                        if (!result.Succeeded) return ScheduleEditTransactionResult.Rejected(result.FailureCode, baseRevision);
+                        path = Array.AsReadOnly(new List<GridPoint>(result.Path).ToArray());
+                    }
+                    projections.Add(new SchedulePlanPreview(ActionPlanSnapshot.From(copy), path));
+                }
                 var previewEdits = new List<AppliedScheduleEdit>(appliedEdits.Count);
                 for (int i = 0; i < appliedEdits.Count; i++)
                 {
@@ -550,7 +624,7 @@ namespace ProjectHero.Logic.Timeline
                     AppliedEdits: previewEdits, Evaluations: evaluation.Evaluations,
                     AddedPlanIds: Array.Empty<ActionPlanId>(),
                     RemovedPlanIds: ToIds(removedPlans),
-                    RipplePlanIds: RippleIds(evaluation));
+                    RipplePlanIds: RippleIds(evaluation), PreviewPlans: projections.AsReadOnly());
             }
 
             // —— 阶段 7：提交（此时才占用正式 ID、注册、写 Lane、+1 修订号）——

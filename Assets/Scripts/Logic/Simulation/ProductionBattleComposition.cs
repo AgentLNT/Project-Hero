@@ -6,6 +6,8 @@ using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
 using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Turns;
+using ProjectHero.Logic.Commands;
+using ProjectHero.Logic.Combat;
 
 namespace ProjectHero.Logic.Simulation
 {
@@ -18,7 +20,8 @@ namespace ProjectHero.Logic.Simulation
         private BattleSimulation _simulation;
         public BattleSimulationAssembly Assembly { get; }
 
-        public ProductionBattleComposition(BattleDefinition definition, EncounterDefinitionId encounterId, BattleRuntimeInputs inputs)
+        public ProductionBattleComposition(BattleDefinition definition, EncounterDefinitionId encounterId, BattleRuntimeInputs inputs,
+            StepPhaseTimingRecorder phaseTiming = null)
         {
             _encounter = definition.FindEncounter(encounterId);
             if (_encounter?.TurnSubmission == null) throw new LogicDefinitionException("PRODUCTION_TURN_SUBMISSION_MISSING", encounterId.Value);
@@ -48,14 +51,24 @@ namespace ProjectHero.Logic.Simulation
             var observers = new IDecisionObserver[_ai.Count];
             for (int i = 0; i < observers.Length; i++) observers[i] = _ai[i];
             Assembly = new BattleSimulationAssembly(turnWindowSchedule: this, decisionObservers: observers,
-                aiRuntimeStates: this, concurrentHeroUnitId: initial.SlotToUnitId[_encounter.TurnSubmission.ConcurrentHeroSlot]);
+                aiRuntimeStates: this, concurrentHeroUnitId: initial.SlotToUnitId[_encounter.TurnSubmission.ConcurrentHeroSlot], phaseTiming: phaseTiming);
         }
 
         public void Attach(BattleSimulation simulation)
         {
             if (_simulation != null) throw new InvalidOperationException("Composition is already attached");
             _simulation = simulation;
-            foreach (var ai in _ai) ai.AttachPorts(simulation.AiReactionOpportunities, simulation.AiActionPlanLookup, simulation.MovementPathCalculator);
+            foreach (var ai in _ai) ai.AttachPorts(simulation.AiReactionOpportunities, simulation.AiActionPlanLookup,
+                simulation.MovementPathCalculator, PreviewNormalCommand);
+        }
+
+        private string PreviewNormalCommand(ControllerId issuer, CommandRequest request)
+        {
+            if (!(request?.Scope is ScheduleEditScope scope) || !(request.Payload is ScheduleEditPayload payload))
+                return CommandCodes.SCOPE_PAYLOAD_MISMATCH;
+            return _simulation.ScheduleEditor.Apply(payload.Operations, request.TargetTick,
+                scope.ExpectedScheduleRevision, _simulation.ScheduleRevision, preview: true,
+                expectedWindowId: scope.ExpectedWindowId, issuer: issuer).RejectionCode;
         }
 
         public WindowOpenRequest TryOpenDue(long tick)
@@ -65,8 +78,8 @@ namespace ProjectHero.Logic.Simulation
             if (tick <= manager.LastClosedAtTick) return null;
             // The latest closed window is already captured in the authoritative window ledger.
             // Advance from its actual owner; skipped dead slots must not cause repeated turns.
-            int first = manager.ClosedWindows.Count == 0 ? 0
-                : (_order.IndexOf(manager.ClosedWindows[manager.ClosedWindows.Count - 1].OwnerUnitId) + 1) % _order.Count;
+            int first = manager.LastClosedWindowId == 0 ? 0
+                : (_order.IndexOf(manager.LastClosedOwnerUnitId) + 1) % _order.Count;
             for (int i = 0; i < _order.Count; i++)
             {
                 UnitId id = _order[(first + i) % _order.Count];
@@ -83,9 +96,10 @@ namespace ProjectHero.Logic.Simulation
             foreach (var ai in _ai) states.AddRange(ai.CaptureRuntimeStatesOrdered());
             return states.AsReadOnly();
         }
-        public static BattleSimulation Create(BattleDefinition definition, EncounterDefinitionId encounterId, BattleRuntimeInputs inputs)
+        public static BattleSimulation Create(BattleDefinition definition, EncounterDefinitionId encounterId, BattleRuntimeInputs inputs,
+            StepPhaseTimingRecorder phaseTiming = null)
         {
-            var composition = new ProductionBattleComposition(definition, encounterId, inputs);
+            var composition = new ProductionBattleComposition(definition, encounterId, inputs, phaseTiming);
             var simulation = BattleSimulation.Create(definition, encounterId, inputs, composition.Assembly);
             composition.Attach(simulation); return simulation;
         }

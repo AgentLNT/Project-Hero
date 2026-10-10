@@ -45,6 +45,7 @@ namespace ProjectHero.Logic.AI
         private IAiReactionOpportunitySource _opportunities;
         private IAiActionPlanLookup _planLookup;
         private IMovementPathCalculator _pathCalculator;
+        private Func<ControllerId, CommandRequest, string> _normalPreview;
 
         public AiControllerLogic(
             ulong battleSeed,
@@ -81,11 +82,13 @@ namespace ProjectHero.Logic.AI
         public void AttachPorts(
             IAiReactionOpportunitySource opportunities,
             IAiActionPlanLookup planLookup,
-            IMovementPathCalculator pathCalculator)
+            IMovementPathCalculator pathCalculator,
+            Func<ControllerId, CommandRequest, string> normalPreview = null)
         {
             _opportunities = opportunities;
             _planLookup = planLookup;
             _pathCalculator = pathCalculator;
+            _normalPreview = normalPreview;
         }
 
         /// <summary>已注册的 AI 控制者（注册顺序；只增不改）。</summary>
@@ -249,7 +252,7 @@ namespace ProjectHero.Logic.AI
         /// </summary>
         public AiDecisionContext BuildContext(DecisionSnapshot snapshot, ControllerId controllerId)
             => AiDecisionContextFactory.Build(
-                snapshot, controllerId, _opportunities, _planLookup, _pathCalculator);
+                snapshot, controllerId, _opportunities, _planLookup, _pathCalculator) with { NormalPreview = _normalPreview };
 
         /// <summary>诊断文本（不参与逻辑与哈希）。</summary>
         public string Describe()

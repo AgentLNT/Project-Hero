@@ -10,12 +10,18 @@ using UnityEngine;
 
 namespace ProjectHero.UnityView
 {
-    public sealed class BattleViewRegistry : MonoBehaviour, IBattleViewConsumer
+    public sealed class BattleViewRegistry : MonoBehaviour, IBattleViewConsumer, IBattleViewLifetimeConsumer
     {
         [SerializeField] private CombatUnitView[] _views = Array.Empty<CombatUnitView>();
         private readonly Dictionary<long, CombatUnitView> _byUnit = new Dictionary<long, CombatUnitView>();
         public CombatFeedbackMapper Feedback { get; } = new CombatFeedbackMapper();
+        public bool TryGetView(long unitId, out CombatUnitView view) => _byUnit.TryGetValue(unitId, out view);
         public void Configure(CombatUnitView[] views) => _views = views ?? Array.Empty<CombatUnitView>();
+        public void ReleaseVisuals()
+        {
+            foreach (var view in _views) if (view != null) view.Unbind();
+            _byUnit.Clear(); Feedback.Reset();
+        }
 
         public void Bind(BattleInitializationResult mapping, LogicSnapshot snapshot)
         {
@@ -41,11 +47,12 @@ namespace ProjectHero.UnityView
             foreach (var fact in events.EventsInSequenceOrder)
             {
                 foreach (var unit in snapshot.Units)
-                    if (_byUnit.TryGetValue(unit.UnitId, out var view)) view.Consume(fact);
+                    if (_byUnit.TryGetValue(unit.UnitId, out var view) && view != null) view.Consume(fact);
                 Feedback.Consume(fact);
             }
             foreach (var unit in snapshot.Units)
-                if (_byUnit.TryGetValue(unit.UnitId, out var view)) view.ApplySnapshot(unit);
+                if (_byUnit.TryGetValue(unit.UnitId, out var view) && view != null)
+                { view.ApplyMovementSnapshot(snapshot); view.ApplySnapshot(unit); }
         }
     }
 }

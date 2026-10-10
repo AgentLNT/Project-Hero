@@ -68,12 +68,15 @@ namespace ProjectHero.Logic.Movement
         /// 显式编辑、系统自动延期与只读预览共用本入口。
         /// </summary>
         public PathSearchResult FindPathFor(ActionPlan plan, long startTick)
+            => FindPathFor(plan, startTick, plan == null ? null : _authority.FindLane(plan.OwnerUnitId)?.Plans);
+
+        internal PathSearchResult FindPathFor(ActionPlan plan, long startTick, IReadOnlyList<ActionPlan> candidates)
         {
             if (plan == null) return PathSearchResult.FailedAtPreflight(ScheduleCodes.SCHEDULE_OPERATION_INVALID);
             if (!plan.Destination.HasValue)
                 return PathSearchResult.FailedAtPreflight(PathSearchCodes.PATH_INVALID_DESTINATION);
 
-            GridPoint from = ProjectedOriginOf(plan, startTick);
+            GridPoint from = ProjectedOriginOf(plan, startTick, candidates);
             return _pathfinder.FindPath(from, plan.Destination.Value, plan.OwnerUnitId, plan.ActionPlanId);
         }
 
@@ -82,21 +85,22 @@ namespace ProjectHero.Logic.Movement
         /// 只读：不修改任何计划、不分配 ID、不推进修订号。
         /// </summary>
         public GridPoint ProjectedOriginOf(ActionPlan plan, long startTick)
+            => ProjectedOriginOf(plan, startTick, plan == null ? null : _authority.FindLane(plan.OwnerUnitId)?.Plans);
+
+        private GridPoint ProjectedOriginOf(ActionPlan plan, long startTick, IReadOnlyList<ActionPlan> plans)
         {
             if (plan == null) return default;
             if (!_grid.TryGetAnchor(plan.OwnerUnitId, out GridPoint anchor))
                 throw new LogicDefinitionException(LogicGridCodes.LOGIC_GRID_UNIT_UNKNOWN,
                     plan.OwnerUnitId.Value.ToString(CultureInfo.InvariantCulture));
 
-            ActorLane lane = _authority.FindLane(plan.OwnerUnitId);
-            if (lane == null) return anchor;
-
-            IReadOnlyList<ActionPlan> plans = lane.Plans;
+            if (plans == null) return anchor;
             ActionPlan best = null;
             for (int i = 0; i < plans.Count; i++)
             {
                 ActionPlan candidate = plans[i];
                 if (candidate == null) continue;
+                if (candidate.OwnerUnitId != plan.OwnerUnitId) continue;
                 if (candidate.ActionPlanId.Value == plan.ActionPlanId.Value) continue;
                 if (!candidate.IsMovementFamily) continue;
                 if (candidate.IsTerminal) continue;

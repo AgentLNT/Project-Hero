@@ -22,6 +22,30 @@ namespace ProjectHero.Editor.RuntimeOwnership
     {
         private static readonly string Output = Path.GetFullPath("优化任务/执行记录");
         public static void Run()
+            => RunCore("11-project-audit.txt", true);
+        public static void RunCompletionReferences()
+            => RunCore("11-completion-project-audit.txt", false);
+        public static void BuildDevelopmentValidation()
+        {
+            var path = Path.GetFullPath("Logs/Task11DevelopmentBuild/ProjectHeroValidation.exe");
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            var options = BuildOptions.Development | BuildOptions.ConnectWithProfiler;
+            var result = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
+                scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
+                locationPathName = path, target = BuildTarget.StandaloneWindows64, options = options
+            });
+            Directory.CreateDirectory(Output);
+            File.WriteAllText(Path.Combine(Output, "11-development-build-validation.txt"),
+                "Development Build compilation only; NOT a performance acceptance result\n"
+                + "Unity=" + Application.unityVersion + "\nTarget=" + result.summary.platform
+                + "\nOptions=" + result.summary.options + "\nResult=" + result.summary.result
+                + "\nErrors=" + result.summary.totalErrors + "\nWarnings=" + result.summary.totalWarnings
+                + "\nBytes=" + result.summary.totalSize + "\nSeconds=" + result.summary.totalTime.TotalSeconds.ToString("F3", CultureInfo.InvariantCulture)
+                + "\nProduction default remains Legacy pending full Shadow classification.\n", new UTF8Encoding(false));
+            if (result.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+                throw new InvalidOperationException("DEVELOPMENT_BUILD_VALIDATION_FAILED");
+        }
+        private static void RunCore(string reportName, bool benchmark)
         {
             Directory.CreateDirectory(Output);
             var report = new StringBuilder("Task10/11 audit: NOT FINAL ACCEPTANCE\n");
@@ -74,8 +98,8 @@ namespace ProjectHero.Editor.RuntimeOwnership
             var policy = ShadowCasePolicy.CreateDefault("task09-command-and-ai-shadow-profile", seed.RulesVersion, true, true, true, true);
             report.AppendLine("fullShadowPolicyTemporaryFields=" + policy.TemporarilyUncomparable.Count);
             foreach (var field in policy.TemporarilyUncomparable) report.AppendLine("BLOCKED_TEMPORARY|" + field.Id + "|" + field.OwnerTask + "|" + field.Reason);
-            File.WriteAllText(Path.Combine(Output, "11-project-audit.txt"), report.ToString(), new UTF8Encoding(false));
-            Benchmark(seed);
+            File.WriteAllText(Path.Combine(Output, reportName), report.ToString(), new UTF8Encoding(false));
+            if (benchmark) Benchmark(seed);
         }
 
         private static void Benchmark(BattleSimulationSeed seed)

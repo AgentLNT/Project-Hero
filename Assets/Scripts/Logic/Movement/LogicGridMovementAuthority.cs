@@ -54,6 +54,11 @@ namespace ProjectHero.Logic.Movement
             IReadOnlyList<ActionPlan> candidatePlans, long scheduleRevision, long tick);
     }
 
+    public interface IEditableMovementSpacePreviewPort
+    {
+        string ValidateMovementSpacePreview(IReadOnlyList<ActionPlan> candidatePlans, long revision, long tick);
+    }
+
     /// <summary>一次"空间整批替换"的只读结果（诊断用，不参与逻辑与哈希）。</summary>
     public sealed record MovementSpaceBatchResult(
         bool Succeeded,
@@ -140,7 +145,7 @@ namespace ProjectHero.Logic.Movement
     /// 先成功提交者持有，后者稳定拒绝、不可抢占。</item>
     /// </list>
     /// </summary>
-    public sealed class LogicGridMovementAuthority : IActionPlanCleanupParticipant, IEditableMovementSpacePort
+    public sealed class LogicGridMovementAuthority : IActionPlanCleanupParticipant, IEditableMovementSpacePort, IEditableMovementSpacePreviewPort
     {
         private readonly LogicGrid _grid;
         private readonly ActionScheduleAuthority _authority;
@@ -500,10 +505,19 @@ namespace ProjectHero.Logic.Movement
         /// <summary>批次内计划的预测起点：链首用权威锚点，其余用前一个已纳入计划的目的格。</summary>
         private GridPoint ProjectedChainOriginOf(IReadOnlyList<ActionPlan> working, int index)
         {
-            if (index == 0) return _grid.TryGetAnchor(working[0].OwnerUnitId, out GridPoint anchor)
-                ? anchor
-                : default;
-            return working[index - 1].Destination ?? default;
+            var owner = working[index].OwnerUnitId;
+            for (int previous = index - 1; previous >= 0; previous--)
+                if (working[previous].OwnerUnitId == owner) return working[previous].Destination ?? default;
+            return _grid.TryGetAnchor(owner, out GridPoint anchor) ? anchor : default;
+        }
+
+        public string ValidateMovementSpacePreview(IReadOnlyList<ActionPlan> candidatePlans, long revision, long tick)
+        {
+            var detached = new LogicGridMovementAuthority(_grid.CopyForPreview(), _authority, CostRules, SearchRules);
+            foreach (var pair in _segments) detached._segments.Add(pair.Key, pair.Value);
+            var copies = new List<ActionPlan>(candidatePlans.Count);
+            foreach (var candidate in candidatePlans) copies.Add(candidate.CopyForPreview());
+            return detached.RebuildMovementSpace(copies, revision, tick);
         }
 
         /// <summary>
@@ -673,26 +687,30 @@ namespace ProjectHero.Logic.Movement
                     return ScheduleCodes.SCHEDULE_TERMINAL_ORPHAN_ACTIVE_REFERENCE + ":cell-mismatch=" + pair.Key;
             }
 
-            var planIds = new HashSet<long>();
-            foreach (KeyValuePair<ReservationKey, MovementSegment> pair in _segments) planIds.Add(pair.Key.ActionPlanId.Value);
-            foreach (long planId in planIds)
+            foreach (var pair in _segments)
             {
-                var id = new ActionPlanId(planId);
-                IReadOnlyList<MovementSegment> ordered = SegmentsOfPlanOrdered(id);
-                for (int i = 1; i < ordered.Count; i++)
+                var segment = pair.Value;
+                var id = segment.ActionPlanId;
+                if (segment.StepIndex > 0 && _segments.TryGetValue(new ReservationKey(id, segment.StepIndex - 1), out var previous))
                 {
-                    if (ordered[i].StepIndex != ordered[i - 1].StepIndex + 1 ||
-                        ordered[i].From.X != ordered[i - 1].To.X ||
-                        ordered[i].From.Y != ordered[i - 1].To.Y)
-                    {
-                        return MovementCodes.MOVEMENT_SEGMENT_CHAIN_DISCONTINUOUS +
-                               ":" + ordered[i - 1] + " -> " + ordered[i];
-                    }
+                    if (segment.From != previous.To) return MovementCodes.MOVEMENT_SEGMENT_CHAIN_DISCONTINUOUS + ":" + previous + " -> " + segment;
+                    continue;
                 }
-                IReadOnlyList<Reservation> reservations = _grid.ReservationsOfPlanOrdered(id);
-                if (reservations.Count != ordered.Count)
-                    return MovementCodes.MOVEMENT_RESERVATION_BATCH_MISMATCH +
-                           ":plan=" + planId.ToString(CultureInfo.InvariantCulture);
+                // Only the first still-active segment can lack its predecessor. Earlier
+                // committed segments are intentionally absent. Validate each chain once
+                // without allocating ordered temporary lists for every plan on every Tick.
+                int count = 0;
+                foreach (var other in _segments.Values)
+                {
+                    if (other.ActionPlanId != id) continue;
+                    if (other.StepIndex < segment.StepIndex) return MovementCodes.MOVEMENT_SEGMENT_CHAIN_DISCONTINUOUS + ":missing predecessor=" + segment;
+                    if (other.StepIndex > segment.StepIndex && (!_segments.TryGetValue(new ReservationKey(id, other.StepIndex - 1), out var predecessor)
+                        || other.From != predecessor.To))
+                        return MovementCodes.MOVEMENT_SEGMENT_CHAIN_DISCONTINUOUS + ":broken predecessor=" + other;
+                    count++;
+                }
+                if (_grid.ReservationCountOfPlan(id) != count)
+                    return MovementCodes.MOVEMENT_RESERVATION_BATCH_MISMATCH + ":plan=" + id.Value.ToString(CultureInfo.InvariantCulture);
             }
 
             // 终态计划不得残留活动段（任务包「必须验收」：任意计划终态后不存在该计划的活动/未来段）。

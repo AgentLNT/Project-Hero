@@ -28,9 +28,42 @@ namespace ProjectHero.Logic.Timeline
     {
         private readonly Dictionary<long, ActionPlan> _byId = new Dictionary<long, ActionPlan>();
         private readonly List<ActionPlan> _active = new List<ActionPlan>();
+        private readonly Dictionary<long, ActionPlanSnapshot> _frozenTerminal = new Dictionary<long, ActionPlanSnapshot>();
+        private readonly Dictionary<long, ActionPlanSnapshot> _activeProjection = new Dictionary<long, ActionPlanSnapshot>();
+        private IReadOnlyList<ActionPlanSnapshot> _activeSnapshots = Array.Empty<ActionPlanSnapshot>();
+        private bool _projectionMembershipChanged;
+        private bool _activeMembershipChanged;
+        private IReadOnlyList<ActionPlan> _activeView = Array.Empty<ActionPlan>();
+
+        internal IReadOnlyList<ActionPlanSnapshot> BuildActiveSnapshots(ProjectHero.Logic.Definitions.IFactionRelationResolver factions)
+        {
+            bool changed = _projectionMembershipChanged;
+            foreach (var plan in _active)
+            {
+                if (_activeProjection.TryGetValue(plan.ActionPlanId.Value, out var snapshot) && snapshot.MatchesAuthoritative(plan, factions)) continue;
+                _activeProjection[plan.ActionPlanId.Value] = ActionPlanSnapshot.From(plan, factions); changed = true;
+            }
+            if (changed)
+            {
+                var snapshots = new List<ActionPlanSnapshot>(_activeProjection.Values);
+                snapshots.Sort((a, b) => a.ActionPlanId.CompareTo(b.ActionPlanId));
+                _activeSnapshots = snapshots.Count == 0 ? Array.Empty<ActionPlanSnapshot>() : snapshots.AsReadOnly();
+                _projectionMembershipChanged = false;
+            }
+            return _activeSnapshots;
+        }
 
         /// <summary>活动计划数（非终态）。</summary>
         public int ActiveCount => _active.Count;
+        internal bool HasDefensePlans
+        {
+            get
+            {
+                foreach (var plan in _active)
+                    if (!plan.IsEditable && (plan.ActionType == ActionType.Guard || plan.ActionType == ActionType.Block || plan.ActionType == ActionType.Dodge)) return true;
+                return false;
+            }
+        }
 
         /// <summary>已进入终态并离开活动索引的计划累计数（不展开明细）。</summary>
         public long TerminalRecordCount { get; private set; }
@@ -48,17 +81,35 @@ namespace ProjectHero.Logic.Timeline
         {
             get
             {
+                if (_active.Count == 0) return Array.Empty<ActionPlan>();
+                if (!_activeMembershipChanged) return _activeView;
                 var copy = new List<ActionPlan>(_active);
                 copy.Sort((a, b) => a.ActionPlanId.Value.CompareTo(b.ActionPlanId.Value));
-                return copy;
+                _activeView = copy.AsReadOnly(); _activeMembershipChanged = false;
+                return _activeView;
             }
         }
 
-        /// <summary>按 ID 查找（终态计划<strong>不</strong>可查到：它们已离开活动索引）。</summary>
+        /// <summary>按 ID 查找，保留终态对象以支持重复终态请求的幂等检查。</summary>
         public ActionPlan Find(ActionPlanId actionPlanId)
             => _byId.TryGetValue(actionPlanId.Value, out ActionPlan plan) ? plan : null;
 
         public bool Contains(ActionPlanId actionPlanId) => _byId.ContainsKey(actionPlanId.Value);
+
+        /// <summary>只读终态明细；在阶段 19 全部清理结束后冻结，与活动索引分离。</summary>
+        public ActionPlanSnapshot FindFrozenTerminal(ActionPlanId id)
+            => _frozenTerminal.TryGetValue(id.Value, out var snapshot) ? snapshot : null;
+
+        internal ActionPlanSnapshot FreezeTerminal(ActionPlan plan, ProjectHero.Logic.Definitions.IFactionRelationResolver factions)
+        {
+            if (!plan.IsTerminal) throw new InvalidOperationException("Cannot freeze an active plan");
+            if (!_frozenTerminal.TryGetValue(plan.ActionPlanId.Value, out var snapshot))
+            {
+                snapshot = ActionPlanSnapshot.From(plan, factions);
+                _frozenTerminal.Add(plan.ActionPlanId.Value, snapshot);
+            }
+            return snapshot;
+        }
 
         /// <summary>注册一个新计划（ID 必须唯一且有效）。</summary>
         internal void Register(ActionPlan plan)
@@ -72,6 +123,8 @@ namespace ProjectHero.Logic.Timeline
 
             _byId[plan.ActionPlanId.Value] = plan;
             _active.Add(plan);
+            _projectionMembershipChanged = true;
+            _activeMembershipChanged = true;
         }
 
         /// <summary>
@@ -83,6 +136,8 @@ namespace ProjectHero.Logic.Timeline
         {
             if (plan == null) return;
             if (!_active.Remove(plan)) return;
+            _activeProjection.Remove(plan.ActionPlanId.Value); _projectionMembershipChanged = true;
+            _activeMembershipChanged = true;
 
             TerminalRecordCount++;
             TerminalDigestValue = HistoryDigestProtocol.Append(

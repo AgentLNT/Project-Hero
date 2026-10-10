@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Movement;
 
 namespace ProjectHero.Logic.Timeline
 {
@@ -177,7 +178,8 @@ namespace ProjectHero.Logic.Timeline
         /// 所有者单位；候选计划的 Lane 会从意图里自动补全）。
         /// </summary>
         public ScheduleEvaluationResult Evaluate(
-            IReadOnlyList<ScheduleOperationIntent> intents, IReadOnlyList<UnitId> affectedLaneUnits)
+            IReadOnlyList<ScheduleOperationIntent> intents, IReadOnlyList<UnitId> affectedLaneUnits,
+            IReadOnlyList<ActionPlan> removedPlans = null)
         {
             if (intents == null) intents = Array.Empty<ScheduleOperationIntent>();
 
@@ -187,6 +189,13 @@ namespace ProjectHero.Logic.Timeline
                 return ScheduleEvaluationResult.Rejected(ScheduleCodes.SCHEDULE_OPERATION_INVALID);
 
             var directPlanIds = new HashSet<long>();
+            var removedIds = new HashSet<long>();
+            var changedMovementLanes = new HashSet<long>();
+            foreach (var removed in removedPlans ?? Array.Empty<ActionPlan>())
+            {
+                removedIds.Add(removed.ActionPlanId.Value);
+                if (removed.IsMovementFamily) changedMovementLanes.Add(removed.OwnerUnitId.Value);
+            }
             // "定点"（pinned）= 被直接移动的已有计划 + 本批新增的候选计划。
             // 候选计划没有"旧投影"可以比较，它的请求位点就是它的偏好位点；
             // 而已有计划只有被<strong>直接</strong>移动时才可以早于旧投影。
@@ -198,6 +207,7 @@ namespace ProjectHero.Logic.Timeline
                 if (intent == null || intent.Plan == null)
                     return ScheduleEvaluationResult.Rejected(ScheduleCodes.SCHEDULE_OPERATION_INVALID);
                 if (intent.IsDirectMove) directPlanIds.Add(intent.Plan.ActionPlanId.Value);
+                if (intent.Plan.IsMovementFamily) changedMovementLanes.Add(intent.Plan.OwnerUnitId.Value);
                 if (intent.IsDirectMove || !_authority.Registry.Contains(intent.Plan.ActionPlanId))
                     pinnedPlanIds.Add(intent.Plan.ActionPlanId.Value);
                 desired[intent.Plan.ActionPlanId.Value] = intent.DesiredStartTick < 0L ? 0L : intent.DesiredStartTick;
@@ -231,7 +241,8 @@ namespace ProjectHero.Logic.Timeline
                 UnitId unitId = lanes[i];
                 var working = new List<ActionPlan>();
                 ActorLane lane = _authority.FindLane(unitId);
-                if (lane != null) working.AddRange(lane.Plans);
+                if (lane != null) foreach (var plan in lane.Plans)
+                    if (!removedIds.Contains(plan.ActionPlanId.Value)) working.Add(plan);
                 if (addedByLane.TryGetValue(unitId.Value, out List<ActionPlan> extra)) working.AddRange(extra);
                 working.Sort(ActorLane.Compare);
                 workingByLane[unitId.Value] = working;
@@ -244,6 +255,9 @@ namespace ProjectHero.Logic.Timeline
 
             // —— 1. 依赖闭包：位置依赖的传递闭包 + 显式锚点，跨过非移动计划 ——
             var affected = new HashSet<long>();
+            foreach (var lane in changedMovementLanes)
+                foreach (var plan in workingByLane[lane])
+                    if (plan.IsEditable && plan.IsOrdinaryMove) affected.Add(plan.ActionPlanId.Value);
             for (int i = 0; i < intents.Count; i++)
             {
                 ActionPlan plan = intents[i].Plan;
@@ -313,6 +327,15 @@ namespace ProjectHero.Logic.Timeline
             // 位置变化会改变 Move 的路径、边数与路径权重，而"预算与 EndTick 必须使用路径权重"，
             // 因此重算发生在求值内：结果进入 evaluations 的 NewEndTick，并由提交点整批写入。
             var pathProjections = new Dictionary<long, MovementPathProjection>();
+            if (PathCalculator is LogicGridMovementPathCalculator gridCalculator)
+            {
+                string pathError = EvaluateMovementChains(gridCalculator, lanes, workingByLane, desired, pinnedPlanIds,
+                    dependencyFloor, previousStart, previousEnd, finalStart, finalEnd, laneOrderings, affected, pathProjections);
+                if (pathError != null) return ScheduleEvaluationResult.Rejected(pathError);
+                closureCount = affected.Count;
+            }
+            else
+            {
             for (int i = 0; i < lanes.Count; i++)
             {
                 List<ActionPlan> lanePlans = workingByLane[lanes[i].Value];
@@ -330,6 +353,7 @@ namespace ProjectHero.Logic.Timeline
                     finalEnd[planIdValue] = newStart +
                         (projection.WeightUnits * plan.ResolvedBaseStepTicks) + plan.RecoveryTicks;
                 }
+            }
             }
 
             // —— 5. 规范结果（按 ActionPlanId 升序，稳定且与输入顺序无关）——
@@ -353,6 +377,69 @@ namespace ProjectHero.Logic.Timeline
             evaluations.Sort((a, b) => a.PlanId.Value.CompareTo(b.PlanId.Value));
 
             return new ScheduleEvaluationResult(evaluations, null, closureCount, laneOrderings, pathProjections);
+        }
+
+        // Candidate-only fixed point: path cost changes interval length, which can ripple the next plan.
+        // Original ActionPlan objects remain untouched; result LaneOrderings always refers back to them.
+        private string EvaluateMovementChains(LogicGridMovementPathCalculator calculator, List<UnitId> lanes,
+            Dictionary<long, List<ActionPlan>> originalLanes, Dictionary<long, long> desired, HashSet<long> pinned,
+            Dictionary<long, long> floors, Dictionary<long, long> previousStart, Dictionary<long, long> previousEnd,
+            Dictionary<long, long> finalStart, Dictionary<long, long> finalEnd,
+            Dictionary<long, IReadOnlyList<ActionPlan>> orderings, HashSet<long> affected,
+            Dictionary<long, MovementPathProjection> paths)
+        {
+            var copies = new Dictionary<long, List<ActionPlan>>();
+            var originals = new Dictionary<long, ActionPlan>();
+            int planCount = 0;
+            foreach (var lane in lanes)
+            {
+                var list = new List<ActionPlan>();
+                foreach (var plan in originalLanes[lane.Value])
+                { list.Add(plan.CopyForPreview()); originals.Add(plan.ActionPlanId.Value, plan); planCount++; }
+                copies.Add(lane.Value, list);
+            }
+            for (int pass = 0; pass < planCount * 2 + 4; pass++)
+            {
+                bool changed = false;
+                finalStart.Clear(); finalEnd.Clear(); orderings.Clear();
+                var candidateOrderings = new Dictionary<long, List<ActionPlan>>();
+                foreach (var lane in lanes)
+                {
+                    var list = copies[lane.Value];
+                    foreach (var plan in list) if (plan.IsOrdinary) plan.RebindAbsoluteTicks(previousStart[plan.ActionPlanId.Value]);
+                    string error = EvaluateLane(list, desired, pinned, floors, previousStart, finalStart, finalEnd, out var ordering);
+                    if (error != null) return error;
+                    candidateOrderings.Add(lane.Value, ordering);
+                }
+                changed |= RaiseDependencyFloors(lanes, copies, previousStart, previousEnd, floors, finalStart, finalEnd);
+                foreach (var lane in lanes)
+                {
+                    var ordering = candidateOrderings[lane.Value];
+                    foreach (var plan in ordering)
+                    {
+                        long id = plan.ActionPlanId.Value;
+                        if (plan.IsOrdinary) plan.RebindAbsoluteTicks(finalStart[id]);
+                        if (finalStart[id] != previousStart[id] && plan.IsOrdinary) affected.Add(id);
+                    }
+                    foreach (var plan in ordering)
+                    {
+                        long id = plan.ActionPlanId.Value;
+                        if (!plan.IsEditable || !plan.IsOrdinaryMove || !affected.Contains(id)) continue;
+                        var path = calculator.FindPathFor(plan, finalStart[id], ordering);
+                        if (!path.Succeeded) return path.FailureCode;
+                        changed |= path.PathWeightUnits != plan.ResolvedPathWeightUnits;
+                        plan.SetPathProjection(path.EdgeCount, path.PathWeightUnits);
+                        paths[id] = new MovementPathProjection(path.EdgeCount, path.PathWeightUnits);
+                        finalEnd[id] = plan.EndTick;
+                    }
+                    var originalOrder = new List<ActionPlan>(ordering.Count);
+                    foreach (var plan in ordering) originalOrder.Add(originals[plan.ActionPlanId.Value]);
+                    orderings.Add(lane.Value, originalOrder.AsReadOnly());
+                }
+                if (affected.Count > Limits.MaxDependencyClosurePlans) return ScheduleCodes.SCHEDULE_DEPENDENCY_CLOSURE_TOO_LARGE;
+                if (!changed) return null;
+            }
+            return ScheduleCodes.SCHEDULE_PATH_PROJECTION_NOT_STABLE;
         }
 
         /// <summary>

@@ -264,6 +264,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
             // ---- 只读输入/表现回调（跨模式保留，不得写逻辑） ----
             AddReadOnly("ProjectHero.Core.Input.InputManager", "Update", MainScenePrefix + "Manager",
                 "射线 hover，仅发事件");
+            AddReadOnly("ProjectHero.UnityView.CombatUnitView", "LateUpdate", MainScenePrefix + "Player|" + MainScenePrefix + "Enemy", "只读快照驱动的视觉插值");
+            AddReadOnly("ProjectHero.UnityView.BattlePresentationView", "LateUpdate", MainScenePrefix + "NewBattlePresentation", "只读 HUD 与本地输入采样；确认经命令入口提交");
+            AddReadOnly("ProjectHero.UnityView.BattleFeedbackPlayer", "LateUpdate", MainScenePrefix + "NewBattlePresentation", "只写相机表现偏移，不写逻辑");
             AddReadOnly("ProjectHero.UI.UIManager", "Update", MainScenePrefix + "Manager",
                 "暂停态轮询（只读）");
             AddReadOnly("ProjectHero.Visuals.UnitMovement", "LateUpdate",

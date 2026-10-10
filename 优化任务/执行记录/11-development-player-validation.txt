@@ -1,0 +1,28 @@
+Development Player diagnostic; NOT complete performance acceptance
+Unity=6000.6.2f1
+Platform=WindowsPlayer
+Processor=Intel(R) Core(TM) Ultra X7 358H
+MemoryMB=32272
+Rules=battle-def-v2-turn180
+Definition=ed4c3e21b1488e60
+IL2CPP damage-event metadata probe=Passed
+DiagnosticTicks=1200
+Units=2
+PeakPlans=4
+PeakReservations=0
+Events=2185
+HistoryRecords=414
+OldHistoryHotReadsCopiesHashes=0/0/0
+StepP50Ms=0.359200
+StepP95Ms=1.201700
+StepP99Ms=2.137600
+AllocationProbeBytes=0
+AllocatedStepBytesPerTick=unavailable
+GC0InBurst=223
+BurstWallSeconds=0.774
+NativePlayerFileReplayRestarts=100
+ReplayBytes=640855
+Limits: no player attacks/movement, no complete battle, no 8/64/32 load or GC pause/real-time-minute gate.
+Native UnityView smoke=Passed; real serialized slot/window, Player preview/confirm, single command, old-clock zero, release
+Native view smoke is not a complete native battle or visual capture.
+Result=Passed

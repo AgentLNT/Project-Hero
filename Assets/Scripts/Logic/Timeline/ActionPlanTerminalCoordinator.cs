@@ -37,6 +37,7 @@ namespace ProjectHero.Logic.Timeline
         private readonly List<IActionPlanCleanupParticipant> _participants = new List<IActionPlanCleanupParticipant>();
         private readonly List<ActionPlanId> _frozenTickCandidates = new List<ActionPlanId>();
         private readonly HashSet<long> _frozenTickCandidateIds = new HashSet<long>();
+        private bool _archiveCandidatesConsumed;
 
         public ActionPlanTerminalCoordinator(
             ActionScheduleAuthority authority, IReadOnlyList<IActionPlanCleanupParticipant> participants = null)
@@ -169,12 +170,11 @@ namespace ProjectHero.Logic.Timeline
             return outcomes;
         }
 
-        /// <summary>Step 阶段 0：开始本 Tick 的归档候选批次（候选只含本 Tick 的新终态）。</summary>
+        /// <summary>Step 阶段 0：开始归档批次；保留上次冻结后尚未被归档的终态候选。</summary>
         public void BeginTick(long tick)
         {
             _authority.BeginTerminalBatch();
-            _frozenTickCandidates.Clear();
-            _frozenTickCandidateIds.Clear();
+            if (_archiveCandidatesConsumed) ClearArchiveCandidates();
         }
 
         /// <summary>
@@ -190,7 +190,13 @@ namespace ProjectHero.Logic.Timeline
 
         private void RecordArchiveCandidate(ActionPlanId actionPlanId)
         {
+            if (_archiveCandidatesConsumed) ClearArchiveCandidates();
             if (_frozenTickCandidateIds.Add(actionPlanId.Value)) _frozenTickCandidates.Add(actionPlanId);
+        }
+        internal void MarkArchiveCandidatesConsumed() => _archiveCandidatesConsumed = true;
+        private void ClearArchiveCandidates()
+        {
+            _frozenTickCandidates.Clear(); _frozenTickCandidateIds.Clear(); _archiveCandidatesConsumed = false;
         }
 
         private void SortParticipants()

@@ -32,6 +32,42 @@ namespace ProjectHero.Logic.Tests
         private static LogicGrid NewOpenGrid()
             => NewGrid(new GridPoint(-40, -40), new GridPoint(420, 300));
 
+        [Test] public void PathfinderChecksCompleteBodyWhenAnchorIsFree()
+        {
+            var grid = NewGrid(new GridPoint(-20, -20), new GridPoint(20, 20));
+            var volume = DirectionalGeometry.ExpandFromBases(
+                new[] { new TrianglePoint(3, 0, 1) }, new[] { new TrianglePoint(4, 1, -1) });
+            Assert.That(grid.RegisterUnit(Mover, new GridPoint(0, 0), GridDirection.East, volume), Is.Null);
+            var blockedDestination = new GridPoint(4, 0);
+            var footprint = grid.ResolveDestinationCells(Mover, blockedDestination, GridDirection.East);
+            var blocker = new List<GridPoint>(footprint).Find(p => p != blockedDestination);
+            Assert.That(blocker, Is.Not.EqualTo(blockedDestination));
+            Assert.That(grid.RegisterUnitWithPointFootprint(new UnitId(2), blocker, GridDirection.East), Is.Null);
+            Assert.That(grid.IsCellBlockedFor(blockedDestination, Mover), Is.False, "The anchor-only negative control is free.");
+            Assert.That(NewPathfinder(grid).FindPath(new GridPoint(0, 0), blockedDestination, Mover).FailureCode,
+                Is.EqualTo(PathSearchCodes.PATH_INVALID_DESTINATION));
+            var path = NewPathfinder(grid).FindPath(new GridPoint(0, 0), new GridPoint(10, 0), Mover);
+            Assert.That(path.Succeeded, Is.True, path.FailureCode);
+            for (int i = 1; i < path.Path.Count; i++)
+            {
+                Assert.That(grid.ValidateDestinationFor(Mover, path.Path[i], GridDirection.East), Is.Null);
+                Assert.That(grid.CommitAnchor(Mover, path.Path[i], GridDirection.East), Is.Null);
+                Assert.That(grid.VerifyConsistency(), Is.Null);
+            }
+        }
+
+        [Test] public void PathfinderRejectsBodyOutsideBoundaryEvenWithLegalAnchor()
+        {
+            var grid = NewGrid(new GridPoint(-10, -10), new GridPoint(10, 10));
+            var volume = DirectionalGeometry.ExpandFromBases(
+                new[] { new TrianglePoint(3, 0, 1) }, new[] { new TrianglePoint(4, 1, -1) });
+            Assert.That(grid.RegisterUnit(Mover, new GridPoint(0, 0), GridDirection.East, volume), Is.Null);
+            var destination = new GridPoint(10, 0);
+            Assert.That(grid.IsLegalGridPoint(destination), Is.True);
+            Assert.That(NewPathfinder(grid).FindPath(new GridPoint(0, 0), destination, Mover).FailureCode,
+                Is.EqualTo(PathSearchCodes.PATH_INVALID_DESTINATION));
+        }
+
         // ————————————————————————————————————————————————————————————
         // 权重与成本
         // ————————————————————————————————————————————————————————————

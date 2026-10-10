@@ -6,7 +6,7 @@ using ProjectHero.Core.Entities;
 namespace ProjectHero.Visuals
 {
     [RequireComponent(typeof(GridManager))]
-    public class UnitVolumeRenderer : MonoBehaviour
+    public class UnitVolumeRenderer : MonoBehaviour, ProjectHero.Core.Compatibility.Runtime.ILegacyVisualGate
     {
         public Color volumeColor = new Color(0, 1, 0, 0.3f);
         public float heightOffset = 0.1f;
@@ -15,6 +15,15 @@ namespace ProjectHero.Visuals
         private MeshRenderer _meshRenderer;
         private Mesh _mesh;
         private GridManager _gridManager;
+        private bool _newViewActive, _savedRendererEnabled;
+        public void SetNewViewActive(bool active)
+        {
+            if (_newViewActive == active) return;
+            _newViewActive = active;
+            if (_meshRenderer == null) return;
+            if (active) { _savedRendererEnabled = _meshRenderer.enabled; _meshRenderer.enabled = false; }
+            else _meshRenderer.enabled = _savedRendererEnabled;
+        }
 
         private void Awake()
         {
@@ -32,7 +41,9 @@ namespace ProjectHero.Visuals
             
             _mesh = new Mesh();
             _meshFilter.mesh = _mesh;
+            ProjectHero.Core.Compatibility.Runtime.LegacyVisualRegistry.Register(this);
         }
+        private void OnDestroy() => ProjectHero.Core.Compatibility.Runtime.LegacyVisualRegistry.Unregister(this);
 
         private void LateUpdate()
         {

@@ -34,7 +34,7 @@ namespace ProjectHero.Logic.Snapshots
                 MovementSegment segment = segments[i];
                 result[i] = new MovementSegmentSnapshot(
                     segment.ActionPlanId.Value, segment.StepIndex,
-                    segment.From.X, segment.From.Y, segment.To.X, segment.To.Y, segment.EndTick);
+                    segment.From.X, segment.From.Y, segment.To.X, segment.To.Y, segment.EndTick, segment.StartTick);
             }
             return result;
         }

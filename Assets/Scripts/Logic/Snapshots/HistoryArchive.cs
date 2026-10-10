@@ -83,7 +83,7 @@ namespace ProjectHero.Logic.Snapshots
             ArchivedAtTick = archivedAtTick;
             Kind = kind;
             StableKey = stableKey ?? string.Empty;
-            _payload = payload ?? Array.Empty<byte>();
+            _payload = payload == null ? Array.Empty<byte>() : (byte[])payload.Clone();
             DigestAfterAppend = digestAfterAppend;
         }
 
@@ -332,7 +332,7 @@ namespace ProjectHero.Logic.Snapshots
                 _canonicalKeys.Add(canonicalKey);
 
                 // 归档总是做防御性拷贝：之后改写原数组不影响已冻结记录。
-                byte[] frozenPayload = (byte[])candidate.Payload.Clone();
+                byte[] frozenPayload = candidate.Payload; // ArchivedRecord owns the single defensive copy.
                 digest = HistoryDigestProtocol.Append(
                     digest, index, candidate.ArchivedAtTick, candidate.Kind, candidate.StableKey, frozenPayload);
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Snapshots;
 
 namespace ProjectHero.Logic.Turns
 {
@@ -149,6 +150,30 @@ namespace ProjectHero.Logic.Turns
     {
         private readonly Dictionary<long, int> _reservations = new Dictionary<long, int>();
         private readonly List<ActionPlanId> _orderedPlanIds = new List<ActionPlanId>();
+        private TurnWindowSnapshot _cachedSnapshot;
+        internal TurnWindowSnapshot BuildSnapshot()
+        {
+            if (_cachedSnapshot != null && _cachedSnapshot.ClosedAtTick == ClosedAtTick) return _cachedSnapshot;
+            var reservations = Reservations;
+            var rows = new TurnWindowReservationSnapshot[reservations.Count];
+            for (int i = 0; i < rows.Length; i++) rows[i] = new TurnWindowReservationSnapshot(reservations[i].ActionPlanId.Value, reservations[i].ReservedTicks);
+            return _cachedSnapshot = new TurnWindowSnapshot(WindowId.Value, OwnerUnitId.Value, OpenedAtTick,
+                TotalBudgetTicks, ReservedBudgetTicks, SpentBudgetTicks, AvailableBudgetTicks, IsOpen,
+                IsAcceptingSubmissions, (int)(CloseReason ?? TurnWindowCloseReason.OwnerRequested), Array.AsReadOnly(rows), ClosedAtTick);
+        }
+        internal Action<TurnWindow> LedgerChanged { get; set; }
+        public bool IsFrozenForHistory { get; private set; }
+        public long ClosedAtTick { get; internal set; } = -1;
+        internal void FreezeForHistory()
+        {
+            if (IsOpen || ReservationCount != 0 || ReservedBudgetTicks != 0)
+                throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT, "mutable window cannot freeze");
+            IsFrozenForHistory = true;
+        }
+        private void RequireMutable()
+        {
+            if (IsFrozenForHistory) throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT, "frozen window cannot change");
+        }
 
         public TurnWindow(WindowId windowId, UnitId ownerUnitId, long openedAtTick, int totalBudgetTicks)
         {
@@ -221,6 +246,7 @@ namespace ProjectHero.Logic.Turns
         /// </summary>
         internal void ReserveForEditablePlan(ActionPlanId planId, int cost)
         {
+            RequireMutable();
             if (!planId.IsValid)
                 throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT, "planId invalid");
             if (_reservations.ContainsKey(planId.Value))
@@ -244,6 +270,7 @@ namespace ProjectHero.Logic.Turns
         internal void AdjustReservation(ActionPlanId planId, int delta)
         {
             if (delta == 0) return;
+            RequireMutable();
             if (!_reservations.TryGetValue(planId.Value, out int current))
                 throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT,
                     "no reservation for plan " + planId.Value.ToString(CultureInfo.InvariantCulture));
@@ -276,6 +303,7 @@ namespace ProjectHero.Logic.Turns
         /// </summary>
         internal void ConsumeReservationAtLock(ActionPlanId planId, int cost)
         {
+            if (cost != 0) RequireMutable();
             if (cost < 0)
                 throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT,
                     "cost=" + cost.ToString(CultureInfo.InvariantCulture));
@@ -325,6 +353,8 @@ namespace ProjectHero.Logic.Turns
         /// </summary>
         internal int ClearReservationsForBattleEnd()
         {
+            if (ReservedBudgetTicks == 0) return 0;
+            RequireMutable();
             int released = ReservedBudgetTicks;
             _reservations.Clear();
             _orderedPlanIds.Clear();
@@ -342,6 +372,7 @@ namespace ProjectHero.Logic.Turns
             if (!IsOpen || (!IsAcceptingSubmissions && reason != TurnWindowCloseReason.BattleEnded)) return;
             IsAcceptingSubmissions = false;
             CloseReason = reason;
+            _cachedSnapshot = null;
         }
 
         /// <summary>Tick 末正式关闭。它只翻转窗口自身的两个布尔位，不触碰任何计划或账本明细。</summary>
@@ -350,15 +381,18 @@ namespace ProjectHero.Logic.Turns
             if (!IsOpen) return;
             IsOpen = false;
             IsAcceptingSubmissions = false;
+            _cachedSnapshot = null;
         }
 
         private void CheckInvariant()
         {
+            _cachedSnapshot = null;
             if (ReservedBudgetTicks < 0 || SpentBudgetTicks < 0 || AvailableBudgetTicks < 0)
                 throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT,
                     "reserved=" + ReservedBudgetTicks.ToString(CultureInfo.InvariantCulture) +
                     " spent=" + SpentBudgetTicks.ToString(CultureInfo.InvariantCulture) +
                     " available=" + AvailableBudgetTicks.ToString(CultureInfo.InvariantCulture));
+            LedgerChanged?.Invoke(this);
         }
     }
 }

@@ -495,6 +495,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         {
             if (!OwnsTopLevelClock || !enabled) return;
             Ledger.RecordBootstrapUpdate();
+            AdvanceViewDiagnostics(Time.unscaledDeltaTime);
             if (!_battleCreated || _stopped) return;
 
             float deltaTime = Time.deltaTime;
@@ -667,6 +668,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
                         throw new LogicDefinitionException("VIEW_CONSUMER_SLOT_INVALID", DescribePath(_viewConsumerSlot));
                     _newDriver.BindView(_viewConsumerSlot as IBattleViewConsumer);
                     _newDriver.CreateSimulation(_simulationSource);
+                    if (_viewConsumerSlot is IBattleInputConsumer inputConsumer)
+                        inputConsumer.BindInput(_newDriver.CreatePlayerInputPorts(
+                            new Logic.Ids.ControllerId(inputConsumer.PlayerControllerId)));
                 }
                 catch (LogicDefinitionException exception)
                 {
@@ -755,8 +759,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public void DriveFrameForTests(float deltaTime, float unscaledDeltaTime)
         {
             _explicitDriverCount++;
+            AdvanceViewDiagnostics(unscaledDeltaTime);
             if (!_battleCreated || _stopped) return;
             AdvanceOneFrame(deltaTime, unscaledDeltaTime);
+        }
+        private void AdvanceViewDiagnostics(double unscaledSeconds)
+        {
+            if (_battleCreated && _battleMode == BattleRuntimeMode.New)
+                (_viewConsumerSlot as IBattleDiagnosticFrameConsumer)?.AdvanceDiagnostics(unscaledSeconds);
         }
 
         /// <summary>由测试显式触发一次只读 Shadow 检查点。</summary>

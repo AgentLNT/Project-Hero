@@ -1,0 +1,105 @@
+Task10/11 audit: NOT FINAL ACCEPTANCE
+Assets/Scenes/CombatSampleScene.unity|mode=0
+Assets/Scenes/CombatSampleScene.unity|bootstrapCount=1|missingScripts=0
+Assets/Scenes/HiddenRuntimeValidation.unity|mode=0
+Assets/Scenes/HiddenRuntimeValidation.unity|bootstrapCount=1|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/01-  Single Line TextMesh Pro.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/02 - Multi-line TextMesh Pro.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/03 - Line Justification.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/04 - Word Wrapping.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/05 - Style Tags.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/06 - Extra Rich Text Examples.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/07 - Superscript & Subscript Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/08 - Improved Text Alignment.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/09 - Margin Tag Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/10 - Bullets & Numbered List Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/11 - The Style Tag.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/12 - Link Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/12a - Text Interactions.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/13 - Soft Hyphenation.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/14 - Multi Font & Sprites.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/15 - Inline Graphics & Sprites.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/16 - Linked text overflow mode example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/17 - Old Computer Terminal.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/18 - ScrollRect & Masking & Layout.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/19 - Masking Texture & Soft Mask.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/20 - Input Field with Scrollbar.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/21 - Script Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/22 - Basic Scripting Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/23 - Animating Vertex Attributes.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example URP.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/25 - Sunny Days Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/26 - Dropdown Placeholder Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/27 - Double Pass Shader Example.unity|bootstrapCount=0|missingScripts=0
+Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example.unity|bootstrapCount=0|missingScripts=5
+Assets/TextMesh Pro/Examples & Extras/Scenes/Benchmark (Floating Text).unity|bootstrapCount=0|missingScripts=0
+prefabs=6|missingPrefabScripts=0
+UnityViewAssembly=ProjectHero.UnityView
+UnityViewReferences=netstandard,UnityEngine.CoreModule,ProjectHero.Logic,UnityEditor.CoreModule,UnityEngine.AudioModule,Unity.TextMeshPro,UnityEngine.UI,UnityEngine.AnimationModule,Unity.InputSystem
+definition=ed4c3e21b1488e60|rules=battle-def-v2-turn180|encounter=encounter.combat_sample_scene
+rng=20260922|meta=10
+binding=enemy|unit=1|faction=monster
+binding=hero|unit=2|faction=hero
+replayFormat=4|initialHash=bc70adb81214a364
+fullShadowPolicyTemporaryFields=60
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline|07|旧实现用浮点 CurrentAdrenaline 逐帧衰减（CombatUnit.Update，5/s），新内核用整数 AvailableAdrenaline + 个人 CycleId；量纲与生命周期都不同，在只读检查点无法稳定采样。任务 07 已把新侧模型落定（每单位 AdrenalineLedger：Available 不衰减、跨其他单位窗口保留、自己窗口打开时先递增 CycleId 再清零、预留按 ReservationCycleId 归属、Tick 末只接受规范聚合事实入账），但旧侧浮点衰减仍在逐帧改变取值 ⇒ 本条**仍**不可做字段级相等比较（不是被忽略，也不是被批准）。逐窗口/逐周期的真实比较在 Logic 对 Logic 通道上完成（Task07TurnWindowFacts，逐用例由 ShadowCasePolicy.CompareTurnWindowFacts 开启）；本条的迁移归属仍是任务 10（旧表现层最后一次读取旧字段之前）。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10|07|旧体力是 CombatUnit 浮点字段，新方案 1.2 已定移除；在新资源模型落地前没有对应字段可比较。任务 07 的整数预算与肾上腺素账本**都不映射**旧体力/专注（旧体力不再被任何 Logic 路径读取），因此本条不会因任务 07 而消失：它随旧字段一起在任务 10 的场景迁移中清零。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded|10|旧胜负由 BattleManager 每帧轮询 + timeScale 慢放表达，新胜负由唯一 Finalizer 在 Step 阶段 2/16 原子提交；任务 04 已把旧侧结束标志真读（BattleManager.BattleEnded）并与 BattleEndSnapshot.IsEnded 做字段级比较，本登记项保留的是「旧侧结束时机（逐帧轮询、含 timeScale 慢放）与新侧阶段边界不同」这一语义差异，由任务 10 迁移旧胜负表现时收口。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state|05|旧侧状态由多个独立 bool 表达（无等价状态机），任务 04 已把它们按冻结规则推导为状态族标签并真读比较；本登记项保留的是覆盖边界：旧侧没有 Guarding/Blocking/Dodging 的等价事实（属任务 05/08 的计划状态），三者一旦出现在新侧就会与本标签不一致，届时必须把它们纳入比较并更新策略。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode|10|覆盖边界登记项（与 battleEnd.isEnded / units[i].state 同类）：旧侧只有结束显示文本（BattleManager.EndMessage），没有与 Finalizer 对齐的结果码字段；任务 04 已真读该文本、按冻结规则派生结果码并把它纳入字段级比较（“无结果”的两种表示——旧侧空串、新侧 null——已归一为同一缺席事实，见 ShadowComparisonDetector.NormalizeAbsentCode），因此本条比较的鉴别力是「旧结束事实被真读且派生码与新侧一致」，而不是「两侧结束语义等价」。任务 10 迁移旧 UI 胜负表现时一并收口。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count|04|旧侧没有「效果」这一实体：它只有 BattleTimeline 的排程 Intent 列表，与新内核的 StatusEffect（任务 04）不是同一结构，计数不可比。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count|05|旧侧计划由排程 Intent + CombatUnit 状态表达，新内核计划是 ActionPlan（任务 05）的显式实体；在任务 05 落地前计数不可对齐。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state|09|旧运行时没有显式 RNG 状态可采样（随机性分散在旧表现与特效路径）；新内核 RNG 状态是确定性基础设施事实，但旧侧无对应可比较值。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count|08|旧侧 Intent 只以 BattleTimeline 排程条目存在且无独立序号空间，新内核 Intent 由任务 08 的事件/意图系统产生；两者计数不可比。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount|05|旧侧排程表条目数（任务 04 已真读 BattleTimeline.ScheduledEventCount）。它与新内核 StatusEffect/ActionPlan/Intent 不是同一结构，因此不进入字段级相等比较；本登记项的作用是留下「旧侧排程事实确实被真读」的观察，供负控制使用。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].state|05|旧侧没有 ActionPlan 对象，只有 BattleTimeline 排程条目与 CombatUnit 的若干独立 bool；Editable/Locked/Running/Completed/Terminated 这套生命周期状态在旧侧没有等价事实可采样。逐计划状态在 Logic 对 Logic 通道上真比较（Task05ScheduleFacts）。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].startTick|05|旧侧排程条目的时间语义是「队列位置 + 逐帧推进」，没有与新内核同口径的 StartTick/绝对 Tick 投影，因此无法在只读检查点上做字段级相等比较。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].lockedAtTick|05|旧侧没有「锁定」这一原子边界（动作是逐帧开始执行的），原子锁定/启动是任务 05 的新语义，旧侧不存在可比较事实。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].automaticDeferralCount|05|旧侧被控制状态阻塞时不做「确定性向右延期」，而是直接跳过本帧；系统自动延期次数是新语义，旧侧无对应计数。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].impactTick|05|旧侧攻击没有显式 ImpactTick 字段（命中时刻由动画事件与逐帧逻辑共同决定），Impact 与 Recovery 的绝对 Tick 边界在本任务才成为权威事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit#plans[i].submittedWindowId|05|旧侧窗口归属由 BattleManager 的占用状态表达，不挂在动作上；新内核把窗口归属记录为计划的审计字段且不参与执行过滤，两侧不可比。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].terminationReason|05|旧侧动作没有终态原因（被打断就是不再继续执行），13 项 ActionTerminationReason 是新内核的显式语义。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit#actorLanes[i].pendingPlanCount|05|旧侧每单位的动作队列分散在 BattleTimeline 事件表与 CombatUnit 状态里，不存在「每单位一条全局 Lane」这一权威结构。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit#actorLanes[i].locked|05|旧侧没有「Lane 提交锁」（死亡后由控制流短路），锁定只阻止新提交、不清除已有计划这一语义在旧侧没有对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#reactionOpportunities[i].state|05|旧侧没有 ReactionOpportunity 对象：Block/Dodge 是直接播放的动作，没有机会状态机、逐选项截止与关闭原因可采样。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#nextReactionOpportunityId|05|旧侧没有机会 ID 空间；新内核的机会 ID 由权威排程器分配并进入规范化快照。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#terminalPlanRecordCount|05|旧侧没有「终态计划历史 + 增量摘要」这一结构（任务 03 归档协议是新的）。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#GridManager.OccupancyMap#occupancy[i].anchor|06|旧侧没有 LogicGrid 占位权威：占位由 GridManager.OccupancyMap 与 Transform 位置共同表达，单位锚点的权威值只存在于新逻辑层。旧侧可比较的空间事实是 CombatUnit.GridPosition（已作为 units[i].position 真读比较），而不是逐单位逻辑格锚点。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#Pathfinder#movementSegments[i].from|06|旧侧没有 MovementSegment 对象：移动由 UnitMovement 的逐帧插值表示，没有 (ActionPlanId, StepIndex) 定位的离散段与 From/To 半开区间。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#Pathfinder#movementSegments[i].to|06|旧侧没有段的目的格这一权威事实：落点由逐帧插值与 transform 位置表达，无法在只读检查点上与离散段的 To 做字段级比较。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#Pathfinder#movementSegments[i].endTick|06|旧侧移动的结束时刻由动画/插值进度决定，没有与新内核同口径的绝对 EndTick，因此'命令前边界在 EndTick 原子提交'这一事实在旧侧不可采样。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#Pathfinder#reservations[i].cell|06|旧侧没有空间 Reservation 这一对象：同时到达同一格的冲突由逐帧执行顺序与 Transform 距离隐式决定，没有'一格一持有者、先成功提交者持有'的权威结构可采样。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#UnitMovement#movementCommit[i].expectedFrom|06|旧侧没有'未提交段'这一概念，因此没有'剩余路径起点必须等于当前锚点'的可采样事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#Pathfinder#movementTerminal[i].segments|06|旧侧没有'计划终态后清理其移动段'这一结构：旧移动是逐帧插值，计划被打断即不再继续，不存在可逐条核对的残留段集合。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#Pathfinder#movementTerminal[i].reservations|06|旧侧没有 Reservation 表，因此'计划终态后其全部预留已释放'在旧侧没有对应事实可采样。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#currentWindowId|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（窗口 ID 计数器 nextWindowId 仍作为基础设施事实逐检查点比较；这里登记的是「哪个窗口是当前窗口」这一权限状态）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows.count|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（含已关闭窗口的可审计账本，旧侧没有窗口对象可计数）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].openedAtTick|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「窗口在哪个 Tick 打开」的权威边界）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].isOpen|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「已请求关闭/已正式关闭」这两个分离的窗口位）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].isAcceptingSubmissions|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「立即停止接受新增提交，但本 Tick 后续命令仍按稳定码拒绝」这一语义）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].closeReason|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（OwnerRequested/BudgetExhausted/OwnerDied/BattleEnded 四类关闭原因是新内核的显式语义）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].totalBudgetTicks|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].reservedBudgetTicks|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].spentBudgetTicks|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].availableBudgetTicks|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].reservations|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（按 ActionPlanId 归属的预留明细尤其不存在：旧侧动作没有「从哪个窗口预留了多少 Tick」这一事实）
+BLOCKED_TEMPORARY|CombatSampleScene/Manager#BattleManager#windows[i].budgetIdentity|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（恒等式 Reserved + Spent + Available == Total 与预留明细合计一致性都是新侧不变量）
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#nextWindowTick|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「下一个窗口最早在哪一 Tick 打开」的排程事实）
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#lastClosedWindowId|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「最近关闭的窗口」这一审计事实）
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetAvailable|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetReserved|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetSpent|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetIdentity|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（全部窗口聚合的恒等式同样是新侧不变量）
+BLOCKED_TEMPORARY|CombatSampleScene/Core/Gameplay#TacticsController#concurrentAction.hasActiveAuthorization|07|旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Core/Gameplay#TacticsController#concurrentAction.windowId|07|旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。（授权绑定到哪一个窗口同样是新侧事实）
+BLOCKED_TEMPORARY|CombatSampleScene/Core/Gameplay#TacticsController#concurrentAction.playerUnitId|07|旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。（「激活者」必须等于装配显式注入的主角单位，旧侧没有该身份）
+BLOCKED_TEMPORARY|CombatSampleScene/Core/Gameplay#TacticsController#resources.metaResource|07|旧侧局外资源没有被「按窗口一次、由权威定义定价」的消费通道：新侧并发激活的费用只来自 ConcurrentActionDefinition，并原子扣减唯一计数；旧侧没有对应的事实可采样（旧输入路径不消费该资源）。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#adrenaline[unitId].cycleId|07|旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#adrenaline[unitId].reservations|07|旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。（旧侧没有「按计划归属、带 ReservationCycleId」的预留明细）
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#adrenaline[unitId].reservedTotal|07|旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。（预留合计同样不存在）
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#units[i].adrenalineCycleId|07|旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。（单位只读镜像里的周期号在旧侧没有对应字段）
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].budgetCostTicks|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（动作的整数预算成本在旧侧由动画/时间线隐式决定，没有可比较字段）
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].reservedTurnBudgetTicks|07|旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（计划当前持有的预留额同样是新侧投影）
+BLOCKED_TEMPORARY|CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].submittedWindowLedger|07|旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（「计划跨窗口切换时其来源窗口账本逐字不变」这条不变量的旧侧对应事实不存在：旧侧动作根本没有窗口归属；plans[i].submittedWindowId 本身已由任务 05 的登记项覆盖）
+BLOCKED_TEMPORARY|CombatSampleScene/Player#CombatUnit.CurrentHealth#stagedResolution.remainingHits|08|旧权威里没有「按目标聚合的分阶段求解结果」这一对象：伤害在旧实现里逐次直接扣减CombatUnit 生命，没有「同 Tick 多个来源指向同一目标后按通道聚合」的可采样中间事实。新侧的 StagedResolution 是**只读诊断面、不进快照哈希**（08 交接 §4.5），因此它同样不进快照对快照通道的可比面——两条通道都不比较，故必须逐条登记：不是「被忽略」，也不是「被批准」。四类真事实（Intent 载荷 / 冲突组 / 接触键 / AI 决策状态）**不在此登记**，因为它们在快照通道上已被 Task08AiAndArbitrationFacts 逐字段真比较。

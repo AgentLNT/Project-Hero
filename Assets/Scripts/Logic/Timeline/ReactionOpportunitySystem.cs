@@ -9,6 +9,10 @@ using ProjectHero.Logic.Factions;
 using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Snapshots;
+using ProjectHero.Logic.Determinism;
+using ProjectHero.Logic.Replay;
+using System.Globalization;
+using System.Text;
 
 namespace ProjectHero.Logic.Timeline
 {
@@ -236,6 +240,8 @@ namespace ProjectHero.Logic.Timeline
         private readonly ReactionPlanner _planner;
 
         private readonly List<ReactionOpportunityRuntime> _active = new List<ReactionOpportunityRuntime>();
+        private readonly Dictionary<long, ReactionOpportunitySnapshot> _frozen =
+            new Dictionary<long, ReactionOpportunitySnapshot>();
         private readonly List<LogicEvent> _emitted = new List<LogicEvent>();
         private readonly List<ReactionReservationReleaseRequest> _pendingReleases =
             new List<ReactionReservationReleaseRequest>();
@@ -314,11 +320,66 @@ namespace ProjectHero.Logic.Timeline
         public ReactionOpportunityRuntime FindOpportunity(ReactionOpportunityId opportunityId)
             => FindById(opportunityId);
 
+        /// <summary>Explicit diagnostic lookup; frozen bindings never enter per-Tick projection.</summary>
+        public ReactionOpportunitySnapshot FindFrozenOpportunity(ReactionOpportunityId id)
+            => _frozen.TryGetValue(id.Value, out var value) ? value : null;
+
+        public bool TryGetDefenderUnitId(ReactionOpportunityId id, out UnitId defender)
+        {
+            var active = FindById(id);
+            if (active != null) { defender = active.DefenderUnitId; return defender.IsValid; }
+            var frozen = FindFrozenOpportunity(id);
+            defender = frozen == null ? default : new UnitId(frozen.DefenderUnitId);
+            return defender.IsValid;
+        }
+
+        /// <summary>
+        /// Stage 19: seal only after both source and bound plan are terminal and no release
+        /// notification remains pending. Accepted/Triggered bindings must survive until then.
+        /// Full immutable payloads preserve options and closure/trigger provenance.
+        /// </summary>
+        public IReadOnlyList<HistoryArchiveCandidate> CollectFrozenBindingCandidates(long tick)
+        {
+            if (_active.Count == 0) return Array.Empty<HistoryArchiveCandidate>();
+            List<HistoryArchiveCandidate> records = null;
+            for (int i = _active.Count - 1; i >= 0; i--)
+            {
+                var opportunity = _active[i];
+                if (opportunity.IsOpen) continue;
+                var source = _authority.Registry.Find(opportunity.SourceAttackPlanId);
+                if (source == null || !source.IsTerminal) continue;
+                if (opportunity.BoundActionPlanId.IsValid)
+                {
+                    var bound = _authority.Registry.Find(opportunity.BoundActionPlanId);
+                    if (bound == null || !bound.IsTerminal) continue;
+                }
+                bool pending = false;
+                for (int p = 0; p < _pendingReleases.Count; p++)
+                    if (_pendingReleases[p].OpportunityId == opportunity.Id) { pending = true; break; }
+                if (pending) continue;
+                var snapshot = BuildSnapshot(opportunity);
+                var encoder = new CanonicalEncoder();
+                encoder.BeginDomain("ReactionOpportunityBinding.v4");
+                encoder.WriteBytes(Encoding.UTF8.GetBytes(ReplayEventComparison.CanonicalValue(snapshot)));
+                if (records == null) records = new List<HistoryArchiveCandidate>();
+                records.Add(new HistoryArchiveCandidate(tick, HistoryRecordKind.ReactionOpportunityBinding,
+                    opportunity.Id.Value.ToString(CultureInfo.InvariantCulture), encoder.ToArray(), HistorySealProof.Sealed));
+                _frozen.Add(opportunity.Id.Value, snapshot);
+                _active.RemoveAt(i);
+            }
+            if (records == null) return Array.Empty<HistoryArchiveCandidate>();
+            records.Sort((a, b) => a.CompareCanonical(b));
+            return records;
+        }
+
         /// <summary>尚未被接收方取走的预留释放请求（顺序 = 产生顺序）。</summary>
         public IReadOnlyList<ReactionReservationReleaseRequest> PendingReservationReleases => _pendingReleases;
 
         /// <summary>本 Tick 已发射的事件（按产生顺序；<c>Sequence</c> 为 0 占位）。</summary>
         public IReadOnlyList<LogicEvent> EmittedEvents => _emitted;
+
+        /// <summary>The committed outbox/replay owns history; this diagnostic buffer holds one Tick.</summary>
+        public void BeginTick() => _emitted.Clear();
 
         /// <summary>取走并清空事件缓冲（注入 <see cref="EventSink"/> 后仍可用作审计）。</summary>
         public List<LogicEvent> DrainEmittedEvents()
@@ -704,7 +765,9 @@ namespace ProjectHero.Logic.Timeline
         public string ConfirmTrigger(ReactionOpportunityId opportunityId, long tick)
         {
             ReactionOpportunityRuntime opportunity = FindById(opportunityId);
-            if (opportunity == null) return ReactionOpportunityCodes.OPPORTUNITY_NOT_OPEN;
+            if (opportunity == null)
+                return FindFrozenOpportunity(opportunityId)?.State == (int)ReactionOpportunityState.Triggered
+                    ? null : ReactionOpportunityCodes.OPPORTUNITY_NOT_OPEN;
             bool alreadyTriggered = opportunity.State == ReactionOpportunityState.Triggered;
             if (!alreadyTriggered && opportunity.State != ReactionOpportunityState.Accepted)
                 return ReactionOpportunityCodes.OPPORTUNITY_NOT_OPEN;
@@ -786,27 +849,26 @@ namespace ProjectHero.Logic.Timeline
         /// <summary>活动机会的规范化快照（按 <c>ReactionOpportunityId</c> 升序）。</summary>
         public IReadOnlyList<ReactionOpportunitySnapshot> BuildSnapshots()
         {
+            if (_active.Count == 0) return Array.Empty<ReactionOpportunitySnapshot>();
             var snapshots = new List<ReactionOpportunitySnapshot>(_active.Count);
             for (int i = 0; i < _active.Count; i++)
-            {
-                ReactionOpportunityRuntime opportunity = _active[i];
-                var options = new List<ReactionOptionSnapshot>(opportunity.Options.Count);
-                for (int o = 0; o < opportunity.Options.Count; o++)
-                {
-                    ReactionOptionRuntime option = opportunity.Options[o];
-                    options.Add(new ReactionOptionSnapshot(
-                        option.ReactionActionSpecId.Value, (int)option.ReactionType,
-                        option.ResponseDeadlineTick, option.IsOpen, option.IsPublished, option.OutcomeCode));
-                }
-
-                snapshots.Add(new ReactionOpportunitySnapshot(
-                    opportunity.Id.Value, opportunity.DefenderUnitId.Value,
-                    opportunity.SourceAttackPlanId.Value, opportunity.TriggerTick,
-                    opportunity.TelegraphTick, (int)opportunity.State, opportunity.CloseReason,
-                    opportunity.ClosedAtTick, opportunity.BoundActionPlanId.Value,
-                    opportunity.AcceptedActionSpecId, options));
-            }
+                snapshots.Add(BuildSnapshot(_active[i]));
             return snapshots;
+        }
+
+        private static ReactionOpportunitySnapshot BuildSnapshot(ReactionOpportunityRuntime opportunity)
+        {
+            var options = new ReactionOptionSnapshot[opportunity.Options.Count];
+            for (int o = 0; o < options.Length; o++)
+            {
+                var option = opportunity.Options[o];
+                options[o] = new ReactionOptionSnapshot(option.ReactionActionSpecId.Value, (int)option.ReactionType,
+                    option.ResponseDeadlineTick, option.IsOpen, option.IsPublished, option.OutcomeCode);
+            }
+            return new ReactionOpportunitySnapshot(opportunity.Id.Value, opportunity.DefenderUnitId.Value,
+                opportunity.SourceAttackPlanId.Value, opportunity.TriggerTick, opportunity.TelegraphTick,
+                (int)opportunity.State, opportunity.CloseReason, opportunity.ClosedAtTick,
+                opportunity.BoundActionPlanId.Value, opportunity.AcceptedActionSpecId, Array.AsReadOnly(options));
         }
 
         // ————————————————————————————————————————————————————————————

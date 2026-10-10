@@ -920,6 +920,28 @@ namespace ProjectHero.Core.Compatibility.Runtime
             AddNewRuleFact(report, policy, tick, checkpoint, "lastClosedWindowId",
                 legacyManager.LastClosedWindowId, shadowManager.LastClosedWindowId,
                 "最近正式关闭的窗口必须一致（关闭只撤销提交权限，不结算任何计划）", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "lastClosedOwnerUnitId",
+                legacyManager.LastClosedOwnerUnitId, shadowManager.LastClosedOwnerUnitId, "下一窗口的拥有者依据必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "lastClosedAtTick",
+                legacyManager.LastClosedAtTick, shadowManager.LastClosedAtTick, "正式关闭边界必须一致", eventSequence);
+            var legacyFrozen = legacyManager.FrozenBudget ?? new ClosedWindowBudgetSummary(0, 0, 0, 0);
+            var shadowFrozen = shadowManager.FrozenBudget ?? new ClosedWindowBudgetSummary(0, 0, 0, 0);
+            AddNewRuleFact(report, policy, tick, checkpoint, "frozenBudget.windowCount", legacyFrozen.WindowCount, shadowFrozen.WindowCount, "冻结账本数量必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "frozenBudget.totalBudgetTicks", legacyFrozen.TotalBudgetTicks, shadowFrozen.TotalBudgetTicks, "冻结账本总预算必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "frozenBudget.spentBudgetTicks", legacyFrozen.SpentBudgetTicks, shadowFrozen.SpentBudgetTicks, "冻结已消费预算必须一致", eventSequence);
+            AddNewRuleFact(report, policy, tick, checkpoint, "frozenBudget.availableBudgetTicks", legacyFrozen.AvailableBudgetTicks, shadowFrozen.AvailableBudgetTicks, "冻结未消费预算必须一致", eventSequence);
+            var legacyFuture = legacyManager.FutureWindows ?? Array.Empty<ScheduledWindowSnapshot>();
+            var shadowFuture = shadowManager.FutureWindows ?? Array.Empty<ScheduledWindowSnapshot>();
+            AddNewRuleFact(report, policy, tick, checkpoint, "futureWindows.count", legacyFuture.Count, shadowFuture.Count, "未来开窗输入数量必须一致", eventSequence);
+            for (int index = 0; index < Math.Max(legacyFuture.Count, shadowFuture.Count); index++)
+            {
+                var left = index < legacyFuture.Count ? legacyFuture[index] : null;
+                var right = index < shadowFuture.Count ? shadowFuture[index] : null;
+                string futurePrefix = "futureWindows[" + index.ToString(CultureInfo.InvariantCulture) + "]";
+                AddNewRuleFact(report, policy, tick, checkpoint, futurePrefix + ".targetTick", left?.TargetTick ?? long.MinValue, right?.TargetTick ?? long.MinValue, "未来开窗 Tick 必须一致", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, futurePrefix + ".ownerUnitId", left?.OwnerUnitId ?? long.MinValue, right?.OwnerUnitId ?? long.MinValue, "未来窗口拥有者必须一致", eventSequence);
+                AddNewRuleFact(report, policy, tick, checkpoint, futurePrefix + ".budgetTicks", left?.BudgetTicks ?? int.MinValue, right?.BudgetTicks ?? int.MinValue, "未来窗口预算必须一致", eventSequence);
+            }
             AddNewRuleFact(report, policy, tick, checkpoint, "windows.count",
                 legacyManager.Windows.Count, shadowManager.Windows.Count,
                 "窗口集合必须一致（含已关闭窗口仍保留的可审计账本，任务 07）", eventSequence);
@@ -993,8 +1015,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 legacyResources.TurnBudgetSpent, shadowResources.TurnBudgetSpent,
                 "全窗口已消费聚合必须一致", eventSequence);
             AddNewRuleFact(report, policy, tick, checkpoint, "resources.turnBudgetIdentity",
-                ResourceBudgetIdentityHolds(legacyManager.Windows, legacyResources),
-                ResourceBudgetIdentityHolds(shadowManager.Windows, shadowResources),
+                ResourceBudgetIdentityHolds(legacyManager.Windows, legacyResources, legacyManager.FrozenBudget),
+                ResourceBudgetIdentityHolds(shadowManager.Windows, shadowResources, shadowManager.FrozenBudget),
                 "战斗资源恒等式必须成立：Available + Reserved + Spent == Σ Total（直到战斗结束清理）",
                 eventSequence);
 
@@ -1074,13 +1096,13 @@ namespace ProjectHero.Core.Compatibility.Runtime
                     legacyPlan.ReservedTurnBudgetTicks, shadowPlan.ReservedTurnBudgetTicks,
                     "计划当前持有的预留额必须一致：锁定后为 0，Editable 释放后也为 0（任务 07）", eventSequence);
                 AddNewRuleFact(report, policy, tick, checkpoint, prefix + "submittedWindowLedger",
-                    DescribeSubmittedWindowLedger(legacyPlan, legacyManager.Windows),
-                    DescribeSubmittedWindowLedger(shadowPlan, shadowManager.Windows),
+                    DescribeSubmittedWindowLedger(legacyPlan, legacy),
+                    DescribeSubmittedWindowLedger(shadowPlan, shadow),
                     "计划跨窗口切换时其来源窗口账本条目必须逐字不变（已关闭窗口只更新历史账本，不重开、不转移）",
                     eventSequence);
                 AddNewRuleFact(report, policy, tick, checkpoint, prefix + "budgetLedgerLinked",
-                    PlanBudgetLedgerLinked(legacyPlan, legacyManager.Windows),
-                    PlanBudgetLedgerLinked(shadowPlan, shadowManager.Windows),
+                    PlanBudgetLedgerLinked(legacyPlan, legacy),
+                    PlanBudgetLedgerLinked(shadowPlan, shadow),
                     "计划预算投影必须与其来源窗口账本条目一致（账本漂移即差异）", eventSequence);
             }
         }
@@ -1170,13 +1192,15 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         /// <summary>战斗资源恒等式：<c>Available + Reserved + Spent == Σ Total</c>。</summary>
         private static bool ResourceBudgetIdentityHolds(
-            IReadOnlyList<TurnWindowSnapshot> windows, BattleResourceSnapshot resources)
+            IReadOnlyList<TurnWindowSnapshot> windows, BattleResourceSnapshot resources, ClosedWindowBudgetSummary frozen)
         {
             if (resources == null) return false;
             if (resources.TurnBudgetAvailable < 0L || resources.TurnBudgetReserved < 0L
                 || resources.TurnBudgetSpent < 0L) return false;
             long sum = resources.TurnBudgetAvailable + resources.TurnBudgetReserved + resources.TurnBudgetSpent;
-            return sum == SumWindowTotals(windows);
+            if (frozen != null && (frozen.SpentBudgetTicks < 0 || frozen.AvailableBudgetTicks < 0
+                || frozen.SpentBudgetTicks + frozen.AvailableBudgetTicks != frozen.TotalBudgetTicks)) return false;
+            return sum == SumWindowTotals(windows) + (frozen?.TotalBudgetTicks ?? 0);
         }
 
         /// <summary>
@@ -1261,12 +1285,13 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// （窗口已从集合中消失时为显式标记，绝不猜）。
         /// </summary>
         private static string DescribeSubmittedWindowLedger(
-            ActionPlanSnapshot plan, IReadOnlyList<TurnWindowSnapshot> windows)
+            ActionPlanSnapshot plan, LogicSnapshot snapshot)
         {
             if (plan == null) return "<plan-absent>";
             if (plan.SubmittedWindowId == 0L) return "<none>";
-            TurnWindowSnapshot window = FindWindowSnapshot(windows, plan.SubmittedWindowId);
-            if (window == null) return "w=" + plan.SubmittedWindowId.ToString(CultureInfo.InvariantCulture) + ";missing";
+            TurnWindowSnapshot window = FindWindowSnapshot(snapshot.WindowManager.Windows, plan.SubmittedWindowId);
+            if (window == null) return "w=" + plan.SubmittedWindowId.ToString(CultureInfo.InvariantCulture)
+                + (IsFrozenSourceWindow(snapshot, plan.SubmittedWindowId) ? ";frozen;history=" + snapshot.History.RecordCount + ":" + snapshot.History.Digest : ";missing");
             return "w=" + window.WindowId.ToString(CultureInfo.InvariantCulture)
                    + ";open=" + (window.IsOpen ? "true" : "false")
                    + ";accepting=" + (window.IsAcceptingSubmissions ? "true" : "false")
@@ -1280,14 +1305,19 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// （锁定后两者都为 0；Editable 释放后同理）。没有来源窗口时要求计划的预留投影为 0。
         /// </summary>
         private static bool PlanBudgetLedgerLinked(
-            ActionPlanSnapshot plan, IReadOnlyList<TurnWindowSnapshot> windows)
+            ActionPlanSnapshot plan, LogicSnapshot snapshot)
         {
             if (plan == null) return false;
             if (plan.SubmittedWindowId == 0L) return plan.ReservedTurnBudgetTicks == 0;
-            TurnWindowSnapshot window = FindWindowSnapshot(windows, plan.SubmittedWindowId);
-            if (window == null) return false;
+            TurnWindowSnapshot window = FindWindowSnapshot(snapshot.WindowManager.Windows, plan.SubmittedWindowId);
+            if (window == null) return plan.ReservedTurnBudgetTicks == 0 && plan.LockedAtTick >= 0
+                && IsFrozenSourceWindow(snapshot, plan.SubmittedWindowId);
             return WindowReservedFor(window, plan.ActionPlanId) == plan.ReservedTurnBudgetTicks;
         }
+        private static bool IsFrozenSourceWindow(LogicSnapshot snapshot, long id)
+            => id > 0 && id <= snapshot.WindowManager.LastClosedWindowId
+                && id <= snapshot.WindowManager.NextWindowOrdinal && (snapshot.WindowManager.FrozenBudget?.WindowCount ?? 0) > 0
+                && FindWindowSnapshot(snapshot.WindowManager.Windows, id) == null;
 
         private static TurnWindowSnapshot FindWindowSnapshot(IReadOnlyList<TurnWindowSnapshot> windows, long windowId)
         {

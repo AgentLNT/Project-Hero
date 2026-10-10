@@ -520,7 +520,8 @@ namespace ProjectHero.Logic.Simulation
             // 任务 09 A 流（产出 15）：AI 未来决策状态的只读来源。刻意放在签名末尾并带默认值，
             // 让全部既有位置参数调用点（含 Unity 侧夹具）零改动继续编译。
             // 默认 null = 本场没有 AI 控制者 ⇒ 快照的 AiControllers 为空集合（合法状态）。
-            AI.IAiRuntimeStateSource aiRuntimeStates = null)
+            AI.IAiRuntimeStateSource aiRuntimeStates = null,
+            bool useEmptyInteractionFastPath = true)
         {
             UnitStateAdvance = unitStateAdvance ?? NoUnitStateAdvanceSystem.Instance;
             VictoryEvaluator = victoryEvaluator ?? FactionEliminationVictoryEvaluator.Instance;
@@ -544,6 +545,7 @@ namespace ProjectHero.Logic.Simulation
             ArchiveCandidateSources = archiveCandidateSources ?? Array.Empty<IHistoryArchiveCandidateSource>();
             DecisionObservers = decisionObservers ?? Array.Empty<IDecisionObserver>();
             PhaseTiming = phaseTiming;
+            UseEmptyInteractionFastPath = useEmptyInteractionFastPath;
             LifecycleNoticeSink = lifecycleNoticeSink;
             // 未显式注入时保持 null：BattleSimulation 会把本场自己的预算权威接到该接缝上
             // （任务 07 的真实 Reserved -> Spent 提交端口）。
@@ -622,6 +624,8 @@ namespace ProjectHero.Logic.Simulation
 
         /// <summary>可选的阶段计时采样器（默认 null = 不采样；计时结果绝不进入逻辑输入或哈希）。</summary>
         public StepPhaseTimingRecorder PhaseTiming { get; }
+        /// <summary>Equivalent implementation choice; false is the independent reference path in performance regression tests.</summary>
+        public bool UseEmptyInteractionFastPath { get; }
 
         /// <summary>
         /// 可选的死亡生命周期清理通知接收点（任务 05 接入统一终态协调器）。

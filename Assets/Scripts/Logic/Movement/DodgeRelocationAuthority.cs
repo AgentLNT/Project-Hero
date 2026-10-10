@@ -351,6 +351,13 @@ namespace ProjectHero.Logic.Movement
             new Dictionary<long, DodgeDestinationReservation>();
 
         private readonly List<DodgeCommitResult> _commitLog = new List<DodgeCommitResult>();
+        private IReadOnlyList<DodgeSpaceUnitEntry> _spaceUnits = Array.Empty<DodgeSpaceUnitEntry>();
+        private static bool SamePoints<T>(IReadOnlyList<T> a, IReadOnlyList<T> b)
+        {
+            if (a.Count != b.Count) return false;
+            for (int i = 0; i < a.Count; i++) if (!EqualityComparer<T>.Default.Equals(a[i], b[i])) return false;
+            return true;
+        }
 
         public DodgeRelocationAuthority(
             LogicGrid grid,
@@ -453,19 +460,30 @@ namespace ProjectHero.Logic.Movement
         public DodgeSpaceSnapshot CaptureSpaceSnapshot(long tick)
         {
             IReadOnlyList<UnitId> units = _grid.RegisteredUnitsOrdered();
-            var entries = new List<DodgeSpaceUnitEntry>(units.Count);
+            List<DodgeSpaceUnitEntry> entries = null;
             for (int i = 0; i < units.Count; i++)
             {
                 UnitId unitId = units[i];
                 if (!_grid.TryGetAnchor(unitId, out GridPoint anchor)) continue;
                 _grid.TryGetFacing(unitId, out GridDirection facing);
-                entries.Add(new DodgeSpaceUnitEntry(
-                    unitId, anchor, facing, Snapshot(_grid.CellsOf(unitId)), Snapshot(_grid.TrianglesOf(unitId))));
+                var cells = _grid.CellsOf(unitId); var triangles = _grid.TrianglesOf(unitId);
+                var previous = i < _spaceUnits.Count ? _spaceUnits[i] : null;
+                bool same = previous != null && previous.UnitId == unitId && previous.Anchor == anchor && previous.Facing == facing
+                    && SamePoints(previous.Cells, cells) && SamePoints(previous.Triangles, triangles);
+                if (!same && entries == null)
+                {
+                    entries = new List<DodgeSpaceUnitEntry>(units.Count);
+                    for (int prior = 0; prior < i; prior++) entries.Add(_spaceUnits[prior]);
+                }
+                if (entries != null) entries.Add(same ? previous : new DodgeSpaceUnitEntry(unitId, anchor, facing, Snapshot(cells), Snapshot(triangles)));
             }
+            if (entries != null) _spaceUnits = entries.AsReadOnly();
+            else if (_spaceUnits.Count != units.Count)
+            { var prefix = new List<DodgeSpaceUnitEntry>(units.Count); for (int i = 0; i < units.Count; i++) prefix.Add(_spaceUnits[i]); _spaceUnits = prefix.AsReadOnly(); }
 
             return new DodgeSpaceSnapshot(
                 tick,
-                entries,
+                _spaceUnits,
                 Snapshot(_grid.AllReservationsOrdered()),
                 AllReservationsOrdered(),
                 Snapshot(_movement.AllSegmentsOrdered()));
@@ -986,7 +1004,7 @@ namespace ProjectHero.Logic.Movement
             if (source == null || source.Count == 0) return Array.Empty<T>();
             var result = new T[source.Count];
             for (int i = 0; i < source.Count; i++) result[i] = source[i];
-            return result;
+            return Array.AsReadOnly(result);
         }
 
         /// <summary>诊断文本（不参与逻辑与哈希）。</summary>

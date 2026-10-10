@@ -16,7 +16,7 @@ namespace ProjectHero.Logic.Replay
     /// <summary>Versioned developer file format. Closed command tags; never resolves runtime types from files.</summary>
     public static class ReplayFile
     {
-        private const string Magic = "ProjectHero.DeveloperReplay.v3";
+        private const string Magic = "ProjectHero.DeveloperReplay.v4";
         private const int MaximumRecords = 2000000;
         public static void Save(Stream stream, BattleReplay replay)
         {

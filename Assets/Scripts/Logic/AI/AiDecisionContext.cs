@@ -34,7 +34,8 @@ namespace ProjectHero.Logic.AI
         TurnWindowSnapshot OwnWindow,
         IReadOnlyList<AiOpportunityView> Opportunities,
         IMovementPathCalculator PathCalculator,
-        IAiActionPlanLookup PlanLookup)
+        IAiActionPlanLookup PlanLookup,
+        Func<ControllerId, CommandRequest, string> NormalPreview = null)
     {
         /// <summary>本决策允许使用的目标 Tick（= 快照 Tick 的下一 Tick）。</summary>
         public long NextTick => Snapshot == null ? 0L : Snapshot.Tick + 1L;

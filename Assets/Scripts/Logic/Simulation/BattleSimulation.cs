@@ -651,7 +651,7 @@ namespace ProjectHero.Logic.Simulation
                     expectedWindowId,
                     _windowManager.CurrentWindow != null ? _windowManager.CurrentWindow.WindowId : (WindowId?)null,
                     issuer);
-            _terminalArchiveSource = new ActionPlanTerminalArchiveSource(_scheduleAuthority, _terminalCoordinator);
+            _terminalArchiveSource = new ActionPlanTerminalArchiveSource(_scheduleAuthority, _terminalCoordinator, _factionResolver);
             _planCommandProcessor = new ActionPlanCommandProcessor(_scheduleAuthority, _scheduleEditor, assembly.CommandProcessor);
 
             // 任务 06：Dodge 目的格预留与换位事务的**真实实现**（默认装配；任务 08 可整体替换）。
@@ -1393,7 +1393,7 @@ namespace ProjectHero.Logic.Simulation
             ValidateBatch(tick, externalBatch);
             _eventTick = tick;
 
-            _trace.Begin(tick, _assembly.PhaseTiming != null);
+            _trace.Begin(tick, _assembly.PhaseTiming != null, _assembly.PhaseTiming?.AllocationReader);
             _frozenBatch = externalBatch;
             // 主方案 3.4.3：批次冻结与 BatchBaseScheduleRevision 在 Step 入口一起冻结，
             // 阶段 5 只是把它提交为本 Tick 的命令基线（并断言阶段 0–4 未改动排程修订）。
@@ -1541,6 +1541,7 @@ namespace ProjectHero.Logic.Simulation
             _lastFinalFootprintRemovals.Clear();
             _claimedThisTick.Clear();
             _terminalCoordinator.BeginTick(tick);
+            _reactionSystem.BeginTick();
 
             // —— 死亡清理（不依赖窗口）——
             ConsumeLifecycleCleanup(tick);
@@ -1604,7 +1605,8 @@ namespace ProjectHero.Logic.Simulation
         /// </summary>
         private void AdvanceStateAndEffects(long tick)
         {
-            IReadOnlyList<UnitSnapshot> view = BuildUnitSnapshots();
+            IReadOnlyList<UnitSnapshot> view = _assembly.UseEmptyInteractionFastPath && _assembly.UnitStateAdvance is NoUnitStateAdvanceSystem
+                ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots();
 
             // —— 1. 状态机自动到期（单位顺序固定 UnitId 升序）——
             for (int i = 0; i < _units.Count; i++)
@@ -2518,6 +2520,13 @@ namespace ProjectHero.Logic.Simulation
 
             // 2. 全部到期预留，按 (TriggerTick, Destination.X, Destination.Y, CommandSequence, OpportunityId) 升序。
             IReadOnlyList<DodgeDestinationReservation> due = _dodgeRelocation.DueReservationsOrdered(tick);
+            if (_assembly.UseEmptyInteractionFastPath && !_scheduleAuthority.Registry.HasDefensePlans && (_intentQueue?.Count ?? 0) == 0 && due.Count == 0)
+            {
+                // Preserve the complete diagnostic occupancy surface. With no mutation, the immutable
+                // before/after values are identical and need not be captured and allocated twice.
+                _dodgeCommitReport = new DodgeCommitReport(tick, before, Array.Empty<DodgeCommitResult>(), before);
+                SyncGridLogicalPositions(); return;
+            }
             int logStart = _dodgeRelocation.CommitLog.Count;
 
             for (int i = 0; i < due.Count; i++)
@@ -2593,6 +2602,17 @@ namespace ProjectHero.Logic.Simulation
             _conflictGraphError = null;
             _stagedResolution = StagedConflictResolution.Empty(tick);
             _conflictGroupKeyByPlan = new Dictionary<long, long>();
+
+            // With no intents, Dodge results or defense plans there is no eligible interaction.
+            // Active Block/Guard/Dodge plans always keep the full path and their semantic events.
+            if (_assembly.UseEmptyInteractionFastPath && !_scheduleAuthority.Registry.HasDefensePlans
+                && (_intentQueue?.Count ?? 0) == 0 && _dodgeCommitReport.Results.Count == 0)
+            {
+                foreach (var entry in _dodgeCommitReport.Before.Units) ControllerOf(entry.UnitId);
+                _conflictGraph = ConflictGraph.Empty(tick);
+                _stagedResolution = _stagedResolution with { Graph = _conflictGraph };
+                return;
+            }
 
             IReadOnlyList<InteractionPlanFacts> planFacts = BuildInteractionPlanFacts();
             IReadOnlyList<UnitOccupancy> unitsBefore = BuildOccupancy(_dodgeCommitReport.Before);
@@ -3204,10 +3224,12 @@ namespace ProjectHero.Logic.Simulation
 
         private void CommitDamageAndBuildForcedDisplacementRequests(long tick)
         {
-            _resolutionCommit.CommitDamageAndAggregationOrdered(tick, BuildUnitSnapshots());
+            _resolutionCommit.CommitDamageAndAggregationOrdered(tick,
+                _assembly.UseEmptyInteractionFastPath && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
 
             IReadOnlyList<ForcedDisplacementRequest> requests =
-                _displacementRequestBuilder.BuildOrdered(tick, BuildUnitSnapshots());
+                _displacementRequestBuilder.BuildOrdered(tick,
+                    _assembly.UseEmptyInteractionFastPath && _displacementRequestBuilder is DisplacementRequestBuilder ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
             if (requests == null || requests.Count == 0)
             {
                 _displacementRequests = Array.Empty<ForcedDisplacementRequest>();
@@ -3374,7 +3396,8 @@ namespace ProjectHero.Logic.Simulation
         private void CommitStateControlAndAdrenalineAccrual(long tick)
         {
             // 阶段 14 只能读取批量换位<em>之后</em>的最终位置。
-            _resolutionCommit.CommitStateControlAndRemainingTerminalsOrdered(tick, BuildUnitSnapshots());
+            _resolutionCommit.CommitStateControlAndRemainingTerminalsOrdered(tick,
+                _assembly.UseEmptyInteractionFastPath && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
 
             // —— 参与 Clash 的攻击必须在**本阶段**（状态/控制与其后终态）终止 ——
             //
@@ -3479,6 +3502,10 @@ namespace ProjectHero.Logic.Simulation
 
         private void CloseRequestedWindowAndScheduleNext(long tick)
         {
+            // Exhaustion closes submission authority, never execution authority. Future plans and
+            // their reservations keep running across the next owner's window.
+            if (_windowManager.CurrentWindow?.AvailableBudgetTicks == 0)
+                _windowManager.RequestCloseForBudgetExhaustion();
             // 脚本窗口可以在任意 Tick 请求关闭当前窗口；请求与正式关闭分离：
             // 请求立即停止接受提交（本 Tick 后续命令稳定拒绝），正式关闭在本阶段完成。
             if (_assembly.TurnWindowSchedule.ShouldCloseCurrentWindow(tick))
@@ -3631,8 +3658,8 @@ namespace ProjectHero.Logic.Simulation
         private StepResult BuildStepResult(long tick, StepStatus status)
         {
             // 1. 只读不变量检查（显式装配、顺序固定、不得修改状态、不得发射玩法事件）。
-            IReadOnlyList<UnitSnapshot> units = BuildUnitSnapshots();
             IReadOnlyList<IStepInvariantCheck> checks = _assembly.InvariantChecks;
+            IReadOnlyList<UnitSnapshot> units = _assembly.UseEmptyInteractionFastPath && checks.Count == 0 ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots();
             for (int i = 0; i < checks.Count; i++)
             {
                 IStepInvariantCheck check = checks[i];
@@ -3663,7 +3690,7 @@ namespace ProjectHero.Logic.Simulation
             _currentSnapshot = snapshot;
 
             // 5. 可选的阶段计时采样（纯诊断，不参与逻辑与哈希）。
-            _assembly.PhaseTiming?.RecordTick(_trace, _trace.EndTimestamp());
+            _assembly.PhaseTiming?.RecordTick(_trace, _trace.EndTimestamp(), _assembly.PhaseTiming.AllocationReader());
             return new StepResult(status, eventBatch, snapshot);
         }
 
@@ -3673,9 +3700,11 @@ namespace ProjectHero.Logic.Simulation
             // 两者共享<strong>同一个</strong>HistoryArchive 与同一份封条契约；
             // 无新增终态时本来源返回空列表 ⇒ 归档器不读取、不复制、不哈希任何旧记录。
             IReadOnlyList<HistoryArchiveCandidate> fromTimeline = _terminalArchiveSource.CollectOrdered(tick);
+            IReadOnlyList<HistoryArchiveCandidate> fromWindows = _windowManager.CollectFrozenLedgerCandidates(tick);
+            IReadOnlyList<HistoryArchiveCandidate> fromReactions = _reactionSystem.CollectFrozenBindingCandidates(tick);
 
             IReadOnlyList<IHistoryArchiveCandidateSource> sources = _assembly.ArchiveCandidateSources;
-            if (sources.Count == 0 && fromTimeline.Count == 0)
+            if (sources.Count == 0 && fromTimeline.Count == 0 && fromWindows.Count == 0 && fromReactions.Count == 0)
             {
                 // 空批次：不读取、不复制、不哈希任何旧记录。
                 _history.AppendFinalizedOrdered(tick, null);
@@ -3683,6 +3712,8 @@ namespace ProjectHero.Logic.Simulation
             }
 
             var candidates = new List<HistoryArchiveCandidate>();
+            candidates.AddRange(fromWindows);
+            candidates.AddRange(fromReactions);
             for (int i = 0; i < sources.Count; i++)
             {
                 IReadOnlyList<HistoryArchiveCandidate> fromSource = sources[i]?.CollectOrdered(tick);
@@ -3713,13 +3744,29 @@ namespace ProjectHero.Logic.Simulation
 
         // —— 快照构建 ——
 
+        private IReadOnlyList<UnitSnapshot> _unitProjection = Array.Empty<UnitSnapshot>();
         private IReadOnlyList<UnitSnapshot> BuildUnitSnapshots()
         {
-            var snapshots = new UnitSnapshot[_units.Count];
+            UnitSnapshot[] snapshots = _unitProjection.Count == _units.Count ? null : new UnitSnapshot[_units.Count];
             for (int i = 0; i < _units.Count; i++)
             {
                 UnitRuntimeState unit = _units[i];
                 UnitState state = unit.StateMachine != null ? unit.StateMachine.CurrentState : UnitState.Idle;
+                var previous = i < _unitProjection.Count ? _unitProjection[i] : null;
+                bool same = previous != null && previous.UnitId == unit.UnitId.Value && previous.DefinitionId == (unit.DefinitionId.Value ?? string.Empty)
+                    && previous.FactionId == (unit.FactionId.Value ?? string.Empty) && previous.X == unit.Position.X && previous.Y == unit.Position.Y
+                    && previous.Facing == (int)unit.Facing && previous.HealthQ10 == unit.HealthQ10 && previous.IsAlive == unit.IsAlive
+                    && previous.AvailableAdrenaline == unit.AvailableAdrenaline && previous.AdrenalineCycleId == unit.AdrenalineCycleId
+                    && previous.State == (int)state && previous.StateStartTick == (unit.StateMachine?.StateStartTick ?? 0)
+                    && previous.StateEndTick == (unit.StateMachine?.StateEndTick ?? long.MaxValue)
+                    && previous.CanReceiveDirectHit == UnitStateMachine.CanReceiveDirectHitIn(state);
+                if (same)
+                { if (snapshots != null) snapshots[i] = previous; continue; }
+                if (snapshots == null)
+                {
+                    snapshots = new UnitSnapshot[_units.Count];
+                    for (int prior = 0; prior < i; prior++) snapshots[prior] = _unitProjection[prior];
+                }
                 snapshots[i] = new UnitSnapshot(
                     unit.UnitId.Value,
                     unit.DefinitionId.Value ?? string.Empty,
@@ -3736,7 +3783,8 @@ namespace ProjectHero.Logic.Simulation
                     unit.StateMachine != null ? unit.StateMachine.StateEndTick : long.MaxValue,
                     UnitStateMachine.CanReceiveDirectHitIn(state));
             }
-            return snapshots;
+            if (snapshots != null) _unitProjection = Array.AsReadOnly(snapshots);
+            return _unitProjection;
         }
 
         /// <summary>
@@ -3747,8 +3795,23 @@ namespace ProjectHero.Logic.Simulation
         /// 重新规范排序所用的键完全一致。它<strong>不</strong>包含已提交的只读审计段：
         /// 审计记录不进哈希（它们只描述过去，不影响未来结果）。
         /// </summary>
+        private IReadOnlyList<MovementSegment> _segmentProjectionSources = Array.Empty<MovementSegment>();
+        private IReadOnlyList<MovementSegmentSnapshot> _segmentProjection = Array.Empty<MovementSegmentSnapshot>();
+        private IReadOnlyList<Reservation> _reservationProjectionSources = Array.Empty<Reservation>();
+        private IReadOnlyList<ReservationSnapshot> _reservationProjection = Array.Empty<ReservationSnapshot>();
+        private static bool EqualSources<T>(IReadOnlyList<T> a, IReadOnlyList<T> b)
+        {
+            if (a.Count != b.Count) return false;
+            for (int i = 0; i < a.Count; i++) if (!EqualityComparer<T>.Default.Equals(a[i], b[i])) return false;
+            return true;
+        }
         private IReadOnlyList<MovementSegmentSnapshot> BuildMovementSegmentSnapshots()
-            => MovementSnapshotProjection.Segments(_movementAuthority.AllSegmentsOrdered());
+        {
+            var sources = _movementAuthority.AllSegmentsOrdered();
+            if (!EqualSources(sources, _segmentProjectionSources))
+            { _segmentProjectionSources = sources; _segmentProjection = MovementSnapshotProjection.Segments(sources); }
+            return _segmentProjection;
+        }
 
         /// <summary>
         /// 任务 06「必须产出」7：<strong>空间 Reservation 的规范化快照</strong>。
@@ -3762,7 +3825,12 @@ namespace ProjectHero.Logic.Simulation
         /// 它进入 <c>DodgeSpaceSnapshot</c> 与任务 08 的接触复核，不进入本快照的 Reservation 列表。
         /// </summary>
         private IReadOnlyList<ReservationSnapshot> BuildReservationSnapshots()
-            => MovementSnapshotProjection.Reservations(_logicGrid.AllReservationsOrdered());
+        {
+            var sources = _logicGrid.AllReservationsOrdered();
+            if (!EqualSources(sources, _reservationProjectionSources))
+            { _reservationProjectionSources = sources; _reservationProjection = MovementSnapshotProjection.Reservations(sources); }
+            return _reservationProjection;
+        }
 
         /// <summary>
         /// 当前活动持续效果的规范化快照（按 <c>UnitId -&gt; AppliedAtTick -&gt; EffectSequence -&gt; EffectId</c>）。
@@ -3843,50 +3911,24 @@ namespace ProjectHero.Logic.Simulation
         /// </summary>
         private IReadOnlyList<ActionPlanSnapshot> BuildActionPlanSnapshots()
         {
-            IReadOnlyList<ActionPlan> active = _scheduleAuthority.Registry.ActivePlans;
-            var snapshots = new List<ActionPlanSnapshot>(active.Count);
-            for (int i = 0; i < active.Count; i++)
-            {
-                snapshots.Add(ActionPlanSnapshot.From(active[i], _factionResolver));
-            }
-            return snapshots;
+            return _scheduleAuthority.Registry.BuildActiveSnapshots(_factionResolver);
         }
 
         private static TurnWindowSnapshot ToWindowSnapshot(TurnWindow window)
-        {
-            IReadOnlyList<TurnWindowReservation> reservations = window.Reservations;
-            var projected = new List<TurnWindowReservationSnapshot>(reservations.Count);
-            for (int i = 0; i < reservations.Count; i++)
-            {
-                projected.Add(new TurnWindowReservationSnapshot(
-                    reservations[i].ActionPlanId.Value, reservations[i].ReservedTicks));
-            }
-            return new TurnWindowSnapshot(
-                window.WindowId.Value,
-                window.OwnerUnitId.Value,
-                window.OpenedAtTick,
-                window.TotalBudgetTicks,
-                window.ReservedBudgetTicks,
-                window.SpentBudgetTicks,
-                window.AvailableBudgetTicks,
-                window.IsOpen,
-                window.IsAcceptingSubmissions,
-                (int)(window.CloseReason ?? TurnWindowCloseReason.OwnerRequested),
-                projected);
-        }
+            => window.BuildSnapshot();
 
         private LogicSnapshot BuildSnapshot(long tick)
         {
             var windows = new List<TurnWindowSnapshot>();
             if (_windowManager.CurrentWindow != null)
                 windows.Add(ToWindowSnapshot(_windowManager.CurrentWindow));
-            for (int i = 0; i < _windowManager.ClosedWindows.Count; i++)
-                windows.Add(ToWindowSnapshot(_windowManager.ClosedWindows[i]));
+            foreach (var window in _windowManager.MutableClosedWindows)
+                windows.Add(ToWindowSnapshot(window));
             windows.Sort((a, b) => a.WindowId.CompareTo(b.WindowId));
 
-            long total = 0L;
+            long total = _windowManager.FrozenBudgetSummary.TotalBudgetTicks;
             long reserved = 0L;
-            long spent = 0L;
+            long spent = _windowManager.FrozenBudgetSummary.SpentBudgetTicks;
             for (int i = 0; i < windows.Count; i++)
             {
                 total += windows[i].TotalBudgetTicks;
@@ -3899,7 +3941,8 @@ namespace ProjectHero.Logic.Simulation
                 _windowManager.NextWindowTick,
                 _windowManager.NextWindowOrdinal,
                 _windowManager.LastClosedWindowId,
-                windows);
+                windows.AsReadOnly(), _windowManager.LastClosedOwnerUnitId.Value, _windowManager.LastClosedAtTick,
+                _windowManager.FrozenBudgetSummary, _windowManager.CaptureFutureSchedule());
 
             // 任务 08 快照契约：快照取"本 Tick 冻结后的队列"（阶段 8 的 _intentQueue）与
             // "本 Tick 的构图产物"（阶段 10 的 _conflictGraph），二者都是**只读入口**的投影，

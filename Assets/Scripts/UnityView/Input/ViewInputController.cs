@@ -644,7 +644,8 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
             var defender = new UnitId(_reactionSelection.DefenderUnitId);
             var specId = new ActionSpecId(_reactionSelection.ReactionActionSpecId);
-            string rejection = logic.DescribeDodgeDestinationRejection(defender, specId, destination);
+            string rejection = logic.DescribeDodgeDestinationRejectionForOpportunity(
+                new ReactionOpportunityId(_reactionSelection.OpportunityId), defender, specId, destination);
             if (rejection != null)
             {
                 _lastOutcome = ViewSubmissionOutcome.Blocked(rejection);

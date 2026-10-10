@@ -6,6 +6,9 @@ using ProjectHero.Logic.Determinism;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Snapshots;
+using ProjectHero.Logic.Definitions;
+using ProjectHero.Logic.Replay;
+using System.Text;
 
 namespace ProjectHero.Logic.Timeline
 {
@@ -25,23 +28,22 @@ namespace ProjectHero.Logic.Timeline
     /// <item>无新增终态时返回空列表 ⇒ 归档器<strong>不读取、不复制、不哈希</strong>任何旧记录。</item>
     /// </list>
     ///
-    /// ⚠️ <strong>载荷一致性（必须说明）</strong>：<see cref="ActionPlanRegistry.MarkTerminal"/>
-    /// 在追加终态摘要时使用 <c>null</c> 载荷。为了让
-    /// <c>LogicSnapshot.TerminalPlanDigest</c> 与 <c>HistoryArchive.Summary</c>
-    /// 在同一批终态上得到<strong>相同</strong>的增量摘要，本来源同样使用 <c>null</c> 载荷。
-    /// 改为规范字节载荷会改变历史摘要，因此它属于一次显式的
-    /// <c>ReplayFormat.Version</c> 变更，不属于任务 05。
+    /// 格式 v4 保存完整、深度不可变的最终计划投影（含时序、scope、预算和终止原因）。
+    /// 注册表 TerminalPlanDigest 仍是终态键/时间的计数索引摘要；完整记录由
+    /// LogicSnapshot.History 的摘要覆盖，两者不再要求相等。冻结只发生在清理完成的阶段 19。
     /// </summary>
     public sealed class ActionPlanTerminalArchiveSource : IHistoryArchiveCandidateSource
     {
         private readonly ActionScheduleAuthority _authority;
         private readonly ActionPlanTerminalCoordinator _coordinator;
+        private readonly IFactionRelationResolver _factions;
 
         public ActionPlanTerminalArchiveSource(
-            ActionScheduleAuthority authority, ActionPlanTerminalCoordinator coordinator)
+            ActionScheduleAuthority authority, ActionPlanTerminalCoordinator coordinator, IFactionRelationResolver factions = null)
         {
             _authority = authority ?? throw new ArgumentNullException(nameof(authority));
             _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
+            _factions = factions;
         }
 
         public IReadOnlyList<HistoryArchiveCandidate> CollectOrdered(long tick)
@@ -55,15 +57,20 @@ namespace ProjectHero.Logic.Timeline
                 ActionPlan plan = _authority.Registry.Find(candidates[i]);
                 if (plan == null || !plan.IsTerminal) continue;
 
+                var snapshot = _authority.Registry.FreezeTerminal(plan, _factions);
+                var encoder = new CanonicalEncoder();
+                encoder.BeginDomain("ActionPlanTerminal.v4");
+                encoder.WriteBytes(Encoding.UTF8.GetBytes(ReplayEventComparison.CanonicalValue(snapshot)));
                 records.Add(new HistoryArchiveCandidate(
                     plan.TerminalTick,
                     HistoryRecordKind.ActionPlanTerminal,
                     ActionPlanRegistry.StableKeyOf(plan),
-                    null,
+                    encoder.ToArray(),
                     HistorySealProof.Sealed));
             }
 
             records.Sort((a, b) => a.CompareCanonical(b));
+            _coordinator.MarkArchiveCandidatesConsumed();
             return records;
         }
 

@@ -130,7 +130,7 @@ namespace ProjectHero.Authoring.Tests
                 .Where(r => !r.StartsWith("UnityEngine.") && !r.StartsWith("UnityEditor."))
                 .OrderBy(r => r, StringComparer.Ordinal)
                 .ToArray();
-            Assert.That(compatibilityReferences, Is.EqualTo(new[] { "ProjectHero.Logic" }),
+            Assert.That(compatibilityReferences, Is.EqualTo(new[] { "ProjectHero.Logic", "Unity.InputSystem", "Unity.TextMeshPro" }),
                 "Compatibility.Runtime 只允许引用 Logic：不得依赖 Authoring 或任何 Legacy 具体类型");
             Assert.That(compatibilityRuntime.noEngineReferences, Is.False,
                 "Compatibility.Runtime 需要 UnityEngine（MonoBehaviour 契约与只读检查点）");

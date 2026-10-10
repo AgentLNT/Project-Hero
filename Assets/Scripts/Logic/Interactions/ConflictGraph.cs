@@ -112,6 +112,8 @@ namespace ProjectHero.Logic.Interactions
         }
 
         public long Tick { get; }
+        internal static ConflictGraph Empty(long tick) => new ConflictGraph(tick,
+            Array.Empty<ConflictNode>(), Array.Empty<InteractionContact>(), Array.Empty<ConflictGroup>());
 
         /// <summary>节点：按 <c>IntentSequence</c> 升序。</summary>
         public IReadOnlyList<ConflictNode> Nodes => _nodes;

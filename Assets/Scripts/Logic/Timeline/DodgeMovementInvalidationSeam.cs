@@ -157,6 +157,21 @@ namespace ProjectHero.Logic.Timeline
             return QueryInvalidatedMoves(new[] { dodgePlan });
         }
 
+        /// <summary>Same future-origin dependency predicate before a reaction plan exists. No ID is allocated.</summary>
+        public IReadOnlyList<ActionPlan> QueryFutureEditableMoves(UnitId owner, long intervalStart)
+        {
+            var result = new List<ActionPlan>();
+            var lane = _authority.FindLane(owner);
+            if (lane != null)
+                foreach (var plan in lane.Plans)
+                    if (plan.IsEditable && plan.IsMovementFamily && plan.StartTick >= intervalStart)
+                        result.Add(plan);
+            if (result.Count > _evaluator.Limits.MaxDependencyClosurePlans)
+                throw new LogicDefinitionException(ScheduleCodes.SCHEDULE_DEPENDENCY_CLOSURE_TOO_LARGE, "dodge dependent moves=" + result.Count);
+            result.Sort((a, b) => a.ActionPlanId.Value.CompareTo(b.ActionPlanId.Value));
+            return result.AsReadOnly();
+        }
+
         /// <summary>只读查询的多种子重载（预检与 TriggerTick 共用同一实现）。</summary>
         public IReadOnlyList<ActionPlan> QueryInvalidatedMoves(IReadOnlyList<ActionPlan> seeds)
         {
@@ -173,14 +188,8 @@ namespace ProjectHero.Logic.Timeline
             {
                 ActionPlan seed = seeds[s];
                 if (seed == null || seed.ActionType != ActionType.Dodge) continue;
-                ActorLane lane = _authority.FindLane(seed.OwnerUnitId);
-                if (lane == null) continue;
-                for (int p = 0; p < lane.Plans.Count; p++)
-                {
-                    ActionPlan plan = lane.Plans[p];
-                    if (plan.IsEditable && plan.IsMovementFamily && plan.StartTick >= seed.StartTick
-                        && !result.Contains(plan)) result.Add(plan);
-                }
+                foreach (var plan in QueryFutureEditableMoves(seed.OwnerUnitId, seed.StartTick))
+                    if (!result.Contains(plan)) result.Add(plan);
             }
             for (int i = 0; i < closure.Count; i++)
             {

@@ -203,6 +203,11 @@ namespace ProjectHero.Logic.Movement
 
         private bool IsBlocked(GridPoint cell, UnitId mover, ActionPlanId actionPlanId)
         {
+            // A free anchor does not imply a free multi-triangle body. Use the same
+            // canonical footprint as CommitAnchor so accepted paths cannot cross a
+            // stationary unit or the boundary through their outer volume.
+            if (_grid.TryGetFacing(mover, out GridDirection facing)
+                && _grid.ValidateDestinationFor(mover, cell, facing) != null) return true;
             if (_grid.IsCellBlockedFor(cell, mover)) return true;
             Reservation reservation = _grid.ReservationAt(cell);
             if (reservation == null) return false;

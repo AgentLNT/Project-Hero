@@ -93,7 +93,11 @@ namespace ProjectHero.Logic.Replay
             _recordIndex = 0; _submissionIndex = 0; Deviation = null; IsPaused = true;
         }
 
-        public void Play() { if (Deviation == null && !IsComplete) IsPaused = false; }
+        public void Play()
+        {
+            if (_replay == null) throw new LogicDefinitionException("REPLAY_NOT_LOADED", "");
+            if (Deviation == null && !IsComplete) IsPaused = false;
+        }
         public void Pause() => IsPaused = true;
         public void SetSpeed(double speed)
         {

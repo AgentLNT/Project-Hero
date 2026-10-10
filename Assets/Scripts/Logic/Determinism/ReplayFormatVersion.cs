@@ -62,7 +62,10 @@ namespace ProjectHero.Logic.Determinism
         /// </summary>
         // v3: future ingress buckets include full canonical requests; recordings preserve
         // original submission boundaries independently of target Tick. Rules remain unchanged.
-        public const int Version = 3;
+        // v4: frozen closed ledgers are archived once; future window inputs and the compact
+        // last-owner/budget state remain in the active snapshot. Full terminal payloads and
+        // movement segment StartTick are encoded. Gameplay rule definitions are unchanged.
+        public const int Version = 4;
 
         public const string HashAlgorithmId = "fnv1a64";
         public const int DigestHexWidth = 16;

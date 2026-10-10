@@ -73,6 +73,24 @@ namespace ProjectHero.Logic.Grid
         /// <summary>Encounter 的合法网格边界（唯一的空间搜索边界）。</summary>
         public GridBoundaryDefinition Boundary => _boundary;
 
+        /// <summary>Detached candidate workspace. Immutable geometry/records are shared; every writable index and row is copied.</summary>
+        internal LogicGrid CopyForPreview()
+        {
+            var copy = new LogicGrid(_boundary);
+            foreach (var pair in _rows)
+            {
+                var row = pair.Value;
+                copy._rows.Add(pair.Key, new UnitRow { UnitId = row.UnitId, Anchor = row.Anchor, Facing = row.Facing,
+                    Directions = row.Directions, Triangles = row.Triangles, Cells = row.Cells, PendingDestination = row.PendingDestination });
+            }
+            copy._unitIds.AddRange(_unitIds);
+            foreach (var pair in _cellOwner) copy._cellOwner.Add(pair.Key, pair.Value);
+            foreach (var pair in _triangleOwner) copy._triangleOwner.Add(pair.Key, pair.Value);
+            foreach (var pair in _reservations) copy._reservations.Add(pair.Key, pair.Value);
+            foreach (var pair in _reservationHolders) copy._reservationHolders.Add(pair.Key, new List<ReservationKey>(pair.Value));
+            return copy;
+        }
+
         // ————————————————————————————————————————————————————————————
         // 邻居枚举（唯一的规范顺序）
         // ————————————————————————————————————————————————————————————
@@ -463,6 +481,12 @@ namespace ProjectHero.Logic.Grid
             => TryGetCanonicalHolder(cell, out ReservationKey key) ? _reservations[key] : null;
 
         /// <summary>某计划持有的全部 Reservation（按稳定空间键 <c>(StartTick, X, Y, PlanId, StepIndex)</c> 升序）。</summary>
+        internal int ReservationCountOfPlan(ActionPlanId actionPlanId)
+        {
+            int count = 0;
+            foreach (var reservation in _reservations.Values) if (reservation.ActionPlanId == actionPlanId) count++;
+            return count;
+        }
         public IReadOnlyList<Reservation> ReservationsOfPlanOrdered(ActionPlanId actionPlanId)
         {
             var result = new List<Reservation>();

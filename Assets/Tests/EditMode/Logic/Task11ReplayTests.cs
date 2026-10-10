@@ -18,6 +18,45 @@ namespace ProjectHero.Logic.Tests
 {
     public sealed class Task11ReplayTests
     {
+        [Test] public void AllocationDiagnosticProviderDoesNotChangeEventsOrSnapshotHash()
+        {
+            long counter = 0;
+            var timing = new StepPhaseTimingRecorder(() => counter += 10);
+            var definition = Task09A2Fixture.BuildDefinition();
+            using (var observed = Task09A2Fixture.NewSim(definition, new BattleSimulationAssembly(phaseTiming: timing)))
+            using (var reference = Task09A2Fixture.NewSim(definition, new BattleSimulationAssembly()))
+            {
+                for (int tick = 0; tick < 20; tick++)
+                {
+                    var a = Task09A2Fixture.StepNext(observed); var b = Task09A2Fixture.StepNext(reference);
+                    Assert.That(a.SnapshotHash, Is.EqualTo(b.SnapshotHash));
+                    Assert.That(a.Events.Events.Select(ReplayEventComparison.Canonical), Is.EqualTo(b.Events.Events.Select(ReplayEventComparison.Canonical)));
+                }
+            }
+            Assert.That(timing.MeasuredTicks, Is.EqualTo(20));
+            Assert.That(timing.Snapshot().All(p => p.Invocations == 20 && p.TotalAllocatedBytes > 0), Is.True);
+        }
+        [Test] public void PriorV3ReplayIsRejectedBeforeCreatingWorld()
+        {
+            var definition = Task09A2Fixture.BuildDefinition(); var replay = Record(definition); int created = 0;
+            using (var player = new ReplayPlayer(definition, header => { created++; return Create(definition, header); }))
+            {
+                var error = Assert.Throws<LogicDefinitionException>(() => player.Load(new BattleReplay(
+                    replay.Header with { ReplayFormatVersion = 3 }, replay.Records, replay.Submissions)));
+                Assert.That(error.ErrorCode, Is.EqualTo(ReplayCodes.REPLAY_FORMAT_VERSION_MISMATCH));
+                Assert.That(created, Is.Zero);
+            }
+        }
+        [Test] public void ReplayCannotPlayBeforeACompatibleFileHasBeenLoaded()
+        {
+            using (var player = new ReplayPlayer(Task09A2Fixture.BuildDefinition()))
+            {
+                var error = Assert.Throws<ProjectHero.Logic.LogicDefinitionException>(() => player.Play());
+                Assert.That(error.ErrorCode, Is.EqualTo("REPLAY_NOT_LOADED"));
+                Assert.That(player.IsPaused, Is.True);
+                Assert.That(player.CurrentSnapshot, Is.Null);
+            }
+        }
         private sealed class Window : ITurnWindowSchedule
         {
             public WindowOpenRequest TryOpenDue(long tick) => tick == 0

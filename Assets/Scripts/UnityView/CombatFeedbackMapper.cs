@@ -38,6 +38,10 @@ namespace ProjectHero.UnityView
                 cue = new CombatFeedbackCue("Damage", damage.TargetUnitId.Value, damage.AttackPlanId.Value, fact);
             else if (fact is BlockResolvedEvent block)
                 cue = new CombatFeedbackCue("BlockResolved", block.DefenderUnitId.Value, block.BlockPlanId.Value, fact);
+            else if (fact is GuardPartiallyResistedEvent guard)
+                cue = new CombatFeedbackCue("Guard", guard.DefenderUnitId.Value, guard.GuardPlanId.Value, fact);
+            else if (fact is ClashParticipantResolvedEvent clash)
+                cue = new CombatFeedbackCue("Clash", clash.OwnerUnitId.Value, clash.ActionPlanId.Value, fact);
             else if (fact is ForcedDisplacementResolvedEvent displacement)
                 cue = new CombatFeedbackCue(displacement.AppliedSteps == 0 ? "DisplacementBlocked" : "Displacement",
                     displacement.TargetUnitId.Value, 0, fact);

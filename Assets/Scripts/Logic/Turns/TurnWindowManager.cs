@@ -5,6 +5,8 @@ using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Determinism;
+using ProjectHero.Logic.Snapshots;
 
 namespace ProjectHero.Logic.Turns
 {
@@ -72,6 +74,54 @@ namespace ProjectHero.Logic.Turns
 
         /// <summary>已关闭窗口的账本历史（按 <c>WindowId</c> 升序；关闭后仍然可审计）。</summary>
         private readonly List<TurnWindow> _closedWindows = new List<TurnWindow>();
+        private readonly Dictionary<long, TurnWindow> _closedIndex = new Dictionary<long, TurnWindow>();
+        private readonly SortedDictionary<long, TurnWindow> _mutableClosed = new SortedDictionary<long, TurnWindow>();
+        private readonly SortedSet<long> _dirtyClosed = new SortedSet<long>();
+        public IEnumerable<TurnWindow> MutableClosedWindows => _mutableClosed.Values;
+        public ClosedWindowBudgetSummary FrozenBudgetSummary { get; private set; } = new ClosedWindowBudgetSummary(0, 0, 0, 0);
+        public UnitId LastClosedOwnerUnitId { get; private set; }
+
+        private void RegisterClosed(TurnWindow window, long tick)
+        {
+            window.ClosedAtTick = tick;
+            _closedWindows.Add(window); _closedIndex.Add(window.WindowId.Value, window);
+            _mutableClosed.Add(window.WindowId.Value, window); _dirtyClosed.Add(window.WindowId.Value);
+            LastClosedOwnerUnitId = window.OwnerUnitId;
+        }
+        private void OnLedgerChanged(TurnWindow window)
+        {
+            if (!window.IsOpen && !window.IsFrozenForHistory) _dirtyClosed.Add(window.WindowId.Value);
+        }
+        internal IReadOnlyList<HistoryArchiveCandidate> CollectFrozenLedgerCandidates(long tick)
+        {
+            if (_dirtyClosed.Count == 0) return Array.Empty<HistoryArchiveCandidate>();
+            var candidates = new List<HistoryArchiveCandidate>();
+            foreach (long id in _dirtyClosed)
+            {
+                if (!_mutableClosed.TryGetValue(id, out var window) || window.ReservedBudgetTicks != 0 || window.ReservationCount != 0) continue;
+                var payload = new CanonicalEncoder().BeginDomain("FrozenWindowLedger.v4")
+                    .WriteInt64(id).WriteInt64(window.OwnerUnitId.Value).WriteInt64(window.OpenedAtTick).WriteInt64(window.ClosedAtTick)
+                    .WriteInt32(window.TotalBudgetTicks).WriteInt32(window.SpentBudgetTicks).WriteInt32(window.AvailableBudgetTicks)
+                    .WriteInt32((int)(window.CloseReason ?? TurnWindowCloseReason.OwnerRequested)).ToArray();
+                window.FreezeForHistory(); _mutableClosed.Remove(id);
+                FrozenBudgetSummary = new ClosedWindowBudgetSummary(FrozenBudgetSummary.WindowCount + 1,
+                    checked(FrozenBudgetSummary.TotalBudgetTicks + window.TotalBudgetTicks),
+                    checked(FrozenBudgetSummary.SpentBudgetTicks + window.SpentBudgetTicks),
+                    checked(FrozenBudgetSummary.AvailableBudgetTicks + window.AvailableBudgetTicks));
+                candidates.Add(new HistoryArchiveCandidate(tick, HistoryRecordKind.WindowLedger,
+                    id.ToString(CultureInfo.InvariantCulture), payload, HistorySealProof.Sealed));
+            }
+            _dirtyClosed.Clear(); return candidates.AsReadOnly();
+        }
+        public IReadOnlyList<ScheduledWindowSnapshot> CaptureFutureSchedule()
+        {
+            var result = new List<ScheduledWindowSnapshot>();
+            foreach (var bucket in _futureSchedule)
+                foreach (var request in bucket.Value) result.Add(new ScheduledWindowSnapshot(bucket.Key, request.OwnerUnitId.Value, request.BudgetTicks));
+            result.Sort((a, b) => { int tick = a.TargetTick.CompareTo(b.TargetTick); if (tick != 0) return tick;
+                int owner = a.OwnerUnitId.CompareTo(b.OwnerUnitId); return owner != 0 ? owner : a.BudgetTicks.CompareTo(b.BudgetTicks); });
+            return result.AsReadOnly();
+        }
 
         /// <summary>未来 Tick 的窗口排程桶（按 Tick 升序；同 Tick 内按稳定窗口键）。</summary>
         private readonly SortedDictionary<long, List<ScheduledTurnWindowRequest>> _futureSchedule =
@@ -130,11 +180,7 @@ namespace ProjectHero.Logic.Turns
         public TurnWindow FindWindow(WindowId windowId)
         {
             if (CurrentWindow != null && CurrentWindow.WindowId == windowId) return CurrentWindow;
-            for (int i = _closedWindows.Count - 1; i >= 0; i--)
-            {
-                if (_closedWindows[i].WindowId == windowId) return _closedWindows[i];
-            }
-            return null;
+            return _closedIndex.TryGetValue(windowId.Value, out var closed) ? closed : null;
         }
 
         /// <summary>已经排定但尚未打开的窗口请求总数（诊断与快照）。</summary>
@@ -269,6 +315,7 @@ namespace ProjectHero.Logic.Turns
                     _allocateWindowId != null ? _allocateWindowId() : new WindowId(_nextWindowOrdinal),
                     request.OwnerUnitId, tick, request.BudgetTicks);
                 CurrentWindow = window;
+                window.LedgerChanged = OnLedgerChanged;
                 WindowOpenedSink?.Invoke(window, tick);
                 return window;
             }
@@ -356,7 +403,7 @@ namespace ProjectHero.Logic.Turns
             CurrentWindow = null;
             LastClosedWindowId = window.WindowId.Value;
             LastClosedAtTick = tick;
-            _closedWindows.Add(window);
+            RegisterClosed(window, tick);
 
             WindowClosedAuthoritySink?.Invoke(window.WindowId, tick);
             WindowClosedSink?.Invoke(window, reason, tick);
@@ -381,7 +428,7 @@ namespace ProjectHero.Logic.Turns
                 {
                     window.RequestClose(TurnWindowCloseReason.BattleEnded);
                     window.FinalizeClose();
-                    _closedWindows.Add(window);
+                    RegisterClosed(window, tick);
                     LastClosedWindowId = window.WindowId.Value;
                     LastClosedAtTick = tick;
                     WindowClosedAuthoritySink?.Invoke(window.WindowId, tick);

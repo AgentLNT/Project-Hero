@@ -59,6 +59,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         public void ReleaseSimulation()
         {
+            (_view as IBattleViewLifetimeConsumer)?.ReleaseVisuals();
             _releasedReplay = _replayRecordingError == null ? _recorder?.BuildReplay() : null;
             _recorder = null;
             _simulation?.Dispose();
@@ -157,6 +158,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             }
             catch
             {
+                (_view as IBattleViewLifetimeConsumer)?.ReleaseVisuals();
                 _simulation.Dispose(); _simulation = null; _recorder = null;
                 throw;
             }
@@ -268,6 +270,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// <summary>战斗之间重置。</summary>
         public void ResetForNewBattle()
         {
+            (_view as IBattleViewLifetimeConsumer)?.ReleaseVisuals();
             _advanceCallCount = 0;
             _stopCallCount = 0;
             _ticksAdvanced = 0;

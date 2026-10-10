@@ -138,12 +138,15 @@ namespace ProjectHero.Logic.AI
             var eligible = new List<AiCandidate>();
             for (int i = 0; i < ordered.Count; i++)
             {
-                if (ordered[i].IsEligible) eligible.Add(ordered[i]);
+                if (ordered[i].IsEligible && (context.NormalPreview == null
+                    || context.NormalPreview(context.ControllerId, AiCommandRequestBuilder.ToRequest(context, ordered[i])) == null))
+                    eligible.Add(ordered[i]);
             }
             if (eligible.Count == 0)
             {
-                reason = ReasonNoEligibleCandidate;
-                return null;
+                var close = context.NormalPreview != null ? AiCommandRequestBuilder.BuildCloseOwnWindowRequest(context) : null;
+                reason = close == null ? ReasonNoEligibleCandidate : null;
+                return close;
             }
 
             AiCandidate chosen = eligible[rng.PickIndex(eligible.Count)];

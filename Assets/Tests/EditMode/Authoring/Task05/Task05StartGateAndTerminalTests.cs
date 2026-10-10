@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Commands;
@@ -21,6 +22,68 @@ namespace ProjectHero.Authoring.Tests.Task05
     public sealed class Task05StartGateAndTerminalTests
     {
         private const long T = 100L;
+
+        [Test] public void AutoDeferralNeverMovesLockedRunningOrReactionPlan()
+        {
+            var s = new Task05Scheduler();
+            var locked = Task05Scheduler.Lock(s.Attack(100), 5);
+            var running = Task05Scheduler.Run(s.Attack(300), 5);
+            var reaction = s.Bundle.CreateReaction(Task05Farm.BlockId, 600, 540).Plan;
+            foreach (var plan in new[] { locked, running, reaction })
+            {
+                s.Authority.RegisterPlan(plan);
+                var before = (plan.StartTick, plan.ImpactTick, plan.EndTick, plan.State,
+                    plan.ReservedTurnBudgetTicks, plan.LastRequestedStartTick, plan.AutomaticDeferralCount);
+                var result = s.Editor.ApplySystemAutoDeferral(plan, 700, T, null);
+                Assert.That(result.Committed, Is.False);
+                Assert.That(result.RejectionCode, Is.EqualTo(ScheduleCodes.SCHEDULE_PLAN_NOT_EDITABLE));
+                Assert.That((plan.StartTick, plan.ImpactTick, plan.EndTick, plan.State,
+                    plan.ReservedTurnBudgetTicks, plan.LastRequestedStartTick, plan.AutomaticDeferralCount), Is.EqualTo(before));
+            }
+            Assert.That(s.Revision, Is.Zero);
+        }
+
+        [Test] public void InvalidPrimaryTargetRelationTerminatesAsTargetInvalidWithoutRetargeting()
+        {
+            var s = new Task05Scheduler();
+            var plan = s.Attack(T); s.Authority.RegisterPlan(plan);
+            var originalTarget = plan.PrimaryTargetUnitId;
+            // A malformed plan/definition binding at the gate must fail closed; production definitions
+            // are immutable, so this is an explicit boundary negative control, not a runtime faction edit.
+            var definition = s.Bundle.Definition with { Actions = s.Bundle.Definition.Actions.Select(a =>
+                a.ActionSpecId.Value == plan.ActionSpecId.Value ? a with { Payload = ((AttackPayloadSpec)a.Payload) with
+                    { AllowedTargetRelations = ProjectHero.Logic.Factions.TargetRelationMask.Allied } } : a).ToArray() };
+            var strict = new ActionPlanFactory(definition, s.Bundle.Factions, s.Bundle.Facts, s.Ids);
+            Assert.That(strict.ValidatePrimaryTargetForGate(plan), Is.EqualTo(ScheduleCodes.SCHEDULE_PRIMARY_TARGET_RELATION_REJECTED));
+            var result = new ActionStartGate().Evaluate(plan, Context(T, factory: strict));
+            Assert.That(result.IsTerminal, Is.True);
+            Assert.That(((ActionStartGateResult.Terminal)result).Reason, Is.EqualTo(ActionTerminationReason.TargetInvalid));
+            var coordinator = new ActionPlanTerminalCoordinator(s.Authority);
+            Assert.That(coordinator.EnterTerminal(plan, ((ActionStartGateResult.Terminal)result).Reason, T).EnteredTerminal, Is.True);
+            Assert.That(plan.TerminationReason, Is.EqualTo(ActionTerminationReason.TargetInvalid));
+            Assert.That(plan.PrimaryTargetUnitId, Is.EqualTo(originalTarget));
+            Assert.That(s.Authority.Registry.ActivePlans, Is.Empty);
+            Assert.That(s.Authority.FindLane(plan.OwnerUnitId).Count, Is.Zero);
+        }
+
+        [Test] public void AutoDeferralReusesCanonicalScheduleEvaluator()
+        {
+            var system = new Task05Scheduler(); var explicitEdit = new Task05Scheduler();
+            var systemPlans = new[] { system.Attack(100), system.Attack(180), Task05Scheduler.Lock(system.Attack(400), 5) };
+            var userPlans = new[] { explicitEdit.Attack(100), explicitEdit.Attack(180), Task05Scheduler.Lock(explicitEdit.Attack(400), 5) };
+            foreach (var plan in systemPlans) system.Authority.RegisterPlan(plan);
+            foreach (var plan in userPlans) explicitEdit.Authority.RegisterPlan(plan);
+            var a = system.Editor.ApplySystemAutoDeferral(systemPlans[0], 160, T, null);
+            var b = explicitEdit.Apply(new ScheduleEditOperation[] { Task05Scheduler.MoveOp(userPlans[0].ActionPlanId, 160) }, T);
+            Assert.That(a.Committed && b.Committed, Is.True);
+            Assert.That(systemPlans.Select(p => (p.StartTick, p.ImpactTick, p.EndTick, p.BudgetCostTicks)),
+                Is.EqualTo(userPlans.Select(p => (p.StartTick, p.ImpactTick, p.EndTick, p.BudgetCostTicks))));
+            Assert.That(system.LanePlanIds(Task05Farm.Hero), Is.EqualTo(explicitEdit.LanePlanIds(Task05Farm.Hero)));
+            Assert.That(systemPlans[0].LastRequestedStartTick, Is.EqualTo(100));
+            Assert.That(userPlans[0].LastRequestedStartTick, Is.EqualTo(160));
+            Assert.That(systemPlans[0].AutomaticDeferralCount, Is.EqualTo(1));
+            Assert.That(userPlans[0].AutomaticDeferralCount, Is.Zero);
+        }
 
         /// <summary>
         /// 门禁上下文。

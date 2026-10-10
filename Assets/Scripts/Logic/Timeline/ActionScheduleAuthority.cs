@@ -220,6 +220,7 @@ namespace ProjectHero.Logic.Timeline
         /// <summary>活动计划（非终态）的规范化快照（按 <c>ActionPlanId</c> 升序）。</summary>
         public IReadOnlyList<ActionPlanSnapshot> BuildPlanSnapshots()
         {
+            if (_registry.ActiveCount == 0) return Array.Empty<ActionPlanSnapshot>();
             IReadOnlyList<ActionPlan> active = _registry.ActivePlans;
             var snapshots = new List<ActionPlanSnapshot>(active.Count);
             for (int i = 0; i < active.Count; i++) snapshots.Add(ActionPlanSnapshot.From(active[i], Factions));

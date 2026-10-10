@@ -32,6 +32,76 @@ namespace ProjectHero.Logic.Tests
     /// </summary>
     public class Task06AssemblyIntegrationTests
     {
+        [Test] public void ReorderingMoveChainRecomputesEveryCandidatePathFromTheNewPredecessor()
+        {
+            var h = NewHarness();
+            var first = AddMoveOrFail(h, 1, 1, 4, 0, 100);
+            var second = AddMoveOrFail(h, 2, 1, 8, 0, 300);
+            var preview = h.Editor.Apply(new ScheduleEditOperation[] { new MoveEditablePlanOperation(second.ActionPlanId, 10) },
+                1, h.Schedule.ScheduleRevision, h.Schedule.ScheduleRevision, preview: true);
+            Assert.That(preview.Succeeded, Is.True, preview.RejectionCode);
+            var firstPreview = new List<SchedulePlanPreview>(preview.PreviewPlans).Find(p => p.Plan.ActionPlanId == first.ActionPlanId.Value);
+            Assert.That(firstPreview, Is.Not.Null, "The reordered successor must be part of the position dependency projection.");
+            Assert.That(firstPreview.Path[0], Is.EqualTo(new GridPoint(8, 0)));
+            Assert.That(firstPreview.Path[firstPreview.Path.Count - 1], Is.EqualTo(new GridPoint(4, 0)));
+        }
+
+        [Test] public void RemovingMovePredecessorRecomputesPathCostWithoutLeftCompactingItsSuccessor()
+        {
+            var h = NewHarness();
+            var first = AddMoveOrFail(h, 1, 1, 4, 0, 100);
+            var second = AddMoveOrFail(h, 2, 1, 8, 0, 300);
+            long previousStart = second.StartTick;
+            var preview = h.Editor.Apply(new ScheduleEditOperation[] { new RemoveEditablePlanOperation(first.ActionPlanId) },
+                1, h.Schedule.ScheduleRevision, h.Schedule.ScheduleRevision, preview: true);
+            Assert.That(preview.Succeeded, Is.True, preview.RejectionCode);
+            var next = new List<SchedulePlanPreview>(preview.PreviewPlans).Find(p => p.Plan.ActionPlanId == second.ActionPlanId.Value);
+            Assert.That(next, Is.Not.Null);
+            Assert.That(next.Path[0], Is.EqualTo(new GridPoint(0, 0)));
+            Assert.That(next.Plan.ResolvedPathWeightUnits, Is.EqualTo(4));
+            Assert.That(next.Plan.StartTick, Is.EqualTo(previousStart));
+        }
+
+        [Test] public void DetachedSchedulePreviewDoesNotChangePlansSpaceRevisionOrInvokeCommitHooks()
+        {
+            var h = NewHarness();
+            h.Editor.MovementSpacePort = h.Movement;
+            var plan = AddMoveOrFail(h, 1, 1, 4, 0, 10);
+            var before = ActionPlanSnapshot.From(plan);
+            var segments = MovementSnapshotProjection.Segments(h.Movement.AllSegmentsOrdered());
+            var reservations = MovementSnapshotProjection.Reservations(h.Grid.AllReservationsOrdered());
+            long revision = h.Schedule.ScheduleRevision;
+            int committedHooks = 0;
+            var hook = typeof(ActionPlan).GetProperty("ProjectionCommittedSink", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Assert.That(hook, Is.Not.Null);
+            hook.SetValue(plan, new Action<ActionPlan, long, long, long>((p, s, r, t) => committedHooks++));
+            for (int i = 0; i < 5; i++)
+            {
+                var preview = h.Editor.Apply(new ScheduleEditOperation[] { new MoveEditablePlanOperation(plan.ActionPlanId, 100) },
+                    1, revision, revision, preview: true);
+                Assert.That(preview.Succeeded, Is.True, preview.RejectionCode);
+                Assert.That(preview.PreviewPlans.Count, Is.EqualTo(1));
+                Assert.That(preview.PreviewPlans[0].Plan.StartTick, Is.EqualTo(100));
+            }
+            Assert.That(ActionPlanSnapshot.From(plan), Is.EqualTo(before));
+            Assert.That(h.Schedule.ScheduleRevision, Is.EqualTo(revision));
+            Assert.That(MovementSnapshotProjection.Segments(h.Movement.AllSegmentsOrdered()), Is.EqualTo(segments));
+            Assert.That(MovementSnapshotProjection.Reservations(h.Grid.AllReservationsOrdered()), Is.EqualTo(reservations));
+            Assert.That(committedHooks, Is.Zero);
+        }
+
+        [Test] public void MovementSpaceBatchUsesEachUnitsOwnOriginWhenChainsAreInterleaved()
+        {
+            var h = NewHarness();
+            var a = AddMoveOrFail(h, 1, 1, 2, 0, 10);
+            var b = AddMoveOrFail(h, 2, 3, 2, -30, 10);
+            var error = h.Movement.RebuildMovementSpace(new[] { b, a }, h.Schedule.ScheduleRevision, 0);
+            Assert.That(error, Is.Null);
+            Assert.That(h.Movement.SegmentsOfPlanOrdered(a.ActionPlanId)[0].From, Is.EqualTo(new GridPoint(0, 0)));
+            Assert.That(h.Movement.SegmentsOfPlanOrdered(b.ActionPlanId)[0].From, Is.EqualTo(new GridPoint(0, -30)));
+            Assert.That(h.Movement.VerifyInvariants(), Is.Null);
+        }
+
         private static readonly GridBoundaryDefinition Wide =
             new GridBoundaryDefinition(new GridPoint(-40, -40), new GridPoint(40, 40));
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -2211,15 +2212,18 @@ namespace ProjectHero.Tests.PlayMode
         {
             public RealCheckpointStream(
                 IReadOnlyList<LogicSnapshot> snapshots,
-                IReadOnlyList<ShadowCheckpointEventBinding> eventBindings)
+                IReadOnlyList<ShadowCheckpointEventBinding> eventBindings,
+                IReadOnlyList<ReactionOpportunitySnapshot> frozenReactions = null)
             {
                 Snapshots = snapshots;
                 EventBindings = eventBindings;
+                FrozenReactions = frozenReactions ?? Array.Empty<ReactionOpportunitySnapshot>();
             }
 
             public IReadOnlyList<LogicSnapshot> Snapshots { get; }
 
             public IReadOnlyList<ShadowCheckpointEventBinding> EventBindings { get; }
+            public IReadOnlyList<ReactionOpportunitySnapshot> FrozenReactions { get; }
 
             /// <summary>该逻辑 Tick 上首个已提交事件的序号（无事件时为 -1）。</summary>
             public long FirstEventSequenceAt(long logicalTick)
@@ -3754,6 +3758,7 @@ namespace ProjectHero.Tests.PlayMode
 
             var snapshots = new List<LogicSnapshot>(Task05EndTick + 1);
             var bindings = new List<ShadowCheckpointEventBinding>(Task05EndTick + 1);
+            var frozenReactions = new List<ReactionOpportunitySnapshot>();
             BattleSimulation simulation = BattleSimulation.Create(
                 seed.Definition, seed.EncounterId, seed.RuntimeInputs, assembly);
 
@@ -3803,13 +3808,22 @@ namespace ProjectHero.Tests.PlayMode
                     snapshots.Add(simulation.CurrentSnapshot);
                     bindings.Add(BuildEventBinding(tick, result));
                 }
+                for (long id = 1; id < simulation.CurrentSnapshot.NextReactionOpportunityId; id++)
+                {
+                    var frozen = simulation.ReactionOpportunities.FindFrozenOpportunity(new ReactionOpportunityId(id));
+                    if (frozen != null) frozenReactions.Add(frozen);
+                }
+                var archived = simulation.ReadHistoryForDiagnostics();
+                Assert.That(archived.Count(r => r.Kind == ProjectHero.Logic.Determinism.HistoryRecordKind.ReactionOpportunityBinding), Is.EqualTo(1));
+                Assert.That(archived.Single(r => r.Kind == ProjectHero.Logic.Determinism.HistoryRecordKind.ReactionOpportunityBinding).PayloadLength, Is.GreaterThan(0));
+                Assert.That(simulation.RecomputeHistoryDigestForDiagnostics().ToString("x16"), Is.EqualTo(simulation.History.Digest));
             }
             finally
             {
                 simulation.Dispose();
             }
 
-            return new RealCheckpointStream(snapshots, bindings);
+            return new RealCheckpointStream(snapshots, bindings, frozenReactions);
         }
 
         /// <summary>
@@ -3909,9 +3923,10 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(lockedLane.Locked, Is.True,
                 "战斗结束 Finalizer 必须锁定全部 Lane 的新提交（locked = true）：" + stream);
             Assert.That(lockedLane.PendingPlanCount, Is.EqualTo(0), stream);
-            Assert.That(atEnd.ReactionOpportunities.Count, Is.EqualTo(1),
-                "战斗结束关闭机会但不删除审计记录：" + stream);
-            Assert.That(atEnd.ReactionOpportunities[0].State,
+            Assert.That(atEnd.ReactionOpportunities, Is.Empty,
+                "已完成清理的机会只留在冻结历史中：" + stream);
+            Assert.That(side.FrozenReactions.Count, Is.EqualTo(1), "完整机会审计记录必须保留：" + stream);
+            Assert.That(side.FrozenReactions[0].State,
                 Is.EqualTo((int)ReactionOpportunityState.BattleEnded),
                 "战斗结束必须用同一个 Finalizer 关闭机会：" + stream);
 
@@ -5242,6 +5257,7 @@ namespace ProjectHero.Tests.PlayMode
                 //        ⇒ 整批事务以稳定失败码失败（fail-closed），且在提交点之前。
                 LogicDefinitionException thrown = null;
                 CommandIngressRejection stepRejection = null;
+                string commandRejection = null;
                 try
                 {
                     stepRejection = entry.Submit(new CommandRequest(
@@ -5255,18 +5271,20 @@ namespace ProjectHero.Tests.PlayMode
                                 AnchorAfterPlanId: default, PrimaryTargetUnitId: null,
                                 Facing: GridDirection.North, Destination: outOfBounds)
                         })));
-                    simulation.Step(Task06SubmitTick + 1L,
+                    var rejectedStep = simulation.Step(Task06SubmitTick + 1L,
                         simulation.CommandIngress.FreezeTick(Task06SubmitTick + 1L));
+                    commandRejection = FirstCommandRejectionReason(rejectedStep);
                 }
                 catch (LogicDefinitionException ex)
                 {
                     thrown = ex;
                 }
 
-                Assert.That(thrown != null || stepRejection != null, Is.True,
+                Assert.That(thrown != null || stepRejection != null || commandRejection != null, Is.True,
                     "排程重算失败必须以冻结失败码<strong>失败</strong>（抛出或稳定拒绝），而不是静默部分提交："
                     + "thrown=" + (thrown != null ? thrown.ErrorCode : "<none>")
-                    + " rejection=" + DescribeRejection(stepRejection));
+                    + " rejection=" + DescribeRejection(stepRejection) + " command=" + commandRejection);
+                if (commandRejection != null) Assert.That(commandRejection, Is.EqualTo(PathSearchCodes.PATH_INVALID_DESTINATION));
                 // —— ③ 零局部写入：修订号、计划集合、段表、Reservation 表、锚点、世界摘要逐字不变 ——
                 LogicSnapshot after = simulation.CurrentSnapshot;
                 string afterSpace = DescribeSpace(after, facts.PlanId);
@@ -5283,9 +5301,12 @@ namespace ProjectHero.Tests.PlayMode
                 Assert.That(
                     ReservationsOfPlan(after, facts.PlanId), Is.EqualTo(ReservationsOfPlan(before, facts.PlanId)),
                     "失败事务绝不放走或新增本计划的 Reservation：" + afterSpace);
-                Assert.That(after.ComputeHash(), Is.EqualTo(before.ComputeHash()),
-                    "整世界规范化摘要必须逐位不变（最强的零局部写入断言）："
-                    + before.ComputeHashHex() + " -> " + after.ComputeHashHex());
+                Assert.That(after.Plans, Is.EqualTo(before.Plans));
+                Assert.That(after.ActorLanes, Is.EqualTo(before.ActorLanes));
+                Assert.That(after.NextActionPlanId, Is.EqualTo(before.NextActionPlanId), "Rejected candidate must not allocate a plan ID.");
+                Assert.That(after.Rng, Is.EqualTo(before.Rng));
+                // A processed rejection advances Tick/ingress/event counters. Those committed facts
+                // belong in the hash; transactional plan/lane/space state must remain unchanged.
             }
             finally
             {
@@ -5700,34 +5721,34 @@ namespace ProjectHero.Tests.PlayMode
 
             // ⑤.1 窗口打开（**叶子事实**：打开 Tick 不被任何派生不变量引用 ⇒ 它同时是下面的负控制）。
             var negative = AssertTask07FieldIsCompared(seed, legacySide.Stream,
-                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                TamperCheckpoint(shadowSide.Stream, Task07HeroWindowCloseTick,
                     snapshot => CopySnapshot(snapshot, windowManager: TamperWindow(
                         snapshot.WindowManager, facts.HeroWindowId,
                         window => window with { OpenedAtTick = window.OpenedAtTick + 5L }))),
-                w1 + ".openedAtTick", Task07ProbeTick, "窗口打开：打开 Tick（叶子事实 / 负控制）");
+                w1 + ".openedAtTick", Task07HeroWindowCloseTick, "窗口打开：打开 Tick（叶子事实 / 负控制）");
 
             // ⑤.2 窗口关闭：接受提交位（请求关闭后立即为 false，与 IsOpen 分离）。
             AssertTask07FieldIsCompared(seed, legacySide.Stream,
-                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                TamperCheckpoint(shadowSide.Stream, Task07HeroWindowCloseTick,
                     snapshot => CopySnapshot(snapshot, windowManager: TamperWindow(
                         snapshot.WindowManager, facts.HeroWindowId,
                         window => window with { IsAcceptingSubmissions = !window.IsAcceptingSubmissions }))),
-                w1 + ".isAcceptingSubmissions", Task07ProbeTick, "窗口关闭：接受提交位");
+                w1 + ".isAcceptingSubmissions", Task07HeroWindowCloseTick, "窗口关闭：接受提交位");
 
             // ⑤.3 窗口账本的可审计性：已关闭窗口仍留在集合里（删掉它 ⇒ 计数与存在性都变）。
             AssertTask07FieldIsCompared(seed, legacySide.Stream,
-                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                TamperCheckpoint(shadowSide.Stream, Task07HeroWindowCloseTick,
                     snapshot => CopySnapshot(snapshot, windowManager: RemoveWindow(
                         snapshot.WindowManager, facts.HeroWindowId))),
-                "windows.count", Task07ProbeTick, "窗口关闭：已关闭窗口仍保留在可审计账本里");
+                "windows.count", Task07HeroWindowCloseTick, "窗口关闭：已关闭窗口仍保留在可审计账本里");
 
             // ⑤.4 整数预算：窗口账本的已消费额（被窗口恒等式与计划来源账本引用 ⇒ 反差证据）。
             var budgetContrast = AssertTask07FieldIsCompared(seed, legacySide.Stream,
-                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                TamperCheckpoint(shadowSide.Stream, Task07HeroWindowCloseTick,
                     snapshot => CopySnapshot(snapshot, windowManager: TamperWindow(
                         snapshot.WindowManager, facts.HeroWindowId,
                         window => window with { SpentBudgetTicks = window.SpentBudgetTicks + 1 }))),
-                w1 + ".spentBudgetTicks", Task07ProbeTick, "整数预算：窗口已消费额");
+                w1 + ".spentBudgetTicks", Task07HeroWindowCloseTick, "整数预算：窗口已消费额");
             Assert.That(budgetContrast.CountOf(ShadowDifferenceKind.NewRuleVerifiedFact),
                 Is.GreaterThanOrEqualTo(2),
                 "篡改被派生事实引用的预算字段必须同时推翻'窗口预算恒等式'与'计划来源账本逐字不变'："
@@ -5735,11 +5756,11 @@ namespace ProjectHero.Tests.PlayMode
 
             // ⑤.5 整数预算的派生不变量：恒等式本身也必须真的参与比较。
             AssertTask07FieldIsCompared(seed, legacySide.Stream,
-                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                TamperCheckpoint(shadowSide.Stream, Task07HeroWindowCloseTick,
                     snapshot => CopySnapshot(snapshot, windowManager: TamperWindow(
                         snapshot.WindowManager, facts.HeroWindowId,
                         window => window with { AvailableBudgetTicks = window.AvailableBudgetTicks + 1 }))),
-                w1 + ".budgetIdentity", Task07ProbeTick,
+                w1 + ".budgetIdentity", Task07HeroWindowCloseTick,
                 "整数预算：Reserved + Spent + Available == Total");
 
             // ⑤.6 全部窗口的时间预算聚合（战斗资源快照）。
@@ -5795,6 +5816,17 @@ namespace ProjectHero.Tests.PlayMode
                 adrenalinePrefix + ".mirrorMatchesLedger", Task07ProbeTick,
                 "肾上腺素：单位只读镜像必须与账本一致");
 
+            AssertTask07FieldIsCompared(seed, legacySide.Stream,
+                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                    snapshot => CopySnapshot(snapshot, windowManager: snapshot.WindowManager with
+                    { FrozenBudget = snapshot.WindowManager.FrozenBudget with { SpentBudgetTicks = snapshot.WindowManager.FrozenBudget.SpentBudgetTicks + 1 } })),
+                "frozenBudget.spentBudgetTicks", Task07ProbeTick, "Frozen budget summaries participate in comparison");
+            AssertTask07FieldIsCompared(seed, legacySide.Stream,
+                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                    snapshot => CopySnapshot(snapshot, windowManager: snapshot.WindowManager with
+                    { FutureWindows = new[] { new ScheduledWindowSnapshot(1000, heroUnitId, 180) } })),
+                "futureWindows[0].targetTick", Task07ProbeTick, "Future window payloads participate in comparison");
+
             // ⑤.12 跨窗口计划不变性：计划的来源窗口账本投影（已关闭窗口只更新历史账本）。
             AssertTask07FieldIsCompared(seed, legacySide.Stream,
                 TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
@@ -5819,7 +5851,7 @@ namespace ProjectHero.Tests.PlayMode
                 + DescribeDifferenceList(negative.Differences));
             Assert.That(negative.FirstUnexpectedDifference.FieldPath,
                 Is.EqualTo(w1 + ".openedAtTick"), negative.Describe());
-            Assert.That(negative.FirstUnexpectedDifference.LogicalTick, Is.EqualTo((long)Task07ProbeTick),
+            Assert.That(negative.FirstUnexpectedDifference.LogicalTick, Is.EqualTo((long)Task07HeroWindowCloseTick),
                 "差异必须绑定被篡改的逻辑 Tick：" + negative.FirstUnexpectedDifference);
             Assert.That(negative.CanClaimEquivalence, Is.False,
                 "存在非预期差异时不得宣称等价：" + negative.Describe());
@@ -5830,7 +5862,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(ShadowCasePolicy.CreateDefault(Task07CaseId, seed.RulesVersion).CompareTurnWindowFacts,
                 Is.False, "compareTurnWindowFacts 必须默认关闭");
             var defaultPolicyReport = CompareWithPolicy(seed, legacySide.Stream,
-                TamperCheckpoint(shadowSide.Stream, Task07ProbeTick,
+                TamperCheckpoint(shadowSide.Stream, Task07HeroWindowCloseTick,
                     snapshot => CopySnapshot(snapshot, windowManager: TamperWindow(
                         snapshot.WindowManager, facts.HeroWindowId,
                         window => window with { OpenedAtTick = window.OpenedAtTick + 7L }))),
@@ -6192,6 +6224,13 @@ namespace ProjectHero.Tests.PlayMode
                     }
 
                     if (tick == Task07ActivationTick) result.ActivationRejectionCode = FirstCommandRejectionReason(step);
+                    if (tick == Task07RequestedStartTick)
+                    {
+                        var sourceLedger = simulation.WindowManager.FindWindow(new WindowId(result.HeroWindowId));
+                        Assert.That(sourceLedger, Is.Not.Null, "The frozen source ledger remains available for explicit diagnostics.");
+                        result.WindowReservedAtStart = sourceLedger.ReservedBudgetTicks;
+                        result.WindowSpentAtStart = sourceLedger.SpentBudgetTicks;
+                    }
                 }
             }
             finally
@@ -6384,8 +6423,7 @@ namespace ProjectHero.Tests.PlayMode
                 TurnWindowSnapshot window = source.Windows[i];
                 windows.Add(window != null && window.WindowId == windowId ? change(window) : window);
             }
-            return new TurnWindowManagerSnapshot(source.CurrentWindowId, source.NextWindowTick,
-                source.NextWindowOrdinal, source.LastClosedWindowId, windows);
+            return source with { Windows = windows };
         }
 
         /// <summary>删掉一条窗口投影（其余逐字保留）。</summary>
@@ -6399,8 +6437,7 @@ namespace ProjectHero.Tests.PlayMode
                 if (window != null && window.WindowId == windowId) continue;
                 windows.Add(window);
             }
-            return new TurnWindowManagerSnapshot(source.CurrentWindowId, source.NextWindowTick,
-                source.NextWindowOrdinal, source.LastClosedWindowId, windows);
+            return source with { Windows = windows };
         }
 
         /// <summary>按单位 ID 替换一条肾上腺素账本投影（未命中的账本逐字保留）。</summary>
@@ -6574,7 +6611,10 @@ namespace ProjectHero.Tests.PlayMode
                 LogicSnapshot snapshot = side.Snapshots[i];
                 string where = "tick=" + snapshot.Tick + " ; ";
                 var windows = snapshot.WindowManager.Windows;
-                long total = 0L;
+                var frozen = snapshot.WindowManager.FrozenBudget;
+                long total = frozen?.TotalBudgetTicks ?? 0;
+                if (frozen != null) Assert.That(frozen.SpentBudgetTicks + frozen.AvailableBudgetTicks,
+                    Is.EqualTo(frozen.TotalBudgetTicks), "Frozen budgets also satisfy the ledger identity.");
                 for (int w = 0; w < windows.Count; w++)
                 {
                     TurnWindowSnapshot window = windows[w];
@@ -6624,8 +6664,15 @@ namespace ProjectHero.Tests.PlayMode
                     ActionPlanSnapshot plan = snapshot.Plans[p];
                     if (plan.SubmittedWindowId == 0L) continue;
                     TurnWindowSnapshot source = WindowOf(snapshot, plan.SubmittedWindowId);
-                    Assert.That(source, Is.Not.Null,
-                        where + "计划的来源窗口必须仍留在可审计账本里：" + stream);
+                    if (source == null)
+                    {
+                        Assert.That(plan.ReservedTurnBudgetTicks, Is.Zero, where + "Only zero-reservation source ledgers may leave the active projection.");
+                        Assert.That(plan.LockedAtTick, Is.GreaterThanOrEqualTo(0));
+                        Assert.That(plan.SubmittedWindowId, Is.LessThanOrEqualTo(snapshot.WindowManager.LastClosedWindowId));
+                        Assert.That(frozen?.WindowCount ?? 0, Is.GreaterThan(0));
+                        Assert.That(snapshot.History.RecordCount, Is.GreaterThan(0));
+                        continue;
+                    }
                     int held = 0;
                     for (int r = 0; r < source.Reservations.Count; r++)
                     {
@@ -6825,9 +6872,9 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(running.ReservedTurnBudgetTicks, Is.EqualTo(0),
                 "锁定后 Reserved 投影必须归零（预算已转为 Spent）：" + stream);
             TurnWindowSnapshot sourceAfterLock = WindowOf(atStart, facts.HeroWindowId);
-            Assert.That(sourceAfterLock.ReservedBudgetTicks, Is.EqualTo(0),
-                "来源窗口（已关闭）的 Reserved 必须清零：" + stream);
-            Assert.That(sourceAfterLock.SpentBudgetTicks, Is.EqualTo(facts.PlanBudgetCost),
+            Assert.That(sourceAfterLock, Is.Null, "A sealed closed ledger must leave the active snapshot.");
+            Assert.That(atStart.WindowManager.FrozenBudget.WindowCount, Is.EqualTo(1));
+            Assert.That(atStart.WindowManager.FrozenBudget.SpentBudgetTicks, Is.EqualTo(facts.PlanBudgetCost),
                 "来源窗口的 Spent 必须恰好等于该计划的成本（不二次扣费）：" + stream);
             Assert.That(atStart.WindowManager.CurrentWindowId, Is.EqualTo(facts.EnemyWindowId),
                 "本 Tick 的当前窗口仍是 enemy 的窗口（计划来自窗口 A 却在窗口 B 期间启动）：" + stream);
@@ -6838,13 +6885,14 @@ namespace ProjectHero.Tests.PlayMode
 
             // —— Tick 60：enemy 窗口关闭 ⇒ 授权被撤销，但已接受计划与其 Spent 继续存在 ——
             LogicSnapshot atTerminal = side.Snapshots[Task07TerminalTick];
-            Assert.That(WindowOf(atTerminal, facts.EnemyWindowId).IsOpen, Is.False,
+            Assert.That(WindowOf(atTerminal, facts.EnemyWindowId), Is.Null,
                 "Tick " + Task07TerminalTick + " 末必须正式关闭 enemy 窗口：" + stream);
             Assert.That(atTerminal.ConcurrentAction.HasActiveAuthorization, Is.False,
                 "窗口关闭即撤销并发授权：" + stream);
             Assert.That(atTerminal.ConcurrentAction.PlayerUnitId, Is.EqualTo(0L), stream);
             Assert.That(atTerminal.WindowManager.CurrentWindowId, Is.EqualTo(0L), stream);
-            Assert.That(WindowOf(atTerminal, facts.HeroWindowId).SpentBudgetTicks,
+            Assert.That(atTerminal.WindowManager.FrozenBudget.WindowCount, Is.EqualTo(2));
+            Assert.That(atTerminal.WindowManager.FrozenBudget.SpentBudgetTicks,
                 Is.EqualTo(facts.PlanBudgetCost),
                 "Locked/Running 的 Spent 在任何终态都不退款：" + stream);
 

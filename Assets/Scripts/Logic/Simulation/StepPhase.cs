@@ -119,7 +119,16 @@ namespace ProjectHero.Logic.Simulation
     /// （<see cref="BattleSimulationAssembly.PhaseTiming"/>），使用纯 BCL 的
     /// <c>Stopwatch.GetTimestamp()</c>，绝不读取 Unity 帧时间。
     /// </summary>
-    public sealed record StepPhaseTraceEntry(long Tick, StepPhase Phase, int Order, long Timestamp);
+    public readonly struct StepPhaseTraceEntry
+    {
+        public StepPhaseTraceEntry(long tick, StepPhase phase, int order, long timestamp, long allocatedBytesAtEntry = 0)
+        { Tick = tick; Phase = phase; Order = order; Timestamp = timestamp; AllocatedBytesAtEntry = allocatedBytesAtEntry; }
+        public long Tick { get; }
+        public StepPhase Phase { get; }
+        public int Order { get; }
+        public long Timestamp { get; }
+        public long AllocatedBytesAtEntry { get; }
+    }
 
     /// <summary>
     /// 阶段计时采样器（任务 01 §19 的"Step 内按阶段采样"要求）。
@@ -130,15 +139,19 @@ namespace ProjectHero.Logic.Simulation
     /// </summary>
     public sealed class StepPhaseTimingRecorder
     {
+        internal Func<long> AllocationReader { get; }
+        public StepPhaseTimingRecorder(Func<long> allocationReader = null)
+        { AllocationReader = allocationReader ?? GC.GetAllocatedBytesForCurrentThread; }
         private readonly long[] _invocations = new long[StepPhaseExtensions.PhaseCount];
         private readonly long[] _totalTicks = new long[StepPhaseExtensions.PhaseCount];
         private readonly long[] _maxTicks = new long[StepPhaseExtensions.PhaseCount];
         private readonly long[] _ticksMeasured = new long[StepPhaseExtensions.PhaseCount];
+        private readonly long[] _allocatedBytes = new long[StepPhaseExtensions.PhaseCount];
 
         /// <summary>采样到的 Tick 数。</summary>
         public long MeasuredTicks { get; private set; }
 
-        internal void RecordTick(StepPhaseTrace trace, long endTimestamp)
+        internal void RecordTick(StepPhaseTrace trace, long endTimestamp, long endAllocatedBytes)
         {
             IReadOnlyList<StepPhaseTraceEntry> entries = trace.Entries;
             if (entries.Count == 0) return;
@@ -155,6 +168,8 @@ namespace ProjectHero.Logic.Simulation
                 _totalTicks[index] += elapsed;
                 if (elapsed > _maxTicks[index]) _maxTicks[index] = elapsed;
                 _ticksMeasured[index]++;
+                long allocationEnd = i + 1 < entries.Count ? entries[i + 1].AllocatedBytesAtEntry : endAllocatedBytes;
+                if (allocationEnd >= entries[i].AllocatedBytesAtEntry) _allocatedBytes[index] += allocationEnd - entries[i].AllocatedBytesAtEntry;
             }
             MeasuredTicks++;
         }
@@ -165,7 +180,7 @@ namespace ProjectHero.Logic.Simulation
             for (int i = 0; i < StepPhaseExtensions.PhaseCount; i++)
             {
                 entries.Add(new PhaseTimingEntry(
-                    StepPhaseExtensions.FrozenOrder[i], _invocations[i], _totalTicks[i], _maxTicks[i]));
+                    StepPhaseExtensions.FrozenOrder[i], _invocations[i], _totalTicks[i], _maxTicks[i], _allocatedBytes[i]));
             }
             return entries;
         }
@@ -176,12 +191,13 @@ namespace ProjectHero.Logic.Simulation
             Array.Clear(_totalTicks, 0, _totalTicks.Length);
             Array.Clear(_maxTicks, 0, _maxTicks.Length);
             Array.Clear(_ticksMeasured, 0, _ticksMeasured.Length);
+            Array.Clear(_allocatedBytes, 0, _allocatedBytes.Length);
             MeasuredTicks = 0L;
         }
     }
 
     /// <summary>单个阶段的累计采样结果（计数、总耗时、最大耗时；耗时单位为 Stopwatch 刻度）。</summary>
-    public sealed record PhaseTimingEntry(StepPhase Phase, long Invocations, long TotalTicks, long MaxTicks)
+    public sealed record PhaseTimingEntry(StepPhase Phase, long Invocations, long TotalTicks, long MaxTicks, long TotalAllocatedBytes = 0)
     {
         public double MeanTicks => Invocations == 0 ? 0d : (double)TotalTicks / Invocations;
     }
@@ -189,6 +205,7 @@ namespace ProjectHero.Logic.Simulation
     /// <summary>阶段轨迹记录器（每次 Step 开始时清空）。</summary>
     public sealed class StepPhaseTrace
     {
+        private Func<long> _allocationReader;
         private readonly List<StepPhaseTraceEntry> _entries = new List<StepPhaseTraceEntry>(StepPhaseExtensions.PhaseCount);
 
         public long Tick { get; private set; } = -1L;
@@ -198,10 +215,11 @@ namespace ProjectHero.Logic.Simulation
 
         public IReadOnlyList<StepPhaseTraceEntry> Entries => _entries;
 
-        internal void Begin(long tick, bool recordTimestamps)
+        internal void Begin(long tick, bool recordTimestamps, Func<long> allocationReader = null)
         {
             Tick = tick;
             TimestampsEnabled = recordTimestamps;
+            _allocationReader = allocationReader;
             _entries.Clear();
         }
 
@@ -209,7 +227,8 @@ namespace ProjectHero.Logic.Simulation
         {
             _entries.Add(new StepPhaseTraceEntry(
                 Tick, phase, _entries.Count,
-                TimestampsEnabled ? System.Diagnostics.Stopwatch.GetTimestamp() : 0L));
+                TimestampsEnabled ? System.Diagnostics.Stopwatch.GetTimestamp() : 0L,
+                TimestampsEnabled ? _allocationReader?.Invoke() ?? GC.GetAllocatedBytesForCurrentThread() : 0L));
         }
 
         internal long EndTimestamp() => TimestampsEnabled ? System.Diagnostics.Stopwatch.GetTimestamp() : 0L;
