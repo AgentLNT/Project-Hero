@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections.Generic;
 using ProjectHero.Core.Grid;
@@ -100,3 +101,5 @@ namespace ProjectHero.Visuals
         }
     }
 }
+
+#endif

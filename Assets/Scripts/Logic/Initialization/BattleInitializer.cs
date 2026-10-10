@@ -62,6 +62,9 @@ namespace ProjectHero.Logic.Initialization
             if (slotError != null)
                 throw new LogicDefinitionException(slotError, encounterId.Value);
 
+            string spawnError = DynamicUnitSpawnDefinition.ValidateAll(definition, encounter);
+            if (spawnError != null) throw new LogicDefinitionException(spawnError, encounterId.Value);
+
             // 1. 唯一权威顺序：SlotId 的 Ordinal 升序。加载顺序不得影响结果。
             var orderedSlots = EncounterSlotOrdering.OrderBySlotIdOrdinal(encounter.Slots);
             for (int i = 1; i < orderedSlots.Count; i++)

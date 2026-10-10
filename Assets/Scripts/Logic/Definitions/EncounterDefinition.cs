@@ -110,11 +110,20 @@ namespace ProjectHero.Logic.Definitions
         IReadOnlyList<EncounterUnitSlot> Slots,
         IReadOnlyList<ControllerBinding> Controllers,
         VictoryDefinition Victory,
-        TurnSubmissionDefinition TurnSubmission = null)
+        TurnSubmissionDefinition TurnSubmission = null,
+        IReadOnlyList<DynamicUnitSpawnDefinition> DynamicSpawns = null)
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
             writer.Write("encounter.id", EncounterId.Value ?? string.Empty);
+            if (DynamicSpawns != null && DynamicSpawns.Count > 0)
+            {
+                var spawns = new List<DynamicUnitSpawnDefinition>(DynamicSpawns);
+                spawns.Sort((a, b) => a.Tick != b.Tick ? a.Tick.CompareTo(b.Tick)
+                    : System.StringComparer.Ordinal.Compare(a.SpawnId, b.SpawnId));
+                writer.Write("encounter.spawn_protocol", "encounter-stage1-after-effects-source-controller-v1");
+                foreach (var spawn in spawns) spawn.WriteHashComponents(writer);
+            }
             if (TurnSubmission != null)
             {
                 writer.Write("encounter.turn_budget_ticks", TurnSubmission.BudgetTicks);

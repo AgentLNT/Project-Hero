@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using ProjectHero.Authoring.Legacy;
 using UnityEngine;
@@ -51,11 +52,11 @@ namespace ProjectHero.Core.Actions
 
             float impactTime = startTime + impactDurationRaw;
 
-            // ¹¥»÷ÅÐ¶¨ (Priority 0)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ (Priority 0)
             var attackIntent = new AttackIntent(attacker, action, timeline);
             timeline.Schedule(impactTime, attackIntent, $"{attacker.name} hits", groupId, TimelinePriority.Attack);
 
-            // ×´Ì¬ÇÐ»» (Priority 50)£¬±£Ö¤Í¬Ò»Ö¡ÏÈÇÐ»»×´Ì¬
+            // ×´Ì¬ï¿½Ð»ï¿½ (Priority 50)ï¿½ï¿½ï¿½ï¿½Ö¤Í¬Ò»Ö¡ï¿½ï¿½ï¿½Ð»ï¿½×´Ì¬
             var startRecoveryIntent = new StateChangeIntent(attacker, "Recovery", recoveryDurationRaw);
             timeline.Schedule(impactTime, startRecoveryIntent, "Start Recovery", groupId, TimelinePriority.State);
 
@@ -192,3 +193,5 @@ namespace ProjectHero.Core.Actions
         }
     }
 }
+
+#endif

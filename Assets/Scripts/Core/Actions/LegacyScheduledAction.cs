@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Pathfinding;
 using ProjectHero.Core.Grid;
@@ -19,3 +20,5 @@ namespace ProjectHero.Core.Actions
         public GridPoint? Destination { get; }
     }
 }
+
+#endif

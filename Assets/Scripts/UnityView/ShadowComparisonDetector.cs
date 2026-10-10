@@ -38,6 +38,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 report.AddApproval(policy.Approvals[i]);
             for (int i = 0; i < policy.Rejections.Count; i++)
                 report.AddRejection(policy.Rejections[i]);
+            foreach (var proof in policy.ResolvedMigrationObligations) report.AddResolvedMigrationObligation(proof);
 
             var legacy = input.LegacyCheckpoints;
             var shadow = input.ShadowCheckpoints;
@@ -1494,6 +1495,16 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
                 if (string.Equals(path, "scheduledEventCount", StringComparison.Ordinal))
                 {
+                    ShadowMigrationObligation representation = null;
+                    foreach (var proof in policy.ResolvedMigrationObligations)
+                        if (proof.Category == "ReplacedRepresentation" && proof.Id.EndsWith("#scheduledEventCount", StringComparison.Ordinal)) representation = proof;
+                    if (representation != null)
+                    {
+                        report.AddMigrationObservation(new ShadowMigrationObservation(observation.Tick, path,
+                            observation.ScheduledEventCountLive.ToString(CultureInfo.InvariantCulture),
+                            CountShadowScheduledEntries(shadow).ToString(CultureInfo.InvariantCulture), representation.Id));
+                        continue;
+                    }
                     // 旧排程表条目数（真读 BattleTimeline.ScheduledEventCount）vs 新内核当前排程条目数。
                     // 新内核在任务 04 阶段不产生排程条目（计划属任务 05），因此两侧都为 0；
                     // 这条比较证明"旧侧排程事实确实被读过"，而不是结构等价的声明。

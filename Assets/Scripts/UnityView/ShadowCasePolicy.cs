@@ -94,6 +94,35 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public IReadOnlyList<ShadowComparisonApproval> Approvals { get; }
 
         public IReadOnlyList<string> Rejections { get; }
+        public IReadOnlyList<ShadowMigrationObligation> ResolvedMigrationObligations { get; private set; }
+            = Array.Empty<ShadowMigrationObligation>();
+
+        public static ShadowCasePolicy ResolveMigrationObligations(string caseId, string rulesVersion,
+            string definitionHash, IReadOnlyList<ShadowMigrationObligation> evidence)
+        {
+            var baseline = CreateDefault(caseId, rulesVersion, true, true, true, true);
+            var unresolved = new List<TemporarilyUncomparableField>(baseline.TemporarilyUncomparable);
+            var resolved = new List<ShadowMigrationObligation>();
+            var errors = new List<string>(baseline.Rejections);
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var proof in evidence ?? Array.Empty<ShadowMigrationObligation>())
+            {
+                int index = proof == null ? -1 : unresolved.FindIndex(f => f.Id == proof.Id);
+                bool valid = proof != null && ids.Add(proof.Id) && index >= 0
+                    && proof.CaseId == caseId && proof.RulesVersion == rulesVersion && proof.DefinitionHash == definitionHash
+                    && !string.IsNullOrWhiteSpace(proof.Reason) && proof.ExecutedCases != null && proof.ExecutedCases.Count > 0
+                    && (proof.Category == "NewRule" || proof.Category == "ReplacedRepresentation"
+                        || proof.Category == "RemovedResource" || proof.Category == "DiagnosticOnly");
+                if (valid) foreach (var test in proof.ExecutedCases)
+                    if (string.IsNullOrWhiteSpace(test) || test.IndexOf('*') >= 0 || test.IndexOf('.') < 0) valid = false;
+                if (!valid) { errors.Add("SHADOW_MIGRATION_EVIDENCE_INVALID|" + (proof?.Id ?? "<null>")); continue; }
+                unresolved.RemoveAt(index); resolved.Add(proof);
+            }
+            var policy = new ShadowCasePolicy(caseId, rulesVersion, unresolved,
+                new List<ShadowComparisonApproval>(), errors, true, true, true, true);
+            policy.ResolvedMigrationObligations = resolved.AsReadOnly();
+            return policy;
+        }
 
         /// <summary>
         /// <strong>逐用例开启</strong>的任务 05 排程检查点（默认 <c>false</c>）。

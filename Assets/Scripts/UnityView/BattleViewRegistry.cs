@@ -14,12 +14,15 @@ namespace ProjectHero.UnityView
     {
         [SerializeField] private CombatUnitView[] _views = Array.Empty<CombatUnitView>();
         private readonly Dictionary<long, CombatUnitView> _byUnit = new Dictionary<long, CombatUnitView>();
+        private readonly List<CombatUnitView> _createdViews = new List<CombatUnitView>();
         public CombatFeedbackMapper Feedback { get; } = new CombatFeedbackMapper();
         public bool TryGetView(long unitId, out CombatUnitView view) => _byUnit.TryGetValue(unitId, out view);
         public void Configure(CombatUnitView[] views) => _views = views ?? Array.Empty<CombatUnitView>();
         public void ReleaseVisuals()
         {
             foreach (var view in _views) if (view != null) view.Unbind();
+            foreach (var view in _createdViews) if (view != null) { view.Unbind(); Destroy(view.gameObject); }
+            _createdViews.Clear();
             _byUnit.Clear(); Feedback.Reset();
         }
 
@@ -46,6 +49,7 @@ namespace ProjectHero.UnityView
         {
             foreach (var fact in events.EventsInSequenceOrder)
             {
+                if (fact is UnitCreatedEvent created) CreateView(created, snapshot);
                 foreach (var unit in snapshot.Units)
                     if (_byUnit.TryGetValue(unit.UnitId, out var view) && view != null) view.Consume(fact);
                 Feedback.Consume(fact);
@@ -53,6 +57,24 @@ namespace ProjectHero.UnityView
             foreach (var unit in snapshot.Units)
                 if (_byUnit.TryGetValue(unit.UnitId, out var view) && view != null)
                 { view.ApplyMovementSnapshot(snapshot); view.ApplySnapshot(unit); }
+        }
+
+        private void CreateView(UnitCreatedEvent created, LogicSnapshot snapshot)
+        {
+            if (_byUnit.ContainsKey(created.UnitId.Value))
+                throw new LogicDefinitionException("VIEW_CREATED_UNIT_DUPLICATE", created.SpawnId);
+            UnitSnapshot unit = null; CombatUnitView template = null;
+            foreach (var candidate in snapshot.Units)
+                if (candidate.UnitId == created.UnitId.Value) unit = candidate;
+            if (unit == null || unit.DefinitionId != created.DefinitionId.Value || unit.FactionId != created.FactionId.Value)
+                throw new LogicDefinitionException("VIEW_CREATED_FACT_MISMATCH", created.SpawnId);
+            foreach (var candidate in _byUnit.Values)
+                if (candidate != null && candidate.LatestSnapshot.DefinitionId == unit.DefinitionId
+                    && (template == null || candidate.UnitId.Value < template.UnitId.Value)) template = candidate;
+            if (template == null) throw new LogicDefinitionException("VIEW_CREATED_TEMPLATE_MISSING", unit.DefinitionId);
+            var view = Instantiate(template.gameObject, transform).GetComponent<CombatUnitView>();
+            view.gameObject.name = "UnitView-" + unit.UnitId;
+            view.BindCreated(unit); _createdViews.Add(view); _byUnit.Add(unit.UnitId, view);
         }
     }
 }

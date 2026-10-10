@@ -66,7 +66,7 @@ namespace ProjectHero.Tests.PlayMode
                 && r.UnalignedCheckpoints == 0 && r.Rejections.Count == 0), Is.True);
             var report = Bootstrap.LastShadowReport;
             File.WriteAllText("优化任务/执行记录/11-shadow-scene-observations.txt",
-                "scene=CombatSampleScene\nmode=Shadow\nframes=120\nlegacyAdvanceDelta=120\nnewDriverAdvance=0\nshadowWrites="
+                "scene=LegacyComparisonScene (Editor-only diagnostic copy)\nmode=Shadow\nframes=120\nlegacyAdvanceDelta=120\nnewDriverAdvance=0\nshadowWrites="
                 + Bootstrap.ShadowWrites.Total + "\nobservations=" + Bootstrap.LegacyObservations.Count
                 + "\n" + report.Describe() + "\n" + string.Join("\n", report.Differences.Select(d => d.ToString())));
             TestContext.WriteLine(report.Describe());

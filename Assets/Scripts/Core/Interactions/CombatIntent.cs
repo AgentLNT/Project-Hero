@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Authoring.Legacy;
 using ProjectHero.Core.Entities;
@@ -42,3 +43,4 @@ namespace ProjectHero.Core.Interactions
         }
     }
 }
+#endif

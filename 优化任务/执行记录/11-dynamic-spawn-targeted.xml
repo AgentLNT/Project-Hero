@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.8908052">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="896" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.890805" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2005" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="540" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.879389" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="45516" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2006" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="540" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.869170" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2007" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="540" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.866215" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2008" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="540" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.862867" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1920" name="Task11DynamicSpawnTests" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.850471" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1926" name="DynamicSpawnCanonicalOrderAndDefinitionHashIgnoreInputEnumeration" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCanonicalOrderAndDefinitionHashIgnoreInputEnumeration" methodname="DynamicSpawnCanonicalOrderAndDefinitionHashIgnoreInputEnumeration" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" seed="1582520273" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:42Z" duration="0.130706" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1923" name="DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.705205" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1921" name="DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies(True)" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies(True)" methodname="DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" seed="1973878844" result="Passed" start-time="2026-10-10 09:42:42Z" end-time="2026-10-10 09:42:43Z" duration="0.408141" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1922" name="DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies(False)" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies(False)" methodname="DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" seed="113099877" result="Passed" start-time="2026-10-10 09:42:43Z" end-time="2026-10-10 09:42:43Z" duration="0.294688" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1925" name="DynamicSpawnDefinitionRejectsUnknownConflictingFactionAndSourceBeforeWorldCreation" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnDefinitionRejectsUnknownConflictingFactionAndSourceBeforeWorldCreation" methodname="DynamicSpawnDefinitionRejectsUnknownConflictingFactionAndSourceBeforeWorldCreation" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" seed="1545349859" result="Passed" start-time="2026-10-10 09:42:43Z" end-time="2026-10-10 09:42:43Z" duration="0.002623" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1924" name="DynamicSpawnFailureConsumesNoUnitIdAndDoesNotRetryOnLaterTicks" fullname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnFailureConsumesNoUnitIdAndDoesNotRetryOnLaterTicks" methodname="DynamicSpawnFailureConsumesNoUnitIdAndDoesNotRetryOnLaterTicks" classname="ProjectHero.Logic.Tests.Task11DynamicSpawnTests" runstate="Runnable" seed="1554359020" result="Passed" start-time="2026-10-10 09:42:43Z" end-time="2026-10-10 09:42:43Z" duration="0.002072" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Linq;
 using ProjectHero.Core.Actions;
@@ -76,3 +77,5 @@ namespace ProjectHero.Core.Compatibility.Authoring
         private void Reject(string code) { RejectedCount++; LastRejection = code; }
     }
 }
+
+#endif

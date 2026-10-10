@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Core.Grid;
 using ProjectHero.Core.Entities;
@@ -126,3 +127,5 @@ namespace ProjectHero.Visuals
         public bool IsMoving => _isMoving;
     }
 }
+
+#endif

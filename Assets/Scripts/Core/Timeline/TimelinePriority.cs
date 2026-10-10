@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 namespace ProjectHero.Core.Timeline
 {
     /// <summary>
@@ -25,3 +26,5 @@ namespace ProjectHero.Core.Timeline
         public const int Cleanup = -50;
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 namespace ProjectHero.Demos
@@ -37,3 +38,5 @@ namespace ProjectHero.Demos
         }
     }
 }
+
+#endif

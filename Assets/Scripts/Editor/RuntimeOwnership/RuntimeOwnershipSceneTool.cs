@@ -80,7 +80,8 @@ namespace ProjectHero.Editor.RuntimeOwnership
         /// <summary>接入主战斗场景（幂等）。返回诊断文本。</summary>
         public static string WireMainScene()
         {
-            var scene = EditorSceneManager.OpenScene(MainScenePath, OpenSceneMode.Single);
+            var scene = EditorSceneManager.OpenScene(File.Exists(Task11ProductionMigration.LegacyScene)
+                ? Task11ProductionMigration.LegacyScene : MainScenePath, OpenSceneMode.Single);
             var report = new StringBuilder();
 
             var demo = FindInScene<CombatDemo>(scene);

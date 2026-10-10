@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="1.0402426">
+  <test-suite type="TestSuite" id="1079" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="1.040243" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1072" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="1.032893" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1600" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1073" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="1.032000" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1074" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="1.031446" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1075" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="1.030806" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1060" name="Task11DynamicSpawnSceneTests" fullname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests" classname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="0.615162" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1061" name="MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays" fullname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests.MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays" methodname="MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays" classname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests" runstate="Runnable" seed="354864881" result="Passed" start-time="2026-10-10 11:02:50Z" end-time="2026-10-10 11:02:51Z" duration="0.605933" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1065" name="Task11MigrationContractTests" fullname="ProjectHero.Tests.PlayMode.Task11MigrationContractTests" classname="ProjectHero.Tests.PlayMode.Task11MigrationContractTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-10 11:02:51Z" end-time="2026-10-10 11:02:51Z" duration="0.353709" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1066" name="MigrationShadowWithConfirmedFutureAttackKeepsRealCommonFieldsAndResolvesObligations" fullname="ProjectHero.Tests.PlayMode.Task11MigrationContractTests.MigrationShadowWithConfirmedFutureAttackKeepsRealCommonFieldsAndResolvesObligations" methodname="MigrationShadowWithConfirmedFutureAttackKeepsRealCommonFieldsAndResolvesObligations" classname="ProjectHero.Tests.PlayMode.Task11MigrationContractTests" runstate="Runnable" seed="341615880" result="Passed" start-time="2026-10-10 11:02:51Z" end-time="2026-10-10 11:02:51Z" duration="0.352904" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[--- Starting Combat Demo (Ticks) ---
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1067" name="Task11ProductionSceneTests" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-10 11:02:51Z" end-time="2026-10-10 11:02:51Z" duration="0.059197" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1068" name="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests.ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" methodname="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" seed="1438068794" result="Passed" start-time="2026-10-10 11:02:51Z" end-time="2026-10-10 11:02:51Z" duration="0.058208" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

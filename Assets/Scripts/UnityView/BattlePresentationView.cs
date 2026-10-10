@@ -65,6 +65,7 @@ namespace ProjectHero.UnityView
         public BattlePresentationModel Model { get; } = new BattlePresentationModel();
         public string PlayerControllerId => _controllerId;
         public BattleViewRegistry Registry => _registry;
+        public UnitId SelectedActingUnit => _owner;
         public void ConfigureFeedback(BattleFeedbackPlayer player) => _feedbackPlayer = player;
         public void ConfigureFootprints(BattleFootprintView footprints) => _footprints = footprints;
         public void ConfigureLegacyCanvases(GameObject[] canvases) => _legacyCanvases = canvases;
@@ -174,6 +175,7 @@ namespace ProjectHero.UnityView
             _rows.Clear(); Clear(_reactionButtons); Clear(_actionButtons); Clear(_targetButtons); _debugLines.Clear();
             if (_feedbackPlayer != null) _feedbackPlayer.Unbind();
             if (_footprints != null) _footprints.ReleaseVisuals();
+            _grid?.ReleaseBackdrop();
             if (_registry != null) _registry.ReleaseVisuals();
             if (_panel != null) _panel.SetActive(false);
             if (_legacyCanvasStates != null)
@@ -189,7 +191,13 @@ namespace ProjectHero.UnityView
         {
             Model.Bind(ports); _bound = true; _owner = Model.Decision.ControlledUnitIds[0];
             BindReplay();
+            _grid.BindBoundary(Model.Decision.Definition.FindEncounter(_bootstrap.NewDriver.ReplayHeader.EncounterId).GridBoundary);
             _footprints?.Bind(Model.Decision.Definition); _footprints?.Consume(Model.Decision.VisibleUnits);
+            RebuildOwnerActions();
+            Render();
+        }
+        private void RebuildOwnerActions()
+        {
             Clear(_actionButtons); Clear(_targetButtons);
             foreach (var action in Model.Decision.ActionSetOf(_owner))
             {
@@ -201,7 +209,6 @@ namespace ProjectHero.UnityView
                 label = System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(label);
                 _actionButtons.Add(CreateButton(_actions, label, () => SelectAction(captured)));
             }
-            Render();
         }
         public void Consume(EventBatch events, LogicSnapshot snapshot)
         {
@@ -211,6 +218,15 @@ namespace ProjectHero.UnityView
             if (_bound)
             {
                 Model.Synchronize(events);
+                UnitId acting = Model.Decision.ControlledUnitIds[0];
+                if (Model.Window != null)
+                    foreach (var controlled in Model.Decision.ControlledUnitIds)
+                        if (controlled.Value == Model.Window.OwnerUnitId) { acting = controlled; break; }
+                if (acting != _owner)
+                {
+                    _owner = acting; Model.CancelDraft(); _selectedAction = default; _target = default;
+                    RebuildOwnerActions();
+                }
                 if (_selectedReaction != 0)
                 {
                     _selectedDodgePreview = Model.PreviewDodge(_selectedReaction, _reactionAction, _reactionDestination);

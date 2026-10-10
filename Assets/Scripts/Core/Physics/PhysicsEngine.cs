@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
@@ -178,3 +179,5 @@ namespace ProjectHero.Core.Physics
         }
     }
 }
+
+#endif

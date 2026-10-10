@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 namespace ProjectHero.Core.Interactions
 {
     public enum InteractionType
@@ -11,3 +12,4 @@ namespace ProjectHero.Core.Interactions
         Escape
     }
 }
+#endif

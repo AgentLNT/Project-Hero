@@ -64,12 +64,14 @@ namespace ProjectHero.Logic.Units
         /// 状态机的每一次转换都在同一个 Outbox 上分配事件序号，
         /// 因此不存在"状态机自己的一套事件顺序"。
         /// </summary>
-        public UnitStateMachine(UnitId unitId, LogicEventOutbox outbox)
+        public UnitStateMachine(UnitId unitId, LogicEventOutbox outbox, long initialTick = 0)
         {
             if (!unitId.IsValid)
                 throw new LogicDefinitionException(UnitStateCodes.STATE_UNKNOWN, "unitId=" + unitId.Value);
             _unitId = unitId;
             _outbox = outbox ?? throw new ArgumentNullException(nameof(outbox));
+            if (initialTick < 0) throw new LogicDefinitionException(UnitStateCodes.STATE_UNKNOWN, "initialTick");
+            StateStartTick = initialTick;
         }
 
         public UnitId UnitId => _unitId;

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Authoring.Legacy;
 using System.Collections.Generic;
@@ -210,3 +211,5 @@ namespace ProjectHero.Core.Interactions
         }
     }
 }
+
+#endif

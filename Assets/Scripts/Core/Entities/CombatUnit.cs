@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Actions.Intents;
 using ProjectHero.Core.Grid;
@@ -342,3 +343,5 @@ namespace ProjectHero.Core.Entities
         }
     }
 }
+
+#endif

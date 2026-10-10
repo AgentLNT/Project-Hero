@@ -1,0 +1,2110 @@
+{
+  "decision": "accepted-2026-10-10-rule-obligations-performance-deferred",
+  "caseId": "task11-shadow-confirmed-future-attack",
+  "rulesVersion": "battle-def-v2-turn180",
+  "definitionHash": "ed4c3e21b1488e60",
+  "editResults": "11-migrated-final-editmode.xml",
+  "playResults": "11-migrated-final-playmode.xml",
+  "editSha256": "733A96CFB3CEC12D56D130F32A8F27695A4466FE697B67F8673A1E099EA94E12",
+  "playSha256": "0146977B17A9F1534A4B3D05D128CABE1B08CC92A1FDE7961C3E7F3F173A49F9",
+  "sourceHashes": [
+    {
+      "path": "Assets/Scripts/Authoring/BattleDefinitionAssembler.cs",
+      "sha256": "0315FD36FA2591BC47E29BE4E2D5A69114E7511998FBE4B1C15A18337E7CD050"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/BattleDefinitionBuilder.cs",
+      "sha256": "97C9047688C1A0E93FC2607972D5462EF43D633B5DD5CB19DE8764DFCB5C20DB"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/BattleDefinitionBuildResult.cs",
+      "sha256": "0FB81B421DB6D28BD98386D48EA7508C98C3A8910D8CEC6C0A30614555B2141E"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/BattleDefinitionValidator.cs",
+      "sha256": "D71FDACBCC6F3CBD342BB52C6105EE4D28FD1724AA8B8F239E8DBE8A278A15EF"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyAttackDefinitionConverter.cs",
+      "sha256": "1B7337D63A7B0DCF9328C1CB0AE4A2AB42C47385B6A177D9C19EC0567B2BCAA4"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyAuthoringCodes.cs",
+      "sha256": "1A2B6460C5B7C963705A1D0B55D7C445E16B8A73056F211D5B7886C572C6066E"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyDamageMapping.cs",
+      "sha256": "36B749CF505F045A1172F93FB42E386DE89F5FD2047EB7DAD6BBE4783C26C6D4"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyGridDefinitionConverter.cs",
+      "sha256": "0296EBBC595E68E01B05DC1381962EBC48223E8A446AC60DB4A57EE4CD875084"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyTimingQuantization.cs",
+      "sha256": "7D904C048C8355795A45FCE107A211942B5AE8992A0FE394E94C40683300F995"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyUnitStatInputs.cs",
+      "sha256": "0552A1E25CAE485992ACE49AF85FEF88339CC2DE74F724AE3EE6F03095EE32B9"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Compatibility/LegacyUnitStatsAdapter.cs",
+      "sha256": "BEFD67BE13D97864785B5CB127F3A01E1C8CFF00459979975E2BFAAEEC391FFE"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/Action.cs",
+      "sha256": "F3347E1C02B7E3F6B4A6BE41B01D518CB080BDD1753BAE4B15B5C4B706CA0266"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/ActionLibrarySO.cs",
+      "sha256": "F7E18CB40D0DFC57698BAD0D4DD4F64A815922C7CE3B984FA1BCBE58AC098EB4"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/ActionType.cs",
+      "sha256": "C50704BCBE14AF880DB9263D0687581FC3108B56F2C0A82506DB3004FF437CA6"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/AttackPattern.cs",
+      "sha256": "6A6874C0653E146C53297594D6115AC4D24808B6F58A0F3FAE1EC96150616F47"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/ImpactType.cs",
+      "sha256": "238FDD7107564F6DED9915042CEF2B23ED6A0B75D5AAD1D3670375D3B9AD36D0"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/LegacyAssetResolver.cs",
+      "sha256": "B1D3355B55093E83A575A246D1C7B5E420BF8AFE89AFDB733EE9934C8B009453"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/LegacyIdMigrationManifest.cs",
+      "sha256": "BEA95C49AC24D6AD7433AD58C604877B10065093F36CF6CC868641859BD3B9EE"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/Legacy/UnitVolume.cs",
+      "sha256": "08AA64CE3F9BCCC3C1D314A66E56F3A1D0D86100E43ED24766E8725C0AB228E1"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/LegacyBattleUnitSource.cs",
+      "sha256": "975C4B1E1A77C5613F4A8FFB90583F533C37C84F626A62646CD338614B6CBD9D"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/LegacyTypeConversion.cs",
+      "sha256": "3E9E7D4EE342D24D162C132405FA514A92D91A5DED09024FE322CF051326276C"
+    },
+    {
+      "path": "Assets/Scripts/Authoring/ProjectHero.Authoring.asmdef",
+      "sha256": "62F02271EFFE8D725C444B550EB4F04427F3FE7ADF226594B9A1E2B45ACC3364"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/ActionScheduler.cs",
+      "sha256": "18F2561B626B4D4F819A68C7B8F7316449F5827CBF2E365609D875049E399092"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/AttackIntent.cs",
+      "sha256": "52DB1C07D9E9C485F9FA150B7CDD0C310920FCFD3ACAA70791A89D12BD45ED22"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/BlockIntent.cs",
+      "sha256": "16C355F6649E30BA2C5F498DD4DD72E9A2F3331A4FF4432F484A586E2DA8EF32"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/CommitMoveStepIntent.cs",
+      "sha256": "D11D540C6F97AE26DA1FB5CD87E71B735AEA88BEE4B3ECC99A2CB51319A3C4BA"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/DodgeIntent.cs",
+      "sha256": "94B4693CCD710175B62437630D8FD5CFA425F892C47B7FDB52DC4A3CCD115F61"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/MoveIntent.cs",
+      "sha256": "EA305C03DB1947CF5F6C3EA59DF62E051F82780C4427B2F59AD382996CC04E7B"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/PlanFacingIntent.cs",
+      "sha256": "5940B07983F9243FE58EDE3433AD124CD3F49EB49A96EA5400E84D366A7BABE1"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/PlanMoveIntent.cs",
+      "sha256": "689B5943DAD8722453C0C286910C521B2C93EBD444E346A7603E30047881C5A8"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/RecoverIntent.cs",
+      "sha256": "C77A41896171A23FCD684955F48A31D7AB3953CFD4CE06530131634F88750E63"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/SetRecoveringFlagIntent.cs",
+      "sha256": "2865D9EC9890664685FFCCB3BD3A2793C91ECA607F6AF51DC522F8FEBCC6FF4F"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/Intents/StateChangeIntent.cs",
+      "sha256": "59238EE4BE2F63A67914F6C815E84B65830F2E71ECDC582892F839B36AE55501"
+    },
+    {
+      "path": "Assets/Scripts/Core/Actions/LegacyScheduledAction.cs",
+      "sha256": "89E848C4246427E60E72000E86A4C28EDAD4E7802FB8BD475F979B93D4DBDEA2"
+    },
+    {
+      "path": "Assets/Scripts/Core/Compatibility/Authoring/BattleSimulationSourceFactory.cs",
+      "sha256": "14981397C7B0F2E5453DBA264FC17EB4ADC88B6084BF3A2DF683519C90B31693"
+    },
+    {
+      "path": "Assets/Scripts/Core/Compatibility/Authoring/LegacyCombatUnitStatsReader.cs",
+      "sha256": "810993B2A4DB99BF0B7CBF784897AB304E8A4102ACDC5B5991471ECADF64FDC8"
+    },
+    {
+      "path": "Assets/Scripts/Core/Compatibility/Authoring/ShadowSceneInputBridge.cs",
+      "sha256": "9B318CFD70F86DCF999DFC7EF0B42D6179D4BAA30A00B4924641C91496639F0F"
+    },
+    {
+      "path": "Assets/Scripts/Core/Entities/CombatUnit.cs",
+      "sha256": "0365E09FD9E66E304E26D48CE0BCC5F8CFC3794D0210CBCB663924CA944B241C"
+    },
+    {
+      "path": "Assets/Scripts/Core/Gameplay/BattleManager.cs",
+      "sha256": "B533C5F17C7C6A01473F35EAC7607B9789D62C5E8458D02A9DEB2277EE3CF19B"
+    },
+    {
+      "path": "Assets/Scripts/Core/Gameplay/EnemyAIController.cs",
+      "sha256": "A872717FC601CC0FD91D090BDB22F42727AADA21E38353457A875A02A0AB87AA"
+    },
+    {
+      "path": "Assets/Scripts/Core/Gameplay/TacticsController.cs",
+      "sha256": "0AE68534D0B5BD1ECE53E2523F2947C6B0ABB5A220CFD2A02142A2457FE7B366"
+    },
+    {
+      "path": "Assets/Scripts/Core/Grid/GridManager.cs",
+      "sha256": "88EA29E3F9C534F78B4867AA26E01B6F65D3E8D44FF98450309E27CCC3C64211"
+    },
+    {
+      "path": "Assets/Scripts/Core/Input/InputManager.cs",
+      "sha256": "A9215DA6A8AEB740B93201F7FE9EB372196AE282B72D433641FCC1399F84E79A"
+    },
+    {
+      "path": "Assets/Scripts/Core/Interactions/CombatArbiter.cs",
+      "sha256": "1F8C1E0D5D45A48894154DF4FF169FD3B9109815610EAC5EAF7781CD60E40AD5"
+    },
+    {
+      "path": "Assets/Scripts/Core/Interactions/CombatIntent.cs",
+      "sha256": "0005160AFCE4AF63C57511DFD3C9B1792239F8C9E11136E431B9EB2125CE251C"
+    },
+    {
+      "path": "Assets/Scripts/Core/Interactions/InteractionType.cs",
+      "sha256": "D279923130FE2E3BAC5D63DAD475D4FEF8348E0DDDD3B8EFC22BFF8A5D0C0E75"
+    },
+    {
+      "path": "Assets/Scripts/Core/Pathfinding/Pathfinder.cs",
+      "sha256": "B8E35F4459F68211BC128305D6366FD4A2E9628270BC9441A322DA4658D7A043"
+    },
+    {
+      "path": "Assets/Scripts/Core/Physics/PhysicsEngine.cs",
+      "sha256": "07A6F753997347DCEDCBD4BA7666DD3B1280DEB6A3CBB2E33986FB15F20062AD"
+    },
+    {
+      "path": "Assets/Scripts/Core/Timeline/BattleTimeline.cs",
+      "sha256": "88F8FC716A49BDF56DBC0C000665F9317798DEBA5A4896DFFFD89B26453174BC"
+    },
+    {
+      "path": "Assets/Scripts/Core/Timeline/TimelinePriority.cs",
+      "sha256": "05014905C0BACCCE3BBC51900B642260F2F985E1BF5E2E01AA72B8DB5E9DC8DA"
+    },
+    {
+      "path": "Assets/Scripts/Demos/CombatDemo.cs",
+      "sha256": "741148E6D4B843042E905E68CD18B420A659FC81DE28D11CAAB13048CF3BEC60"
+    },
+    {
+      "path": "Assets/Scripts/Demos/LibraryGenerator.cs",
+      "sha256": "F256F96E03FE7A8419C91F14D1CF7D30A20108B50422409D2A45E3F01548DF91"
+    },
+    {
+      "path": "Assets/Scripts/Demos/SimpleColorChange.cs",
+      "sha256": "54B66FA6BFB598F343BF1F68ED5DCD5E0ABEDD4DDAA8FEE8925FBF8D90BFBEC2"
+    },
+    {
+      "path": "Assets/Scripts/Editor/BaselineDiagnostics/BaselineDiagnosticRunner.cs",
+      "sha256": "CA4679C50B4E1105804ACE5ECB0E1083C622B8E9F2E127F0E698F8D3F68BB6EF"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/RuntimeOwnershipBatchEntry.cs",
+      "sha256": "4F7D5475CF96512A15974F0D6C01D1FB2BF60D1D855E27E1388A8A6A8B20E424"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/RuntimeOwnershipSceneTool.cs",
+      "sha256": "6372093BD956EB2D3711EF40EEE2D104880A2822A0CFBEDA1BE0E87ABD02A88C"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/Task08SceneWiring.cs",
+      "sha256": "9BA3C021B645EB936DEEA4C0526E33A19515C88D9CBF638F71C4A9C69C2C7A1F"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/Task10SceneMigration.cs",
+      "sha256": "52D751E706005F5078D8543AE8EF5A45A650BF4A8908F30400241F918DDB6A95"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/Task11Audit.cs",
+      "sha256": "0F5048BB4AC4E527D1FF64354089F36DE0AC066FB61B04D1EF7F5C377DBDB916"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/Task11MigrationEvidence.cs",
+      "sha256": "E4A914C05BA435D3C617D023058F13975B8D65743E8A6ED321A499C52C5A3B32"
+    },
+    {
+      "path": "Assets/Scripts/Editor/RuntimeOwnership/Task11ProductionMigration.cs",
+      "sha256": "C946ECFB415D496CEEA85CB28A26E6EDC05CB416BB6998B6A886BF76D9FFC31D"
+    },
+    {
+      "path": "Assets/Scripts/Grid/GridDirection.cs",
+      "sha256": "1B5FEE2F3EA56AECCCD883888F1E64A855F1E64F44AC5007EC058FE42F82BDFF"
+    },
+    {
+      "path": "Assets/Scripts/Grid/GridMath.cs",
+      "sha256": "C2A719B37AC2774F2745D1D0699E315298E3DFFF400F03B423EB39646C2B9ADC"
+    },
+    {
+      "path": "Assets/Scripts/Grid/GridPoint.cs",
+      "sha256": "53CB1C6A0964A754FE5169DEFF008D625CB0F4BCC0FDBDF87751DD2F34AB27B3"
+    },
+    {
+      "path": "Assets/Scripts/Grid/ProjectHero.Grid.asmdef",
+      "sha256": "983667F548AEA0D549FC1CA61079AA9D331E469D70860F1504292EB1EC38313F"
+    },
+    {
+      "path": "Assets/Scripts/Grid/TrianglePoint.cs",
+      "sha256": "2A95CFD4400C14E091D261825E120F41F79689CE78FE9C6DBE4CD9F0E941E4BF"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Actions/ActionDefinitionValidation.cs",
+      "sha256": "B9C1E40863ADE9A0061D23914D8800DAFF2F9A3DC44A79E2A757918A563659AD"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Actions/ActionPayloadSpec.cs",
+      "sha256": "04220D6064DC8797DF27AE719C3B7AD1EADE92ABD89ED51C74B653DDC523E769"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Actions/ActionPlan.cs",
+      "sha256": "10821DF3D7BEDCFDE25723CF2B43D3349DD9CCD2125FDBDDDE36FB4CE22981EF"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Actions/ActionSpec.cs",
+      "sha256": "817038374065F0DBC8A8CBBC12AE6B41607F08666DA779E1C3F0CD4B795FF3DA"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Actions/ActionTimingSpec.cs",
+      "sha256": "E1EE1EA91280FB3CBB413B318A5E8D601B81F67CE5CD05C992B8814193ED9555"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Actions/ActionType.cs",
+      "sha256": "179DB73E9ABBDB7E46BFE24AAF44D0FA86F9F8BE829A27445EF79394EB0DFF61"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiCandidate.cs",
+      "sha256": "82D8E649C6CE695FEA713353E8009D64A29C6254B7D90CC34A763E25093443A4"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiCandidateBuilder.cs",
+      "sha256": "9374EBAEA56470CD08F68B51A2363A6DC86B50463C5CF9B38567B4D9F15CAA48"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiCandidateKinds.cs",
+      "sha256": "475BECE24310ABBBFFA0F7333F49FC9C6BB32D530AC52CF7829D135F41128CD0"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiCommandRequestBuilder.cs",
+      "sha256": "6E7D15A475411DF6B26174CC468AE58B1D6DE3DB6B5E849168952B60EA497FF2"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiControllerLogic.cs",
+      "sha256": "B06AFC20CC3F1B30C00F6D0DE0CEFFF0C42ECA10C2D32D545E5173940D8BB788"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiDecision.cs",
+      "sha256": "4DC9904666BF443AB6A609F8C0D70A4184CACFB0381D96623AB13C0FD21EB006"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiDecisionContext.cs",
+      "sha256": "DADE38CD91650DBECBEAA3310A2191DBB5BE04C86E457704F46B8375070E3DB1"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiDecisionContextFactory.cs",
+      "sha256": "943BF040CB4F234FF5A63E0FACE45977E70EFCD411F67B44BF6627F0D6975887"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiDecisionFunction.cs",
+      "sha256": "4FDA1A6429AEC8FD9AB30F69D81113C8BE176712A5CE9B7C5E8B298BCDE1CA65"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiReactionCandidateBuilder.cs",
+      "sha256": "54C74C56BDBABFAF6782B856F58BAC35670351C17F863448FE2465DACF1D2CA1"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiRuntimeState.cs",
+      "sha256": "38C755131D47F16065C36229E91694632A3765AB3D661A328BF7D262EBD67947"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/AiRuntimeStateStore.cs",
+      "sha256": "73B85F6D267EDF481F43B400BBABB973265F96F29DAEE86FDB5D92ED72600359"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AI/IAiActionPlanLookup.cs",
+      "sha256": "ABA781AC6BB8BED2ADB7AFEC0127CD757109F236B9873650BEEBB0121CB16700"
+    },
+    {
+      "path": "Assets/Scripts/Logic/AssemblyInfo.cs",
+      "sha256": "FBDE6CA5C6194DD10719134B53D0ACA18BB08CEED7762BFEB2F8FFD2D42CCC15"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/BattleDefinitionHash.cs",
+      "sha256": "810E9876498A474B539F56E338A0CBD43095F25245F6208E07E0B2B8927DBE14"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/BattleRules.cs",
+      "sha256": "E08482EB9E55184FBEB33E6F87B44332F742988CD70EA503BA063151C65CF6AC"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/DefinitionCodes.cs",
+      "sha256": "DC3F0852BC9D270F8FCE34C409C905A52C6366E6D1182A33A7A32A501944B07F"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/ForcedDisplacement.cs",
+      "sha256": "3F3CF4C4CBA222AB1FCDB8DDB9C017BD022D8AB6B1C13846C18D92B4F6C1F988"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/MomentumClashSolver.cs",
+      "sha256": "9F270AE96680576CD3603134C04E77ABFAD8E2A67D4538A99DB3D3607DB4099B"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/MomentumPacket.cs",
+      "sha256": "64A79371D412EE0CB1E0D0A2C4D3B6AB36462D3767D54BEC2FA0ADD0AD6DA469"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/MomentumQuantizer.cs",
+      "sha256": "FDDD875B7378554645FD73A9776B2776360BA78C5B6641A430254F2048E98F7C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/MomentumRuleTable.cs",
+      "sha256": "F2779039A738852F062AF1B7B7067ED06092705E8B2524CE5DF411FFF6B69791"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/PathCostRules.cs",
+      "sha256": "0C03490F0D195E7611D3071CDA7D2CA29614C2BF09192C58ECAF057E536EE7E5"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/PathSearchRules.cs",
+      "sha256": "C7D9D56190B339C763055E7AEA8A530C56C9A8DBBB04FD3508F20D25843C4FE3"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/ReactionModel.cs",
+      "sha256": "1BEAA7A4E4EB0E300F2F2413B95EBB4C9ADB26920B3AB289132119AED4ED2F75"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/TargetAggregator.cs",
+      "sha256": "E49A58C9BB4D6AF7A8025CF478BA5E60B0EFCC23DD0B2ACA7FA0D704C02577EC"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/TickQuantization.cs",
+      "sha256": "0968FE5A602A508CA690D2B9D6CD114F48B94237F02F39F84399624E7DD61DA8"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Combat/UnitDefinition.cs",
+      "sha256": "5BC7B1B832843FD7846A01270A50FFEA9B378894C796C65C849B7076D245EBF4"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/BattleCommandProcessor.cs",
+      "sha256": "DB5DB3ABFDE7BE614F06A05F45959BB7537A879B22249ECC8B0855386122C729"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandAuthority.cs",
+      "sha256": "010EA9C461D16B2F9F18852C9FB76BB3D63CB61C42245FE3536B52D35FD4C9DF"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandCodes.cs",
+      "sha256": "1C723637ECC38F003997A3636040DA560BC5A0E9805B151204D230145E38BBEA"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandGateway.cs",
+      "sha256": "CACEA2520EDCAE683F9EECB684CB804DB5C939BDC1D7528255B1E2BB3DCD0F1C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandIngressEntry.cs",
+      "sha256": "8E0CE1771DFF53BF44338A68A19021FD3F24EA02CC72902F905813FEEC50DCBD"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandIngressRegistry.cs",
+      "sha256": "8115C3ABE75109486724F880B6BE50A9C087E0AA55EC3BB36CE50D3D2F5E1034"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandPayloads.cs",
+      "sha256": "F1B403F28BE750FB7F6F412E90A75943B3827E28EAE3CE15E058402AAF2FBB53"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandRequest.cs",
+      "sha256": "43B08A930163EB5A933EE9B82939837759D2E2AC2CB362AB082F93214F31DA6A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/CommandScopes.cs",
+      "sha256": "700D70458925475E6D241B142070554BE017562F4262D98EB35B5C5E573741BA"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Commands/TargetCandidateQuery.cs",
+      "sha256": "C720E1067E925E6CD9A69F98E49CC5ACB6F60EEDF9377DA0F7751DE2E37389DB"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Damage/DamageChannels.cs",
+      "sha256": "3ED47410679F2EE7B672F2586CE0C473937815438B82E45049601471491DCE0C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Damage/DamageComponentSpec.cs",
+      "sha256": "7DC3823288F1F499E1AC5EB7F38B9A95A16237D2BFC7E8373ACD9B7DE1834242"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Damage/ImpactProfiles.cs",
+      "sha256": "1A35F5B5D14E76F826C5330621C142F98138D42A8A0520053868EF4ABE6C099F"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/ActionSetDefinition.cs",
+      "sha256": "175AAEDAD280F31F18AD67E55CBB03FDC0CDEB54C88578BFE267464F30A88C58"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/BattleDefinition.cs",
+      "sha256": "8E9E91B6C859EEEDD67EA8EAEADC75402A101E3A099727F90E84DAE6622603BD"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/ControllerBinding.cs",
+      "sha256": "35D13998CB9F7808BA5D1ACD2CC40F412C7FCEC71D4EBB26CD19D6F1AF256C7F"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/DamageChannelDefinition.cs",
+      "sha256": "26B10C9FC00F34AE19C30FFC58F1AA7591873ABC8A464F0E810CA5062ED3E133"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/DynamicUnitSpawnDefinition.cs",
+      "sha256": "A17AD89049973537611F77CA6C8BB2D544D10AFF4CBED9D2BF5A1DC7EA76B029"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/EncounterDefinition.cs",
+      "sha256": "20C01D6201B334AA7F4A43EB1DE1BAFCB6040932FCE086F39675EAC1622126EE"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Definitions/FactionModelDefinition.cs",
+      "sha256": "C6B96ACEFBD44BF9E3C36C35A07C81649A41C030E6A2D63DCDFA29D70AA5B064"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Determinism/CanonicalEncoding.cs",
+      "sha256": "6DB54D23A008235BC448BAEF19C9C23FDE4475B9D3016676EDD2E23A31ADC2C8"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Determinism/DeterministicRng.cs",
+      "sha256": "79F01DD9961EEC6A2E16D98160576BC955C4E2BB9E57006C32AB3A6789BEE61F"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Determinism/ReplayFormatVersion.cs",
+      "sha256": "78EBCA49A8870C9781C6ADC9FBFAA5F4AD956CFAF0D435232B2E7CFB4AD2319C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Encounter/EncounterUnitSlot.cs",
+      "sha256": "C5A1BE48501FFC00761C3545E2972D0AB6F3AE6D64F1D83880B81080908F1BDD"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Events/ActionPlanEvents.cs",
+      "sha256": "5251C79BD11E9CC9E53D53EAF93F6342EE92CA6E6E36D14686072D8C60BD596B"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Events/InteractionResolutionEvents.cs",
+      "sha256": "B067F4A1369A1C787D158B1EC2BB2A0D0729C453926994A0E019461523295FA1"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Events/LogicEvent.cs",
+      "sha256": "E3EF7BFFD3CD107D5BA7E1DA79CF7C518B30A821E0213EB09164B3F88AFC6B2B"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Events/SimulationEvents.cs",
+      "sha256": "54D1F3F0355F01539DB6519D34BB6B906F1D83E5CABF8714DA347D2E86486747"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Factions/FactionModel.cs",
+      "sha256": "7F72C674247C296DA90C78F6B1C54A452F0EB70F5C9E9FC292F8E79CC90F1BEE"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/DirectionalCodes.cs",
+      "sha256": "2C1EBB2747C77BA56D963D20E05532D2D93EEDC7BA917948B7D8843570A4C866"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/DirectionalGeometry.cs",
+      "sha256": "64045CDA1FD4801E80AEBE5FAA711D1AE71B43ECC8FFFA6391871CAA3B58C4DB"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/DirectionalSpecs.cs",
+      "sha256": "9CBC3F07A90A3B6EF317F6FED9F9E50A696E22EA223498B36FD7F069B48D6AA3"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/DirectionalSpecValidation.cs",
+      "sha256": "6F5CEE426DDCB2466DD138199E980D04B3E2C76BA76470C6BF06885B64A34985"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/DirectionalTriangleSet.cs",
+      "sha256": "42726E01A98E7D90D508AC339877A2959FD60C9C936A2425C70094398839F09D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/GridDirection.cs",
+      "sha256": "3341150378A00566BB43FDBB0541CA2E4E0B473369F76FF74E305C585A118881"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/GridNeighborTable.cs",
+      "sha256": "C575F692F71D7B195539E1E9719C38F700178573A2B75407ACC354E8C92BAD3E"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/GridPoint.cs",
+      "sha256": "DC840E541A7900E56E28C9DD0617CED32F644ECA3661FECAF869513EDA9F4A9E"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/LogicGrid.cs",
+      "sha256": "7B3FF4B20F4451620B33D42A8B7FEE9B8CA57A7828DF47906CF6DA194E2C8E28"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/LogicGridCodes.cs",
+      "sha256": "C45F9C3D94CCDF7C954362E4AB55821B2E79B1951C8285A33FCCCEB87ACCF96B"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/TrianglePoint.cs",
+      "sha256": "529FDB286327AB7BF78C6BF1C61A1993A5424EA27EB30D5D5233BA06530A17DD"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Grid/VolumeFootprint.cs",
+      "sha256": "D08C6210A74416BCF8C4C36013E7832FEC574F3D1921808C8921823A63407BAE"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Ids/ControllerId.cs",
+      "sha256": "CA5A1BB4E10AFF5A5D26DCCE68382A321B0C463373A7034A51D02042C9CA1E61"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Ids/DefinitionIds.cs",
+      "sha256": "B66E1205487AD8E33C0FD3AEAB1293CDA9A4712678ED122B447AF92A4E34A74B"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Ids/DefinitionIdValidation.cs",
+      "sha256": "4381C3CF9286A4176A9C3E9123711CE0DE4E9CA4DEC63B3E2EB1128ED060ECC6"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Ids/InstanceIds.cs",
+      "sha256": "C609DB48BB96B00E5EC6DC1C0E7F06864FB110E63180C517F9E869001F9DD673"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Initialization/BattleInitializer.cs",
+      "sha256": "5FECF2C10F99A3C1D240DAF2BA987A30F633092C901E9E3E33DADA7EB313A4F5"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Initialization/BattleRuntimeInputs.cs",
+      "sha256": "A8A4AB0A874AE8C35F602CA894A2A0498BFF0E91464F17B20A711B22F4E448C2"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/CombatIntent.cs",
+      "sha256": "F56AA7EE37434EF1F677B14AE63E08EE3F809512DEAA633509352B9D9DAA2428"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/ConflictGraph.cs",
+      "sha256": "5A0C2B9EA58040399667CB06C9034F0EC84BEEE3BE89FF7E2D5C3B2A96D6ECF8"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/ConflictGraphBuilder.cs",
+      "sha256": "500CA5E1B340A3875FF18204D90ECFF71B12186CEAA9C9B97B93E38AE2EE7F23"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/ConflictGraphInput.cs",
+      "sha256": "7E5398FDA3BD24CCB10AAFEE2C45E6D1163AFCF8FF0E84E3C911924E18EC3252"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/ContactKey.cs",
+      "sha256": "95F8CE21A96FFC94DDB933011411D88C3F7AF1F886B3CB13C9AF9441312D55D8"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/ForcedDisplacementCommitter.cs",
+      "sha256": "7239517104451354E46DBE1C71C15A2AE4DC4AA2847441DB100E2571BDF27788"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/ForcedDisplacementSolver.cs",
+      "sha256": "D36D737C1BBBFBBCF17365B8E342A79F4F55E839D2C4BF3D7D17EFB579A78AC5"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/GlobalIntentQueue.cs",
+      "sha256": "7EEB157F063D49E04BF86F854B735B3CA76474A5FB00A1A00013F56C4AE449D2"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/InteractionCandidateBuilder.cs",
+      "sha256": "A7DC6020D3599214E651EEAED383384519B92E940997E842805860AA37361227"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/InteractionCodes.cs",
+      "sha256": "7B4650ABA5A308D208F7E3D5A8AEE4D2BD82E2B1D6E1AF970C2FCDFE75FFA250"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/InteractionCollections.cs",
+      "sha256": "21E309AA6A1656A9346732478ECAC8509690112EAEDC5C521ABC19FFDD085B5D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/InteractionSpace.cs",
+      "sha256": "DAE8CBBB0D5323F79508200DF0EEA2DF7FF46F71925392DF27B1E177CCD09E38"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/StagedConflictResolution.cs",
+      "sha256": "D79462D8743E5FCE916F1E163A445AD183DA25B0A66F6F39380EA33C27F390DF"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Interactions/StagedConflictResolver.cs",
+      "sha256": "B0960C048CF32CAEEEBBA539C7000DB05707128B010C5C88E8B55DB4756C1339"
+    },
+    {
+      "path": "Assets/Scripts/Logic/IsExternalInit.cs",
+      "sha256": "CB1E5BA09345942D5706ABA9BC6EDCAEB4049D7AD6D2C248AF1B6B613765CEA3"
+    },
+    {
+      "path": "Assets/Scripts/Logic/LogicDefinitionException.cs",
+      "sha256": "4CD9E7A0566FA0D4FF800DD3D350FC60E5E8C79B7FE6759B9FD10B84ECE5E783"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/DodgeCancellationPreview.cs",
+      "sha256": "71756A389D3A332A0122081A255D58EB4B8AFB678906ACC5141C01FB098CB052"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/DodgeRelocationAuthority.cs",
+      "sha256": "3D842DBDDC5764275BE3A98DD5D9FEB7E2FCBEBCE7B8414E30C894A625F23788"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/LogicGridMovementAuthority.cs",
+      "sha256": "A4E41BA99C10CF83685D67D884800B1729F481B004066D0700CCCE0370EC298E"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/LogicGridMovementPathCalculator.cs",
+      "sha256": "19F0E87309ED852B24192FF17AF55E1A129D5964A9C4DD25C0A45A8118202693"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/LogicPathfinder.cs",
+      "sha256": "68D610C5B3361C46CA2E52EF5EBABDEAE3CC13EC93E44F838C91A3CED2AC40CA"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/MovementSegment.cs",
+      "sha256": "5AE16686098BDA31E7D323E7B30FD21F3CE5E1B8AB83618ED3E3F5CE01820D36"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Movement/Reservation.cs",
+      "sha256": "34BE410B4ABEBEC826C6DF2BCB64BFBB60AFD093C8837C362E62FF028474880D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/ProjectHero.Logic.asmdef",
+      "sha256": "2FEAC2599C13F66C5079AABEB243F69303658733610D090A20E5E497F2694BBA"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Replay/ReplayAuthorityInput.cs",
+      "sha256": "FB65A7FF60AAB171DE77F28BC437759C098B1E8E4E5E1875F9A2BEAFB4DA049C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Replay/ReplayContracts.cs",
+      "sha256": "7582347416E5296A8625A6A9E3F6A2ECD656089B6FE3469378E12DE508243131"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Replay/ReplayEventComparison.cs",
+      "sha256": "30E9EAAF75963599963B1CE078DF3FAEABDF9D40B6AA112CB217526FDEE826E4"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Replay/ReplayFile.cs",
+      "sha256": "8EB1D959BEB414F5BBD9A2FC19515C93EEA1DA3ECE6EB946F839C9508D9D241B"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Replay/ReplayPlayer.cs",
+      "sha256": "78A93EE3E46A5F486B5C286EF8C04EF2E2646EC1C0B2CF1BC6CF2606BC94FF0A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Replay/ReplayRecorder.cs",
+      "sha256": "7BDADE812B99D02B73CC74E5F96A3C6DC351B4076205D8805B2FE34DD860708A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Resources/AdrenalineLedger.cs",
+      "sha256": "65BA33FDDA295EE8E6A287A18AE699A9AF8FA4DD815CEC120BD6B443F489FAB1"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Resources/AdrenalineLedgerRegistry.cs",
+      "sha256": "121E971F2C23ACA87B411F70F7D0E4CD96B5BDFEB4F5F722EA11E9FB3367AC6E"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/AreaThreatCandidateSource.cs",
+      "sha256": "54367E2A4DB0776B7F953CDFCE2E8CAE5656EC326B1887CF92B3E6B681F333D0"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/BattleSimulation.cs",
+      "sha256": "D0901174D11EAFC71AC1B223E8267FC5A44BABDE9C4F0B076117E5F5DCD1BEF3"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/ConflictGroupResolutionCommitSystem.cs",
+      "sha256": "99B80348B967FBC2C2859FE60FDC9EF869DF83177EE9894A456D27A43CC72A6D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/ProductionBattleComposition.cs",
+      "sha256": "BEE8CBA79C734683EAB7D8E6921305F3B19988DD6FBB5ACBAF0C41576B68DD5A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/ResolutionIntegrationConsumers.cs",
+      "sha256": "7FBFE9376475E2380F667C9951C8D6D4028BF3EB1E4AD295C5F5A8BFFA5BCE70"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/SimulationPhaseSystems.cs",
+      "sha256": "3B10F7FBD8A9DEEF0F11A9B11855553A9A1C8FA3F12EB3ED268033DA727C0E8C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/StepPhase.cs",
+      "sha256": "B62378A30A845C0D43E6EF40E8DAC46B6032AF5041B36A59EBB59A1643615A8E"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/StepResult.cs",
+      "sha256": "F807F820B14E2CEA3AC08555CFD6103CAD81294223E1A9A42CE6F96FA301908A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Simulation/TurnWindow.cs",
+      "sha256": "64D97E79E82F639B6EB3811BCAE4E8A0E91EA1A8F96CB507F359505CA01A083C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Snapshots/DecisionSnapshot.cs",
+      "sha256": "CE8FC8BD2EC6EEF5818C4A39B12A82887F75FACD9DF4B5827685F5380EBE582F"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Snapshots/HistoryArchive.cs",
+      "sha256": "8F1B6B016C689A875DB416A7E97EE68E4776028611DF7FD507FBCAD839A4BCE4"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Snapshots/InteractionSnapshotProjection.cs",
+      "sha256": "12B4C153B85A2DA9BC019BA81D87CC4B1646907314022A1AC7AAABE8DA6E2AFA"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Snapshots/LogicSnapshot.cs",
+      "sha256": "07CC73FE7C51137B4FF86406958366BD1DBE48929E96D32F9E80E4282F90F112"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Snapshots/MovementSnapshotProjection.cs",
+      "sha256": "1DDC6C568180CEC1729101FC6F09EBFCCD86B97D3CF32E65AB3BFCB0445E5DCF"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Status/BuffSystem.cs",
+      "sha256": "2F46BE4720C247793F66250042223C381C081F0C5DC59DA6FBBB311CCCB0C0BC"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Status/StatusEffectSpec.cs",
+      "sha256": "FC30B2C766C14FFCA29E9B36DB8B73C533E132D4014FFBEE1CD12CB0B78876D1"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionPlanCommandProcessor.cs",
+      "sha256": "0F3FBF108B27325C4BFEBA1AC64F3DE5A213EB9FBC1A63C5810A016FBB01E864"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionPlanFactory.cs",
+      "sha256": "3B8132A49941673C0FA959DCFBBB74A75AA56EA53780FCB409B0D6D6E0DDF7D9"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionPlanRegistry.cs",
+      "sha256": "557322E9A977185A077A225106A658E3DA8000D83128A8F310E4590C10F04D42"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionPlanTerminalArchiveSource.cs",
+      "sha256": "0B47A96550DF04E0F1D192F8AF01FF9B026CDBD4B5460C5B043AA21366658411"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionPlanTerminalCoordinator.cs",
+      "sha256": "9AC54BAD3B3F1E5BD6DF54A673AD1724E59C50FE6B49D8E6F4A3134E05B9810D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionScheduleAuthority.cs",
+      "sha256": "EE1EA822CDD0E244204D751842AFA766249AEEBB2FDD1A13E7FF2D2498A1D03D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionStartCommitPort.cs",
+      "sha256": "55C2F710C61FB57E14436340F7BBBF23728020B12139AEF13F72B27700CC0135"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActionStartGate.cs",
+      "sha256": "AF087B04942A3EC7118A38A691FFDD5522C59E91868719520E08A7D0D979F78E"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ActorLane.cs",
+      "sha256": "752861611200C8F9EE0081255F8D0A52A11935BCF3BEF1F80C784212D277F8F2"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/DodgeMovementInvalidationSeam.cs",
+      "sha256": "34B74F9B927ACBF76F619E017650209984E31A318D05F156DB45A5A69F8E2D1A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ReactionCodes.cs",
+      "sha256": "DEA984A45886CC11241B437E9A7C0048C9CBA0FB4C23A8B1DED7B1B09E905671"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ReactionCommandPlanner.cs",
+      "sha256": "0A73AC870EBE4EE28D1F8A1FCE2C88BA2C2A7C57708566B56CCC6DAF20B5F60C"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ReactionOpportunitySystem.cs",
+      "sha256": "4E8EF430EE69B64C60DFA0DC9E46E86F8E47E15D6A2F1F130EBB1D1206A26685"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ReactionPlanner.cs",
+      "sha256": "6A7E08D3C858235AA895FDC558781638F1B00BC171C036240212F14E1764EFE1"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ScheduleCodes.cs",
+      "sha256": "240BCF3E575880773E0D726C0BD50F905DFB2EC7E75E9C1FA245971437162A3D"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ScheduleEditor.cs",
+      "sha256": "0CE7FF4EE6EF4936A563CE960253CF4C7BD9A933F917981EBB1090FFA9C973BE"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/ScheduleEvaluator.cs",
+      "sha256": "A98D81C776686B5417C712173F178152A5FDE03EA92E5F368F050E79BCC203AF"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Timeline/SchedulePlanPreview.cs",
+      "sha256": "507256708046435D0CA7C6BF3A638E27F991F33C45064C28789549E25A929755"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Turns/BudgetAndAdrenalineCleanupParticipant.cs",
+      "sha256": "619D666B5E4B15F3BBE953091432E4E9B9DC56CF7A122833E3D022866055442A"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Turns/ConcurrentActionSystem.cs",
+      "sha256": "F0EC667FB50E5129A239C041C281863FBF7764A70D7E93C051149E684A2154AE"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Turns/ScheduleBudget.cs",
+      "sha256": "68A488BB4BDDD9254F16B2C1B863658953DF3B49CBD85389D4FCF425FD692444"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Turns/TurnWindow.cs",
+      "sha256": "21FC6D5B8F312817B73608D829A59A211E62339C2ADBFF5EB47CAAF72496B6E4"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Turns/TurnWindowManager.cs",
+      "sha256": "6C70921D687C595D51D684474EC90651D9B66950BF3656E21C39A5070C9DE2B6"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Units/UnitState.cs",
+      "sha256": "F0E2BC5DCE9A31AEB08A7CE0B97041E9F257F185364A552BF716E3A4BA9032D0"
+    },
+    {
+      "path": "Assets/Scripts/Logic/Units/UnitStateMachine.cs",
+      "sha256": "D65D35B35EC471AB484D7D4E38F90EDF8B07A2BFECC016BB4DF1D9C1223E147F"
+    },
+    {
+      "path": "Assets/Scripts/UI/ActionButton.cs",
+      "sha256": "23EB093F5558ABA929A2A297F3CD9D3765A65BED54388C669F78101416DC936D"
+    },
+    {
+      "path": "Assets/Scripts/UI/HUDManager.cs",
+      "sha256": "159141D0D330B88642BFF369DC171456E47BCF734A59CD39432D6B015DB9657F"
+    },
+    {
+      "path": "Assets/Scripts/UI/Timeline/TimelineActionPlacement.cs",
+      "sha256": "9D83587C520E090A93633EC01A9AE19699B226919F76050C83E643B06152C439"
+    },
+    {
+      "path": "Assets/Scripts/UI/Timeline/TimelineBlockView.cs",
+      "sha256": "CA26AD8112C591CB26B5A7C28FD10FA98247EF867595611AC93C52F5003292AA"
+    },
+    {
+      "path": "Assets/Scripts/UI/Timeline/TimelineEditorUI.cs",
+      "sha256": "938CAAE579717E6E67060AEFDBAE1D89047B077EE29505C6C4C4EF5381D63A59"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIManager.cs",
+      "sha256": "EDFE3940B950F77537D2DCA5BEED12EB92A7AA3F861AF09DBDF1477FA2B1E83B"
+    },
+    {
+      "path": "Assets/Scripts/UI/UnitStatusHUD.cs",
+      "sha256": "CDE7B250B1AAA6D8C855137292B430C7DBF7EEE3B1AD67749F6DAD0B2B234AEC"
+    },
+    {
+      "path": "Assets/Scripts/UnityAuthoring/NewBattleSimulationSource.cs",
+      "sha256": "EB8A8B4A246EAAA193A675913C8E1412C55C3B845A7AF01DF47F4644957BF4EA"
+    },
+    {
+      "path": "Assets/Scripts/UnityAuthoring/ProjectHero.UnityAuthoring.asmdef",
+      "sha256": "C201D5E7D50C72F08463D5C1733991C669645302FF0BDA6E36697633D7C7E18D"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattleFeedbackPlayer.cs",
+      "sha256": "794F033146CE3F822C466D8592EE1F114C68788F0AA071277334A6FA9368B310"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattleFootprintView.cs",
+      "sha256": "A5B1DB46C1A901C5AD9BF08C1868ED4AD9C3EBC61D12F08C02F083FCC247AE30"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattlePresentationModel.cs",
+      "sha256": "D4E9AB6823F83D91B424F27ABFAF1E89A3ED90489E9F1C9616645F649C4D73E9"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattlePresentationView.cs",
+      "sha256": "F55200C374C6EEA8F93E13EC29624BD0F09990FC7CE6E96E80B4AD0DEB606C1E"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs",
+      "sha256": "722318D06E4585534C1D7FA5506D67DCA78254E3C75A802DD70A7F60E7A90269"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattleRuntimeLifecycle.cs",
+      "sha256": "88DFDE1FAA9865D2070E20A56D77540346B8676EE0268D395D8007B75E8977CB"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattleRuntimeMode.cs",
+      "sha256": "277E3613DB207FDEBF4CBC5216CD7643A7EBEB336DF13203DBFA14C27210714A"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/BattleViewRegistry.cs",
+      "sha256": "A02776D2CFCA6BCB69C8A0911560FF24E972B7EE600F201A83FC4A0AFD1460EB"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/CombatFeedbackMapper.cs",
+      "sha256": "C280FBB42E3201A5B2862AA8062A804F45AF766304C82F0815970AB74F80BDDD"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/CombatUnitView.cs",
+      "sha256": "A5224D31032D154BC85D18F7A8647E202C9BC883F5C0E17E0D7EAC2BE5B6E2BC"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/GridView.cs",
+      "sha256": "3892FD1F4693B938CC231D0729D8EF296BE35A75757CDB84CCFC0DBBB83414A4"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/IBattleViewConsumer.cs",
+      "sha256": "3C595BE7AE02362A82FC366D9CE2B616CACE90DC3D3D89D143F44C1904F27A59"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/IViewPreviewPort.cs",
+      "sha256": "917C29DE7AEB51F38BFF28D7CE8BAED403C330EC2C0FCBDE94C1792C1FBDBCF1"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/RuntimeViewLogicPort.cs",
+      "sha256": "C501795F75CF8FB419DE1E8CEC84E6E8361983AB8F406B37948BF78FC4771BAF"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/ViewCommandFactory.cs",
+      "sha256": "0F9049F88A445934E5BEB1B74663082781A590820F3E8AB1A9FDBFEEE23CBCC0"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/ViewInputController.cs",
+      "sha256": "FF6FB1AE3527883197F90582BECBFF0EBABFFFEC29192262EDC2334B392A437D"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/ViewInputPorts.cs",
+      "sha256": "E483AB304489A6FE6D5716AA0FDB514DC4277040E59655B0ADD4A55131E3DAC1"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/ViewInputTypes.cs",
+      "sha256": "8991E58451E05800CDE00A66BFAF964006AC99F83FE68FB582AE1B8FD311D5E0"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Input/ViewTickConverter.cs",
+      "sha256": "3B96FBD0ABA4C2E0975AB94348CA21B37CEA3B8D8B2609FD319ED3211DBFFE7E"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/LegacyWriterRegistry.cs",
+      "sha256": "31AAC6911145685FD74E690A2C291305503966429AF7282121BA896CE9C512FA"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/link.xml",
+      "sha256": "F470C36423A0DF8E1796737B1293161A81A96773CF8046D69CE326FEFD79CDC0"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/NewCutoverGate.cs",
+      "sha256": "D5169B2264264C92E3D5BAE43FDD689094C644D17FFD4226A40FC34FD1F18C7E"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ProjectHero.UnityView.asmdef",
+      "sha256": "B74F596808BDC391664BBD1C34E8E8DE3099E58A3C862AB573EF4BB1CE9FAE26"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Replay/DeveloperReplayControls.cs",
+      "sha256": "F83028A5EAEF88C5897E060A92EC7BBC0A425FE2C29A08E3D4695BCEA98D1396"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Replay/Task11PlayerValidation.cs",
+      "sha256": "B1F7C2F443BEC069AFEF05E071C2DB459BE2F5F3706F3FAD5E4CFC8203E93ADE"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/Replay/Task11PressureValidation.cs",
+      "sha256": "66148FAD0047F0A3C8F28D76DC1778AE51D0765D86B2187CCB9FC2B6FCF4E7F6"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/RuntimeCallbackRegistry.cs",
+      "sha256": "891F922D411214E887865C1BA6342BDC1E36D727B48996BF2B6DEA777028D163"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/RuntimeCallLedger.cs",
+      "sha256": "F0024B2EE1B0158A3C3A3AF4F44955FC9FE7261DA9D48D3C9AC95A99018D7335"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/RuntimeContracts.cs",
+      "sha256": "9115578373B8F13DB468628CAA50BF531A2E85B833E311E201D67646F316A303"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowAuthorityProtocol.cs",
+      "sha256": "83D27E1DB19A204FBC9BF71C4223AA7144D696366E8AA84A39803DF6D054B8B3"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowBattleRunner.cs",
+      "sha256": "C54A195497DC74920DAB4859DC438B94C07E52AFA2E44D1251B81DE60936C834"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowCasePolicy.cs",
+      "sha256": "8D6E99B23AAB655C2409B46F8BA420237097201FE3483A04BA29BDCA8C2528D9"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowComparisonDetector.cs",
+      "sha256": "2EE68B0BB90F22BDDF051A0C019FAA2F27A425BBFAE96B8308D0A6CF07AC57E4"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowComparisonReport.cs",
+      "sha256": "00D41CEE5A4114CB69CFF91EF160110165015B15E3EF8356ACB93317EB297409"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowMigrationObligation.cs",
+      "sha256": "E2195AE2E595533CA34A00E966EB21AC50341218A764786050082E5161B88297"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowPlayerRequestMirror.cs",
+      "sha256": "38CD310EC31EF456836755D08B7B41BBFF104DE1E6A4B3565963438B9FED34CE"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/TimelinePlanView.cs",
+      "sha256": "544B880BAB6E86B35977DD0709C0F593CDE223B336240CD686270E2BB8E4D90F"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/UnityBattleDriver.cs",
+      "sha256": "208558BF92ABE2ABBC1A29D508D0E385B2C54E3F9D06489D6824AA03128359E5"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/GameFeelManager.cs",
+      "sha256": "7971F7367D44A473F6191E86D64BF10D2982A1BBF7A2FF52B3F7A90E3CFA777C"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/GridCursor.cs",
+      "sha256": "E8619B551E041002A71D1C94B7B7F3012114B08BE28D37867C4B7A1389B3802F"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/GridVisuals.cs",
+      "sha256": "832403432009FC87AD9632E7E95516222AA15685FF772EB6B177B6A756918EEA"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/NextActionPreview/NextActionPreviewBootstrap.cs",
+      "sha256": "866DA0529564F194F444CD803E0B39FB4880376011ECAB440449491479E3E877"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/NextActionPreview/NextActionPreviewInstaller.cs",
+      "sha256": "0001839A7379C082D457FE6F0B9D3B4CFD9FC5380318B7EE7F0F3C58A7EC6D67"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/NextActionPreview/NextActionPreviewRenderer.cs",
+      "sha256": "74E301B8CEC7AADD2C05B0A41C6BE18EC7DD800AC06792C01123BDE68D0C4E73"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/NextActionPreview/NextActionPreviewSystem.cs",
+      "sha256": "FA30E464F92896B57C04A3EB1577C7A1D3D199A1516AB4BEE1DB36550256389B"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/UnitBounce.cs",
+      "sha256": "6F3DC05A3D79DCC3C36556A70310BD7857825607DCB153F8340A757945F5D95F"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/UnitMovement.cs",
+      "sha256": "B0F3FA9A22BEA5C5BB0D0C301CDB48E7868890EE48262C137CB1B81B9033F6BA"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/UnitVolumeRenderer.cs",
+      "sha256": "5C4E95BC5D3EE2D3908F75C120C48FE10EC5BC019F93DD9670BEC389D4AE9885"
+    },
+    {
+      "path": "Assets/Scripts/Visuals/UnitVolumeVisuals.cs",
+      "sha256": "9B0642633EDB32DA346B28C7F7CADCCEFB04E9CD500BC6EA203D08EA63B50170"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/AssemblyBoundaryAuthoringTests.cs",
+      "sha256": "C95BF8CEBBCB54EBAF177DED3490F12DD15C4B157580641C27BAF0087A133F55"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/AuthoringInstanceRuleTests.cs",
+      "sha256": "B4463ED48622CE9EEECB304FA524F42BF498D5FF0564917D49087BD115F58DA9"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/AuthoringMigrationTests.cs",
+      "sha256": "7FE1D285505DDB19D1C81B7AA9FCFF9EF28DA8D5042DEBE4922C08790DF0F4C5"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/BattleDefinitionFixture.cs",
+      "sha256": "6D65A878636E2253979E4272991CA6AC043363F5018AE8C1569C0C23FD88FDB8"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/BattleInitializationTests.cs",
+      "sha256": "74C20436540B33BFC40A319794787CE4E21F4E32E5D13046FCE4B6770B35EB4F"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/LegacyAdapterTests.cs",
+      "sha256": "2549001E0D0B5E2EA9833B1814D435FEAC693244CA2DF40327841A6294C590C9"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/LegacyGeometrySliceTests.cs",
+      "sha256": "F6E25867B23A393D437F451155C333B7B092E63269290DBC51C72E4886C18115"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/ProjectHero.Authoring.Tests.asmdef",
+      "sha256": "E3239D9AA6DBFAFBD2E0C44F871124551BC48FA453A98DBD680078AAC506E9BE"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/RuntimeOwnershipSceneWiringTests.cs",
+      "sha256": "7E6345E60924323D6D22225565A992650A19A4391D3FB8DA85BE962C0811A033"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/CommandIngressTests.cs",
+      "sha256": "1D92A393343A03ECFCC2255975E6C0A9C2B3D2BE3D8ADDFE63B5797E84CBE70F"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/DeterministicKernelTests.cs",
+      "sha256": "5B4A7642E6C9577EA37D4FED68F85C652404F376D899623B700043E64955FAC1"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/ReplayContractTests.cs",
+      "sha256": "C9ADB7E211D45ABAB016A11308DBEA988AAAC56CF87F5F3DE92F9933D9881FFE"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/SimulationLifecycleTests.cs",
+      "sha256": "60D51C5D82DA830E9DEF6563B3F2284752AF7CCFB3EB6239F10F209D275E3038"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/SnapshotAndHistoryTests.cs",
+      "sha256": "E3D739B2A02FFC6ACF397A3A5B047B18691DB9DB57143FC879B9461BB19D3A79"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/StepEvidenceTests.cs",
+      "sha256": "9B8E469481BFABA7F3A924167115D34364B99F6F27BC54181D5489FBB82038C2"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/StepPhaseOrderTests.cs",
+      "sha256": "9DA8281F237093448F252702FB0FAAB98BA7167BBAD105F73EB6FEBB34921A43"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task03/Task03Fixture.cs",
+      "sha256": "1A4AE5915A96493F5D6948A347D643A51E23C5AD37ED2AA17A6293DC1CDAD37B"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task04/Task04Fixture.cs",
+      "sha256": "E760AC444AF6C9B8D2B391CCBFCCAA1E94C692B9B163135A341F235B7FD1FE76"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task04/Task04LifecycleTests.cs",
+      "sha256": "B4841E3F0286194722CCF43E13B3FD152D595660A768D808172EF296F455693A"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05ActionPlanAndLaneTests.cs",
+      "sha256": "ADB4C21254C02781DD02233FEEF9452CE801C228F4EA6899A94778AE5A5C38CD"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05DodgeSeamTests.cs",
+      "sha256": "C06846A02EA52AAC326CE2D288CD1B67F4FA732D15A784F81E749431028ECF68"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05Fixture.cs",
+      "sha256": "74099FC8FCD3EDA65AEBBF6CCD2C978620EE4772A85F541BD1AB093E0F99E0F4"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityIdAllocatorTests.cs",
+      "sha256": "699FFB627BF9FC66B8E8C6173C0B2A11D7AFE9CA85566043989FEAD649033A16"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05ReactionOpportunityTests.cs",
+      "sha256": "152793BCC126035B3080C81C4B28FBDE50FB2C1DE1EECE3B3BE501DEDD3B0A6E"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05ScheduleEditorTests.cs",
+      "sha256": "FB07C4006AFEBDA1608A24BE0AA0902B4C0D5387FCD1A1AA61B642A75378E6D7"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05SimulationWiringTests.cs",
+      "sha256": "5B0171A50C6493A3705654AB8A130F25E361F2A5FD4E43E8E8C7168CDADE956C"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task05/Task05StartGateAndTerminalTests.cs",
+      "sha256": "85C901458DAF95F45122CE0DA3C649ED3BF4728C90767C7CA4D726C245C943CF"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task06/Task06CommitTerminalSemanticsTests.cs",
+      "sha256": "83705A4A8D7D4566357CC02B3F5719DCC5F9F2689C58395A14D88E6B2A55011C"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task06/Task06ScheduleSpaceTests.cs",
+      "sha256": "44411C8BEE0F1BD50E1999EE16FAADFACE397A74A8781A40BBD3DA0B213813C0"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task10DriverTests.cs",
+      "sha256": "A7454B4F0EF463857FA607EA0C38E8D6E0B92DD35ED7FD5BC971440AB1FE2A64"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task10PresentationModelTests.cs",
+      "sha256": "4E7AB312095660E9C3773D4A7BE152580760F5B88574CC6F55B6121832617026"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task10ProductionTests.cs",
+      "sha256": "E62064EC338E52B54231CCCF2322B08C096EB68D5D96F5273DAA837BCD98FBB7"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Authoring/Task10ViewLifecycleTests.cs",
+      "sha256": "2763A51C73019E6AC771E4F955D7A37B96135F9C809B1F9A7339D59CD2684B55"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Compatibility/Editor/LegacyCombatUnitAdapterTests.cs",
+      "sha256": "C81FC7D0C4CDA3F6614F8B9D3B41682FE8FAA4BE2E5F3D435EA7232C4EEB8748"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/ActionDefinitionTests.cs",
+      "sha256": "8F6617DB83B60F2DC9A5D69C0328DCD943D9B7BAD008701D057CDD5FBEE36BDB"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/AssemblyBoundaryTests.cs",
+      "sha256": "72F13B53B59AFB0DF7D7858AB97CA4A695F8FD8A33DED69BC14C02DF01C2AA2F"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/DefinitionIdTests.cs",
+      "sha256": "403051C5D147933ED598FCD20C616753F7B0BC99793F5F0F0B1DA5031376B189"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/EncounterAndFactionTests.cs",
+      "sha256": "C213B0AB211E0789B1E08EEC529A3FA29DBA4890BA0205B3A65EFCBE86273A51"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/GridGeometryTests.cs",
+      "sha256": "E84D7EFCDFAF3C846D0C06D7DFC3DC5D3323985568A0F05C074A9633261BF9BB"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/HashParticipationTests.cs",
+      "sha256": "2F859F9967403F3A15B22472C66984CB3B211D7229FC118B4FFDDC2A6899D1F8"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/PathRulesTests.cs",
+      "sha256": "D7BD2027EC7CBF8E7A398D68C084E1A9591C431DD73A56940DBCE2F0F98E86FD"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/ProjectHero.Logic.Tests.asmdef",
+      "sha256": "54FEAA7129600B45D91C2F30CBE259990C5DF149B016B361B7D70C90F6A63318"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/ReactionAndAdrenalineTests.cs",
+      "sha256": "2AC883061C9149EEB514CB5481D67886BF3E07D17A1BB69522D5BFA7BE92E0D2"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/StatusEffectKernelTests.cs",
+      "sha256": "532E4A0568B63FE62B617E8AD4F93A3531A974C01777F3214F87F7B785C6DB83"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task0108LifecycleRegressionTests.cs",
+      "sha256": "CB82C57070AA94D3923395CF1DBBF4A7C1880619FC1070B01E42BB41E17C105F"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task06AssemblyIntegrationTests.cs",
+      "sha256": "7C7F753BCA95EE7E2F3CD66C33ECD34931E28C7D90A341CE43D7083C441C4D50"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task06DodgeRelocationTests.cs",
+      "sha256": "54A9B9CBA28F5E3FA4333AC9DB603CEBC6303BB88C2CAEDBC68277000BAEE155"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task06LogicGridTests.cs",
+      "sha256": "3DEBE79330437D4287608CA1E8ED4771F31154CA745921D9B2CEEAFED529E566"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task06PathfinderTests.cs",
+      "sha256": "1624BE883B3DF9C0121F51A3141A6F770C3D23EAC626C825936BEF8A9FFFC988"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task07BudgetTransactionTests.cs",
+      "sha256": "5DA3F77E36FA7368CED934936A05BAD3B8E08E43B07A438568F7D4F71184FF37"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task07ForcedDisplacementBudgetTests.cs",
+      "sha256": "78F89EB27FC732D7AB225DBF9659520F1A670DD0744CD1D9CB53D58D8B5AF01D"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task07QueueAndReactionLaneTests.cs",
+      "sha256": "BE92823CA15B6269322697E3A531DCD73A6039E46877948F1CC74FF0053E11C5"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task07RemovalAndDiscardTests.cs",
+      "sha256": "226C5C8FED433BB9773D1FD7241DC087C246FFFD9FB51B43B717BB4F3AC96481"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task07TurnWindowAndBudgetTests.cs",
+      "sha256": "E055BC8333700435ADD54F562A158F384345E471D05A5BD42ED56BEA011A9959"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08AoeTargetPolicyIntegrationTests.cs",
+      "sha256": "D1796B1EEA52D3B849F59D8B95E422E28926C0B27DE2BC8E64DC1E23B336C7A7"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08CommitCoverageTests.cs",
+      "sha256": "AF070C566DEB30AE493CEC69BAFDE7124FB7F1827AFFB2F0CDFF6B6770BF940C"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08ConflictGraphTests.cs",
+      "sha256": "B16C41B443782CEC04589820D0B430932037FCED15BDE7A12924E9C994F1992C"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08DeathFootprintRemovalTests.cs",
+      "sha256": "A2C2ABC69CB75970828F635FFC34BD3C748F9976424138E93E0EFDA1854983A2"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08DefenseCoverageTests.cs",
+      "sha256": "B5A4AE5C63FD7BA480C7B38BA39A8E5F977146F9477412BF2867BA54F4ECBE1A"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08EventAndAccrualIntegrationTests.cs",
+      "sha256": "7877C3C0E9A3F60F34000978B124467E239A642C4D12478B4815F730EDFE3273"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementBatchTests.cs",
+      "sha256": "E8D0E270B8FE707E9468F80E02F724DFC9510279693D1BDBFFA10149AE0907EB"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08ForcedDisplacementSolverTests.cs",
+      "sha256": "3AFF60D04C9F8C76E6F0DC7B5E5DE4E4288E7F8571DD5C1E31A119E2DF3E41C2"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08IntentAndConflictGraphIntegrationTests.cs",
+      "sha256": "54B3CCAA41D4DD3566293A1EB3B3733DA273D4207BDA498D4265E34F15D6C2DC"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08MomentumAggregationTests.cs",
+      "sha256": "1875CE9F25806853B93067127E0696B054E12D45F7ABDCEECE3F622C8FE572AF"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08MomentumClashTests.cs",
+      "sha256": "C63BA886D12B2EF0EB8D09DFC96474B2B8A7EAB805101B1A3170AA0C098B3013"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08MomentumTests.cs",
+      "sha256": "D54CF581727595C6184B05E1853EC54069A5CF710F814F11E55B2F474CF2C570"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08MultiPartyCoverageTests.cs",
+      "sha256": "0EC3B7BA92738E82507956AA2C888CC290460FAB62F0E5060194BB49AA9A320B"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08OpeningAdrenalineContractTests.cs",
+      "sha256": "FB15E6C19346A58FED72ED5AB2BFD25392634A920E37702699F8591FA95327B3"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08RemainingCoverageTests.cs",
+      "sha256": "F6414DB7727C2A0C480EE773349CB937A64DAE88501C16BF910964D8DF5D079E"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08SnapshotContractTests.cs",
+      "sha256": "F4957FA6A22F839E2CA32DF7096BD98761166939B29C6733F27C93ED1CDBD478"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task08StagedResolutionIntegrationTests.cs",
+      "sha256": "A345113A6531D0770E788515F6CEF0A8BAB254284B6B1ECAA77D27F86C552803"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09A2Fixture.cs",
+      "sha256": "325664B35A2CF5D54F0A9B271EC33410E01FF9104A6E636FFAFB7A9F343C902B"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09AiDecisionTests.cs",
+      "sha256": "D01F8AF28D0D9811CA0A6EA3777AF109B3501F57111C9759853E0963334557FE"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09AiSnapshotTests.cs",
+      "sha256": "DF43B8B74BCF93B2051723D65907B8FED13719E9FADE2B5640AEFACB9F5527D3"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09CommandIngressTests.cs",
+      "sha256": "324B907FE0B79BECF37C272808D9090FBE8307A3710C8B121558B5D7141AC869"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09CommandSurfaceTests.cs",
+      "sha256": "C2931AFD98871023DDE8E33031277A5E63F1E8269C77EDD7B81FDFFFA6BB2FA9"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09ProcessorAndAuthorityTests.cs",
+      "sha256": "167E14D8201720F0E47C8C59213E3FD34F7B440502E0B7E9ABC9771E7A715812"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09ReactionCommandTests.cs",
+      "sha256": "F4F98543318C5600418E77DA9201D2EE197A390150D9ACE986B43B67E547B765"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09RemovalSemanticsTests.cs",
+      "sha256": "26C9DB0620DFE9476436BD3B471CDE702A58FE4844052344C6D8ECA2AE718DF9"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09ReplayInputTests.cs",
+      "sha256": "AAADE6194AB73ACEB5B22DBA18295CD9B613FD69BE868CAD19B609F8E70AA0C1"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09ScheduleCommandTests.cs",
+      "sha256": "7B91E1CEDA8F99339BA9A00756190F4FB09AD32C7B10FF3BCDCA5DACFA7329BA"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task09ScheduleSemanticsTests.cs",
+      "sha256": "771B3D407A7D0E86CFEDA42593A039432CC2B524FAF674F996B25C97F0C21E1D"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task11DynamicSpawnTests.cs",
+      "sha256": "1406481AFA1D8C01F91A936035648E2F27254812761827F73E40F946F92F03B7"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task11FinalMatrixReplayTests.cs",
+      "sha256": "B5F1A62D5CBD35C34547C4FB73B32626608E93407E7163976CA3EAECEE90A8F9"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task11ReplayTests.cs",
+      "sha256": "CCFB590FC1C43F7A384B4808C4021DBFACEDD4AC6CA0DBA0A803B2EEDAF1EC52"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task11TerminalHistoryTests.cs",
+      "sha256": "57E567D98CE0B4DA71E66A92C7A8095D2CFB702077E6A487E1DD732DB18AA70D"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/Task11WindowHistoryTests.cs",
+      "sha256": "38D99146B1AC31B693D3D9A8AA1248D840B4AD03E79261D07BCC6DAC7FF93D57"
+    },
+    {
+      "path": "Assets/Tests/EditMode/Logic/UnitStateMachineTests.cs",
+      "sha256": "081E1CF8FA7B27ED3A6339797AC6882250DCEBB08DBAA218526A9AEA75874942"
+    },
+    {
+      "path": "Assets/Tests/EditMode/UnityView/Editor/Task09ViewInputFixture.cs",
+      "sha256": "CF8A8EBC74805174A67935BB41BB56C7AA5C3B1C445A1A1F5FBE57E7DCF50463"
+    },
+    {
+      "path": "Assets/Tests/EditMode/UnityView/Editor/Task09ViewInputTests.cs",
+      "sha256": "7EA2EC92499E658351C6F7B4A73AE7D2AFE843A6AD3785A882185C40227279C9"
+    },
+    {
+      "path": "Assets/Tests/EditMode/UnityView/Editor/Task09ViewTimelineBlockTests.cs",
+      "sha256": "D8F3C33908A7DA21BE2BBB7B544ACBA23353E8BD30021EE4C35F23BFF4B2B922"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/ProjectHero.Compatibility.Runtime.Tests.asmdef",
+      "sha256": "765DB381813BEE372D8498E99635A8490F10DE4C1BCDD68C4E95E634AF2813E9"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/RuntimeOwnershipTestBase.cs",
+      "sha256": "78757C97B9AA23BE7FC1D383DBCD4FB8D82C47DF3C7DF188B7CFC468D2059A46"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/RuntimeOwnershipTests.cs",
+      "sha256": "41AEA8D49739AC0DD2C5BD231C93CCCB803E662B024BC9DA55884285A39C7C66"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task08SceneCoverageTests.cs",
+      "sha256": "C316B3614CD3AED6805D132AB8619C61E28CD4F84C3C13EA220D50BAB85F271B"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task09ShadowMirrorTests.cs",
+      "sha256": "4653235885B727381A1A182B6F763309C70DC50EB92B78B6FA09C187CBE5F3AE"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task09ShadowProfileTests.cs",
+      "sha256": "36837AE75930711DAA683BB049242A9D8CBBD38E673E415CAA6E3DAF76CC1EF0"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task10MigrationTests.cs",
+      "sha256": "773AB01DD2CB11A13B78D033493EF46A00E4724190AB874D9CF8AB269F6E3ABB"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task10WiredPresentationTests.cs",
+      "sha256": "EAD20F29908AC0A2F1C886D6301FCEABE058D56C3A44D1A270D0611DF87A8244"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task11DynamicSpawnSceneTests.cs",
+      "sha256": "30288F47E4C8A50B8224BF3B92A8BD996A28DC0B8A546D35CDA6BBAAE291044A"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task11IndependentSourceSceneTests.cs",
+      "sha256": "D771F28ACAD727ACAEB6D217AF24041E1F8EA2D14664D21484137297E50B1FB2"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task11MigrationContractTests.cs",
+      "sha256": "D07139C568C7E5BE95FD02ED481DA1858665C3E0ABCE129BBD655F356F1D9374"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task11ProductionSceneTests.cs",
+      "sha256": "099A0A161ACB6CECC96E202892C0748B108C517ED30542D22DB4DB571E1CE0EF"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task11SceneScenarioSource.cs",
+      "sha256": "EF3DA4DF2B6CA9D242F88115D3E46F4CDA8AB343B352BCE6D7E78ECB82E9C63F"
+    },
+    {
+      "path": "Assets/Tests/PlayMode/Task11ShadowClassificationTests.cs",
+      "sha256": "57A055118B458F46DA3983BEE37D1322B3857553180A992ACFBDC59EE1ED7700"
+    }
+  ],
+  "entries": [
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline",
+      "category": "ReplacedRepresentation",
+      "reason": "旧实现用浮点 CurrentAdrenaline 逐帧衰减（CombatUnit.Update，5/s），新内核用整数 AvailableAdrenaline + 个人 CycleId；量纲与生命周期都不同，在只读检查点无法稳定采样。任务 07 已把新侧模型落定（每单位 AdrenalineLedger：Available 不衰减、跨其他单位窗口保留、自己窗口打开时先递增 CycleId 再清零、预留按 ReservationCycleId 归属、Tick 末只接受规范聚合事实入账），但旧侧浮点衰减仍在逐帧改变取值 ⇒ 本条**仍**不可做字段级相等比较（不是被忽略，也不是被批准）。逐窗口/逐周期的真实比较在 Logic 对 Logic 通道上完成（Task07TurnWindowFacts，逐用例由 ShadowCasePolicy.CompareTurnWindowFacts 开启）；本条的迁移归属仍是任务 10（旧表现层最后一次读取旧字段之前）。",
+      "executedCases": [
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.AdrenalinePersistsAcrossOtherUnitsWindowsAndOwnWindowClose",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.OwnersNextWindowOpenClearsAvailableAdrenalineBeforeCommands"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10",
+      "category": "RemovedResource",
+      "reason": "旧体力是 CombatUnit 浮点字段，新方案 1.2 已定移除；在新资源模型落地前没有对应字段可比较。任务 07 的整数预算与肾上腺素账本**都不映射**旧体力/专注（旧体力不再被任何 Logic 路径读取），因此本条不会因任务 07 而消失：它随旧字段一起在任务 10 的场景迁移中清零。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded",
+      "category": "ReplacedRepresentation",
+      "reason": "旧胜负由 BattleManager 每帧轮询 + timeScale 慢放表达，新胜负由唯一 Finalizer 在 Step 阶段 2/16 原子提交；任务 04 已把旧侧结束标志真读（BattleManager.BattleEnded）并与 BattleEndSnapshot.IsEnded 做字段级比较，本登记项保留的是「旧侧结束时机（逐帧轮询、含 timeScale 慢放）与新侧阶段边界不同」这一语义差异，由任务 10 迁移旧胜负表现时收口。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail",
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.IsStaggered / IsKnockedDown / InWindup / InRecovery / IsMoving / CurrentHealth#units[i].state",
+      "category": "ReplacedRepresentation",
+      "reason": "旧侧状态由多个独立 bool 表达（无等价状态机），任务 04 已把它们按冻结规则推导为状态族标签并真读比较；本登记项保留的是覆盖边界：旧侧没有 Guarding/Blocking/Dodging 的等价事实（属任务 05/08 的计划状态），三者一旦出现在新侧就会与本标签不一致，届时必须把它们纳入比较并更新策略。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail",
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager.EndMessage#battleEnd.resultCode",
+      "category": "ReplacedRepresentation",
+      "reason": "覆盖边界登记项（与 battleEnd.isEnded / units[i].state 同类）：旧侧只有结束显示文本（BattleManager.EndMessage），没有与 Finalizer 对齐的结果码字段；任务 04 已真读该文本、按冻结规则派生结果码并把它纳入字段级比较（“无结果”的两种表示——旧侧空串、新侧 null——已归一为同一缺席事实，见 ShadowComparisonDetector.NormalizeAbsentCode），因此本条比较的鉴别力是「旧结束事实被真读且派生码与新侧一致」，而不是「两侧结束语义等价」。任务 10 迁移旧 UI 胜负表现时一并收口。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail",
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#effects.count",
+      "category": "ReplacedRepresentation",
+      "reason": "旧侧没有「效果」这一实体：它只有 BattleTimeline 的排程 Intent 列表，与新内核的 StatusEffect（任务 04）不是同一结构，计数不可比。",
+      "executedCases": [
+        "ProjectHero.Logic.Tests.StatusEffectKernelTests.EffectIdsAreUniqueAndMonotonicAcrossUnitsAndSpecs",
+        "ProjectHero.Logic.Tests.StatusEffectKernelTests.InsertionOrderDoesNotChangeOutcomeOrEventSequence"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans.count",
+      "category": "ReplacedRepresentation",
+      "reason": "旧侧计划由排程 Intent + CombatUnit 状态表达，新内核计划是 ActionPlan（任务 05）的显式实体；在任务 05 落地前计数不可对齐。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests.TerminalPlanLeavesEverySchedulableCollection"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#rng.state",
+      "category": "NewRule",
+      "reason": "旧运行时没有显式 RNG 状态可采样（随机性分散在旧表现与特效路径）；新内核 RNG 状态是确定性基础设施事实，但旧侧无对应可比较值。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Authoring.Tests.Task03.ReplayContractTests.TickZeroReplayFromRecordedPlayerFactsReproducesIdenticalHashes"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#intents.count",
+      "category": "ReplacedRepresentation",
+      "reason": "旧侧 Intent 只以 BattleTimeline 排程条目存在且无独立序号空间，新内核 Intent 由任务 08 的事件/意图系统产生；两者计数不可比。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Authoring.Tests.Task05.Task05SimulationWiringTests.ImpactTickTransitionsToRecoveryAndStillEmitsIntent"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#scheduledEventCount",
+      "category": "ReplacedRepresentation",
+      "reason": "旧侧排程表条目数（任务 04 已真读 BattleTimeline.ScheduledEventCount）。它与新内核 StatusEffect/ActionPlan/Intent 不是同一结构，因此不进入字段级相等比较；本登记项的作用是留下「旧侧排程事实确实被真读」的观察，供负控制使用。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Authoring.Tests.Task05.Task05StartGateAndTerminalTests.TerminalPlanLeavesEverySchedulableCollection"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].state",
+      "category": "NewRule",
+      "reason": "旧侧没有 ActionPlan 对象，只有 BattleTimeline 排程条目与 CombatUnit 的若干独立 bool；Editable/Locked/Running/Completed/Terminated 这套生命周期状态在旧侧没有等价事实可采样。逐计划状态在 Logic 对 Logic 通道上真比较（Task05ScheduleFacts）。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].startTick",
+      "category": "NewRule",
+      "reason": "旧侧排程条目的时间语义是「队列位置 + 逐帧推进」，没有与新内核同口径的 StartTick/绝对 Tick 投影，因此无法在只读检查点上做字段级相等比较。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].lockedAtTick",
+      "category": "NewRule",
+      "reason": "旧侧没有「锁定」这一原子边界（动作是逐帧开始执行的），原子锁定/启动是任务 05 的新语义，旧侧不存在可比较事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].automaticDeferralCount",
+      "category": "NewRule",
+      "reason": "旧侧被控制状态阻塞时不做「确定性向右延期」，而是直接跳过本帧；系统自动延期次数是新语义，旧侧无对应计数。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].impactTick",
+      "category": "NewRule",
+      "reason": "旧侧攻击没有显式 ImpactTick 字段（命中时刻由动画事件与逐帧逻辑共同决定），Impact 与 Recovery 的绝对 Tick 边界在本任务才成为权威事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit#plans[i].submittedWindowId",
+      "category": "NewRule",
+      "reason": "旧侧窗口归属由 BattleManager 的占用状态表达，不挂在动作上；新内核把窗口归属记录为计划的审计字段且不参与执行过滤，两侧不可比。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].terminationReason",
+      "category": "NewRule",
+      "reason": "旧侧动作没有终态原因（被打断就是不再继续执行），13 项 ActionTerminationReason 是新内核的显式语义。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit#actorLanes[i].pendingPlanCount",
+      "category": "NewRule",
+      "reason": "旧侧每单位的动作队列分散在 BattleTimeline 事件表与 CombatUnit 状态里，不存在「每单位一条全局 Lane」这一权威结构。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit#actorLanes[i].locked",
+      "category": "NewRule",
+      "reason": "旧侧没有「Lane 提交锁」（死亡后由控制流短路），锁定只阻止新提交、不清除已有计划这一语义在旧侧没有对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#reactionOpportunities[i].state",
+      "category": "NewRule",
+      "reason": "旧侧没有 ReactionOpportunity 对象：Block/Dodge 是直接播放的动作，没有机会状态机、逐选项截止与关闭原因可采样。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#nextReactionOpportunityId",
+      "category": "NewRule",
+      "reason": "旧侧没有机会 ID 空间；新内核的机会 ID 由权威排程器分配并进入规范化快照。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#terminalPlanRecordCount",
+      "category": "NewRule",
+      "reason": "旧侧没有「终态计划历史 + 增量摘要」这一结构（任务 03 归档协议是新的）。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#GridManager.OccupancyMap#occupancy[i].anchor",
+      "category": "NewRule",
+      "reason": "旧侧没有 LogicGrid 占位权威：占位由 GridManager.OccupancyMap 与 Transform 位置共同表达，单位锚点的权威值只存在于新逻辑层。旧侧可比较的空间事实是 CombatUnit.GridPosition（已作为 units[i].position 真读比较），而不是逐单位逻辑格锚点。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#Pathfinder#movementSegments[i].from",
+      "category": "NewRule",
+      "reason": "旧侧没有 MovementSegment 对象：移动由 UnitMovement 的逐帧插值表示，没有 (ActionPlanId, StepIndex) 定位的离散段与 From/To 半开区间。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#Pathfinder#movementSegments[i].to",
+      "category": "NewRule",
+      "reason": "旧侧没有段的目的格这一权威事实：落点由逐帧插值与 transform 位置表达，无法在只读检查点上与离散段的 To 做字段级比较。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#Pathfinder#movementSegments[i].endTick",
+      "category": "NewRule",
+      "reason": "旧侧移动的结束时刻由动画/插值进度决定，没有与新内核同口径的绝对 EndTick，因此'命令前边界在 EndTick 原子提交'这一事实在旧侧不可采样。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#Pathfinder#reservations[i].cell",
+      "category": "NewRule",
+      "reason": "旧侧没有空间 Reservation 这一对象：同时到达同一格的冲突由逐帧执行顺序与 Transform 距离隐式决定，没有'一格一持有者、先成功提交者持有'的权威结构可采样。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#UnitMovement#movementCommit[i].expectedFrom",
+      "category": "NewRule",
+      "reason": "旧侧没有'未提交段'这一概念，因此没有'剩余路径起点必须等于当前锚点'的可采样事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#Pathfinder#movementTerminal[i].segments",
+      "category": "NewRule",
+      "reason": "旧侧没有'计划终态后清理其移动段'这一结构：旧移动是逐帧插值，计划被打断即不再继续，不存在可逐条核对的残留段集合。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#Pathfinder#movementTerminal[i].reservations",
+      "category": "NewRule",
+      "reason": "旧侧没有 Reservation 表，因此'计划终态后其全部预留已释放'在旧侧没有对应事实可采样。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#currentWindowId",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（窗口 ID 计数器 nextWindowId 仍作为基础设施事实逐检查点比较；这里登记的是「哪个窗口是当前窗口」这一权限状态）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows.count",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（含已关闭窗口的可审计账本，旧侧没有窗口对象可计数）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].openedAtTick",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「窗口在哪个 Tick 打开」的权威边界）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].isOpen",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「已请求关闭/已正式关闭」这两个分离的窗口位）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].isAcceptingSubmissions",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「立即停止接受新增提交，但本 Tick 后续命令仍按稳定码拒绝」这一语义）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].closeReason",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（OwnerRequested/BudgetExhausted/OwnerDied/BattleEnded 四类关闭原因是新内核的显式语义）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].totalBudgetTicks",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].reservedBudgetTicks",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].spentBudgetTicks",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].availableBudgetTicks",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].reservations",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（按 ActionPlanId 归属的预留明细尤其不存在：旧侧动作没有「从哪个窗口预留了多少 Tick」这一事实）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Manager#BattleManager#windows[i].budgetIdentity",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（恒等式 Reserved + Spent + Available == Total 与预留明细合计一致性都是新侧不变量）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#nextWindowTick",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「下一个窗口最早在哪一 Tick 打开」的排程事实）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#lastClosedWindowId",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（旧侧没有「最近关闭的窗口」这一审计事实）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetAvailable",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetReserved",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetSpent",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator#resources.turnBudgetIdentity",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（全部窗口聚合的恒等式同样是新侧不变量）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.BudgetLedgerInvariantHoldsAcrossReserveAdjustAndRelease",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ReleasingClosedWindowReservationDoesNotReopenSubmissions"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Core/Gameplay#TacticsController#concurrentAction.hasActiveAuthorization",
+      "category": "NewRule",
+      "reason": "旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentActivationRejectsStaleWindow",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentCostComesFromAbilityDefinition"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Core/Gameplay#TacticsController#concurrentAction.windowId",
+      "category": "NewRule",
+      "reason": "旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。（授权绑定到哪一个窗口同样是新侧事实）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentActivationRejectsStaleWindow",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentCostComesFromAbilityDefinition"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Core/Gameplay#TacticsController#concurrentAction.playerUnitId",
+      "category": "NewRule",
+      "reason": "旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。（「激活者」必须等于装配显式注入的主角单位，旧侧没有该身份）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentActivationRejectsStaleWindow",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentCostComesFromAbilityDefinition"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Core/Gameplay#TacticsController#resources.metaResource",
+      "category": "NewRule",
+      "reason": "旧侧局外资源没有被「按窗口一次、由权威定义定价」的消费通道：新侧并发激活的费用只来自 ConcurrentActionDefinition，并原子扣减唯一计数；旧侧没有对应的事实可采样（旧输入路径不消费该资源）。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentActivationRejectsStaleWindow",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.ConcurrentCostComesFromAbilityDefinition"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#adrenaline[unitId].cycleId",
+      "category": "NewRule",
+      "reason": "旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.OldCycleReservationSurvivesToTriggerButCannotRefundIntoNewCycle"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#adrenaline[unitId].reservations",
+      "category": "NewRule",
+      "reason": "旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。（旧侧没有「按计划归属、带 ReservationCycleId」的预留明细）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.OldCycleReservationSurvivesToTriggerButCannotRefundIntoNewCycle"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#adrenaline[unitId].reservedTotal",
+      "category": "NewRule",
+      "reason": "旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。（预留合计同样不存在）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.OldCycleReservationSurvivesToTriggerButCannotRefundIntoNewCycle"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#units[i].adrenalineCycleId",
+      "category": "NewRule",
+      "reason": "旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。（单位只读镜像里的周期号在旧侧没有对应字段）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.OldCycleReservationSurvivesToTriggerButCannotRefundIntoNewCycle"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].budgetCostTicks",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（动作的整数预算成本在旧侧由动画/时间线隐式决定，没有可比较字段）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.CostIncreaseCannotTransferPlanBudgetToAnotherWindow",
+        "ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests.DodgeMoveInvalidationReleasesReservedToEachOriginalWindowExactlyOnce"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].reservedTurnBudgetTicks",
+      "category": "NewRule",
+      "reason": "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。（计划当前持有的预留额同样是新侧投影）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.CostIncreaseCannotTransferPlanBudgetToAnotherWindow",
+        "ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests.DodgeMoveInvalidationReleasesReservedToEachOriginalWindowExactlyOnce"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/CombatDemo#BattleTimeline._events#plans[i].submittedWindowLedger",
+      "category": "NewRule",
+      "reason": "旧权威里不存在 TurnWindow 对象：提交权限与「预算归属」在旧玩法中不是显式状态（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），因此该字段在只读检查点上没有可采样的旧侧事实。逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。（「计划跨窗口切换时其来源窗口账本逐字不变」这条不变量的旧侧对应事实不存在：旧侧动作根本没有窗口归属；plans[i].submittedWindowId 本身已由任务 05 的登记项覆盖）",
+      "executedCases": [
+        "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference",
+        "ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests.CostIncreaseCannotTransferPlanBudgetToAnotherWindow",
+        "ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests.DodgeMoveInvalidationReleasesReservedToEachOriginalWindowExactlyOnce"
+      ]
+    },
+    {
+      "id": "CombatSampleScene/Player#CombatUnit.CurrentHealth#stagedResolution.remainingHits",
+      "category": "DiagnosticOnly",
+      "reason": "旧权威里没有「按目标聚合的分阶段求解结果」这一对象：伤害在旧实现里逐次直接扣减CombatUnit 生命，没有「同 Tick 多个来源指向同一目标后按通道聚合」的可采样中间事实。新侧的 StagedResolution 是**只读诊断面、不进快照哈希**（08 交接 §4.5），因此它同样不进快照对快照通道的可比面——两条通道都不比较，故必须逐条登记：不是「被忽略」，也不是「被批准」。四类真事实（Intent 载荷 / 冲突组 / 接触键 / AI 决策状态）**不在此登记**，因为它们在快照通道上已被 Task08AiAndArbitrationFacts 逐字段真比较。",
+      "executedCases": [
+        "ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests.StagedResolutionRunsAllFivePhasesAndCommitsDamageOncePerUnit",
+        "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.TargetDamageAndImpulseCommitOnceInStableOrder"
+      ]
+    }
+  ]
+}

@@ -54,6 +54,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         [Header("模式（创建本场战斗前固定，战斗中不可修改）")]
         [SerializeField] private BattleRuntimeMode _requestedMode = BattleRuntimeMode.Legacy;
+        [SerializeField] private bool _productionNewOnly;
 
         [Header("显式适配器槽位（顺序与内容都由本字段决定，不做容器发现）")]
         [Tooltip("Legacy 帧适配器：由 Assembly-CSharp 的 CombatDemo 实现 IBattleFrameAdapter。")]
@@ -118,6 +119,12 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private string _lastStopReason;
         private int _explicitDriverCount;
         private ShadowComparisonReport _lastShadowReport;
+        private IReadOnlyList<ShadowMigrationObligation> _diagnosticMigrationEvidence;
+        public void SetShadowMigrationEvidenceForDiagnostics(IReadOnlyList<ShadowMigrationObligation> evidence)
+        {
+            if (_productionNewOnly || _battleCreated) throw new InvalidOperationException("MIGRATION_EVIDENCE_DIAGNOSTIC_SETUP_ONLY");
+            _diagnosticMigrationEvidence = evidence == null ? null : new List<ShadowMigrationObligation>(evidence).AsReadOnly();
+        }
         // ---------------- 只读观测面（PlayMode 测试直接读取，不从日志推断） ----------------
 
         /// <summary>可观察调用计数账本。</summary>
@@ -538,6 +545,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// <summary>设置创建本场战斗前要使用的模式；战斗已创建时显式拒绝。</summary>
         public bool TrySetRequestedMode(BattleRuntimeMode mode, out string rejection)
         {
+#if !UNITY_EDITOR
+            if (mode != BattleRuntimeMode.New) { rejection = "PRODUCTION_LEGACY_MODE_REMOVED"; return false; }
+#endif
+            if (_productionNewOnly && mode != BattleRuntimeMode.New)
+            {
+                rejection = "PRODUCTION_LEGACY_MODE_REMOVED";
+                return false;
+            }
             if (_battleCreated)
             {
                 rejection = BOOTSTRAP_MODE_CHANGE_REJECTED
@@ -996,7 +1011,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
                     legacyObservations,
                     _legacySlotOrder,
                     shadow.LastStepDeficit),
-                ShadowCasePolicy.CreateDefault(shadow.CaseId, rulesVersion));
+                _diagnosticMigrationEvidence == null ? ShadowCasePolicy.CreateDefault(shadow.CaseId, rulesVersion)
+                    : ShadowCasePolicy.ResolveMigrationObligations(shadow.CaseId, rulesVersion,
+                        seed.BattleDefinitionHash, _diagnosticMigrationEvidence));
 
             _lastShadowReport = report;
             _shadowReports.Add(report);
@@ -1163,10 +1180,11 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 // 因此不进入门控登记表——它们在 New 模式下的门控由任务 04/10 迁移时处理，
                 // 分类表仍然完整记录它们（禁止事项第 2 条：不得当成表现回调而漏登记）。
                 if (classification.Phase == UnityCallbackPhase.Coroutine) continue;
-
+                var gateTarget = ResolveGateTarget(classification.TypeName);
+                if (_productionNewOnly && gateTarget == null) continue;
                 RegisterLegacyWriter(
                     classification.Site, classification.SceneObjectPath, classification.TimeSource,
-                    ResolveGateTarget(classification.TypeName));
+                    gateTarget);
             }
         }
 

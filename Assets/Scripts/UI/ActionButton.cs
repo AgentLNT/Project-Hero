@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Authoring.Legacy;
 using UnityEngine.UI;
@@ -55,3 +56,4 @@ namespace ProjectHero.UI
         }
     }
 }
+#endif

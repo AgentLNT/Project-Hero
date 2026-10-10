@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -169,3 +170,5 @@ namespace ProjectHero.UI.Timeline
         }
     }
 }
+
+#endif

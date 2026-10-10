@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Core.Grid;
 using UnityEngine.SceneManagement;
@@ -17,3 +18,5 @@ namespace ProjectHero.Visuals
         }
     }
 }
+
+#endif

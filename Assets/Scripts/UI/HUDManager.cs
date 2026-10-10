@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Core.Entities;
 using System.Collections.Generic;
@@ -56,3 +57,5 @@ namespace ProjectHero.UI
         }
     }
 }
+
+#endif

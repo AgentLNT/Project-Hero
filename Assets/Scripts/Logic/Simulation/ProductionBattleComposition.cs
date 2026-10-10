@@ -17,6 +17,8 @@ namespace ProjectHero.Logic.Simulation
         private readonly EncounterDefinition _encounter;
         private readonly List<AiControllerLogic> _ai = new List<AiControllerLogic>();
         private readonly List<UnitId> _order = new List<UnitId>();
+        private readonly HashSet<long> _playerUnits = new HashSet<long>();
+        private readonly Dictionary<long, float> _speed = new Dictionary<long, float>();
         private BattleSimulation _simulation;
         public BattleSimulationAssembly Assembly { get; }
 
@@ -26,7 +28,7 @@ namespace ProjectHero.Logic.Simulation
             _encounter = definition.FindEncounter(encounterId);
             if (_encounter?.TurnSubmission == null) throw new LogicDefinitionException("PRODUCTION_TURN_SUBMISSION_MISSING", encounterId.Value);
             var initial = BattleInitializer.BuildInitialState(definition, encounterId, inputs);
-            var playerUnits = new HashSet<long>();
+            var playerUnits = _playerUnits;
             foreach (var binding in _encounter.Controllers)
             {
                 if (binding.SourceKind == CommandSourceKind.Player)
@@ -34,7 +36,7 @@ namespace ProjectHero.Logic.Simulation
                 if (binding.SourceKind != CommandSourceKind.Ai) continue;
                 var ai = new AiControllerLogic(inputs.InitialRngSeed); ai.RegisterController(binding); _ai.Add(ai);
             }
-            var speed = new Dictionary<long, float>();
+            var speed = _speed;
             foreach (var slot in _encounter.Slots)
             {
                 UnitId id = initial.SlotToUnitId[slot.SlotId]; _order.Add(id);
@@ -60,6 +62,20 @@ namespace ProjectHero.Logic.Simulation
             _simulation = simulation;
             foreach (var ai in _ai) ai.AttachPorts(simulation.AiReactionOpportunities, simulation.AiActionPlanLookup,
                 simulation.MovementPathCalculator, PreviewNormalCommand);
+        }
+
+        internal void RegisterCreatedUnit(UnitId id, UnitDefinition definition, ControllerId controller)
+        {
+            _order.Add(id); _speed.Add(id.Value, definition.ActionSpeed);
+            foreach (var binding in _encounter.Controllers)
+                if (binding.ControllerId == controller && binding.SourceKind == CommandSourceKind.Player)
+                    _playerUnits.Add(id.Value);
+            _order.Sort((a, b) => {
+                int rank = (_playerUnits.Contains(a.Value) ? 0 : 1).CompareTo(_playerUnits.Contains(b.Value) ? 0 : 1);
+                if (rank != 0) return rank;
+                int speed = _speed[b.Value].CompareTo(_speed[a.Value]);
+                return speed != 0 ? speed : a.Value.CompareTo(b.Value);
+            });
         }
 
         private string PreviewNormalCommand(ControllerId issuer, CommandRequest request)

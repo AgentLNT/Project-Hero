@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -115,3 +116,5 @@ namespace ProjectHero.UI
         }
     }
 }
+
+#endif

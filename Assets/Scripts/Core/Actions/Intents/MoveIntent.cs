@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Interactions;
@@ -37,7 +38,7 @@ namespace ProjectHero.Core.Actions.Intents
         {
             if (!IsForced && (Owner.IsStaggered || Owner.IsKnockedDown)) return;
 
-            // Åö×²¼ì²â
+            // ï¿½ï¿½×²ï¿½ï¿½ï¿½
             var dir = GridMath.GetDirection(From, To);
             var projectedVolume = Owner.GetProjectedOccupancy(To, dir);
 
@@ -53,7 +54,7 @@ namespace ProjectHero.Core.Actions.Intents
             _reservedVolume = projectedVolume;
             if (GridManager.Instance != null) GridManager.Instance.RegisterReservation(Owner, projectedVolume);
 
-            // ÊÓ¾õ²åÖµ
+            // ï¿½Ó¾ï¿½ï¿½ï¿½Öµ
             var mover = Owner.GetComponent<Visuals.UnitMovement>();
             if (mover != null)
             {
@@ -61,7 +62,7 @@ namespace ProjectHero.Core.Actions.Intents
                 mover.MoveVisuals(targetWorldPos, Duration, null, Rotate, expectedLogicEnd: To);
             }
 
-            // Âß¼­Ìá½» (Priority > State)
+            // ï¿½ß¼ï¿½ï¿½á½» (Priority > State)
             if (_timeline != null)
             {
                 var commit = new CommitMoveStepIntent(Owner, From, To, _reservedVolume != null ? new System.Collections.Generic.List<TrianglePoint>(_reservedVolume) : null);
@@ -81,3 +82,5 @@ namespace ProjectHero.Core.Actions.Intents
         }
     }
 }
+
+#endif

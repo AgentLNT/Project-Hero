@@ -81,6 +81,23 @@ namespace ProjectHero.UnityView
             _interpolating = false; _forced = false; _movementPlanId = 0; _bounceRemaining = 0;
         }
 
+        internal void BindCreated(UnitSnapshot snapshot)
+        {
+            if (_grid == null || snapshot == null || snapshot.UnitId <= 0 || string.IsNullOrEmpty(snapshot.FactionId))
+                throw new LogicDefinitionException("VIEW_CREATED_BINDING_INVALID", "");
+            UnitId = default; _encounterSlotId = string.Empty;
+            _originalPosition = transform.position; _originalRotation = transform.rotation;
+            _originalBodyActive = _bodyVisual != null && _bodyVisual.gameObject.activeSelf;
+            UnitId = new UnitId(snapshot.UnitId); FactionId = new FactionId(snapshot.FactionId);
+            LatestSnapshot = snapshot; _interpolating = false; _movementPlanId = 0; _forced = false;
+            _bounceRemaining = 0; _animationTriggers.Clear();
+            if (_bodyVisual != null) _bodyScale = _bodyVisual.localScale;
+            if (_animator != null && _animator.runtimeAnimatorController != null)
+                foreach (var parameter in _animator.parameters)
+                    if (parameter.type == AnimatorControllerParameterType.Trigger) _animationTriggers.Add(parameter.name);
+            ApplySnapshot(snapshot);
+        }
+
         public void Consume(LogicEvent fact)
         {
             if (fact is ForcedDisplacementResolvedEvent displacement && displacement.TargetUnitId == UnitId)

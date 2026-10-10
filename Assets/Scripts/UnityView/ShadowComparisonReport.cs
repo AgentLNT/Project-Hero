@@ -506,6 +506,12 @@ namespace ProjectHero.Core.Compatibility.Runtime
             new List<TemporarilyUncomparableField>();
         private readonly List<ShadowComparisonApproval> _approvals = new List<ShadowComparisonApproval>();
         private readonly List<string> _rejections = new List<string>();
+        private readonly List<ShadowMigrationObligation> _resolvedMigrationObligations = new List<ShadowMigrationObligation>();
+        public IReadOnlyList<ShadowMigrationObligation> ResolvedMigrationObligations => _resolvedMigrationObligations;
+        internal void AddResolvedMigrationObligation(ShadowMigrationObligation proof) => _resolvedMigrationObligations.Add(proof);
+        private readonly List<ShadowMigrationObservation> _migrationObservations = new List<ShadowMigrationObservation>();
+        public IReadOnlyList<ShadowMigrationObservation> MigrationObservations => _migrationObservations;
+        internal void AddMigrationObservation(ShadowMigrationObservation observation) => _migrationObservations.Add(observation);
 
         public ShadowComparisonReport(
             string battleDefinitionHash,
@@ -603,6 +609,25 @@ namespace ProjectHero.Core.Compatibility.Runtime
             && UnalignedCheckpoints == 0 && InfrastructureDifferences == 0
             && ComparedCheckpoints > 0;
 
+        /// <summary>Comparable-surface equality alone never authorizes production migration.</summary>
+        public bool HasCompleteMigrationCoverage => Mode == BattleRuntimeMode.Shadow && CanClaimEquivalence
+            && ComparedFieldObservations > 0 && DroppedCheckpoints == 0
+            && _temporarilyUncomparable.Count == 0 && CountOf(ShadowDifferenceKind.TemporarilyUncomparable) == 0;
+
+        public string MigrationCoverageClaim
+        {
+            get
+            {
+                if (Mode != BattleRuntimeMode.Shadow) return "INVALID_MODE";
+                if (!CanClaimEquivalence) return "INVALID_RUN:" + EquivalenceClaim;
+                if (ComparedFieldObservations == 0) return "NO_FIELD_OBSERVATIONS";
+                if (DroppedCheckpoints != 0) return "CHECKPOINTS_DROPPED:" + DroppedCheckpoints;
+                if (_temporarilyUncomparable.Count != 0) return "INCOMPLETE_TEMPORARY_FIELDS:" + _temporarilyUncomparable.Count;
+                if (CountOf(ShadowDifferenceKind.TemporarilyUncomparable) != 0) return "INCOMPLETE_TEMPORARY_OBSERVATIONS";
+                return "COMPLETE";
+            }
+        }
+
         /// <summary>不允许宣称等价时的稳定理由码（<c>EQUIVALENT</c> 表示可以宣称）。</summary>
         public string EquivalenceClaim
         {
@@ -615,6 +640,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
                     return "INFRASTRUCTURE_DIFFERS:" + FirstInfrastructureDifferenceField;
                 if (UnalignedCheckpoints > 0) return "UNALIGNED:" + UnalignedCheckpoints;
                 if (ComparedCheckpoints == 0) return "NO_COMPARABLE_CHECKPOINT";
+                if (ResolvedMigrationObligations.Count > 0) return "COMPARABLE_SURFACE_EQUAL;NEW_RULE_EVIDENCE_VERIFIED";
                 return "EQUIVALENT";
             }
         }
@@ -674,6 +700,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 + " mode=" + BattleRuntimeModes.Describe(Mode)
                 + " rules=" + RulesVersion
                 + " cfg=" + ComparisonConfigVersion
+                + " migrationCoverage=" + MigrationCoverageClaim
+                + " ruleObligations=" + ResolvedMigrationObligations.Count
+                + " representationObservations=" + MigrationObservations.Count
                 + " checkpoints=" + ComparedCheckpoints
                 + " comparedFields=" + ComparedFieldObservations
                 + " dropped=" + DroppedCheckpoints

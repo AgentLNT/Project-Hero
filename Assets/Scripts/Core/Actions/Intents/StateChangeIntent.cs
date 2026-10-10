@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using ProjectHero.Core.Entities;
 using ProjectHero.Authoring.Legacy;
 using ProjectHero.Core.Grid;
@@ -42,7 +43,7 @@ namespace ProjectHero.Core.Actions.Intents
             {
                 Owner.CurrentStateStartTick = timeline.CurrentTick;
             }
-            // ´æ´¢Îª Tick
+            // ï¿½æ´¢Îª Tick
             Owner.CurrentStateDurationTicks = Mathf.RoundToInt(DurationSeconds * BattleTimeline.TicksPerSecond);
 
             switch (StateName)
@@ -61,20 +62,20 @@ namespace ProjectHero.Core.Actions.Intents
                     break;
             }
 
-            // ÈÎÎñ 04 ¼æÈÝ½Ó·ì£º°ÑÍ¬Ò»ÊÂÊµÍ¬Ê±Ð´³ÉÐÂ×´Ì¬»ú×´Ì¬Óë¾É×Ö¶Î£¬
-            // ÈÃ Legacy ´ÓÊôÐ´ÈëÕßÓëÐÂ Logic Â·¾¶²»»á¸÷×ÔÑÝ»¯³ö²»Í¬×´Ì¬¡£
-            // Ö»×öµ¥Ïò×ª·¢£¨¾É×´Ì¬Ãû -> UnitState£©£¬²»·´ÍÆ¡¢²»²ÂÄ¬ÈÏÖµ£»
-            // Î´½ÓÈë×´Ì¬»ú£¨Legacy Ä£Ê½£©Ê±±¾¶ÎÕûÌåÌø¹ý¡£
+            // ï¿½ï¿½ï¿½ï¿½ 04 ï¿½ï¿½ï¿½Ý½Ó·ì£ºï¿½ï¿½Í¬Ò»ï¿½ï¿½ÊµÍ¬Ê±Ð´ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½Ö¶Î£ï¿½
+            // ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Logic Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½Í¬×´Ì¬ï¿½ï¿½
+            // Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ -> UnitStateï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½
+            // Î´ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½Legacy Ä£Ê½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             ApplyStateToLogicStateMachine(Owner);
 
             if (ForceFacing.HasValue) Owner.SetFacingDirection(ForceFacing.Value);
         }
 
         /// <summary>
-        /// ¾É×´Ì¬Ãû -> UnitState µÄÎ¨Ò»Ó³ÉäÂäÔÚ CombatUnit.MapLegacyStateName¡£
-        /// "Busy" Ã»ÓÐ¶ÔÓ¦×´Ì¬£¨ËüÖ»±íÊ¾"Õ¼Î»²»¸Ä±ä×´Ì¬"£©£¬Òò´Ë²»Ð´×´Ì¬»ú¡£
-        /// ×ª»»±»×´Ì¬»ú¾Ü¾øÊ±²»Å×Òì³£Ò²²»»Ø¹ö¾É×Ö¶Î£º¾Ü¾øÊÇÔËÐÐÊ±ÊÂÊµ
-        /// £¨ÀýÈçÖÕÌ¬ Dead ²»ÔÊÐíÔÙ×ª»»£©£¬¾É×Ö¶Î±£³ÖÔ­Öµ¼´¿É¡£
+        /// ï¿½ï¿½×´Ì¬ï¿½ï¿½ -> UnitState ï¿½ï¿½Î¨Ò»Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CombatUnit.MapLegacyStateNameï¿½ï¿½
+        /// "Busy" Ã»ï¿½Ð¶ï¿½Ó¦×´Ì¬ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ê¾"Õ¼Î»ï¿½ï¿½ï¿½Ä±ï¿½×´Ì¬"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½Ð´×´Ì¬ï¿½ï¿½ï¿½ï¿½
+        /// ×ªï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½Ü¾ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ì³£Ò²ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½ï¿½Ö¶Î£ï¿½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Êµ
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ Dead ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶Î±ï¿½ï¿½ï¿½Ô­Öµï¿½ï¿½ï¿½É¡ï¿½
         /// </summary>
         private void ApplyStateToLogicStateMachine(CombatUnit owner)
         {
@@ -91,3 +92,5 @@ namespace ProjectHero.Core.Actions.Intents
         }
     }
 }
+
+#endif

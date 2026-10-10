@@ -63,9 +63,9 @@ $map=@{}
 39|ReplayCannotAuthorizeAiOrSystemInputs;ShadowMirrorsPlayerRequestsButRebuildsAiAndSystemExactlyOnce
 40|SceneHasExactlyOneBattleRuntimeBootstrap;CombatDemoNoLongerOwnsAutonomousUpdate;NewModeDisablesEveryRegisteredLegacyLogicWriter
 41|MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback;NewModeNeverCallsLegacyAdvanceTime
-42|MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation;ShadowSimulationCannotBindViewsOrPlayFeedback;ShadowSimulationCannotMutateLegacyOrUnityState;BroadDifferenceAllowlistIsRejected
+42|MigrationShadowWithConfirmedFutureAttackKeepsRealCommonFieldsAndResolvesObligations;MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs;ShadowSimulationCannotBindViewsOrPlayFeedback;ShadowSimulationCannotMutateLegacyOrUnityState;BroadDifferenceAllowlistIsRejected
 43|MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback
-44|SceneHasExactlyOneBattleRuntimeBootstrap
+44|ProductionSceneUsesOnlyNewAndRejectsLegacyStartup;MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback
 45|ReactionBeforeOpportunityExistsIsRejected;ReactionOptionDeadlineIsInclusiveAndExpiresAfterCommandPhase;ReactionAtOptionDeadlineIsAcceptedAndAfterDeadlineIsRejected
 46|PlayerAndAiShareOneTickReactionIngressLead;AiAndPlayerAvailabilityUsesSameActionSetRules;AiCannotCreateOpportunityOrReactionPlanDirectly;PlayerAndAiReactionsUseSameProcessorAndPlanner;MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts
 47|GuardPartiallyReducesEligibleDamageAndMomentumOnlyWhileActive;BlockZeroesAllEligibleDamageAndMomentumOnTriggerTick;GuardPhaseUsesItsActiveAndRecoveryBoundaries
@@ -90,7 +90,7 @@ $map=@{}
 66|FinalCombatClassFileReplaysOneHundredTimesFromTickZero;RecordedPlayerFactsExcludeAiAndSystemSources
 67|FactionMatrixCanonicalizesEveryUnorderedPair;FactionMatrixHashIgnoresInputEnumerationOrder;BuilderRejectsMissingDuplicateReverseDuplicateOrDanglingFactionRelation
 68|AreaAndPrimaryTargetPoliciesShareTheSameFactionRelationResolverAsTheCommandLayer;AreaOpportunityCandidatesUseSameFactionRelationMaskAsAttack;UiAndAiCandidateFiltersUseDecisionSnapshotFactionResolver;PrimaryTargetRelationMustBeAllowedByActionSpec;FinalCombatClassFileReplaysOneHundredTimesFromTickZero
-69|DynamicSpawnFactionComesOnlyFromFixedOrExplicitInheritancePolicy
+69|DynamicSpawnFactionComesOnlyFromFixedOrExplicitInheritancePolicy;DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies;DynamicSpawnDefinitionRejectsUnknownConflictingFactionAndSourceBeforeWorldCreation;DynamicSpawnCanonicalOrderAndDefinitionHashIgnoreInputEnumeration;DynamicSpawnFailureConsumesNoUnitIdAndDoesNotRetryOnLaterTicks;DynamicSpawnReceivesProductionWindowAndAcceptsOnlyItsControllersCommands;DynamicSpawnCannotReviveDeadSourceAndKeepsOtherFactionAlive;MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays
 D1|DodgeOriginInvalidationFindsTransitiveMovesAcrossNonMovementPlans;DodgeMoveInvalidationReleasesReservedToEachOriginalWindowExactlyOnce;MainCanvasDodgeCancelsFutureMoveChainAndReleasesClosedOriginalWindow
 D2|DodgeRelocationFailureDoesNotReleaseFutureMoveBudget;DodgeCommitFailureLeavesDependentMovesReservationsAndBudgetsUnchanged;CancelledDodgePreservesFutureMovementChain;DodgeWithoutPositionChangeDoesNotInvalidateMoves
 D3|DodgeMovementTerminalIsIdempotentAndDoesNotIncrementScheduleRevision;DodgeOriginInvalidationFindsTransitiveMovesAcrossNonMovementPlans
@@ -107,9 +107,9 @@ $rows=@(foreach($key in $requirements.Keys){
     $proof=Resolve-Evidence $map[$key]
     $status='Verified'; $boundary='具体断言及其执行结果；组件级排列/失败边界与代表性全流水线文件回放组合构成证据，不宣称每条配置均已在正式场景复现。'
     if($key -eq '22'){$status='DeferredPerformance';$boundary='仅统计接口测试通过；稀疏/大型分量/共享目标的正式构建性能测量不在本轮验收范围。'}
-    if($key -eq '44'){$status='DeferredMigration';$boundary='Legacy 未删除；基础唯一时钟检查不能代替删除后的扫描。'}
-    if($key -eq '69'){$status='RuntimeGap';$boundary='只有固定/继承阵营策略定义、非法值拒绝与哈希测试；无战斗中动态单位创建事件、UnitSnapshot 或完整回放实现。'}
-    if($key -eq '42'){$boundary='60 项逐字段兼容边界已分类；主场景 Shadow 零写入。生产比较策略及 60 项披露保留；未批准任何差异，未宣称新规则与 Legacy 完整等价。'}
+    if($key -eq '44'){$boundary='生产主场景默认 New、独立 UnityAuthoring 配置源、22 个旧组件移除；Legacy/Shadow 启动拒绝。49 个旧源码仅 UNITY_EDITOR 对照，Player 不编译；生产场景/Prefab 递归引用扫描与 IL2CPP 完整战斗/100 次文件回放通过。'}
+    if($key -eq '69'){$boundary='Encounter 权威配置驱动 Step 内动态创建；固定/继承 Faction、事件/快照/胜负、实际控制权/开窗和非法定义拒绝通过，两类逻辑完整战斗各文件重演 100 次；真实主场景创建/只读视图/释放与 100 次文件重演通过。首版不新增玩家召唤命令或召唤 UI。'}
+    if($key -eq '42'){$boundary='用户批准的逐字段迁移契约：60 项规则义务关联执行案例、源码/测试结果指纹；真实编辑器旧场景确认未来攻击并镜像，26 检查点、520 个共同字段真比较、零写入、零未决义务。旧排程条目与新计划数原值保留；只声明共同可比面一致，执行前场景之外的攻击/防御/位移由独立规则和回放证据验收。'}
     if($key -eq 'D1' -or $key -eq 'D4'){$boundary='实际主场景 Canvas、真实 Player 端口与生产 AI；组合夹具显式降低攻击冲击，正式网格/单位体积/180 Tick/hero，显式统一各朝向攻击范围并配置攻击 60/30、反应 1/30 时序、真实伤害入账；不冒充未改配置的正式主场景组合。'}
     [pscustomobject]@{Criterion=$key;Status=$status;Requirement=$requirements[$key];EvidenceMethods=$map[$key];ExecutedCases=$proof -join ';';Boundary=$boundary}
 })
@@ -166,7 +166,7 @@ $mainRows=@(foreach($line in ($mainSection[0] -split '\r?\n')) {
     if($label -eq '初始化确定性'){$methods+=';RepeatedInitializationIsByteIdenticalAcrossOneHundredRuns'}
     $proof=Resolve-Evidence $methods
     $status='Verified';$boundary='主方案要求由具体组件断言、真实场景及代表性完整回放组合关联；不把自动化总数作为独立证据。'
-    if($label -eq 'Shadow 隔离'){$status='DeferredCutover';$boundary='零写入和逐字段分类已验证，但生产 TemporarilyUncomparable 仍为 60，尚不满足切换前为 0 的严格门槛；不得将分类等同清零。'}
+    if($label -eq 'Shadow 隔离'){$boundary='用户于 2026-10-10 采用逐字段收口契约；旧场景共同字段真比较，60 项规则义务有效，零未决字段，全部原观察保留。生产仅 New，Shadow 对照仅编辑器诊断；不宣称全部旧新玩法等价。'}
     if($label -eq '性能' -or $label -eq '性能基准'){$status='DeferredPerformance';$boundary='原生分配继续优化按用户决定暂缓；正式交互/冲突图/强制位移压力与 GC 频率/停顿仍未闭合。现有静态审计、统计接口与历史 IL2CPP 数据不能代替该门槛。'}
     [pscustomobject]@{Criterion=$label;Status=$status;Requirement=$requirement;FinalScenarioRefs=$refs;ExecutedCases=$proof -join ';';Boundary=$boundary}
 })
@@ -177,9 +177,9 @@ $lines.Add('本次完成 1–69、10A–10E、13A 和五条 Dodge 补充，共 8
 $lines.Add('');$lines.Add("最新执行：EditMode $($edit.'test-run'.passed)/$($edit.'test-run'.total)，PlayMode $($play.'test-run'.passed)/$($play.'test-run'.total)。所有关联证据方法都由脚本匹配实际 Passed 的测试案例；缺名、失败、跳过、重复分类或遗漏会令审计失败。")
 $lines.Add('');$lines.Add('| 项 | 状态 | 具体证据方法 |');$lines.Add('|---|---|---|')
 foreach($row in $rows){$lines.Add('| '+$row.Criterion+' | '+$row.Status+' | '+($row.EvidenceMethods -replace ';','；')+' |')}
-$lines.Add('');$lines.Add('原生分配优化按用户决定延期。第 22 项正式性能测量、第 44 项旧实现删除属于后续整体门槛；第 69 项是实际运行实现缺口，不是“测试名称不同”。60 项分类审计完成，不删除旧观测登记或批量批准差异。完整要求、执行案例全名和每行证据边界见 CSV。')
+$lines.Add('');$lines.Add('正式性能验收及原生分配优化按用户决定延期。第 22 项正式性能测量仍未闭合；第 44 项生产 Legacy 清理、第 69 项动态生成及用户批准的 Shadow 收口契约均按具体执行案例与独立 Player 证据验收。历史原观察保留，不批量批准差异。完整要求、执行案例全名和每行证据边界见 CSV。')
 $lines.Add('');$lines.Add('## 主方案每阶段验收标准（36 项）');$lines.Add('')
-$lines.Add('主方案另要求切换前暂不可比较字段为 0。本轮完成分类，不满足该严格切换门槛；主场景继续保留 Legacy 默认值。逐项原文、关联场景编号和实际案例见 11-main-plan-acceptance-matrix.csv。')
+$lines.Add('主方案的迁移门槛按 2026-10-10 用户批准的逐字段验收契约执行；生产主场景默认 New，Legacy 仅编辑器对照。正式性能继续延期，整体发布验收不记为通过。逐项原文、关联场景编号和实际案例见 11-main-plan-acceptance-matrix.csv。')
 $lines.Add('');$lines.Add('| 主方案验收项 | 状态 | 最终场景编号或额外测试 |');$lines.Add('|---|---|---|')
 foreach($row in $mainRows){$lines.Add('| '+$row.Criterion+' | '+$row.Status+' | '+($row.FinalScenarioRefs -replace ';','；')+' |')}
 $lines | Set-Content (Join-Path $recordRoot '11-最终验收矩阵-2026-10-10.md') -Encoding utf8

@@ -23,6 +23,7 @@ namespace ProjectHero.Tests.PlayMode
 {
     public sealed class Task10WiredPresentationTests : RuntimeOwnershipTestBase
     {
+        protected override bool UseLegacyComparisonScene => false;
         private static object Field(object value, string name)
             => value.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(value);
         private static void Click(object button)
@@ -109,7 +110,7 @@ namespace ProjectHero.Tests.PlayMode
 
         private IEnumerator CompleteColdLegacyBattle()
         {
-            yield return LoadMainScene();
+            yield return LoadLegacyComparisonScene();
             Assert.That(Bootstrap.BattleMode, Is.EqualTo(BattleRuntimeMode.Legacy));
             Assert.That(Bootstrap.NewDriver.SimulationCreated, Is.False);
             var units = FindLegacyUnits();
@@ -296,8 +297,7 @@ namespace ProjectHero.Tests.PlayMode
             var legacyHudRoots = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(root => root.GetComponentsInChildren<Transform>(true)).Where(t => t.name.StartsWith("HUD_", StringComparison.Ordinal))
                 .Select(t => t.gameObject).ToArray();
-            Assert.That(legacyHudRoots.Length, Is.EqualTo(2), "The real Legacy startup creates two resource HUDs.");
-            Assert.That(legacyHudRoots.All(go => !go.activeSelf), Is.True, "New must hide old stamina/focus/adrenaline graphics.");
+            Assert.That(legacyHudRoots.Length, Is.Zero, "Production must no longer create Legacy stamina/focus HUDs.");
             var buttonType = Type.GetType("UnityEngine.UI.Button, UnityEngine.UI", true);
             var attempts = new System.Collections.Generic.List<string>();
             foreach (var attack in model.Decision.ActionSetOf(hero).Where(id => model.Decision.FindAction(id).Type == ActionType.Attack

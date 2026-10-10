@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using ProjectHero.Core.Entities;
@@ -122,3 +123,5 @@ namespace ProjectHero.Core.Gameplay
         }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
@@ -38,3 +39,5 @@ namespace ProjectHero.UI.Timeline
         public Action<float, long> Schedule;
     }
 }
+
+#endif

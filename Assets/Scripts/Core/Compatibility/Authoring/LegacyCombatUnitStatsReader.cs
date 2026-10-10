@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using ProjectHero.Authoring;
 using ProjectHero.Authoring.Compatibility;
 using ProjectHero.Core.Entities;
@@ -71,3 +72,5 @@ namespace ProjectHero.Core.Compatibility.Authoring
         }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
 using ProjectHero.Core.Entities;
@@ -55,3 +56,5 @@ namespace ProjectHero.Core.Actions.Intents
         }
     }
 }
+
+#endif

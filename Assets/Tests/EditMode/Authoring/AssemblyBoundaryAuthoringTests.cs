@@ -54,6 +54,7 @@ namespace ProjectHero.Authoring.Tests
             "ProjectHero.Grid",
             "ProjectHero.Logic",
             "ProjectHero.Logic.Tests",
+            "ProjectHero.UnityAuthoring",
             "ProjectHero.UnityView"
         };
 
@@ -78,8 +79,7 @@ namespace ProjectHero.Authoring.Tests
 
             var names = infos.Select(i => i.name).OrderBy(n => n, StringComparer.Ordinal).ToArray();
             Assert.That(names, Is.EqualTo(ExpectedAssemblyNames),
-                "程序集全量集合必须与冻结清单一致（03B 只新增 Compatibility.Runtime 与其测试程序集；"
-                + "不得提前创建 UnityView）");
+                "程序集集合必须与迁移后的冻结清单一致；独立 UnityAuthoring 只引用 Authoring/Logic/UnityView。");
             Assert.That(names, Does.Not.Contain("ProjectHero.Compatibility.Runtime"),
                 "任务10迁移后只保留一个运行时契约程序集");
 
@@ -153,7 +153,7 @@ namespace ProjectHero.Authoring.Tests
             Assert.That(File.Exists(Path.Combine(Directory.GetCurrentDirectory(), MainScenePath)), Is.True,
                 "主战斗场景文件必须存在");
 
-            var scene = EditorSceneManager.OpenScene(MainScenePath, OpenSceneMode.Single);
+            var scene = EditorSceneManager.OpenScene("Assets/Diagnostics/Editor/LegacyComparisonScene.unity", OpenSceneMode.Single);
             Assert.That(scene.IsValid(), Is.True, "主战斗场景必须可加载");
 
             // 无缺失脚本（MISSING SCRIPT = 0）。

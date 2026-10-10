@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems; // Added for UI check
@@ -187,3 +188,5 @@ namespace ProjectHero.Core.Input
         }
     }
 }
+
+#endif

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="46.0284747">
+  <test-suite type="TestSuite" id="1077" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="46.028475" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1070" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="46.021884" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="40576" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1071" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="46.021130" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1072" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="46.020539" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1073" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="46.019928" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1051" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:11Z" duration="45.893002" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1052" name="MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback" methodname="MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="145415305" result="Passed" start-time="2026-10-10 10:21:25Z" end-time="2026-10-10 10:22:10Z" duration="45.768433" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\10-main-new-start.png device=Intel(R) Arc(TM) B390 GPU
+Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\10-main-new-ended.png device=Intel(R) Arc(TM) B390 GPU
+MainScene New cold run=0 endedTick=1325 result=victory playerSubmissions=36 oldAdvanceDelta=0 endFeedback=1
+MainScene complete file replay: 100 restarts from Tick 0; records=1326 bytes=552213
+MainScene New cold run=1 endedTick=1231 result=victory playerSubmissions=41 oldAdvanceDelta=0 endFeedback=1
+MainScene New cold run=2 endedTick=1234 result=victory playerSubmissions=45 oldAdvanceDelta=0 endFeedback=1
+--- Starting Combat Demo (Ticks) ---
+[Combat] Player swung Heavy Smash but hit nothing.
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+Enemy took 31.0 damage! HP: 169/200
+[Combat] Enemy hits 1 targets with Spear Thrust!
+[Physics] Enemy hits Player | Damage: 31.0 | ImpactV: 3.0
+Player took 31.0 damage! HP: 169/200
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+Enemy took 31.0 damage! HP: 138/200
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+Enemy took 31.0 damage! HP: 107/200
+[Combat] Enemy hits 1 targets with Spear Thrust!
+[Physics] Enemy hits Player | Damage: 31.0 | ImpactV: 3.0
+Player took 31.0 damage! HP: 138/200
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 28.0 | ImpactV: 1.5
+Enemy took 28.0 damage! HP: 79/200
+[Combat] Enemy hits 1 targets with Spear Thrust!
+[Physics] Enemy hits Player | Damage: 31.0 | ImpactV: 3.0
+Player took 31.0 damage! HP: 107/200
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 28.0 | ImpactV: 1.5
+Enemy took 28.0 damage! HP: 51/200
+[Combat] Enemy hits 1 targets with Spear Thrust!
+[Physics] Enemy hits Player | Damage: 31.0 | ImpactV: 3.0
+Player took 31.0 damage! HP: 76/200
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 28.0 | ImpactV: 1.5
+Enemy took 28.0 damage! HP: 23/200
+[Combat] Player hits 1 targets with Spear Thrust!
+[Physics] Player hits Enemy | Damage: 28.0 | ImpactV: 1.5
+Enemy took 28.0 damage! HP: -5/200
+Enemy has been DEFEATED!
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+[Combat] Player swung Spear Thrust but hit nothing.
+Battle Ended: VICTORY
+Press 'R' to Restart
+Cold Legacy rehearsal completed through its own scheduler; attacks=95 moves=1 result=VICTORY
+Press 'R' to Restart
+MainScene New cold run=3 endedTick=1234 result=victory playerSubmissions=43 oldAdvanceDelta=0 endFeedback=1
+]]></output>
+              </test-case>
+              <test-case id="1053" name="MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce" methodname="MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="1713666070" result="Passed" start-time="2026-10-10 10:22:10Z" end-time="2026-10-10 10:22:11Z" duration="0.113089" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\10-main-new-start.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1060" name="Task11DynamicSpawnSceneTests" fullname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests" classname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-10 10:22:11Z" end-time="2026-10-10 10:22:11Z" duration="0.124084" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1061" name="MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays" fullname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests.MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays" methodname="MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays" classname="ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests" runstate="Runnable" seed="459232064" result="Passed" start-time="2026-10-10 10:22:11Z" end-time="2026-10-10 10:22:11Z" duration="0.123145" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

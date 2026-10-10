@@ -18,7 +18,8 @@ namespace ProjectHero.Editor.RuntimeOwnership
             var scene = EditorSceneManager.OpenScene(RuntimeOwnershipSceneTool.MainScenePath, OpenSceneMode.Single);
             var bootstrap = Find<BattleRuntimeBootstrap>(scene);
             var factory = Find<BattleSimulationSourceFactory>(scene);
-            if (bootstrap == null || factory == null) throw new InvalidOperationException("MAIN_SCENE_INITIALIZATION_CHAIN_MISSING");
+            if (bootstrap == null || (factory == null && Find<NewBattleSimulationSource>(scene) == null))
+                throw new InvalidOperationException("MAIN_SCENE_INITIALIZATION_CHAIN_MISSING");
             var existing = Find<BattlePresentationView>(scene);
             if (existing == null) existing = CreatePresentation(scene, bootstrap, factory);
             RefineLayout(existing);

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using System.Collections.Generic;
 using ProjectHero.Core.Pathfinding;
@@ -345,3 +346,4 @@ namespace ProjectHero.Core.Grid
         //}
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using ProjectHero.Authoring.Legacy;
 using System.Linq;
@@ -306,3 +307,5 @@ namespace ProjectHero.Core.Timeline
         }
     }
 }
+
+#endif

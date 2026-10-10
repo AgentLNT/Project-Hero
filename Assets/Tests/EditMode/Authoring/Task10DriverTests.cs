@@ -54,6 +54,50 @@ namespace ProjectHero.Authoring.Tests
             { driver.AdvanceFrame(new BattleFrameDelta(0.1f, false, true)); Assert.That(driver.TicksAdvanced, Is.EqualTo(6)); }
             finally { driver.ResetForNewBattle(); }
         }
+
+        [Test] public void ComparableShadowEqualityCannotMasqueradeAsCompleteMigrationCoverage()
+        {
+            var seed = new Source().BuildSeed();
+            using var a = BattleSimulation.Create(seed.Definition, seed.EncounterId, seed.RuntimeInputs);
+            using var b = BattleSimulation.Create(seed.Definition, seed.EncounterId, seed.RuntimeInputs);
+            var input = new ShadowComparisonInput(seed.BattleDefinitionHash, seed.EncounterId.Value,
+                BattleRuntimeMode.Shadow, seed.InputSummary, seed.RulesVersion, ShadowComparisonConfig.Strict(),
+                new[] { a.CurrentSnapshot }, new[] { b.CurrentSnapshot });
+            var policy = ShadowCasePolicy.CreateDefault("full-migration-guard", seed.RulesVersion, true, true, true, true);
+            var report = ShadowDifferenceDetector.Compare(input, policy);
+            Assert.That(report.CanClaimEquivalence, Is.True);
+            Assert.That(report.TemporarilyUncomparable.Count, Is.EqualTo(60));
+            Assert.That(report.HasCompleteMigrationCoverage, Is.False);
+            Assert.That(report.MigrationCoverageClaim, Is.EqualTo("INCOMPLETE_TEMPORARY_FIELDS:60"));
+            Assert.That(report.Describe(), Does.Contain("migrationCoverage=INCOMPLETE_TEMPORARY_FIELDS:60"));
+            Assert.That(NewCutoverGate.Rejections(report, seed.BattleDefinitionHash, seed.RulesVersion,
+                seed.EncounterId.Value).Count, Is.GreaterThanOrEqualTo(60));
+        }
+
+        [Test] public void MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs()
+        {
+            var seed = new Source().BuildSeed(); const string caseId = "migration-proof-guards";
+            var baseline = ShadowCasePolicy.CreateDefault(caseId, seed.RulesVersion, true, true, true, true);
+            var proofs = baseline.TemporarilyUncomparable.Select(f => new ShadowMigrationObligation(f.Id,
+                "NewRule", caseId, seed.RulesVersion, seed.BattleDefinitionHash, f.Reason,
+                new[] { "ProjectHero.Tests.SpecificExecutedCase" })).ToArray();
+            ShadowCasePolicy Resolve(System.Collections.Generic.IReadOnlyList<ShadowMigrationObligation> entries)
+                => ShadowCasePolicy.ResolveMigrationObligations(caseId, seed.RulesVersion, seed.BattleDefinitionHash, entries);
+            Assert.That(Resolve(proofs).TemporarilyUncomparable, Is.Empty);
+            Assert.That(Resolve(proofs.Take(59).ToArray()).TemporarilyUncomparable.Count, Is.EqualTo(1));
+            Assert.That(Resolve(proofs.Concat(new[] { proofs[0] }).ToArray()).Rejections, Is.Not.Empty);
+            var first = proofs[0];
+            foreach (var invalid in new[] {
+                new ShadowMigrationObligation(first.Id, "NewRule", "wrong-case", seed.RulesVersion, seed.BattleDefinitionHash, first.Reason, first.ExecutedCases),
+                new ShadowMigrationObligation(first.Id, "NewRule", caseId, "wrong-rules", seed.BattleDefinitionHash, first.Reason, first.ExecutedCases),
+                new ShadowMigrationObligation(first.Id, "NewRule", caseId, seed.RulesVersion, "wrong-hash", first.Reason, first.ExecutedCases),
+                new ShadowMigrationObligation(first.Id, "NewRule", caseId, seed.RulesVersion, seed.BattleDefinitionHash, first.Reason, new[] { "ProjectHero.Tests.*" }),
+                new ShadowMigrationObligation(first.Id, "NewRule", caseId, seed.RulesVersion, seed.BattleDefinitionHash, first.Reason, Array.Empty<string>()) })
+            {
+                var result = Resolve(new[] { invalid }.Concat(proofs.Skip(1)).ToArray());
+                Assert.That(result.Rejections, Is.Not.Empty); Assert.That(result.TemporarilyUncomparable.Count, Is.EqualTo(1));
+            }
+        }
         [Test] public void DriverRetainsCatchUpDebtInsteadOfDroppingTicks()
         {
             var driver = Create(new Source());

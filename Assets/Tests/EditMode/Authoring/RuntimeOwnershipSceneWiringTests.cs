@@ -78,7 +78,7 @@ namespace ProjectHero.Authoring.Tests
         [Test, Order(2)]
         public void MainSceneHasExactlyOneBootstrapAndKeepsOriginalContent()
         {
-            var scene = EditorSceneManager.OpenScene(MainScenePath, OpenSceneMode.Single);
+            var scene = EditorSceneManager.OpenScene("Assets/Diagnostics/Editor/LegacyComparisonScene.unity", OpenSceneMode.Single);
             Assert.That(scene.IsValid(), Is.True);
 
             int bootstrapCount = 0;

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Authoring.Legacy;
 using ProjectHero.Core.Compatibility.Runtime.Input;
@@ -732,3 +733,5 @@ namespace ProjectHero.Core.Gameplay
         }
     }
 }
+
+#endif

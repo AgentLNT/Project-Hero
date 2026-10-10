@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Visuals;
 
@@ -76,3 +77,5 @@ namespace ProjectHero.Visuals
         }
     }
 }
+
+#endif

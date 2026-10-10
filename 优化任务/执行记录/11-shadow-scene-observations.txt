@@ -1,11 +1,11 @@
-scene=CombatSampleScene
+scene=LegacyComparisonScene (Editor-only diagnostic copy)
 mode=Shadow
 frames=120
 legacyAdvanceDelta=120
 newDriverAdvance=0
 shadowWrites=0
 observations=64
-shadow-report hash=ed4c3e21b1488e60 encounter=encounter.combat_sample_scene mode=Shadow rules=battle-def-v2-turn180 cfg=1 checkpoints=64 comparedFields=1344 dropped=0 unaligned=0 infra=0 newRule=0 temp=640 approved=0 firstUnexpected=<none> firstInfra=<none> claim=EQUIVALENT
+shadow-report hash=ed4c3e21b1488e60 encounter=encounter.combat_sample_scene mode=Shadow rules=battle-def-v2-turn180 cfg=1 migrationCoverage=INCOMPLETE_TEMPORARY_FIELDS:10 ruleObligations=0 representationObservations=0 checkpoints=64 comparedFields=1344 dropped=0 unaligned=0 infra=0 newRule=0 temp=640 approved=0 firstUnexpected=<none> firstInfra=<none> claim=EQUIVALENT
 TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Player#CombatUnit.CurrentAdrenaline#availableAdrenaline legacy=<not-sampled-legacy> shadow=0
 TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Player#CombatUnit.CurrentStamina#staminaQ10 legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>
 TemporarilyUncomparable tick=57 @LateUpdate@57 CombatSampleScene/Manager#BattleManager._battleEnded#battleEnd.isEnded legacy=<not-sampled-legacy> shadow=<not-sampled-legacy>

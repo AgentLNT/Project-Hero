@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Core.Compatibility.Runtime;
 using ProjectHero.Core.Entities;
@@ -14,16 +15,16 @@ using System.Threading;
 namespace ProjectHero.Demos
 {
     /// <summary>
-    /// ¾ÉÕ½¶·ÑÝÊ¾Èë¿Ú ¡ª¡ª ÈÎÎñ 03B Ö®ºóÊÇ¡¸±»µ÷ÓÃÊÊÅäÆ÷¡¹£¬²»ÔÙÊÇ¶¥²ãÊ±ÖÓ¡£
+    /// ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 03B Ö®ï¿½ï¿½ï¿½Ç¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½ï¿½ï¿½Ê±ï¿½Ó¡ï¿½
     ///
-    /// ¸ÄÔìÒªµã£¨ÈÎÎñ°ü¡¸±ØÐë²ú³ö¡¹4£»²»±äÁ¿ 21£©£º
-    /// 1) ²»ÔÙÉùÃ÷ Update()£º¾ÉÊ±¼äÏßÎ¨Ò»µÄµ÷ÓÃÕßÊÇ BattleRuntimeBootstrap µÄ Legacy/Shadow ·ÖÖ§¡£
-    /// 2) ÍÆ½øÖ°ÔðÌáÈ¡ÎªÏÔÊ½ AdvanceFrame(BattleFrameDelta)£»Ö¡Ê±¼äÓÉ Bootstrap ´«Èë£¬
-    ///    ÊÊÅäÆ÷×Ô¼º²»¶Á Time.deltaTime£¬±ÜÃâÐÎ³ÉµÚ¶þ¸öÊ±¼äÀ´Ô´¡£
-    /// 3) Íæ·¨ÓïÒåÔ­Ñù±£Áô£ºP ¼üÔÝÍ£ÇÐ»»¡¢Timeline.AdvanceTime µÄÊÜÊ±±êËõ·ÅÊ±¼ä¡¢
-    ///    ÊÂ¼þ»Øµ÷ÓëÈ«²¿³¡¾°Ð´Èë¶¼²»±ä¡£
-    /// 4) Start() ÀïµÄ³õÊ¼»¯Ð´Èë±£Áô£¬µ«±¾×é¼þµÇ¼ÇÎª Legacy ´ÓÊôÐ´ÈëÕß£¬
-    ///    New Ä£Ê½ÏÂÓÉ Bootstrap ÕûÌå½ûÓÃ£¨enabled = false£©¡£
+    /// ï¿½ï¿½ï¿½ï¿½Òªï¿½ã£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 21ï¿½ï¿½ï¿½ï¿½
+    /// 1) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Update()ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Î¨Ò»ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BattleRuntimeBootstrap ï¿½ï¿½ Legacy/Shadow ï¿½ï¿½Ö§ï¿½ï¿½
+    /// 2) ï¿½Æ½ï¿½Ö°ï¿½ï¿½ï¿½ï¿½È¡Îªï¿½ï¿½Ê½ AdvanceFrame(BattleFrameDelta)ï¿½ï¿½Ö¡Ê±ï¿½ï¿½ï¿½ï¿½ Bootstrap ï¿½ï¿½ï¿½ë£¬
+    ///    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ Time.deltaTimeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î³ÉµÚ¶ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½
+    /// 3) ï¿½æ·¨ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½P ï¿½ï¿½ï¿½ï¿½Í£ï¿½Ð»ï¿½ï¿½ï¿½Timeline.AdvanceTime ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä¡¢
+    ///    ï¿½Â¼ï¿½ï¿½Øµï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ë¶¼ï¿½ï¿½ï¿½ä¡£
+    /// 4) Start() ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½Ð´ï¿½ë±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½Îª Legacy ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ß£ï¿½
+    ///    New Ä£Ê½ï¿½ï¿½ï¿½ï¿½ Bootstrap ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½enabled = falseï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [DefaultExecutionOrder(RuntimeCallbackRegistry.LegacyWriterExecutionOrder)]
     public class CombatDemo : MonoBehaviour, IBattleFrameAdapter, ILegacyPauseAware, ILegacyAdvanceTimeObservable
@@ -41,13 +42,13 @@ namespace ProjectHero.Demos
         private int _advanceCallCount;
         private int _stopCallCount;
 
-        // ---- IBattleFrameAdapter£ºÆõÔ¼³ÌÐò¼¯ÓµÓÐ½Ó¿Ú£¬Legacy ¾ßÌåÀàÐÍÁôÔÚ±¾³ÌÐò¼¯ÊµÏÖ ----
+        // ---- IBattleFrameAdapterï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½Óµï¿½Ð½Ó¿Ú£ï¿½Legacy ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ ----
 
         public string AdapterName => nameof(CombatDemo);
 
         public string CallbackSite => "ProjectHero.Demos.CombatDemo.Update";
 
-        /// <summary>ºãÎª false£º¸ÄÔìºó±¾ÊÊÅäÆ÷²»ÔÙÓµÓÐÈÎºÎ×ÔÖ÷¶¥²ãÍÆ½ø¡£</summary>
+        /// <summary>ï¿½ï¿½Îª falseï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½</summary>
         public bool OwnsAutonomousUpdate => false;
 
         public MonoBehaviour GateTarget => this;
@@ -60,12 +61,12 @@ namespace ProjectHero.Demos
 
         public int StopCallCount => _stopCallCount;
 
-        /// <summary>¾ÉÊ±¼äÏßµÄÔÝÍ£ÓïÒå£¨ÓÃ»§ÔÝÍ£»òÏµÍ³ÔÝÍ££©£¬¹© Bootstrap ¹Û²â¡£</summary>
+        /// <summary>ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½å£¨ï¿½Ã»ï¿½ï¿½ï¿½Í£ï¿½ï¿½ÏµÍ³ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Bootstrap ï¿½Û²â¡£</summary>
         public bool IsPaused => Timeline != null && Timeline.Paused;
 
         /// <summary>
-        /// ¾É×é¼þ×Ô¼ºÀÛ¼ÆµÄ AdvanceTime µ÷ÓÃÊý£¨Î¨Ò»È¨ÍþÀ´Ô´£©¡£
-        /// ËüÈÃ¡¸New Ä£Ê½¾ÉÍÆ½øµ÷ÓÃÎª 0¡¹¿ÉÒÔ±»Ö±½ÓÖ¤Ã÷£¬¶ø²»ÊÇ¿¿ÈÕÖ¾ÍÆ¶Ï¡£
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½Û¼Æµï¿½ AdvanceTime ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¨Ò»È¨ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½Ã¡ï¿½New Ä£Ê½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Îª 0ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½Ö±ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½Ö¾ï¿½Æ¶Ï¡ï¿½
         /// </summary>
         public int AdvanceTimeCallCount => Timeline != null ? Timeline.TotalAdvanceTimeCalls : 0;
 
@@ -76,19 +77,19 @@ namespace ProjectHero.Demos
             _initialized = true;
             _stopped = false;
 
-            // ¾ÉÆô¶¯Á´µÄ³õÊ¼»¯Ð´Èë±£³ÖÔ­Ñù£ºStart() ÒÑ¾­×ö¹ý¶µµ×´´½¨ÓëÒýÓÃ½âÎö£¬
-            // ÕâÀïÖ»²¹ÉÏ¡¸Timeline ±ØÐë´æÔÚ¡¹µÄÏÔÊ½Ð£Ñé¡£
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½Ð´ï¿½ë±£ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Start() ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½Ï¡ï¿½Timeline ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½ï¿½ï¿½ï¿½ï¿½Ê½Ð£ï¿½é¡£
             if (Timeline == null) Timeline = GetComponent<BattleTimeline>();
         }
 
-        /// <summary>ÍÆ½øÒ»Ö¡¡£Ö»ÔÊÐí BattleRuntimeBootstrap µ÷ÓÃ¡£</summary>
+        /// <summary>ï¿½Æ½ï¿½Ò»Ö¡ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ BattleRuntimeBootstrap ï¿½ï¿½ï¿½Ã¡ï¿½</summary>
         public void AdvanceFrame(BattleFrameDelta delta)
         {
             if (!_initialized || _stopped) return;
 
             _advanceCallCount++;
 
-            // ¾É±íÏÖÐÐÎª£ºTimelineUI ¹Û²ì¶ÔÏó¶µµ×£¨Ô­ Update µÚÒ»¶Î£¬Ö»¶Á±íÏÖ£¬²»Ð´Âß¼­£©¡£
+            // ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½TimelineUI ï¿½Û²ï¿½ï¿½ï¿½ó¶µµ×£ï¿½Ô­ Update ï¿½ï¿½Ò»ï¿½Î£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½Ð´ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½
             if (Enemy != null && ProjectHero.UI.UIManager.Instance != null && ProjectHero.UI.UIManager.Instance.TimelineUI != null)
             {
                 var timelineUI = ProjectHero.UI.UIManager.Instance.TimelineUI;
@@ -97,13 +98,13 @@ namespace ProjectHero.Demos
 
             if (Timeline == null) return;
 
-            // ÔÝÍ£ÇÐ»»±£³Ö¾ÉÓïÒå£ºP ¼üÔÚ Legacy ÊÊÅäÆ÷ÄÚ´¦Àí£¨²»¸Ä±äÊ±¼äËõ·ÅµÄÖ¡ËÙÂÊ£©¡£
+            // ï¿½ï¿½Í£ï¿½Ð»ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½å£ºP ï¿½ï¿½ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½Ö¡ï¿½ï¿½ï¿½Ê£ï¿½ï¿½ï¿½
             if (Input.GetKeyDown(KeyCode.P)) Timeline.SetPaused(!Timeline.Paused);
 
             if (delta.IsPaused) return;
 
-            // Ê±¼äÀ´Ô´ÓïÒå±£³Ö²»±ä£ºLegacy ¶ÎÊ¹ÓÃÊÜ timeScale Ëõ·ÅµÄÖ¡Ê±¼ä£¬
-            // Òò´ËÂý¶¯×÷/¶ÙÖ¡ÈÔÈ»Ó°Ïì¾ÉÂß¼­ Tick ÂÊ¡ª¡ªÕâÊÇ 03B ¿ÌÒâ±£ÁôµÄ¿É¼û»ùÏß¡£
+            // Ê±ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½å±£ï¿½Ö²ï¿½ï¿½ä£ºLegacy ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ timeScale ï¿½ï¿½ï¿½Åµï¿½Ö¡Ê±ï¿½ä£¬
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½Ö¡ï¿½ï¿½È»Ó°ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ Tick ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 03B ï¿½ï¿½ï¿½â±£ï¿½ï¿½ï¿½Ä¿É¼ï¿½ï¿½ï¿½ï¿½ß¡ï¿½
             Timeline.AdvanceTime(delta.DeltaTime);
             DebugTimeDisplay = Timeline.CurrentTime;
 
@@ -111,7 +112,7 @@ namespace ProjectHero.Demos
                 _context.Ledger.RecordLegacyWriterAdvanceCall(CallbackSite);
         }
 
-        /// <summary>Í£Ö¹±¾³¡Õ½¶·£¨ÃÝµÈ£©¡£¾ÉÊ±¼äÏß²»ÒòÍ£Ö¹¶øÏú»Ù£¬Ö»Í£Ö¹±»ÍÆ½ø¡£</summary>
+        /// <summary>Í£Ö¹ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÈ£ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß²ï¿½ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½Ù£ï¿½Ö»Í£Ö¹ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½</summary>
         public void StopBattle(string reason)
         {
             _stopCallCount++;
@@ -123,12 +124,12 @@ namespace ProjectHero.Demos
         }
 
         /// <summary>
-        /// ÎªÐÂÒ»³¡Õ½¶·¸´Î»£¨¿É»ØÇÐÓïÒå£©¡£
+        /// Îªï¿½ï¿½Ò»ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½É»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£©ï¿½ï¿½
         ///
-        /// Í¬Ò»¸ö Bootstrap ¿ÉÒÔÔÚ StopBattle + ReleaseBattle Ö®ºóÒÔÁíÒ»Ä£Ê½ÖØÐÂ¿ª¾Ö£»
-        /// Èô²»¸´Î»£¬ÉÏÒ»³¡ÒÅÁôµÄ _stopped = true »áÈÃÐÂÕ½¶·"¿ª¾Ö¼´Í£Ö¹"
-        /// £¨Bootstrap µÄ Adapters.Legacy.IsStopped »á±£³Ö true£©¡£
-        /// ±¾·½·¨Ö»¸´Î»"Ã¿³¡Õ½¶·"µÄ×´Ì¬£º¾ÉÊ±¼äÏßµÄÀÛ¼Æ¼ÆÊýÓëÈ«²¿³¡¾°¶ÔÏó±£³ÖÔ­Ñù¡£
+        /// Í¬Ò»ï¿½ï¿½ Bootstrap ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ StopBattle + ReleaseBattle Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ä£Ê½ï¿½ï¿½ï¿½Â¿ï¿½ï¿½Ö£ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ _stopped = true ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½"ï¿½ï¿½ï¿½Ö¼ï¿½Í£Ö¹"
+        /// ï¿½ï¿½Bootstrap ï¿½ï¿½ Adapters.Legacy.IsStopped ï¿½á±£ï¿½ï¿½ trueï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Î»"Ã¿ï¿½ï¿½Õ½ï¿½ï¿½"ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½ï¿½Û¼Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó±£³ï¿½Ô­ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void ResetForNewBattle()
         {
@@ -138,15 +139,15 @@ namespace ProjectHero.Demos
             _advanceCallCount = 0;
             _stopCallCount = 0;
 
-            // µÚ¶þÊÕÎ²ÂÖ R2£¨È±ÏÝ D2£©£ºStopBattle »á¸ø¾ÉÊ±¼äÏßÉèÖÃ¡¸ÏµÍ³ÔÝÍ£¡¹£¬
-            // ¶øÖØÐÂ×°ÅäÐÂÕ½¶·Ê±Èô²»Çå³ý£¬ÖØ¿ªºóµÄ¾ÉÊ±ÖÓ**ÓÀ²»ÍÆ½ø**£¬
-            // µ« AdvanceTime µ÷ÓÃ¼ÆÊýÈÔÖðÖ¡Ôö³¤£¨¼ÈÓÐÓÃÀýÖ»¶ÏÑÔ¼ÆÊý£¬Òò´ËÑÚ¸ÇÁËËü£©¡£
-            // ¡¸¿É»ØÇÐ¡¹±ØÐë°üº¬¡¸ÖØ¿ªºóÄÜÕæÕýÍÆ½ø¡¹£ºÕâÀïÇå³ý±¾³¡Õ½¶·Ê©¼ÓµÄÏµÍ³ÔÝÍ£¡£
-            // »Ö¸´ÓïÒå£º
-            //   1) ÏµÍ³ÔÝÍ£ = ÓÉÕ½¶·ÉúÃüÖÜÆÚÊ©¼Ó£¨StopBattle ÖÃÎ»£©-> ÖØ¿ªÊ±±ØÐëÇå³ý£»
-            //   2) ÓÃ»§ÔÝÍ££¨P ¼ü / UI£©ÊÇÍæ¼Ò×Ô¼ºµÄÒâÍ¼£¬²»ÔÚÕâÀï¸ÄÐ´£»
-            //   3) Õ½¶·Ö®¼äµÄ¶¥²ãÔÝÍ£ÓÉ BattleRuntimeBootstrap.SetPaused ¸ºÔð£¬
-            //      Ëü²»½øÈë¾ÉÊ±¼äÏß£¬Òò´ËÒ²²»»á²ÐÁôµ½ÏÂÒ»³¡¡£
+            // ï¿½Ú¶ï¿½ï¿½ï¿½Î²ï¿½ï¿½ R2ï¿½ï¿½È±ï¿½ï¿½ D2ï¿½ï¿½ï¿½ï¿½StopBattle ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½ÏµÍ³ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½ï¿½ï¿½Ä¾ï¿½Ê±ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½**ï¿½ï¿½
+            // ï¿½ï¿½ AdvanceTime ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½É»ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½Ê©ï¿½Óµï¿½ÏµÍ³ï¿½ï¿½Í£ï¿½ï¿½
+            // ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½å£º
+            //   1) ÏµÍ³ï¿½ï¿½Í£ = ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê©ï¿½Ó£ï¿½StopBattle ï¿½ï¿½Î»ï¿½ï¿½-> ï¿½Ø¿ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            //   2) ï¿½Ã»ï¿½ï¿½ï¿½Í£ï¿½ï¿½P ï¿½ï¿½ / UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½
+            //   3) Õ½ï¿½ï¿½Ö®ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ BattleRuntimeBootstrap.SetPaused ï¿½ï¿½ï¿½ï¿½
+            //      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
             if (Timeline == null) Timeline = GetComponent<BattleTimeline>();
             if (Timeline != null && Timeline.SystemPaused) Timeline.SetSystemPaused(false);
         }
@@ -176,8 +177,8 @@ namespace ProjectHero.Demos
                 controller.Timeline = Timeline;
             }
 
-            // Ê±¼äÏß¶µµ×ÒýÓÃ£º¸ÄÔìÇ° Update Í¨¹ý Timeline ×Ö¶ÎÍÆ½ø£¬×Ö¶ÎÎª¿ÕÊ±¾ÉÏµÍ³»á¾²Ä¬²»ÍÆ½ø£»
-            // Îª±£³Ö¡¸Legacy ÈÔÊÇ±»µ÷ÓÃµÄÎ¨Ò»¾ÉÍÆ½øÂ·¾¶¡¹£¬ÕâÀï²¹Ò»´ÎÍ¬ GameObject ÉÏµÄ½âÎö¡£
+            // Ê±ï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Ç° Update Í¨ï¿½ï¿½ Timeline ï¿½Ö¶ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½Îªï¿½ï¿½Ê±ï¿½ï¿½ÏµÍ³ï¿½á¾²Ä¬ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½
+            // Îªï¿½ï¿½ï¿½Ö¡ï¿½Legacy ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ï¿½ï¿½Ãµï¿½Î¨Ò»ï¿½ï¿½ï¿½Æ½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï²¹Ò»ï¿½ï¿½Í¬ GameObject ï¿½ÏµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (Timeline == null) Timeline = GetComponent<BattleTimeline>();
 
             Debug.Log("--- Starting Combat Demo (Ticks) ---");
@@ -209,3 +210,5 @@ namespace ProjectHero.Demos
         }
     }
 }
+
+#endif

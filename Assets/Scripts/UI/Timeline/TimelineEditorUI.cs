@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using ProjectHero.Core.Actions;
 using ProjectHero.Core.Entities;
 using ProjectHero.Core.Grid;
@@ -52,32 +53,32 @@ namespace ProjectHero.UI.Timeline
         [Header("Snapping")]
         public float SnapThresholdSeconds = 0.15f;
 
-        // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        // ÈÎÎñ 09 ½ÓÈëµã£¨B Á÷£©£ºÊäÈëÄ£Ê½ + Ô­×ÓÃüÁîÌá½»
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ 09 ï¿½ï¿½ï¿½ï¿½ã£¨B ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ + Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á½»
         //
-        // ÕâÀï**²»**±£´æÈÎºÎÂß¼­È¨Íþ×´Ì¬£º¶Ë¿ÚÖ»Ìá¹©"µ±Ç° Tick / Ô¤ÆÚÐÞ¶©ºÅ /
-        // ¿É±à¼­¼Æ»® / ·´Ó¦»ú»á / Dodge Ä¿µÄ¸ñºÏ·¨ÐÔ"ÕâÐ©Ö»¶ÁÍ¶Ó°£¬
-        // ÒÔ¼°Î¨Ò»Ð´Èë¿Ú SubmitCommand(CommandRequest)¡£
-        // Ã»ÓÐ¶Ë¿ÚÊ±£¬É¾³ý¶¯×÷**¾Ü¾øÖ´ÐÐ**£¨¾ø²»»ØÍËµ½Ö±½ÓÉ¾¼Æ»®/ÒâÍ¼/ÒÆ¶¯¶Î/Ô¤Áô£©¡£
+        // ï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ß¼ï¿½È¨ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½Ë¿ï¿½Ö»ï¿½á¹©"ï¿½ï¿½Ç° Tick / Ô¤ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½ï¿½ /
+        // ï¿½É±à¼­ï¿½Æ»ï¿½ / ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ / Dodge Ä¿ï¿½Ä¸ï¿½Ï·ï¿½ï¿½ï¿½"ï¿½ï¿½Ð©Ö»ï¿½ï¿½Í¶Ó°ï¿½ï¿½
+        // ï¿½Ô¼ï¿½Î¨Ò»Ð´ï¿½ï¿½ï¿½ SubmitCommand(CommandRequest)ï¿½ï¿½
+        // Ã»ï¿½Ð¶Ë¿ï¿½Ê±ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**ï¿½Ü¾ï¿½Ö´ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Ö±ï¿½ï¿½É¾ï¿½Æ»ï¿½/ï¿½ï¿½Í¼/ï¿½Æ¶ï¿½ï¿½ï¿½/Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         //
-        // B2 ²¹ÈýÌõ½á¹¹ÐÔÔ¼Êø£¨¼û¸÷³ÉÔ±×¢ÊÍ£©£º
-        // ¢Ù `LegacyTimelineWritesEnabled`£º¶Ë¿Ú½ÓÏßºó¾ÉÊ±¼äÏßÐ´Èë£¨CancelGroup /
-        //    ReserveGroupId / placement.Schedule£©ÔÚ**´úÂëÉÏ**²»¿É´ï£¬²»ÔÙÒÀÀµ
-        //    "_playerBlocks Ç¡ºÃÎª¿Õ"ÕâÒ»Êý¾ÝÇÉºÏ£»
-        // ¢Ú ¿é±êÊ¶ = Logic `ActionPlanSnapshot.ActionPlanId`£¨Î¨Ò»À´Ô´
-        //    `IViewLogicPort.EditablePlansOf`£©£¬²»ÊÇ `ReserveGroupId()`£»
-        // ¢Û Ãë / Tick Ö»ÓÐ `ViewTickConverter` Ò»¸ö»»Ëãµã£¨tick ÂÊÈ¡×Ô
-        //    ¾ÉÊ±¼äÏßµÄÎ¨Ò»³£Á¿ `BattleTimeline.TicksPerSecond`£©¡£
-        // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
-        [Header("Task 09 ÃüÁî½ÓÈë£¨¿É¿Õ£©")]
-        [Tooltip("×¢Èëºó£ºÉ¾³ý Editable ÆÕÍ¨¼Æ»®×ß RemoveEditablePlanOperation ¾­Í¬Ò»ÃüÁîÈë¿ÚÌá½»£»Ëø¶¨ÏßÏÔÊ¾ CurrentTick+1¡£")]
+        // B2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±×¢ï¿½Í£ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ `LegacyTimelineWritesEnabled`ï¿½ï¿½ï¿½Ë¿Ú½ï¿½ï¿½ßºï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ë£¨CancelGroup /
+        //    ReserveGroupId / placement.Scheduleï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½ï¿½É´ï£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //    "_playerBlocks Ç¡ï¿½ï¿½Îªï¿½ï¿½"ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÉºÏ£ï¿½
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¶ = Logic `ActionPlanSnapshot.ActionPlanId`ï¿½ï¿½Î¨Ò»ï¿½ï¿½Ô´
+        //    `IViewLogicPort.EditablePlansOf`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ `ReserveGroupId()`ï¿½ï¿½
+        // ï¿½ï¿½ ï¿½ï¿½ / Tick Ö»ï¿½ï¿½ `ViewTickConverter` Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã£¨tick ï¿½ï¿½È¡ï¿½ï¿½
+        //    ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½Î¨Ò»ï¿½ï¿½ï¿½ï¿½ `BattleTimeline.TicksPerSecond`ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        [Header("Task 09 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¨ï¿½É¿Õ£ï¿½")]
+        [Tooltip("×¢ï¿½ï¿½ï¿½É¾ï¿½ï¿½ Editable ï¿½ï¿½Í¨ï¿½Æ»ï¿½ï¿½ï¿½ RemoveEditablePlanOperation ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ CurrentTick+1ï¿½ï¿½")]
         public ViewInputController InputController;
         public ViewInputPorts InputPorts;
 
-        /// <summary>±¾ÊÓÍ¼µÄÊäÈëÄ£Ê½×´Ì¬»ú£¨Î´×¢ÈëÊ±Îª null£©¡£</summary>
+        /// <summary>ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½×´Ì¬ï¿½ï¿½ï¿½ï¿½Î´×¢ï¿½ï¿½Ê±Îª nullï¿½ï¿½ï¿½ï¿½</summary>
         public ViewInputController Controller => InputController;
 
-        /// <summary>°Ñ¶Ë¿Ú×¢Èë±¾ÊÓÍ¼ÓëÄÚ²¿ÊäÈë¿ØÖÆÆ÷£¨ËÞÖ÷ÔÚ New Ä£Ê½Æô¶¯Ê±µ÷ÓÃÒ»´Î£©¡£</summary>
+        /// <summary>ï¿½Ñ¶Ë¿ï¿½×¢ï¿½ë±¾ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ New Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î£ï¿½ï¿½ï¿½</summary>
         public void BindInputPorts(ViewInputPorts ports)
         {
             InputPorts = ports;
@@ -87,8 +88,8 @@ namespace ProjectHero.UI.Timeline
 
             if (IsInputPortsBound) return;
 
-            // »Øµ½¾ÉÂ·¾¶£º¶ªÆúÉÏÒ»ÂÖÓÉ Logic Í¶Ó°²úÉúµÄ¿éÓëÕ¼Î» placement£¬
-            // ÈÃ¾É ReserveGroupId ¼ü¿Õ¼ä±£³Ö¸É¾»£¨·ñÔò¾ÉÂ·¾¶»á×²ÉÏ Schedule == null µÄÕ¼Î»ÌõÄ¿£©¡£
+            // ï¿½Øµï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ Logic Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Õ¼Î» placementï¿½ï¿½
+            // ï¿½Ã¾ï¿½ ReserveGroupId ï¿½ï¿½ï¿½Õ¼ä±£ï¿½Ö¸É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½ Schedule == null ï¿½ï¿½Õ¼Î»ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½
             foreach (long planId in _projectedActionPlanIds)
             {
                 _playerBlocks.Remove(planId);
@@ -98,13 +99,13 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// Ëø¶¨ÏßÏÔÊ¾ Tick£º¿ìÕÕ <c>CurrentTick + 1</c>¡£
-        /// ÕâÖ»ÊÇ<strong>ÌáÇ°·´À¡</strong>¡ª¡ªÔ½Ïß±à¼­µÄ×îÖÕ¾Ü¾øÀ´×Ô Logic
-        /// £¨ÃüÁîÄ¿±ê Tick + ¼Æ»® State + Æô¶¯ÃÅ½û£©¡£
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ Tickï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <c>CurrentTick + 1</c>ï¿½ï¿½
+        /// ï¿½ï¿½Ö»ï¿½ï¿½<strong>ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ß±à¼­ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾Ü¾ï¿½ï¿½ï¿½ï¿½ï¿½ Logic
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ Tick + ï¿½Æ»ï¿½ State + ï¿½ï¿½ï¿½ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public long LockedLineTick => InputController != null ? InputController.LockedLineTick : 0L;
 
-        /// <summary>¸Ã¼Æ»®ÔÚ UI ²àÊÇ·ñ<strong>¿´ÆðÀ´</strong>¿ÉÉ¾³ý£¨´æÔÚ + ÊôÖ÷ÊÜ¿Ø + ÆÕÍ¨¼Æ»® + Editable£©¡£</summary>
+        /// <summary>ï¿½Ã¼Æ»ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½Ç·ï¿½<strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ + ï¿½ï¿½Í¨ï¿½Æ»ï¿½ + Editableï¿½ï¿½ï¿½ï¿½</summary>
         public bool CanRequestDelete(long actionPlanId)
         {
             if (InputController == null || actionPlanId <= 0L) return false;
@@ -115,47 +116,47 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// Ê±¼äÏß¿éÔÚ UI ²à"´Ë¿Ì¿ÉÉ¾ / ¿ÉÍÏ"µÄ<strong>Î¨Ò»</strong>ÅÐ¶¨
-        /// £¨ÈÎÎñ 09 / B2 ·¶Î§ ¡ì3.5 µÄ UI ²à¿Ú¾¶£©¡£
+        /// Ê±ï¿½ï¿½ï¿½ß¿ï¿½ï¿½ï¿½ UI ï¿½ï¿½"ï¿½Ë¿Ì¿ï¿½É¾ / ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½<strong>Î¨Ò»</strong>ï¿½Ð¶ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 09 / B2 ï¿½ï¿½Î§ ï¿½ï¿½3.5 ï¿½ï¿½ UI ï¿½ï¿½Ú¾ï¿½ï¿½ï¿½ï¿½ï¿½
         ///
-        /// Ëü<strong>Ö»</strong>ÊÇÌáÇ°·´À¡£¬²»ÊÇÊÚÈ¨£º
+        /// ï¿½ï¿½<strong>Ö»</strong>ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
         /// <list type="bullet">
-        /// <item>ÕæÖµÀ´Ô´ÊÇ <see cref="IViewLogicPort.TryFindEditablePlan"/>£¬
-        /// ¼´"´æÔÚ + ÊôÖ÷ÊÜ¿Ø + <strong>ÆÕÍ¨</strong>¼Æ»® + <c>Editable</c>"¡£
-        /// Òò´Ë Locked / Running / ·´Ó¦¼Æ»®ÔÚ UI ÉÏ<strong>¾ÍµØ²»¿ÉÉ¾¡¢²»¿ÉÍÏ</strong>
-        /// £¨°´Å¥/ÍÏ×§Èë¿ÚÖ±½Ó²»ÏìÓ¦£¬Á¬ÃüÁî¶¼²»¹¹Ôì£©£»</item>
-        /// <item>UI µÄÅÐ¶¨<strong>²»ÊÇ</strong>È¨Íþ£ºËùÓÐÉ¾³ý/ÖØÅÅÈÔÈ»±àÂëÎª
-        /// <c>RemoveEditablePlanOperation</c> / <c>MoveEditablePlanOperation</c> ¾­Î¨Ò»Èë¿ÚÌá½»£¬
-        /// Logic »áÓÃÐÞ¶©ºÅ¡¢¼Æ»® State Óë¿ØÖÆÈ¨ÖØÐÂÐ£Ñé£»
-        /// ¼´Ê¹ UI ÅÐ¶Ï±»ÈÆ¹ý£¬Logic µÄÎÈ¶¨¾Ü¾øÈÔÊÇ×îÖÕ´ð°¸¡£</item>
+        /// <item>ï¿½ï¿½Öµï¿½ï¿½Ô´ï¿½ï¿½ <see cref="IViewLogicPort.TryFindEditablePlan"/>ï¿½ï¿½
+        /// ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ + <strong>ï¿½ï¿½Í¨</strong>ï¿½Æ»ï¿½ + <c>Editable</c>"ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ Locked / Running / ï¿½ï¿½Ó¦ï¿½Æ»ï¿½ï¿½ï¿½ UI ï¿½ï¿½<strong>ï¿½ÍµØ²ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong>
+        /// ï¿½ï¿½ï¿½ï¿½Å¥/ï¿½ï¿½×§ï¿½ï¿½ï¿½Ö±ï¿½Ó²ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¶¼ï¿½ï¿½ï¿½ï¿½ï¿½ì£©ï¿½ï¿½</item>
+        /// <item>UI ï¿½ï¿½ï¿½Ð¶ï¿½<strong>ï¿½ï¿½ï¿½ï¿½</strong>È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Îª
+        /// <c>RemoveEditablePlanOperation</c> / <c>MoveEditablePlanOperation</c> ï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½
+        /// Logic ï¿½ï¿½ï¿½ï¿½ï¿½Þ¶ï¿½ï¿½Å¡ï¿½ï¿½Æ»ï¿½ State ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½Ð£ï¿½é£»
+        /// ï¿½ï¿½Ê¹ UI ï¿½Ð¶Ï±ï¿½ï¿½Æ¹ï¿½ï¿½ï¿½Logic ï¿½ï¿½ï¿½È¶ï¿½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ´ð°¸¡ï¿½</item>
         /// </list>
         /// </summary>
         public bool CanEditBlockInUi(long actionPlanId) => actionPlanId > 0L && CanRequestDelete(actionPlanId);
 
         /// <summary>
-        /// ±¾µØ·ÅÖÃ²Ý¸åµÄÈ·ÈÏ£º°Ñµ±Ç°²Ý¸å±àÒëÎªÔ­×Ó Operations ²¢¾­Î¨Ò»Èë¿ÚÌá½»¡£
-        /// ÖðÖ¡Ô¤ÀÀ/Îü¸½<strong>²»</strong>×ßÕâÀï¡£
+        /// ï¿½ï¿½ï¿½Ø·ï¿½ï¿½Ã²Ý¸ï¿½ï¿½È·ï¿½Ï£ï¿½ï¿½Ñµï¿½Ç°ï¿½Ý¸ï¿½ï¿½ï¿½ï¿½ÎªÔ­ï¿½ï¿½ Operations ï¿½ï¿½ï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½
+        /// ï¿½ï¿½Ö¡Ô¤ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½<strong>ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¡£
         /// </summary>
         public ViewSubmissionOutcome ConfirmLocalDraft()
             => InputController != null
                 ? InputController.ConfirmDraft()
                 : ViewSubmissionOutcome.Blocked(ViewInputCodes.NO_LOGIC_PORT);
 
-        // ¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª
-        // Î¨Ò»»»Ëãµã / ¾ÉÐ´ÈëÊØÎÀ / Logic Í¶Ó°£¨ÈÎÎñ 09 / B2£©
-        // ¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // Î¨Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ / ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ / Logic Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 09 / B2ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        /// <summary>ÊÓÍ¼Ê±¼äÖá¾ø¶ÔÃë ¡ú ¾ø¶Ô Tick£¨Î¨Ò»»»ËãµãµÄ¹«¿ª³ö¿Ú£©¡£</summary>
+        /// <summary>ï¿½ï¿½Í¼Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Tickï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½</summary>
         public long ViewSecondsToTick(double secondsAbsolute)
             => TickConverter.TickAtAbsoluteSeconds(secondsAbsolute);
 
-        /// <summary>¾ø¶Ô Tick ¡ú ÊÓÍ¼Ê±¼äÖá¾ø¶ÔÃë£¨Í¬Ò»»»ËãµãµÄ·´Ïò³ö¿Ú£©¡£</summary>
+        /// <summary>ï¿½ï¿½ï¿½ï¿½ Tick ï¿½ï¿½ ï¿½ï¿½Í¼Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¨Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½</summary>
         public double ViewSecondsOfTick(long tick) => TickConverter.SecondsAtTick(tick);
 
         /// <summary>
-        /// ¾ÉÊ±¼äÏßÅÅ³ÌÐ´ÈëµÄ<strong>Î¨Ò»³ö¿Ú</strong>£¨·ÀÓù×ÝÉî£©£º
-        /// µ÷ÓÃµãÒÑ¾­ÏÔÊ½ÅÐ¶Ï¹ý <see cref="LegacyTimelineWritesEnabled"/>£¬ÕâÀïÔÙÅÐÒ»´Î¡ª¡ª
-        /// ÈÎºÎÐÂÔöµÄ¾ÉÐ´ÈëÂ·¾¶Ö»Òª×ßËü¾Í²»¿ÉÄÜÔ½¹ýÊØÎÀ¡£
+        /// ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½Ð´ï¿½ï¿½ï¿½<strong>Î¨Ò»ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î£©ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½Ê½ï¿½Ð¶Ï¹ï¿½ <see cref="LegacyTimelineWritesEnabled"/>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î¡ï¿½ï¿½ï¿½
+        /// ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½Ð´ï¿½ï¿½Â·ï¿½ï¿½Ö»Òªï¿½ï¿½ï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         private bool TryLegacySchedule(TimelineActionPlacement placement, float delaySeconds, long blockId)
         {
@@ -168,7 +169,7 @@ namespace ProjectHero.UI.Timeline
             return true;
         }
 
-        /// <summary>¾ÉÊ±¼äÏß <c>BattleTimeline.CancelGroup</c> µÄÎ¨Ò»³ö¿Ú£¨Í¬ÉÏ£©¡£</summary>
+        /// <summary>ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ <c>BattleTimeline.CancelGroup</c> ï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½Ú£ï¿½Í¬ï¿½Ï£ï¿½ï¿½ï¿½</summary>
         private bool TryLegacyCancelGroup(long blockId)
         {
             if (!LegacyTimelineWritesEnabled || Timeline == null)
@@ -180,7 +181,7 @@ namespace ProjectHero.UI.Timeline
             return true;
         }
 
-        /// <summary>¾ÉÊ±¼äÏß <c>BattleTimeline.ReserveGroupId</c> µÄÎ¨Ò»³ö¿Ú£¨Í¬ÉÏ£©¡£</summary>
+        /// <summary>ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ <c>BattleTimeline.ReserveGroupId</c> ï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½Ú£ï¿½Í¬ï¿½Ï£ï¿½ï¿½ï¿½</summary>
         private long ReserveLegacyGroupId()
         {
             if (!LegacyTimelineWritesEnabled || Timeline == null)
@@ -192,23 +193,23 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// °Ñ Logic Ö»¶ÁÍ¶Ó°Í¬²½½øÍæ¼Ò Lane µÄ¿é±í£º<strong>¿éµÄÎ¨Ò»Éí·ÝÀ´Ô´</strong>¡£
+        /// ï¿½ï¿½ Logic Ö»ï¿½ï¿½Í¶Ó°Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Lane ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½<strong>ï¿½ï¿½ï¿½Î¨Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´</strong>ï¿½ï¿½
         ///
         /// <list type="bullet">
-        /// <item>¼ü<strong>¾ÍÊÇ</strong> <c>ActionPlanSnapshot.ActionPlanId</c>
-        /// £¨À´×Ô <see cref="IViewLogicPort.EditablePlansOf"/>£©£¬
-        /// <strong>²»ÊÇ</strong> <c>BattleTimeline.ReserveGroupId()</c>£»
-        /// Òò´ËÉ¾³ý/ÖØÅÅÄÃµ½µÄ plan id Ò»¶¨ÄÜÔÚ <c>IViewLogicPort</c> ÉÏ²éµÃµ½£¬
-        /// "½ÓÏßºó <c>CanRequestDelete</c> ºã false"Õâ¸öÈ±ÏÝ±»´Ó¸ùÉÏÏû³ý¡£</item>
-        /// <item>¼¯ºÏ±¾ÉíÒÑ¾­Ö»º¬"´æÔÚ + ÊôÖ÷ÊÜ¿Ø + ÆÕÍ¨¼Æ»® + <c>Editable</c>"£¬
-        /// Òò´Ë Locked / Running / ·´Ó¦¼Æ»®ÌìÈ»²»ÔÚÆäÖÐ£¨UI ²àÎÞÐèÔÙÅÐÒ»´Î×´Ì¬£¬
-        /// Ò²²»»á³öÏÖ"UI Óë Logic Á½Ì×¿Ú¾¶"£©¡£</item>
-        /// <item><strong>Î´½ÓÏßÊ±ÊÇ´¿ no-op</strong>£º²»Î±Ôì¿é¡¢²»»ØÍËµ½¾É <c>ReserveGroupId</c>¡£</item>
-        /// <item>Àë¿ª¿É±à¼­¼¯ºÏµÄ¿éÖ»Çå<strong>ÊÓÍ¼</strong>Ä£ÐÍ¡ª¡ª
-        /// È¨ÍþÉ¾³ýÓÉ Logic µÄÍ³Ò»ÖÕÌ¬Ð­µ÷Æ÷Íê³É£¬±¾·½·¨¾ø²»Ð´Âß¼­¡£</item>
+        /// <item>ï¿½ï¿½<strong>ï¿½ï¿½ï¿½ï¿½</strong> <c>ActionPlanSnapshot.ActionPlanId</c>
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <see cref="IViewLogicPort.EditablePlansOf"/>ï¿½ï¿½ï¿½ï¿½
+        /// <strong>ï¿½ï¿½ï¿½ï¿½</strong> <c>BattleTimeline.ReserveGroupId()</c>ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½É¾ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ plan id Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <c>IViewLogicPort</c> ï¿½Ï²ï¿½Ãµï¿½ï¿½ï¿½
+        /// "ï¿½ï¿½ï¿½ßºï¿½ <c>CanRequestDelete</c> ï¿½ï¿½ false"ï¿½ï¿½ï¿½È±ï¿½Ý±ï¿½ï¿½Ó¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</item>
+        /// <item>ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½Ö»ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ + ï¿½ï¿½Í¨ï¿½Æ»ï¿½ + <c>Editable</c>"ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ Locked / Running / ï¿½ï¿½Ó¦ï¿½Æ»ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½×´Ì¬ï¿½ï¿½
+        /// Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"UI ï¿½ï¿½ Logic ï¿½ï¿½ï¿½×¿Ú¾ï¿½"ï¿½ï¿½ï¿½ï¿½</item>
+        /// <item><strong>Î´ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ç´ï¿½ no-op</strong>ï¿½ï¿½ï¿½ï¿½Î±ï¿½ï¿½é¡¢ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ <c>ReserveGroupId</c>ï¿½ï¿½</item>
+        /// <item>ï¿½ë¿ªï¿½É±à¼­ï¿½ï¿½ï¿½ÏµÄ¿ï¿½Ö»ï¿½ï¿½<strong>ï¿½ï¿½Í¼</strong>Ä£ï¿½Í¡ï¿½ï¿½ï¿½
+        /// È¨ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ Logic ï¿½ï¿½Í³Ò»ï¿½ï¿½Ì¬Ð­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ß¼ï¿½ï¿½ï¿½</item>
         /// </list>
         /// </summary>
-        /// <returns>±¾´ÎÍ¶Ó°³öµÄ¿éÊýÁ¿¡£</returns>
+        /// <returns>ï¿½ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</returns>
         public int SyncPlayerBlocksFromLogic()
         {
             if (!IsInputPortsBound) return 0;
@@ -243,8 +244,8 @@ namespace ProjectHero.UI.Timeline
                 };
                 _playerBlocks[planId] = model;
 
-                // ¾É placement ±íÖ»±£Áô"±êÇ©/Ê±³¤"ÕâÐ©´¿ÊÓÍ¼×Ö¶Î£»
-                // ½ÓÏßºóËüµÄ Schedule ºãÎª null ¡ª¡ª ¾ÉÊ±¼äÏßµ÷¶ÈÎ¯ÍÐÔÚ New Ä£Ê½ÏÂ²»´æÔÚ¡£
+                // ï¿½ï¿½ placement ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½Ç©/Ê±ï¿½ï¿½"ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ö¶Î£ï¿½
+                // ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ Schedule ï¿½ï¿½Îª null ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½Î¯ï¿½ï¿½ï¿½ï¿½ New Ä£Ê½ï¿½Â²ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½
                 if (!_placementsByGroupId.TryGetValue(planId, out TimelineActionPlacement placement)
                     || placement == null)
                 {
@@ -298,8 +299,8 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// È¨Íþ <c>ActionType</c> ¡ú ¾ÉäÖÈ¾ÓÃµÄ <see cref="TimelineActionKind"/>¡£
-        /// Ö»Ó°ÏìÑÕÉ«/¹Ø¼üÖ¡±íÏÖ£¬²»²ÎÓëÈÎºÎÅÐ¶¨£»Î´Öª¹æ¸ñ·µ»Ø <c>None</c>£¨²»²Â£©¡£
+        /// È¨ï¿½ï¿½ <c>ActionType</c> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È¾ï¿½Ãµï¿½ <see cref="TimelineActionKind"/>ï¿½ï¿½
+        /// Ö»Ó°ï¿½ï¿½ï¿½ï¿½É«/ï¿½Ø¼ï¿½Ö¡ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Î´Öªï¿½ï¿½ñ·µ»ï¿½ <c>None</c>ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½ï¿½ï¿½
         /// </summary>
         private TimelineActionKind ViewKindOf(ProjectHero.Logic.Snapshots.ActionPlanSnapshot plan)
         {
@@ -328,9 +329,9 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// ÊÓÍ¼¶ÔÏóµÄÏú»Ù£ºÔËÐÐÊ±ÓÃ <c>Destroy</c>£»±à¼­ÆÚ£¨Editor ¹¤¾ß / EditMode ²âÊÔ£©ÓÃ
-        /// <c>DestroyImmediate</c>¡ª¡ª±à¼­ÆÚµ÷ÓÃ <c>Destroy</c> »á´òÓ¡´íÎóÈÕÖ¾¡£
-        /// <strong>Ö»</strong>ÓÃÓÚ½ÓÏßºóÊØÎÀ·ÖÖ§ÀïµÄ±¾µØ ghost ÇåÀí£»¾ÉÂ·¾¶µÄÏú»ÙµãÖð×ÖÎ´¸Ä¡£
+        /// ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù£ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ <c>Destroy</c>ï¿½ï¿½ï¿½à¼­ï¿½Ú£ï¿½Editor ï¿½ï¿½ï¿½ï¿½ / EditMode ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½
+        /// <c>DestroyImmediate</c>ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½Úµï¿½ï¿½ï¿½ <c>Destroy</c> ï¿½ï¿½ï¿½Ó¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½
+        /// <strong>Ö»</strong>ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ ghost ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ùµï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½Ä¡ï¿½
         /// </summary>
         private static void DestroyViewObject(GameObject go)
         {
@@ -341,31 +342,31 @@ namespace ProjectHero.UI.Timeline
 
         private readonly Dictionary<long, TimelineBlockView> _activeViews = new();
         /// <summary>
-        /// ¾É <c>TimelineActionPlacement</c> ±í¡£¼üÊÇ<strong>¿é±êÊ¶</strong>£º
-        /// Î´½ÓÏßÊ±ÊÇ¾É <c>ReserveGroupId</c> ×éºÅ£»½ÓÏßºóÊÇ Logic <c>ActionPlanId</c>
-        /// £¨´ËÊ±ÌõÄ¿µÄ <c>Schedule</c> ºãÎª <c>null</c>¡ª¡ª½ÓÏßºó²»´æÔÚÈÎºÎ¾ÉÊ±¼äÏßµ÷¶ÈÎ¯ÍÐ£©¡£
+        /// ï¿½ï¿½ <c>TimelineActionPlacement</c> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<strong>ï¿½ï¿½ï¿½Ê¶</strong>ï¿½ï¿½
+        /// Î´ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ç¾ï¿½ <c>ReserveGroupId</c> ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ Logic <c>ActionPlanId</c>
+        /// ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ä¿ï¿½ï¿½ <c>Schedule</c> ï¿½ï¿½Îª <c>null</c>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºó²»´ï¿½ï¿½ï¿½ï¿½ÎºÎ¾ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½Î¯ï¿½Ð£ï¿½ï¿½ï¿½
         /// </summary>
         private readonly Dictionary<long, TimelineActionPlacement> _placementsByGroupId = new();
-        /// <summary>Íæ¼Ò Lane ¿é±í¡£¼ü = ¿é±êÊ¶£¨¼û <see cref="BlockRenderModel.ActionPlanId"/>£©¡£</summary>
+        /// <summary>ï¿½ï¿½ï¿½ Lane ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ = ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ <see cref="BlockRenderModel.ActionPlanId"/>ï¿½ï¿½ï¿½ï¿½</summary>
         private readonly Dictionary<long, BlockRenderModel> _playerBlocks = new();
         private readonly Dictionary<long, BlockRenderModel> _observedBlocks = new();
 
         private class BlockRenderModel
         {
             /// <summary>
-            /// ¿é±êÊ¶£¨ÈÎÎñ 09 / B2¡¸Ê±¼äÏß¿é±êÊ¶ÓïÒå¡¹£©¡£
+            /// ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 09 / B2ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß¿ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½å¡¹ï¿½ï¿½ï¿½ï¿½
             ///
             /// <list type="bullet">
-            /// <item>¶Ô <see cref="_playerBlocks"/>£¨Íæ¼Ò Lane¡¢¿É½»»¥£©Ëü<strong>¾ÍÊÇ</strong>
-            /// Logic Ö»¶ÁÍ¶Ó° <c>ActionPlanSnapshot.ActionPlanId</c>
-            /// £¨Î¨Ò»À´Ô´ <c>IViewLogicPort.EditablePlansOf</c>£©£¬É¾³ý/ÖØÅÅÖ±½ÓÄÃËü¹¹Ôì
-            /// <c>RemoveEditablePlanOperation</c> / <c>MoveEditablePlanOperation</c>¡£
-            /// <strong>²»ÊÇ</strong>¾É <c>BattleTimeline.ReserveGroupId()</c>¡¢
-            /// ¸ü²»ÊÇ <c>GetInstanceID()</c>/<c>GetEntityId()</c>/×¢²áË³Ðò/Ãû³Æ£¨00 ºÅ¹æÔò 16£©¡£</item>
-            /// <item>¶Ô <see cref="_observedBlocks"/>£¨¹Û²ì Lane¡¢<c>IsInteractable == false</c>£©
-            /// ËüÈÔÊÇ¾ÉÊ±¼äÏß¿ìÕÕµÄ×éºÅ£¬<strong>Ö»</strong>×÷ÎªäÖÈ¾¼üÊ¹ÓÃ£º
-            /// ËüÓÀÔ¶×ß²»µ½É¾³ý/ÖØÅÅ¾ö²ß£¨ÄÇÁ½ÌõÂ·¾¶¶¼ÒªÇó
-            /// <see cref="IsBlockInteractable"/> ÇÒÒÔ <c>IViewLogicPort</c> µÄÖ»¶ÁÅÐ¶¨Îª×¼£©¡£</item>
+            /// <item>ï¿½ï¿½ <see cref="_playerBlocks"/>ï¿½ï¿½ï¿½ï¿½ï¿½ Laneï¿½ï¿½ï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<strong>ï¿½ï¿½ï¿½ï¿½</strong>
+            /// Logic Ö»ï¿½ï¿½Í¶Ó° <c>ActionPlanSnapshot.ActionPlanId</c>
+            /// ï¿½ï¿½Î¨Ò»ï¿½ï¿½Ô´ <c>IViewLogicPort.EditablePlansOf</c>ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            /// <c>RemoveEditablePlanOperation</c> / <c>MoveEditablePlanOperation</c>ï¿½ï¿½
+            /// <strong>ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ <c>BattleTimeline.ReserveGroupId()</c>ï¿½ï¿½
+            /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <c>GetInstanceID()</c>/<c>GetEntityId()</c>/×¢ï¿½ï¿½Ë³ï¿½ï¿½/ï¿½ï¿½ï¿½Æ£ï¿½00 ï¿½Å¹ï¿½ï¿½ï¿½ 16ï¿½ï¿½ï¿½ï¿½</item>
+            /// <item>ï¿½ï¿½ <see cref="_observedBlocks"/>ï¿½ï¿½ï¿½Û²ï¿½ Laneï¿½ï¿½<c>IsInteractable == false</c>ï¿½ï¿½
+            /// ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½Ê±ï¿½ï¿½ï¿½ß¿ï¿½ï¿½Õµï¿½ï¿½ï¿½Å£ï¿½<strong>Ö»</strong>ï¿½ï¿½Îªï¿½ï¿½È¾ï¿½ï¿½Ê¹ï¿½Ã£ï¿½
+            /// ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ß²ï¿½ï¿½ï¿½É¾ï¿½ï¿½/ï¿½ï¿½ï¿½Å¾ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½
+            /// <see cref="IsBlockInteractable"/> ï¿½ï¿½ï¿½ï¿½ <c>IViewLogicPort</c> ï¿½ï¿½Ö»ï¿½ï¿½ï¿½Ð¶ï¿½Îª×¼ï¿½ï¿½ï¿½ï¿½</item>
             /// </list>
             /// </summary>
             public long ActionPlanId;
@@ -387,12 +388,12 @@ namespace ProjectHero.UI.Timeline
         private float _pendingLastMouseXFromLeft;
 
         private bool _isRepositioning;
-        /// <summary>ÖØÅÅÊÖÊÆµÄ¿é±êÊ¶£¨¼üÓïÒåÍ¬ <see cref="BlockRenderModel.ActionPlanId"/>£©¡£</summary>
+        /// <summary>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆµÄ¿ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ <see cref="BlockRenderModel.ActionPlanId"/>ï¿½ï¿½ï¿½ï¿½</summary>
         private long _repositionGroupId;
         private BlockRenderModel _repositionOriginalModel;
 
         private bool _isDraggingExisting;
-        /// <summary>ÍÏ¶¯ÖÐµÄ¿é±êÊ¶£¨¼üÓïÒåÍ¬ <see cref="BlockRenderModel.ActionPlanId"/>£©¡£</summary>
+        /// <summary>ï¿½Ï¶ï¿½ï¿½ÐµÄ¿ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ <see cref="BlockRenderModel.ActionPlanId"/>ï¿½ï¿½ï¿½ï¿½</summary>
         private long _draggingGroupId;
         private TimelineBlockView _draggingView;
         private float _dragOriginalX;
@@ -413,54 +414,54 @@ namespace ProjectHero.UI.Timeline
         private float _suppressBlockClicksUntilUnscaled;
 
         /// <summary>
-        /// Ãë / Tick µÄ<strong>Î¨Ò»</strong>»»Ëãµã£¨ÈÎÎñ 09 / B2 ·¶Î§ ¡ì3.3£©¡£
+        /// ï¿½ï¿½ / Tick ï¿½ï¿½<strong>Î¨Ò»</strong>ï¿½ï¿½ï¿½ï¿½ã£¨ï¿½ï¿½ï¿½ï¿½ 09 / B2 ï¿½ï¿½Î§ ï¿½ï¿½3.3ï¿½ï¿½ï¿½ï¿½
         ///
-        /// tick ÂÊÀ´×Ô¾ÉÊ±¼äÏßµÄÎ¨Ò»³£Á¿ <c>BattleTimeline.TicksPerSecond</c>£¬
-        /// ±¾ÊÓÍ¼<strong>²»ÔÙ</strong>×Ô½¨µÚ¶þ¸ö 60¡£ÈÎºÎ"Ãë ¡ú ÕûÊý Tick"µÄ»»Ëã
-        /// £¨·ÅÖÃ/ÖØÅÅÇëÇó¡¢Logic ¼Æ»®Î»µãµÄäÖÈ¾Í¶Ó°¡¢Ëø¶¨ÏßÏñËØÆ«ÒÆ£©¶¼±ØÐë¾­Ëü£¬
-        /// ½ûÖ¹ÔÚ UI ¸÷´¦É¢Âä³Ë/³ý 60¡£
+        /// tick ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½Î¨Ò»ï¿½ï¿½ï¿½ï¿½ <c>BattleTimeline.TicksPerSecond</c>ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½Í¼<strong>ï¿½ï¿½ï¿½ï¿½</strong>ï¿½Ô½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ 60ï¿½ï¿½ï¿½Îºï¿½"ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Tick"ï¿½Ä»ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Logic ï¿½Æ»ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½È¾Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë¾­ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½Ö¹ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½É¢ï¿½ï¿½ï¿½/ï¿½ï¿½ 60ï¿½ï¿½
         /// </summary>
         private ViewTickConverter TickConverter
             => new ViewTickConverter(InputController != null ? InputController.Logic : null,
                 BattleTimeline.TicksPerSecond);
 
         /// <summary>
-        /// <c>UnitId</c>(Logic) ¡ú <c>CombatUnit</c>(ÊÓÍ¼) µÄÓ³Éä£¬ÓÉËÞÖ÷£¨ÈÎÎñ 10 ÊÊÅäÆ÷£©×¢Èë¡£
+        /// <c>UnitId</c>(Logic) ï¿½ï¿½ <c>CombatUnit</c>(ï¿½ï¿½Í¼) ï¿½ï¿½Ó³ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ë¡£
         ///
-        /// Î´×¢ÈëÊ±·µ»Ø <c>null</c>£ºÍ¶Ó°³öµÄ¿é<strong>Ö»Ð¯´øÈ¨ÍþÉí·Ý</strong>
-        /// £¨<c>ActionPlanId</c>£©£¬²»²ÎÓëäÖÈ¾¡ª¡ª¾ø²»°´Ãû×Ö/Ë³Ðò/²ÛÎ»²Âµ¥Î»¡£
+        /// Î´×¢ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ <c>null</c>ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½Ä¿ï¿½<strong>Ö»Ð¯ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong>
+        /// ï¿½ï¿½<c>ActionPlanId</c>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/Ë³ï¿½ï¿½/ï¿½ï¿½Î»ï¿½Âµï¿½Î»ï¿½ï¿½
         /// </summary>
         public Func<long, CombatUnit> ViewUnitResolver;
 
-        /// <summary>µ±Ç°ÓÉ Logic Í¶Ó°²úÉúµÄ¿é±êÊ¶£¨Àë¿ª¿É±à¼­¼¯ºÏÊ±Òª»ØÊÕ£¬¼û <see cref="BindInputPorts"/>£©¡£</summary>
+        /// <summary>ï¿½ï¿½Ç°ï¿½ï¿½ Logic Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ë¿ªï¿½É±à¼­ï¿½ï¿½ï¿½ï¿½Ê±Òªï¿½ï¿½ï¿½Õ£ï¿½ï¿½ï¿½ <see cref="BindInputPorts"/>ï¿½ï¿½ï¿½ï¿½</summary>
         private readonly HashSet<long> _projectedActionPlanIds = new();
 
         /// <summary>
-        /// ±» <see cref="LegacyTimelineWritesEnabled"/> ÊØÎÀÀ¹ÏÂµÄ¾ÉÊ±¼äÏßÐ´Èë³¢ÊÔ´ÎÊý
-        /// £¨¹Û²âÃæ£»Õý³£Â·¾¶ºãÎª 0 Ôö³¤£©¡£
+        /// ï¿½ï¿½ <see cref="LegacyTimelineWritesEnabled"/> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÂµÄ¾ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ë³¢ï¿½Ô´ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½Û²ï¿½ï¿½æ£»ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Îª 0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ///
-        /// ËüÖ»ÓÃÓÚÈÃ"½ÓÏßºó¾ÉÐ´Èë²»¿É´ï"ÕâÌõ½á¹¹ÐÔÔ¼Êø¿É±»¸´ºË£»
-        /// Ëü<strong>²»ÊÇ</strong>ÊÚÈ¨¡¢²»²ÎÓëÈÎºÎ¾ö²ß¡£
+        /// ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ï¿½ßºï¿½ï¿½Ð´ï¿½ë²»ï¿½É´ï¿½"ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½Ë£ï¿½
+        /// ï¿½ï¿½<strong>ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎºÎ¾ï¿½ï¿½ß¡ï¿½
         /// </summary>
         public int LegacyTimelineWritesBlockedCount { get; private set; }
 
         /// <summary>
-        /// ¾ÉÊ±¼äÏßÐ´ÈëÊÇ·ñÈÔÈ»ÆôÓÃ£¨ÈÎÎñ 09 / B2 µÄ<strong>½á¹¹ÐÔ</strong>ÊØÎÀ£©¡£
+        /// ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ 09 / B2 ï¿½ï¿½<strong>ï¿½á¹¹ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ///
         /// <list type="bullet">
-        /// <item><strong>¶Ë¿Ú½ÓÏßºó</strong>£¨<see cref="IsInputPortsBound"/>£©ºãÎª <c>false</c>£º
-        /// È«²¿¾ÉÈë¿Ú£¨<see cref="FinalizePlacement"/>¡¢<see cref="RequestReposition"/>¡¢
-        /// <see cref="RequestDelete"/>¡¢<c>EndDragExisting</c>¡¢<c>RecomputePlayerBlocksForLane</c>¡¢
-        /// <see cref="CancelPlacement"/> µÄ¾É»Ø¹ö·ÖÖ§£©¶¼<strong>Ö»ÄÜ</strong>¸Ä±¾µØÊÓÍ¼×´Ì¬£¬
-        /// Ò»¸ö¶¼²»ÄÜ´¥´ï <c>BattleTimeline.CancelGroup</c> /
-        /// <c>BattleTimeline.ReserveGroupId</c> / <c>TimelineActionPlacement.Schedule</c>¡£</item>
-        /// <item><strong>ÎªÊ²Ã´±ØÐëÊÇÏÔÊ½ÊØÎÀ</strong>£º½ÓÏßºó <c>_playerBlocks</c> Ç¡ºÃÎª¿Õ
-        /// Ö»ÊÇ<strong>µ±Ê±</strong>µÄÊý¾ÝÇÉºÏ¡ª¡ªÈÎÎñ 10 µÄÊÊÅäÆ÷Ò»µ©°Ñ Logic ¼Æ»®Í¶Ó°½ø
-        /// <c>_playerBlocks</c>£¨±¾ÀàÒÑÌá¹© <see cref="SyncPlayerBlocksFromLogic"/>£©£¬
-        /// Õâ¸öÒþÊ½Ç°ÌáÁ¢¿ÌÏûÊ§£¬¾ÉÐ´Èë¾Í»áÖØÐÂ±äµÃ¿É´ï¡£ÊØÎÀ°Ñ"²»¿É´ï"´ÓÊý¾ÝÇÉºÏ
-        /// Éý¼¶Îª´úÂëÊÂÊµ£¬²¢ÓÉ <c>SelectionAndDragModesDoNotMutateLogic</c> µÄÀ©Õ¹¶Î¶¤×¡¡£</item>
-        /// <item><strong>Î´½ÓÏß</strong>£¨¾É Legacy ³¡¾° / PlayMode »Ø¹é£©ºãÎª <c>true</c>£º
-        /// ¾ÉÐÐÎªÖð×Ö±£Áô£¨PlayMode 38 ÌõÓë¾É³¡¾°Áã»Ø¹é£©¡£</item>
+        /// <item><strong>ï¿½Ë¿Ú½ï¿½ï¿½ßºï¿½</strong>ï¿½ï¿½<see cref="IsInputPortsBound"/>ï¿½ï¿½ï¿½ï¿½Îª <c>false</c>ï¿½ï¿½
+        /// È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½<see cref="FinalizePlacement"/>ï¿½ï¿½<see cref="RequestReposition"/>ï¿½ï¿½
+        /// <see cref="RequestDelete"/>ï¿½ï¿½<c>EndDragExisting</c>ï¿½ï¿½<c>RecomputePlayerBlocksForLane</c>ï¿½ï¿½
+        /// <see cref="CancelPlacement"/> ï¿½Ä¾É»Ø¹ï¿½ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½<strong>Ö»ï¿½ï¿½</strong>ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½Í¼×´Ì¬ï¿½ï¿½
+        /// Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½ <c>BattleTimeline.CancelGroup</c> /
+        /// <c>BattleTimeline.ReserveGroupId</c> / <c>TimelineActionPlacement.Schedule</c>ï¿½ï¿½</item>
+        /// <item><strong>ÎªÊ²Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ <c>_playerBlocks</c> Ç¡ï¿½ï¿½Îªï¿½ï¿½
+        /// Ö»ï¿½ï¿½<strong>ï¿½ï¿½Ê±</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÉºÏ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ Logic ï¿½Æ»ï¿½Í¶Ó°ï¿½ï¿½
+        /// <c>_playerBlocks</c>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹© <see cref="SyncPlayerBlocksFromLogic"/>ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ê½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½Â±ï¿½Ã¿É´ï¡£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ï¿½É´ï¿½"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éºï¿½
+        /// ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <c>SelectionAndDragModesDoNotMutateLogic</c> ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½Î¶ï¿½×¡ï¿½ï¿½</item>
+        /// <item><strong>Î´ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½ / PlayMode ï¿½Ø¹é£©ï¿½ï¿½Îª <c>true</c>ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½PlayMode 38 ï¿½ï¿½ï¿½ï¿½É³ï¿½ï¿½ï¿½ï¿½ï¿½Ø¹é£©ï¿½ï¿½</item>
         /// </list>
         /// </summary>
         public bool LegacyTimelineWritesEnabled => ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed && !IsInputPortsBound;
@@ -575,12 +576,12 @@ namespace ProjectHero.UI.Timeline
         public bool HasPendingPlacement => _pendingGhost != null;
 
         /// <summary>
-        /// È¡Ïûµ±Ç°·ÅÖÃ/ÖØÅÅÊÖÊÆ£¨ÓÒ¼ü / ·µ»Ø / ¹Ø±ÕÃæ°å£©¡£
+        /// È¡ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½Ò¼ï¿½ / ï¿½ï¿½ï¿½ï¿½ / ï¿½Ø±ï¿½ï¿½ï¿½å£©ï¿½ï¿½
         ///
-        /// ÈÎÎñ 09£º½ÓÏßºóËü<strong>Ö»¸Ä±äÊäÈëÄ£Ê½Óë±¾µØ²Ý¸å</strong>¡ª¡ª
-        /// ²»Ð´Âß¼­¡¢²»ÔÝÍ£Ö´ÐÐ¡¢²»²úÉúÃüÁî¡¢²»Ó°Ïì»Ø·ÅÊäÈë¡£
-        /// ¾ÉµÄ <c>placement.Schedule</c> »Ø¹öÖ»ÔÚ<strong>Î´½ÓÏß</strong>µÄ Legacy ·ÅÖÃÂ·¾¶ÉÏÖ´ÐÐ
-        /// £¨ÄÇÌõÂ·¾¶±¾Éí²»ÃæÏòÐÂÂß¼­Â·¾¶£©¡£
+        /// ï¿½ï¿½ï¿½ï¿½ 09ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½<strong>Ö»ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ë±¾ï¿½Ø²Ý¸ï¿½</strong>ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½Ð´ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£Ö´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¡¢ï¿½ï¿½Ó°ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ë¡£
+        /// ï¿½Éµï¿½ <c>placement.Schedule</c> ï¿½Ø¹ï¿½Ö»ï¿½ï¿½<strong>Î´ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void CancelPlacement()
         {
@@ -588,15 +589,15 @@ namespace ProjectHero.UI.Timeline
 
             if (InputController != null)
             {
-                // ´¿ÊÓÍ¼»ØÍË£º¶ªÆú²Ý¸å¡¢ÍË³öÊäÈëÄ£Ê½¡£
+                // ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸å¡¢ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½
                 InputController.CancelGesture();
                 _isRepositioning = false;
                 _repositionGroupId = 0;
             }
             else if (LegacyTimelineWritesEnabled && _isRepositioning && Timeline != null && _repositionGroupId != 0)
             {
-                // ¾É»Ø¹ö·ÖÖ§£ºÖ»ÓÐ"Î´½ÓÏß"µÄ Legacy ³¡¾°»á×ßµ½ÕâÀï£¨ÏÔÊ½ÊØÎÀ£¬¼û
-                // LegacyTimelineWritesEnabled£©¡£½ÓÏßºó¸Ã·ÖÖ§ÕûÌå²»¿É´ï¡£
+                // ï¿½É»Ø¹ï¿½ï¿½ï¿½Ö§ï¿½ï¿½Ö»ï¿½ï¿½"Î´ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½ï¿½ï£¨ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                // LegacyTimelineWritesEnabledï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½Ã·ï¿½Ö§ï¿½ï¿½ï¿½å²»ï¿½É´ï¡£
                 if (_placementsByGroupId.TryGetValue(_repositionGroupId, out var placement) && placement != null)
                 {
                     float delay = Mathf.Max(0f, _repositionOriginalModel.StartTimeAbs - Timeline.CurrentTime);
@@ -618,17 +619,17 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// È·ÈÏÒ»´Î·ÅÖÃ£¨¾É·ÅÖÃÂ·¾¶£©¡£
+        /// È·ï¿½ï¿½Ò»ï¿½Î·ï¿½ï¿½Ã£ï¿½ï¿½É·ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ///
-        /// <strong>ÈÎÎñ 09 / B2 ±ß½ç£¨½á¹¹ÐÔ²»¿É´ï£©</strong>£º¶Ë¿Ú½ÓÏßºó±¾·½·¨
-        /// <strong>ÕûÌå²»¿É´ï</strong>¡ª¡ª¶¥²¿µÄ <see cref="LegacyTimelineWritesEnabled"/> ÊØÎÀ
-        /// »áÈÃËüÖ»ÇåÀí±¾µØ ghost£¬¾ø²»´¥´ï <c>Timeline.ReserveGroupId()</c> /
-        /// <c>placement.Schedule</c> / <c>BattleTimeline.CancelGroup</c>£¬Ò²²»½¨Á¢
-        /// <c>_playerBlocks</c>/<c>_placementsByGroupId</c> ÌõÄ¿¡£
-        /// ÐÂÂß¼­Â·¾¶µÄ"È·ÈÏ"×ß <see cref="ConfirmLocalDraft"/>£¨±¾µØ²Ý¸å ¡ú Ô­×Ó Operations
-        /// ¡ú Í¬Ò»ÃüÁîÈë¿Ú£©¡£
+        /// <strong>ï¿½ï¿½ï¿½ï¿½ 09 / B2 ï¿½ß½ç£¨ï¿½á¹¹ï¿½Ô²ï¿½ï¿½É´ï£©</strong>ï¿½ï¿½ï¿½Ë¿Ú½ï¿½ï¿½ßºó±¾·ï¿½ï¿½ï¿½
+        /// <strong>ï¿½ï¿½ï¿½å²»ï¿½É´ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <see cref="LegacyTimelineWritesEnabled"/> ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ghostï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <c>Timeline.ReserveGroupId()</c> /
+        /// <c>placement.Schedule</c> / <c>BattleTimeline.CancelGroup</c>ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// <c>_playerBlocks</c>/<c>_placementsByGroupId</c> ï¿½ï¿½Ä¿ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ß¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½"È·ï¿½ï¿½"ï¿½ï¿½ <see cref="ConfirmLocalDraft"/>ï¿½ï¿½ï¿½ï¿½ï¿½Ø²Ý¸ï¿½ ï¿½ï¿½ Ô­ï¿½ï¿½ Operations
+        /// ï¿½ï¿½ Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½
         ///
-        /// <strong>Î´½ÓÏß</strong>£¨¾É Legacy ³¡¾°£©£ºÐÐÎªÖð×Ö²»±ä¡£
+        /// <strong>Î´ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ö²ï¿½ï¿½ä¡£
         /// </summary>
         public void FinalizePlacement(TimelineBlockView ghost)
         {
@@ -637,7 +638,7 @@ namespace ProjectHero.UI.Timeline
 
             if (!LegacyTimelineWritesEnabled)
             {
-                // ½ÓÏßºó£ºÖ»»ØÊÕ±¾µØ ghost ÓëÊÖÊÆ×´Ì¬£¬Ò»¸ö¾ÉÊ±¼äÏßÐ´Èë¶¼²»·¢Éú¡£
+                // ï¿½ï¿½ï¿½ßºï¿½Ö»ï¿½ï¿½ï¿½Õ±ï¿½ï¿½ï¿½ ghost ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ë¶¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 LegacyTimelineWritesBlockedCount++;
                 DestroyViewObject(ghost.gameObject);
                 if (_placementShield != null) { DestroyViewObject(_placementShield.gameObject); _placementShield = null; }
@@ -693,45 +694,45 @@ namespace ProjectHero.UI.Timeline
         }
 
         /// <summary>
-        /// É¾³ýÇëÇó£¨ÈÎÎñ 09¡¸±ØÐë²ú³ö¡¹14£©¡£
+        /// É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 09ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½14ï¿½ï¿½ï¿½ï¿½
         ///
-        /// <strong>½ÓÏßºó</strong>£¨<see cref="InputController"/> ÒÑ°ó¶¨¶Ë¿Ú£©£º
+        /// <strong>ï¿½ï¿½ï¿½ßºï¿½</strong>ï¿½ï¿½<see cref="InputController"/> ï¿½Ñ°ó¶¨¶Ë¿Ú£ï¿½ï¿½ï¿½
         /// <list type="bullet">
-        /// <item>Ö»ÓÐ"ÈÔÎª Editable µÄ<strong>ÆÕÍ¨</strong>¼Æ»®"²Å½øÈëÊÖÊÆ£»Locked/Running/·´Ó¦¼Æ»®
-        /// ÔÚ UI ²à¼´<strong>²»¿ÉÉ¾</strong>£¨Á¬ÃüÁî¶¼²»¹¹Ôì£©¡£</item>
-        /// <item>ÕæÕýÉ¾³ý±àÂëÎª <c>RemoveEditablePlanOperation</c>£¬¾­
-        /// <c>CommandIngressEntry.Submit(CommandRequest)</c> ×ßÍ¬Ò»Èë¿Ú¡¢Í¬Ò»ÐÞ¶©ºÅÓëÔ­×ÓÊÂÎñ£¬
-        /// ÔÙÓÉ Logic µÄÍ³Ò»ÖÕÌ¬Ð­µ÷Æ÷ÊÕ¿Ú¡£</item>
-        /// <item>±¾·½·¨<strong>²»</strong>Ö±½ÓÉ¾ Plan / Intent / MovementSegment / Reservation£¬
-        /// Ò²<strong>²»</strong>µ÷ÓÃ¾É <c>BattleTimeline.CancelGroup</c>¡£</item>
+        /// <item>Ö»ï¿½ï¿½"ï¿½ï¿½Îª Editable ï¿½ï¿½<strong>ï¿½ï¿½Í¨</strong>ï¿½Æ»ï¿½"ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Locked/Running/ï¿½ï¿½Ó¦ï¿½Æ»ï¿½
+        /// ï¿½ï¿½ UI ï¿½à¼´<strong>ï¿½ï¿½ï¿½ï¿½É¾</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¶¼ï¿½ï¿½ï¿½ï¿½ï¿½ì£©ï¿½ï¿½</item>
+        /// <item>ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª <c>RemoveEditablePlanOperation</c>ï¿½ï¿½ï¿½ï¿½
+        /// <c>CommandIngressEntry.Submit(CommandRequest)</c> ï¿½ï¿½Í¬Ò»ï¿½ï¿½Ú¡ï¿½Í¬Ò»ï¿½Þ¶ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ Logic ï¿½ï¿½Í³Ò»ï¿½ï¿½Ì¬Ð­ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿Ú¡ï¿½</item>
+        /// <item>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<strong>ï¿½ï¿½</strong>Ö±ï¿½ï¿½É¾ Plan / Intent / MovementSegment / Reservationï¿½ï¿½
+        /// Ò²<strong>ï¿½ï¿½</strong>ï¿½ï¿½ï¿½Ã¾ï¿½ <c>BattleTimeline.CancelGroup</c>ï¿½ï¿½</item>
         /// </list>
         ///
-        /// <strong>Î´½ÓÏß</strong>£¨¾É Legacy ³¡¾°£©£ºÍêÈ«Ã»ÓÐ¿É±à¼­¼Æ»®Ê±£¬É¾³ýÇëÇó±»<strong>¾Ü¾ø</strong>
-        /// ²¢¼ÇÂ¼Ô­Òò¡ª¡ª¾ø²»¾²Ä¬»ØÍËµ½"Ö±½ÓÉ¾¼Æ»®"µÄ¾ÉÂ·¾¶¡£
+        /// <strong>Î´ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«Ã»ï¿½Ð¿É±à¼­ï¿½Æ»ï¿½Ê±ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<strong>ï¿½Ü¾ï¿½</strong>
+        /// ï¿½ï¿½ï¿½ï¿½Â¼Ô­ï¿½ò¡ª¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½Ëµï¿½"Ö±ï¿½ï¿½É¾ï¿½Æ»ï¿½"ï¿½Ä¾ï¿½Â·ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void RequestDelete(TimelineBlockView block)
         {
             if (block == null) return;
-            // ½ÓÏßºóµÄÉ¾³ýÂ·¾¶**²»ÒÀÀµ**¾É BattleTimeline£¨New Ä£Ê½¿ÉÒÔÃ»ÓÐËü£©£»
-            // Î´½ÓÏßÊ±¾ÉÒýÓÃÈÔÊÇÓ²Ç°Ìá¡£
+            // ï¿½ï¿½ï¿½ßºï¿½ï¿½É¾ï¿½ï¿½Â·ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½ BattleTimelineï¿½ï¿½New Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Î´ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó²Ç°ï¿½á¡£
             if (Timeline == null && !IsInputPortsBound) return;
             if (block.ActionPlanId == 0) return;
 
             if (IsInputPortsBound)
             {
-                // ¿é±êÊ¶¾ÍÊÇ Logic µÄ ActionPlanId£¨Î¨Ò»À´Ô´ IViewLogicPort.EditablePlansOf£©¡£
+                // ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ Logic ï¿½ï¿½ ActionPlanIdï¿½ï¿½Î¨Ò»ï¿½ï¿½Ô´ IViewLogicPort.EditablePlansOfï¿½ï¿½ï¿½ï¿½
                 var planId = new ActionPlanId(block.ActionPlanId);
                 if (!CanEditBlockInUi(block.ActionPlanId))
                 {
                     Debug.LogWarning(
-                        "[TimelineEditorUI] ¾Ü¾øÉ¾³ý£ºÄ¿±ê²»ÊÇÈÔÎª Editable µÄÆÕÍ¨¼Æ»®£¨Locked/Running/·´Ó¦¼Æ»®²»¿ÉÉ¾£©¡£planId=" +
+                        "[TimelineEditorUI] ï¿½Ü¾ï¿½É¾ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ê²»ï¿½ï¿½ï¿½ï¿½Îª Editable ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Æ»ï¿½ï¿½ï¿½Locked/Running/ï¿½ï¿½Ó¦ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½planId=" +
                         block.ActionPlanId);
                     return;
                 }
 
                 if (!InputController.BeginRemoval(planId))
                 {
-                    Debug.LogWarning("[TimelineEditorUI] ¾Ü¾øÉ¾³ý£ºÎ´ÄÜ½øÈëÉ¾³ýÊÖÊÆ¡£planId=" + block.ActionPlanId);
+                    Debug.LogWarning("[TimelineEditorUI] ï¿½Ü¾ï¿½É¾ï¿½ï¿½ï¿½ï¿½Î´ï¿½Ü½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½planId=" + block.ActionPlanId);
                     return;
                 }
 
@@ -739,13 +740,13 @@ namespace ProjectHero.UI.Timeline
                 if (!outcome.Submitted)
                 {
                     Debug.LogWarning(
-                        "[TimelineEditorUI] RemoveEditablePlanOperation Î´Ìá½»£º" + outcome.ReasonCode +
+                        "[TimelineEditorUI] RemoveEditablePlanOperation Î´ï¿½á½»ï¿½ï¿½" + outcome.ReasonCode +
                         " / " + outcome.RejectionReasonCode);
                     return;
                 }
 
-                // ÊÓÍ¼²àÖ»Çåµô±¾µØäÖÈ¾Ä£ÐÍ£»È¨ÍþÉ¾³ýÓÉ Logic µÄÍ³Ò»ÖÕÌ¬Ð­µ÷Æ÷Íê³É£¬
-                // ÏÂÒ»´Î¿ìÕÕÍ¬²½»á°Ñ¸Ã¿éÒÆ³ö¿É±à¼­¼¯ºÏ¡£
+                // ï¿½ï¿½Í¼ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾Ä£ï¿½Í£ï¿½È¨ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ Logic ï¿½ï¿½Í³Ò»ï¿½ï¿½Ì¬Ð­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½
+                // ï¿½ï¿½Ò»ï¿½Î¿ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½Ñ¸Ã¿ï¿½ï¿½Æ³ï¿½ï¿½É±à¼­ï¿½ï¿½ï¿½Ï¡ï¿½
                 _placementsByGroupId.Remove(block.ActionPlanId);
                 _playerBlocks.Remove(block.ActionPlanId);
                 _layoutDirty = true;
@@ -753,62 +754,62 @@ namespace ProjectHero.UI.Timeline
             }
 
             Debug.LogWarning(
-                "[TimelineEditorUI] Î´×¢ÈëÃüÁî¶Ë¿Ú£º¾Ü¾øÉ¾³ý¡£É¾³ý Editable ¼Æ»®±ØÐë¾­ RemoveEditablePlanOperation Ìá½»¡£" +
+                "[TimelineEditorUI] Î´×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿Ú£ï¿½ï¿½Ü¾ï¿½É¾ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ Editable ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ë¾­ RemoveEditablePlanOperation ï¿½á½»ï¿½ï¿½" +
                 "planId=" + block.ActionPlanId);
         }
 
-        /// <summary>¸Ã¼Æ»®ÔÚ UI ²àÊÇ·ñ<strong>¿´ÆðÀ´</strong>¿É±à¼­£¨Î´½ÓÏßÊ±ºãÎª false£©¡£</summary>
+        /// <summary>ï¿½Ã¼Æ»ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½Ç·ï¿½<strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong>ï¿½É±à¼­ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Îª falseï¿½ï¿½ï¿½ï¿½</summary>
         public bool IsPlanEditableInUi(long planId) => CanEditBlockInUi(planId);
 
-        /// <summary>ÃüÁî¶Ë¿ÚÊÇ·ñÒÑ×¢Èë£¨¾É¿é¾Ý´Ë¾ö¶¨ÊÇ·ñ±£³ÖÖ»¸Ä±¾µØäÖÈ¾µÄ¾ÉÍÏ¶¯ÐÐÎª£©¡£</summary>
+        /// <summary>ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½ï¿½Ç·ï¿½ï¿½ï¿½×¢ï¿½ë£¨ï¿½É¿ï¿½Ý´Ë¾ï¿½ï¿½ï¿½ï¿½Ç·ñ±£³ï¿½Ö»ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½Ä¾ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½</summary>
         public bool IsInputPortsBound => InputController != null && InputController.Logic != null;
 
         /// <summary>
-        /// ¸Ã¿éÊÇ·ñ¿É½»»¥£¨×ó¼üÖØÅÅ / ÓÒ¼üÉ¾³ýµÄ UI ÃÅ¼÷£©¡£
-        /// ½ÓÏßºóµþ¼Ó"ÈÔÎª Editable ÆÕÍ¨¼Æ»®"µÄÖ»¶ÁÅÐ¶¨£ºLocked/Running/·´Ó¦¼Æ»®ÔÚ UI ²à¼´Ö»¶Á¡£
+        /// ï¿½Ã¿ï¿½ï¿½Ç·ï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ / ï¿½Ò¼ï¿½É¾ï¿½ï¿½ï¿½ï¿½ UI ï¿½Å¼ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½Îª Editable ï¿½ï¿½Í¨ï¿½Æ»ï¿½"ï¿½ï¿½Ö»ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Locked/Running/ï¿½ï¿½Ó¦ï¿½Æ»ï¿½ï¿½ï¿½ UI ï¿½à¼´Ö»ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         private bool IsBlockInteractable(BlockRenderModel model)
             => model != null && model.IsInteractable && IsPlanEditableInUi(model.ActionPlanId);
 
         /// <summary>
-        /// ÖØÅÅÇëÇó£¨ÈÎÎñ 09¡¸±ØÐë²ú³ö¡¹14£©£ºÍÏ¶¯<strong>ÈÔÎª Editable µÄÆÕÍ¨¼Æ»®</strong>¡£
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 09ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½14ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½<strong>ï¿½ï¿½Îª Editable ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Æ»ï¿½</strong>ï¿½ï¿½
         ///
-        /// <strong>½ÓÏßºó</strong>£º½øÈëÖØÅÅÊÖÊÆ£¨<see cref="ViewInputController.BeginReorder"/>£©£¬
-        /// ÊÖÊÆÆÚ¼äµÄÃ¿´ÎÊó±êÒÆ¶¯Ö»¸üÐÂ±¾µØÔ¤ÀÀ£»È·ÈÏÊ±ÓÉ
-        /// <see cref="ViewInputController.ConfirmDraft"/> ±àÒëÎª <c>MoveEditablePlanOperation</c>
-        /// ²¢¾­Í¬Ò»ÃüÁîÈë¿ÚÌá½»¡£·ÅÏÂÊ±µÄÇëÇó Tick ÓÉ<strong>Î¨Ò»»»Ëãµã</strong>
-        /// <see cref="ViewSecondsToTick"/> ´ÓÊÓÍ¼ÖáÃëÍÆ³ö£¬±¾·½·¨<strong>²»</strong>µ÷ÓÃ
-        /// <c>BattleTimeline.CancelGroup</c>/<c>placement.Schedule</c> Ð´¾ÉÊ±¼äÏß¡£
+        /// <strong>ï¿½ï¿½ï¿½ßºï¿½</strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½<see cref="ViewInputController.BeginReorder"/>ï¿½ï¿½ï¿½ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ö»ï¿½ï¿½ï¿½Â±ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½Ê±ï¿½ï¿½
+        /// <see cref="ViewInputController.ConfirmDraft"/> ï¿½ï¿½ï¿½ï¿½Îª <c>MoveEditablePlanOperation</c>
+        /// ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Tick ï¿½ï¿½<strong>Î¨Ò»ï¿½ï¿½ï¿½ï¿½ï¿½</strong>
+        /// <see cref="ViewSecondsToTick"/> ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<strong>ï¿½ï¿½</strong>ï¿½ï¿½ï¿½ï¿½
+        /// <c>BattleTimeline.CancelGroup</c>/<c>placement.Schedule</c> Ð´ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß¡ï¿½
         ///
-        /// <strong>Î´½ÓÏß</strong>£º¾Ü¾øÖØÅÅ²¢¼ÇÂ¼Ô­Òò¡ª¡ª¾ø²»¾²Ä¬»ØÍËµ½¾ÉÊ±¼äÏßµÄÖ±½ÓÐ´Èë¡£
+        /// <strong>Î´ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½ï¿½Â¼Ô­ï¿½ò¡ª¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ßµï¿½Ö±ï¿½ï¿½Ð´ï¿½ë¡£
         /// </summary>
         public void RequestReposition(TimelineBlockView block)
         {
             if (block == null) return;
-            // ½ÓÏßºóµÄÖØÅÅÂ·¾¶**²»ÒÀÀµ**¾É BattleTimeline£¨New Ä£Ê½¿ÉÒÔÃ»ÓÐËü£©£»
-            // Î´½ÓÏßÊ±¾ÉÒýÓÃÈÔÊÇÓ²Ç°Ìá¡£
+            // ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½ BattleTimelineï¿½ï¿½New Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Î´ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó²Ç°ï¿½á¡£
             if (Timeline == null && !IsInputPortsBound) return;
             if (block.ActionPlanId == 0) return;
             if (!_playerBlocks.TryGetValue(block.ActionPlanId, out var model)) return;
 
             if (IsInputPortsBound)
             {
-                // ¡ª¡ª¡ª ÐÂÂ·¾¶£º¿é±êÊ¶ = Logic ActionPlanId£»legacy placement ÍêÈ«²»²ÎÓë ¡ª¡ª¡ª
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ = Logic ActionPlanIdï¿½ï¿½legacy placement ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (!IsBlockInteractable(model))
                 {
                     Debug.LogWarning(
-                        "[TimelineEditorUI] ¾Ü¾øÖØÅÅ£ºÄ¿±ê²»ÊÇÈÔÎª Editable µÄÆÕÍ¨¼Æ»®¡£planId=" + block.ActionPlanId);
+                        "[TimelineEditorUI] ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½Å£ï¿½Ä¿ï¿½ê²»ï¿½ï¿½ï¿½ï¿½Îª Editable ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Æ»ï¿½ï¿½ï¿½planId=" + block.ActionPlanId);
                     return;
                 }
 
                 long previewTick = ViewSecondsToTick(model.StartTimeAbs);
                 if (!InputController.BeginReorder(new ActionPlanId(block.ActionPlanId), previewTick))
                 {
-                    Debug.LogWarning("[TimelineEditorUI] ¾Ü¾øÖØÅÅ£ºÎ´ÄÜ½øÈëÖØÅÅÊÖÊÆ¡£planId=" + block.ActionPlanId);
+                    Debug.LogWarning("[TimelineEditorUI] ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½Å£ï¿½Î´ï¿½Ü½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½planId=" + block.ActionPlanId);
                     return;
                 }
 
-                // ÊÖÊÆ±¾Ìå£ºÖ»½¨Á¢ÊÓÍ¼²Ý¸åÓë ghost£¬²»Ð´Âß¼­¡¢²»Ìá½»ÃüÁî¡£
+                // ï¿½ï¿½ï¿½Æ±ï¿½ï¿½å£ºÖ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ý¸ï¿½ï¿½ï¿½ ghostï¿½ï¿½ï¿½ï¿½Ð´ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½ï¿½î¡£
                 if (_pendingGhost != null) CancelPlacement();
 
                 _pendingPlacement = new TimelineActionPlacement
@@ -836,8 +837,8 @@ namespace ProjectHero.UI.Timeline
                 ghost.SetWidth(width);
                 ghost.SetColor(ApplyDepth(GetBaseColor(model.Kind), model.Duration, isGhost: true));
 
-                // ÊÓÍ¼ÖáÔ­µã£º¾ÉÊ±¼äÏß´æÔÚÊ±ÓÃËü£¬²»´æÔÚ£¨New Ä£Ê½ÎÞ Legacy Ê±¼äÏß£©Ê±
-                // ÓÃ 0¡ª¡ªÎ»µã±¾ÉíÀ´×Ô Logic Tick Í¶Ó°£¨ViewSecondsOfTick£©£¬´Ë´¦Ö»ËãÏñËØ¡£
+                // ï¿½ï¿½Í¼ï¿½ï¿½Ô­ï¿½ã£ºï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½New Ä£Ê½ï¿½ï¿½ Legacy Ê±ï¿½ï¿½ï¿½ß£ï¿½Ê±
+                // ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½Î»ï¿½ã±¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Logic Tick Í¶Ó°ï¿½ï¿½ViewSecondsOfTickï¿½ï¿½ï¿½ï¿½ï¿½Ë´ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
                 float viewNow = Timeline != null ? Timeline.CurrentTime : 0f;
                 float xLeftEdge = (model.StartTimeAbs - viewNow) * PixelsPerSecond;
                 float xCenter = xLeftEdge + width * 0.5f;
@@ -848,12 +849,12 @@ namespace ProjectHero.UI.Timeline
                 return;
             }
 
-            // ¡ª¡ª¡ª Î´½ÓÏß£¨¾É Legacy ³¡¾°£©£º¾Ü¾øÖØÅÅ²¢¼ÇÂ¼Ô­Òò ¡ª¡ª¡ª
-            // ¾ÉÊµÏÖµÄ"Î´½ÓÏß"·ÖÖ§ÔÚÊÖÊÆÆðµã¾ÍÖ±½Ó Timeline.CancelGroup + É¾±¾µØÄ£ÐÍ
-            // £¨HEAD:301-308£©£¬ÄÇÊÇÒ»ÌõÈÆ¹ýÃüÁîÈë¿ÚµÄÐ´Èë£»ÈÎÎñ 09 µÄÑéÊÕ±ê×¼ÒªÇó
-            // ²»´æÔÚÕâÑùµÄÐ´ÈëÂ·¾¶£¬Òò´Ë¸ÃÔ¤Ð´×Ô B1 ÆðÒÑÒÆ³ý£¬±¾´¦±£³Ö¾Ü¾øÓïÒå¡£
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Î´ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ Legacy ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½ï¿½Â¼Ô­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½Êµï¿½Öµï¿½"Î´ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ Timeline.CancelGroup + É¾ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
+            // ï¿½ï¿½HEAD:301-308ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ð´ï¿½ë£»ï¿½ï¿½ï¿½ï¿½ 09 ï¿½ï¿½ï¿½ï¿½ï¿½Õ±ï¿½×¼Òªï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¸ï¿½Ô¤Ð´ï¿½ï¿½ B1 ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Ü¾ï¿½ï¿½ï¿½ï¿½å¡£
             Debug.LogWarning(
-                "[TimelineEditorUI] Î´×¢ÈëÃüÁî¶Ë¿Ú£º¾Ü¾øÖØÅÅ¡£ÖØÅÅ Editable ¼Æ»®±ØÐë¾­ MoveEditablePlanOperation Ìá½»¡£" +
+                "[TimelineEditorUI] Î´×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿Ú£ï¿½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½Å¡ï¿½ï¿½ï¿½ï¿½ï¿½ Editable ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ë¾­ MoveEditablePlanOperation ï¿½á½»ï¿½ï¿½" +
                 "planId=" + block.ActionPlanId);
         }
 
@@ -881,10 +882,10 @@ namespace ProjectHero.UI.Timeline
             if (!_isDraggingExisting) return;
             if (block == null || block.ActionPlanId != _draggingGroupId) { ResetDrag(); return; }
 
-            // ÈÎÎñ 09 / B2£º½ÓÏßºóÍÏ¶¯**Ö»ÊÇ±¾µØÊÖÊÆ**¡£
-            // Ã¿Ò»´ÎÊó±êÒÆ¶¯/Îü¸½Ö»¸üÐÂÊÓÍ¼Ô¤ÀÀ£¨²Ý¸å£©£¬È·ÈÏÊ±²ÅÓÉ
-            // ViewInputController.ConfirmDraft ±àÒëÎª MoveEditablePlanOperation ²¢¾­Èë¿ÚÌá½»¡£
-            // ÕâÀï¾ø²»µ÷ÓÃ BattleTimeline.CancelGroup / placement.Schedule Ð´¾ÉÊ±¼äÏß¡£
+            // ï¿½ï¿½ï¿½ï¿½ 09 / B2ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½Ï¶ï¿½**Ö»ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½**ï¿½ï¿½
+            // Ã¿Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½/ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸å£©ï¿½ï¿½È·ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+            // ViewInputController.ConfirmDraft ï¿½ï¿½ï¿½ï¿½Îª MoveEditablePlanOperation ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á½»ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BattleTimeline.CancelGroup / placement.Schedule Ð´ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß¡ï¿½
             if (!LegacyTimelineWritesEnabled)
             {
                 LegacyTimelineWritesBlockedCount++;
@@ -931,8 +932,8 @@ namespace ProjectHero.UI.Timeline
 
         private void Update()
         {
-            // ÈÎÎñ 09 / B2£º¿éµÄÈ¨ÍþÉí·ÝÍ¬²½£¨ActionPlanId Í¶Ó°£©±ØÐëÔÚ¾ÉÊ±¼äÏßÒýÓÃ¼ì²é
-            // **Ö®Ç°**¡ª¡ª½ÓÏßºóµÄ New Ä£Ê½¿ÉÒÔÃ»ÓÐ¾É BattleTimeline£¬Éí·ÝÈÔÈ»±ØÐëÕýÈ·¡£
+            // ï¿½ï¿½ï¿½ï¿½ 09 / B2ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ActionPlanId Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¾ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½
+            // **Ö®Ç°**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ New Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð¾ï¿½ BattleTimelineï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½
             SyncPlayerBlocksFromLogic();
 
             if (Timeline == null || PlayerLane == null || ObservedLane == null) return;
@@ -946,7 +947,7 @@ namespace ProjectHero.UI.Timeline
 
             if (_layoutDirty)
             {
-                // ¾É Lane ¼¸ºÎÖØËã£º½ÓÏßºóÓÉÈë¿ÚÊØÎÀÖ±½Ó·µ»Ø£¨¼û RecomputePlayerBlocksForLane£©¡£
+                // ï¿½ï¿½ Lane ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã£ºï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ RecomputePlayerBlocksForLaneï¿½ï¿½ï¿½ï¿½
                 RecomputePlayerBlocksForLane(PlayerUnit, TimelineLane.Player);
                 _layoutDirty = false;
             }
@@ -1056,8 +1057,8 @@ namespace ProjectHero.UI.Timeline
                 {
                     model = new BlockRenderModel
                     {
-                        // ¹Û²ì Lane µÄ¿éÀ´×Ô¾ÉÊ±¼äÏß¿ìÕÕµÄ×éºÅ£¬Ö»ÊÇäÖÈ¾¼ü£º
-                        // IsInteractable == false ÒâÎ¶×ÅÓÀ²»½øÈëÉ¾³ý/ÖØÅÅ¾ö²ßÂ·¾¶¡£
+                        // ï¿½Û²ï¿½ Lane ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½Ê±ï¿½ï¿½ï¿½ß¿ï¿½ï¿½Õµï¿½ï¿½ï¿½Å£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
+                        // IsInteractable == false ï¿½ï¿½Î¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½/ï¿½ï¿½ï¿½Å¾ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½
                         ActionPlanId = groupId,
                         Owner = owner,
                         Lane = lane,
@@ -1155,7 +1156,7 @@ namespace ProjectHero.UI.Timeline
             float width = Mathf.Max(MinBlockWidthPx, model.Duration * PixelsPerSecond);
             if (width > 5000f) width = 5000f;
 
-            // Ê¹ÓÃ VisualTime
+            // Ê¹ï¿½ï¿½ VisualTime
             float startX = (model.StartTimeAbs - Timeline.VisualTime) * PixelsPerSecond;
 
             if (startX + width < -50f)
@@ -1194,8 +1195,8 @@ namespace ProjectHero.UI.Timeline
             view.SetColor(finalColor);
 
             view.SetKeyframeOffsetsSeconds(GetKeyframeOffsetsSeconds(model.Kind, model.Duration), PixelsPerSecond);
-            // ÈÎÎñ 09 / B2£¨¡ì3.5 UI ²à¿Ú¾¶£©£º²»¿ÉÉ¾/²»¿ÉÍÏµÄ¿éÁ¬µã»÷¶¼²»½ÓÊÕ¡ª¡ª
-            // Locked/Running/·´Ó¦¼Æ»®ÔÚ UI ÉÏ¾ÍÊÇ"°´Å¥²»¿ÉÓÃ"£¬¶ø²»ÊÇ"µãÁËÒÔºó±»¾Ü¾ø"¡£
+            // ï¿½ï¿½ï¿½ï¿½ 09 / B2ï¿½ï¿½ï¿½ï¿½3.5 UI ï¿½ï¿½Ú¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾/ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¡ï¿½ï¿½ï¿½
+            // Locked/Running/ï¿½ï¿½Ó¦ï¿½Æ»ï¿½ï¿½ï¿½ UI ï¿½Ï¾ï¿½ï¿½ï¿½"ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ï¿½Ôºó±»¾Ü¾ï¿½"ï¿½ï¿½
             if (view.Background != null) view.Background.raycastTarget = IsBlockInteractable(model);
         }
         private void EnsureTimeLines()
@@ -1207,7 +1208,7 @@ namespace ProjectHero.UI.Timeline
             if (_mouseLinePlayer == null) _mouseLinePlayer = CreateLine(PlayerLane, "MouseLine");
             if (_mouseLineObserved == null) _mouseLineObserved = CreateLine(ObservedLane, "MouseLine");
 
-            // ÈÎÎñ 09£ºËø¶¨Ïß£¨¿ìÕÕ CurrentTick + 1£©¡£ËüÖ»×öÌáÇ°·´À¡£¬²»ÊÇÈ¨ÏÞÅÐ¶¨¡£
+            // ï¿½ï¿½ï¿½ï¿½ 09ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ CurrentTick + 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½
             if (_lockedLinePlayer == null) _lockedLinePlayer = CreateLockedLine(PlayerLane, "LockedLine");
             if (_lockedLineObserved == null) _lockedLineObserved = CreateLockedLine(ObservedLane, "LockedLine");
 
@@ -1284,7 +1285,7 @@ namespace ProjectHero.UI.Timeline
             SetLineX(_currentTimeLineObserved.rectTransform, 0f);
             if (_nowTimeText != null && Timeline != null)
             {
-                // Ê¹ÓÃ VisualTime
+                // Ê¹ï¿½ï¿½ VisualTime
                 _nowTimeText.text = $"now {Timeline.VisualTime:F2}s";
                 float rulerX = ConvertLaneXToRulerX(0f);
                 SetTextX(_nowTimeText.rectTransform, rulerX);
@@ -1316,7 +1317,7 @@ namespace ProjectHero.UI.Timeline
             SetLineX(_mouseLinePlayer.rectTransform, x); SetLineX(_mouseLineObserved.rectTransform, x);
 
             float offsetTime = x / PixelsPerSecond;
-            // Ê¹ÓÃ VisualTime
+            // Ê¹ï¿½ï¿½ VisualTime
             float absTime = Timeline != null ? Timeline.VisualTime + offsetTime : 0f;
 
             if (_mouseTimeText != null)
@@ -1443,11 +1444,11 @@ namespace ProjectHero.UI.Timeline
         {
             if (Timeline == null || owner == null) return;
 
-            // ÈÎÎñ 09 / B2 µÄ½á¹¹ÐÔÊØÎÀ£¨¶ÔÓ¦¶³½á¼þ ¡ì8.3 µÚÒ»Ìõ£©£º
-            // ¾ÉÊµÏÖÎÞÌõ¼þ×ßµ½µ×²¿µÄ Timeline.CancelGroup(id) + placement.Schedule£¬
-            // ½ñÌì"Ã»³öÊÂ"Ö»ÊÇÒòÎª½ÓÏßºó _playerBlocks Ç¡ºÃÎª¿Õ¡ª¡ªÄÇÊÇÊý¾ÝÇÉºÏ£¬²»ÊÇ±£Ö¤¡£
-            // ½ÓÏßºóÕû¶Î¼¸ºÎÖØËãÓë¾ÉÊ±¼äÏß»ØÐ´¶¼Ê§È¥ÒâÒå£¨Î»µãÀ´×Ô Logic Í¶Ó°£©£¬
-            // Òò´ËÔÚÈë¿ÚÏÔÊ½¾Ü¾ø£¬²¢ÓÉ TryLegacyCancelGroup/TryLegacySchedule ÔÚ³ö¿ÚÔÙÅÐÒ»´Î¡£
+            // ï¿½ï¿½ï¿½ï¿½ 09 / B2 ï¿½Ä½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½8.3 ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½×²ï¿½ï¿½ï¿½ Timeline.CancelGroup(id) + placement.Scheduleï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½"Ã»ï¿½ï¿½ï¿½ï¿½"Ö»ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ßºï¿½ _playerBlocks Ç¡ï¿½ï¿½Îªï¿½Õ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÉºÏ£ï¿½ï¿½ï¿½ï¿½Ç±ï¿½Ö¤ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß»ï¿½Ð´ï¿½ï¿½Ê§È¥ï¿½ï¿½ï¿½å£¨Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Logic Í¶Ó°ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ TryLegacyCancelGroup/TryLegacySchedule ï¿½Ú³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î¡ï¿½
             if (!LegacyTimelineWritesEnabled)
             {
                 LegacyTimelineWritesBlockedCount++;
@@ -1653,11 +1654,11 @@ namespace ProjectHero.UI.Timeline
         private Image CreateLine(RectTransform lane, string name) { var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image)); go.transform.SetParent(lane, false); var img = go.GetComponent<Image>(); img.color = new Color(1f, 1f, 1f, 0.8f); var r = go.GetComponent<RectTransform>(); r.anchorMin = new Vector2(0, 0); r.anchorMax = new Vector2(0, 1); r.sizeDelta = new Vector2(2, 0); return img; }
 
         /// <summary>
-        /// Ëø¶¨Ïß£¨ÈÎÎñ 09¡¸±ØÐë²ú³ö¡¹14£©£ºÎ»ÖÃÈ¡×Ô¿ìÕÕ <c>CurrentTick + 1</c>¡£
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ 09ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½14ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½È¡ï¿½Ô¿ï¿½ï¿½ï¿½ <c>CurrentTick + 1</c>ï¿½ï¿½
         ///
-        /// Ëü<strong>Ö»ÏÔÊ¾</strong>¡ª¡ªUI ²»¾Ý´Ë×ÔÅÐÈ¨ÏÞ£¬Ò²²»°ÑÏßÓÒ²àµ±×÷"¿É±à¼­"µÄÖ¤Ã÷£º
-        /// Ô½Ïß±à¼­µÄ×îÖÕ¾Ü¾øÀ´×Ô Logic£¨ÃüÁîÄ¿±ê Tick¡¢¼Æ»® State¡¢Step Æô¶¯ÃÅ½û£©¡£
-        /// Î´×¢Èë¶Ë¿ÚÊ±ÕûÌõÏßÒþ²Ø£¬¶ø²»ÊÇ»ØÍËµ½"ÓÃ¾ÉÊ±¼äÏßµÄµ±Ç°Ê±¿Ìµ±Ëø¶¨Ïß"¡£
+        /// ï¿½ï¿½<strong>Ö»ï¿½ï¿½Ê¾</strong>ï¿½ï¿½ï¿½ï¿½UI ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½Þ£ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²àµ±ï¿½ï¿½"ï¿½É±à¼­"ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+        /// Ô½ï¿½ß±à¼­ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾Ü¾ï¿½ï¿½ï¿½ï¿½ï¿½ Logicï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ Tickï¿½ï¿½ï¿½Æ»ï¿½ Stateï¿½ï¿½Step ï¿½ï¿½ï¿½ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// Î´×¢ï¿½ï¿½Ë¿ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½Ëµï¿½"ï¿½Ã¾ï¿½Ê±ï¿½ï¿½ï¿½ßµÄµï¿½Ç°Ê±ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½
         /// </summary>
         private Image CreateLockedLine(RectTransform lane, string name)
         {
@@ -1687,7 +1688,7 @@ namespace ProjectHero.UI.Timeline
 
             long currentTick = InputController.Logic.CurrentTick;
             long lockedTick = currentTick + 1L;
-            // Î¨Ò»»»Ëãµã£ºTick ²î ¡ú ÊÓÍ¼Ãë£¨²»ÔÙÔÚÕâÀïÉ¢ÂäÐ´ / TicksPerSecond£©¡£
+            // Î¨Ò»ï¿½ï¿½ï¿½ï¿½ã£ºTick ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Í¼ï¿½ë£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¢ï¿½ï¿½Ð´ / TicksPerSecondï¿½ï¿½ï¿½ï¿½
             float offsetSeconds = (float)ViewSecondsOfTick(lockedTick - currentTick);
             float x = offsetSeconds * Mathf.Max(1f, PixelsPerSecond);
 
@@ -1700,3 +1701,5 @@ namespace ProjectHero.UI.Timeline
         }
     }
 }
+
+#endif

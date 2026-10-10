@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using ProjectHero.Authoring.Legacy;
 using System.Collections.Generic;
@@ -245,12 +246,12 @@ namespace ProjectHero.UI
             TimelineUI = root.AddComponent<TimelineEditorUI>();
             TimelineUI.Canvas = canvas;
 
-            // ÈÎÎñ 03B£ºTimelineEditorUI ÓÉ±¾·½·¨ÔÚÔËÐÐÊ±´´½¨£¬Òò´Ë±ØÐëÔÚ´´½¨µãµÇ¼ÇÎª
-            // Legacy ´ÓÊôÐ´ÈëÕß£¬Bootstrap ²ÅÄÜ°´Ä£Ê½ÃÅ¿ØËü£¨New Ä£Ê½½ûÓÃ£»Î´·ÖÀàÔò¾Ü¾øÆô¶¯£©¡£
+            // ï¿½ï¿½ï¿½ï¿½ 03Bï¿½ï¿½TimelineEditorUI ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë±ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½Îª
+            // Legacy ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ß£ï¿½Bootstrap ï¿½ï¿½ï¿½Ü°ï¿½Ä£Ê½ï¿½Å¿ï¿½ï¿½ï¿½ï¿½ï¿½New Ä£Ê½ï¿½ï¿½ï¿½Ã£ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             ProjectHero.Core.Compatibility.Runtime.LegacyWriterRegistry.Register(
                 TimelineUI,
                 ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.DescribePath(TimelineUI),
-                "Ã¿Ö¡£¨º¬Êó±êÊäÈëÂÖÑ¯£©");
+                "Ã¿Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½");
 
             if (MainFont != null)
             {
@@ -311,3 +312,5 @@ namespace ProjectHero.UI
         }
     }
 }
+
+#endif

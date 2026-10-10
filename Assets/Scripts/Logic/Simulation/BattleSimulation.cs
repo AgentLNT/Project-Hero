@@ -219,6 +219,8 @@ namespace ProjectHero.Logic.Simulation
 
         private readonly List<UnitRuntimeState> _units = new List<UnitRuntimeState>();
         private readonly Dictionary<long, UnitRuntimeState> _unitsById = new Dictionary<long, UnitRuntimeState>();
+        private readonly List<DynamicUnitSpawnDefinition> _dynamicSpawns;
+        private readonly IReadOnlyDictionary<EncounterSlotId, UnitId> _initialSlotUnits;
 
         private readonly LogicIdGenerator _idGenerator;
         private readonly LogicSequenceGenerator _sequences = new LogicSequenceGenerator();
@@ -469,6 +471,11 @@ namespace ProjectHero.Logic.Simulation
             _runtimeInputs = initialization.RuntimeInputs;
             _assembly = assembly;
             _factionResolver = initialization.FactionResolver;
+            _initialSlotUnits = initialization.SlotToUnitId;
+            _dynamicSpawns = new List<DynamicUnitSpawnDefinition>(definition.FindEncounter(encounterId).DynamicSpawns
+                ?? Array.Empty<DynamicUnitSpawnDefinition>());
+            _dynamicSpawns.Sort((a, b) => a.Tick != b.Tick ? a.Tick.CompareTo(b.Tick)
+                : StringComparer.Ordinal.Compare(a.SpawnId, b.SpawnId));
             // 任务 09（产出 4）：UI/AI 共用的唯一目标资格查询面 —— 直接引用整场唯一的
             // 关系解析器实例（与决策快照上的那个是同一个），绝不复制关系矩阵。
             _targetCandidateQuery = new TargetCandidateQuery(_factionResolver);
@@ -1409,6 +1416,7 @@ namespace ProjectHero.Logic.Simulation
             // 1. 状态到期与持续效果（任务 04 接入）
             _trace.Enter(StepPhase.StateAndEffectAdvance);
             AdvanceStateAndEffects(tick);
+            ApplyEncounterUnitCreations(tick);
 
             // 2. 命令前的死亡与胜负检查（任务包「必须产出」6 的第一段）。
             //
@@ -3745,6 +3753,54 @@ namespace ProjectHero.Logic.Simulation
         // —— 快照构建 ——
 
         private IReadOnlyList<UnitSnapshot> _unitProjection = Array.Empty<UnitSnapshot>();
+        private void ApplyEncounterUnitCreations(long tick)
+        {
+            foreach (var spawn in _dynamicSpawns)
+            {
+                if (spawn.Tick != tick) continue;
+                UnitId sourceId = _initialSlotUnits[spawn.SourceSlotId];
+                var source = _unitsById[sourceId.Value];
+                string rejection = source.IsCombatEffective ? null : "DYNAMIC_SPAWN_SOURCE_UNAVAILABLE";
+                var unitDefinition = _definition.FindUnit(spawn.DefinitionId);
+                var directions = _unitVolumeTables.VolumeDirectionsOf(spawn.DefinitionId);
+                // Creations do not preempt committed future Move or Dodge reservations.
+                var cells = directions == null ? new[] { spawn.Position }
+                    : VolumeFootprint.ResolveCells(directions, spawn.Position, spawn.Facing);
+                foreach (var cell in cells)
+                {
+                    if (!_encounter.GridBoundary.Contains(cell)) rejection ??= "DYNAMIC_SPAWN_FOOTPRINT_OUT_OF_BOUNDS";
+                    if (_logicGrid.ReservationAt(cell) != null) rejection ??= "DYNAMIC_SPAWN_SPACE_RESERVED";
+                }
+                UnitId id = new UnitId(_idGenerator.NextUnitIdValue);
+                if (rejection == null)
+                    rejection = directions == null
+                        ? _logicGrid.RegisterUnitWithPointFootprint(id, spawn.Position, spawn.Facing)
+                        : _logicGrid.RegisterUnit(id, spawn.Position, spawn.Facing, directions);
+                if (rejection != null)
+                {
+                    _outbox.Emit(sequence => new UnitCreationRejectedEvent(tick, sequence, spawn.SpawnId, sourceId, rejection));
+                    continue;
+                }
+                _idGenerator.NextUnitId();
+                var faction = spawn.FactionPolicy.InheritSourceFaction ? source.FactionId : spawn.FactionPolicy.FixedFactionId;
+                var unit = new UnitRuntimeState {
+                    UnitId = id, DefinitionId = spawn.DefinitionId, FactionId = faction,
+                    Position = spawn.Position, Facing = spawn.Facing,
+                    HealthQ10 = QuantizeHealth(unitDefinition.InitialHealth),
+                    StateMachine = new UnitStateMachine(id, _outbox, tick)
+                };
+                _units.Add(unit); _unitsById.Add(id.Value, unit);
+                ((FactionRelationResolver)_factionResolver).RegisterCreatedUnit(id, faction);
+                _adrenaline.Register(id, 0, 0);
+                ControllerId controller = ControllerOf(sourceId);
+                if (!string.IsNullOrEmpty(controller.Value)) RegisterControllerBinding(controller, new[] { id });
+                if (_assembly.TurnWindowSchedule is ProductionBattleComposition production)
+                    production.RegisterCreatedUnit(id, unitDefinition, controller);
+                _outbox.Emit(sequence => new UnitCreatedEvent(tick, sequence, spawn.SpawnId,
+                    id, spawn.DefinitionId, sourceId, faction, spawn.Position, spawn.Facing));
+            }
+        }
+
         private IReadOnlyList<UnitSnapshot> BuildUnitSnapshots()
         {
             UnitSnapshot[] snapshots = _unitProjection.Count == _units.Count ? null : new UnitSnapshot[_units.Count];

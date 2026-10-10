@@ -41,7 +41,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
                 + "\nOptions=" + result.summary.options + "\nResult=" + result.summary.result
                 + "\nErrors=" + result.summary.totalErrors + "\nWarnings=" + result.summary.totalWarnings
                 + "\nBytes=" + result.summary.totalSize + "\nSeconds=" + result.summary.totalTime.TotalSeconds.ToString("F3", CultureInfo.InvariantCulture)
-                + "\nProduction default remains Legacy pending full Shadow classification.\n", new UTF8Encoding(false));
+                + "\nProduction defaults New; Legacy is Editor-only diagnostic support; formal performance remains deferred.\n", new UTF8Encoding(false));
             if (result.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 throw new InvalidOperationException("DEVELOPMENT_BUILD_VALIDATION_FAILED");
         }
@@ -84,7 +84,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             report.AppendLine("UnityViewAssembly=" + typeof(BattleRuntimeBootstrap).Assembly.GetName().Name);
             report.AppendLine("UnityViewReferences=" + string.Join(",", typeof(BattleRuntimeBootstrap).Assembly.GetReferencedAssemblies().Select(a => a.Name)));
             EditorSceneManager.OpenScene(RuntimeOwnershipSceneTool.MainScenePath, OpenSceneMode.Single);
-            var source = UnityEngine.Object.FindFirstObjectByType<BattleSimulationSourceFactory>();
+            var source = UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IBattleSimulationSource>().SingleOrDefault();
             if (source == null) throw new InvalidOperationException("Main scene source missing");
             var seed = source.BuildSeed();
             if (seed.Validate() != null || source.LastConfigurationError != null) throw new InvalidOperationException(source.LastConfigurationError ?? seed.Validate());
@@ -96,8 +96,9 @@ namespace ProjectHero.Editor.RuntimeOwnership
             using (var sim = ProductionBattleComposition.Create(seed.Definition, seed.EncounterId, seed.RuntimeInputs))
                 report.AppendLine("replayFormat=" + ReplayFormat.Version + "|initialHash=" + sim.InitialStateHashHex);
             var policy = ShadowCasePolicy.CreateDefault("task09-command-and-ai-shadow-profile", seed.RulesVersion, true, true, true, true);
-            report.AppendLine("fullShadowPolicyTemporaryFields=" + policy.TemporarilyUncomparable.Count);
-            foreach (var field in policy.TemporarilyUncomparable) report.AppendLine("BLOCKED_TEMPORARY|" + field.Id + "|" + field.OwnerTask + "|" + field.Reason);
+            report.AppendLine("historicalLegacyBaselineTemporaryFields=" + policy.TemporarilyUncomparable.Count);
+            foreach (var field in policy.TemporarilyUncomparable) report.AppendLine("HISTORICAL_FIELD|" + field.Id + "|" + field.OwnerTask + "|" + field.Reason);
+            report.AppendLine("productionMode=New; performance=deferred; current migration evidence=11-migration-shadow-accepted.txt");
             File.WriteAllText(Path.Combine(Output, reportName), report.ToString(), new UTF8Encoding(false));
             if (benchmark) Benchmark(seed);
         }

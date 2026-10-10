@@ -10,6 +10,13 @@ using ProjectHero.Logic.Units;
 
 namespace ProjectHero.Logic.Events
 {
+    public sealed record UnitCreatedEvent(long Tick, long Sequence, string SpawnId,
+        UnitId UnitId, UnitDefinitionId DefinitionId, UnitId SourceUnitId, FactionId FactionId,
+        GridPoint Position, GridDirection Facing) : LogicEvent(Tick, Sequence);
+
+    public sealed record UnitCreationRejectedEvent(long Tick, long Sequence, string SpawnId,
+        UnitId SourceUnitId, string RejectionCode) : LogicEvent(Tick, Sequence);
+
     /// <summary>
     /// 战斗结束事件。它是结束 Tick 的<strong>最后一个</strong>逻辑事件，整场只出现一次。
     /// </summary>

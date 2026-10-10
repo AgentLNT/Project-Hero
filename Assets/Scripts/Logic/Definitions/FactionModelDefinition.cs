@@ -146,6 +146,13 @@ namespace ProjectHero.Logic.Definitions
 
         public bool HasUnit(UnitId unitId) => _unitFactions.ContainsKey(unitId);
 
+        internal void RegisterCreatedUnit(UnitId unitId, FactionId factionId)
+        {
+            if (!unitId.IsValid || _unitFactions.ContainsKey(unitId) || !_model.ContainsFaction(factionId))
+                throw new LogicDefinitionException("DYNAMIC_SPAWN_FACTION_REGISTRATION_INVALID", unitId.ToString());
+            _unitFactions.Add(unitId, factionId);
+        }
+
         public UnitRelation Classify(UnitId sourceUnitId, UnitId targetUnitId)
         {
             if (sourceUnitId == targetUnitId) return UnitRelation.Self;

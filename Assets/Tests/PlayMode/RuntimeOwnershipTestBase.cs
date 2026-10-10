@@ -127,10 +127,28 @@ namespace ProjectHero.Tests.PlayMode
         /// <summary>加载主战斗场景（默认 Legacy，自动启动）。主场景在 Build Settings 中且启用。</summary>
         protected IEnumerator LoadMainScene()
         {
+            if (UseLegacyComparisonScene)
+            {
+                yield return LoadLegacyComparisonScene();
+                yield break;
+            }
             yield return SceneManager.LoadSceneAsync(MainSceneName, LoadSceneMode.Single);
             yield return null;
             ResolveBootstrap();
             UsingProductionScene = true;
+        }
+        protected virtual bool UseLegacyComparisonScene => true;
+        protected IEnumerator LoadLegacyComparisonScene()
+        {
+#if UNITY_EDITOR
+            UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(
+                "Assets/Diagnostics/Editor/LegacyComparisonScene.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null;
+            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("LegacyComparisonScene"));
+            ResolveBootstrap(); UsingProductionScene = true;
+#else
+            throw new InvalidOperationException("LEGACY_COMPARISON_EDITOR_ONLY");
+#endif
         }
 
 #if UNITY_EDITOR
@@ -273,7 +291,9 @@ namespace ProjectHero.Tests.PlayMode
             // 先按程序集限定名解析（Assembly-CSharp / Assembly-CSharp-Editor 是 Legacy 具体类型的
             // 唯一宿主），再退回候选程序集清单——不枚举 AppDomain（Unity 分析器 UAC0005）。
             var resolved = Type.GetType(fullName + ", Assembly-CSharp", throwOnError: false)
-                ?? Type.GetType(fullName + ", Assembly-CSharp-Editor", throwOnError: false);
+                ?? Type.GetType(fullName + ", Assembly-CSharp-Editor", throwOnError: false)
+                ?? Type.GetType(fullName + ", ProjectHero.Legacy.Diagnostics", throwOnError: false)
+                ?? Type.GetType(fullName + ", ProjectHero.UnityAuthoring", throwOnError: false);
             if (resolved != null) return resolved;
 
             foreach (var assembly in CandidateAssemblies())
@@ -361,6 +381,15 @@ namespace ProjectHero.Tests.PlayMode
         protected static int LegacyTimelineAdvanceTimeCalls()
         {
             var timeline = FindProductionComponent("ProjectHero.Core.Timeline.BattleTimeline");
+            if (timeline == null && UnityEngine.SceneManagement.SceneManager.GetActiveScene().path == MainScenePath)
+            {
+                var owners = UnityEngine.Object.FindObjectsByType<BattleRuntimeBootstrap>(FindObjectsInactive.Include);
+                Assert.That(owners.Length, Is.EqualTo(1));
+                Assert.That(owners[0].Adapters.Legacy, Is.Null, "Production Legacy adapter must be physically absent.");
+                Assert.That(FindProductionComponent("ProjectHero.Core.Entities.CombatUnit"), Is.Null,
+                    "A missing counter is valid only after the production Legacy components are actually removed.");
+                return 0;
+            }
             Assert.That(timeline, Is.Not.Null,
                 "对照证据：场景中必须存在旧 BattleTimeline（解析不到时不得静默返回 0——"
                 + "返回 0 会让『New 模式旧推进为 0』变成 0 == 0 的恒真断言）");
