@@ -39,6 +39,9 @@ namespace ProjectHero.Logic.AI
     {
         /// <summary>本决策允许使用的目标 Tick（= 快照 Tick 的下一 Tick）。</summary>
         public long NextTick => Snapshot == null ? 0L : Snapshot.Tick + 1L;
+        /// <summary>The same R4 public resource projection delivered to player controllers.</summary>
+        public IReadOnlyList<AdrenalineLedgerSnapshot> AdrenalineLedgers
+            => Snapshot?.AdrenalineLedgers ?? Array.Empty<AdrenalineLedgerSnapshot>();
 
         /// <summary>与处理器<strong>同一个</strong>关系解析器的候选筛面（唯一构造入口）。</summary>
         public TargetCandidateQuery Candidates => TargetCandidateQuery.From(Snapshot);

@@ -77,7 +77,7 @@ namespace ProjectHero.Tests.PlayMode
                 "The actual Canvas must be able to act when a newly created controlled unit owns the window.");
             Assert.That(Bootstrap.NewDriver.RecordedReplay.Records.SelectMany(r => r.Events)
                 .Count(f => ReplayEventComparison.Canonical(f).StartsWith(typeof(UnitCreatedEvent).FullName + "{")), Is.EqualTo(1));
-            string path = Path.GetFullPath("优化任务/执行记录/12B-11-dynamic-scene.heroReplay");
+            string path = Path.GetFullPath("优化任务/执行记录/12C-11-dynamic-scene.heroReplay");
             using (var file = File.Create(path)) ReplayFile.Save(file, Bootstrap.NewDriver.RecordedReplay);
             BattleReplay replay; using (var file = File.OpenRead(path)) replay = ReplayFile.Load(file, d);
             using (var player = new ReplayPlayer(d, h => ProductionBattleComposition.Create(d, h.EncounterId, h.RuntimeInputs)))

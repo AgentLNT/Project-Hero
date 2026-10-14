@@ -33,7 +33,8 @@ namespace ProjectHero.UnityView
         public bool ActionPanelVisible { get; private set; } = true;
         public void SetActionPanelVisible(bool visible) => ActionPanelVisible = visible;
         public TurnWindowSnapshot Window => _preview?.CurrentWindow;
-        public IReadOnlyList<AdrenalineLedgerSnapshot> Adrenaline => _preview?.OwnAdrenaline ?? Array.Empty<AdrenalineLedgerSnapshot>();
+        public IReadOnlyList<AdrenalineLedgerSnapshot> Adrenaline => _preview?.AllAdrenaline ?? Array.Empty<AdrenalineLedgerSnapshot>();
+        public HudPreviewService HudPreviews => _preview?.HudPreviews;
 
         public void Bind(ViewInputPorts ports)
         {

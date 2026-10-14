@@ -1,0 +1,9 @@
+﻿path,line,text,classification
+优化任务/02B-完整配置与战斗初始化.md,27,Assembly-CSharp（尚未迁移的兼容代码） ──→ ProjectHero.Authoring ──→ ProjectHero.Logic,历史任务设计或12C要求引用，非当前状态
+优化任务/12C-肾上腺素公开与收尾.md,34,   - 删除 `RuntimeViewLogicPort` 中按控制权过滤肾上腺素的逻辑；`OwnAdrenaline` 改为 `AllAdrenaline`，界面按单位显示。,历史任务设计或12C要求引用，非当前状态
+优化任务/12C-肾上腺素公开与收尾.md,53,"     - 主方案 R1～R4 一节开头的""代码尚未迁移""改为""已于 <日期> 迁移，证据见 …""；",历史任务设计或12C要求引用，非当前状态
+优化任务/12C-肾上腺素公开与收尾.md,57,"   - 更新记忆中""代码未迁移""的描述（由调度者执行）。",历史任务设计或12C要求引用，非当前状态
+优化任务/12C-肾上腺素公开与收尾.md,96,"- 所有文档状态行与入口已同步，全仓扫描不再有""代码尚未迁移""一类的过期描述（历史记录除外）。",历史任务设计或12C要求引用，非当前状态
+优化任务/执行记录/10-交接记录.md,65,本文件记录 `51f581c` 所属轮次。当前新增 UI、预览、插值、释放、开发者回放面板和归档修复的结果与剩余门槛见 [2026-10-10 续作记录](10-11-续作记录-2026-10-10.md)。本文件的旧测试数字和“尚未实现”表不作为续作代码的最终状态。,历史证据/本轮审计与接口替换说明
+优化任务/执行记录/12C-交接记录.md,5,`DecisionSnapshot.AdrenalineLedgers` 对每个控制者公开全部单位的可用值、CycleId、ReservedTotal 及预留明细，按 UnitId 排序并冻结集合。`AiDecisionContext.AdrenalineLedgers` 直接读取相同快照。`IViewPreviewPort.AllAdrenaline` 替代 `OwnAdrenaline`，基础界面逐单位显示 Available/Reserved。控制权过滤继续隐藏他方 Editable 普通计划。,历史证据/本轮审计与接口替换说明
+优化任务/执行记录/12C-acceptance-audit.py,114,"    pattern=re.compile(r'代码[^。\n]{0,25}(?:尚未|未迁移|待迁移)|(?:尚未|未迁移|待迁移)[^。\n]{0,25}代码|R4.{0,12}待.{0,5}12C|OwnAdrenaline')",历史证据/本轮审计与接口替换说明

@@ -278,14 +278,18 @@ namespace ProjectHero.UnityView
             var text = new StringBuilder();
             text.Append("Tick ").Append(Model.Decision.Tick).Append("  |  Locked before ").Append(Model.LockLine).Append("\n");
             foreach (var unit in Model.Decision.VisibleUnits)
-                text.Append("Unit ").Append(unit.UnitId).Append("  HP ").Append(unit.HealthQ10 / 1024f).Append("  ").Append(unit.StateValue).Append('\n');
+            {
+                text.Append("Unit ").Append(unit.UnitId).Append("  HP ").Append(unit.HealthQ10 / 1024f).Append("  ").Append(unit.StateValue);
+                foreach (var ledger in Model.Adrenaline)
+                    if (ledger.UnitId == unit.UnitId)
+                        text.Append("  Adrenaline ").Append(ledger.AvailableAdrenaline).Append("  Reserved ").Append(ledger.ReservedTotal);
+                text.Append('\n');
+            }
             var window = Model.Window;
             if (window != null) text.Append("Window owner ").Append(window.OwnerUnitId).Append(" · Remaining ")
                 .Append((Math.Max(0L, window.EndTick - Model.Decision.Tick - 1L)
                     / (double)Model.Decision.Definition.TicksPerSecond).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))
                 .Append(" s\n");
-            foreach (var ledger in Model.Adrenaline)
-                text.Append("Adrenaline ").Append(ledger.AvailableAdrenaline).Append("  Reserved ").Append(ledger.ReservedTotal).Append("  Cycle ").Append(ledger.CycleId).Append('\n');
             if (Model.Decision.BattleEnd.IsEnded) text.Append(Model.Decision.BattleEnd.ResultCode);
             _status.text = text.ToString();
             _confirm.interactable = ((Model.HasDraft && Model.Preview?.Succeeded == true)
@@ -317,6 +321,14 @@ namespace ProjectHero.UnityView
                     .Append("  Weight ").Append(plan.ResolvedPathWeightUnits).Append("\nPath: ").Append(string.Join(" -> ", projection.Path)).Append('\n');
             }
             if (Model.LastRejection != null) text.Append("\nRejected: ").Append(Model.LastRejection);
+            foreach (var capability in Model.HudPreviews?.OpponentCapabilities ?? Array.Empty<OpponentReactionCapability>())
+            {
+                if (!capability.IsWithinKnownHorizon) continue;
+                text.Append("\nAttack ").Append(capability.AttackPlanId).Append(" -> Unit ").Append(capability.TargetUnitId).Append(": ");
+                if (!capability.CanBlock && !capability.CanDodge) text.Append("Opponent cannot react");
+                else text.Append(capability.CanBlock ? "Can Block " : "").Append(capability.CanDodge ? "Can Dodge " : "");
+                if (capability.IsInRecovery) text.Append(" (in recovery)");
+            }
             _previewText.text = text.ToString();
         }
         private void RenderTimeline()

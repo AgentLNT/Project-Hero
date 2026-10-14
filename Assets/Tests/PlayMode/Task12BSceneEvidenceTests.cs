@@ -93,7 +93,7 @@ namespace ProjectHero.Tests.PlayMode
         [UnityTest] public IEnumerator MainSceneGuardResistsTwiceThenThirdHitIsFull() {yield return Scenario(4);}
         IEnumerator Scenario(int scenario)
         {
-            yield return LoadMainScene(); Bootstrap.StopBattle("12B-scene-prepare"); Bootstrap.ReleaseBattle();
+            yield return LoadMainScene(); Bootstrap.StopBattle("12C-scene-prepare"); Bootstrap.ReleaseBattle();
             var original=((IBattleSimulationSource)Field(Bootstrap,"_simulationSourceSlot")).BuildSeed();
             var source=NewGameObject("Task12BSceneSource").AddComponent<Task11SceneScenarioSource>(); source.Seed=Configure(original);
             Bootstrap.GetType().GetField("_simulationSourceSlot",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(Bootstrap,source);
@@ -146,6 +146,10 @@ namespace ProjectHero.Tests.PlayMode
             else
             {
                 var opportunity=model.Reactions.Single(o=>o.DefenderUnitId==hero.Value && o.SourceImpactTick==221);
+                var contactPreview=model.HudPreviews.PreviewDefense(new ReactionOpportunityId(opportunity.ReactionOpportunityId),
+                    source.Seed.Definition.Actions.Single(a=>a.Type==ActionType.Block).ActionSpecId, scenario==2 ? 183 : (long?)null);
+                Assert.That(contactPreview.RejectionCode,Is.Null);
+                Assert.That(contactPreview.TriggerTick,Is.EqualTo(scenario==2 ? 199 : 221));
                 Assert.That(opportunity.SourceImpactTick,Is.EqualTo(221));
                 var block=source.Seed.Definition.Actions.Single(a=>a.Type==ActionType.Block);
                 if(scenario==3)
@@ -158,6 +162,7 @@ namespace ProjectHero.Tests.PlayMode
                 Drive(182); Assert.That(simulation.LastCommandSet.RejectedCommands,Is.Empty);
                 reaction=simulation.ScheduleAuthority.Registry.ActivePlans.Single(p=>p.IsReaction); Drive(scenario==2 ? 222 : 221);
                 Assert.That(reaction.ReactionTriggeredAtTick,Is.EqualTo(scenario==2 ? 199 : 221));
+                Assert.That(reaction.ReactionTriggeredAtTick,Is.EqualTo(contactPreview.TriggerTick),"12C public preview matches the actual recorded Step trigger");
                 Assert.That(reaction.TerminationReason,Is.EqualTo(ActionTerminationReason.ReactionTriggered));
                 if(scenario==2) Assert.That(capture.Facts.OfType<DamageChannelResolvedEvent>()
                     .Single(x=>x.Tick==221 && x.TargetUnitId==hero).Channels.Sum(c=>c.AfterActionResistanceQ10),Is.EqualTo(20*1024));
@@ -166,16 +171,16 @@ namespace ProjectHero.Tests.PlayMode
                 if(scenario==3) {Drive(227); Assert.That(capture.Facts.OfType<ActionPlanLockedEvent>().Any(x=>x.OwnerUnitId==hero.Value && x.StartTick==222),Is.True);}
             }
             typeof(Task10WiredPresentationTests).GetMethod("CaptureView",BindingFlags.NonPublic|BindingFlags.Static)
-                .Invoke(null,new object[] {presentation,"12B-main-defense-case-"+scenario});
-            var replay=Bootstrap.NewDriver.RecordedReplay; string path="优化任务/执行记录/12B-main-defense-case-"+scenario+".heroReplay";
+                .Invoke(null,new object[] {presentation,"12C-main-defense-case-"+scenario});
+            var replay=Bootstrap.NewDriver.RecordedReplay; string path="优化任务/执行记录/12C-main-defense-case-"+scenario+".heroReplay";
             using(var file=File.Create(path)) ReplayFile.Save(file,replay);
             using(var player=new ReplayPlayer(source.Seed.Definition,h=>ProductionBattleComposition.Create(source.Seed.Definition,h.EncounterId,h.RuntimeInputs)))
                 for(int run=0;run<100;run++) { if(run==0) player.Load(replay); else player.Restart(); player.Play();
                     while(!player.IsComplete && player.Deviation==null) player.AdvanceOneTick(); Assert.That(player.Deviation,Is.Null); Assert.That(player.IsComplete,Is.True); }
-            File.WriteAllText("优化任务/执行记录/12B-main-defense-case-"+scenario+".txt",source.Seed.InputSummary+"\nscenario="+scenario+"\ntick="+simulation.Tick
+            File.WriteAllText("优化任务/执行记录/12C-main-defense-case-"+scenario+".txt",source.Seed.InputSummary+"\nscenario="+scenario+"\ntick="+simulation.Tick
                 +"\nreactionTriggeredAtTick="+(reaction?.ReactionTriggeredAtTick.ToString()??"Guard quota 512,512,0")+"\nreplayRestarts=100\n"
                 +string.Join("\n",capture.Facts.Where(f=>f is BlockResolvedEvent || f is GuardQuotaConsumedEvent || f is ActionPlanTerminatedEvent || f is DamageChannelResolvedEvent).Select(ReplayEventComparison.Canonical)));
-            Bootstrap.StopBattle("12B-scene-complete"); Bootstrap.ReleaseBattle(); yield return null;
+            Bootstrap.StopBattle("12C-scene-complete"); Bootstrap.ReleaseBattle(); yield return null;
         }
     }
 }

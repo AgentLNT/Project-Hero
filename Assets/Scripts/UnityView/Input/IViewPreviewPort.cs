@@ -14,7 +14,8 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
         DodgeCancellationPreview PreviewDodge(ReactionOpportunityId opportunity, ActionSpecId action, GridPoint destination, long? startTick = null);
         IReadOnlyList<GridPoint> DodgeDestinations(ReactionOpportunityId opportunity, ActionSpecId action);
         TurnWindowSnapshot CurrentWindow { get; }
-        IReadOnlyList<AdrenalineLedgerSnapshot> OwnAdrenaline { get; }
+        IReadOnlyList<AdrenalineLedgerSnapshot> AllAdrenaline { get; }
+        HudPreviewService HudPreviews { get; }
         bool TryGetOwnTerminalPlan(ActionPlanId planId, out ActionPlanSnapshot snapshot);
     }
 }

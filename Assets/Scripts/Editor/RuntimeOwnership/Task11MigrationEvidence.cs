@@ -21,8 +21,8 @@ namespace ProjectHero.Editor.RuntimeOwnership
         public static IReadOnlyList<ShadowMigrationObligation> Load(string caseId, string rules, string definitionHash)
         {
             const string root = "优化任务/执行记录/";
-            var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(root + "12B-shadow-migration-evidence.json"));
-            if (manifest.decision != "accepted-2026-10-14-R2-R3-defense-duration-performance-deferred" || manifest.caseId != caseId
+            var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(root + "12C-shadow-migration-evidence.json"));
+            if (manifest.decision != "accepted-2026-10-14-R1-R4-performance-deferred" || manifest.caseId != caseId
                 || manifest.rulesVersion != rules || manifest.definitionHash != definitionHash || manifest.entries?.Length != 73)
                 throw new InvalidOperationException("MIGRATION_EVIDENCE_SCOPE_INVALID");
             var files = Directory.GetFiles("Assets/Scripts", "*.cs", SearchOption.AllDirectories)

@@ -44,9 +44,10 @@ namespace ProjectHero.Logic.Snapshots
             IReadOnlyList<ActionPlanSnapshot> plans,
             long scheduleRevision,
             BattleEndSnapshot battleEnd,
-            IFactionRelationResolver factionResolver)
+            IFactionRelationResolver factionResolver,
+            IReadOnlyList<AdrenalineLedgerSnapshot> adrenalineLedgers = null)
             : this(tick, rulesVersion, battleDefinitionHash, visibleUnits, plans, plans,
-                scheduleRevision, battleEnd, factionResolver, default, null, null, null)
+                scheduleRevision, battleEnd, factionResolver, default, null, null, null, adrenalineLedgers)
         {
         }
 
@@ -63,12 +64,23 @@ namespace ProjectHero.Logic.Snapshots
             ControllerId controllerId,
             IReadOnlyList<UnitId> controlledUnitIds,
             TurnWindowSnapshot ownWindow,
-            BattleDefinition definition)
+            BattleDefinition definition,
+            IReadOnlyList<AdrenalineLedgerSnapshot> adrenalineLedgers)
         {
             Tick = tick;
             RulesVersion = rulesVersion ?? string.Empty;
             BattleDefinitionHash = battleDefinitionHash ?? string.Empty;
             VisibleUnits = Freeze(visibleUnits);
+            var ledgers = new List<AdrenalineLedgerSnapshot>();
+            if (adrenalineLedgers != null)
+                foreach (var ledger in adrenalineLedgers)
+                    ledgers.Add(ledger with { Reservations = Freeze(ledger.Reservations) });
+            else
+                foreach (var unit in VisibleUnits)
+                    ledgers.Add(new AdrenalineLedgerSnapshot(unit.UnitId, unit.AvailableAdrenaline,
+                        unit.AdrenalineCycleId, Array.Empty<AdrenalineReservationSnapshot>(), 0));
+            ledgers.Sort((a, b) => a.UnitId.CompareTo(b.UnitId));
+            AdrenalineLedgers = ledgers.AsReadOnly();
             VisiblePlans = Freeze(publicPlans);
             OwnPlans = Freeze(ownPlans);
             ScheduleRevision = scheduleRevision;
@@ -96,6 +108,8 @@ namespace ProjectHero.Logic.Snapshots
         public string RulesVersion { get; }
         public string BattleDefinitionHash { get; }
         public IReadOnlyList<UnitSnapshot> VisibleUnits { get; }
+        /// <summary>R4 public facts for every unit, including reservation amounts and cycles; sorted by UnitId.</summary>
+        public IReadOnlyList<AdrenalineLedgerSnapshot> AdrenalineLedgers { get; }
 
         /// <summary>
         /// <strong>按玩法公开</strong>的计划（其他 Controller 的 Editable 普通计划<strong>不</strong>在此列）。
@@ -235,7 +249,7 @@ namespace ProjectHero.Logic.Snapshots
         /// <item><strong>私有面</strong>（<see cref="OwnPlans"/>）= 该控制者可控制单位的
         /// <strong>全部</strong>非终态计划（含 <c>Editable</c>），供它编辑自己的时间线。</item>
         /// <item><strong>单位面</strong>（<see cref="VisibleUnits"/>）<strong>不</strong>裁剪：
-        /// 单位的存活/位置/血量是玩法公开事实，且 <c>FactionRelationResolver</c> 与候选筛面
+        /// 单位的存活/位置/血量以及所有单位的肾上腺素可用值、周期、反应预留是玩法公开事实，且 <c>FactionRelationResolver</c> 与候选筛面
         /// 都需要完整单位集合（裁剪会让关系分类随视角漂移，那才是真正的不一致）。</item>
         /// <item><strong>控制者面</strong>（<see cref="ControlledUnitIds"/> / <see cref="OwnWindow"/>）
         /// 只放该控制者自己的控制权投影与自己的窗口快照。</item>
@@ -279,7 +293,7 @@ namespace ProjectHero.Logic.Snapshots
 
             return new DecisionSnapshot(
                 Tick, RulesVersion, BattleDefinitionHash, VisibleUnits, publicPlans, ownPlans,
-                ScheduleRevision, BattleEnd, _factionResolver, controllerId, units, ownWindow, Definition);
+                ScheduleRevision, BattleEnd, _factionResolver, controllerId, units, ownWindow, Definition, AdrenalineLedgers);
         }
 
         /// <summary>
@@ -292,7 +306,7 @@ namespace ProjectHero.Logic.Snapshots
             return new DecisionSnapshot(
                 Tick, RulesVersion, BattleDefinitionHash, VisibleUnits, VisiblePlans, OwnPlans,
                 ScheduleRevision, BattleEnd, _factionResolver, ControllerId, _controlledUnitIds,
-                OwnWindow, definition);
+                OwnWindow, definition, AdrenalineLedgers);
         }
 
         private static bool Contains(IReadOnlyList<UnitId> units, long unitId)

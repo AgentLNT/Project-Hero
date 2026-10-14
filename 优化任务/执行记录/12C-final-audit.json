@@ -1,0 +1,2020 @@
+{
+  "tests": {
+    "editmode": {
+      "baseline": 929,
+      "current": 947,
+      "passed": 947,
+      "added": 18,
+      "removed": 0
+    },
+    "playmode": {
+      "baseline": 65,
+      "current": 67,
+      "passed": 67,
+      "added": 2,
+      "removed": 0
+    }
+  },
+  "requiredTests": 14,
+  "matrixRows": 41,
+  "shadowObligations": 73,
+  "sourceFingerprintVerified": true,
+  "nativeResults": [
+    {
+      "path": "12C-editmode.xml",
+      "sha256": "3E3907B4CCF28F3428E2B5739DE147FA7F48329B45D25F662387F1A059E81F3E"
+    },
+    {
+      "path": "12C-playmode-bootstrap.xml",
+      "sha256": "CA62DEA4BA606305C3DDAE0958BB71B2F840C08A39ACA1397C7B81123179C517"
+    },
+    {
+      "path": "12C-playmode.xml",
+      "sha256": "17BF63B50CB4266ABB7E4E647E0171EC3866B763D744C98C9B868A88487B831B"
+    }
+  ],
+  "archivedEvidenceUnchanged": [
+    {
+      "path": "优化任务/执行记录/01-08-audit-logic-results.xml",
+      "sha256": "9B579417DADE4C9D8228315737DDBDC4695EC2FC58801D52BFEA72875C2F8F17"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-fix-before-results.xml",
+      "sha256": "4BE4B880516A60A5C4820217C7558D39A9E2EB6802E385350236564A100AFA40"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-fix-editmode-results.xml",
+      "sha256": "876E353074C6C7D514F106178667168675B3A001578678A54CD9575F9A79721B"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-fix-focused-results.xml",
+      "sha256": "86B041A73584DE2F717E11B9448DF75FE93C55124C357E738D41891B5F2367AD"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-fix-logic-results.xml",
+      "sha256": "336C6677BBDE0CEB4BFD21ECCEE978D93A5017F5586FC62452E1B22A5C30B013"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-fix-playmode-results.xml",
+      "sha256": "213165C48C33A2114D84CBAE487FF3DC98CAFFF260F1DF1E268DB6A981DE6A33"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-fix-probe-results.txt",
+      "sha256": "F2A21AC13678A9F2937D9B4EAD27A91DF2810E386E958FD3311EC0F0E29B750B"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-修复后验收核对-2026-10-09.json",
+      "sha256": "D0398D71A2C4FCDD39D74F33C937C809EBA5D3D60DCAAB94574630286745B138"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-修复记录-2026-10-09.md",
+      "sha256": "AF9B196A2F8BC041FF5835C2214985CB826E2727F40347DCA83AAFC7881CDF22"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-定向复现.cs",
+      "sha256": "7A75DC0454EA67B3959DB0D0C666F1E85FD841797FA2897CA3BE20AAB517B7C9"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-定向复现.ps1",
+      "sha256": "2958150B50AE8D62251A938734201C52780F2457F7D119E9B7E221ABEAF3C3DA"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-定向复现结果.txt",
+      "sha256": "00DF43C893359D4ECF98A0807A5AFB661400C8ECD2960A91D18F51CDCEA7EFB0"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-必需测试缺失名称.csv",
+      "sha256": "022187438A1739D1DC9BD58207DA424817C61A0D7069206BD4E945A13679EA3F"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-检查记录-2026-10-09.md",
+      "sha256": "4CD35A53E518D0F6A53C8564E014D9F15DE24536F58DD9CC2FFBEC8A5184E80A"
+    },
+    {
+      "path": "优化任务/执行记录/01-08-验收核对-2026-10-09.json",
+      "sha256": "0E567F539F9E197D22EFB5B4CB980C636E26C81E55AB7EED70FF8116ACA3D77A"
+    },
+    {
+      "path": "优化任务/执行记录/01-基线记录-资产配置与程序集.md",
+      "sha256": "0EB8C2CCCE1C3CAEDEA335392CEFD01B1374BC5D9CA6EEDD891001E81D5FCFFE"
+    },
+    {
+      "path": "优化任务/执行记录/01-基线记录-运行时与代码链.md",
+      "sha256": "26876B5FD082BB213EA7D9CD132BBD632E50097C203FAB8B68BF167559175DDC"
+    },
+    {
+      "path": "优化任务/执行记录/01-基线记录.md",
+      "sha256": "03624F8707E59947F8A2716AEF922F3EA2E3128EB00FCDD472E217763C51D53D"
+    },
+    {
+      "path": "优化任务/执行记录/01-诊断输出.txt",
+      "sha256": "6D48A960227E46C4311CAF6C4EF03ADFB348190E58B6BE3F5B70B86BD80827B5"
+    },
+    {
+      "path": "优化任务/执行记录/01B-待决设计决策.md",
+      "sha256": "3F476F565016BD472CB6AD7A8D47A77B7DEC5245AEA59865DD180B04B027F9F4"
+    },
+    {
+      "path": "优化任务/执行记录/02-test-results.xml",
+      "sha256": "C314BF09C61B7269468D23E05EAB438DD54B049652DCCB6CF5968352FCAAEB01"
+    },
+    {
+      "path": "优化任务/执行记录/02-交接记录.md",
+      "sha256": "E98CC77CF9711E4EE4B03858D0E82C4DD456EA957585E419074E2687EE76E2AD"
+    },
+    {
+      "path": "优化任务/执行记录/02B-baseline-test-results.xml",
+      "sha256": "B9E8652FCF5EC0F85F5F6FB01F1E638F91AB4ED25CC4149DF7ED92FF0B72D70C"
+    },
+    {
+      "path": "优化任务/执行记录/02B-test-results.xml",
+      "sha256": "83154C650CB8DC0022BD217D92D3FD6ED833146C380E1E1604388DE43F6A9E4D"
+    },
+    {
+      "path": "优化任务/执行记录/02B-verification-test-results.xml",
+      "sha256": "D05A74E8BCF03C5AF3E0A458559AFD4ABC294E99B32EFAC7FB4159B2BF72D624"
+    },
+    {
+      "path": "优化任务/执行记录/02B-交接记录.md",
+      "sha256": "844BC22CB7F6567033D536270A1E35826C99A2E921E259AAD00D664E6664B2F7"
+    },
+    {
+      "path": "优化任务/执行记录/02B-独立验证记录.md",
+      "sha256": "6101E5387502D8FAD172B2E9AFEAD32E66192B09B05085D87833A92FCBE49153"
+    },
+    {
+      "path": "优化任务/执行记录/02B-配置迁移记录.md",
+      "sha256": "4C83AD16B8E4388EA79831CC96B1BA1D90A7C606650CCBDF1293A12987920ED4"
+    },
+    {
+      "path": "优化任务/执行记录/03-baseline-test-results.xml",
+      "sha256": "62A50EA369C8B1D7E48C42DE6FF83194AEA5A341BA4EB04C7E4E953FAAD93DC7"
+    },
+    {
+      "path": "优化任务/执行记录/03-step-evidence.txt",
+      "sha256": "2F6ED8EFDB049E4779996D259BECA7955C715D6FAEB303C0D48A32EBA3E31C53"
+    },
+    {
+      "path": "优化任务/执行记录/03-test-results.xml",
+      "sha256": "B63DE7823AFA542B9CB1D895A33C505FEEF774CD919B31C71BF4187D59CA0682"
+    },
+    {
+      "path": "优化任务/执行记录/03-verification-test-results.xml",
+      "sha256": "7B6F15FAED70004B7A42385D73129D3F8ED8DBDA2AEDF21057B83E424702C8BE"
+    },
+    {
+      "path": "优化任务/执行记录/03-交接记录.md",
+      "sha256": "FB2C894D90F1C1762925E2A65688CFB1D7D2F8FF4320836BA71DB83C620C77D1"
+    },
+    {
+      "path": "优化任务/执行记录/03-独立验证记录.md",
+      "sha256": "506F7B26355FDF0A0EA1D0EE8021537D0628287EE86EE6519137C5BBBE201785"
+    },
+    {
+      "path": "优化任务/执行记录/03B-editmode-results.xml",
+      "sha256": "5AD632B3447D06DE82C8DA2DF37F46B894274F02B8A24542881F43F29D355C11"
+    },
+    {
+      "path": "优化任务/执行记录/03B-playmode-results.xml",
+      "sha256": "76ACC0C975DFE4C52CEDAC3A8F6B17A19F820531E6E259400FE2BE2CEBD09C43"
+    },
+    {
+      "path": "优化任务/执行记录/03B-verification-editmode.xml",
+      "sha256": "4B9D182D8FCEDA7738D13806524C1029B6D0762CB7FE21194007BF4162EA3FF1"
+    },
+    {
+      "path": "优化任务/执行记录/03B-verification-playmode.xml",
+      "sha256": "6FBBF379339D6D355915470ABA9C75107A7E7BA784D3B55610713E13E7AA0D75"
+    },
+    {
+      "path": "优化任务/执行记录/03B-verification2-editmode.xml",
+      "sha256": "E8A9C756E78CAE73BC02BF70BFEFF7533385127251E033BE0018110887241F00"
+    },
+    {
+      "path": "优化任务/执行记录/03B-verification2-playmode.xml",
+      "sha256": "A59B7156B0CE77B185209B162CFC279222AEC55E4931EB1E9D89951A24E733B4"
+    },
+    {
+      "path": "优化任务/执行记录/03B-交接记录.md",
+      "sha256": "BB85F90E30CE8C694B1C2FBB93CB28D9BF860984744D8E6C40D90CEAB4FD601C"
+    },
+    {
+      "path": "优化任务/执行记录/03B-独立验证记录-第二轮.md",
+      "sha256": "13A5E98C37695BBA4E24C01FEDD0887BF0B8F359BB5E49A7DE8E8A067EB313C1"
+    },
+    {
+      "path": "优化任务/执行记录/03B-独立验证记录.md",
+      "sha256": "7C03AB9841127259FD6138564EB8759756166A5058366566B8620A15E2E901BC"
+    },
+    {
+      "path": "优化任务/执行记录/04-editmode-results.xml",
+      "sha256": "996A1E86A14A2E8711D2A6DB8178476B0B4A2C7271C03452EEA4F5DA885E2F30"
+    },
+    {
+      "path": "优化任务/执行记录/04-playmode-results.xml",
+      "sha256": "F1B8403ACA6B80E63FC3C41939536F48D582532DE37ED653079B7EFA0479A763"
+    },
+    {
+      "path": "优化任务/执行记录/04-verification-editmode.xml",
+      "sha256": "8347514ECE9699282866D4F4099692D3E2765BF7FB2715E3E363B5F6C92168E4"
+    },
+    {
+      "path": "优化任务/执行记录/04-verification-playmode.xml",
+      "sha256": "5318D050F80A8DDA6A5F023D1EE60A6B6AE9FDBF01EDCED21162E09932A8DE2B"
+    },
+    {
+      "path": "优化任务/执行记录/04-交接记录.md",
+      "sha256": "3F2738EF05678090BA297809E3C41969AD50604E8FE8731E07CE615144EA9151"
+    },
+    {
+      "path": "优化任务/执行记录/04-独立验证记录.md",
+      "sha256": "FD51EFF38AACB689E538119147893E2F91485C2CA3A67777211E26A051B92233"
+    },
+    {
+      "path": "优化任务/执行记录/05-compilecheck-logic.ps1",
+      "sha256": "461241BD517C3FFDF0517E09E7813F3DC17506AA3772DDED21CFF43F76140A11"
+    },
+    {
+      "path": "优化任务/执行记录/05-compilecheck.xml",
+      "sha256": "988530A21C82AF07B5EFEE5F9CE14DDAD78EAB5B930D8673E7197DF1CED017BB"
+    },
+    {
+      "path": "优化任务/执行记录/05-editmode-results.xml",
+      "sha256": "F18580AF90DBA55C8DE28DDA46D3BB5354C0FA6FFFC4EC740FDF77DB3BECAD0D"
+    },
+    {
+      "path": "优化任务/执行记录/05-final-editmode-results.xml",
+      "sha256": "522333C02C291E9DB7E0A8F4E6878A459D1953217BD3588908F347CA027685F5"
+    },
+    {
+      "path": "优化任务/执行记录/05-final-playmode-results.xml",
+      "sha256": "5FBE1A8222A101192332227EACF5A47C0A9557AE06D28DEF1475797F47B21968"
+    },
+    {
+      "path": "优化任务/执行记录/05-offline-harness.ps1",
+      "sha256": "3D958E98B0A5E9F59810084AEDB2CC61C39D61C84A010CF11557561FA427EB7B"
+    },
+    {
+      "path": "优化任务/执行记录/05-p0-diag.xml",
+      "sha256": "246E5CBEA9EAB6CBF665C60FFE6D38FCD599B53AD2239684C2C61783E232D168"
+    },
+    {
+      "path": "优化任务/执行记录/05-p0-editmode-results.xml",
+      "sha256": "5F057F8344A36AADC71FAB52DC9EF7FA66EF64933C988AB516721E01A8B3F4AB"
+    },
+    {
+      "path": "优化任务/执行记录/05-p0-schedule-results.xml",
+      "sha256": "AE9153DB15781EA42D56EBEA3BA63E84A1F526014CB760B47ED0EF6B0F8DD17D"
+    },
+    {
+      "path": "优化任务/执行记录/05-p0-task05-results.xml",
+      "sha256": "D03FA099502D392F11AC513274AA2871C5B65C1D917E7C494330A985998D8C71"
+    },
+    {
+      "path": "优化任务/执行记录/05-p1-editmode-results.xml",
+      "sha256": "390A9DFEEC02973CFED3467A5692D1921A42846DB24D1148C7C8932258ABF531"
+    },
+    {
+      "path": "优化任务/执行记录/05-p1-playmode-results.xml",
+      "sha256": "4801611A31B5103515A1725F1BFDE6BAFE88AF714EF168F43146447F3A0D79E7"
+    },
+    {
+      "path": "优化任务/执行记录/05-p1-reaction-results.xml",
+      "sha256": "4A4AFA512F5925843F3F8CD52AC71176836A4FB35ECEDA5E6031BC16454D7E95"
+    },
+    {
+      "path": "优化任务/执行记录/05-p1-task05-results.xml",
+      "sha256": "CDF0AFA627EBB2F0385EDAE1E0EE537EB5C2C7F9806D566844E8B0CC611D33EF"
+    },
+    {
+      "path": "优化任务/执行记录/05-p2-editmode.txt",
+      "sha256": "A7476B3A02F1659B5D83F01C9771A880E3E31099247039410DF767378D3275B8"
+    },
+    {
+      "path": "优化任务/执行记录/05-p2-playmode.txt",
+      "sha256": "0D57DD5F7416B5ACA4753A7614002348E3108BF401C4196FD0691C4AC96CC133"
+    },
+    {
+      "path": "优化任务/执行记录/05-phaseA-results.xml",
+      "sha256": "3E4CA1AF37127D05B208206C234105EF8A5EE6EF948F496EDA41E39668523D9D"
+    },
+    {
+      "path": "优化任务/执行记录/05-r1-editmode-results.xml",
+      "sha256": "5AD862332578468BCD51D9AE056327EF3D997AC76E3F2FA2BB69822E041124F0"
+    },
+    {
+      "path": "优化任务/执行记录/05-r1-mutation-probe.xml",
+      "sha256": "A5E2F74D1699F565279EB7504E7394264D1D5323B56CEB1AB9CC2ABB3D27D7EF"
+    },
+    {
+      "path": "优化任务/执行记录/05-r1-playmode-results.xml",
+      "sha256": "5556E1DE7A8C49FF22C1C113EA55C6EECE87721441BBF45B83534B575CAA7A5C"
+    },
+    {
+      "path": "优化任务/执行记录/05-reflect-runner.cs",
+      "sha256": "8D0E2B07153FF9B594EC96405646EEA2CDE5462E39EE1646A6DC00052E7D6194"
+    },
+    {
+      "path": "优化任务/执行记录/05-summarize.ps1",
+      "sha256": "6440FD1462C2D093AC565420AADA050D5619B3A4D807C36817CBFD4EAA69063E"
+    },
+    {
+      "path": "优化任务/执行记录/05-verification-editmode.xml",
+      "sha256": "035C6B36B2EF926FEB59099480020E7BC51C48E08E86617FFA709FD1D459E5A0"
+    },
+    {
+      "path": "优化任务/执行记录/05-verification-playmode.xml",
+      "sha256": "6BADDCA0177D8800A9E43F72A0D0F5F21CC2F718A2DEC6DD8825486B802EF6F7"
+    },
+    {
+      "path": "优化任务/执行记录/05-交接记录.md",
+      "sha256": "545E6C3220B581E5F0C506F77D0D7C872235665175C56FD529E0EFA26B318A7D"
+    },
+    {
+      "path": "优化任务/执行记录/05-独立验证记录.md",
+      "sha256": "CA7750FC504309D83E9240D37E45F3B70E896EB5CD2CF61E83985EC13D98CA32"
+    },
+    {
+      "path": "优化任务/执行记录/05-续作语义映射-2026-10-10.md",
+      "sha256": "4FB387B01D1BB0391AC6CB33EFC4A6CFC272E06ECF180E879F7B886418BFCC00"
+    },
+    {
+      "path": "优化任务/执行记录/06-editmode-results.xml",
+      "sha256": "C5D11FA13280556A05B8091A29BAF19E5D5D62F0230C5CC3CAD9EEB73A689272"
+    },
+    {
+      "path": "优化任务/执行记录/06-final-editmode-results.xml",
+      "sha256": "BC921EAD61399F594B5C50644ACBD95146F63403BB660991CDEABAAD4F619193"
+    },
+    {
+      "path": "优化任务/执行记录/06-final-playmode-results.xml",
+      "sha256": "4D4ACB771A768EE237C1DBFD27F47BF487E1F4A97E1B8CD93815E4C0050CDE0E"
+    },
+    {
+      "path": "优化任务/执行记录/06-final2-editmode-results.xml",
+      "sha256": "40AD842FACB7312FEF027FEC1B9F8C0AC034209F6F716019F4F6C01A6AE67563"
+    },
+    {
+      "path": "优化任务/执行记录/06-final2-playmode-results.xml",
+      "sha256": "D91F8C07EC9DDC3746B73E42FDDED3F6E5D7D3E71C4C70993D425EB1D37F3636"
+    },
+    {
+      "path": "优化任务/执行记录/06-final3-editmode-results.xml",
+      "sha256": "32095521AAFD30CEBD1354815D8322FA0927BE3F3A42AF61E851471CFDD8B148"
+    },
+    {
+      "path": "优化任务/执行记录/06-final3-playmode-results.xml",
+      "sha256": "6F1ABD92EE97320264DC960D59DAAF9405BAAF66ED94A0BC211594DF2BBF579A"
+    },
+    {
+      "path": "优化任务/执行记录/06-final4-playmode-results.xml",
+      "sha256": "760BC1909427B104846F9BAACD1075AD69B9ED8C18E2470FEB3F85CFEC2FB0A8"
+    },
+    {
+      "path": "优化任务/执行记录/06-final5-playmode-results.xml",
+      "sha256": "2D169D4000382CEABE5F92160E170BAC3D9F561E6F2B208F02CF497E22D0CA94"
+    },
+    {
+      "path": "优化任务/执行记录/06-nunit-runner.cs",
+      "sha256": "3AA0DFF531D117A7CF7C098C23E1D24CD16F7499BAC854E866467AC464D99E6D"
+    },
+    {
+      "path": "优化任务/执行记录/06-offline-harness.ps1",
+      "sha256": "8BC073F9E9D2441420C21A9B61E020949270F32167AFAC8B0C1DCB3597A001D5"
+    },
+    {
+      "path": "优化任务/执行记录/06-playmode-results.xml",
+      "sha256": "D451295F6AD4007E046F43F0C7C19A2C2B1B77837570F949E3239F68975DE770"
+    },
+    {
+      "path": "优化任务/执行记录/06-r1-full-editmode.xml",
+      "sha256": "93F90DF995ED8ED6B8E0FDB2CDE05603712DAC5E966AC66AD772D4B8EB05525D"
+    },
+    {
+      "path": "优化任务/执行记录/06-r1-full-playmode.xml",
+      "sha256": "B92592EC604DA398C26B60C41D58FA817D8A7A5D45461AD600CF14FC67D34206"
+    },
+    {
+      "path": "优化任务/执行记录/06-r1-terminal-semantics.xml",
+      "sha256": "7271BCD93E5A12D13F4F7579EFF9C6ADC9747E7698B15C63B0BCE1EA0DA6E691"
+    },
+    {
+      "path": "优化任务/执行记录/06-r2-schedule-results.xml",
+      "sha256": "7A2F9B48548747CF5A68E6F1066325D5A1076B1AD6AFA4BE1A20EA26A7BA3A5A"
+    },
+    {
+      "path": "优化任务/执行记录/06-r4-hash-verify.xml",
+      "sha256": "EF5D7D465AB27F91811E25804DFA6F7D51C61C4F5404098D826846AA18085F34"
+    },
+    {
+      "path": "优化任务/执行记录/06-smoke-results.xml",
+      "sha256": "49269E5BFEAD743D092DD3726AD05FC09DAFE7E50810AB8C9BECCE2CBDAB1F22"
+    },
+    {
+      "path": "优化任务/执行记录/06-verification-editmode.xml",
+      "sha256": "9C53B98400AF46875CACC7451ECC1480FFC63F23E9FF520AC30CDD9EC9733C9F"
+    },
+    {
+      "path": "优化任务/执行记录/06-verification-playmode.xml",
+      "sha256": "A3F86714B0D76985CD99ECBE733DB8FBE714B1DF3770D7B11CFB9639DE477A6E"
+    },
+    {
+      "path": "优化任务/执行记录/06-交接记录.md",
+      "sha256": "C30969FBDE04C8F452E2D290F47A2274872FCFE29F1954897763DA45FE089F00"
+    },
+    {
+      "path": "优化任务/执行记录/06-独立验证记录.md",
+      "sha256": "244B3AC9BFF4323F1C45928DF303D663026733DC0386141EB4C97C537FF739C4"
+    },
+    {
+      "path": "优化任务/执行记录/07-editmode-results.xml",
+      "sha256": "F02088F578865173629D89355D79D6BA764900D4A29909C3B348CE96E50A5887"
+    },
+    {
+      "path": "优化任务/执行记录/07-logic-results.xml",
+      "sha256": "94F3618345A23DCA94C7A3B55889EB63AD53E64A3C435607D3A232169A9AFFD6"
+    },
+    {
+      "path": "优化任务/执行记录/07-offline-harness.ps1",
+      "sha256": "5F5F2FABCD2C35A1CDBA3CD3E6144DB25B3DE1FDF3BAE36737137DC59E120035"
+    },
+    {
+      "path": "优化任务/执行记录/07-playmode-results.xml",
+      "sha256": "FAC0FBC2134A8BE5CDF7E0FEF2198DFA916A3FA9DEE5048AAA64AFA4D6AE2A69"
+    },
+    {
+      "path": "优化任务/执行记录/07-shadow-probe-detector.cs",
+      "sha256": "D75390E462AD393E3FEEDCE2C6C71AB751F59F2B895C2820DEF92E27BCC92A25"
+    },
+    {
+      "path": "优化任务/执行记录/07-shadow-probe-run.ps1",
+      "sha256": "94DEE63E9376A5ABB675C0A872FE6E9BBC876C1FC69DBAB8F50269414C675BAF"
+    },
+    {
+      "path": "优化任务/执行记录/07-shadow-probe-scenario.cs",
+      "sha256": "AA25890FC0E5E8985A41C3D8055D27954C17BC52183D6A7CBE20F4E773102C54"
+    },
+    {
+      "path": "优化任务/执行记录/07-sub-verify-logic.ps1",
+      "sha256": "5028F2B503B538F840F3B519B9F4D8D74E903FF2B7A27625103558C038C67E7B"
+    },
+    {
+      "path": "优化任务/执行记录/07-交接记录.md",
+      "sha256": "AED344AA6120617CF81DC10BA696F05302B55093F53405B28522090CFA6C7D1C"
+    },
+    {
+      "path": "优化任务/执行记录/07-子代理-ScheduleEditor预算接入记录.md",
+      "sha256": "34937D5CF5760195B96C1BC6CE7644ED96C2DE98BE453183C1DAD471E106FC63"
+    },
+    {
+      "path": "优化任务/执行记录/07-接口冻结与集成清单.md",
+      "sha256": "DB3DC7243224D861B4A35FEBAC6AC59697C794BA2C811114134C1C5256DC5B3F"
+    },
+    {
+      "path": "优化任务/执行记录/07-验证脚手架说明.md",
+      "sha256": "6F0ABA007EA721D45C414CA4E47CBC512152E871281A0777EFB5E94027638D32"
+    },
+    {
+      "path": "优化任务/执行记录/08-acceptance-check.ps1",
+      "sha256": "5D2FF1A0556AB81D176A7588EE1D169607C1E6A8A8CA1C4BAB397DFA4BD7AC16"
+    },
+    {
+      "path": "优化任务/执行记录/08-completion-before-results.xml",
+      "sha256": "6AB5813BA0E050886FEEBDE8BABF41F19AA93D6F6AC34A2E663CC81AFB684E62"
+    },
+    {
+      "path": "优化任务/执行记录/08-completion-editmode-results.xml",
+      "sha256": "5B18AF091F41133BD3FD115EC23D6A3AF2AB0D477E955AAE8046902CCE28FDC7"
+    },
+    {
+      "path": "优化任务/执行记录/08-completion-logic-results.xml",
+      "sha256": "4EA24113BF829859AF49837014C05B7FFC58C2768C50906248B8A1E193BA8DBD"
+    },
+    {
+      "path": "优化任务/执行记录/08-completion-playmode-results.xml",
+      "sha256": "3B8D1C8ED336D1999160A76CBAD63E2B11D08301AE753F6DC286713AD0A35908"
+    },
+    {
+      "path": "优化任务/执行记录/08-completion-scene-results.xml",
+      "sha256": "7C37B15C757ED22B114A9F2D80A7FA7F73AC0D5AE39745C3BC8C4335C3FA6024"
+    },
+    {
+      "path": "优化任务/执行记录/08-editmode-results.xml",
+      "sha256": "0D495ADEAB1C0905B6ADF868CC6B9848268E7ECB363F3E8AEC9E633D5D94DAEF"
+    },
+    {
+      "path": "优化任务/执行记录/08-playmode-results.xml",
+      "sha256": "425A7580BAD919D026923282C078F6144A48920B48D9C7756F27C3DC5B88954C"
+    },
+    {
+      "path": "优化任务/执行记录/08-shadow-golden-profiles.csv",
+      "sha256": "B62BE429985032DF43BDBECFB1160B2C9A631B2BD2AB7D2312E9F43589966640"
+    },
+    {
+      "path": "优化任务/执行记录/08-主方案口径提取-伤害与动量.md",
+      "sha256": "7B3ABD146832DDBBA5F06FD628A3514CFAB25B9E6DA60B7B64D7C52308839E9F"
+    },
+    {
+      "path": "优化任务/执行记录/08-交接记录.md",
+      "sha256": "1F6FAFF47E149308F8E1D8086FC07E072CDCFADCDA0471E209CF3E7EE39E89AC"
+    },
+    {
+      "path": "优化任务/执行记录/08-复核记录.md",
+      "sha256": "FDA13E42C9700BE607DEF0122B465BCB0525E66A7C72CC5DB52E1B2C4AE85B78"
+    },
+    {
+      "path": "优化任务/执行记录/08-子代理-同时强制位移协议记录.md",
+      "sha256": "F1118DA12959F01A6335C014636D7ACABB5F48880E25ADD4B2F7DFFCCB6E4043"
+    },
+    {
+      "path": "优化任务/执行记录/08-子代理-集成段第二步记录.md",
+      "sha256": "28B6862A53B75E2DC6E67CC6F1C3FA2AB360DD4C9BAD6AF4FEBDB3DE27D53287"
+    },
+    {
+      "path": "优化任务/执行记录/08-接口冻结与集成清单.md",
+      "sha256": "9EF5D59FDDF2472711810A9E9E6F2A338FDD28645FC686A3E5514570D0B6E46B"
+    },
+    {
+      "path": "优化任务/执行记录/08-补齐与场景接线记录-2026-10-09.md",
+      "sha256": "A92DE1C7A95C69B2BE7C728EDBB9BD5CA7FF1BBF98D99543C06CBB2882860E2D"
+    },
+    {
+      "path": "优化任务/执行记录/08-补齐源码哈希-2026-10-09.json",
+      "sha256": "0AE067A34B64B42F1A9994097B1E0E8D95FFDE3DC37C123BF5E0E30CE4D03912"
+    },
+    {
+      "path": "优化任务/执行记录/08-补齐验收核对-2026-10-09.json",
+      "sha256": "CD2D500A937DDF46EC99CBA7779AD1BA9057273DC7343B3E92393702391481EE"
+    },
+    {
+      "path": "优化任务/执行记录/08-集成与验收台账.md",
+      "sha256": "87730CE6545A0F3E8732E8815812307C8BA62762C6EF4798EE01323A90763F7D"
+    },
+    {
+      "path": "优化任务/执行记录/09-A2-logic-results.xml",
+      "sha256": "674EFEE0ADFF9B6369F0F7EC3EC4D7D4CC4E7545AC3C0F43A387D70277E0CBBB"
+    },
+    {
+      "path": "优化任务/执行记录/09-A2-派工书.md",
+      "sha256": "9A1AB2BF564CB05DC6D74093A4C833980CC1878A36B178FF83EC33FD345B7C27"
+    },
+    {
+      "path": "优化任务/执行记录/09-A2-离线与变异探针证据.md",
+      "sha256": "558DFCCAF660495BECA3DAD3B313419A615F46DABBB80A02836B5F94492B8F2D"
+    },
+    {
+      "path": "优化任务/执行记录/09-A21-logic-results.xml",
+      "sha256": "98A113F1A86E3DBA2493DAE5A5EDD94E7A14307D44DA4F1CD10AE0244F9FD06B"
+    },
+    {
+      "path": "优化任务/执行记录/09-A21-修复派工书.md",
+      "sha256": "1ED8DD5E8219957B90EBE871BB4E2FFAEEDF57716855A42351FC44B12A14DCFD"
+    },
+    {
+      "path": "优化任务/执行记录/09-A3-logic-results.xml",
+      "sha256": "E46A666B01A466F78D25DB547B911DA0DC7B73C0A2AD80C6C5A4E363E569F1A9"
+    },
+    {
+      "path": "优化任务/执行记录/09-A3-派工书.md",
+      "sha256": "8B7766035167D9C61112A7BF156717B64F3FBC0E8FE610780409F5601B22D94D"
+    },
+    {
+      "path": "优化任务/执行记录/09-A流-logic-results.xml",
+      "sha256": "717B6451742599A4C0DF627F53F9BE75D392B7ED9E9B8103B4DA424CDF0975F4"
+    },
+    {
+      "path": "优化任务/执行记录/09-A流-离线与变异探针证据.md",
+      "sha256": "24D1A9CE468A547B0862C60799B76ACDDF64CD26FA9042FC330E8A41B3D1CD06"
+    },
+    {
+      "path": "优化任务/执行记录/09-B2-派工书.md",
+      "sha256": "CDEC4CD366DA53CD5C26A1DB9DD42F84E59D3BC2045D72430423E790279F6668"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1-logic-results.xml",
+      "sha256": "77CD4AD79D63E49B55FD5EB171E632CFB890878D6A85FCF7B8AA7DE1334C78C9"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1-派工书.md",
+      "sha256": "2301B6D695855D8FE5141DCA1CF77555DE0840DF54F1CCA9E1B2E52AB6D0BDEF"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-m1.xml",
+      "sha256": "0B9BE5C6BDC4C5A81B4584F315B6155296ECE4AEBE120522FC46C5E5C3CC2CC4"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-m2.xml",
+      "sha256": "4332AE88ED78E118B6C40A18973FBC6C40E5F51CFA884AAE178D95084B5425BF"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-m3.xml",
+      "sha256": "7DB93D7AAE2D78C5DBC51104E8A687EDBF43F263379BCC6153A6180DBE9BFEF2"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-m4.xml",
+      "sha256": "DC777375292651ED6BB27113FAAC912ACF6408D7C3A407BEE616043F809424B8"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-m5.xml",
+      "sha256": "EA2EA71A6CB1ED08E48498AB257B4E5BF59DA7ABD3471D243187AE3928E9D644"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-派工书.md",
+      "sha256": "008EEA4FDEE0A31BC80D1009A39EBAFE8FCA8459BABF735F0F0A042CAB538B70"
+    },
+    {
+      "path": "优化任务/执行记录/09-C1fix-离线与变异探针证据.md",
+      "sha256": "8864082342B92451DD2C72243D50F1357C779BADC3FC41E121101B70772FBAF0"
+    },
+    {
+      "path": "优化任务/执行记录/09-C2-派工书.md",
+      "sha256": "48F52924B858313740F0F203C502BF9CF3AD7064F70178F00C45D2AADB0E5FB1"
+    },
+    {
+      "path": "优化任务/执行记录/09-C2a-compilecheck.ps1",
+      "sha256": "3CF6DA1EA59EDFE48E77B828230A23E886343EE8911CC87C768AD54F84E6EA70"
+    },
+    {
+      "path": "优化任务/执行记录/09-C2a-派工书.md",
+      "sha256": "211D95D0246DEBC3301C0DB573EEA86F560D4E023512E94FF7556D07EE0C38FF"
+    },
+    {
+      "path": "优化任务/执行记录/09-C2a-进度.md",
+      "sha256": "12FF2D232D7E7A85FF9100A4707AE6D36C5F37A862304C8A9BA021CFA11C7892"
+    },
+    {
+      "path": "优化任务/执行记录/09-C2b-派工书.md",
+      "sha256": "94144E6FCEC5568C44A78C0E58E66229DED007F38B6CFC1F4308D935BCA312C1"
+    },
+    {
+      "path": "优化任务/执行记录/09-C2b-进度.md",
+      "sha256": "EA505627FAD11ACA6E11302A6C188D4B1B8C597310CA14B06F3CE59CB7946833"
+    },
+    {
+      "path": "优化任务/执行记录/09-acceptance-check.ps1",
+      "sha256": "477F49F05185DCC1A9F415DB7F308E71FA97F91A224672223CD3F9525DC38536"
+    },
+    {
+      "path": "优化任务/执行记录/09-final-editmode-results.xml",
+      "sha256": "F3E1367C4B0744997A74305386F35836DF418794278A66B2C3EE401B504AADA0"
+    },
+    {
+      "path": "优化任务/执行记录/09-final-logic-results.xml",
+      "sha256": "481A4BD253CEBB6B630D268E7C806F77A2A6AB722B7D2A63D6B5668D1F620EEB"
+    },
+    {
+      "path": "优化任务/执行记录/09-final-playmode-results.xml",
+      "sha256": "C7BDA0556C6F1313F51B35D36697BF7C8B8A2781BDE3A7736B7140CD75290172"
+    },
+    {
+      "path": "优化任务/执行记录/09-final2-playmode-results.xml",
+      "sha256": "2B8B733689B0D3CF025DFC49B4D3C318A328641FAD2FE7C11FB1247C7B109B56"
+    },
+    {
+      "path": "优化任务/执行记录/09-final3-playmode-results.xml",
+      "sha256": "1528D82CCC037341AD9C1E70C36404328B22C5CEB6BE75399122C6ED84CBE158"
+    },
+    {
+      "path": "优化任务/执行记录/09-final4-playmode-results.xml",
+      "sha256": "C02CF5455CDFD32C4C89FA0F32D2D096DAB853566970694C0408BDFD8E3B2381"
+    },
+    {
+      "path": "优化任务/执行记录/09-p1-probe-shadow.xml",
+      "sha256": "7B4CBD58288BB73CBE08C5BF3E5D87BEE3070C1FE89CA56E5C751FE9E82ED488"
+    },
+    {
+      "path": "优化任务/执行记录/09-p4-probe-shadow.xml",
+      "sha256": "5D6D9F51FF024AE64C5ADC01FAB035E39CBE704034CC92A70D35D00FDD02D48C"
+    },
+    {
+      "path": "优化任务/执行记录/09-p4-probe2-shadow.xml",
+      "sha256": "92600B30D66D53FE174F763E12B78F14B53A2FD5EC4A103CA0F3779C197B89C2"
+    },
+    {
+      "path": "优化任务/执行记录/09-r1-editmode-results.xml",
+      "sha256": "B24D14FE2CC000AC212086A9B02E7931509ED06C1AB6F9719BD9362A3BCC03F4"
+    },
+    {
+      "path": "优化任务/执行记录/09-r1-logic-results.xml",
+      "sha256": "44AB0F31D32E5FF2919C51341BF698FCEB2EA03A24C6AE63D5389000A43073C8"
+    },
+    {
+      "path": "优化任务/执行记录/09-r1-playmode-results.xml",
+      "sha256": "B00344B2F502AC0EAA1B4B78D3763DEE03D077782C380D572A9639AA29686842"
+    },
+    {
+      "path": "优化任务/执行记录/09-r10-playmode-results.xml",
+      "sha256": "2AC99F4D0A2EC70C583EC6755571125043208DA7F95AA267CDA5A9FBD15D34B5"
+    },
+    {
+      "path": "优化任务/执行记录/09-r10-playmode-shadow.xml",
+      "sha256": "46F7F91FA76F6A25ABC96730736B1CE2B6FFF61F68131307D8B1EF6E42C4E6A4"
+    },
+    {
+      "path": "优化任务/执行记录/09-r11-playmode-results.xml",
+      "sha256": "75CF9976CB3974F4AEA1EFE2ECEAC1F07D01C83832516C3DF056A506183709F3"
+    },
+    {
+      "path": "优化任务/执行记录/09-r11-playmode-shadow.xml",
+      "sha256": "3BC78CCBB4767C965EC0A60E1F7AB735DD27FE60689CCAEC61033C341D4F6D89"
+    },
+    {
+      "path": "优化任务/执行记录/09-r12-playmode-results.xml",
+      "sha256": "D7781B61DA1E17AD7C41E991823EFF02F16AF89EDBAFC0538CD5C017973139BA"
+    },
+    {
+      "path": "优化任务/执行记录/09-r12-playmode-shadow.xml",
+      "sha256": "79168BA7A94B6171635287501A4AF9838C3E43FD67795576BCAA101CB180C650"
+    },
+    {
+      "path": "优化任务/执行记录/09-r2-editmode-results.xml",
+      "sha256": "8BBB27CF0F1E8351E3976995D8A1B8838FBC6A3EDB28E9A98BDFDA7ABD1F5C5E"
+    },
+    {
+      "path": "优化任务/执行记录/09-r2-playmode-results.xml",
+      "sha256": "804EDE3280DCF9D0FB05BACBCD39954C6079BE80FD6443474B193DC7319D41D5"
+    },
+    {
+      "path": "优化任务/执行记录/09-r3-editmode-results.xml",
+      "sha256": "41B24CDED51C468C3DA70CE5CD37EFEF4941B94AD3C990B04F75DA4183C19780"
+    },
+    {
+      "path": "优化任务/执行记录/09-r3-logic-results.xml",
+      "sha256": "0E54DE87A376FE7C7FF9AF24234C8336F047640012359181CA9A8D2077050A95"
+    },
+    {
+      "path": "优化任务/执行记录/09-r3-playmode-results.xml",
+      "sha256": "9C50683833806828ACCE12EDE521EE066A991D555FA4BDCAAC656F805463F725"
+    },
+    {
+      "path": "优化任务/执行记录/09-r4-editmode-results.xml",
+      "sha256": "E202C5AC8063F4FCDD6AFD46424CBBB918CC82BED4F181358324FF12259A429F"
+    },
+    {
+      "path": "优化任务/执行记录/09-r4-logic-results.xml",
+      "sha256": "E7C19553C43AB1A432695D7D933B6C47F9887CBF9A7CC7F38085AC9E1DDC0459"
+    },
+    {
+      "path": "优化任务/执行记录/09-r4-playmode-results.xml",
+      "sha256": "A64B4ED7CC9A99644CEEBD433EE8FE9045BC4F108474CF0090F064E37A09997B"
+    },
+    {
+      "path": "优化任务/执行记录/09-r4-playmode-shadow.xml",
+      "sha256": "62488EB2D154908950311E711A944C1E59700EA3DF254BB951A3F25BA8C61F8E"
+    },
+    {
+      "path": "优化任务/执行记录/09-r5-editmode-results.xml",
+      "sha256": "E1E391BDB56385000D25A0D95D68239D68D0C07753427E529DF55BB3A303D990"
+    },
+    {
+      "path": "优化任务/执行记录/09-r5-logic-results.xml",
+      "sha256": "DDF2EA16A18A8D96CE8B3A5A296934008C6ABA0CDE5B98D133A97A9F8AD787DE"
+    },
+    {
+      "path": "优化任务/执行记录/09-r5-playmode-shadow.xml",
+      "sha256": "F3D57ECAC90A8EEB9F202E63583ABC1334D2393DCECA81391478DAA024116226"
+    },
+    {
+      "path": "优化任务/执行记录/09-r6-playmode-results.xml",
+      "sha256": "AEFC623D9A4B097BD0882C2700D8A513043BCE7DE6C204D76B944BD0F8F7EB12"
+    },
+    {
+      "path": "优化任务/执行记录/09-r6-playmode-shadow.xml",
+      "sha256": "1A28B3A1D029281C33626729D0A5D5DEDDA05D137DB8E2EDDE36CBB1EDE64F9E"
+    },
+    {
+      "path": "优化任务/执行记录/09-r8-playmode-results.xml",
+      "sha256": "10BD36C9969E69CB00229BA83AA639FE24C576CD2A2FE42A37BC006DC4F79A72"
+    },
+    {
+      "path": "优化任务/执行记录/09-r8-playmode-shadow.xml",
+      "sha256": "D353EDE1EC04960F80F889813CB91DA14C4C9DF0D82C523FBB336F73227E2BED"
+    },
+    {
+      "path": "优化任务/执行记录/09-r9-playmode-results.xml",
+      "sha256": "AF9D02BE68C2E76721521111B1DCD8B1C5819F0F3C43053CC0B97C61714CB0DA"
+    },
+    {
+      "path": "优化任务/执行记录/09-r9-playmode-shadow.xml",
+      "sha256": "EA72D8494D1EC414CCEF59B2769F938D8C93B8AB2D26D0899287AFE9CD77E41B"
+    },
+    {
+      "path": "优化任务/执行记录/09-recheck-editmode-results.xml",
+      "sha256": "F5BDB7198B1220998E519433BD84464BB7AD181D56ACA1E008BF2613740FB095"
+    },
+    {
+      "path": "优化任务/执行记录/09-recheck-logic-results.xml",
+      "sha256": "E903FD397C646886BC559149FEF15E4B589445040FBCC3956F7F7FFBC91F9127"
+    },
+    {
+      "path": "优化任务/执行记录/09-recheck-playmode-results.xml",
+      "sha256": "83A95DAA77615F40A82ABD1BD96511F317CD7A91FBA098166F496037CE657827"
+    },
+    {
+      "path": "优化任务/执行记录/09-交接记录.md",
+      "sha256": "FF1F6A96FF6218D0C8DFACB7884D704EA72B583FF303F7DB60068A4115A82173"
+    },
+    {
+      "path": "优化任务/执行记录/09-复验记录-2026-10-09.md",
+      "sha256": "E81F86B87EDC42CACFC01632750D31DC73016C6068A23EACF3B2A1559F00A5E7"
+    },
+    {
+      "path": "优化任务/执行记录/09-接口冻结与集成清单.md",
+      "sha256": "0341BE72917085264F667DAA05332C93FB566A82D6E9FE22C5D409C33134C12E"
+    },
+    {
+      "path": "优化任务/执行记录/09-收口清单.md",
+      "sha256": "B74D782D7948AA7BC99D3B43507B4D0E0AA4031C6ACBAEFB02BA0B1A8893D3D9"
+    },
+    {
+      "path": "优化任务/执行记录/09-独立验证记录.md",
+      "sha256": "B5116718D12D65F05E6A0D8A6C589C6D2E214658B951B466813464C80223D757"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-completion-editmode-before-window-assertion.xml",
+      "sha256": "EA5722C4C0DC04F55ADF2CC007D4BEE319C25A9FCA47B098C8B512452A5A7DA6"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-completion-editmode-results.xml",
+      "sha256": "119E83EE3C82CBD5A3A50FCC18D1D08BA72182A34642A162F2E389D48F177D19"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-completion-file-manifest.csv",
+      "sha256": "F1DC32273CA2DD37A6CB51071E7F80FC8CFB82ED69977C026C13D0097C2BBA76"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-completion-playmode-before-profile-assertions.xml",
+      "sha256": "2640117D0297F3D87A5DBBF93E09625A827EE2253AD7D1D5792C20714F8992EB"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-completion-playmode-results.xml",
+      "sha256": "43EB1FF99F40864BD515033E3278D0CD926B543702E5AE0C0C7B9CCC554A1DF4"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-completion-required-execution.csv",
+      "sha256": "8AB4416821211F52DBC3F56DCDBB121E26629020C09391DBC350D25AEAACCB8F"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-required-test-inventory.csv",
+      "sha256": "C532392100617488B88FB5BF538D88072EABF5B4F8C1B609DF4C76E11F93FD1B"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-wired-input-before-budget-selection.xml",
+      "sha256": "68F4F964411E31F9CC04DAC2AB563FD1B93C7B2CD1B5B7FB03CD8A6E4DED19B8"
+    },
+    {
+      "path": "优化任务/执行记录/10-11-续作记录-2026-10-10.md",
+      "sha256": "9288AA14B8655715C9C17104040C9C4C8E5F11B75FA0FB83016ED9450CF2977F"
+    },
+    {
+      "path": "优化任务/执行记录/10-completion-editmode-results.xml",
+      "sha256": "3CEA8548D9376042EA7A339BB96FE4117F5D6DC0658F625F854A310A728100BA"
+    },
+    {
+      "path": "优化任务/执行记录/10-completion-harness.ps1",
+      "sha256": "E9ED1BDCE0F5C00F37C5F7B5A9DE06FBF84053FF7D0EDEA10DBF199B503C189A"
+    },
+    {
+      "path": "优化任务/执行记录/10-completion-logic-results.xml",
+      "sha256": "4C5F280D70FA47D640B1F1585D1A33B4EBCE8673E238EB663ACC2C5957EC482F"
+    },
+    {
+      "path": "优化任务/执行记录/10-completion-view-model-managed-results.xml",
+      "sha256": "86DBFFD4A6BD0481190AE6378EEDE8A6700F94A95B091B974DA12504A50AA4BF"
+    },
+    {
+      "path": "优化任务/执行记录/10-editmode-results.xml",
+      "sha256": "971E9BE711616EA2C0DC8EED268F1660B88B12BAE9BB9F325E19BACB5E3A76B4"
+    },
+    {
+      "path": "优化任务/执行记录/10-guid-migration.csv",
+      "sha256": "C21FFF2F1148AA01587ADCAC9BF6C61BC86EC9467909A9183457725290C593F7"
+    },
+    {
+      "path": "优化任务/执行记录/10-layout-visual-results.xml",
+      "sha256": "727A61EDE0DF37DDE9C3670704FE04C4FF08E9A835F3109FB252A52F4D472D28"
+    },
+    {
+      "path": "优化任务/执行记录/10-logic-results.xml",
+      "sha256": "ECCF2FD2AD21A79F9D2475F662CCC4A444213BA9852B654FCEA6EBF91B8678C6"
+    },
+    {
+      "path": "优化任务/执行记录/10-main-new-ended.png",
+      "sha256": "DABFD3D6D01D9AB03FFE176124EB4D9341258B69589A0DFDA3428A30793E5A90"
+    },
+    {
+      "path": "优化任务/执行记录/10-main-new-start.png",
+      "sha256": "C4C20CA2DC58F8C18F17F93A05D179314344B878A2D3ED408152392E19962DB2"
+    },
+    {
+      "path": "优化任务/执行记录/10-playmode-results.xml",
+      "sha256": "FBE3C8A1D2BA0824239E039F9C37ED19705BA7284143447A651DF08EBB94A689"
+    },
+    {
+      "path": "优化任务/执行记录/10-preview-chain-before-results.xml",
+      "sha256": "6E96CD9B28DF2F0EE4F4B8C9AD89F06AC1CC61C8E96EB778B908AB99223D619D"
+    },
+    {
+      "path": "优化任务/执行记录/10-reaction-before-footprint-fix.xml",
+      "sha256": "E67DD9A3BC7EE3A48DB90308F0AF5749A4317AB558F818AC68A5B8D57E69A3E4"
+    },
+    {
+      "path": "优化任务/执行记录/10-reaction-wired-results.xml",
+      "sha256": "ACCBBB4783B9D46E9D89CEF69FA0046120B318F142BA13EF29367B51BCA9BC3F"
+    },
+    {
+      "path": "优化任务/执行记录/10-timeline-wired-results.xml",
+      "sha256": "BCC3E16B99EAFBB2E1C82E915AD66537E15A1DC81E623CB4489A19EA6DD60997"
+    },
+    {
+      "path": "优化任务/执行记录/10-交接记录.md",
+      "sha256": "18C2D8035011E5E5DCAAA00C0960720AC9BB95458AA199DBFE6ACA6D27804AC8"
+    },
+    {
+      "path": "优化任务/执行记录/11-active-projection-logic-results.xml",
+      "sha256": "92DC480DF795B65C99611496D05DB79A96DF334856423D61DD640EEABB826DF6"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-canvas-combination-final.xml",
+      "sha256": "316F861A28D1D2B1EE349AAB2B57F94542642D09DADF765EADCFA105C7D0E4F0"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-diagnostic-fifth.xml",
+      "sha256": "8C1E378FD86241C1B081B3D785B2F6CDF5AB191DFAED93336C821198ADBE1A63"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-diagnostic-fourth.xml",
+      "sha256": "7B466AC47E81E6A9D2BA46A5E1314F6691FE7C34005A55F581F00488DB2E7B16"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-diagnostic-second.xml",
+      "sha256": "E8440A292E013E1F02F3FD22EB2C40C6E0F19F293F8E1D05F4B3F236B96F91A2"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-diagnostic-third.xml",
+      "sha256": "84A4C246DF1158463E9BF52291B9A5D6918BA70DB2AD3B731F2CFF158D5844EB"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-diagnostic.xml",
+      "sha256": "51D1DAFDD78CDF25D965202E7839B89F38B308D51316200C08C764EA23C27107"
+    },
+    {
+      "path": "优化任务/执行记录/11-ai-facing-fix.xml",
+      "sha256": "EACB8C999BF194B9AD14A697D65DDD6411A051AE7D28900875DA128F78FAE03F"
+    },
+    {
+      "path": "优化任务/执行记录/11-build-classification.ps1",
+      "sha256": "B06CCF12CF639F625F8C4451C78716C9C241CD71BB2AF990793857F67CBCA9F1"
+    },
+    {
+      "path": "优化任务/执行记录/11-canvas-combinations-final.xml",
+      "sha256": "4698539C28BCD233CD053BA2AAF2C24BBDC2CC85C245C54D3202EFE522AECD07"
+    },
+    {
+      "path": "优化任务/执行记录/11-classification-evidence-manifest.csv",
+      "sha256": "3452528F4CC1C2FC45C59EDE9AE3DC50F09B442599176531BA30A7603BE94A75"
+    },
+    {
+      "path": "优化任务/执行记录/11-classification-final-editmode.xml",
+      "sha256": "184A094243A85C2E6E7C97BAF15D48BCFECC3C053E110AC76605E1E71DB8593E"
+    },
+    {
+      "path": "优化任务/执行记录/11-classification-final-playmode.xml",
+      "sha256": "A0F2AD16CC43171BEA83987A6F18D3C1BDDCB7D572C7D611E4814C7396B1D2B0"
+    },
+    {
+      "path": "优化任务/执行记录/11-cold-rollback-results.xml",
+      "sha256": "2F1C913CBC8D616BEE5AD027FCC6601ED79ADFF070A8F7B7E4A26DA59F00BD19"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-final-editmode-results.xml",
+      "sha256": "001304548EDFF4803A5AF639D477A4FF5D0FC1479B21C346D56C3C8D8B27CBF6"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-final-playmode-results.xml",
+      "sha256": "A367E2563E931F29A1241AC1F36EAEC5609F77EC0C980224738728046D158153"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-phase-allocation.csv",
+      "sha256": "2A675FF3C61A081C327D7DB6E7EF337D3D5802F1E53CE3E7FDC5A04C966E484F"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-project-audit.txt",
+      "sha256": "C418EA300E535EBF92CED29EDAB7534489555FAB1CAE7160B8E4A9EB134EC650"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-reaction-history-diagnostic.csv",
+      "sha256": "8468B16E683DD960E70B859008229A9FF36B4DB09749B98399798535A09E3AE2"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-reaction-history-optimized.csv",
+      "sha256": "A5CBD482C44274EF73009F6CCD0FF2A66BA13DDBD16A27429FBEF40BF2BAFA25"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-terminal-history-diagnostic.csv",
+      "sha256": "4D6A487056F141B984771DD1777E6CD41B5529CF5BFDFCDAEA2657EE7D6D5ABE"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-terminal-history-optimized.csv",
+      "sha256": "1DF5A0E2B1D1461F4F41576C69EF11126D926ECB3C66C4BDE6F0A84EBA24AB65"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-window-benchmark.cs",
+      "sha256": "9C5ABB44A64A74A7D29904FD72D8BABF4F9A23F6E1099F0992E92FF45D0206BA"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-window-history-diagnostic.csv",
+      "sha256": "B2B92A08C4F49A98B16F772414F6F8EAFDB443B8FDAB0DFC3D3DFB7C2A2DA69A"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-window-history-optimized.csv",
+      "sha256": "20C4E9CD456C88EAD9D2282B2F2070B5247CF2EF446BB2397596FEE6CDA2F0F3"
+    },
+    {
+      "path": "优化任务/执行记录/11-completion-window-history-profiled.csv",
+      "sha256": "F9EF53F33E537B511D9CE9611E6E8EB0DA0D6A9511EE196B285FD9220C5C48A1"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-build-provenance.json",
+      "sha256": "A12E2029D49F208C56B3285DA23B095683689078887056B73E58764C5EC082C4"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-build-validation.txt",
+      "sha256": "C475D3D41BA829929ECBB3F22CFD3F47CF5D4C7F728A52E6A8BE70241BECBC9E"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-phase-2.csv",
+      "sha256": "E87A92B6A3C24B5E5EDD345DB9091E155106F01ACD74A49B118DD20666B125ED"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-phase-8.csv",
+      "sha256": "E97D34538DE0C34A9CC573484E07F9099FBE85928BE06C49ADF71BD5632DC1FE"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-allocation-before.csv",
+      "sha256": "B219E77FB72A3ACCAFCA61B2FE790209CE56720DFB47E924AAC8045CBE0F26FA"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-allocation-before.txt",
+      "sha256": "ABDE05335538FFD4F16E6F8113FF9F3FF8F002E2AD8F4E8EE8532FC9D230E17F"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-allocation-first-optimized.csv",
+      "sha256": "DABF7ABD25E61BB9A25C0CCC45458DBC3540A9B676D27B8B785F9CF6D32B842F"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-allocation-unavailable.csv",
+      "sha256": "743AD430E4BA25BB0A1C0EED05C2E1D74957E27592174BF8C7808444D9CBFB7E"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-allocation-unavailable.txt",
+      "sha256": "F6EE67F6B8AAE4AFA34E9B3F6EA5C6AD548265FBF80C148672659D6971210274"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-allocation.csv",
+      "sha256": "3325B820A5F562BA97966ED9C24F1F859885A2E632535E86037F9811D060C275"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-before.csv",
+      "sha256": "57547BC95F58F80DB95F797F65C6E54AE95CA76BA9AD351E3F8CB67AC96EC568"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-quick-validation.txt",
+      "sha256": "61A1F800BC301B8CB0675E57AFA357E6FF6872434153AF37B32FED650C508B76"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-quick.csv",
+      "sha256": "961A8DA7167E14014C903CB9BD172E1130DFD8A69DB0F31D627B5620CCF3DEDE"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure-validation.txt",
+      "sha256": "34336898B7503BF359C26C3FF8E97BA0D707641E51E987C87CB64D88581416D4"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-future-pressure.csv",
+      "sha256": "57547BC95F58F80DB95F797F65C6E54AE95CA76BA9AD351E3F8CB67AC96EC568"
+    },
+    {
+      "path": "优化任务/执行记录/11-development-player-validation.txt",
+      "sha256": "3B3FC213176A7D7B62C59B9D463ABF1BB9B9CDD3511671C3A2C2CA228AC01490"
+    },
+    {
+      "path": "优化任务/执行记录/11-dynamic-scene.heroReplay",
+      "sha256": "8F0E3ACC53F17F4C18E202E4960B90F97A80F2C4A6BBF3DB5DD29DB5337CCBD2"
+    },
+    {
+      "path": "优化任务/执行记录/11-dynamic-spawn-offline.xml",
+      "sha256": "0CC2CD7675B6E3B8271E27BF825A285F325D817A24FD77EF141237B16B6C5318"
+    },
+    {
+      "path": "优化任务/执行记录/11-dynamic-spawn-scene-targeted.xml",
+      "sha256": "E0CA6A4D4F8B02DCA70C1508A81FA690A0139971FE4C8BF2663ACE456B2D58AE"
+    },
+    {
+      "path": "优化任务/执行记录/11-dynamic-spawn-targeted.xml",
+      "sha256": "2924C9286911D4766312F9A993AEA1566C01311B6164071846F42A93F89CDA37"
+    },
+    {
+      "path": "优化任务/执行记录/11-editor-performance-before-diagnostic-cache.csv",
+      "sha256": "7BFC1A981A3BF0DD0FB7A673A6EA5185C1F7ECDC43E91A1F570469038EA94E12"
+    },
+    {
+      "path": "优化任务/执行记录/11-editor-performance-diagnostic.csv",
+      "sha256": "0B6FF8914893219630C0AD44118FE261EA5446D0C2FCA8CDB8BB4117A29C89FD"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-acceptance-audit.ps1",
+      "sha256": "48C8F568CEAFBAF79AE228FA26E26C7E608F158EC17DBA772828360AA8F1AC93"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-acceptance-matrix.csv",
+      "sha256": "7ABEBCF78B9BF53803F8469859F6F9823CC6BEC4CEFB48B3DE291EB9ECE512E0"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-editmode-results.xml",
+      "sha256": "9CD519AE3D937C93B712E29DE90B21EE01131D8C678995E9B2BA3A70F4C69204"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-matrix-replay-all-verified.xml",
+      "sha256": "7C2D464DDC3F56036B32378EDFB5E004EB9B02BCE75E163A00014304A6EE5BFE"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-matrix-replay-first.xml",
+      "sha256": "3489292F7FA0762ECC0C6AD64B61119512405954868521DE46B718EAA7C9B8FA"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-matrix-replay-second.xml",
+      "sha256": "E3E06337EBB3FAD172C82249E47122957DBC5C1EFD54566AFE497A8871279C29"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-matrix-replay-verified.xml",
+      "sha256": "FB59420E1011720ADDE1369F0CA05B4C1036DA42D5EB6993632772E56F053410"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-migration-targeted.xml",
+      "sha256": "035D9FD510B5B5BB749E9371665744AEE12564BD22CF001A6EBB40C86BE393A4"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-playmode-results.xml",
+      "sha256": "88F64ED6F8912966FE767227B39671823271BC816C817E63A74BA09E00755EF5"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-AoeDodge.heroReplay",
+      "sha256": "91D4F060CF6140193B7AADD37F947C4F5361CA0CD581ECEFCF8A86B89BD56B1C"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-AutoDeferral.heroReplay",
+      "sha256": "1390B6BA8752607DFE5F1A7F3A57C87F9E5B30E2EB1EAC8BECF07C9C962A7DD6"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-Block.heroReplay",
+      "sha256": "18795965B81DA4416F4D4CD99E53A2A1AA39D28DFB60D038D013849F5A2785AD"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-Clash3.heroReplay",
+      "sha256": "B565309CECC3C1442B9711DB64008F050B0F4885112A1EB611068704AA291AD3"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-DisplacementDeath.heroReplay",
+      "sha256": "C87761EEFBB44FA9780467D9C589F5167F95410301741A4F5BEBE3F47B47A32B"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-Dodge.heroReplay",
+      "sha256": "E4B25A3D4D5C7A2115172847B40AFE7C9BEC8FC1AD0BC48BFF08C9F61F3DFE2E"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-DodgeChain.heroReplay",
+      "sha256": "A0B936C22F8A3C22950C32107A6D00374C71BD9F11397C0F7B40FF7121E15526"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-FacingAoe.heroReplay",
+      "sha256": "4D110AEC7974539E5CFF330BB4FB5C03430250510C6A79C599F5B9BF5A971CB7"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-Flank.heroReplay",
+      "sha256": "F723E4B416619BA9A17A806741C8175BA18D57BB85C51C45F18053A993855E4E"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-FriendlyAoe.heroReplay",
+      "sha256": "E76E484028B2900B1D358ABF725D6B80D6807642C58192CFCE9D29E99EDCBDD7"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-Guard.heroReplay",
+      "sha256": "6A627EA8474B8EEC529D844AE10EE78BA8B907A118748A7F45068425B1623F58"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-MixedDodge.heroReplay",
+      "sha256": "05A6E234A69F1E1ACF87AD110D00EA443C1030BA845DCA3824521DD2FB2EFD6A"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-PartialBlock.heroReplay",
+      "sha256": "F1C7C7BBD774185267B07CE8B247E439A20C2C2424441E2600A4D5F988D957A9"
+    },
+    {
+      "path": "优化任务/执行记录/11-final-replay-Reservation.heroReplay",
+      "sha256": "037BD2F58A3E6984F0CA92CC498B742B647BC79BA63D70AA0B0B94B91CB4DF1F"
+    },
+    {
+      "path": "优化任务/执行记录/11-footprint-logic-results.xml",
+      "sha256": "3110B3F490A1A87030733184C202723AE740148E081F38E15A836B68B781C3B3"
+    },
+    {
+      "path": "优化任务/执行记录/11-full-scene-replay-results.xml",
+      "sha256": "92B4908E635C8E83E963FC035D66352D3D3F518583B5F2CC9631C4F45C85DAD6"
+    },
+    {
+      "path": "优化任务/执行记录/11-full-scene-smoke-after-budget-results.xml",
+      "sha256": "BAC8CAD6B99188F913A4003DCEC5002D32ACF4D99BBDAFE7C30860801412191C"
+    },
+    {
+      "path": "优化任务/执行记录/11-full-scene-smoke-before-results.xml",
+      "sha256": "38617306039AE84322C1567F4A939B483915B48095776C0D912C27A766C71572"
+    },
+    {
+      "path": "优化任务/执行记录/11-full-scene-smoke-results.xml",
+      "sha256": "DA292973C487F3F3EEE8D836059C064AA897E65053555A33D70E3C9890397E0B"
+    },
+    {
+      "path": "优化任务/执行记录/11-future-guard-logic-results.xml",
+      "sha256": "1AB972C7C7051EDCB885EED4E03E67C7CFA5B9033A7E08A91F6736A0EAD13DCB"
+    },
+    {
+      "path": "优化任务/执行记录/11-independent-source-targeted.xml",
+      "sha256": "3A02C1BEE8CDB0283AB7A36721995826D4BFF93C2B8D76C5504A929CF42AA551"
+    },
+    {
+      "path": "优化任务/执行记录/11-initialization-before-assertion.xml",
+      "sha256": "CC682B64CEBD5539D54FAA33D465CB3449BB1109C76BE9549E178DB1FE497CB3"
+    },
+    {
+      "path": "优化任务/执行记录/11-logic-results.xml",
+      "sha256": "4B5E3420897AE3A1F51860891D38D1FD27D057B87622DDBE527719953E38848B"
+    },
+    {
+      "path": "优化任务/执行记录/11-main-plan-acceptance-matrix.csv",
+      "sha256": "A2D42A740D59EB56124126B22B370DBDB1B88B4C64D1FE98D5BE5D68F26E7F6B"
+    },
+    {
+      "path": "优化任务/执行记录/11-migrated-final-editmode.xml",
+      "sha256": "733A96CFB3CEC12D56D130F32A8F27695A4466FE697B67F8673A1E099EA94E12"
+    },
+    {
+      "path": "优化任务/执行记录/11-migrated-final-playmode.xml",
+      "sha256": "0146977B17A9F1534A4B3D05D128CABE1B08CC92A1FDE7961C3E7F3F173A49F9"
+    },
+    {
+      "path": "优化任务/执行记录/11-migration-shadow-accepted.txt",
+      "sha256": "D2536D4E8907B75B0378881EB51644364ECA3C88E5E806318FEB1724477DC838"
+    },
+    {
+      "path": "优化任务/执行记录/11-migration-shadow-targeted.xml",
+      "sha256": "85175E738E0B5CAA4674A23A93EBC54FD9DF73522829EEB2DCDC2D6FA1A48D85"
+    },
+    {
+      "path": "优化任务/执行记录/11-native-migration-validation.txt",
+      "sha256": "B044438FDBD047F26D99C3BF1E992A0885057D52C0C39A899FBF263815130EF1"
+    },
+    {
+      "path": "优化任务/执行记录/11-nonperformance-final-editmode.xml",
+      "sha256": "30D40E65F84F4BC629E2B1C55221DC082D7CB3B3F64B4D8A6DF41E516A71B39B"
+    },
+    {
+      "path": "优化任务/执行记录/11-nonperformance-final-playmode.xml",
+      "sha256": "44A9E5C38D714842CA0C80F718C592CF9E85934496D13196EC74F53E95CE4A43"
+    },
+    {
+      "path": "优化任务/执行记录/11-pressure-instrumentation-logic-results.xml",
+      "sha256": "7FE953535A2309DCCF0874C26A04121E16EFBF5E30C96C313FB77DA46E4F3D10"
+    },
+    {
+      "path": "优化任务/执行记录/11-production-migration.txt",
+      "sha256": "B95F15CAE48C7D5ECC40A5F323EDAA28CC25C4D3941C7CB342D86D7F66308998"
+    },
+    {
+      "path": "优化任务/执行记录/11-production-new-after-removal.xml",
+      "sha256": "A14603408750E28586422CAC446570870F5ADAE51AEA38036FA09837AB122E6B"
+    },
+    {
+      "path": "优化任务/执行记录/11-production-reference-audit.txt",
+      "sha256": "799B53078C275B707C12AE5936BE210020327C79A2DB43426D37FFE33591CEE7"
+    },
+    {
+      "path": "优化任务/执行记录/11-project-audit.txt",
+      "sha256": "1FA9C343518B0429331FD071FD6C6D818780A176F1CE0BF591D8F388F0B71647"
+    },
+    {
+      "path": "优化任务/执行记录/11-reaction-history-editmode-results.xml",
+      "sha256": "334E38B2DD5612CADFE85964DCFC2BE814A97CED5A45E393CC20A58995F0E1AC"
+    },
+    {
+      "path": "优化任务/执行记录/11-reaction-history-logic-results.xml",
+      "sha256": "20296D294E70EEC03E45ADAA27E72866CFEEF0456DB7E0997DB808CC5D23EA89"
+    },
+    {
+      "path": "优化任务/执行记录/11-required-test-execution.csv",
+      "sha256": "B94DD947E57CA6DC57FCED6A66E345004BCCD9CD0B1918ABAC1A236C3A3A18C5"
+    },
+    {
+      "path": "优化任务/执行记录/11-retired-editor-only-sources.txt",
+      "sha256": "50E472EC489A4D4B88D8B7A6672EFF0C373DA85BAA5CA3823D501F339F84F02E"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-ai-reaction.heroReplay",
+      "sha256": "6D963673B62D66319306A9C1DE3B676330E785E1EB4F7D98981521D1513881CC"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-baseline-dodge.xml",
+      "sha256": "A40727C7416C858A98468004F5C19DA7C3D31C812075AB84AFC88707226630A8"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-classification-first.xml",
+      "sha256": "7710DDDFC9FC3BF3D296F19B18F7DD0FA489F289C30AC7E301FC19C09E1E7CB9"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-classification-second.xml",
+      "sha256": "1D8959288E43C06847A85FB4EE3AE726F319A82D55D5F276CD30DAD0E6612212"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-classification-third.xml",
+      "sha256": "C4AA8A22EFAB8AABE429793419F7279DA21322328717EE825E8271C8CC7B4800"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combination-fixed-timing-first.xml",
+      "sha256": "164336724437C6EE7F40FE1EDC16878BAC4E1BC13CC6969520F67C5E105AFB6F"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-fifth.xml",
+      "sha256": "E9DB3CB71A7EE2659284C97964DA658E1158B1876530EB469A5227DFFB1A5C33"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-first.xml",
+      "sha256": "B7B1FC82D5252989BE9901B792C1315C71C7A1CC793B000FF6DE1DFBFFCA9C54"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-fourth.xml",
+      "sha256": "FDE6DA0C2104D1E32DA80DF7F79C12CD389B399109BFA36EAB5A122EE620F29B"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-second.xml",
+      "sha256": "68AEA77667D61440F05AC1057B67DBFA295ADC1FD408F42DE312374D471CAE4C"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-sixth.xml",
+      "sha256": "52F133020A7B0CFE5501BAE981A2D9A3467153B4932522717DBA9D9F609318F8"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-targeted-verified.xml",
+      "sha256": "3A365C8582957DDC3967E42EC66881FD1DA36E085C3AA97C783847F2E0BCECDE"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-third.xml",
+      "sha256": "9A2D7162305777FFB9252F245BFA578A21E03A61620FDDD1C747DEE6E68A95ED"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-combinations-uniform-second.xml",
+      "sha256": "AED6D6E9268AC0A01EEA24D4A7B749F4706E1C6FC9D3791419971689D18F294F"
+    },
+    {
+      "path": "优化任务/执行记录/11-scene-dodge-chain.heroReplay",
+      "sha256": "3A2466EDFD000A983712380AA2BE78D87234D0D9B4B8937291D2AB19E30F24A9"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-classification-executed.csv",
+      "sha256": "9148DF7EB00E3A4E7D2E185BD37ADBF18F12D0D0AF855D1D1A306E01BE15B496"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-classification.csv",
+      "sha256": "21AE4CCD706B706B5A7E6F177098F9E9568FC4065431579D22CA21162FA12450"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-classification.json",
+      "sha256": "15C0A79CF2B24593B0B38EEC13B1741F5AE16AEAEFCB8E5E1F36333574403F41"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-migration-evidence.json",
+      "sha256": "631B62F4BEC93FDB13A03B6E0C80AD561ADFC273A54EED34F8B77C970F7D1514"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-resolution-proposal.csv",
+      "sha256": "29D1C3EE9047C8E9D3900294B4B952FE81D71D62EE8EA7B661902F94A2FCCDC3"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-resolution-proposal.ps1",
+      "sha256": "7A56141BDDB674C7074F5A18F791CEEE8B22557FDFA022786FE870F7326DC085"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-scene-observations.txt",
+      "sha256": "A44F81CF4043DD078577CD5DBC4FA380B57233E0DAE61AB95304D5842758E409"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-收口规则提案-2026-10-10.md",
+      "sha256": "8DD98BF6175444AB8E9DC47326634C736EABCB7721DB8D9012583E6141AA6251"
+    },
+    {
+      "path": "优化任务/执行记录/11-shadow-逐字段分类-2026-10-10.md",
+      "sha256": "1FD0BE33F76158C72356A083E11CEB41D4912F423B80A3F7614123182341F010"
+    },
+    {
+      "path": "优化任务/执行记录/11-source-evidence-manifest.csv",
+      "sha256": "B0CB358462EF9BCCC0379263BC86CAB9A189E29625351D67512ECE7BF0110835"
+    },
+    {
+      "path": "优化任务/执行记录/11-window-history-before-results.xml",
+      "sha256": "D20310C1046EF3AE5A20766DCC950FEF7787F44D280D3FDFD28AB46AF8FABEEF"
+    },
+    {
+      "path": "优化任务/执行记录/11-window-history-logic-results.xml",
+      "sha256": "62DDF4B0BD3C421AFE35EEBC33C8452CF0C6928576C4D0A06497F44B84AF4E28"
+    },
+    {
+      "path": "优化任务/执行记录/11-对照分类与组合验收-2026-10-10.md",
+      "sha256": "C37EED0330B85595B9793C25F005D4021F85B7841D831FA4CD0BAE6F275F872D"
+    },
+    {
+      "path": "优化任务/执行记录/11-开发版活动压力-2026-10-10.md",
+      "sha256": "43F7DDACB89139D7448E4AF31BA8D8C70475F6FC4445E1B00DCF1DB0ED2D42D7"
+    },
+    {
+      "path": "优化任务/执行记录/11-最终验收.md",
+      "sha256": "56B7811FD42BF6DD87DAB7A6B6BFB90BA4CE6880DCBEF9D1AED013E0648E04E4"
+    },
+    {
+      "path": "优化任务/执行记录/11-最终验收矩阵-2026-10-10.md",
+      "sha256": "9B6CBB11E4659C389791FCE1655EA934F61DD5885342FDD6B3ACAA464600442A"
+    },
+    {
+      "path": "优化任务/执行记录/11-非性能收尾验收-2026-10-10.md",
+      "sha256": "1D2E815FBB7C184846A24AE0681A9129AFBC151FEF510D986AC38971D2E00D89"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-dynamic-scene.heroReplay",
+      "sha256": "734B1485F0DC776766E682C5D61C347EB7CB21AD9EB7C609A8D8C47B1F794AEC"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-AoeDodge.heroReplay",
+      "sha256": "C1D2603BE248683406EFF7850E5E2F20A8BBFEA82C7EDCC373B53D05040B713A"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-AutoDeferral.heroReplay",
+      "sha256": "15E52A7CA2C483394D3E1AADA1F520D041F0876376B1504FE4C5AED472333725"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-Block.heroReplay",
+      "sha256": "E8FBBDDD537E100652B2F3AFA97F4187558FA309B4A39E803CAA3B23B4177253"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-Clash3.heroReplay",
+      "sha256": "8AC278E10B4E9688AB4C8EABDE5B395DB36F4272C88579E906D65E7311EC21D8"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-DisplacementDeath.heroReplay",
+      "sha256": "FFA0F5B51CDD38D06342F1A461473A69093A6F04A161DEA9D54DF5DA0C722027"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-Dodge.heroReplay",
+      "sha256": "C4812337A53F0589E7CB5ACB3ADC4F400295E324342BF5E66F2FF3186D173BB6"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-DodgeChain.heroReplay",
+      "sha256": "450FF0FAEB35236C6B042007E7E21E36EF2E772CD3FC47BB50F1330D35B906D3"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-FacingAoe.heroReplay",
+      "sha256": "FAA973358F24E475D1AA1B7D200F5F2F558D23BB05ADA0D4E3F2D9EAA68830F7"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-Flank.heroReplay",
+      "sha256": "448018012F334B56C245469309C9B584A51651B63BC0DC88B25BDA9C82161AD1"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-FriendlyAoe.heroReplay",
+      "sha256": "75EDEC9F27F1A1D2C88753B368B947B18CD3F65D67E75A1E804D7FE9EFC24973"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-Guard.heroReplay",
+      "sha256": "402481CA493F3BE7608B341162C6DEC8026A18E4244CECF12957F20177A25842"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-MixedDodge.heroReplay",
+      "sha256": "0F26D22F6E5A5FE93D0D62D08C7DD4F511933681C81E88938381BD404F96B70D"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-PartialBlock.heroReplay",
+      "sha256": "4D470FB83FB0757749F429DC6BC37A39CFB4A109181E363992D7E57DCB63CF1F"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-final-replay-Reservation.heroReplay",
+      "sha256": "9E74F16433C751CB380AF237A60498B5AE2DF19CF4A0AFDFF1B29EC145C6D316"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-migration-shadow-accepted.txt",
+      "sha256": "14E86E1B027365D2810061AFF54C6AE38D1FABB153AEDCD273A8B1F2B35B7763"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-scene-ai-reaction.heroReplay",
+      "sha256": "475389BEB25032A391C531815D50ED4B07B42DAB852FFB3A7C5DD2F2A5C31B89"
+    },
+    {
+      "path": "优化任务/执行记录/12A-11-scene-dodge-chain.heroReplay",
+      "sha256": "3E5873BE998BA2D913B20762BEB6402CADD5D7B868A0051875C936A9C8AE2E18"
+    },
+    {
+      "path": "优化任务/执行记录/12A-acceptance-audit.py",
+      "sha256": "9353B64A42EC5683379418CA7ACD0F84B0A6EB8DEE40E11E6CCB0762D0B09E24"
+    },
+    {
+      "path": "优化任务/执行记录/12A-budget-scan-repository.txt",
+      "sha256": "D5D04446FAE6929CA321F31368F9E8FAEF622597F49A11C853B0B7627A267BAD"
+    },
+    {
+      "path": "优化任务/执行记录/12A-budget-scan-source.txt",
+      "sha256": "2A75808612F3C0DCDCDDB6DA21666B95A34F2FABDFC2510FBEAE555EE6257A4A"
+    },
+    {
+      "path": "优化任务/执行记录/12A-clash3-events.txt",
+      "sha256": "3A19904E1D91DDBA901D8C96F4CADC20A8A69904DAE66574649A76C3C5CF2D05"
+    },
+    {
+      "path": "优化任务/执行记录/12A-compile-output.txt",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "优化任务/执行记录/12A-dodge-chain-trace.txt",
+      "sha256": "44D8562C812B7676FEB116AD20FA76B6F3D9F1FDC0568E173724A157C3EFFEE6"
+    },
+    {
+      "path": "优化任务/执行记录/12A-dodge-scene.xml",
+      "sha256": "2F7933BA06B82499695EB88A526618CF0924819D4DF707813909DF26B07F6BE5"
+    },
+    {
+      "path": "优化任务/执行记录/12A-editmode.xml",
+      "sha256": "05D57A7082948BDA4EDF6D3E1C1E2DADBEC1E84307E1F5CD2240629DCFF22848"
+    },
+    {
+      "path": "优化任务/执行记录/12A-final-audit.json",
+      "sha256": "6034027F7D576DB03281006295F0E1B0DCF7A02CBD531E3F93ED2A60808857D9"
+    },
+    {
+      "path": "优化任务/执行记录/12A-hash-anchors.json",
+      "sha256": "F96C1A564FF75472B90F1BE7401ACD4F104472613A70E7982F29F88FD5B73702"
+    },
+    {
+      "path": "优化任务/执行记录/12A-initial-encoding-v4-domain.bin",
+      "sha256": "C9FEC78712A52AE462FC368A95AA3B6F86574EE11426B068B00829CD9C550F83"
+    },
+    {
+      "path": "优化任务/执行记录/12A-initial-scan.txt",
+      "sha256": "EB4752886888DBD5511455C77DF27FA3E5F927D2A957AD7B2592087339057281"
+    },
+    {
+      "path": "优化任务/执行记录/12A-main-new-ended.png",
+      "sha256": "30DAA9B2370A926F9282DCAA98DA22859009D1821C98BFCF2673769C18E83543"
+    },
+    {
+      "path": "优化任务/执行记录/12A-main-new-start.png",
+      "sha256": "100DB91A3A9F2911EAA47B1796071DC3F3D80080C05011BD9E936C63FB8CC30D"
+    },
+    {
+      "path": "优化任务/执行记录/12A-main-window-observations.txt",
+      "sha256": "9FC0C1956E74EE20BBA4FDF30AE0EE5EA8DB7FC36D93ADC703EC0AF3722115D7"
+    },
+    {
+      "path": "优化任务/执行记录/12A-offline-all.xml",
+      "sha256": "1CF200AA6CE5A711AFAB5B9C075D27A534971AD63F98CB146F15F48EC61BF9FE"
+    },
+    {
+      "path": "优化任务/执行记录/12A-offline-focused.xml",
+      "sha256": "F1AD9A86CC2763E7CEFB956C23A02C06BABA60FBE5487879FFC131385C6E3552"
+    },
+    {
+      "path": "优化任务/执行记录/12A-offline-output.txt",
+      "sha256": "1CFCB5726B913DDAF596FED953E307EC680EE4A89354ABFF818306C4A3E95417"
+    },
+    {
+      "path": "优化任务/执行记录/12A-old-initial-hash-reference.json",
+      "sha256": "1CD6E1026CDF31AF7A639E66398D0CB425626C558F38224AD13E2C12D9E0F301"
+    },
+    {
+      "path": "优化任务/执行记录/12A-playmode-bootstrap.xml",
+      "sha256": "92A7445401DDF1E9F2389ADFAC35D6E049B8A741F9A7100EF787F8D47C7E7D1A"
+    },
+    {
+      "path": "优化任务/执行记录/12A-playmode-focused.xml",
+      "sha256": "59EA37A05294BB4D042407EE4393FC5C3C373FFBAE5C50E5BB8DEF91DF7A3E3B"
+    },
+    {
+      "path": "优化任务/执行记录/12A-playmode.xml",
+      "sha256": "C3A8FB3AA29F70DB75C8CE576839DC964FC2E799500ADAC1A514E63A3CE70D93"
+    },
+    {
+      "path": "优化任务/执行记录/12A-production-initial-encoding-v4-domain.bin",
+      "sha256": "342F0675EA8265D6100D1997F09057BBC9E98CCD9CB94A67E57C6D9BD1216362"
+    },
+    {
+      "path": "优化任务/执行记录/12A-production-initial-reference-v4.bin",
+      "sha256": "F7AB09BB98FB95330DE3C68455025DC36E5A475DBFE515BE1B076EB4E8E6F416"
+    },
+    {
+      "path": "优化任务/执行记录/12A-replay-matrix.xml",
+      "sha256": "1E50A445995ED1838BADA82D784D4469756C175A065FBCE74395ACA9DEF84D96"
+    },
+    {
+      "path": "优化任务/执行记录/12A-shadow-classification.csv",
+      "sha256": "707289F526C102BF5B771BDCB17B9374697AE02CA6B430766BC0A38D05C82A8A"
+    },
+    {
+      "path": "优化任务/执行记录/12A-shadow-classification.json",
+      "sha256": "EE8638FA7B9DE44D7AC3402D521A5C485DE2E1672CF5A9D686AAAADFFF7B8B9F"
+    },
+    {
+      "path": "优化任务/执行记录/12A-shadow-migration-evidence.json",
+      "sha256": "A5210CF3179AEEB27006625A26B4ECCB37F5990198CDDBABD7C29A8CD5DF25F6"
+    },
+    {
+      "path": "优化任务/执行记录/12A-shadow-scene-observations.txt",
+      "sha256": "A4390B69B4D2E3DC987920320CD56D833F73EFCB614C64DE4875B9AF2AEDE140"
+    },
+    {
+      "path": "优化任务/执行记录/12A-standard-initial-reference-v4.bin",
+      "sha256": "B6421478680025EB2A1D4DD69E477AAC41883B15942FB5122C50BB4951319AF9"
+    },
+    {
+      "path": "优化任务/执行记录/12A-test-budget-scan.txt",
+      "sha256": "7ABCBE4F50862CFA7B4CA773FD646E014EE40D6496C59AB92C2FC6EC4D42F58E"
+    },
+    {
+      "path": "优化任务/执行记录/12A-test-counts.json",
+      "sha256": "31A8D3BD8A90B88A694394FB1C637A3FE716916EC593408B20197ED92CEC8EE5"
+    },
+    {
+      "path": "优化任务/执行记录/12A-test-migration.csv",
+      "sha256": "C9ED891E477101F00D34187003C830E1BE121EBD315D6B72C178669C7983FF20"
+    },
+    {
+      "path": "优化任务/执行记录/12A-test-renames.json",
+      "sha256": "B83724A6A8D94183049E99CB0459DD684B7E01B73332C5C432642A8173809FFD"
+    },
+    {
+      "path": "优化任务/执行记录/12A-window-rejection.png",
+      "sha256": "3E4FA9F5755C8D4D16F8ACFB74B608DF409386BEDE36B8AC158A3CB764319F86"
+    },
+    {
+      "path": "优化任务/执行记录/12A-交接记录.md",
+      "sha256": "C4785DCAFCD3B2D42955E4165AEB97522691768B2AC11CDAB60CA353EAC04793"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-dynamic-scene.heroReplay",
+      "sha256": "F25C236D86FA2227FF3B6F92B25479073884E3FE0CB4658BBCA4B3453BEF83D5"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-AoeDodge.heroReplay",
+      "sha256": "F5B7BB79A8FBEE7C93BEA18F973C0B282B97C43FFFAE082E03F613C4C5EC1B02"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-AutoDeferral.heroReplay",
+      "sha256": "6C3DACBD504C7F710DACD8C2F30CF73C5D3DB1D0C054FCA471D280DFBE6C09B9"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-Block.heroReplay",
+      "sha256": "32970DCF435527750ABCA54EC86252CCEE89F53683C00F0963AEAD7D92D4A737"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-Clash3.heroReplay",
+      "sha256": "D768FCB3698C47DBE5841776B3A23B3E24A269F8D4E9DD9C4CFA31B3030A02F4"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-DisplacementDeath.heroReplay",
+      "sha256": "4D41CCFF3C93BD5F6B21C9A9A1926D42F4F561B4C09BB7331A7DA5A6F3EF92EA"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-Dodge.heroReplay",
+      "sha256": "52C1D0369AB28437120DC4B68D04EF58BDA71774EDA4EE0382C93D5952C63072"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-DodgeChain.heroReplay",
+      "sha256": "75121E8AC606B5BA0D73F77C31BF1FD0EC31705ADAD69867069E660629F6A49F"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-FacingAoe.heroReplay",
+      "sha256": "A9BB54B74DBAB63ABA4A8AEE8FE398EF8611F480B305BDE407F8C3A5902157F1"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-Flank.heroReplay",
+      "sha256": "09FE830551EF1D669544EE520B3617912FE58734269ADDDBA0CD8EBA2C044593"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-FriendlyAoe.heroReplay",
+      "sha256": "20DCBCD267C3104307BFDE3FFFEEDB85D30329A1CF9CA1AAB851DD296844114B"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-Guard.heroReplay",
+      "sha256": "2B4B174FE3B48B20BB4AAF1805DB643CB1CC8290049FADE0E8F7C4B8BEBB55FB"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-MixedDodge.heroReplay",
+      "sha256": "51731A5CE6AE01BCEC7AB4987C296FEECBD058A7CFD0263AE0729960FBEC29E8"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-PartialBlock.heroReplay",
+      "sha256": "12DBCD2FC7D3D050D96BFBA20B9619372EA7D8A4E713057B7E2C9A4A503612B3"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-final-replay-Reservation.heroReplay",
+      "sha256": "40C67661729C74ACF848656998DDC1C5645140A11801AF00632E7FF8FEB6C7F7"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-migration-shadow-accepted.txt",
+      "sha256": "36114A624484635101C875469021049290BC46FE6FF6A338EB96E42D7A50B8C1"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-scene-ai-reaction.heroReplay",
+      "sha256": "B91DBAFF2C1E1ED2EECE4AF5AA6A28BA79E92134BC733B6AA84AA1A570D28773"
+    },
+    {
+      "path": "优化任务/执行记录/12B-11-scene-dodge-chain.heroReplay",
+      "sha256": "B99F044454763039B26D9F07DE01B3585A8B725061A0336AB05A3FF4D6912A66"
+    },
+    {
+      "path": "优化任务/执行记录/12B-acceptance-audit.py",
+      "sha256": "292CC9B611E5770C187FBBF7B2D64D2EAF17F20126CDE454425CDA5DB689776A"
+    },
+    {
+      "path": "优化任务/执行记录/12B-ai-focused.xml",
+      "sha256": "0CD425E1878FC6DF2A9A3114A4CC56DF0B29DFAA2F8E49F0DC602F944584A052"
+    },
+    {
+      "path": "优化任务/执行记录/12B-clash3-events.txt",
+      "sha256": "92AED92A780646425F23C297E7D94B779477DF049D1C4C2D1F97DFE696048679"
+    },
+    {
+      "path": "优化任务/执行记录/12B-dodge-chain-trace.txt",
+      "sha256": "44D8562C812B7676FEB116AD20FA76B6F3D9F1FDC0568E173724A157C3EFFEE6"
+    },
+    {
+      "path": "优化任务/执行记录/12B-editmode.xml",
+      "sha256": "72573478C19986F9592FEC8B55764CFBCF4E42D8A482C53CB3F1269E9EF2A9B4"
+    },
+    {
+      "path": "优化任务/执行记录/12B-final-audit.json",
+      "sha256": "AD16EE2C8879549CE5FC2DA032EC0989EA6A0E30443E5C94A92DAE20AAB16031"
+    },
+    {
+      "path": "优化任务/执行记录/12B-hash-anchors.json",
+      "sha256": "BF6B46DEF609E58BF08A76A90B291393C28103E4CCC97CE966B911D7C5DE20C0"
+    },
+    {
+      "path": "优化任务/执行记录/12B-initial-encoding-v4-domain.bin",
+      "sha256": "39229912292D4E0FD1EBDBF61B768E8CB87F71AF4D32476472157C8776A0B04D"
+    },
+    {
+      "path": "优化任务/执行记录/12B-initial-encoding-v6.bin",
+      "sha256": "74FEDACDC90FB520A6B2DAEF2D6B47BBFF8FE24CF69075B61F34BC5AE353C968"
+    },
+    {
+      "path": "优化任务/执行记录/12B-lane-focused.xml",
+      "sha256": "22FEBAE6280E3C94E467EF1BD266CC43993A6E58C291153CCEE983B67CB2AADC"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-1.heroReplay",
+      "sha256": "B6FAB8D257612BDB5C78937803D769F20F53918F1E6E791DE197D3DA972BDD5D"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-1.png",
+      "sha256": "03B2C984DFC55F961E085FFAA83A32C0800B15083C2EB9869DFDBAAE9757B5C1"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-1.txt",
+      "sha256": "3858234FE5FAB251EB519792C0613B54F7D005A2CB9FCA0126E37E887C3DF019"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-2.heroReplay",
+      "sha256": "22C90D90D28838C10C6942A7E5F2BDC4334D3F929493ED0EB5B8187C59735AD0"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-2.png",
+      "sha256": "C7961EC6C2F55B1DD7AB773BEC42ED448675DF37073FFB8EC64496C23E9306C5"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-2.txt",
+      "sha256": "AC9CC70FE69E1CF92ACB67FCEABAFC2BB36F8AC3F0FB6B535C7E54ED6AF4E775"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-3.heroReplay",
+      "sha256": "05E18804E02D0450AB70C3A5F3F13D97E11DAF8F03448B53335C8F78897C9665"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-3.png",
+      "sha256": "D045290D2209203A9519ED83C0BCDC3ABEA90D804354FADD026BC6683DECF367"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-3.txt",
+      "sha256": "A61041C442E59A76CB5A7536758D72C025A17602146E872EC8908F32B00EB774"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-4.heroReplay",
+      "sha256": "F5046705E824D6A6CEAD5BCB2F6FECB5CA070C08DE3529640CE5170668E65FC3"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-4.png",
+      "sha256": "B0B1321586DCD6C404FDAF28E196FE80D0C9DE3CAEC07356F397672A7794D004"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-4.txt",
+      "sha256": "D89A2DF50C2C9AF4AA5367E64FC336841E7487F123C427666DD7B9710E190790"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-new-ended.png",
+      "sha256": "61862D1A424A75CE370418FAF5D2EDCA6D08E337BCFC830EC9601E57A2EFED97"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-new-start.png",
+      "sha256": "100DB91A3A9F2911EAA47B1796071DC3F3D80080C05011BD9E936C63FB8CC30D"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-window-observations.txt",
+      "sha256": "9FC0C1956E74EE20BBA4FDF30AE0EE5EA8DB7FC36D93ADC703EC0AF3722115D7"
+    },
+    {
+      "path": "优化任务/执行记录/12B-offline-all.xml",
+      "sha256": "F529B9705C5F59EBD32E365C382C4AB759072E90A3663240315D94C53EF6C380"
+    },
+    {
+      "path": "优化任务/执行记录/12B-offline-focused.xml",
+      "sha256": "D6ECF129D5456240993BFFDE76B2F0592F7CE7BB6B4AED94873C274699A155C7"
+    },
+    {
+      "path": "优化任务/执行记录/12B-playmode-bootstrap.xml",
+      "sha256": "F0919D516223B9E0CC475BA9C10FE4A8DA909F1311A016103491E46C977906E6"
+    },
+    {
+      "path": "优化任务/执行记录/12B-playmode.xml",
+      "sha256": "E30B73604FE78B45D7EF4E13C56D32FF518EC78DEBEC900283F6039AB50D79A1"
+    },
+    {
+      "path": "优化任务/执行记录/12B-production-initial-encoding-v4-domain.bin",
+      "sha256": "C71F59D9CDFABA9C438F68166C14309E01FC96A614397F4A2B8124F22D538A00"
+    },
+    {
+      "path": "优化任务/执行记录/12B-production-initial-encoding-v6.bin",
+      "sha256": "B772DA05E8E1E91B0AC95767B637BA27FEB7FC47505362146DBEBFA0DCCD5127"
+    },
+    {
+      "path": "优化任务/执行记录/12B-required-tests.json",
+      "sha256": "23FC6A6FF6146A106C51B6BF2673DFBA3D08CEB08E5FCDA7FFEDFE79D05B13EA"
+    },
+    {
+      "path": "优化任务/执行记录/12B-scan-repository.csv",
+      "sha256": "7A0CC97F967D5AA2C9AC0BC34A2DE639D520017CC12D5E19322BBD093FD0DD3A"
+    },
+    {
+      "path": "优化任务/执行记录/12B-scan-source.csv",
+      "sha256": "E8D8DC7CF67CC60B5EA633A7D5F2307426E5151CFEADB853003764F566F811B1"
+    },
+    {
+      "path": "优化任务/执行记录/12B-scan-summary.json",
+      "sha256": "5D249CA6E2AB0C776D800EC2798D5990E998F868351B779C64F58EC8D9802910"
+    },
+    {
+      "path": "优化任务/执行记录/12B-scene-one.xml",
+      "sha256": "22C7A6365F0F8748AB416C32A729323A02C6F4621AB315CCAB44F1E4B88BD08F"
+    },
+    {
+      "path": "优化任务/执行记录/12B-scenes-focused.xml",
+      "sha256": "5956DB58C921A4ACA4D7B732975B12721CE9E99C329099AE5EE8153093E1605A"
+    },
+    {
+      "path": "优化任务/执行记录/12B-shadow-classification.csv",
+      "sha256": "DB7D4D375AFC0968E9A80FFE342A553FFD1E2B336C3E9BE84A98EAA2661FF00A"
+    },
+    {
+      "path": "优化任务/执行记录/12B-shadow-classification.json",
+      "sha256": "508D9B7DAF533EC9760EF3E6F57C100E6D4A246585B096E6FAE3788694F79B6A"
+    },
+    {
+      "path": "优化任务/执行记录/12B-shadow-migration-evidence.json",
+      "sha256": "88D61170E0A9BE74826425F0DE105292278C539ED781666B08E95D7949242D6E"
+    },
+    {
+      "path": "优化任务/执行记录/12B-shadow-scene-observations.txt",
+      "sha256": "40A2696045829E8C376C7675EC62A386D4DE2FBD56E95276511533807FE50C91"
+    },
+    {
+      "path": "优化任务/执行记录/12B-source-baseline.json",
+      "sha256": "E57A9DC0E2E5F8BC5B196AC5368CED0AB47BE01EB5B84D43C1AFF3253B5C2012"
+    },
+    {
+      "path": "优化任务/执行记录/12B-test-counts.json",
+      "sha256": "4B0AF91B35DBFFAFFD6C1C42F31AD34197BDA89D412B22C2FFDF644972235D4E"
+    },
+    {
+      "path": "优化任务/执行记录/12B-test-migration.csv",
+      "sha256": "9F4A78C282D6C05F18BB2FDFEF014BCC9186E0A4F118E7463EF89BAAD5A957DB"
+    },
+    {
+      "path": "优化任务/执行记录/12B-window-rejection.png",
+      "sha256": "3E4FA9F5755C8D4D16F8ACFB74B608DF409386BEDE36B8AC158A3CB764319F86"
+    },
+    {
+      "path": "优化任务/执行记录/12B-交接记录.md",
+      "sha256": "137F02E1458EC27BB51A52970620BE9D52F53BA9F955142B43A062DE364881BD"
+    }
+  ],
+  "hashAnchors": {
+    "oldRulesVersion": "battle-def-v3-window180",
+    "oldDefinitionHash": "c5d1058b7b19720a",
+    "oldInitialStateHash": "e6f9af498bff9600",
+    "oldProductionInitialStateHash": "29c03922dab5c689",
+    "oldEvidence": "12A-hash-anchors.json (archived native R1 execution)",
+    "rulesVersion": "battle-def-v4-defense-duration",
+    "definitionHash": "e04b3c0946ad3035",
+    "initialStateHash": "2046e404a6fb708f",
+    "productionInitialStateHash": "63e751856fe458e8",
+    "ticksPerSecond": 60,
+    "initialRngSeed": 20260922,
+    "initialMetaResource": 10,
+    "replayFormatVersion": 6
+  },
+  "mainSceneEvidence": [
+    {
+      "path": "优化任务/执行记录/12C-main-all-adrenaline.png",
+      "sha256": "4A5EB4BBE9A237D5B8D8C657FA1117A36D2EA4BB6BC806FA0012B146A3964408"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-all-adrenaline.txt",
+      "sha256": "40A472C1D543AB0B203D60F80D058A7696894FDCE2495DB13DE771591F7695FC"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-1.heroReplay",
+      "sha256": "B6FAB8D257612BDB5C78937803D769F20F53918F1E6E791DE197D3DA972BDD5D"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-1.png",
+      "sha256": "2F7816EFA77C920D435A5CEA1DE7E7F39C19D91F0D4BC1F246895EE417059ABC"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-1.txt",
+      "sha256": "3858234FE5FAB251EB519792C0613B54F7D005A2CB9FCA0126E37E887C3DF019"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-2.heroReplay",
+      "sha256": "22C90D90D28838C10C6942A7E5F2BDC4334D3F929493ED0EB5B8187C59735AD0"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-2.png",
+      "sha256": "A1187F170C9A54988BC372C57A85276F2004B4666106DF96E03337C18F0DBF8B"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-2.txt",
+      "sha256": "AC9CC70FE69E1CF92ACB67FCEABAFC2BB36F8AC3F0FB6B535C7E54ED6AF4E775"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-3.heroReplay",
+      "sha256": "05E18804E02D0450AB70C3A5F3F13D97E11DAF8F03448B53335C8F78897C9665"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-3.png",
+      "sha256": "A132ACFC325FFE523D513443E058E859F9749C0C1CBFEF845D98809D355B8F0C"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-3.txt",
+      "sha256": "A61041C442E59A76CB5A7536758D72C025A17602146E872EC8908F32B00EB774"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-4.heroReplay",
+      "sha256": "F5046705E824D6A6CEAD5BCB2F6FECB5CA070C08DE3529640CE5170668E65FC3"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-4.png",
+      "sha256": "B1D41A005555AB7FA11F65E09D473CB6546D944E4768953819B09BC7039F5D44"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-defense-case-4.txt",
+      "sha256": "D89A2DF50C2C9AF4AA5367E64FC336841E7487F123C427666DD7B9710E190790"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-new-ended.png",
+      "sha256": "77BDD1196292294229A1927655A02D84357B30A177B599EA6D9E919CCE96ECC7"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-new-start.png",
+      "sha256": "3083223697BD05B451A3E2CC3C7AEE18262186A6D54193B66EDBC7468E5CF2F2"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-opponent-cannot-react.heroReplay",
+      "sha256": "959FA0203D9E242E136F634E654950F80BDC98C54F3F72A1EBFFF78339C84BB4"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-opponent-cannot-react.png",
+      "sha256": "4A5EB4BBE9A237D5B8D8C657FA1117A36D2EA4BB6BC806FA0012B146A3964408"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-opponent-cannot-react.txt",
+      "sha256": "5C5954901AFCA8A44C893FC2550B000CF74BE7C465BDF093E41FB484BAB13C13"
+    },
+    {
+      "path": "优化任务/执行记录/12C-main-window-observations.txt",
+      "sha256": "9FC0C1956E74EE20BBA4FDF30AE0EE5EA8DB7FC36D93ADC703EC0AF3722115D7"
+    }
+  ],
+  "scope": "R1-R4 and Logic previews complete; HUD M1-M4 and formal performance remain pending."
+}

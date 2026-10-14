@@ -5455,7 +5455,7 @@ namespace ProjectHero.Tests.PlayMode
             var units = ResolveEncounterUnits(seed);
             var a = BuildTask12AWindowStream(seed, units.Hero, units.Enemy);
             var b = BuildTask12AWindowStream(seed, units.Hero, units.Enemy);
-            var policy = ShadowCasePolicy.CreateDefault("12B-window-duration", seed.RulesVersion,
+            var policy = ShadowCasePolicy.CreateDefault("12C-window-duration", seed.RulesVersion,
                 compareScheduleFacts: true, compareMovementFacts: true, compareTurnWindowFacts: true);
             var report = CompareWithPolicy(seed, a, b, policy, a.Snapshots.Count, Array.Empty<LegacyLogicObservation>());
             Assert.That(report.CountOf(ShadowDifferenceKind.InfrastructureFact), Is.Zero, report.Describe());

@@ -16,7 +16,7 @@ namespace ProjectHero.Logic.Turns
         bool CanSubmitOrdinaryAction(ControllerId issuer, UnitId unitId, WindowId windowId, ActionType actionType);
     }
 
-    public sealed class ConcurrentActionSystem : IActionAuthority
+    public sealed partial class ConcurrentActionSystem : IActionAuthority
     {
         private readonly ConcurrentActionDefinition _definition;
         private readonly TurnWindowManager _windows;

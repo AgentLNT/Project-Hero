@@ -103,7 +103,7 @@ namespace ProjectHero.Logic.Resources
         void DiscardReservation(ActionPlanId planId);
     }
 
-    public sealed class AdrenalineLedger
+    public sealed partial class AdrenalineLedger
     {
         private readonly AdrenalineRules _rules;
         private readonly Dictionary<long, ReactionReservation> _reservations = new Dictionary<long, ReactionReservation>();

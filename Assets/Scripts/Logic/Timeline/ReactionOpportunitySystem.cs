@@ -206,7 +206,7 @@ namespace ProjectHero.Logic.Timeline
         }
     }
 
-    public sealed class ReactionOpportunitySystem
+    public sealed partial class ReactionOpportunitySystem
     {
         private readonly ActionScheduleAuthority _authority;
         private readonly LogicIdGenerator _idGenerator;

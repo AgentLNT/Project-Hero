@@ -27,10 +27,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
             if (ReferenceEquals(_projectedSnapshot, _simulation.CurrentSnapshot) && _decision != null) return;
             var current = _simulation.CurrentSnapshot;
             var decision = _simulation.DecisionSnapshotFor(ControllerId);
-            var adrenaline = new List<AdrenalineLedgerSnapshot>();
-            foreach (var ledger in current.Resources.AdrenalineLedgers)
-                if (_simulation.CommandAuthority.CanControl(ControllerId, new UnitId(ledger.UnitId))) adrenaline.Add(ledger);
-            _adrenaline = adrenaline.AsReadOnly();
+            _adrenaline = decision.AdrenalineLedgers;
             var reactions = new List<ReactionOpportunitySnapshot>();
             foreach (var opportunity in current.ReactionOpportunities)
                 if (_simulation.CommandAuthority.CanControl(ControllerId, new UnitId(opportunity.DefenderUnitId))) reactions.Add(opportunity);
@@ -51,6 +48,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
         public bool IsPaused => _paused();
         public ControllerId ControllerId { get; }
         public DecisionSnapshot DecisionSnapshot { get { RefreshProjection(); return _decision; } }
+        public HudPreviewService HudPreviews => _simulation.HudPreviewFor(ControllerId);
         public WindowId? OpenWindowId => _simulation.CurrentSnapshot.WindowManager.Windows.FindOpenWindow();
         public TurnWindowSnapshot CurrentWindow
         {
@@ -61,7 +59,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
                 return null;
             }
         }
-        public IReadOnlyList<AdrenalineLedgerSnapshot> OwnAdrenaline
+        public IReadOnlyList<AdrenalineLedgerSnapshot> AllAdrenaline
         {
             get
             {

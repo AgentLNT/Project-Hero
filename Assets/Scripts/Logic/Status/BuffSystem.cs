@@ -156,7 +156,7 @@ namespace ProjectHero.Logic.Status
     /// 本内核是后续任务<strong>唯一</strong>的效果推进器：任务 05–11 只能扩展
     /// <see cref="StatusEffectPayload"/> 与配置侧，不得建立第二套推进器。
     /// </summary>
-    public sealed class BuffSystem
+    public sealed partial class BuffSystem
     {
         private enum OperationKind
         {

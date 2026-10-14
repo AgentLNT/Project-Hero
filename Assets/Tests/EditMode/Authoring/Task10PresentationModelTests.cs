@@ -39,7 +39,8 @@ namespace ProjectHero.Authoring.Tests
                 new ActionPlanSnapshot(2, 20, "secret-attack", StartTick: 40, EndTick: 50) };
             public List<ReactionOpportunitySnapshot> Offered { get; } = new List<ReactionOpportunitySnapshot>();
             public TurnWindowSnapshot CurrentWindow { get; } = new TurnWindowSnapshot(1, 10, 0, 180, 180, true, true, 4);
-            public IReadOnlyList<AdrenalineLedgerSnapshot> OwnAdrenaline { get; } = new[] { new AdrenalineLedgerSnapshot(10, 7, 2, Array.Empty<AdrenalineReservationSnapshot>(), 3) };
+            public IReadOnlyList<AdrenalineLedgerSnapshot> AllAdrenaline { get; } = new[] { new AdrenalineLedgerSnapshot(10, 7, 2, Array.Empty<AdrenalineReservationSnapshot>(), 3) };
+            public HudPreviewService HudPreviews => null;
             public DecisionSnapshot DecisionSnapshot => new DecisionSnapshot(CurrentTick, "view-fixture", "view-hash",
                 new[] { new UnitSnapshot(10, "unit", "hero", 0, 0, 0, 10240, true, 7, 2), new UnitSnapshot(20, "unit", "enemy", 2, 0, 0, 10240, true, 0, 0) },
                 Plans, ScheduleRevision, new BattleEndSnapshot(IsBattleEnded, -1, null), new Relations())

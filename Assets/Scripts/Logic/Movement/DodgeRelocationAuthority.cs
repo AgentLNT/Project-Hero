@@ -272,7 +272,7 @@ namespace ProjectHero.Logic.Movement
         void ReleaseForPlan(ActionPlan plan);
     }
 
-    public sealed class DodgeRelocationAuthority :
+    public sealed partial class DodgeRelocationAuthority :
         IDodgeRelocationTransaction,
         IDodgeDestinationReservationPort,
         IDodgeDestinationReservationSink,

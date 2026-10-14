@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="39" result="Failed(Child)" total="39" passed="25" failed="14" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.6349903">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="943" result="Failed" site="Child" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.634990" total="39" passed="25" failed="14" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1397" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="351" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.553547" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10100" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1398" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="351" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.541023" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1399" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="351" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.537333" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1400" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="351" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.533621" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1118" name="Task10PresentationModelTests" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.061925" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1128" name="AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation" methodname="AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="947142874" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.030860" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1129" name="DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation" methodname="DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="54257995" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.001349" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1123" name="OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase" methodname="OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="332750815" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000466" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1130" name="PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems" methodname="PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1192502536" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.003712" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1124" name="StaleRevisionOrLockRejectionRebasesFromLatestSnapshot" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.StaleRevisionOrLockRejectionRebasesFromLatestSnapshot" methodname="StaleRevisionOrLockRejectionRebasesFromLatestSnapshot" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="49106020" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.001646" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1125" name="SystemAutoDeferralCancelsAffectedDraftAndRebasesTimeline" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.SystemAutoDeferralCancelsAffectedDraftAndRebasesTimeline" methodname="SystemAutoDeferralCancelsAffectedDraftAndRebasesTimeline" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="910436466" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000668" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1126" name="TimelineCannotEditReactionLockedRunningOrTerminalPlans" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineCannotEditReactionLockedRunningOrTerminalPlans" methodname="TimelineCannotEditReactionLockedRunningOrTerminalPlans" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1783956988" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000618" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1120" name="TimelineDoesNotRevealOtherControllerUnpublishedEditablePlans" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineDoesNotRevealOtherControllerUnpublishedEditablePlans" methodname="TimelineDoesNotRevealOtherControllerUnpublishedEditablePlans" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1801497443" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.002030" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1122" name="TimelineDragProducesOneAtomicScheduleEditOnConfirm" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineDragProducesOneAtomicScheduleEditOnConfirm" methodname="TimelineDragProducesOneAtomicScheduleEditOnConfirm" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1763958512" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000460" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1121" name="TimelineDragTrajectoryDoesNotProduceCombatCommands" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineDragTrajectoryDoesNotProduceCombatCommands" methodname="TimelineDragTrajectoryDoesNotProduceCombatCommands" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1831107958" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000223" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1119" name="TimelineShowsLockLineAtSnapshotTickPlusOne" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineShowsLockLineAtSnapshotTickPlusOne" methodname="TimelineShowsLockLineAtSnapshotTickPlusOne" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1669318460" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000184" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1127" name="WindowHudShowsFixedDurationAndEndTick" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.WindowHudShowsFixedDurationAndEndTick" methodname="WindowHudShowsFixedDurationAndEndTick" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="863146715" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000219" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1131" name="Task10ProductionTests" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.465757" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1142" name="BroadShadowDifferenceAllowlistIsRejected" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.BroadShadowDifferenceAllowlistIsRejected" methodname="BroadShadowDifferenceAllowlistIsRejected" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1630745174" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.002739" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1144" name="CustomAssemblyDoesNotReferenceAssemblyCSharp" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.CustomAssemblyDoesNotReferenceAssemblyCSharp" methodname="CustomAssemblyDoesNotReferenceAssemblyCSharp" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="113179564" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000369" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1139" name="EmptyShadowReportCannotAuthorizeNewCutover" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.EmptyShadowReportCannotAuthorizeNewCutover" methodname="EmptyShadowReportCannotAuthorizeNewCutover" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1535568470" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.001339" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1141" name="InvalidOrBudgetExceededShadowRunCannotAuthorizeNewCutover" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.InvalidOrBudgetExceededShadowRunCannotAuthorizeNewCutover" methodname="InvalidOrBudgetExceededShadowRunCannotAuthorizeNewCutover" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="413823984" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.177680" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1138" name="NewDefinitionAnchorChangesOnlyWithExplicitTurnRulesAndRetainsOldCharacterization" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.NewDefinitionAnchorChangesOnlyWithExplicitTurnRulesAndRetainsOldCharacterization" methodname="NewDefinitionAnchorChangesOnlyWithExplicitTurnRulesAndRetainsOldCharacterization" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1235777019" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.006574" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1136" name="ProductionCompositionReplaysRealDefinitionWithRebuiltAi" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.ProductionCompositionReplaysRealDefinitionWithRebuiltAi" methodname="ProductionCompositionReplaysRealDefinitionWithRebuiltAi" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="13902534" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.251010" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1134" name="ProductionWindowExpiresWithoutWaitingForActionsAndAiSubmitsThroughIngress" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.ProductionWindowExpiresWithoutWaitingForActionsAndAiSubmitsThroughIngress" methodname="ProductionWindowExpiresWithoutWaitingForActionsAndAiSubmitsThroughIngress" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="249327515" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.009812" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1133" name="ProductionWindowUsesExplicit180TickDurationAndInitializerHeroSlot" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.ProductionWindowUsesExplicit180TickDurationAndInitializerHeroSlot" methodname="ProductionWindowUsesExplicit180TickDurationAndInitializerHeroSlot" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="968634472" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000923" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1135" name="RuntimePlayerPortDropsPausedInputBeforeCommandConstruction" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.RuntimePlayerPortDropsPausedInputBeforeCommandConstruction" methodname="RuntimePlayerPortDropsPausedInputBeforeCommandConstruction" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1373721946" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.007161" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1132" name="RuntimePlayerProjectionIsCachedOnlyUntilTheNextCommittedSnapshot" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.RuntimePlayerProjectionIsCachedOnlyUntilTheNextCommittedSnapshot" methodname="RuntimePlayerProjectionIsCachedOnlyUntilTheNextCommittedSnapshot" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1170458191" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.001210" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1140" name="TemporarilyUncomparableShadowFieldBlocksNewCutover" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.TemporarilyUncomparableShadowFieldBlocksNewCutover" methodname="TemporarilyUncomparableShadowFieldBlocksNewCutover" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1761370547" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.003822" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1143" name="UnityViewAssemblyDoesNotReferenceAssemblyCSharpLegacyTypes" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.UnityViewAssemblyDoesNotReferenceAssemblyCSharpLegacyTypes" methodname="UnityViewAssemblyDoesNotReferenceAssemblyCSharpLegacyTypes" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="1943756080" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000282" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1137" name="WindowDurationEntersDefinitionHash" fullname="ProjectHero.Authoring.Tests.Task10ProductionTests.WindowDurationEntersDefinitionHash" methodname="WindowDurationEntersDefinitionHash" classname="ProjectHero.Authoring.Tests.Task10ProductionTests" runstate="Runnable" seed="95811086" result="Passed" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000333" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="2060" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="586" result="Failed" site="Child" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.058338" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10100" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2061" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="586" result="Failed" site="Child" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.044982" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2062" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="586" result="Failed" site="Child" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.039925" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2063" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="586" result="Failed" site="Child" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.035013" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="2030" name="Task12CHudPreviewTests" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.019508" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="2037" name="AutoPauseFeasibilityIsFalseWhenAdrenalineInsufficient" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.AutoPauseFeasibilityIsFalseWhenAdrenalineInsufficient" methodname="AutoPauseFeasibilityIsFalseWhenAdrenalineInsufficient" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="1784227916" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.010137" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.AutoPauseFeasibilityIsFalseWhenAdrenalineInsufficient () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:123 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2031" name="DecisionSnapshotExposesAllUnitsAdrenalineToEveryController" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.DecisionSnapshotExposesAllUnitsAdrenalineToEveryController" methodname="DecisionSnapshotExposesAllUnitsAdrenalineToEveryController" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="74124353" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000842" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.DecisionSnapshotExposesAllUnitsAdrenalineToEveryController () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:67 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2032" name="DecisionSnapshotStillHidesOtherControllersEditablePlans" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.DecisionSnapshotStillHidesOtherControllersEditablePlans" methodname="DecisionSnapshotStillHidesOtherControllersEditablePlans" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="419188344" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000547" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.DecisionSnapshotStillHidesOtherControllersEditablePlans () [0x00006] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:79 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2039" name="ExpectedTriggerContactFlagsEarlierPreemptingContact" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.ExpectedTriggerContactFlagsEarlierPreemptingContact" methodname="ExpectedTriggerContactFlagsEarlierPreemptingContact" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="521261139" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000571" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.ExpectedTriggerContactFlagsEarlierPreemptingContact () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:134 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2038" name="ExpectedTriggerContactMatchesActualWithinHorizon" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.ExpectedTriggerContactMatchesActualWithinHorizon" methodname="ExpectedTriggerContactMatchesActualWithinHorizon" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="270286650" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000510" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.ExpectedTriggerContactMatchesActualWithinHorizon () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:126 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2040" name="GuardQuotaPreviewMatchesActualDeductions" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.GuardQuotaPreviewMatchesActualDeductions" methodname="GuardQuotaPreviewMatchesActualDeductions" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="1600585204" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000649" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.GuardQuotaPreviewMatchesActualDeductions () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:143 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2035" name="KnownHorizonEqualsNextForeignWindowOpen" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.KnownHorizonEqualsNextForeignWindowOpen" methodname="KnownHorizonEqualsNextForeignWindowOpen" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="1428022168" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000396" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.KnownHorizonEqualsNextForeignWindowOpen () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:103 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2042" name="OpponentReactionCapabilityUsesOnlyPublicFacts" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.OpponentReactionCapabilityUsesOnlyPublicFacts" methodname="OpponentReactionCapabilityUsesOnlyPublicFacts" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="466444128" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000535" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.OpponentReactionCapabilityUsesOnlyPublicFacts () [0x00006] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:166 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2033" name="PlayerAndAiSeeIdenticalAdrenalineFacts" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.PlayerAndAiSeeIdenticalAdrenalineFacts" methodname="PlayerAndAiSeeIdenticalAdrenalineFacts" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="29375471" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000330" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.PlayerAndAiSeeIdenticalAdrenalineFacts () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:86 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2044" name="PreviewIsCachedPerCommittedSnapshot" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.PreviewIsCachedPerCommittedSnapshot" methodname="PreviewIsCachedPerCommittedSnapshot" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="316379219" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000538" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.PreviewIsCachedPerCommittedSnapshot () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:184 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2043" name="PreviewsDoNotMutateStateIdsOrRevision" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.PreviewsDoNotMutateStateIdsOrRevision" methodname="PreviewsDoNotMutateStateIdsOrRevision" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="229152404" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000492" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.PreviewsDoNotMutateStateIdsOrRevision () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:174 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2036" name="ReactionFeasibilityReportsEachInfeasibleReasonStably" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.ReactionFeasibilityReportsEachInfeasibleReasonStably" methodname="ReactionFeasibilityReportsEachInfeasibleReasonStably" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="1314853155" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000762" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.ReactionFeasibilityReportsEachInfeasibleReasonStably () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:110 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2034" name="WindowSequenceProjectionMatchesActualOpenings" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.WindowSequenceProjectionMatchesActualOpenings" methodname="WindowSequenceProjectionMatchesActualOpenings" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="293818902" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000618" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.WindowSequenceProjectionMatchesActualOpenings () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:90 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="2041" name="YieldPointPreviewMatchesActualYield" fullname="ProjectHero.Logic.Tests.Task12CHudPreviewTests.YieldPointPreviewMatchesActualYield" methodname="YieldPointPreviewMatchesActualYield" classname="ProjectHero.Logic.Tests.Task12CHudPreviewTests" runstate="Runnable" seed="1910254347" result="Failed" label="Error" start-time="2026-10-14 09:31:25Z" end-time="2026-10-14 09:31:25Z" duration="0.000540" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : TRIANGLE_POINT_INVALID: X=-60, Y=0, T=1]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Grid.TrianglePoint..ctor (System.Int32 x, System.Int32 y, System.Int32 t) [0x00046] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Scripts\Logic\Grid\TrianglePoint.cs:26 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_2 (System.Int32 x) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at (wrapper delegate-invoke) System.Func`2[System.Int32,ProjectHero.Logic.Grid.TrianglePoint].invoke_TResult_T(int)
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests+<>c.<Definition>b__11_1 (System.Int32 f) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:37 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].PreallocatingToArray (System.Int32 count) [0x0001e] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable+SelectIPartitionIterator`2[TSource,TResult].ToArray () [0x00023] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.ToArray[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x0001f] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Definition () [0x00040] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:34 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.Prepared (System.Boolean funds) [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:46 
+  at ProjectHero.Logic.Tests.Task12CHudPreviewTests.YieldPointPreviewMatchesActualYield () [0x00000] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\EditMode\Logic\Task12CHudPreviewTests.cs:155 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

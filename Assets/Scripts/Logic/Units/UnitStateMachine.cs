@@ -29,7 +29,7 @@ namespace ProjectHero.Logic.Units
     /// 不变的转换入口：显式转换与自动到期都经 <see cref="TryTransition"/>，
     /// 因此合法性判定、区间计算与事件形状完全一致，只有原因码不同。
     /// </summary>
-    public sealed class UnitStateMachine
+    public sealed partial class UnitStateMachine
     {
         /// <summary>转换被拒绝时的稳定诊断（拒绝<strong>不</strong>抛出，见 <see cref="TryTransition"/>）。</summary>
         public readonly struct TransitionOutcome

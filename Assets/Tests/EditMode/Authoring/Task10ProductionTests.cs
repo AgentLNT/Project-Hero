@@ -30,8 +30,8 @@ namespace ProjectHero.Authoring.Tests
                 var first = ports.Logic.DecisionSnapshot;
                 Assert.That(ports.Logic.DecisionSnapshot, Is.SameAs(first));
                 var preview = (ProjectHero.Core.Compatibility.Runtime.Input.IViewPreviewPort)ports.Logic;
-                var adrenaline = preview.OwnAdrenaline;
-                Assert.That(preview.OwnAdrenaline, Is.SameAs(adrenaline));
+                var adrenaline = preview.AllAdrenaline;
+                Assert.That(preview.AllAdrenaline, Is.SameAs(adrenaline));
                 driver.AdvanceFrame(new BattleFrameDelta(1f / 60, false, true));
                 Assert.That(ports.Logic.DecisionSnapshot, Is.Not.SameAs(first));
                 Assert.That(ports.Logic.DecisionSnapshot.Tick, Is.EqualTo(1));

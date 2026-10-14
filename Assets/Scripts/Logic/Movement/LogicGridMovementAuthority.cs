@@ -145,7 +145,7 @@ namespace ProjectHero.Logic.Movement
     /// 先成功提交者持有，后者稳定拒绝、不可抢占。</item>
     /// </list>
     /// </summary>
-    public sealed class LogicGridMovementAuthority : IActionPlanCleanupParticipant, IEditableMovementSpacePort, IEditableMovementSpacePreviewPort
+    public sealed partial class LogicGridMovementAuthority : IActionPlanCleanupParticipant, IEditableMovementSpacePort, IEditableMovementSpacePreviewPort
     {
         private readonly LogicGrid _grid;
         private readonly ActionScheduleAuthority _authority;

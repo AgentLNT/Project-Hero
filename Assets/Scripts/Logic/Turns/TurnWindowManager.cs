@@ -63,7 +63,7 @@ namespace ProjectHero.Logic.Turns
     /// <item>战斗结束后不再打开新窗口；Finalizer 关闭当前窗口并清空未来排程。</item>
     /// </list>
     /// </summary>
-    public sealed class TurnWindowManager
+    public sealed partial class TurnWindowManager
     {
         private readonly ITurnWindowWorldView _world;
         private readonly Func<WindowId> _allocateWindowId;

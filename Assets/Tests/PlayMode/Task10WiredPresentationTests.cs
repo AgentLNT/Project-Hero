@@ -46,11 +46,11 @@ namespace ProjectHero.Tests.PlayMode
             presentation.GetType().GetMethod("Render", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(presentation, null);
             var textType = Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true);
             Assert.That((string)textType.GetProperty("text").GetValue(Field(presentation, "_status")), Does.Contain("Remaining"));
-            CaptureView(presentation, "12B-window-rejection");
+            CaptureView(presentation, "12C-window-rejection");
             while (model.Decision.Tick < 180) Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(model.Window.OpenedAtTick, Is.EqualTo(180));
             Assert.That(model.Window.OwnerUnitId, Is.Not.EqualTo(hero.Value));
-            File.WriteAllText("优化任务/执行记录/12B-main-window-observations.txt",
+            File.WriteAllText("优化任务/执行记录/12C-main-window-observations.txt",
                 "mode=New\nfirstWindow=[0,180)\nsecondWindowOpenedAtTick=180\nendTurnButtons=0\nstatus=remaining seconds\nrejection=SCHEDULE_START_OUTSIDE_SOURCE_WINDOW\n");
         }
 
@@ -258,7 +258,7 @@ namespace ProjectHero.Tests.PlayMode
                         else { lastClose = model.Window.WindowId; Assert.That(WaitForWindowExpiry(model), Is.Null); }
                     }
                     Bootstrap.DriveFrameForTests(0, 1f / 60);
-                    if (run == 0 && frame == 0) CaptureView(presentation, "12B-main-new-start");
+                    if (run == 0 && frame == 0) CaptureView(presentation, "12C-main-new-start");
                     if (frame % 120 == 0) yield return null;
                 }
                 Assert.That(model.Decision.BattleEnd.IsEnded, Is.True,
@@ -266,7 +266,7 @@ namespace ProjectHero.Tests.PlayMode
                     + string.Join(";", model.Decision.VisibleUnits) + " rejection=" + model.LastRejection);
                 Assert.That(model.SubmittedCommands, Is.GreaterThan(0));
                 Assert.That(feedback.EndFeedbackCount, Is.EqualTo(1));
-                if (run == 0) CaptureView(presentation, "12B-main-new-ended");
+                if (run == 0) CaptureView(presentation, "12C-main-new-ended");
                 var finalHash = Bootstrap.NewDriver.CurrentSnapshot.ComputeHash();
                 for (int i = 0; i < 20; i++) Bootstrap.DriveFrameForTests(0, 1f / 60);
                 Assert.That(Bootstrap.NewDriver.CurrentSnapshot.ComputeHash(), Is.EqualTo(finalHash));
@@ -314,7 +314,7 @@ namespace ProjectHero.Tests.PlayMode
                 .SelectMany(root => root.GetComponentsInChildren<BattlePresentationView>(true)).Single();
             Bootstrap.DriveFrameForTests(0, 1f / 60);
             var model = presentation.Model;
-            CaptureView(presentation, "12B-main-new-start");
+            CaptureView(presentation, "12C-main-new-start");
             var hero = model.Decision.ControlledUnitIds.Single();
             Assert.That(presentation.Registry.TryGetView(hero.Value, out var view), Is.True);
             Assert.That(view.UnitId, Is.EqualTo(hero));
@@ -491,7 +491,7 @@ namespace ProjectHero.Tests.PlayMode
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay);
-                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12B-11-scene-ai-reaction.heroReplay"), file.ToArray());
+                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12C-11-scene-ai-reaction.heroReplay"), file.ToArray());
                 file.Position = 0; var loaded = ReplayFile.Load(file, source.Seed.Definition);
                 using var player = new ReplayPlayer(source.Seed.Definition,
                     h => ProductionBattleComposition.Create(source.Seed.Definition, h.EncounterId, h.RuntimeInputs)); player.Load(loaded);
@@ -617,7 +617,7 @@ namespace ProjectHero.Tests.PlayMode
                 if (futureChain && model.Decision.Tick % 10 == 0)
                     chainTrace.Append(model.Decision.Tick).Append(" window=").Append(window?.WindowId).Append(" owner=").Append(window?.OwnerUnitId)
                         .Append(" end=").Append(window?.EndTick).Append(" auth=").Append(Bootstrap.NewDriver.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization)
-                        .Append(" available=").Append(model.Adrenaline.Single().AvailableAdrenaline).Append(" chain=").Append(chainWindow)
+                        .Append(" available=").Append(model.Adrenaline.Single(l => l.UnitId == hero.Value).AvailableAdrenaline).Append(" chain=").Append(chainWindow)
                         .Append(" reactions=").Append(string.Join(",", model.Reactions.Select(o => o.SourceImpactTick))).Append('\n');
                 if (window != null && window.OwnerUnitId != hero.Value && window.WindowId != activatedWindow)
                 {
@@ -631,7 +631,7 @@ namespace ProjectHero.Tests.PlayMode
                 {
                     var incoming = model.Reactions.FirstOrDefault(o => o.SourceImpactTick > model.Decision.Tick + 2
                         && o.SourceImpactTick + 45 < model.Window.EndTick);
-                    if (incoming != null && model.Adrenaline.Single().AvailableAdrenaline >= 1)
+                    if (incoming != null && model.Adrenaline.Single(l => l.UnitId == hero.Value).AvailableAdrenaline >= 1)
                         PlaceChain(incoming.SourceImpactTick + 2);
                 }
                 if (!concurrent || (futureChain && chainWindow == 0))
@@ -643,7 +643,7 @@ namespace ProjectHero.Tests.PlayMode
                     var textComponent = go.GetComponentInChildren(textType);
                     var text = (string)textType.GetProperty("text").GetValue(textComponent);
                     if (!text.StartsWith(label + " ", StringComparison.Ordinal)) continue;
-                    if (futureChain && model.Adrenaline.Single().AvailableAdrenaline < model.Decision.ActionSetOf(hero)
+                    if (futureChain && model.Adrenaline.Single(l => l.UnitId == hero.Value).AvailableAdrenaline < model.Decision.ActionSetOf(hero)
                         .Select(model.Decision.FindAction).Single(s => s.Type == kind).AdrenalineCost) continue;
                     long before = model.SubmittedCommands;
                     Click(go.GetComponent(buttonType));
@@ -673,7 +673,7 @@ namespace ProjectHero.Tests.PlayMode
                 if (frames % 120 == 0) yield return null;
                 Bootstrap.DriveFrameForTests(0, 1f / 60);
             }
-            if (futureChain) File.WriteAllText("优化任务/执行记录/12B-dodge-chain-trace.txt", chainTrace.ToString());
+            if (futureChain) File.WriteAllText("优化任务/执行记录/12C-dodge-chain-trace.txt", chainTrace.ToString());
             Assert.That(acceptedOpportunity, Is.GreaterThan(0), "Real reaction was not accepted: " + kind + " chain=" + chainWindow + " tick=" + model.Decision.Tick
                 + " resources=" + string.Join(";", model.Adrenaline) + " rejection=" + model.LastRejection
                 + " units=" + string.Join(";", model.Decision.VisibleUnits) + " window=" + model.Window
@@ -712,7 +712,7 @@ namespace ProjectHero.Tests.PlayMode
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay); file.Position = 0;
-                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12B-11-scene-dodge-chain.heroReplay"), file.ToArray());
+                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12C-11-scene-dodge-chain.heroReplay"), file.ToArray());
                 var loaded = ReplayFile.Load(file, model.Decision.Definition);
                 using (var player = new ReplayPlayer(model.Decision.Definition,
                     h => ProductionBattleComposition.Create(model.Decision.Definition, h.EncounterId, h.RuntimeInputs)))

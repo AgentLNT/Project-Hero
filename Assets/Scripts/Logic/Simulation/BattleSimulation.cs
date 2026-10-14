@@ -94,7 +94,7 @@ namespace ProjectHero.Logic.Simulation
     /// 阶段 11–13 强制位移"仅在命令前判定为假时成立。</item>
     /// </list>
     /// </summary>
-    public sealed class BattleSimulation : IDisposable, IResolutionDamageApplier
+    public sealed partial class BattleSimulation : IDisposable, IResolutionDamageApplier
     {
         private sealed class UnitRuntimeState : IStatusEffectHost
         {
@@ -3907,7 +3907,7 @@ namespace ProjectHero.Logic.Simulation
                 BuildActionPlanSnapshots(),
                 _scheduleRevision,
                 _battleEnd,
-                _factionResolver);
+                _factionResolver, _adrenaline.BuildSnapshots());
 
         /// <summary>
         /// 任务 09（产出 15）：<strong>AI 未来决策状态</strong>的规范化投影。

@@ -23,10 +23,10 @@ namespace ProjectHero.Tests.PlayMode
 
         [Test] public void EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence()
         {
-            var policy = ShadowCasePolicy.CreateDefault("task12B-final-classification", "battle-def-v4-defense-duration", true, true, true, true);
+            var policy = ShadowCasePolicy.CreateDefault("task12C-final-classification", "battle-def-v4-defense-duration", true, true, true, true);
             Assert.That(policy.TemporarilyUncomparable.Count, Is.EqualTo(73));
             Assert.That(policy.Approvals, Is.Empty, "Classifying new structures cannot approve old/new equality.");
-            var catalog = JsonUtility.FromJson<Catalog>(File.ReadAllText("优化任务/执行记录/12B-shadow-classification.json"));
+            var catalog = JsonUtility.FromJson<Catalog>(File.ReadAllText("优化任务/执行记录/12C-shadow-classification.json"));
             Assert.That(catalog.caseId, Is.EqualTo(policy.CaseId));
             Assert.That(catalog.sceneCaseId, Is.EqualTo(ShadowBattleRunner.DefaultCaseId));
             Assert.That(catalog.rulesVersion, Is.EqualTo(policy.RulesVersion));
@@ -65,7 +65,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.ShadowReports.All(r => r.ComparedCheckpoints > 0 && r.InfrastructureDifferences == 0
                 && r.UnalignedCheckpoints == 0 && r.Rejections.Count == 0), Is.True);
             var report = Bootstrap.LastShadowReport;
-            File.WriteAllText("优化任务/执行记录/12B-shadow-scene-observations.txt",
+            File.WriteAllText("优化任务/执行记录/12C-shadow-scene-observations.txt",
                 "scene=LegacyComparisonScene (Editor-only diagnostic copy)\nmode=Shadow\nframes=120\nlegacyAdvanceDelta=120\nnewDriverAdvance=0\nshadowWrites="
                 + Bootstrap.ShadowWrites.Total + "\nobservations=" + Bootstrap.LegacyObservations.Count
                 + "\n" + report.Describe() + "\n" + string.Join("\n", report.Differences.Select(d => d.ToString())));
