@@ -169,7 +169,11 @@ namespace ProjectHero.Tests.PlayMode
             if (profile == "reservation") Assert.That(events.OfType<ForcedDisplacementResolvedEvent>().Single().InvalidatedPlanIds.Count, Is.EqualTo(1));
             if (profile == "mutual-death") Assert.That(events.OfType<UnitDiedEvent>().Count(), Is.EqualTo(2));
             if (profile == "simultaneous-displacement") Assert.That(events.OfType<ForcedDisplacementResolvedEvent>().Count(), Is.EqualTo(2));
-            if (profile == "dodge-dependency") Assert.That(events.OfType<ActionPlanTerminatedEvent>().Count(), Is.EqualTo(2));
+            if (profile == "dodge-dependency")
+            {
+                Assert.That(events.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.MovementOriginInvalidatedByDodge), Is.EqualTo(2));
+                Assert.That(events.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.ReactionTriggered), Is.EqualTo(1));
+            }
             if (profile == "intercept") Assert.That(events.OfType<MoveContactResolvedEvent>().Count(), Is.EqualTo(1));
             if (profile == "lethal-displacement") { Assert.That(events.OfType<UnitDiedEvent>().Count(), Is.EqualTo(1)); Assert.That(events.OfType<ForcedDisplacementResolvedEvent>().Single().AppliedSteps, Is.EqualTo(1)); }
         }

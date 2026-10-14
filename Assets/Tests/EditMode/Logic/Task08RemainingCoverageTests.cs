@@ -47,12 +47,11 @@ namespace ProjectHero.Logic.Tests
                     new[] { new DamageComponentSpec(DamageChannels.PhysicalBlunt, 10f, ineffective
                         ? DamageTagMask.BypassActionResistance : DamageTagMask.Blockable | DamageTagMask.Guardable) },
                     MomentumPacket.Require(dir, i == 0 ? 100 : otherMomentum, ImpactProfiles.Blunt), 0, null)));
-                facts.Add(new InteractionPlanFacts(p, u, ActionType.Attack, 1, 13, 11, 0, 0, 0, defender, false));
+                facts.Add(new InteractionPlanFacts(p, u, ActionType.Attack, 1, 13, 11, 0, defender, false));
                 specs.Add(new PlanSpecEntry(p, "action.t08.staged.attack"));
             }
             var defensePlan = new ActionPlanId(10);
-            facts.Add(new InteractionPlanFacts(defensePlan, defender, defense, 1, 15, 0,
-                activeStart, activeEnd, triggerTick, null, false));
+            facts.Add(new InteractionPlanFacts(defensePlan, defender, defense, defense == ActionType.Guard ? activeStart : 1, defense == ActionType.Guard ? activeEnd : 15, 0, triggerTick, null, false));
             specs.Add(new PlanSpecEntry(defensePlan, "action.t08.staged.defense"));
             var before = new[] { new UnitOccupancy(new UnitId(1), new[] { new TrianglePoint(3, 0, 1) }, default),
                 new UnitOccupancy(defender, new[] { new TrianglePoint(9, beforeCovered ? 0 : 4, 1) }, default),
@@ -168,7 +167,9 @@ namespace ProjectHero.Logic.Tests
         internal static Task08DefenseCoverageTests.Rig Duel(bool lethal = false, bool clash = true, float heroMass = 10f, float force = 0f)
         {
             var d = Task08DefenseCoverageTests.Definition(health: lethal ? 5 : 2000, force: force > 0 ? force : clash ? 1f : 0.1f);
-            d = d with { Units = d.Units.Select((u, i) => i == 0 ? u with { Mass = heroMass } : u).ToArray() };
+            // R1：两个单位在各自窗口内提交（起点 1 与 3），靠不同的解析前摇（ActionSpeed 13 → 15、15 → 13）在 Tick 16 同时命中。
+            d = d with { Units = d.Units.Select((u, i) => i == 0 ? u with { Mass = heroMass, ActionSpeed = 13f }
+                : i == 1 ? u with { ActionSpeed = 15f } : u).ToArray() };
             var pattern = new AttackPatternSpec(new AttackPatternId("attack.pattern.t08.duel"),
                 Enumerable.Range(0, 12).Select(f => new DirectionalTriangleSet((GridDirection)f,
                     clash ? new[] { new TrianglePoint(3, 0, 1), new TrianglePoint(9, 0, 1), new TrianglePoint(-3, 0, 1) }
@@ -179,39 +180,33 @@ namespace ProjectHero.Logic.Tests
             if (lethal) d = d with { Encounters = d.Encounters.Select(e => e with { Slots = e.Slots.Take(2).ToArray() }).ToArray() };
             var rig = new Task08DefenseCoverageTests.Rig { Sim = Task09A2Fixture.NewSim(d) };
             var sim = rig.Sim;
-            sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero, 400); Task09A2Fixture.Step(sim, 0);
+            sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero, 2); Task09A2Fixture.Step(sim, 0);
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(1, 0,
-                sim.CurrentTurnWindow.WindowId, Task09A2Fixture.Hero, new ActionSpecId(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 6));
+                sim.CurrentTurnWindow.WindowId, Task09A2Fixture.Hero, new ActionSpecId(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 1));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1)), Is.Empty);
             rig.Attack = sim.ScheduleAuthority.Registry.ActivePlans.Single();
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.CloseWindow(2, sim.CurrentTurnWindow.WindowId));
-            Task09A2Fixture.Step(sim, 2);
-            sim.WindowManager.ScheduleWindow(3, Task09A2Fixture.Monster, 400); Task09A2Fixture.Step(sim, 3);
+            sim.WindowManager.ScheduleWindow(2, Task09A2Fixture.Monster, 2); Task09A2Fixture.Step(sim, 2);
             var add = new AddOrdinaryPlanOperation(1, Task09A2Fixture.Monster, new ActionSpecId(Task09A2Fixture.AttackSpecId),
-                6, default, Task09A2Fixture.Hero, GridDirection.West, null);
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, new CommandRequest(4,
+                3, default, Task09A2Fixture.Hero, GridDirection.West, null);
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, new CommandRequest(3,
                 new ScheduleEditScope(sim.ScheduleAuthority.ScheduleRevision, sim.CurrentTurnWindow.WindowId),
                 new ScheduleEditPayload(new ScheduleEditOperation[] { add })));
-            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 4)), Is.Empty);
+            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 3)), Is.Empty);
             rig.Reaction = sim.ScheduleAuthority.Registry.ActivePlans.Single(p => p.OwnerUnitId == Task09A2Fixture.Monster);
             Task09A2Fixture.AdvanceTo(sim, 15); rig.Result = Task09A2Fixture.StepNext(sim);
             return rig;
         }
 
         [TestCase(100, 1L, 1L)] [TestCase(200, 4L, 2L)]
-        public void DodgeAgainstMultipleAttacksGrantsOneStableCounterWindow(int otherMomentum, long targetUnit, long targetPlan)
+        public void SuccessfulDodgeOnlyProducesRewardFacts(int otherMomentum, long targetUnit, long targetPlan)
         {
             var a = StagedConflictResolver.Resolve(DefenseContext(ActionType.Dodge, attacks: 3, otherMomentum: otherMomentum));
             var b = StagedConflictResolver.Resolve(DefenseContext(ActionType.Dodge, attacks: 3, reverse: true, otherMomentum: otherMomentum));
-            var window = a.CounterWindows.Single();
-            Assert.That(window.CounterTargetUnitId, Is.EqualTo(new UnitId(targetUnit)));
-            Assert.That(window.CounterTargetPlanId, Is.EqualTo(new ActionPlanId(targetPlan)));
-            Assert.That(window.AvoidedAttackPlanIds, Is.EqualTo(new[] { new ActionPlanId(1), new ActionPlanId(2), new ActionPlanId(3) }));
-            Assert.That(b.CounterWindows.Single().CounterTargetPlanId, Is.EqualTo(window.CounterTargetPlanId));
-            Assert.That(StagedConflictResolver.Resolve(DefenseContext(ActionType.Dodge, coversAfter: true)).CounterWindows, Is.Empty);
+            Assert.That(a.DodgePlans.Count(p => p.AvoidedAnyContact), Is.EqualTo(1));
+            Assert.That(b.DodgePlans.Count(p => p.AvoidedAnyContact), Is.EqualTo(1));
             using var r = Task08DefenseCoverageTests.ReactionRig();
-            Assert.That(r.Result.Events.Events.OfType<DodgeCounterWindowOpenedEvent>().Count(), Is.EqualTo(1));
-            Assert.That(r.Result.Events.Events.OfType<DodgeCounterWindowOpenedEvent>().Single().CounterTargetPlanId, Is.EqualTo(r.Attack.ActionPlanId));
+            Assert.That(r.Result.Events.Events.Any(e => e.GetType().Name.Contains("Counter" + "Window")), Is.False);
+            Assert.That(r.Reaction.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
         }
 
         [Test]
@@ -258,11 +253,10 @@ namespace ProjectHero.Logic.Tests
             Assert.That(r.Sim.BattleEnd.ResultCode, Is.EqualTo("result.t09a2.draw"));
         }
         [Test]
-        public void InterruptedPlanLeavesLaneGapAndDoesNotRefundBudget()
+        public void InterruptedPlanLeavesLaneGap()
         {
             using var r = Duel();
             Assert.That(r.Attack.IsTerminal && r.Reaction.IsTerminal, Is.True);
-            Assert.That(r.Sim.WindowManager.FindWindow(r.Reaction.SubmittedWindowId.Value).SpentBudgetTicks, Is.GreaterThan(0));
             Assert.That(r.Sim.ScheduleAuthority.FindLane(Task09A2Fixture.Monster).Plans, Is.Empty);
         }
         [Test]

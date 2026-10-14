@@ -35,7 +35,7 @@ namespace ProjectHero.Authoring
     public static class BattleDefinitionBuilder
     {
         public const string RulesVersionV1 = "battle-def-v1";
-        public const string MainRulesVersion = "battle-def-v2-turn180";
+        public const string MainRulesVersion = "battle-def-v4-defense-duration";
 
         /// <summary>
         /// 主战斗场景的设计网格边界（顶点包围盒，偶数坐标，包含两个初始站位）。
@@ -48,13 +48,9 @@ namespace ProjectHero.Authoring
         public static readonly ProjectHero.Core.Pathfinding.GridPoint MainSceneBoundaryMax =
             new ProjectHero.Core.Pathfinding.GridPoint(16, 16);
 
-        public const int DefaultBlockReactionWindupTicks = FrozenDesignValues.BlockReactionWindupTicks;
-        public const int DefaultBlockRecoveryTicks = 30;
-        public const int DefaultDodgeReactionWindupTicks = FrozenDesignValues.DodgeReactionWindupTicks;
-        public const int DefaultDodgeRecoveryTicks = 30;
-        public const int DefaultGuardWindupTicks = 15;
-        public const int DefaultGuardActiveTicks = 60;
-        public const int DefaultGuardRecoveryTicks = 15;
+        public const int DefaultBlockDurationTicks = FrozenDesignValues.BlockDurationTicks;
+        public const int DefaultDodgeDurationTicks = FrozenDesignValues.DodgeDurationTicks;
+        public const int DefaultGuardDurationTicks = FrozenDesignValues.GuardDurationTicks;
         public const int DefaultGuardPartialResistanceQ10 = 512;
         public const int DefaultGuardMomentumResistanceQ10 = 512;
         public const int DefaultMoveBaseStepTicks = 12;
@@ -64,6 +60,9 @@ namespace ProjectHero.Authoring
         public const int DefaultReactionCommandIngressLeadTicks = 1;
         public const int DefaultReactionMinimumLeadTicks = 1;
         public const int MainEncounterInitialMetaResource = 10;
+
+        /// <summary>主场景每个回合窗口的固定打开时长（R1；3 秒）。</summary>
+        public const int MainEncounterWindowDurationTicks = 180;
 
         // ================= 公开入口 =================
 
@@ -395,7 +394,7 @@ namespace ProjectHero.Authoring
             AddAction(actions, new ActionSpec(
                 new ActionSpecId(LegacyIdMigrationManifest.ActionGuard),
                 ProjectHero.Logic.Actions.ActionType.Guard,
-                new GuardTimingSpec(DefaultGuardWindupTicks, DefaultGuardActiveTicks, DefaultGuardRecoveryTicks),
+                new GuardTimingSpec(DefaultGuardDurationTicks),
                 new GuardPayloadSpec(guardResistances, DefaultGuardMomentumResistanceQ10,
                     DefenseTagMask.Blockable | DefenseTagMask.Guardable),
                 AdrenalineCost: 0), rules, errors);
@@ -410,14 +409,14 @@ namespace ProjectHero.Authoring
             AddAction(actions, new ActionSpec(
                 new ActionSpecId(LegacyIdMigrationManifest.ActionBlock),
                 ProjectHero.Logic.Actions.ActionType.Block,
-                new BlockReactionTimingSpec(DefaultBlockReactionWindupTicks, DefaultBlockRecoveryTicks),
+                new BlockReactionTimingSpec(DefaultBlockDurationTicks),
                 new BlockPayloadSpec(DefenseTagMask.Blockable | DefenseTagMask.Guardable),
                 FrozenDesignValues.BlockAdrenalineCost), rules, errors);
 
             AddAction(actions, new ActionSpec(
                 new ActionSpecId(LegacyIdMigrationManifest.ActionDodge),
                 ProjectHero.Logic.Actions.ActionType.Dodge,
-                new DodgeReactionTimingSpec(DefaultDodgeReactionWindupTicks, DefaultDodgeRecoveryTicks),
+                new DodgeReactionTimingSpec(DefaultDodgeDurationTicks),
                 new DodgePayloadSpec(DefaultDodgeMaxDistanceSteps, movementPattern),
                 FrozenDesignValues.DodgeAdrenalineCost), rules, errors);
         }
@@ -494,7 +493,7 @@ namespace ProjectHero.Authoring
                 BattleDefinitionAssembler.CanonicalizeSlots(slots),
                 BattleDefinitionAssembler.CanonicalizeControllers(controllers),
                 victory,
-                new TurnSubmissionDefinition(180, new EncounterSlotId(LegacyIdMigrationManifest.SlotHero)));
+                new TurnSubmissionDefinition(MainEncounterWindowDurationTicks, new EncounterSlotId(LegacyIdMigrationManifest.SlotHero)));
         }
 
         // ================= 私有助手 =================

@@ -237,7 +237,7 @@ namespace ProjectHero.Authoring.Tests.Task06
             => new CommandRequest(
                 targetTick,
                 new WindowCommandScope(new WindowId(windowId)),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow));
+                new WindowCommandPayload((WindowCommandKind)0));
 
         private sealed class TickRun
         {

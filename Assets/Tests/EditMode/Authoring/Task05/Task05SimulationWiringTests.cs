@@ -26,52 +26,6 @@ using T03 = ProjectHero.Authoring.Tests.Task03.Task03;
 
 namespace ProjectHero.Authoring.Tests.Task05
 {
-    /// <summary>
-    /// <strong>任务 05 的端到端接线用例</strong>（<c>BattleSimulation</c> 真实 Step）。
-    ///
-    /// 与 <c>Task05ActionPlanAndLaneTests</c> / <c>Task05ScheduleEditorTests</c> /
-    /// <c>Task05StartGateAndTerminalTests</c> / <c>Task05ReactionOpportunityTests</c> 的分工：
-    /// <list type="bullet">
-    /// <item>那四个夹具<strong>直接驱动</strong>排程权威/编辑器/门禁/协调器与机会系统，
-    /// 证明"算法与契约"；</item>
-    /// <item>本文件<strong>只</strong>经公开入口 <c>CommandIngress</c> 提交真实命令、
-    /// 经 <c>BattleSimulation.Step</c> 推进，证明"这些系统真的接在了既定阶段上"。
-    /// 因此这里的断言以<strong>阶段顺序、快照、事件与权威状态</strong>为准。</item>
-    /// </list>
-    ///
-    /// 真实资产时序（02B 定义 + 夹具单位属性，已在文件中逐项核对）：
-    /// <c>unit.hero.radius_1</c> 与 <c>unit.monster.radius_2</c> 的
-    /// <c>ActionSpeed = MoveSpeed = 10</c>，而基准速度 = 20 ⇒
-    /// <c>ResolvedWindupTicks = 2 × BaseWindupTicks</c>。
-    /// <c>action.quick_slash.radius_1</c> 的 <c>BaseWindupTicks = 30</c>、<c>RecoveryTicks = 30</c>
-    /// ⇒ 解析后前摇 60、<c>ImpactTick = Start + 60</c>、<c>EndTick = Start + 90</c>、
-    /// <c>BudgetCostTicks = 90</c>。
-    ///
-    /// <para><strong>§装配说明（任务 07 生效后新增，2026-09 修订）</strong></para>
-    ///
-    /// 任务 07 把"新增/增加预算必须有仍接受提交的当前窗口、且命令必须声明它"
-    /// （00 号规则 18）接进了唯一排程事务：Add 现在必须能解析到
-    /// <strong>当前窗口</strong>（<c>WINDOW_NO_OPEN_WINDOW</c> /
-    /// <c>WINDOW_BUDGET_SOURCE_CLOSED_OR_MISMATCH</c> / <c>WINDOW_STALE_OR_CLOSED</c> /
-    /// <c>WINDOW_INSUFFICIENT_BUDGET</c> / <c>WINDOW_ISSUER_CANNOT_CONTROL_UNIT</c>
-    /// 任一不满足即<strong>整批拒绝、零局部写入</strong>）。
-    /// 本文件原本的 <c>ScheduleEditScope(revision, null)</c> + 无窗口装配因此不再合规：
-    /// 25 个用例在第一个 Add 上被整批拒绝（"没有计划 ⇒ 没有 Lane"），
-    /// 第 26 个（<c>SubmittedWindowIdDoesNotFilterPlanExecution</c>）不经事务，见其文档说明。
-    ///
-    /// 现在的装配（<see cref="NewSim"/> / <see cref="NewOutsiderSim"/>）做两件事：
-    /// <list type="number">
-    /// <item>按已验证定义的 <c>ControllerBinding</c> 登记控制权
-    /// （它是 <c>CanControl</c> 的唯一判据，也是提交授权判定的第一步）；</item>
-    /// <item>在 Tick 0 打开一个属于<strong>计划拥有者</strong>的脚本窗口（预算 1000、整场不关闭），
-    /// 并由 <c>Schedule(...)</c> 把<strong>真实的</strong> <c>CurrentTurnWindow.WindowId</c>
-    /// 写进命令 scope。</item>
-    /// </list>
-    ///
-    /// 因此本文件测的仍然是它原本要测的东西（排程事务、启动门禁、终态清理、自动延期、
-    /// 反应机会接线），而不是窗口系统本身；窗口只是这些用例重新变得<strong>合规</strong>的前提。
-    /// 唯一例外的用例见 <c>SubmittedWindowIdDoesNotFilterPlanExecution</c>（附新契约说明）。
-    /// </summary>
     [TestFixture]
     public sealed class Task05SimulationWiringTests
     {
@@ -91,11 +45,7 @@ namespace ProjectHero.Authoring.Tests.Task05
         // 夹具
         // ————————————————————————————————————————————————————————————
 
-        /// <summary>
-        /// 脚本窗口的预算（整数 Tick）。本文件任何用例同时预留的总量不超过 3 × 90 = 270
-        /// （解析后的攻击 <c>BudgetCostTicks = 90</c>），因此 1000 保证"预算不足"永远不是失败原因。
-        /// </summary>
-        private const int ScriptWindowBudget = 1000;
+        private const int ScriptWindowDuration = 1000;
 
         /// <summary>
         /// 最近一次 <see cref="NewSim"/> / <see cref="NewOutsiderSim"/> 装配的模拟。
@@ -106,18 +56,6 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// </summary>
         private static BattleSimulation _fixtureSim;
 
-        /// <summary>
-        /// 本文件统一的<strong>合规装配</strong>（任务 07「必须产出」4 与 00 号规则 18）：
-        /// <list type="number">
-        /// <item>把已验证定义里的 <c>ControllerBinding</c> 登记进唯一窗口管理器
-        /// （<c>TurnWindowManager.CanControl</c> 是提交授权的唯一判据）；</item>
-        /// <item>在 Tick 0 打开一个属于计划拥有者的脚本窗口（预算 <see cref="ScriptWindowBudget"/>、
-        /// 整场不关闭），使"新增/增加预算"恒有<strong>仍接受提交的当前窗口</strong>——
-        /// 这正是任务 07 的排程事务对 Add 的硬前置条件。</item>
-        /// </list>
-        /// 窗口本身<strong>不</strong>是本文件的被测对象（窗口系统的证据在 <c>Task07*</c> 系列）；
-        /// 它只是让本文件重新测回原本的意图：排程事务 / 启动门禁 / 终态清理 / 自动延期 / 反应机会。
-        /// </summary>
         private static BattleSimulation NewSim(BattleSimulationAssembly assembly = null)
         {
             BattleSimulation sim = T03.NewSim(assembly);
@@ -203,7 +141,7 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// </summary>
         private static void OpenScriptWindow(BattleSimulation sim, UnitId owner)
         {
-            sim.WindowManager.ScheduleWindow(0L, owner, ScriptWindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, owner, ScriptWindowDuration);
             TurnWindow window = sim.WindowManager.TryOpenDueWindow(0L);
             Assert.That(window, Is.Not.Null, "夹具前提：Tick 0 的脚本窗口必须打开");
             Assert.That(window.OwnerUnitId, Is.EqualTo(owner), "夹具前提：窗口拥有者必须是计划拥有者");
@@ -212,10 +150,6 @@ namespace ProjectHero.Authoring.Tests.Task05
                 "夹具前提：脚本窗口必须仍在接受提交");
         }
 
-        /// <summary>
-        /// 命令 scope 里的期望窗口 = <strong>真实的当前窗口</strong>（绝不猜 ID，也绝不复用"最近见过的窗口"）。
-        /// 任务 07 的预算事务要求"新增/增加预算必须声明仍接受提交的当前窗口"（00 号规则 18）。
-        /// </summary>
         private static CommandRequest Schedule(
             long targetTick, long expectedRevision, params ScheduleEditOperation[] operations)
         {
@@ -547,8 +481,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.AutomaticDeferralCount, Is.EqualTo(1));
             Assert.That(plan.LastRequestedStartTick, Is.EqualTo(3L),
                 "系统自动延期绝不覆盖 LastRequestedStartTick");
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(plan.BudgetCostTicks),
-                "延期期间预留保持未消费");
             Assert.That(sim.ScheduleRevision, Is.EqualTo(2L), "成功自动延期恰好 +1（Add 的 1 + 延期 1）");
             Assert.That(tick3.Snapshot.Plans[0].AutomaticDeferralCount, Is.EqualTo(1));
 
@@ -644,7 +576,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.IsTerminated, Is.True);
             Assert.That(plan.TerminationReason, Is.EqualTo(ActionTerminationReason.AutoDeferralLimitExceeded));
             Assert.That(plan.TerminalTick, Is.EqualTo(1L));
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(0), "终态必须释放锁定前预留");
             Assert.That(sim.ScheduleRevision, Is.EqualTo(1L),
                 "终止不是排程事务，不得推进修订号");
             Assert.That(sim.ScheduleAuthority.FindLane(T03.HeroUnitId).Count, Is.EqualTo(0),
@@ -747,13 +678,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(snapshot.NextActionPlanId, Is.EqualTo(secondId + 1L));
         }
 
-        /// <summary>
-        /// <c>PlanTimingAppearsInCanonicalSnapshot</c>（端到端）。
-        ///
-        /// 五类动作的解析时序字段进入快照；这里用真实攻击断言其一：
-        /// 解析前摇（速度 10 vs 基准 20 ⇒ 2 倍）、<c>ImpactTick</c>、
-        /// <c>EndTick</c> 与预算成本严格等于前摇 + 后摇。
-        /// </summary>
         [Test]
         public void PlanTimingAppearsInCanonicalSnapshot()
         {
@@ -769,8 +693,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(snapshot.ImpactTick, Is.EqualTo(4L + ResolvedWindup));
             Assert.That(snapshot.StartTick, Is.EqualTo(4L));
             Assert.That(snapshot.EndTick, Is.EqualTo(4L + PlanDuration));
-            Assert.That(snapshot.BudgetCostTicks, Is.EqualTo(ResolvedWindup + Recovery));
-            Assert.That(snapshot.ReservedTurnBudgetTicks, Is.EqualTo(snapshot.BudgetCostTicks));
             Assert.That(snapshot.PrimaryTargetRelation, Is.Not.EqualTo(0),
                 "必须由权威 FactionRelationResolver 计算（不是恒 Self 的缺省值）");
         }
@@ -900,23 +822,14 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// 任意（甚至根本不存在的）窗口 ID 的普通计划照样在第 7 阶段被原子锁定/启动，
         /// 照常走到 <c>EndTick</c> 并自然完成；窗口之外的计划也一样启动。
         ///
-        /// 【任务 07 说明，未改动任何断言】本用例是<strong>唯一</strong>不经排程事务
-        /// （因此也不需要当前窗口）的用例：它直接经工厂造计划并注册进 Lane。
-        /// 它之所以仍然成立，依赖当前装配事实：阶段 7 的原子启动提交端口是任务 05 的
-        /// <c>NoTurnBudgetCommitPort</c>（默认装配），它只把预留投影清零、<strong>不</strong>查询来源窗口；
-        /// 若日后把任务 07 的 <c>TurnWindowBudgetAuthority.Commit</c> 接成启动提交端口，
-        /// 则"来源窗口不存在 / 不持有该计划的未消费预留"会让启动提交以
-        /// <c>RESOURCE_COMMIT_ERROR</c> 失败（<c>SCHEDULE_START_GATE_COMMIT_INCONSISTENT</c>），
-        /// 本用例的构造就必须改成"经真实 Add 事务取得来源窗口"。该耦合已上报，见交接说明。
+        /// R1 后启动提交不再消费任何资源；来源窗口只约束起点区间，不参与执行过滤。
         /// </summary>
         [Test]
         public void SubmittedWindowIdDoesNotFilterPlanExecution()
         {
             BattleSimulation sim = NewSim();
 
-            // 任务 07 起"窗口归属"不再只是审计字段：计划必须经真实 Add 事务取得
-            // **真实的**来源窗口与账本预留，启动门禁的原子提交才能把 Reserved 转成 Spent。
-            // 因此本用例改为经权威事务创建计划（不建立第二套注册表，也不手写窗口归属）。
+            // 计划经权威事务创建，取得真实的来源窗口（不建立第二套注册表，也不手写窗口归属）。
             WindowId submitted = sim.CurrentTurnWindow.WindowId;
             Submit(sim, Schedule(0L, 0L, AddHeroAttack(1L, 0L)));
 
@@ -925,7 +838,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             Assert.That(plan.SubmittedWindowId.HasValue, Is.True);
             Assert.That(plan.SubmittedWindowId.Value.Value, Is.EqualTo(submitted.Value),
-                "新计划的预算来源窗口必须等于本事务的当前窗口");
+                "新计划的来源窗口必须等于本事务的当前窗口");
             Assert.That(plan.State, Is.EqualTo(ActionPlanState.Running),
                 "窗口归属不得参与执行过滤");
             Assert.That(plan.LockedAtTick, Is.EqualTo(0L));
@@ -941,7 +854,7 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// <c>ImpactTickTransitionsToRecoveryAndStillEmitsIntent</c>（端到端，可观察部分）。
         ///
         /// 在 <c>ImpactTick</c>：计划<strong>仍然 Running</strong>（<c>ImpactTick</c> 不是结束点），
-        /// 已公开机会的 <c>TriggerTick</c> 恰等于它，且计划只在 <c>EndTick</c> 自然完成。
+        /// 已公开机会的 <c>SourceImpactTick</c> 恰等于它，且计划只在 <c>EndTick</c> 自然完成。
         ///
         /// 说明（如实披露）：任务 05 没有冲突图/Intent 队列（任务 08），
         /// 因此"恰好产生一次 <c>AttackIntent</c>"的<strong>事件</strong>证据不在本任务范围内；
@@ -966,7 +879,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.EndTick, Is.GreaterThan(plan.ImpactTick));
 
             ReactionOpportunityRuntime opportunity = sim.ReactionOpportunities.ActiveOpportunities[0];
-            Assert.That(opportunity.TriggerTick, Is.EqualTo(impactTick),
+            Assert.That(opportunity.SourceImpactTick, Is.EqualTo(impactTick),
                 "触发 Tick 由来源攻击的 ImpactTick 唯一推导");
             Assert.That(sim.CurrentSnapshot.Plans[0].ImpactTick, Is.EqualTo(impactTick));
 
@@ -1201,8 +1114,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(second.TerminationReason, Is.EqualTo(ActionTerminationReason.BattleEnded));
             Assert.That(first.TerminalTick, Is.EqualTo(3L));
             Assert.That(second.TerminalTick, Is.EqualTo(3L));
-            Assert.That(first.ReservedTurnBudgetTicks, Is.EqualTo(0));
-            Assert.That(second.ReservedTurnBudgetTicks, Is.EqualTo(0));
 
             List<ActionPlanTerminatedEvent> terminated = EventsOf<ActionPlanTerminatedEvent>(ended);
             Assert.That(terminated.Count, Is.EqualTo(2));
@@ -1251,8 +1162,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             // "MovementSegment 与空间 Reservation"（插在任务 05 预先冻结的
             // ActionPlanCleanupOrder.MovementAndReservation = 500 槽位）。
             // 顺序按 (Order, ParticipantId) 升序，与装配枚举顺序无关。
-            // 任务 07 接入第四个固定清理参与者：TurnBudget 账本与肾上腺素预留
-            // （ActionPlanCleanupOrder.BudgetAndAdrenaline = 600）。
             Assert.That(sim.TerminalCoordinator.Participants.Count, Is.EqualTo(4),
                 "固定清理参与者恰好四个（停止调度 + 机会绑定 + 移动段/预留 + 预算/肾上腺素）");
             Assert.That(sim.TerminalCoordinator.Participants[0].ParticipantId,
@@ -1443,7 +1352,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(opportunity.SourceAttackPlanId, Is.EqualTo(attack.ActionPlanId));
             Assert.That(opportunity.DefenderUnitId, Is.EqualTo(T03.EnemyUnitId));
             Assert.That(opportunity.TelegraphTick, Is.EqualTo(attack.StartTick));
-            Assert.That(opportunity.TriggerTick, Is.EqualTo(attack.ImpactTick));
+            Assert.That(opportunity.SourceImpactTick, Is.EqualTo(attack.ImpactTick));
             Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Open));
             Assert.That(sim.OpenedReactionOpportunitiesThisTick.Count, Is.EqualTo(1));
 
@@ -1453,7 +1362,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(snapshot.ReactionOpportunities[0].ReactionOpportunityId, Is.EqualTo(opportunity.Id.Value));
             Assert.That(snapshot.ReactionOpportunities[0].SourceAttackPlanId, Is.EqualTo(attack.ActionPlanId.Value));
             Assert.That(snapshot.ReactionOpportunities[0].TelegraphTick, Is.EqualTo(attack.StartTick));
-            Assert.That(snapshot.ReactionOpportunities[0].TriggerTick, Is.EqualTo(attack.ImpactTick));
+            Assert.That(snapshot.ReactionOpportunities[0].SourceImpactTick, Is.EqualTo(attack.ImpactTick));
             Assert.That(snapshot.ReactionOpportunities[0].State, Is.EqualTo((int)ReactionOpportunityState.Open));
             Assert.That(snapshot.ReactionOpportunities[0].OpenOptionCount, Is.GreaterThan(0));
             Assert.That(snapshot.NextReactionOpportunityId,
@@ -1473,26 +1382,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(EventsOf<ActionPlanCreatedEvent>(tick0).Count, Is.EqualTo(1));
         }
 
-        /// <summary>
-        /// <c>ReactionCommandIsAcceptedThroughSimulationCommandPhase</c>（端到端接线）。
-        ///
-        /// 反应命令（阶段 6）经唯一机会系统接受 ⇒ 直接创建 <strong>Locked</strong> 的统一计划：
-        /// 固定区间、<c>BudgetCostTicks = 0</c>、<c>SubmittedWindowId = null</c>、
-        /// 目的格被权威记录；接受<strong>不</strong>推进 <c>ScheduleRevision</c>。
-        ///
-        /// 【任务 07 前提】接受反应不要求窗口（00 号规则 26），但任务 07 把唯一肾上腺素账本接进了
-        /// 接受事务：费用来自 <c>ActionSpec.AdrenalineCost</c>，从<strong>防御者</strong>
-        /// （本用例里是敌人）的 <c>AvailableAdrenaline</c> 原子转入计划预留，额度不足即整条拒绝。
-        /// 生产初始化把开局 Available 固定为 0，因此夹具在首个 Step 之前显式写入该单位的开局额度
-        /// （见 <see cref="SeedOpeningAdrenaline"/>）。这与"窗口/提交权限"无关。
-        ///
-        /// 【任务 09 前提】反应命令的<strong>作用单位</strong>是机会的防御者
-        /// （<c>CommandAuthority.TryCollectReactionUnits</c>：载荷不携带单位，目的就是不让生产者自报），
-        /// 因此发行者身份必须是<strong>防御者的控制者</strong>——敌人（<c>UnitId(1)</c>）在
-        /// 已验证定义里由 <c>controller.enemy_ai</c> 控制，本用例因此经 <see cref="SubmitAsAi"/>
-        /// 发行（载荷、scope、目标 Tick 与"由谁发行"以外的每个字段都未改变）。
-        /// 承重断言（被接受 / 计划形状 / 快照 / 修订号）逐字未动。
-        /// </summary>
         [Test]
         public void ReactionCommandIsAcceptedThroughSimulationCommandPhase()
         {
@@ -1527,14 +1416,13 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(dodge.ActionType, Is.EqualTo(ActionType.Dodge));
             Assert.That(dodge.Origin, Is.EqualTo(ActionPlanOrigin.Reaction));
             Assert.That(dodge.State, Is.EqualTo(ActionPlanState.Locked), "反应计划直接 Locked");
-            Assert.That(dodge.BudgetCostTicks, Is.EqualTo(0));
             Assert.That(dodge.SubmittedWindowId, Is.Null);
-            Assert.That(dodge.TriggerTick, Is.EqualTo(opportunity.TriggerTick));
+            Assert.That(dodge.SourceImpactTick, Is.EqualTo(opportunity.SourceImpactTick));
             Assert.That(dodge.ReactionOpportunityId.Value, Is.EqualTo(opportunity.Id));
             Assert.That(dodge.SourceThreatPlanId.Value,
                 Is.EqualTo(opportunity.SourceAttackPlanId));
-            Assert.That(dodge.StartTick, Is.EqualTo(opportunity.TriggerTick - dodge.ReactionWindupTicks));
-            Assert.That(dodge.EndTick, Is.EqualTo(opportunity.TriggerTick + dodge.RecoveryTicks));
+            Assert.That(dodge.StartTick, Is.EqualTo(opportunity.SourceImpactTick));
+            Assert.That(dodge.EndTick, Is.EqualTo(opportunity.SourceImpactTick + dodge.DurationTicks));
             Assert.That(dodge.Destination.HasValue, Is.True);
             Assert.That(dodge.Destination.Value.X, Is.EqualTo(destination.X));
             Assert.That(dodge.Destination.Value.Y, Is.EqualTo(destination.Y));
@@ -1545,7 +1433,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             ActionPlanSnapshot snapshot = SnapOf(tick1.Snapshot, dodge.ActionPlanId.Value);
             Assert.That(snapshot.ReactionOpportunityId, Is.EqualTo(opportunity.Id.Value));
             Assert.That(snapshot.SourceThreatPlanId, Is.EqualTo(opportunity.SourceAttackPlanId.Value));
-            Assert.That(snapshot.TriggerTick, Is.EqualTo(opportunity.TriggerTick));
+            Assert.That(snapshot.SourceImpactTick, Is.EqualTo(opportunity.SourceImpactTick));
             Assert.That(snapshot.HasDestination, Is.True);
             Assert.That(snapshot.DestinationX, Is.EqualTo(destination.X));
             Assert.That(snapshot.DestinationY, Is.EqualTo(destination.Y));
@@ -1553,9 +1441,9 @@ namespace ProjectHero.Authoring.Tests.Task05
         }
 
         /// <summary>
-        /// <c>ReactionCommandCannotProvideTriggerTick</c>（端到端）。
+        /// <c>ReactionCommandCannotProvideSourceImpactTick</c>（端到端）。
         ///
-        /// 载荷在<strong>类型上</strong>就没有 TriggerTick：命令只能指名机会与动作，
+        /// 载荷在<strong>类型上</strong>就没有 SourceImpactTick：命令只能指名机会与动作，
         /// 触发 Tick 恒等于来源攻击的 ImpactTick。本用例用"动作定义与载荷种类不一致"
         /// 这一可表达的错误证明命令路径不会接受生产者指定的时刻/动作。
         ///
@@ -1565,7 +1453,7 @@ namespace ProjectHero.Authoring.Tests.Task05
         /// （<c>COMMAND_ISSUER_CANNOT_CONTROL_UNIT</c>），测不到本用例要测的码。
         /// </summary>
         [Test]
-        public void ReactionCommandCannotProvideTriggerTick()
+        public void ReactionCommandCannotProvideSourceImpactTick()
         {
             BattleSimulation sim = NewSim(
                 new BattleSimulationAssembly(areaThreatCandidateSource: new EnemyAreaThreat()));

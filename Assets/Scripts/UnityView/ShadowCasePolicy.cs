@@ -112,7 +112,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
                     && proof.CaseId == caseId && proof.RulesVersion == rulesVersion && proof.DefinitionHash == definitionHash
                     && !string.IsNullOrWhiteSpace(proof.Reason) && proof.ExecutedCases != null && proof.ExecutedCases.Count > 0
                     && (proof.Category == "NewRule" || proof.Category == "ReplacedRepresentation"
-                        || proof.Category == "RemovedResource" || proof.Category == "DiagnosticOnly");
+                        || proof.Category == "RemovedResource" || proof.Category == "RemovedRepresentation" || proof.Category == "DiagnosticOnly");
                 if (valid) foreach (var test in proof.ExecutedCases)
                     if (string.IsNullOrWhiteSpace(test) || test.IndexOf('*') >= 0 || test.IndexOf('.') < 0) valid = false;
                 if (!valid) { errors.Add("SHADOW_MIGRATION_EVIDENCE_INVALID|" + (proof?.Id ?? "<null>")); continue; }
@@ -158,21 +158,17 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// <list type="bullet">
         /// <item><c>currentWindowId</c>/<c>nextWindowTick</c>/<c>nextWindowOrdinal</c>/
         /// <c>lastClosedWindowId</c>/<c>windows.count</c> 与逐窗口
-        /// <c>windows[i].*</c>（拥有者、打开 Tick、整数预算四项、打开/接受提交位、关闭原因、
-        /// 按计划归属的预留明细、<c>budgetIdentity</c> 与预留明细合计一致性）；</item>
-        /// <item><c>resources.turnBudgetAvailable/Reserved/Spent</c> 与
-        /// <c>resources.turnBudgetIdentity</c>、<c>resources.metaResource</c>；</item>
+        /// <c>windows[i].*</c>（拥有者、打开 Tick、打开时长与区间终点、打开/接受提交位、关闭原因）；</item>
+        /// <item><c>resources.metaResource</c>；</item>
         /// <item><c>concurrentAction.hasActiveAuthorization/windowId/playerUnitId</c> 与
         /// "授权必须指向仍开放的当前窗口且不是拥有者本人"这一派生不变量；</item>
         /// <item><c>adrenaline[unitId].available/cycleId/reservedTotal/reservations</c> 与
         /// 单位只读镜像一致性（窗口打开清零、跨其他单位窗口保留的<b>证据字段</b>）；</item>
-        /// <item><c>plans[i].budgetCostTicks</c>/<c>reservedTurnBudgetTicks</c>/
-        /// <c>submittedWindowLedger</c>/<c>budgetLedgerLinked</c>——即"计划跨窗口切换时
-        /// 身份、状态、排程与预算归属逐字不变"的检查点。</item>
+        /// <item><c>plans[i].submittedWindowLedger</c>——即"计划跨窗口切换时来源窗口事实逐字不变"的检查点。</item>
         /// </list>
         ///
         /// 同时额外登记本任务在<strong>生产旧侧观测通道</strong>上无法采样的字段：
-        /// 旧权威里根本没有"提交窗口""整数 Tick 预算账本""并发提交授权""肾上腺素周期账本"
+        /// 旧权威里根本没有"提交窗口""固定时长窗口区间""并发提交授权""肾上腺素周期账本"
         /// 这四类对象（旧侧只有逐帧时间累加器与浮点 <c>CurrentAdrenaline</c>）。
         ///
         /// 既有用例使用默认值 ⇒ 它们的报告逐字节不变（不引入任何新差异类别）。
@@ -393,6 +389,18 @@ namespace ProjectHero.Core.Compatibility.Runtime
             if (compareScheduleFacts)
             {
                 RegisterTask05ScheduleRegistrations(temporarilyUncomparable, rejections);
+                if (rulesVersion == "battle-def-v4-defense-duration")
+                {
+                    const string source = "CombatSampleScene/Core/Gameplay#TacticsController";
+                    foreach (string field in new[] { "plans[i].activeStartTick", "plans[i].activeEndTick",
+                        "plans[i].reactionWindupTicks", "plans[i].activeTicks", "events.DodgeCounterWindowOpenedEvent", "staged.CounterWindows" })
+                        RegisterTemporarilyUncomparable(temporarilyUncomparable,rejections,source,field,
+                            "R2/R3 removes this defense representation; no equality comparison or replacement counter rule.","12B","12B native evidence");
+                    foreach (string field in new[] { "plans[i].durationTicks", "plans[i].defenseQuotaRemainingQ10",
+                        "plans[i].reactionTriggeredAtTick", "plans[i].sourceImpactTick", "reactionOptions[i].responseDeadlineTick" })
+                        RegisterTemporarilyUncomparable(temporarilyUncomparable,rejections,source,field,
+                            "R2 duration, quota, actual first contact, source boundary and ingress deadline require executable rule evidence.","12B","12B native evidence");
+                }
             }
 
             // —— 任务 06：LogicGrid 占位 / 移动段 / Reservation 的生产通道（旧侧观测）登记项 ——
@@ -415,7 +423,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             //    （旧侧观测）登记项 ——
             //
             // 为什么必须登记而不是"转成批准差异"或"塞进可比较字段"：
-            // 旧权威里根本没有"提交窗口""整数 Tick 预算账本""并发提交授权""个人肾上腺素周期账本"
+            // 旧权威里根本没有"提交窗口""固定时长窗口区间""并发提交授权""个人肾上腺素周期账本"
             // 这四类对象——旧玩法里玩家单位可以随时直接下达动作（TacticsController），
             // 时间是逐帧浮点累加器（BattleTimeline._timeAccumulator），
             // 肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline 且逐帧衰减。
@@ -561,7 +569,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         }
 
         /// <summary>
-        /// 任务 07 的登记项：覆盖「窗口打开/关闭、整数 Tick 预算、并发提交授权、肾上腺素周期账本、
+        /// 任务 07 的登记项：覆盖「窗口打开/关闭、窗口区间、并发提交授权、肾上腺素周期账本、
         /// 跨窗口计划不变性」五类事实在<strong>生产旧侧观测通道</strong>上的覆盖边界。
         ///
         /// 每条都带旧侧对象路径 + 字段 + 原因 + 负责任务 + 最迟清零门槛；
@@ -575,7 +583,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             const string gate = "任务 10 切换主场景到 New 之前";
             // 旧侧的「战斗所有者」：它没有任何回合窗口/提交权限对象（旧玩法随时可下令）。
             const string legacyBattleOwner = "CombatSampleScene/Manager#BattleManager";
-            // 旧侧唯一的时间事实：逐帧浮点累加器（不是「按动作预留的整数 Tick 预算」）。
+            // 旧侧唯一的时间事实：逐帧浮点累加器（不是「固定时长的整数 Tick 窗口区间」）。
             const string legacyTime = "CombatSampleScene/CombatDemo#BattleTimeline._timeAccumulator";
             // 旧侧唯一的玩家输入路径：直接执行动作，没有「授权」这一中间对象。
             const string legacyInput = "CombatSampleScene/Core/Gameplay#TacticsController";
@@ -589,10 +597,6 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 + "（玩家可随时经 TacticsController 下达动作，系统按逐帧时间线推进），"
                 + "因此该字段在只读检查点上没有可采样的旧侧事实。"
                 + "逐窗口事实在 Logic 对 Logic 通道上真比较（Task07TurnWindowFacts）。";
-            const string whyNoIntegerBudget =
-                "旧侧时间只有逐帧浮点累加器（BattleTimeline._timeAccumulator），"
-                + "既没有「按动作预留」的整数 Tick 预算，也没有 Available/Reserved/Spent 三态账本与恒等式"
-                + "（Reserved + Spent + Available == Total）；整数预算是任务 07 的新语义，旧侧无对应事实。";
             const string whyNoAuthority =
                 "旧侧没有「并发提交授权」这一对象：非窗口拥有者提交普通动作在旧玩法里不存在该概念，"
                 + "也没有由权威定义定价、按窗口撤销的一次性授权；旧侧无对应可采样事实。";
@@ -600,6 +604,18 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 "旧侧肾上腺素是 CombatUnit 的浮点 CurrentAdrenaline（逐帧衰减、没有个人周期号），"
                 + "新侧是每单位 AdrenalineLedger（整数 Available + CycleId + 按 ReservationCycleId 归属的预留）；"
                 + "周期号、预留明细与「自己窗口打开先递增周期再清零」这一时机在旧侧都没有对应事实。";
+
+            // Historical resource declarations remain auditable even after their state is removed.
+            // R1 evidence resolves each of these declarations as RemovedResource, never as a comparison.
+            foreach (string removed in new[] {
+                "windows[i].totalBudgetTicks", "windows[i].reservedBudgetTicks", "windows[i].spentBudgetTicks",
+                "windows[i].availableBudgetTicks", "windows[i].reservations", "windows[i].budgetIdentity",
+                "resources.turnBudgetAvailable", "resources.turnBudgetReserved", "resources.turnBudgetSpent",
+                "resources.turnBudgetIdentity", "plans[i].budgetCostTicks", "plans[i].reservedTurnBudgetTicks" })
+                RegisterTemporarilyUncomparable(fields, rejections,
+                    removed.StartsWith("resources.", StringComparison.Ordinal) ? legacyTime
+                    : removed.StartsWith("plans[", StringComparison.Ordinal) ? legacyPlans : legacyBattleOwner, removed,
+                    "R1 removes window time cost, reservation and spending state; classify as RemovedResource.", "12A", gate);
 
             // —— ① 窗口打开/关闭 ——
             RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "currentWindowId",
@@ -620,47 +636,20 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 owner, gate);
 
             RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].closeReason",
-                whyNoWindow + "（OwnerRequested/BudgetExhausted/OwnerDied/BattleEnded 四类关闭原因是新内核的显式语义）",
+                whyNoWindow + "（Expired/OwnerDied/BattleEnded 三类关闭原因是新内核的显式语义；R1）",
                 owner, gate);
 
-            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].totalBudgetTicks",
-                whyNoIntegerBudget, owner, gate);
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].durationTicks",
+                whyNoWindow + "（旧侧没有固定打开时长的窗口区间；R1）", owner, gate);
 
-            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].reservedBudgetTicks",
-                whyNoIntegerBudget, owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].spentBudgetTicks",
-                whyNoIntegerBudget, owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].availableBudgetTicks",
-                whyNoIntegerBudget, owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].reservations",
-                whyNoIntegerBudget + "（按 ActionPlanId 归属的预留明细尤其不存在：旧侧动作没有「从哪个窗口预留了多少 Tick」这一事实）",
-                owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].budgetIdentity",
-                whyNoIntegerBudget + "（恒等式 Reserved + Spent + Available == Total 与预留明细合计一致性都是新侧不变量）",
-                owner, gate);
+            RegisterTemporarilyUncomparable(fields, rejections, legacyBattleOwner, "windows[i].endTick",
+                whyNoWindow + "（旧侧没有「普通动作起点必须落在 [OpenedAtTick, EndTick) 内」的区间终点；R1）", owner, gate);
 
             RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "nextWindowTick",
                 whyNoWindow + "（旧侧没有「下一个窗口最早在哪一 Tick 打开」的排程事实）", owner, gate);
 
             RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "lastClosedWindowId",
                 whyNoWindow + "（旧侧没有「最近关闭的窗口」这一审计事实）", owner, gate);
-
-            // —— ② 整数预算的全局聚合（战斗资源快照）——
-            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetAvailable",
-                whyNoIntegerBudget, owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetReserved",
-                whyNoIntegerBudget, owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetSpent",
-                whyNoIntegerBudget, owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyTime, "resources.turnBudgetIdentity",
-                whyNoIntegerBudget + "（全部窗口聚合的恒等式同样是新侧不变量）", owner, gate);
 
             // —— ③ 并发提交授权 ——
             RegisterTemporarilyUncomparable(fields, rejections, legacyInput, "concurrentAction.hasActiveAuthorization",
@@ -690,15 +679,9 @@ namespace ProjectHero.Core.Compatibility.Runtime
             RegisterTemporarilyUncomparable(fields, rejections, legacyAdrenaline, "units[i].adrenalineCycleId",
                 whyNoCycle + "（单位只读镜像里的周期号在旧侧没有对应字段）", owner, gate);
 
-            // —— ⑤ 跨窗口计划不变性（计划的预算投影与来源窗口账本的联系）——
-            RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "plans[i].budgetCostTicks",
-                whyNoIntegerBudget + "（动作的整数预算成本在旧侧由动画/时间线隐式决定，没有可比较字段）", owner, gate);
-
-            RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "plans[i].reservedTurnBudgetTicks",
-                whyNoIntegerBudget + "（计划当前持有的预留额同样是新侧投影）", owner, gate);
-
+            // —— ⑤ 跨窗口计划不变性（计划的来源窗口；R1）——
             RegisterTemporarilyUncomparable(fields, rejections, legacyPlans, "plans[i].submittedWindowLedger",
-                whyNoWindow + "（「计划跨窗口切换时其来源窗口账本逐字不变」这条不变量的旧侧对应事实不存在："
+                whyNoWindow + "（「计划跨窗口切换时其来源窗口事实逐字不变」这条不变量的旧侧对应事实不存在："
                 + "旧侧动作根本没有窗口归属；plans[i].submittedWindowId 本身已由任务 05 的登记项覆盖）",
                 owner, gate);
         }

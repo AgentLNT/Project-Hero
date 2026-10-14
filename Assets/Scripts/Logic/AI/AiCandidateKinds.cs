@@ -39,7 +39,12 @@ namespace ProjectHero.Logic.AI
         PathCalculatorUnavailable = 4,
 
         /// <summary>权威路径重算明确失败（无路/越界/上限/溢出，或该计划不参与重算）。</summary>
-        PathRejected = 5
+        PathRejected = 5,
+
+        /// <summary>
+        /// 该单位 Lane 的尾部已经到达或越过窗口结束 Tick：追加的新计划起点必然落在窗口外（R1）。
+        /// </summary>
+        LaneTailBeyondWindow = 6
     }
 
     /// <summary>

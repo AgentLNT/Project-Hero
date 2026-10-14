@@ -32,13 +32,13 @@ namespace ProjectHero.Logic.Units
         Guarding = 4,
 
         /// <summary>
-        /// 高阶格挡反应计划中。完全抵抗只在该机会的 TriggerTick 上由匹配载荷产生；
+        /// 高阶格挡反应计划中。完全抵抗只在该机会的 SourceImpactTick 上由匹配载荷产生；
         /// <strong>本状态不提供任何免伤</strong>。
         /// </summary>
         Blocking = 5,
 
         /// <summary>
-        /// 高阶闪避反应计划中。避伤只来自 TriggerTick 原子换格后的空间复核；
+        /// 高阶闪避反应计划中。避伤只来自 SourceImpactTick 原子换格后的空间复核；
         /// <strong>本状态不提供任何免伤</strong>。
         /// </summary>
         Dodging = 6,

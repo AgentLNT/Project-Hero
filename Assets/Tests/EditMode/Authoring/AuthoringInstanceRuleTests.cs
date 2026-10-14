@@ -52,11 +52,11 @@ namespace ProjectHero.Authoring.Tests
         /// <c>Expected: "a10fcfb98357418c" / But was: "d997b13b18573e15"</c>。
         /// 本次重基线与 <c>02B-配置迁移记录.md</c> §16 是同一次修订。
         /// </summary>
-        private const string FrozenRulesVersion = "battle-def-v2-turn180";
+        private const string FrozenRulesVersion = "battle-def-v4-defense-duration";
 
         /// <inheritdoc cref="FrozenRulesVersion"/>
         // Task10: user-confirmed 180-Tick windows and hero slot are now definition inputs.
-        private const string FrozenMainEncounterHash = "ed4c3e21b1488e60";
+        private const string FrozenMainEncounterHash = "e04b3c0946ad3035";
 
         // ============================================================
         // 1. ControllerBinding
@@ -1111,8 +1111,8 @@ namespace ProjectHero.Authoring.Tests
             var dodge = definition.FindAction(new ActionSpecId(LegacyIdMigrationManifest.ActionDodge));
             Assert.That(block.AdrenalineCost, Is.EqualTo(2));
             Assert.That(dodge.AdrenalineCost, Is.EqualTo(1));
-            Assert.That(((BlockReactionTimingSpec)block.Timing).ReactionWindupTicks, Is.EqualTo(60));
-            Assert.That(((DodgeReactionTimingSpec)dodge.Timing).ReactionWindupTicks, Is.EqualTo(30));
+            Assert.That(((BlockReactionTimingSpec)block.Timing).DurationTicks, Is.EqualTo(60));
+            Assert.That(((DodgeReactionTimingSpec)dodge.Timing).DurationTicks, Is.EqualTo(30));
 
             // Attack/Guard/Move 的肾上腺素费用必须为 0。
             foreach (var action in definition.Actions)
@@ -1140,7 +1140,7 @@ namespace ProjectHero.Authoring.Tests
 
             var mutatedActions = definition.Actions.Select(a =>
                 a.ActionSpecId.Value == LegacyIdMigrationManifest.ActionBlock
-                    ? a with { Timing = new BlockReactionTimingSpec(61, 30) }
+                    ? a with { Timing = new BlockReactionTimingSpec(61) }
                     : a).ToList();
             Assert.That(HashWithActions(definition, mutatedActions, adrenaline, definition.ReactionRules),
                 Is.Not.EqualTo(baseline), "Block 反应时序必须参与哈希");

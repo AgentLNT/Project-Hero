@@ -17,15 +17,6 @@ using UnityEngine;
 
 namespace ProjectHero.Tests.UnityView.Editor
 {
-    /// <summary>
-    /// 任务 09 / B 流必需用例（任务包 §3 第 43/46/47 行，逐字同名，归属 Assembly-CSharp-Editor）。
-    ///
-    /// <strong>三条用例的证明口径完全一致</strong>：在<strong>真实</strong>
-    /// <c>BattleSimulation</c>（真实 02B 配置链）上取"规范化快照的逐字段读数"，
-    /// 操作前后<strong>逐字比较</strong>；再叠加入口水位与未来 Tick 桶的比较。
-    /// 它们**不**只断言"我的对象没变"——任何写纪律的破坏（改计划/预算/位置/预留/
-    /// 修订号/入口水位）都会让指纹不同而失败。
-    /// </summary>
     public class Task09ViewInputTests
     {
         /// <summary>装配：真实模拟 + 真实入口 + 注入同一真实模拟的只读端口。</summary>
@@ -96,16 +87,6 @@ namespace ProjectHero.Tests.UnityView.Editor
         // 产出 8 / 43：选择与拖拽模式不写逻辑
         // ————————————————————————————————————————————————————————————————
 
-        /// <summary>
-        /// 选择单位/选择动作/进入放置与重排手势/多次鼠标移动与吸附预览
-        /// <strong>都不</strong>产生任何逻辑写入，也<strong>不</strong>产生任何命令提交。
-        ///
-        /// 会让它红的实现缺陷：
-        /// (a) 任一手势步骤直接调用 ScheduleEditor/TerminalCoordinator/预算/位置写入；
-        /// (b) 逐帧预览被包成 ScheduleEditCommand 提交（入口水位/未来桶会变）；
-        /// (c) 预览改变 ScheduleRevision 或计划 State/StartTick；
-        /// (d) 视图侧建立了"第二套权威状态"并把它写回逻辑。
-        /// </summary>
         [Test]
         public void SelectionAndDragModesDoNotMutateLogic()
         {
@@ -510,14 +491,6 @@ namespace ProjectHero.Tests.UnityView.Editor
         // 产出 14 / 47：打开行动面板不建逻辑草稿、不暂停执行
         // ————————————————————————————————————————————————————————————————
 
-        /// <summary>
-        /// 打开行动面板是纯视图状态：不建立逻辑草稿、不提交任何命令、不暂停执行。
-        ///
-        /// 会让它红的实现缺陷：
-        /// (a) 打开面板即创建/预登记计划、Lane 项或预算预留；
-        /// (b) 打开面板即提交一个 Add 草稿（入口水位会变）；
-        /// (c) 打开面板暂停时钟或 Step 门禁（后续 Step 不再推进 Tick）。
-        /// </summary>
         [Test]
         public void OpeningActionPanelDoesNotCreateLogicalDraftOrPauseExecution()
         {

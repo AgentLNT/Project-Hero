@@ -64,8 +64,8 @@ namespace ProjectHero.Tests.PlayMode
             Assert.Throws<LogicDefinitionException>(() => view.ApplySnapshot(created with { FactionId = "forged" }));
             Assert.That(LegacyTimelineAdvanceTimeCalls(), Is.EqualTo(oldAdvance));
             var presentation = Object.FindFirstObjectByType<BattlePresentationView>();
-            Assert.That(presentation.Model.CloseWindow(), Is.Null);
-            Bootstrap.DriveFrameForTests(0, 1f / 60); Bootstrap.DriveFrameForTests(0, 1f / 60);
+            long end = presentation.Model.Window.EndTick;
+            while (presentation.Model.Decision.Tick < end) Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(presentation.Model.Window.OwnerUnitId, Is.EqualTo(created.UnitId));
             Assert.That(presentation.SelectedActingUnit.Value, Is.EqualTo(created.UnitId));
             var guard = presentation.Model.Decision.ActionSetOf(new UnitId(created.UnitId))
@@ -77,7 +77,7 @@ namespace ProjectHero.Tests.PlayMode
                 "The actual Canvas must be able to act when a newly created controlled unit owns the window.");
             Assert.That(Bootstrap.NewDriver.RecordedReplay.Records.SelectMany(r => r.Events)
                 .Count(f => ReplayEventComparison.Canonical(f).StartsWith(typeof(UnitCreatedEvent).FullName + "{")), Is.EqualTo(1));
-            string path = Path.GetFullPath("优化任务/执行记录/11-dynamic-scene.heroReplay");
+            string path = Path.GetFullPath("优化任务/执行记录/12B-11-dynamic-scene.heroReplay");
             using (var file = File.Create(path)) ReplayFile.Save(file, Bootstrap.NewDriver.RecordedReplay);
             BattleReplay replay; using (var file = File.OpenRead(path)) replay = ReplayFile.Load(file, d);
             using (var player = new ReplayPlayer(d, h => ProductionBattleComposition.Create(d, h.EncounterId, h.RuntimeInputs)))

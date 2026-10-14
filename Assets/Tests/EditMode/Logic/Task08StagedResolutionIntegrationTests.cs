@@ -54,7 +54,7 @@ namespace ProjectHero.Logic.Tests
         private const string EncounterIdValue = "encounter.t08sr";
         private const int AttackBaseWindupTicks = 10;
         private const int AttackRecoveryTicks = 2;
-        private const int WindowBudget = 60;
+        private const int WindowDuration = 60;
         private const long WindowOpenTick = 0L;
         private const long SubmitTick = 1L;
 
@@ -264,7 +264,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(playerEntry, Is.Not.Null, "夹具前提：ControllerBinding 必须注册出命令入口");
 
             var rig = new Rig { Sim = sim, PlayerEntry = playerEntry };
-            sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowBudget);
+            sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowDuration);
             StepOnce(rig, WindowOpenTick);
 
             var request = new CommandRequest(
@@ -783,6 +783,10 @@ namespace ProjectHero.Logic.Tests
             out long firstSubmittedOwner)
         {
             const long sharedStartTick = 5L;
+            // Combat fixture: simultaneous attacks from three owners test arbitration, not submission permission.
+            // R1 no longer permits closing windows before these future starts. Use the standalone
+            // schedule editor contract; Task12A tests cover the production window authority separately.
+            sim.ScheduleEditor.WindowAuthority = null;
             firstSubmittedOwner = 0L;
             var order = new List<int>();
             for (int i = 0; i < owners.Length; i++) order.Add(i);
@@ -798,14 +802,11 @@ namespace ProjectHero.Logic.Tests
                 if (step == 0) firstSubmittedOwner = owner.Value;
 
                 long openTick = sim.Tick + 1L;
-                sim.WindowManager.ScheduleWindow(openTick, owner, WindowBudget);
+                if (step == 0) sim.WindowManager.ScheduleWindow(openTick, owner, WindowDuration);
                 while (sim.Tick + 1L <= openTick) StepZero(sim, entry, sim.Tick + 1L);
 
                 TurnWindow window = sim.CurrentTurnWindow;
                 Assert.That(window, Is.Not.Null, "夹具前提：必须拿到刚打开的窗口");
-                Assert.That(window.OwnerUnitId, Is.EqualTo(owner),
-                    "夹具前提：窗口必须属于该单位；owner=" + owner.Value
-                    + " windowOwner=" + window.OwnerUnitId.Value);
 
                 long submitTick = sim.Tick + 1L;
                 var request = new CommandRequest(
@@ -852,12 +853,6 @@ namespace ProjectHero.Logic.Tests
                         + AlignedImpactTick + " 本次=" + impact + " start=" + created.StartTick);
                 }
 
-                Assert.That(sim.WindowManager.TryRequestClose(owner, window.WindowId,
-                    TurnWindowCloseReason.OwnerRequested), Is.Null,
-                    "夹具前提：拥有者请求关窗必须成功");
-                StepZero(sim, entry, sim.Tick + 1L);
-                Assert.That(sim.CurrentTurnWindow, Is.Null,
-                    "夹具前提：正式关闭之后不得还有当前窗口");
             }
 
             return planIds;

@@ -88,7 +88,7 @@ namespace ProjectHero.Logic.Timeline
     /// <item>它在反应计划被创建<strong>之前</strong>被调用，因此返回非 null 时整个接受事务必须
     /// 整条回滚（<see cref="IReactionPreparationPort.Rollback"/> + <see cref="ReleaseDestination"/>），
     /// 且<strong>不</strong>留下任何已冻结副作用；</item>
-    /// <item>成功时按 <c>ReactionOpportunityId</c> 为 <c>TriggerTick</c> 冻结合法目的格；
+    /// <item>成功时按 <c>ReactionOpportunityId</c> 为 <c>SourceImpactTick</c> 冻结合法目的格；
     /// 计划创建成功后由 <see cref="BindPlan"/> 绑定 <c>ActionPlanId</c>；</item>
     /// <item>冲突胜者<strong>只</strong>由 <paramref name="commandSequence"/>（任务 03 网关的规范命令序）
     /// 决定，后到者稳定拒绝、不可抢占。</item>
@@ -104,7 +104,7 @@ namespace ProjectHero.Logic.Timeline
             GridPoint destination,
             long triggerTick,
             long commandSequence,
-            long tick);
+            long tick, long? endTick = null);
 
         /// <summary>计划创建成功后绑定 <c>ActionPlanId</c>（不改变预留的合法性）。</summary>
         void BindPlan(ReactionOpportunityId opportunityId, ActionPlanId reactionPlanId);
@@ -161,7 +161,7 @@ namespace ProjectHero.Logic.Timeline
             SourceAttackPlanId = sourceAttackPlanId;
             DefenderUnitId = defenderUnitId;
             TelegraphTick = telegraphTick;
-            TriggerTick = triggerTick;
+            SourceImpactTick = triggerTick;
             Options = options;
         }
 
@@ -175,7 +175,7 @@ namespace ProjectHero.Logic.Timeline
         public long TelegraphTick { get; }
 
         /// <summary>= 来源攻击的 <c>ImpactTick</c>（由 Logic 固定推导，命令无法声明）。</summary>
-        public long TriggerTick { get; }
+        public long SourceImpactTick { get; }
 
         public IReadOnlyList<ReactionOptionRuntime> Options { get; }
 
@@ -206,28 +206,6 @@ namespace ProjectHero.Logic.Timeline
         }
     }
 
-    /// <summary>
-    /// <strong><c>ReactionOpportunitySystem</c></strong>（任务包「必须产出」11）。
-    ///
-    /// 冻结语义：
-    /// <list type="bullet">
-    /// <item>来源攻击在执行 Tick <strong>锁定并启动</strong>后才公开机会；仍为 Editable 的攻击不公开、不能响应。</item>
-    /// <item>只为带 <c>Reactable</c> 且 <c>ImpactTick - TelegraphTick &gt;= MinimumReactionLeadTicks</c>
-    /// 的攻击创建机会。</item>
-    /// <item>候选<strong>只</strong>经 <see cref="IFactionRelationResolver"/> + 攻击载荷的
-    /// <c>AllowedTargetRelations</c> 判定：本系统在结构上不读 <c>IsPlayerControlled</c>、
-    /// Controller 类型或任何"默认敌方"标志。显式允许友军伤害时，友军威胁走完全相同流程。</item>
-    /// <item>选项按 <c>ActionSpecId</c> Ordinal 排序，各自
-    /// <c>ResponseDeadlineTick = ImpactTick - ReactionWindupTicks</c>；只公开
-    /// <c>ResponseDeadlineTick &gt;= TelegraphTick + CommandIngressLeadTicks</c> 的选项；
-    /// 没有相容且可达选项时不创建机会。</item>
-    /// <item>每个选项在其截止 Tick 的命令阶段结束后<strong>只发一次</strong>过期事件；
-    /// 最后一项过期才关闭机会；第一次离开 <c>Open</c> 只发一次关闭事件。</item>
-    /// </list>
-    ///
-    /// 它<strong>不</strong>伪造触发：Dodge 的 <c>Triggered</c> 转换必须等任务 06/08 的
-    /// TriggerTick 位置事务成功（见 <see cref="ConfirmTrigger"/>），本任务只留接缝。
-    /// </summary>
     public sealed class ReactionOpportunitySystem
     {
         private readonly ActionScheduleAuthority _authority;
@@ -453,7 +431,7 @@ namespace ProjectHero.Logic.Timeline
 
                 Record(new ReactionOpportunityOpenedEvent(
                     tick, 0L, runtime.Id.Value, runtime.SourceAttackPlanId.Value, defender.Value,
-                    telegraphTick, runtime.TriggerTick, published));
+                    telegraphTick, runtime.SourceImpactTick, published));
             }
 
             return anyCreated ? null : ReactionOpportunityCodes.NO_REACHABLE_OPTION;
@@ -465,7 +443,7 @@ namespace ProjectHero.Logic.Timeline
 
         /// <summary>
         /// 处理一条反应命令（Block/Dodge）。<strong>载荷不提供 Tick</strong>：
-        /// <c>TriggerTick</c> 恒等于来源攻击的 <c>ImpactTick</c>。
+        /// <c>SourceImpactTick</c> 恒等于来源攻击的 <c>ImpactTick</c>。
         /// 返回 null = 已接受（<paramref name="plan"/> 是新建的、直接 Locked 的统一计划）。
         /// </summary>
         public string TryAccept(
@@ -483,8 +461,42 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public string TryAcceptById(
             ReactionOpportunityId opportunityId, ActionSpecId optionSpecId, long tick,
-            GridPoint? dodgeDestination, out ActionPlan plan)
-            => TryAcceptByIdWithCommandSequence(opportunityId, optionSpecId, 0L, tick, dodgeDestination, out plan);
+            GridPoint? dodgeDestination, out ActionPlan plan, long? startTick = null)
+            => TryAcceptByIdWithCommandSequence(opportunityId, optionSpecId, 0L, tick, dodgeDestination, out plan, startTick);
+
+        public ReactionStartPreview PreviewStart(ReactionOpportunityId opportunityId, ActionSpecId optionSpecId,
+            long commandTick, long? requestedStartTick = null)
+        {
+            var opportunity = FindById(opportunityId);
+            if (opportunity == null || !opportunity.IsOpen)
+                return new ReactionStartPreview(0,0,0,0,null,ReactionCodes.OPPORTUNITY_NOT_OPEN);
+            ReactionOptionRuntime selected = null;
+            foreach (var option in opportunity.Options)
+                if (option.ReactionActionSpecId == optionSpecId) selected = option;
+            string admission = selected == null ? ReactionCodes.OPPORTUNITY_OPTION_NOT_OFFERED
+                : !selected.IsPublished ? ReactionCodes.OPTION_NOT_PUBLISHED
+                : !selected.IsOpen ? ReactionOpportunityCodes.OPTION_ALREADY_RESOLVED
+                : commandTick > selected.ResponseDeadlineTick ? ReactionCodes.OPTION_DEADLINE_ELAPSED : null;
+            if (admission != null) return new ReactionStartPreview(0,0,opportunity.SourceImpactTick,0,null,admission);
+            ActionSpec spec = _definition.FindAction(optionSpecId);
+            string error = ReactionPlanner.TryResolveReactionInterval(spec, opportunity.SourceImpactTick,
+                requestedStartTick, commandTick, out long start, out long duration);
+            long end = error == null ? checked(start + duration) : start;
+            long hardEnd = checked(opportunity.SourceImpactTick + 1);
+            ActorLane lane = _authority.FindLane(opportunity.DefenderUnitId);
+            long? yield = null;
+            if (error == null && lane != null)
+            {
+                if (lane.IsSubmissionLocked) error = ReactionCodes.REACTION_LANE_SUBMISSION_LOCKED;
+                if (lane.TryFindOverlapExcept(start, hardEnd - start, null,
+                    p => DodgeMovementInvalidationSeam.DodgeMayInvalidate(p,spec.Type,start),out _))
+                    error = ReactionCodes.REACTION_LANE_INTERVAL_OCCUPIED;
+                foreach (ActionPlan p in lane.Plans)
+                    if (p.IsOrdinary && p.StartTick >= hardEnd && p.StartTick < end
+                        && (!yield.HasValue || p.StartTick < yield.Value)) yield = p.StartTick;
+            }
+            return new ReactionStartPreview(start,end,opportunity.SourceImpactTick,hardEnd,yield,error);
+        }
 
         /// <summary>
         /// 命令路径的便捷入口（携带任务 03 网关的规范命令序）。
@@ -492,7 +504,7 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public string TryAcceptByIdWithCommandSequence(
             ReactionOpportunityId opportunityId, ActionSpecId optionSpecId, long commandSequence, long tick,
-            GridPoint? dodgeDestination, out ActionPlan plan)
+            GridPoint? dodgeDestination, out ActionPlan plan, long? startTick = null)
         {
             ReactionOpportunityRuntime opportunity = FindById(opportunityId);
             if (opportunity == null)
@@ -502,7 +514,7 @@ namespace ProjectHero.Logic.Timeline
             }
             return TryAcceptWithCommandSequence(
                 opportunityId, opportunity.DefenderUnitId, optionSpecId, commandSequence, tick,
-                dodgeDestination, out plan);
+                dodgeDestination, out plan, startTick);
         }
 
         /// <summary>
@@ -517,9 +529,9 @@ namespace ProjectHero.Logic.Timeline
             ActionSpecId optionSpecId,
             long tick,
             GridPoint? dodgeDestination,
-            out ActionPlan plan)
+            out ActionPlan plan, long? startTick = null)
             => TryAcceptWithCommandSequence(
-                opportunityId, defenderUnitId, optionSpecId, 0L, tick, dodgeDestination, out plan);
+                opportunityId, defenderUnitId, optionSpecId, 0L, tick, dodgeDestination, out plan, startTick);
 
         /// <summary>
         /// 与 <see cref="TryAccept(ReactionOpportunityId, UnitId, ActionSpecId, long, GridPoint?, out ActionPlan)"/>
@@ -533,7 +545,7 @@ namespace ProjectHero.Logic.Timeline
             long commandSequence,
             long tick,
             GridPoint? dodgeDestination,
-            out ActionPlan plan)
+            out ActionPlan plan, long? startTick = null)
         {
             plan = null;
 
@@ -591,16 +603,16 @@ namespace ProjectHero.Logic.Timeline
             // 因此"区间被占用"这条拒绝路径既不占用 ActionPlanId、也不写 Lane、
             // 也不触碰肾上腺素账本，且选项保持开放。
             string intervalError = ReactionPlanner.TryResolveReactionInterval(
-                optionSpec, opportunity.TriggerTick, out long intervalStart, out long intervalLength);
+                optionSpec, opportunity.SourceImpactTick, startTick, tick, out long intervalStart, out long intervalLength);
             if (intervalError != null) return intervalError;
 
             // 任务 07 裁定 A（放宽接受侧，使 MovementOriginInvalidatedByDodge 在生产路径可达）：
-            // Dodge 的固定反应区间**允许**覆盖"它自己在 TriggerTick 会失效掉的后续 Editable 移动族"。
+            // Dodge 的固定反应区间**允许**覆盖"它自己在 SourceImpactTick 会失效掉的后续 Editable 移动族"。
             // 容忍判据收敛在 DodgeMovementInvalidationSeam.DodgeMayInvalidate（与失效闭包过滤器
             // 逐字一致），本预检与 ReactionPlanner 的复核共用它，避免两处判据分叉。
             // Block 不换位 ⇒ 绝不容忍任何重叠（保持原判据）。
             if (lane != null && lane.TryFindOverlapExcept(
-                    intervalStart, intervalLength, null,
+                    intervalStart, opportunity.SourceImpactTick + 1L - intervalStart, null,
                     overlapping => DodgeMovementInvalidationSeam.DodgeMayInvalidate(
                         overlapping, optionSpec.Type, intervalStart),
                     out _))
@@ -618,7 +630,7 @@ namespace ProjectHero.Logic.Timeline
             {
                 string reserved = DestinationReservationPort.ReserveDestination(
                     opportunity.Id, defenderUnitId, optionSpecId, dodgeDestination.Value,
-                    opportunity.TriggerTick, commandSequence, tick);
+                    opportunity.SourceImpactTick, commandSequence, tick, checked(intervalStart + intervalLength));
                 if (reserved != null)
                 {
                     PreparationPort?.Rollback(sourcePlan, option.Option, defenderUnitId, tick);
@@ -634,7 +646,7 @@ namespace ProjectHero.Logic.Timeline
             ActionPlanId candidatePlanId = new ActionPlanId(_idGenerator.NextActionPlanIdValue);
             string planError = _planner.TryPlanWithReservation(
                 opportunity, option, sourcePlan, tick, dodgeDestination, candidatePlanId,
-                out ActionPlan reaction);
+                out ActionPlan reaction, intervalStart);
             if (planError != null)
             {
                 DestinationReservationPort?.ReleaseDestination(opportunity.Id);
@@ -693,7 +705,7 @@ namespace ProjectHero.Logic.Timeline
         }
 
         /// <summary>
-        /// 来源攻击在 <c>TriggerTick</c> 前终止：关闭机会、以
+        /// 来源攻击在 <c>SourceImpactTick</c> 前终止：关闭机会、以
         /// <c>SourceThreatCancelled</c> 终止绑定反应，并<strong>发出释放未消费预留的通知</strong>。
         /// 返回被终止的反应计划 id（按稳定序）。
         /// </summary>
@@ -703,7 +715,7 @@ namespace ProjectHero.Logic.Timeline
             for (int i = 0; i < _active.Count; i++)
             {
                 ReactionOpportunityRuntime opportunity = _active[i];
-                if (opportunity.SourceAttackPlanId != sourceAttackPlanId) continue;
+                if (opportunity.SourceAttackPlanId != sourceAttackPlanId || tick > opportunity.SourceImpactTick) continue;
                 if (!opportunity.IsOpen && opportunity.State != ReactionOpportunityState.Accepted) continue;
 
                 for (int o = 0; o < opportunity.Options.Count; o++)
@@ -755,7 +767,7 @@ namespace ProjectHero.Logic.Timeline
         }
 
         /// <summary>
-        /// 任务 06/08 的 TriggerTick 位置事务<strong>成功</strong>之后的确认接缝。
+        /// 任务 06/08 的 SourceImpactTick 位置事务<strong>成功</strong>之后的确认接缝。
         /// 只有它能把 <c>Accepted</c> 推进到 <c>Triggered</c> 并发射
         /// <see cref="ReactionTriggeredEvent"/>；本任务绝不伪造触发。
         ///
@@ -775,7 +787,7 @@ namespace ProjectHero.Logic.Timeline
             ActionPlan bound = _authority.Registry.Find(opportunity.BoundActionPlanId);
             if (bound == null) return ReactionCodes.REACTION_SOURCE_THREAT_ALREADY_TERMINAL;
 
-            // 07-B：TriggerTick 的预留消费与"触发确认"是**同一个提交边界** —— 只有反应
+            // 07-B：SourceImpactTick 的预留消费与"触发确认"是**同一个提交边界** —— 只有反应
             // 实际执行（任务 06/08 的位置/换位事务成功）之后才会走到这里，因此
             // 既不会"触发之前消费"，也不会留下"触发成功但仍持预留"的空洞。
             // 账本保证幂等（无预留 ⇒ 无操作，不重复消费）；重复确认路径同样调用它，
@@ -784,11 +796,12 @@ namespace ProjectHero.Logic.Timeline
 
             if (alreadyTriggered) return null;   // 幂等：重复确认不重复发事件
 
+            bound.ReactionTriggeredAtTick = tick;
             opportunity.State = ReactionOpportunityState.Triggered;
             Record(new ReactionTriggeredEvent(
                 tick, 0L, opportunity.Id.Value, bound.ActionPlanId.Value,
                 opportunity.SourceAttackPlanId.Value, opportunity.DefenderUnitId.Value,
-                opportunity.TriggerTick, (int)bound.ActionType));
+                opportunity.SourceImpactTick, (int)bound.ActionType));
             return null;
         }
 
@@ -866,7 +879,7 @@ namespace ProjectHero.Logic.Timeline
                     option.ResponseDeadlineTick, option.IsOpen, option.IsPublished, option.OutcomeCode);
             }
             return new ReactionOpportunitySnapshot(opportunity.Id.Value, opportunity.DefenderUnitId.Value,
-                opportunity.SourceAttackPlanId.Value, opportunity.TriggerTick, opportunity.TelegraphTick,
+                opportunity.SourceAttackPlanId.Value, opportunity.SourceImpactTick, opportunity.TelegraphTick,
                 (int)opportunity.State, opportunity.CloseReason, opportunity.ClosedAtTick,
                 opportunity.BoundActionPlanId.Value, opportunity.AcceptedActionSpecId, Array.AsReadOnly(options));
         }
@@ -956,10 +969,9 @@ namespace ProjectHero.Logic.Timeline
                 // 动作集合归属：只在单位声明了 ActionSet 且该集合可解析时生效（与创建期同口径）。
                 if (actionSet != null && !actionSet.Contains(spec.ActionSpecId)) continue;
 
-                int windup = ReactionWindupOf(spec);
-                if (windup <= 0) continue;
-
-                long deadline = sourcePlan.ImpactTick - windup;
+                if ((spec.Timing is BlockReactionTimingSpec block && block.DurationTicks <= 0)
+                    || (spec.Timing is DodgeReactionTimingSpec dodge && dodge.DurationTicks <= 0)) continue;
+                long deadline = sourcePlan.ImpactTick - ingressLead;
                 if (deadline <= 0L) continue;
 
                 bool published = deadline >= telegraphTick + ingressLead;
@@ -976,15 +988,6 @@ namespace ProjectHero.Logic.Timeline
             return publishedOnly;
         }
 
-        private static int ReactionWindupOf(ActionSpec spec)
-        {
-            switch (spec.Timing)
-            {
-                case BlockReactionTimingSpec block: return block.ReactionWindupTicks;
-                case DodgeReactionTimingSpec dodge: return dodge.ReactionWindupTicks;
-                default: return 0;
-            }
-        }
 
         /// <summary>来源至少有一个可格挡伤害分量<strong>或</strong>动量时才提供 Block。</summary>
         private static bool HasBlockableContact(AttackPayloadSpec attack)

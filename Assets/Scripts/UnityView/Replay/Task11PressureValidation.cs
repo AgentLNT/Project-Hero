@@ -80,7 +80,7 @@ namespace ProjectHero.UnityView.Replay
             RunLoad(seed, 2, 6, 3, quick, profilerAlloc, csv, report);
             RunLoad(seed, 8, 8, 4, quick, profilerAlloc, csv, report);
             File.WriteAllText(Path.GetFullPath("优化任务/执行记录/11-development-future-pressure" + (profilerAlloc ? "-allocation" : "") + ".csv"), csv.ToString(), new UTF8Encoding(false));
-            report.AppendLine("Limits: derived future-plan fixture; full canonical bodies, formal 180 Tick budget, real Player ingress and ProductionBattleComposition."
+            report.AppendLine("Limits: derived future-plan fixture; full canonical bodies, formal 180 Tick window, real Player ingress and ProductionBattleComposition."
                 + " No fabricated running plans or reservations. All ordinary plans remain Editable through explicit schedule rebase."
                 + " This measures future-state/schedule pressure and window archive growth; no contact graph, forced displacement, AI reactions,"
                 + " real-time 60Hz GC frequency or GC pauses. Allocation is unavailable if its probe fails. It cannot authorize final cutover.");
@@ -166,9 +166,6 @@ namespace ProjectHero.UnityView.Replay
                                 new ScheduleEditPayload(operations.AsReadOnly()))) == null, "PRESSURE_INPUT_REJECTED");
                             peakOperations = Math.Max(peakOperations, operations.Count); lastEditedWindow = window.WindowId.Value;
                         }
-                        else if (tick % 60 == 59 || own.Length < plansPerUnit && lastEditedWindow == window.WindowId.Value)
-                            Require(entry.Submit(new CommandRequest(tick, new WindowCommandScope(window.WindowId),
-                                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow))) == null, "PRESSURE_CLOSE_REJECTED");
                     }
                     int sampleIndex = Array.FindIndex(endpoints, endpoint => tick >= endpoint - 1800 && tick < endpoint);
                     var sample = sampleIndex < 0 ? null : samples[sampleIndex];

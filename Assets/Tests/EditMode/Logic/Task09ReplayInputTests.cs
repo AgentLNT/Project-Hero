@@ -206,7 +206,7 @@ namespace ProjectHero.Logic.Tests
             // 前提：Tick 0 真的打开一个窗口 —— 三条 CloseOwnWindow 请求才有真实目标，
             // "Player 的关窗被接受、AI/System 的同类请求在处理器层被拒绝"才是可观察事实。
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             CommandIngressEntry ai = Task09Fixture.AiEntry(sim);
@@ -226,7 +226,7 @@ namespace ProjectHero.Logic.Tests
             var log = new ReplayAuthorityInput();
 
             // —— 同一个冻结批次（Tick 1）里放三条真实请求：Player / AI / System ——
-            CommandRequest playerRequest = Task09Fixture.CloseWindow(1L, new WindowId(1L));
+            CommandRequest playerRequest = Task09Fixture.ScheduleAdd(1L, 1L, 0L, new WindowId(1L));
             CommandRequest aiRequest = Task09Fixture.CloseWindow(1L, new WindowId(1L));
             CommandRequest systemRequest = Task09Fixture.CloseWindow(1L, new WindowId(1L));
 
@@ -320,7 +320,7 @@ namespace ProjectHero.Logic.Tests
                 "回放注入 DTO 的 IsAuthoritativeReplayInput 与记录器口径一致");
 
             // 记录器只读：它不改变任何授权判定与逻辑状态。
-            Assert.That(result.Snapshot.ScheduleRevision, Is.EqualTo(0L));
+            Assert.That(result.Snapshot.ScheduleRevision, Is.EqualTo(1L));
             Assert.That(result.Snapshot.NextCommandSequence, Is.EqualTo(4L),
                 "三条请求各消耗一个整场序号：记录行为本身不分配也不复用序号");
         }
@@ -352,7 +352,7 @@ namespace ProjectHero.Logic.Tests
         public void UncommittedDragTrajectoryIsAbsentFromReplayInput()
         {
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             var log = new ReplayAuthorityInput();
@@ -456,7 +456,7 @@ namespace ProjectHero.Logic.Tests
         public void ConfirmedScheduleEditRecordsOnlyFinalOperations()
         {
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             var log = new ReplayAuthorityInput();

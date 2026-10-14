@@ -11,14 +11,14 @@ using ProjectHero.Logic.Snapshots;
 namespace ProjectHero.Logic.Turns
 {
     /// <summary>一份只读的窗口排程请求（待打开窗口；拥有者死亡时按稳定顺序跳过）。</summary>
-    public sealed record ScheduledTurnWindowRequest(UnitId OwnerUnitId, int BudgetTicks);
+    public sealed record ScheduledTurnWindowRequest(UnitId OwnerUnitId, int DurationTicks);
 
     /// <summary>
     /// 打开窗口所需的只读世界事实（由模拟装配方提供，管理器自身不持有单位状态）。
     /// </summary>
     public interface ITurnWindowWorldView
     {
-        /// <summary>窗口拥有者是否仍然存活（待打开窗口在打开阶段前死亡 ⇒ 跳过，不发事件、不产生预算）。</summary>
+        /// <summary>窗口拥有者是否仍然存活（待打开窗口在打开阶段前死亡 ⇒ 跳过，不发事件、不创建窗口）。</summary>
         bool IsUnitAliveForWindow(UnitId unitId);
 
         /// <summary>战斗是否已经结束（结束后不得再打开任何窗口，也不得再排定下一窗口）。</summary>
@@ -28,26 +28,21 @@ namespace ProjectHero.Logic.Turns
     /// <summary>
     /// 窗口排程的只读来源（任务 03 的 <c>ITurnWindowSchedule</c> 端口）。
     ///
-    /// 它只回答"本 Tick 是否到期打开一个窗口""是否请求关闭当前窗口"；
-    /// 窗口<strong>不</strong>因此拥有任何计划。
+    /// 它只回答"本 Tick 是否到期打开一个窗口、由谁拥有、打开多久"；窗口<strong>不</strong>因此拥有任何计划。
+    /// 关闭不由排程来源决定：到期关闭只由 <see cref="TurnWindowManager"/> 按 <c>EndTick</c> 判定（R1）。
     /// </summary>
     public interface ITurnWindowSchedule
     {
         /// <summary>本 Tick 应打开的窗口；null 表示没有。</summary>
         WindowOpenRequest TryOpenDue(long tick);
-
-        /// <summary>本 Tick 是否正式请求关闭当前窗口。</summary>
-        bool ShouldCloseCurrentWindow(long tick);
     }
 
-    /// <summary>默认窗口排程：永不打开、永不关闭（测试与显式脚本窗口装配沿用）。</summary>
+    /// <summary>默认窗口排程：永不打开（测试与显式脚本窗口装配沿用）。</summary>
     public sealed class NoTurnWindowSchedule : ITurnWindowSchedule
     {
         public static readonly NoTurnWindowSchedule Instance = new NoTurnWindowSchedule();
 
         public WindowOpenRequest TryOpenDue(long tick) => null;
-
-        public bool ShouldCloseCurrentWindow(long tick) => false;
     }
 
     /// <summary>
@@ -58,13 +53,14 @@ namespace ProjectHero.Logic.Turns
     /// <item>窗口顺序键 = <c>PlayerFirst -&gt; ActionSpeed 降序 -&gt; UnitId</c>（稳定；不得依赖字典枚举）。
     /// 首版每 Tick 至多打开一个到期窗口，下一个窗口最早在<strong>下一 Tick</strong> 打开。</item>
     /// <item>打开窗口时<strong>先</strong>递增拥有者个人周期并清零上个周期遗留的 Available 肾上腺素，
-    /// 然后才创建 <see cref="WindowId"/> 与预算；顺序先于本 Tick 新机会与命令处理。</item>
+    /// 然后才创建 <see cref="WindowId"/> 与窗口区间；顺序先于本 Tick 新机会与命令处理。</item>
+    /// <item>窗口在 <c>EndTick - 1</c> 的 Tick 末以 <see cref="TurnWindowCloseReason.Expired"/> 关闭（R1），
+    /// 不能被主动结束；拥有者死亡与战斗结束是仅有的提前关闭原因。</item>
     /// <item>窗口切换<strong>不</strong>查询、取消、截断、加速、锁定、结算或重排任何 <c>ActionPlan</c>，
-    /// 也不增加 <c>ScheduleRevision</c>；它只翻转提交权限与账本状态。</item>
+    /// 也不增加 <c>ScheduleRevision</c>；它只翻转提交权限。</item>
     /// <item>关闭只撤销属于该窗口的并发提交授权并发射一个 <c>TurnWindowClosedEvent</c>；
-    /// 已关闭窗口的账本继续保留到其 Editable 预留全部锁定或释放。</item>
-    /// <item>战斗结束后不再打开新窗口；Finalizer 关闭当前窗口、清空未来排程、把全部活动窗口账本
-    /// 归零（不产生可继续使用的退款额度）。</item>
+    /// 已关闭窗口没有可变账本，正式关闭后进入历史归档。</item>
+    /// <item>战斗结束后不再打开新窗口；Finalizer 关闭当前窗口并清空未来排程。</item>
     /// </list>
     /// </summary>
     public sealed class TurnWindowManager
@@ -72,54 +68,56 @@ namespace ProjectHero.Logic.Turns
         private readonly ITurnWindowWorldView _world;
         private readonly Func<WindowId> _allocateWindowId;
 
-        /// <summary>已关闭窗口的账本历史（按 <c>WindowId</c> 升序；关闭后仍然可审计）。</summary>
+        /// <summary>已关闭窗口的历史（按关闭顺序，即 Tick 升序）。</summary>
         private readonly List<TurnWindow> _closedWindows = new List<TurnWindow>();
         private readonly Dictionary<long, TurnWindow> _closedIndex = new Dictionary<long, TurnWindow>();
-        private readonly SortedDictionary<long, TurnWindow> _mutableClosed = new SortedDictionary<long, TurnWindow>();
-        private readonly SortedSet<long> _dirtyClosed = new SortedSet<long>();
-        public IEnumerable<TurnWindow> MutableClosedWindows => _mutableClosed.Values;
-        public ClosedWindowBudgetSummary FrozenBudgetSummary { get; private set; } = new ClosedWindowBudgetSummary(0, 0, 0, 0);
+        private readonly SortedDictionary<long, TurnWindow> _pendingArchive = new SortedDictionary<long, TurnWindow>();
+
+        /// <summary>已关闭但尚未归档的窗口（只在关闭当 Tick 存在；按 <c>WindowId</c> 升序）。</summary>
+        public IEnumerable<TurnWindow> PendingArchiveWindows => _pendingArchive.Values;
+
+        /// <summary>已经冻结归档的窗口数（进入规范快照）。</summary>
+        public long FrozenWindowCount { get; private set; }
+
         public UnitId LastClosedOwnerUnitId { get; private set; }
+        /// <summary>Read-only invariant supplied by the simulation before any formal closure.</summary>
+        public Action<TurnWindow> BeforeCloseInvariantCheck { get; set; }
 
         private void RegisterClosed(TurnWindow window, long tick)
         {
             window.ClosedAtTick = tick;
             _closedWindows.Add(window); _closedIndex.Add(window.WindowId.Value, window);
-            _mutableClosed.Add(window.WindowId.Value, window); _dirtyClosed.Add(window.WindowId.Value);
+            _pendingArchive.Add(window.WindowId.Value, window);
             LastClosedOwnerUnitId = window.OwnerUnitId;
         }
-        private void OnLedgerChanged(TurnWindow window)
-        {
-            if (!window.IsOpen && !window.IsFrozenForHistory) _dirtyClosed.Add(window.WindowId.Value);
-        }
+
         internal IReadOnlyList<HistoryArchiveCandidate> CollectFrozenLedgerCandidates(long tick)
         {
-            if (_dirtyClosed.Count == 0) return Array.Empty<HistoryArchiveCandidate>();
-            var candidates = new List<HistoryArchiveCandidate>();
-            foreach (long id in _dirtyClosed)
+            if (_pendingArchive.Count == 0) return Array.Empty<HistoryArchiveCandidate>();
+            var candidates = new List<HistoryArchiveCandidate>(_pendingArchive.Count);
+            foreach (KeyValuePair<long, TurnWindow> entry in _pendingArchive)
             {
-                if (!_mutableClosed.TryGetValue(id, out var window) || window.ReservedBudgetTicks != 0 || window.ReservationCount != 0) continue;
-                var payload = new CanonicalEncoder().BeginDomain("FrozenWindowLedger.v4")
-                    .WriteInt64(id).WriteInt64(window.OwnerUnitId.Value).WriteInt64(window.OpenedAtTick).WriteInt64(window.ClosedAtTick)
-                    .WriteInt32(window.TotalBudgetTicks).WriteInt32(window.SpentBudgetTicks).WriteInt32(window.AvailableBudgetTicks)
-                    .WriteInt32((int)(window.CloseReason ?? TurnWindowCloseReason.OwnerRequested)).ToArray();
-                window.FreezeForHistory(); _mutableClosed.Remove(id);
-                FrozenBudgetSummary = new ClosedWindowBudgetSummary(FrozenBudgetSummary.WindowCount + 1,
-                    checked(FrozenBudgetSummary.TotalBudgetTicks + window.TotalBudgetTicks),
-                    checked(FrozenBudgetSummary.SpentBudgetTicks + window.SpentBudgetTicks),
-                    checked(FrozenBudgetSummary.AvailableBudgetTicks + window.AvailableBudgetTicks));
+                TurnWindow window = entry.Value;
+                var payload = new CanonicalEncoder().BeginDomain("FrozenWindowLedger.v5")
+                    .WriteInt64(entry.Key).WriteInt64(window.OwnerUnitId.Value).WriteInt64(window.OpenedAtTick)
+                    .WriteInt32(window.DurationTicks).WriteInt64(window.ClosedAtTick)
+                    .WriteInt32((int)(window.CloseReason ?? TurnWindowCloseReason.Expired)).ToArray();
+                window.FreezeForHistory();
+                FrozenWindowCount = checked(FrozenWindowCount + 1);
                 candidates.Add(new HistoryArchiveCandidate(tick, HistoryRecordKind.WindowLedger,
-                    id.ToString(CultureInfo.InvariantCulture), payload, HistorySealProof.Sealed));
+                    entry.Key.ToString(CultureInfo.InvariantCulture), payload, HistorySealProof.Sealed));
             }
-            _dirtyClosed.Clear(); return candidates.AsReadOnly();
+            _pendingArchive.Clear();
+            return candidates.AsReadOnly();
         }
+
         public IReadOnlyList<ScheduledWindowSnapshot> CaptureFutureSchedule()
         {
             var result = new List<ScheduledWindowSnapshot>();
             foreach (var bucket in _futureSchedule)
-                foreach (var request in bucket.Value) result.Add(new ScheduledWindowSnapshot(bucket.Key, request.OwnerUnitId.Value, request.BudgetTicks));
+                foreach (var request in bucket.Value) result.Add(new ScheduledWindowSnapshot(bucket.Key, request.OwnerUnitId.Value, request.DurationTicks));
             result.Sort((a, b) => { int tick = a.TargetTick.CompareTo(b.TargetTick); if (tick != 0) return tick;
-                int owner = a.OwnerUnitId.CompareTo(b.OwnerUnitId); return owner != 0 ? owner : a.BudgetTicks.CompareTo(b.BudgetTicks); });
+                int owner = a.OwnerUnitId.CompareTo(b.OwnerUnitId); return owner != 0 ? owner : a.DurationTicks.CompareTo(b.DurationTicks); });
             return result.AsReadOnly();
         }
 
@@ -172,10 +170,11 @@ namespace ProjectHero.Logic.Turns
         public TurnWindow OpenWindow => IsAcceptingSubmissions ? CurrentWindow : null;
 
         /// <summary>
-        /// 按 <c>WindowId</c> 查找窗口（含已关闭窗口的历史账本）。
+        /// 按 <c>WindowId</c> 查找窗口（含已关闭窗口的历史）。
         ///
-        /// 关闭后的窗口<strong>必须</strong>仍可被找到：Editable 预留的释放要回到它原来的来源账本，
-        /// 而不是"最近的窗口"。找不到返回 null（调用方以稳定码拒绝，绝不回退到当前窗口）。
+        /// 普通计划的来源窗口（<c>SubmittedWindowId</c>）决定其 <c>StartTick</c> 的合法区间，
+        /// 因此关闭后的窗口<strong>必须</strong>仍可被找到。找不到返回 null
+        /// （调用方以稳定码拒绝，绝不回退到当前窗口）。
         /// </summary>
         public TurnWindow FindWindow(WindowId windowId)
         {
@@ -195,7 +194,7 @@ namespace ProjectHero.Logic.Turns
             }
         }
 
-        /// <summary>请求打开事件（由模拟方接到 Outbox；参数为窗口、拥有者、预算与打开 Tick）。</summary>
+        /// <summary>请求打开事件（由模拟方接到 Outbox；参数为窗口与打开 Tick）。</summary>
         public Action<TurnWindow, long> WindowOpenedSink { get; set; }
 
         /// <summary>关闭事件（由模拟方接到 Outbox；参数为窗口、关闭原因与关闭 Tick）。</summary>
@@ -250,17 +249,20 @@ namespace ProjectHero.Logic.Turns
         }
 
         /// <summary>排定一个未来 Tick 的窗口（同一个 Tick 可以被多次排定；打开时按稳定键取第一个可打开者）。</summary>
-        public void ScheduleWindow(long tick, UnitId ownerUnitId, int budgetTicks)
+        public void ScheduleWindow(long tick, UnitId ownerUnitId, int durationTicks)
         {
             if (tick < 0L)
-                throw new LogicDefinitionException(TurnWindowCodes.BUDGET_LEDGER_INVARIANT,
+                throw new LogicDefinitionException(TurnWindowCodes.WINDOW_INVARIANT,
                     "tick=" + tick.ToString(CultureInfo.InvariantCulture));
+            if (durationTicks <= 0)
+                throw new LogicDefinitionException(TurnWindowCodes.WINDOW_INVARIANT,
+                    "duration=" + durationTicks.ToString(CultureInfo.InvariantCulture));
             if (!_futureSchedule.TryGetValue(tick, out List<ScheduledTurnWindowRequest> bucket))
             {
                 bucket = new List<ScheduledTurnWindowRequest>();
                 _futureSchedule[tick] = bucket;
             }
-            bucket.Add(new ScheduledTurnWindowRequest(ownerUnitId, budgetTicks));
+            bucket.Add(new ScheduledTurnWindowRequest(ownerUnitId, durationTicks));
             RefreshNextWindowTick();
         }
 
@@ -272,7 +274,7 @@ namespace ProjectHero.Logic.Turns
         {
             WindowOpenRequest request = schedule?.TryOpenDue(tick);
             if (request == null) return false;
-            ScheduleWindow(tick, request.OwnerUnitId, request.BudgetTicks);
+            ScheduleWindow(tick, request.OwnerUnitId, request.DurationTicks);
             return true;
         }
 
@@ -283,9 +285,9 @@ namespace ProjectHero.Logic.Turns
         /// <list type="number">
         /// <item>战斗已结束 ⇒ 不打开、不排定任何窗口；</item>
         /// <item>拥有者已死亡 ⇒ 按稳定窗口顺序<strong>跳过</strong>，
-        /// 不产生该单位的窗口打开事件、不产生预算，也不递增其个人周期；</item>
+        /// 不产生该单位的窗口打开事件、不创建窗口，也不递增其个人周期；</item>
         /// <item>当前仍有未正式关闭的窗口 ⇒ 本 Tick 不打开新窗口（下一个窗口最早下一 Tick）；</item>
-        /// <item>打开顺序 = 先递增拥有者个人周期并清零 Available，再创建窗口与预算。</item>
+        /// <item>打开顺序 = 先递增拥有者个人周期并清零 Available，再创建窗口区间。</item>
         /// </list>
         /// </summary>
         public TurnWindow TryOpenDueWindow(long tick)
@@ -307,72 +309,35 @@ namespace ProjectHero.Logic.Turns
                 if (bucket.Count == 0) _futureSchedule.Remove(tick);
                 RefreshNextWindowTick();
 
-                // 顺序契约：先递增个人周期并清零 Available，再创建窗口与预算。
+                // 顺序契约：先递增个人周期并清零 Available，再创建窗口区间。
                 OwnerCycleResetSink?.Invoke(request.OwnerUnitId, tick);
 
                 _nextWindowOrdinal++;
                 var window = new TurnWindow(
                     _allocateWindowId != null ? _allocateWindowId() : new WindowId(_nextWindowOrdinal),
-                    request.OwnerUnitId, tick, request.BudgetTicks);
+                    request.OwnerUnitId, tick, request.DurationTicks);
                 CurrentWindow = window;
-                window.LedgerChanged = OnLedgerChanged;
                 WindowOpenedSink?.Invoke(window, tick);
                 return window;
             }
 
-            // 桶内全部拥有者都已死亡：整个桶被丢弃（不产生任何打开事件或预算）。
+            // 桶内全部拥有者都已死亡：整个桶被丢弃（不产生任何打开事件或窗口）。
             _futureSchedule.Remove(tick);
             RefreshNextWindowTick();
             return null;
         }
 
         /// <summary>
-        /// 请求关闭当前窗口（命令路径）。返回稳定错误码；null = 已请求关闭
-        /// （<c>IsAcceptingSubmissions</c> 立即为 false，因此本 Tick 后续命令稳定拒绝）。
-        /// </summary>
-        public string TryRequestClose(UnitId issuerUnitId, WindowId expectedWindowId, TurnWindowCloseReason reason)
-        {
-            TurnWindow window = CurrentWindow;
-            if (window == null || !window.IsOpen || !window.IsAcceptingSubmissions)
-                return TurnWindowCodes.NO_OPEN_WINDOW;
-            if (window.WindowId != expectedWindowId)
-                return TurnWindowCodes.STALE_OR_CLOSED_WINDOW;
-            if (window.OwnerUnitId != issuerUnitId)
-                return TurnWindowCodes.NO_SUBMISSION_AUTHORITY;
-
-            window.RequestClose(reason);
-            return null;
-        }
-
-        /// <summary>
-        /// 命令路径的关窗入口：发行者（由命令网关绑定）可以关闭<strong>它自己控制</strong>的单位的窗口。
-        ///
-        /// 顺序契约：先确认存在仍在接受提交的当前窗口，再比对 <c>ExpectedWindowId</c>
-        /// （绝不允许"按当前窗口猜"），最后验证控制权。任一步失败都<strong>零副作用</strong>。
-        /// </summary>
-        public string TryRequestCloseForIssuer(ControllerId issuer, WindowId expectedWindowId)
-        {
-            TurnWindow window = CurrentWindow;
-            if (window == null || !window.IsOpen || !window.IsAcceptingSubmissions)
-                return TurnWindowCodes.NO_OPEN_WINDOW;
-            if (window.WindowId != expectedWindowId)
-                return TurnWindowCodes.STALE_OR_CLOSED_WINDOW;
-            if (!CanControl(issuer, window.OwnerUnitId))
-                return TurnWindowCodes.NO_SUBMISSION_AUTHORITY;
-
-            window.RequestClose(TurnWindowCloseReason.OwnerRequested);
-            return null;
-        }
-
-        /// <summary>
-        /// 预算耗尽：把当前窗口（若仍接受提交）停权，并记录 <see cref="TurnWindowCloseReason.BudgetExhausted"/>。
+        /// 阶段 17：当前窗口若在本 Tick 之后不再覆盖任何 Tick（<c>tick + 1 &gt;= EndTick</c>），
+        /// 就以 <see cref="TurnWindowCloseReason.Expired"/> 请求关闭（R1）。
         /// 它<strong>不</strong>触碰任何计划、Lane、Intent 或 Reservation。
         /// </summary>
-        public void RequestCloseForBudgetExhaustion()
+        public void RequestCloseIfExpired(long tick)
         {
             TurnWindow window = CurrentWindow;
             if (window == null || !window.IsOpen || !window.IsAcceptingSubmissions) return;
-            window.RequestClose(TurnWindowCloseReason.BudgetExhausted);
+            if (tick + 1L < window.EndTick) return;
+            window.RequestClose(TurnWindowCloseReason.Expired);
         }
 
         /// <summary>拥有者死亡：该窗口立即停止接受提交（Tick 末正式关闭）。</summary>
@@ -388,7 +353,7 @@ namespace ProjectHero.Logic.Turns
         /// 阶段 17：正式关闭已请求关闭的当前窗口。
         ///
         /// 冻结语义：正式关闭<strong>只</strong>做三件事——撤销属于该窗口的并发授权、翻转窗口位、
-        /// 发射关闭事件。它<strong>不</strong>在关闭时结算任何计划或预留，也不"顺手"排定下一窗口：
+        /// 发射关闭事件。它<strong>不</strong>在关闭时结算任何计划，也不"顺手"排定下一窗口：
         /// 下一窗口由排程来源在<strong>下一 Tick</strong> 的打开阶段到期决定
         /// （本方法记录 <see cref="LastClosedAtTick"/>，使同一 Tick 内不可能再打开新窗口）。
         /// </summary>
@@ -398,7 +363,8 @@ namespace ProjectHero.Logic.Turns
             if (window == null || !window.IsOpen) return null;
             if (window.IsAcceptingSubmissions) return null;   // 尚未请求关闭
 
-            TurnWindowCloseReason reason = window.CloseReason ?? TurnWindowCloseReason.OwnerRequested;
+            TurnWindowCloseReason reason = window.CloseReason ?? TurnWindowCloseReason.Expired;
+            BeforeCloseInvariantCheck?.Invoke(window);
             window.FinalizeClose();
             CurrentWindow = null;
             LastClosedWindowId = window.WindowId.Value;
@@ -414,10 +380,7 @@ namespace ProjectHero.Logic.Turns
         /// 战斗结束 Finalizer：以 <see cref="TurnWindowCloseReason.BattleEnded"/> 关闭当前窗口、
         /// 撤销属于它的并发授权、清空全部未来窗口排程。
         ///
-        /// 它<strong>不</strong>遍历或终止任何 <c>ActionPlan</c>（那是统一终态协调器的职责），
-        /// 也<strong>不</strong>在这里结算账本：未消费预留由
-        /// <see cref="TurnWindowBudgetAuthority.ClearReservationsForBattleEnd"/> 逐窗口清空
-        /// （保留 <c>Spent</c>，且不产生可继续使用的额度），这样事件里才有完整的前后值。
+        /// 它<strong>不</strong>遍历或终止任何 <c>ActionPlan</c>（那是统一终态协调器的职责）。
         /// </summary>
         public void CloseAllForBattleEnd(long tick)
         {
@@ -427,6 +390,7 @@ namespace ProjectHero.Logic.Turns
                 if (window.IsOpen)
                 {
                     window.RequestClose(TurnWindowCloseReason.BattleEnded);
+                    BeforeCloseInvariantCheck?.Invoke(window);
                     window.FinalizeClose();
                     RegisterClosed(window, tick);
                     LastClosedWindowId = window.WindowId.Value;
@@ -482,9 +446,9 @@ namespace ProjectHero.Logic.Turns
     /// <summary>
     /// 一个待打开的提交窗口请求（阶段 3 消费）。
     ///
-    /// 它<strong>只</strong>描述"谁、多少预算"，不携带任何计划、Intent 或 Reservation。
+    /// 它<strong>只</strong>描述"谁、打开多久"，不携带任何计划、Intent 或 Reservation。
     /// </summary>
-    public sealed record WindowOpenRequest(UnitId OwnerUnitId, int BudgetTicks);
+    public sealed record WindowOpenRequest(UnitId OwnerUnitId, int DurationTicks);
 
     /// <summary>
     /// 窗口命令处理的只读上下文（由模拟方在阶段 6 装配，禁用"生产者自报身份"）。

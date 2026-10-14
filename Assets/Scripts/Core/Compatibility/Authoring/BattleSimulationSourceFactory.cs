@@ -57,7 +57,9 @@ namespace ProjectHero.Core.Compatibility.Authoring
 
         [Tooltip("本场局外资源开局持有量（非负）。")]
         [SerializeField] private int _initialMetaResource = BattleDefinitionBuilder.MainEncounterInitialMetaResource;
-        [SerializeField] private int _shadowInitialWindowBudgetTicks = 600;
+        [Tooltip("Shadow 对照场景唯一窗口的打开时长（Tick，R1）。到期后不再打开新窗口。")]
+        [UnityEngine.Serialization.FormerlySerializedAs("_shadowInitialWindowBudgetTicks")]
+        [SerializeField] private int _shadowInitialWindowDurationTicks = 600;
         private LegacyAssetSet _assets;
         private BattleInitializationResult _initialBindings;
 
@@ -166,18 +168,17 @@ namespace ProjectHero.Core.Compatibility.Authoring
 
         public ProjectHero.Logic.Simulation.BattleSimulationAssembly BuildShadowAssembly(BattleSimulationSeed seed)
         {
-            if (_shadowInitialWindowBudgetTicks <= 0 || !TryResolvePlayerUnit(_heroUnit, out var hero, out _))
+            if (_shadowInitialWindowDurationTicks <= 0 || !TryResolvePlayerUnit(_heroUnit, out var hero, out _))
                 throw new ProjectHero.Logic.LogicDefinitionException("SHADOW_SCENE_WINDOW_INVALID", name);
             return new ProjectHero.Logic.Simulation.BattleSimulationAssembly(
-                turnWindowSchedule: new InitialShadowWindow(hero, _shadowInitialWindowBudgetTicks));
+                turnWindowSchedule: new InitialShadowWindow(hero, _shadowInitialWindowDurationTicks));
         }
         private sealed class InitialShadowWindow : ProjectHero.Logic.Turns.ITurnWindowSchedule
         {
-            private readonly UnitId _owner; private readonly int _budget;
-            public InitialShadowWindow(UnitId owner, int budget) { _owner = owner; _budget = budget; }
+            private readonly UnitId _owner; private readonly int _duration;
+            public InitialShadowWindow(UnitId owner, int duration) { _owner = owner; _duration = duration; }
             public ProjectHero.Logic.Turns.WindowOpenRequest TryOpenDue(long tick)
-                => tick == 0 ? new ProjectHero.Logic.Turns.WindowOpenRequest(_owner, _budget) : null;
-            public bool ShouldCloseCurrentWindow(long tick) => false;
+                => tick == 0 ? new ProjectHero.Logic.Turns.WindowOpenRequest(_owner, _duration) : null;
         }
 
         private void EnsureBuilt()

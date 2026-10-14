@@ -52,19 +52,19 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void BlockStartsConsumesAtTriggerAndCompletesThroughProductionStep()
+        public void BlockTriggersConsumesAndTerminatesThroughProductionStep()
         {
             using var sim = Task09A2Fixture.NewSim();
             ActionPlan block = AcceptReaction(sim, ReactionCommandKind.Block, out var opportunity);
             Advance(sim, block.StartTick);
-            Assert.That(block.IsRunning, Is.True);
-            Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).ReservationCount, Is.EqualTo(1));
-            Advance(sim, block.TriggerTick);
+            Assert.That(block.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
+            Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).ReservationCount, Is.Zero);
+            Advance(sim, block.SourceImpactTick);
             Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Triggered));
             Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).ReservationCount, Is.Zero);
             Assert.That(sim.StagedResolution.BlockPlans.Count, Is.EqualTo(1));
             Advance(sim, block.EndTick);
-            Assert.That(block.IsCompleted, Is.True);
+            Assert.That(block.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
             Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Any(p => p.ActionPlanId == block.ActionPlanId), Is.False);
         }
 
@@ -75,7 +75,7 @@ namespace ProjectHero.Logic.Tests
                 unitStateAdvance: new StateInput { AtTick = 9 }));
             ActionPlan block = AcceptReaction(sim, ReactionCommandKind.Block, out _);
             int available = sim.AdrenalineLedgerOf(block.OwnerUnitId).AvailableAdrenaline;
-            Advance(sim, block.TriggerTick);
+            Advance(sim, block.SourceImpactTick);
             Assert.That(block.TerminationReason, Is.EqualTo(ActionTerminationReason.InterruptedByControl));
             Assert.That(sim.StagedResolution.BlockPlans, Is.Empty);
             Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).ReservationCount, Is.Zero);
@@ -89,7 +89,7 @@ namespace ProjectHero.Logic.Tests
                 unitStateAdvance: new StateInput { AtTick = 11 }));
             ActionPlan block = AcceptReaction(sim, ReactionCommandKind.Block, out _);
             Advance(sim, 10);
-            Assert.That(block.IsRunning, Is.True);
+            Assert.That(block.IsLocked, Is.True);
             Advance(sim, 11);
             Assert.That(block.TerminationReason, Is.EqualTo(ActionTerminationReason.InterruptedByControl));
             Assert.That(sim.StagedResolution.BlockPlans, Is.Empty);
@@ -101,14 +101,14 @@ namespace ProjectHero.Logic.Tests
         {
             using var sim = Task09A2Fixture.NewSim();
             ActionPlan dodge = AcceptReaction(sim, ReactionCommandKind.Dodge, out var opportunity, new GridPoint(6, 2));
-            Advance(sim, dodge.TriggerTick);
+            Advance(sim, dodge.SourceImpactTick);
             Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Triggered));
             Assert.That(sim.AdrenalineLedgerOf(dodge.OwnerUnitId).ReservationCount, Is.Zero);
             Assert.That(sim.LogicGrid.TryGetAnchor(dodge.OwnerUnitId, out var anchor), Is.True);
             Assert.That(anchor, Is.EqualTo(new GridPoint(6, 2)));
             Assert.That(sim.ScheduleAuthority.Registry.Find(dodge.SourceThreatPlanId.Value).IsRunning, Is.True);
             Advance(sim, dodge.EndTick);
-            Assert.That(dodge.IsCompleted, Is.True);
+            Assert.That(dodge.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
         }
 
         [Test]
@@ -198,7 +198,7 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void FailedDodgeAtTriggerReleasesItsReservationWithoutTriggerOrAvoidance()
+        public void FailedDodgeConsumesAndTerminatesWithoutAvoidance()
         {
             using var sim = Task09A2Fixture.NewSim();
             var dodge = AcceptReaction(sim, ReactionCommandKind.Dodge, out var opportunity, new GridPoint(6, 2));
@@ -206,17 +206,17 @@ namespace ProjectHero.Logic.Tests
             // Arrange a late occupied destination through the real grid primitive, without replacing Dodge code.
             Assert.That(sim.LogicGrid.CommitAnchor(Task09A2Fixture.Neutral, new GridPoint(6, 2), GridDirection.East), Is.Null);
             var result = Task09A2Fixture.StepNext(sim);
-            Assert.That(dodge.TerminationReason, Is.EqualTo(ActionTerminationReason.TargetInvalid));
+            Assert.That(dodge.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
             Assert.That(sim.AdrenalineLedgerOf(dodge.OwnerUnitId).ReservationCount, Is.Zero);
-            Assert.That(opportunity.State, Is.Not.EqualTo(ReactionOpportunityState.Triggered));
-            Assert.That(result.Events.Events.OfType<ReactionTriggeredEvent>(), Is.Empty);
+            Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Triggered));
+            Assert.That(result.Events.Events.OfType<ReactionTriggeredEvent>().Count(), Is.EqualTo(1));
             Assert.That(sim.LastDodgeCommitReport.Results.Single().Committed, Is.False);
             Assert.That(sim.LastDodgeCommitReport.Results.Single().Moved, Is.False,
                 "Dodge失败不得换位；之后的攻击强制位移由另一阶段处理");
         }
 
         [Test]
-        public void BlockWithoutContactsStillConsumesAtTriggerAndDoesNotEarnSuccessReward()
+        public void BlockWithoutContactsRemainsReservedUntilExpiryWithoutReward()
         {
             var definition = Task09A2Fixture.BuildDefinition();
             var farPattern = new AttackPatternSpec(new AttackPatternId("attack.audit.far"),
@@ -227,13 +227,13 @@ namespace ProjectHero.Logic.Tests
             using var sim = Task09A2Fixture.NewSim(definition);
             var block = AcceptReaction(sim, ReactionCommandKind.Block, out var opportunity);
             int available = sim.AdrenalineLedgerOf(block.OwnerUnitId).AvailableAdrenaline;
-            Advance(sim, block.TriggerTick);
+            Advance(sim, block.SourceImpactTick);
             Assert.That(sim.StagedResolution.BlockPlans, Is.Empty);
-            Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Triggered));
-            Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).ReservationCount, Is.Zero);
+            Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Accepted));
+            Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).ReservationCount, Is.EqualTo(1));
             Assert.That(sim.AdrenalineLedgerOf(block.OwnerUnitId).AvailableAdrenaline, Is.EqualTo(available));
             Advance(sim, block.EndTick);
-            Assert.That(block.IsCompleted, Is.True);
+            Assert.That(block.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionExpired));
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace ProjectHero.Logic.Tests
         {
             var definition = Task09A2Fixture.BuildDefinition();
             definition = definition with { Actions = definition.Actions.Select(a => a.Type == ActionType.Block
-                ? a with { Timing = new BlockReactionTimingSpec(0, 0) } : a).ToArray() };
+                ? a with { Timing = new BlockReactionTimingSpec(0) } : a).ToArray() };
             using var sim = Task09A2Fixture.NewSim(definition);
             Task09A2Fixture.ArrangeStartedAttack(sim, Task09A2Fixture.Monster);
             var opportunity = Task09A2Fixture.OpenOpportunityFor(sim, Task09A2Fixture.Monster);
@@ -283,11 +283,11 @@ namespace ProjectHero.Logic.Tests
                     ActionSpecIds = s.ActionSpecIds.Concat(new[] { spec.ActionSpecId }).ToArray() }).ToArray() };
 
         [Test]
-        public void GuardPhaseUsesItsActiveAndRecoveryBoundaries()
+        public void GuardPhaseCoversWholeDuration()
         {
             var guardId = new ActionSpecId("action.audit.guard");
             var definition = AddSpec(Task09A2Fixture.BuildDefinition(), new ActionSpec(guardId, ActionType.Guard,
-                new GuardTimingSpec(2, 3, 2), new GuardPayloadSpec(
+                new GuardTimingSpec(3), new GuardPayloadSpec(
                     new Dictionary<DamageChannelId, int> { { DamageChannels.PhysicalBlunt, 512 } }, 512, DefenseTagMask.Guardable), 0));
             using var sim = Task09A2Fixture.NewSim(definition);
             sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero, 400);
@@ -296,9 +296,9 @@ namespace ProjectHero.Logic.Tests
                 sim.CurrentTurnWindow.WindowId, Task09A2Fixture.Hero, guardId, null, 1));
             Task09A2Fixture.Step(sim, 1);
             var state = sim.FindUnitStateMachine(Task09A2Fixture.Hero);
-            Assert.That(state.CurrentState, Is.EqualTo(UnitState.Windup));
+            Assert.That(state.CurrentState, Is.EqualTo(UnitState.Guarding));
             Advance(sim, 3); Assert.That(state.CurrentState, Is.EqualTo(UnitState.Guarding));
-            Advance(sim, 6); Assert.That(state.CurrentState, Is.EqualTo(UnitState.Recovery));
+            Advance(sim, 4); Assert.That(state.CurrentState, Is.EqualTo(UnitState.Idle));
             Advance(sim, 8); Assert.That(state.CurrentState, Is.EqualTo(UnitState.Idle));
         }
 
@@ -355,16 +355,13 @@ namespace ProjectHero.Logic.Tests
                 sim.ScheduleAuthority.ScheduleRevision, window.WindowId, Task09A2Fixture.Hero,
                 new ActionSpecId(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 2));
             Task09A2Fixture.Step(sim, 2);
-            int spent = window.SpentBudgetTicks;
-            Assert.That(spent, Is.GreaterThan(0));
+            Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Single().IsRunning, Is.True);
             sim.WindowManager.ScheduleWindow(100, Task09A2Fixture.Hero, 400);
             Assert.That(sim.WindowManager.ScheduledWindowCount, Is.EqualTo(1), "先安排真实未来窗口再检查Finalizer清除");
             Task09A2Fixture.Step(sim, 3);
             Assert.That(sim.BattleEnd.IsEnded, Is.True);
             Assert.That(window.IsOpen, Is.False);
             Assert.That(window.CloseReason, Is.EqualTo(TurnWindowCloseReason.BattleEnded));
-            Assert.That(window.SpentBudgetTicks, Is.EqualTo(spent));
-            Assert.That(window.ReservedBudgetTicks, Is.Zero);
             Assert.That(sim.WindowManager.ScheduledWindowCount, Is.Zero);
             Assert.That(sim.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization, Is.False);
             Assert.That(sim.CurrentSnapshot.Resources.MetaResource, Is.Zero);

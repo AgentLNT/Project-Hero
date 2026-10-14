@@ -1,0 +1,259 @@
+Assets/Scripts\Core\Compatibility\Authoring\BattleSimulationSourceFactory.cs:61:        [UnityEngine.Serialization.FormerlySerializedAs("_shadowInitialWindowBudgetTicks")]
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:311:                Assert.That(model.Preview.RejectionCode, Is.EqualTo("WINDOW_INSUFFICIENT_BUDGET"));
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:527:                if (!preview.Succeeded && preview.RejectionCode != "WINDOW_INSUFFICIENT_BUDGET") continue;
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:544:                Assert.That(drafted, Is.True, "A real budget-limited Move must approach the production threat region: leg=" + leg
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:560:            long chainWindow = 0, chainBudget = 0, guardId = 0, guardStart = 0;
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:584:                chainBudget = added.Where(p => chainIds.Contains(p.ActionPlanId)).Sum(p => p.ReservedTurnBudgetTicks);
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:585:                Assert.That(chainBudget, Is.GreaterThan(0));
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:628:                            Assert.That(release.BudgetTicks, Is.EqualTo(chainBudget)); Assert.That(release.WindowIsOpen, Is.False);
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:675:                TestContext.WriteLine("Closed original window=" + chainWindow + "; released=" + chainBudget + "; invalidated=" + string.Join(",", chainIds) + "; unrelated Guard preserved.");
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:87:        private const int HeroWindowBudget = 65536;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:770:        /// <c>INVALID:SHADOW_BUDGET_OVERRUN</c>（比较根本不会执行），因此放预算不是放宽判据，
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:777:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:778:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:785:                    ShadowComparisonConfig.Strict(budget),
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:790:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:792:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:811:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:812:                report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:948:            Assert.That(report.BudgetOverrun, Is.False, report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:1110:            var schedule = new ScriptedWindowSchedule(HeroWindowOpenTick, HeroWindowBudget);
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:1488:            private readonly int _budget;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:1490:            public ScriptedWindowSchedule(long openTick, int budget)
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:1493:                _budget = budget;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:1503:                return new ProjectHero.Logic.Turns.WindowOpenRequest(new UnitId(OwnerUnitId), _budget);
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:1506:            public bool ShouldCloseCurrentWindow(long tick) => false;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:2057:                    + "替代证据：EditMode Task08OpeningAdrenalineContractTests / Task07TurnWindowAndBudgetTests。"
+Assets/Tests\PlayMode\Task09ShadowMirrorTests.cs:92:            // 本次实测：`CloseOwnWindow(WindowId 1)` 在真实 seed 里没有对应窗口 ⇒
+Assets/Tests\PlayMode\Task09ShadowMirrorTests.cs:591:                    CommandRequest request = CloseOwnWindow(tick);
+Assets/Tests\PlayMode\Task09ShadowMirrorTests.cs:619:        private static CommandRequest CloseOwnWindow(long targetTick)
+Assets/Tests\PlayMode\Task09ShadowMirrorTests.cs:623:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:799:        /// `BudgetOverrun`、`ComparedCheckpoints == 0`、`claim=INVALID:`，
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:869:                Assert.That(current.InvalidatedByBudget, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1239:            Assert.That(Bootstrap.LastShadowReport.InvalidatedByBudget, Is.False);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1634:        public IEnumerator ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy()
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1661:                ShadowCasePolicy.CreateDefault("03B-shadow-budget", seed.RulesVersion));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1663:            Assert.That(report.BudgetOverrun, Is.True, "超出诊断预算必须标记预算超限");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1664:            Assert.That(report.InvalidatedByBudget, Is.True);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1665:            Assert.That(report.BudgetOverrunReason, Does.StartWith(ShadowComparisonCodes.ShadowBudgetOverrun));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1682:            Bootstrap.StopBattle("shadow-budget-test");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1774:            Assert.That(aligned.InvalidatedByBudget, Is.False);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3768:            simulation.WindowManager.ScheduleWindow(0L, new UnitId(heroUnitId), Task07HeroWindowBudget);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3948:        /// <paramref name="checkpointBudget"/> 默认 64（既有用例的原值，逐字不变）。
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3950:        /// <c>INVALID:SHADOW_BUDGET_OVERRUN</c>（比较根本不会执行），
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3962:            ShadowCasePolicy policy, int checkpointBudget = 64,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3968:                    ShadowComparisonConfig.Strict(checkpointBudget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4385:            // 默认消费者的语义是**显式 no-op**（任务 06 不实现 TurnBudget 账本 ⇒ 没有可释放的预算对象），
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4390:                           new BattleSimulationAssembly(budgetReleaseSink: sink => { })))
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4392:                    Assert.That(wired.DodgeRelocation.BudgetReleaseSink, Is.Not.Null,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4394:                        + "（任务 07 的接入点：BattleSimulationAssembly.budgetReleaseSink）");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4400:                    Assert.That(defaulted.DodgeRelocation.BudgetReleaseSink, Is.Null,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4679:            simulation.WindowManager.ScheduleWindow(0L, new UnitId(heroUnitId), Task07HeroWindowBudget);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4890:            // 检查点数必然超过既有用例的 64；一旦超限报告会变成 INVALID:SHADOW_BUDGET_OVERRUN、
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4893:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4894:            Assert.That(budget, Is.GreaterThan(0));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4895:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4904:                budget, Task06ProfileLegacyObservations);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4905:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4907:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5199:            simulation.WindowManager.ScheduleWindow(0L, new UnitId(heroUnitId), Task07HeroWindowBudget);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5468:        private const string Task07CaseId = "task07-turn-window-budget-authority-profile";
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5509:        private const int Task07HeroWindowBudget = 65536;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5511:        private const int Task07EnemyWindowBudget = 1024;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5526:        /// 真实 <c>TurnWindowManager</c> + 真实 <c>TurnWindowBudgetAuthority</c> +
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5556:        /// <c>BattleSimulation</c> 的 <c>_startCommitPort = assembly.StartCommitPort ?? _budgetAuthority</c>
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5557:        /// <strong>永远</strong>选中默认值 <c>NoTurnBudgetCommitPort.Instance</c>
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5559:        /// 而该默认实现<strong>只</strong>把 <c>ActionPlan.ReservedTurnBudgetTicks</c> 清零、不接触窗口账本
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5564:        /// <c>TurnWindowBudgetAuthority</c>，使 <c>Spent</c> 落账可达。缺口修复后本用例自动退回默认装配。
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5567:        public IEnumerator TurnWindowBudgetAndAuthorityShadowProfileHasNoUnclassifiedDifference()
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5610:                Assert.That(defaultPort.WindowReservedAtStart, Is.EqualTo(defaultPort.PlanBudgetCost),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5612:                    + "Reserved=" + defaultPort.PlanBudgetCost + "、Spent=0 —— Reserved -> Spent 未接线。"
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5614:                    + "`_startCommitPort = assembly.StartCommitPort ?? _budgetAuthority`"
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5615:                    + "（BattleSimulationAssembly 已把默认值兜底成 NoTurnBudgetCommitPort.Instance，"
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5616:                    + "因此真实 TurnWindowBudgetAuthority 永远不会被选中）。"
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5746:            var budgetContrast = AssertTask07FieldIsCompared(seed, legacySide.Stream,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5750:                        window => window with { SpentBudgetTicks = window.SpentBudgetTicks + 1 }))),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5751:                w1 + ".spentBudgetTicks", Task07HeroWindowCloseTick, "整数预算：窗口已消费额");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5752:            Assert.That(budgetContrast.CountOf(ShadowDifferenceKind.NewRuleVerifiedFact),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5755:                + DescribeDifferenceList(budgetContrast.Differences));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5762:                        window => window with { AvailableBudgetTicks = window.AvailableBudgetTicks + 1 }))),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5763:                w1 + ".budgetIdentity", Task07HeroWindowCloseTick,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5771:                        TurnBudgetSpent = snapshot.Resources.TurnBudgetSpent + 1L
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5773:                "resources.turnBudgetSpent", Task07ProbeTick, "整数预算：全窗口已消费聚合");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5822:                    { FrozenBudget = snapshot.WindowManager.FrozenBudget with { SpentBudgetTicks = snapshot.WindowManager.FrozenBudget.SpentBudgetTicks + 1 } })),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5823:                "frozenBudget.spentBudgetTicks", Task07ProbeTick, "Frozen budget summaries participate in comparison");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5842:                        plan => plan with { ReservedTurnBudgetTicks = plan.ReservedTurnBudgetTicks + 1 }))),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5843:                planPrefix + ".budgetLedgerLinked", Task07ProbeTick,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5894:            // 预算从真实检查点数导出（不是魔法数）：一旦超限报告会变成 INVALID:SHADOW_BUDGET_OVERRUN，
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5896:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5897:            Assert.That(budget, Is.GreaterThan(0));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5898:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5907:                budget, Task07ProfileLegacyObservations);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5908:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5910:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6026:            Assert.That(report.BudgetOverrun, Is.False, report.Describe());
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6050:            "windows[i].totalBudgetTicks",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6051:            "windows[i].reservedBudgetTicks",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6052:            "windows[i].spentBudgetTicks",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6053:            "windows[i].availableBudgetTicks",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6055:            "windows[i].budgetIdentity",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6058:            "resources.turnBudgetAvailable",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6059:            "resources.turnBudgetReserved",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6060:            "resources.turnBudgetSpent",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6061:            "resources.turnBudgetIdentity",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6073:            "plans[i].budgetCostTicks",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6074:            "plans[i].reservedTurnBudgetTicks",
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6093:            public int PlanBudgetCost;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6124:        /// <c>TurnWindowBudgetAuthority</c>（创建模拟后回填，因为端口需要该模拟自己的窗口管理器）；
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6150:                    startCommitPort.Target = new ProjectHero.Logic.Turns.TurnWindowBudgetAuthority(
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6222:                            result.PlanBudgetCost = checkpoint.Plans[0].BudgetCostTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6231:                        result.WindowReservedAtStart = sourceLedger.ReservedBudgetTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6232:                        result.WindowSpentAtStart = sourceLedger.SpentBudgetTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6250:                if (started != null) result.PlanBudgetCost = started.BudgetCostTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6254:                    result.WindowReservedAtStart = source.ReservedBudgetTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6255:                    result.WindowSpentAtStart = source.SpentBudgetTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6276:                    : ProjectHero.Logic.Timeline.NoTurnBudgetCommitPort.Instance.Commit(plan, tick, rollback);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6361:                        new UnitId(_heroUnitId), Task07HeroWindowBudget);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6364:                        new UnitId(_enemyUnitId), Task07EnemyWindowBudget);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6368:            public bool ShouldCloseCurrentWindow(long tick)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6514:                   + ";cost=" + plan.BudgetCostTicks
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6515:                   + ";reservedBudget=" + plan.ReservedTurnBudgetTicks
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6539:                        .Append(",tot=").Append(window.TotalBudgetTicks)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6540:                        .Append(",res=").Append(window.ReservedBudgetTicks)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6541:                        .Append(",spent=").Append(window.SpentBudgetTicks)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6542:                        .Append(",avail=").Append(window.AvailableBudgetTicks)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6549:                    .Append(" tb=").Append(snapshot.Resources.TurnBudgetAvailable)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6550:                    .Append('/').Append(snapshot.Resources.TurnBudgetReserved)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6551:                    .Append('/').Append(snapshot.Resources.TurnBudgetSpent)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6571:                        .Append(",cost=").Append(snapshot.Plans[p].BudgetCostTicks)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6572:                        .Append(",resBudget=").Append(snapshot.Plans[p].ReservedTurnBudgetTicks)
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6588:            public int PlanBudgetCost;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6614:                var frozen = snapshot.WindowManager.FrozenBudget;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6615:                long total = frozen?.TotalBudgetTicks ?? 0;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6616:                if (frozen != null) Assert.That(frozen.SpentBudgetTicks + frozen.AvailableBudgetTicks,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6617:                    Is.EqualTo(frozen.TotalBudgetTicks), "Frozen budgets also satisfy the ledger identity.");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6624:                    total += window.TotalBudgetTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6628:                    snapshot.Resources.TurnBudgetAvailable + snapshot.Resources.TurnBudgetReserved
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6629:                    + snapshot.Resources.TurnBudgetSpent,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6729:            facts.PlanBudgetCost = created.BudgetCostTicks;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6737:            Assert.That(facts.PlanBudgetCost, Is.GreaterThan(0),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6845:            Assert.That(atStart.WindowManager.FrozenBudget.WindowCount, Is.EqualTo(1));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6861:            Assert.That(atTerminal.WindowManager.FrozenBudget.WindowCount, Is.EqualTo(2));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:6907:            Assert.That(typeof(BattleResourceSnapshot).GetProperty("TurnBudgetAvailable").PropertyType,
+Assets/Tests\EditMode\Logic\Task0108LifecycleRegressionTests.cs:358:            int spent = window.SpentBudgetTicks;
+Assets/Tests\EditMode\Logic\Task07RemovalAndDiscardTests.cs:640:        // 这里与原 Task07BudgetTransactionTests（已随 R1 删除）采用**同一取舍**：
+Assets/Tests\EditMode\Logic\Task07TurnWindowAndBudgetTests.cs:23:    public class Task07TurnWindowAndBudgetTests
+Assets/Tests\EditMode\Logic\Task07TurnWindowAndBudgetTests.cs:78:            Assert.That(windowType.GetProperties().Any(p => p.Name.IndexOf("Budget", StringComparison.Ordinal) >= 0), Is.False,
+Assets/Tests\EditMode\Logic\Task06DodgeRelocationTests.cs:225:        public void DodgeCommitFailureLeavesDependentMovesReservationsAndBudgetsUnchanged()
+Assets/Tests\EditMode\Logic\Task07QueueAndReactionLaneTests.cs:38:    /// 原 <c>Task07BudgetTransactionTests</c>（已随 R1 删除）的真实定义 + 真实
+Assets/Tests\EditMode\Logic\Task07QueueAndReactionLaneTests.cs:120:        /// 与原 <c>Task07BudgetTransactionTests.BuildDefinition</c> 同形的定义，只有两处任务 07 需要的差异：
+Assets/Tests\EditMode\Logic\Task06LogicGridTests.cs:420:        public void MoveEndTickAndBudgetUsePathWeightNotEdgeCount()
+Assets/Scripts\Logic\Determinism\ReplayFormatVersion.cs:66:        // last-owner/budget state remain in the active snapshot. Full terminal payloads and
+Assets/Scripts\Logic\Determinism\ReplayFormatVersion.cs:68:        // v5 (R1): window time budgets are removed. Windows carry DurationTicks/EndTick, the frozen
+Assets/Scripts\Logic\Determinism\ReplayFormatVersion.cs:69:        // window domain is FrozenWindowLedger.v5, plan and resource snapshots drop budget fields, and
+Assets/Scripts\Logic\Determinism\ReplayFormatVersion.cs:70:        // window command kind 0 (removed CloseOwnWindow) is rejected. v4 recordings are not migrated.
+Assets/Tests\EditMode\Logic\Task08ForcedDisplacementBatchTests.cs:30:    /// ⚠ 夹具必须绕开的一条生产接缝（与 <c>Task07ForcedDisplacementBudgetTests</c> 同一口径）：
+Assets/Scripts\Logic\Commands\CommandPayloads.cs:199:        RemovedCloseOwnWindow = 0,
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:205:        public bool BudgetOverrun { get; private set; }
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:207:        public string BudgetOverrunReason { get; private set; }
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:256:        public int BudgetCheckpointLimit { get; set; } = 4096;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:268:            BudgetCheckpointLimit = _configuration.MaxCheckpoints;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:316:            BudgetCheckpointLimit = _configuration.MaxCheckpoints;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:550:            if (_checkpoints.Count > BudgetCheckpointLimit)
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:554:                BudgetOverrun = true;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:555:                BudgetOverrunReason = ShadowComparisonCodes.ShadowBudgetOverrun
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:557:                    + "|limit=" + BudgetCheckpointLimit;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:625:            BudgetOverrun = false;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:626:            BudgetOverrunReason = null;
+Assets/Scripts\Logic\Turns\TurnWindow.cs:17:        OwnerRequested = 0,
+Assets/Scripts\Logic\Turns\TurnWindow.cs:28:        BudgetExhausted = 3,
+Assets/Scripts\Logic\Turns\TurnWindow.cs:39:        public const string OwnerRequested = "WINDOW_CLOSE_OWNER_REQUESTED";
+Assets/Scripts\Logic\Turns\TurnWindow.cs:42:        public const string BudgetExhausted = "WINDOW_CLOSE_BUDGET_EXHAUSTED";
+Assets/Scripts\Logic\Turns\TurnWindow.cs:49:                case TurnWindowCloseReason.OwnerRequested: return OwnerRequested;
+Assets/Scripts\Logic\Turns\TurnWindow.cs:52:                case TurnWindowCloseReason.BudgetExhausted: return BudgetExhausted;
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:164:        [Test] public void InvalidOrBudgetExceededShadowRunCannotAuthorizeNewCutover()
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:173:                    ShadowCasePolicy.CreateDefault("task10-cutover-over-budget", sim.RulesVersion));
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:174:                Assert.That(report.BudgetOverrun, Is.True);
+Assets/Scripts\Logic\Commands\CommandAuthority.cs:210:                case WindowCommandKind.RemovedCloseOwnWindow:
+Assets/Tests\EditMode\Authoring\Task10PresentationModelTests.cs:105:        [Test] public void TurnBudgetHudSeparatesAvailableReservedAndSpent()
+Assets/Tests\EditMode\Authoring\Task10PresentationModelTests.cs:106:        { var model = Create(out var port); Assert.That(model.Window.AvailableBudgetTicks, Is.EqualTo(130)); Assert.That(model.Window.ReservedBudgetTicks, Is.EqualTo(20)); Assert.That(model.Window.SpentBudgetTicks, Is.EqualTo(30)); Assert.That(port.Submitted, Is.Empty); }
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:57:                report.MarkBudgetOverrun(ShadowComparisonCodes.ShadowBudgetOverrun
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:59:                    + "|budget=" + configuration.MaxStepsPerComparison);
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:1237:                report.MarkBudgetOverrun(ShadowComparisonCodes.ShadowBudgetOverrun
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:1239:                    + "|budget=" + input.Configuration.MaxStepsPerComparison);
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:283:        public const string ShadowBudgetOverrun = "SHADOW_BUDGET_OVERRUN";
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:573:        public bool BudgetOverrun { get; internal set; }
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:575:        public string BudgetOverrunReason { get; internal set; }
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:578:        public bool InvalidatedByBudget => BudgetOverrun;
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:608:            !HasUnexpectedDifference && !InvalidatedByBudget && _rejections.Count == 0
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:636:                if (InvalidatedByBudget) return "INVALID:" + BudgetOverrunReason;
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:689:        internal void MarkBudgetOverrun(string reason)
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:691:            BudgetOverrun = true;
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:692:            BudgetOverrunReason = reason;
+Assets/Tests\EditMode\Logic\Task09AiSnapshotTests.cs:333:                window.TotalBudgetTicks, window.ReservedBudgetTicks, window.SpentBudgetTicks,
+Assets/Tests\EditMode\Logic\Task09AiSnapshotTests.cs:334:                window.AvailableBudgetTicks, window.IsOpen, window.IsAcceptingSubmissions,
+Assets/Tests\EditMode\Logic\Task09AiSnapshotTests.cs:335:                (int)(window.CloseReason ?? TurnWindowCloseReason.OwnerRequested),
+Assets/Tests\EditMode\Logic\Task09AiDecisionTests.cs:159:        /// <c>TurnWindowBudgetAuthority</c>/<c>ActionScheduler</c> 与
+Assets/Tests\EditMode\Logic\Task09AiDecisionTests.cs:960:                "ProjectHero.Logic.Turns.TurnWindowBudgetAuthority",
+Assets/Tests\EditMode\Logic\Task09A2Fixture.cs:392:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow));
+Assets/Tests\EditMode\Logic\Task08StagedResolutionIntegrationTests.cs:856:                    TurnWindowCloseReason.OwnerRequested), Is.Null,
+Assets/Tests\EditMode\Logic\Task11WindowHistoryTests.cs:44:                Assert.That(((WindowCommandPayload)second.Selected.Payload).WindowKind, Is.EqualTo(WindowCommandKind.RemovedCloseOwnWindow));
+Assets/Tests\EditMode\Logic\Task11WindowHistoryTests.cs:50:                Assert.That(closed.Events.Events.OfType<TurnWindowClosedEvent>().Single().Reason, Is.EqualTo(TurnWindowCloseReason.OwnerRequested));
+Assets/Tests\EditMode\Logic\Task11WindowHistoryTests.cs:55:        [Test] public void FullyReservedWindowClosesWithBudgetExhaustedWithoutCancellingItsFutureAttack()
+Assets/Tests\EditMode\Logic\Task11WindowHistoryTests.cs:68:                Assert.That(closed.Reason, Is.EqualTo(TurnWindowCloseReason.BudgetExhausted));
+Assets/Tests\EditMode\Logic\Task08RemainingCoverageTests.cs:261:        public void InterruptedPlanLeavesLaneGapAndDoesNotRefundBudget()
+Assets/Tests\EditMode\Authoring\Task06\Task06ScheduleSpaceTests.cs:240:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow));
+Assets/Tests\EditMode\Logic\Task11TerminalHistoryTests.cs:57:                sim.CurrentTurnWindow.RequestClose(ProjectHero.Logic.Turns.TurnWindowCloseReason.OwnerRequested);
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:337:                "cost", "fee", "price", "adrenaline", "budget", "metaresource"
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:431:            string[] forbidden = { "TriggerTick", "Cost", "Adrenaline", "Budget", "MetaResource", "Price", "Fee" };
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:474:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow)));
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:496:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow)));
+Assets/Tests\EditMode\Logic\Task09CommandSurfaceTests.cs:31:            "TriggerTick", "Cost", "Price", "Fee", "Adrenaline", "Budget", "MetaResource"
+Assets/Tests\EditMode\Logic\Task09CommandSurfaceTests.cs:114:                "adrenaline", "budget", "metaresource"
+Assets/Tests\EditMode\Logic\Task09CommandIngressTests.cs:279:            => new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow);
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:189:        /// <c>AttackBudgetCostEqualsResolvedWindupPlusRecovery</c>：
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:193:        public void AttackImpactOccursAtResolvedWindupEndAndBudgetEqualsWindupPlusRecovery()
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:222:            int budget = plan.BudgetCostTicks;
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:248:            int windup = plan.ResolvedWindupTicks, recovery = plan.RecoveryTicks, budget = plan.BudgetCostTicks;
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:262:        /// <c>GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce</c>：
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:267:        public void GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce()
+Assets/Tests\EditMode\Logic\Task09RemovalSemanticsTests.cs:34:        private static WindowId OpenHeroWindow(BattleSimulation sim, int budget = Task09A2Fixture.WindowDuration)
+Assets/Tests\EditMode\Logic\Task09RemovalSemanticsTests.cs:36:            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, budget);
+Assets/Tests\EditMode\Logic\Task09RemovalSemanticsTests.cs:71:            int cost = plan.BudgetCostTicks;
+Assets/Tests\EditMode\Logic\Task09RemovalSemanticsTests.cs:159:            int laterCost = later.BudgetCostTicks;
+Assets/Tests\EditMode\Logic\Task09RemovalSemanticsTests.cs:160:            int laterReserved = later.ReservedTurnBudgetTicks;
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:57:        /// 反应计划直接 Locked、<c>SubmittedWindowId</c> 为空、<c>BudgetCostTicks</c> 与
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:58:        /// <c>ReservedTurnBudgetTicks</c> 恒为 0（08 交接 §4.5 冻结的
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:59:        /// <c>ReservedTurnBudgetTicks == 0</c> 口径），窗口账本一位不变。
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:66:        /// <item>反应计划参与窗口预算（<c>BudgetCostTicks != 0</c>）⇒ 账本断言红；</item>
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:169:                "Adrenaline", "Budget", "Sequence", "Ordinal", "Priority", "Controller", "Issuer", "Source"
+Assets/Tests\EditMode\Logic\Task11DynamicSpawnTests.cs:160:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow));
+Assets/Tests\EditMode\Logic\Task11DynamicSpawnTests.cs:165:                new WindowCommandScope(s.CurrentTurnWindow.WindowId), new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow))), Is.Null);
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:25:    /// <c>AddOrBudgetIncreaseRequiresCurrentWindowScope</c>、
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:26:    /// <c>StaleWindowCommandCannotSpendNewWindowBudget</c>。
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:54:        private static Task09Fixture.ScriptedWindowSchedule WindowAtZero(int budget = Task09Fixture.WindowDuration)
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:56:                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, budget);
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:295:        public void AddOrBudgetIncreaseRequiresCurrentWindowScope()
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:345:        public void StaleWindowCommandCannotSpendNewWindowBudget()
+Assets/Tests\EditMode\Authoring\Task05\Task05Fixture.cs:32:    /// <c>ImpactTick = Start + 30</c>、<c>EndTick = Start + 60</c>、<c>BudgetCostTicks = 60</c>。</item>
+Assets/Tests\EditMode\Logic\Task09ReplayInputTests.cs:206:            // 前提：Tick 0 真的打开一个窗口 —— 三条 CloseOwnWindow 请求才有真实目标，
+Assets/Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:426:        /// <c>ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept</c>（任务包 §11 第四段）。
+Assets/Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:429:        public void ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept()
+Assets/Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:737:        /// <c>MoveChainRecomputesProjectedStartPathDurationAndBudget</c>：
+Assets/Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:743:        public void MoveChainRecomputesProjectedStartPathDurationAndBudget()
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:48:    /// <c>BudgetCostTicks = 90</c>。
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:55:    /// <c>WINDOW_BUDGET_SOURCE_CLOSED_OR_MISMATCH</c> / <c>WINDOW_STALE_OR_CLOSED</c> /
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:56:    /// <c>WINDOW_INSUFFICIENT_BUDGET</c> / <c>WINDOW_ISSUER_CANNOT_CONTROL_UNIT</c>
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:96:        /// （解析后的攻击 <c>BudgetCostTicks = 90</c>），因此 1000 保证"预算不足"永远不是失败原因。
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:98:        private const int ScriptWindowBudget = 1000;
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:114:        /// <item>在 Tick 0 打开一个属于计划拥有者的脚本窗口（预算 <see cref="ScriptWindowBudget"/>、
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:206:            sim.WindowManager.ScheduleWindow(0L, owner, ScriptWindowBudget);
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:1238:            // 任务 07 接入第四个固定清理参与者：TurnBudget 账本与肾上腺素预留
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:1239:            // （ActionPlanCleanupOrder.BudgetAndAdrenaline = 600）。
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:1464:        /// 固定区间、<c>BudgetCostTicks = 0</c>、<c>SubmittedWindowId = null</c>、
+Assets/Tests\EditMode\Authoring\Task03\Task03Fixture.cs:85:                new WindowCommandPayload(WindowCommandKind.RemovedCloseOwnWindow));
+Assets/Tests\EditMode\Authoring\Task03\StepPhaseOrderTests.cs:326:            Assert.That(closedEvents[0].Reason, Is.EqualTo(TurnWindowCloseReason.OwnerRequested));
+Assets/Scripts\Logic\Simulation\BattleSimulation.cs:2297:                case WindowCommandKind.RemovedCloseOwnWindow:
+Assets/Scripts\Logic\Timeline\ActionStartGate.cs:26:        TurnBudgetUnavailable = 3
+Assets/Scripts\Logic\Timeline\ActionStartGate.cs:34:        public const string TurnBudgetUnavailable = "START_BLOCKER_TURN_BUDGET_UNAVAILABLE";
+Assets/Scripts\Logic\Timeline\ActionStartGate.cs:44:                case ActionStartBlockerReason.TurnBudgetUnavailable: return TurnBudgetUnavailable;

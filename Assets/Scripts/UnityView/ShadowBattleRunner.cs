@@ -67,7 +67,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
     /// <summary>
     /// 一条可镜像请求：生产者可见的三元组（目标 Tick / 作用域 / 载荷）+ 目标入口的
     /// <c>ControllerId</c>。它<strong>不含</strong>来源优先级、ProducerOrdinal、CommandSequence、
-    /// 规则费用或反应 TriggerTick——那些只能由 Logic 侧的入口注册表派生
+    /// 规则费用或反应 SourceImpactTick——那些只能由 Logic 侧的入口注册表派生
     /// （不变量 18、任务 03 §3.2）。
     ///
     /// 任务 09「必须产出」16 追加 <see cref="SubmittedAtTick"/>：镜像的是

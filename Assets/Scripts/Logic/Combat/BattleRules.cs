@@ -6,15 +6,6 @@ namespace ProjectHero.Logic.Combat
         RoundHalfUp = 0
     }
 
-    /// <summary>
-    /// 版本化战斗规则（任务 02 冻结的全部版本化定义输入）：
-    /// 攻击的 ReferenceActionSpeed = 20 / DefaultAttackRecoveryTicks = 30（替代运行时硬编码 0.5f）、
-    /// 移动的 ReferenceMoveSpeed = 20 / 每权重单位 Tick、RoundHalfUp 舍入、
-    /// Guard 的 Windup/Active/Recovery、Block/Dodge 的 ReactionWindup/Recovery、
-    /// Stagger = 30 Tick / Knockdown = 60 Tick 自动恢复（01B 拍板 B2，状态机实现留任务 04）、
-    /// PathCostRules / PathSearchRules 与 ForcedDisplacementProtocolVersion。
-    /// 全部进入 BattleDefinitionHash；运行时解析由任务 05/06 完成。
-    /// </summary>
     public sealed record BattleRules(
         int TicksPerSecond,
         int ReferenceActionSpeed,
@@ -43,6 +34,7 @@ namespace ProjectHero.Logic.Combat
         /// Block 对合格接触的完全抵抗固定为 1024（规则固定值），Authoring 不提供可降低该值的字段。
         /// </summary>
         public const int FullBlockResistanceQ10 = 1024;
+        public const int GuardInitialQuotaQ10 = 1024;
 
         public const int FrozenReferenceActionSpeed = 20;
         public const int FrozenReferenceMoveSpeed = 20;
@@ -59,10 +51,6 @@ namespace ProjectHero.Logic.Combat
         /// </summary>
         public const int FrozenMaxAutomaticDeferralsPerPlan = 8;
 
-        /// <summary>
-        /// 最大排程视野（Tick）。任务 02B 只冻结并哈希该版本化常量，
-        /// 供任务 05 的排程评估与任务 07 的窗口预算共同使用；不改变任何窗口语义。
-        /// </summary>
         public const int FrozenMaxScheduleHorizonTicks = 60 * 600; // 600 秒 @ 60 Tick/s
 
         /// <summary>最大排程视野（Tick），与 <see cref="FrozenMaxScheduleHorizonTicks"/> 同值。</summary>
@@ -119,6 +107,8 @@ namespace ProjectHero.Logic.Combat
             writer.Write("rules.stagger_auto_recovery_ticks", StaggerAutoRecoveryTicks);
             writer.Write("rules.knockdown_auto_recovery_ticks", KnockdownAutoRecoveryTicks);
             writer.Write("rules.full_block_resistance_q10", FullBlockResistanceQ10);
+            writer.Write("rules.guard_initial_quota_q10", GuardInitialQuotaQ10);
+            writer.Write("rules.guard_resistance_rounding", "FloorResistedQ10");
             writer.Write("rules.max_automatic_deferrals_per_plan", MaxAutomaticDeferralsPerPlan);
             writer.Write("rules.max_schedule_horizon_ticks", MaxScheduleHorizonTicks);
             PathCostRules.WriteHashComponents(writer);
@@ -138,7 +128,8 @@ namespace ProjectHero.Logic.Combat
     {
         public const int BlockAdrenalineCost = 2;
         public const int DodgeAdrenalineCost = 1;
-        public const int BlockReactionWindupTicks = 60;   // 旧 BlockDuration = 1.0s
-        public const int DodgeReactionWindupTicks = 30;   // 旧 DodgeDuration = 0.5s
+        public const int BlockDurationTicks = 60;   // 旧 BlockDuration = 1.0s
+        public const int DodgeDurationTicks = 30;   // 旧 DodgeDuration = 0.5s
+        public const int GuardDurationTicks = 60;
     }
 }

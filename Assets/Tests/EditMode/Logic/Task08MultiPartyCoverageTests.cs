@@ -35,8 +35,18 @@ namespace ProjectHero.Logic.Tests
                 d = d with { Volumes = d.Volumes.Concat(new[] { volume }).ToArray(), Units = d.Units.Select((u, i) =>
                     i == 1 ? u with { VolumeSpecId = volume.VolumeSpecId } : u).ToArray() };
             }
+            // R1：普通动作的起点必须落在各自拥有者的窗口内，窗口依次轮转，因此几个单位的同一种攻击
+            // 只能靠不同的解析前摇在同一 Tick 命中。起点依次为 1、3、5（见 Multi），基础前摇 10：
+            // ActionSpeed 14 → 14、17 → 12、20 → 10。
+            float[] speeds = clash ? new[] { 14f, 17f, 20f, 20f } : new[] { 17f, 20f, 20f, 20f };
+            d = d with { Units = d.Units.Select((u, i) => i == 0 ? u with { ActionSpeed = speeds[0] }
+                : i == 1 ? u with { ActionSpeed = clash ? speeds[1] : u.ActionSpeed }
+                : i == 3 ? u with { ActionSpeed = clash ? speeds[2] : speeds[1] } : u).ToArray() };
             return d;
         }
+
+        /// <summary>多方同时命中的影响 Tick：起点 1、3、5 与上面的解析前摇对齐到同一 Tick。</summary>
+        internal static long MultiImpactTick(bool clash) => clash ? 15L : 13L;
 
         internal static Task08DefenseCoverageTests.Rig Multi(bool clash)
         {
@@ -46,23 +56,21 @@ namespace ProjectHero.Logic.Tests
                 : new[] { Task09A2Fixture.Hero, Task09A2Fixture.Ally };
             for (int i = 0; i < owners.Length; i++)
             {
-                long openTick = i * 3; sim.WindowManager.ScheduleWindow(openTick, owners[i], 400);
+                // 每个窗口 [2i, 2i+2)：Tick 2i 打开，Tick 2i+1 提交起点为 2i+1 的攻击，窗口在该 Tick 末到期。
+                long openTick = i * 2; sim.WindowManager.ScheduleWindow(openTick, owners[i], 2);
                 Task09A2Fixture.Step(sim, openTick);
                 var controller = owners[i] == Task09A2Fixture.Monster ? Task09A2Fixture.AiId : Task09A2Fixture.PlayerId;
                 var target = owners[i] == Task09A2Fixture.Monster ? Task09A2Fixture.Hero : Task09A2Fixture.Monster;
                 var facing = i == 0 ? GridDirection.East : clash && i == 2 ? (GridDirection)4 : GridDirection.West;
-                var add = new AddOrdinaryPlanOperation(1, owners[i], new ActionSpecId(Task09A2Fixture.AttackSpecId), 10, default, target, facing, null);
+                var add = new AddOrdinaryPlanOperation(1, owners[i], new ActionSpecId(Task09A2Fixture.AttackSpecId), openTick + 1, default, target, facing, null);
                 Task09A2Fixture.Submit(sim, controller, new CommandRequest(openTick + 1,
                     new ScheduleEditScope(sim.ScheduleAuthority.ScheduleRevision, sim.CurrentTurnWindow.WindowId),
                     new ScheduleEditPayload(new ScheduleEditOperation[] { add })));
                 Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.StepNext(sim)), Is.Empty);
-                if (i < owners.Length - 1)
-                {
-                    Task09A2Fixture.Submit(sim, controller, Task09A2Fixture.CloseWindow(openTick + 2, sim.CurrentTurnWindow.WindowId));
-                    Task09A2Fixture.StepNext(sim);
-                }
             }
-            Task09A2Fixture.AdvanceTo(sim, 19); r.Result = Task09A2Fixture.StepNext(sim); return r;
+            Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Select(p => p.ImpactTick).Distinct(),
+                Is.EqualTo(new[] { MultiImpactTick(clash) }), "夹具前提：各方攻击在同一 Tick 命中");
+            Task09A2Fixture.AdvanceTo(sim, MultiImpactTick(clash) - 1); r.Result = Task09A2Fixture.StepNext(sim); return r;
         }
 
         internal static Task08DefenseCoverageTests.Rig Reservation()
@@ -71,9 +79,9 @@ namespace ProjectHero.Logic.Tests
             d = d with { Encounters = d.Encounters.Select(e => e with { Slots = e.Slots.Select(s =>
                 s.SlotId.Value == "c_neut" ? s with { InitialPosition = new GridPoint(30, 0) } : s).ToArray() }).ToArray() };
             var r = new Task08DefenseCoverageTests.Rig { Sim = Task09A2Fixture.NewSim(d) };
-            var sim = r.Sim; r.Attack = Task09A2Fixture.ArrangeStartedAttackOnly(sim, Task09A2Fixture.Monster);
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.CloseWindow(2, sim.CurrentTurnWindow.WindowId));
-            Task09A2Fixture.StepNext(sim);
+            var sim = r.Sim; r.Attack = Task09A2Fixture.ArrangeStartedAttackInShortWindow(sim, Task09A2Fixture.Monster,
+                new ActionSpecId(Task09A2Fixture.AttackSpecId), seedDefenderAdrenaline: false);
+            Task09A2Fixture.StepNext(sim);   // Tick 2：攻击者窗口已在 Tick 1 末到期（R1）
             sim.WindowManager.ScheduleWindow(3, Task09A2Fixture.Neutral, 400); Task09A2Fixture.StepNext(sim);
             var move = new AddOrdinaryPlanOperation(1, Task09A2Fixture.Neutral, Task08DefenseCoverageTests.MoveId, 30, default,
                 null, GridDirection.East, new GridPoint(14, 0));
@@ -129,9 +137,9 @@ namespace ProjectHero.Logic.Tests
                         DamageComponents = new[] { new DamageComponentSpec(DamageChannels.PhysicalBlunt, 10, DamageTagMask.BypassActionResistance) } }
                     : ((AttackPayloadSpec)a.Payload) with { Pattern = pattern } }).ToArray() };
             using var sim = Task09A2Fixture.NewSim(d);
-            Task09A2Fixture.ArrangeStartedAttack(sim, Task09A2Fixture.Monster, new ActionSpecId(Task09A2Fixture.AlliedAttackSpecId));
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.CloseWindow(2, sim.CurrentTurnWindow.WindowId));
-            Task09A2Fixture.StepNext(sim);
+            Task09A2Fixture.ArrangeStartedAttackInShortWindow(sim, Task09A2Fixture.Monster,
+                new ActionSpecId(Task09A2Fixture.AlliedAttackSpecId), seedDefenderAdrenaline: true);
+            Task09A2Fixture.StepNext(sim);   // Tick 2：攻击者窗口已在 Tick 1 末到期（R1）
             sim.WindowManager.ScheduleWindow(3, Task09A2Fixture.Ally, 400); Task09A2Fixture.StepNext(sim);
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(4, sim.ScheduleAuthority.ScheduleRevision,
                 sim.CurrentTurnWindow.WindowId, Task09A2Fixture.Ally, new ActionSpecId(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 4));

@@ -83,8 +83,7 @@ namespace ProjectHero.Tests.PlayMode
         // 因此窗口取值由"动作时长"派生而不是猜：见 coverage 的 planWindup/planRecovery 读数。
         private const long TerminalTick = 900L;
 
-        /// <summary>hero 窗口的整数 Tick 预算：必须足以覆盖真实攻击/移动计划的成本，且刻意远大于它。</summary>
-        private const int HeroWindowBudget = 65536;
+        private const int HeroWindowDuration = 65536;
 
         /// <summary>默认策略（不开任何任务检查点）下既有的「暂不可比较」登记条数。</summary>
         private const int BaselineRegistrationCount = 10;
@@ -105,7 +104,7 @@ namespace ProjectHero.Tests.PlayMode
         /// = 报告实测 `TemporarilyUncomparable.Count`。原常量 25 是旧值（该组后来增至 29 条）。
         /// 条数变化必须同步这里，否则本用例立刻红——这正是该断言的作用。
         /// </summary>
-        private const int TurnWindowRegistrationCount = 29;
+        private const int TurnWindowRegistrationCount = 31;
 
         /// <summary>
         /// 任务 08 画像策略新增的登记条数（由 <c>compareTask08ProfileFacts</c> 开启）。
@@ -121,7 +120,7 @@ namespace ProjectHero.Tests.PlayMode
 
         /// <summary>本用例的总登记条数（四个开关全开）。</summary>
         private const int TotalRegistrationCount = BaselineRegistrationCount + ScheduleRegistrationCount
-            + MovementRegistrationCount + TurnWindowRegistrationCount + Task08RegistrationCount;
+            + MovementRegistrationCount + TurnWindowRegistrationCount + Task08RegistrationCount + 11; // R2/R3
 
         [UnityTest]
         public IEnumerator CommandAndAiShadowProfileHasNoUnclassifiedDifference()
@@ -1107,7 +1106,7 @@ namespace ProjectHero.Tests.PlayMode
             var bindings = new List<ShadowCheckpointEventBinding>((int)TerminalTick + 1);
             var identityHashes = new List<int>((int)TerminalTick + 1);
 
-            var schedule = new ScriptedWindowSchedule(HeroWindowOpenTick, HeroWindowBudget);
+            var schedule = new ScriptedWindowSchedule(HeroWindowOpenTick, HeroWindowDuration);
             var controller = new AiControllerLogic(fixture.Seed.RuntimeInputs.InitialRngSeed);
             controller.RegisterController(fixture.AiBinding);
 
@@ -1485,12 +1484,12 @@ namespace ProjectHero.Tests.PlayMode
         private sealed class ScriptedWindowSchedule : ProjectHero.Logic.Turns.ITurnWindowSchedule
         {
             private readonly long _openTick;
-            private readonly int _budget;
+            private readonly int _duration;
 
-            public ScriptedWindowSchedule(long openTick, int budget)
+            public ScriptedWindowSchedule(long openTick, int duration)
             {
                 _openTick = openTick;
-                _budget = budget;
+                _duration = duration;
             }
 
             public long OwnerUnitId { get; set; }
@@ -1500,10 +1499,10 @@ namespace ProjectHero.Tests.PlayMode
                 if (tick != _openTick) return null;
                 Assert.That(OwnerUnitId, Is.GreaterThan(0L),
                     "构造前提：窗口排程必须已接到拥有者单位（Tick " + tick + "）");
-                return new ProjectHero.Logic.Turns.WindowOpenRequest(new UnitId(OwnerUnitId), _budget);
+                return new ProjectHero.Logic.Turns.WindowOpenRequest(new UnitId(OwnerUnitId), _duration);
             }
 
-            public bool ShouldCloseCurrentWindow(long tick) => false;
+
         }
 
         private static ShadowCheckpointEventBinding BuildEventBinding(long tick, StepResult result)
@@ -2054,7 +2053,7 @@ namespace ProjectHero.Tests.PlayMode
                     + "本场累计伤害 Q10=" + coverage.CumulativeDamageQ10
                     + "（按规格开局 AvailableAdrenaline=0）⇒ 获得路径是否触发由该读数判定",
                 Disposition = "部分覆盖：账本读数逐检查点已比较；获得路径的触发以累计伤害为前置读数。"
-                    + "替代证据：EditMode Task08OpeningAdrenalineContractTests / Task07TurnWindowAndBudgetTests。"
+                    + "替代证据：EditMode Task08OpeningAdrenalineContractTests / Task07TurnWindowTests。"
                     + gate
             });
 

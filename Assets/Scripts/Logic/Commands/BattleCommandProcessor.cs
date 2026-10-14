@@ -77,7 +77,7 @@ namespace ProjectHero.Logic.Commands
     /// <item><strong>整批语义</strong>：一条命令的拒绝<strong>不</strong>影响同批其他命令；
     /// 拒绝按 <c>CommandSequence</c> 升序返回。</item>
     /// </list>
-    /// 它<strong>不</strong>：读窗口、推导反应 TriggerTick、分配 <c>CommandSequence</c>、
+    /// 它<strong>不</strong>：读窗口、推导反应 SourceImpactTick、分配 <c>CommandSequence</c>、
     /// 写计划终态，也不检查 <c>SourceKind</c>——玩家与 AI 的差异只体现在入口注册的来源类型。
     /// </summary>
     public sealed class BattleCommandProcessor : IAuthorityRoutedCommandProcessor

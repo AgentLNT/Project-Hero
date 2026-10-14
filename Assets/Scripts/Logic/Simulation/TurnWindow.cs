@@ -22,10 +22,6 @@ namespace ProjectHero.Logic.Simulation
             _isBattleEnded = isBattleEnded;
         }
 
-        /// <summary>
-        /// 窗口拥有者是否仍存活（待打开窗口在打开阶段前死亡 ⇒ 按稳定顺序跳过，
-        /// 不产生该单位的窗口打开事件，也不产生预算）。
-        /// </summary>
         public bool IsUnitAliveForWindow(UnitId unitId)
             => _isUnitAlive != null && _isUnitAlive(unitId);
 

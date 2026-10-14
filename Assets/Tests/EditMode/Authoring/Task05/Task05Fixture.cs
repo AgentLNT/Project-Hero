@@ -12,33 +12,6 @@ using ProjectHero.Logic.Timeline;
 
 namespace ProjectHero.Authoring.Tests.Task05
 {
-    /// <summary>
-    /// 任务 05 测试夹具：在<strong>真实 02B 定义</strong>（<c>BattleDefinitionFixture</c>）之上
-    /// 追加五个时序完全受控的合成动作，用来精确断言任务 05 的时序解析契约。
-    ///
-    /// 为什么必须这样做：
-    /// <list type="bullet">
-    /// <item>真实资产只提供 <c>quick_slash</c>（攻击，前摇 30）与 <c>block</c>/<c>dodge</c>；
-    /// 任务 05 还必须覆盖 Guard 三段半开区间、Move 的 <c>ResolvedBaseStepTicks</c>
-    /// 与路径权重重算，这些没有真实资产，只能显式构造。</item>
-    /// <item>夹具<strong>不</strong>新建第二套配置模型：它只做 <c>with { Actions = ... }</c>
-    /// 的纯追加，Encounter / Faction / Rules / 图案全部沿用真实定义。</item>
-    /// </list>
-    ///
-    /// 冻结时序（全部进入断言，改动即让对应用例失败）：
-    /// <list type="bullet">
-    /// <item>Attack：<c>BaseWindupTicks = 30</c>、<c>RecoveryTicks = 30</c>；
-    /// <c>ActionSpeed = 20</c>（= ReferenceActionSpeed）⇒ <c>ResolvedWindupTicks = 30</c>、
-    /// <c>ImpactTick = Start + 30</c>、<c>EndTick = Start + 60</c>、<c>BudgetCostTicks = 60</c>。</item>
-    /// <item>Guard：<c>Windup = 10</c>、<c>Active = 20</c>、<c>Recovery = 30</c> ⇒
-    /// <c>Active = [Start+10, Start+30)</c>、<c>EndTick = Start + 60</c>、预算 60（三段全固定，不读速度）。</item>
-    /// <item>Move：<c>BaseStepTicks = 5</c>、<c>RecoveryTicks = 10</c>；
-    /// <c>MoveSpeed = 20</c> ⇒ <c>ResolvedBaseStepTicks = 5</c>；
-    /// 路径权重 4 ⇒ 移动时长 20、<c>EndTick = Start + 30</c>、预算 30。</item>
-    /// <item>Block：<c>ReactionWindupTicks = 60</c>、<c>RecoveryTicks = 20</c>（01B 拍板 B3）。</item>
-    /// <item>Dodge：<c>ReactionWindupTicks = 30</c>、<c>RecoveryTicks = 10</c>（01B 拍板 B3）。</item>
-    /// </list>
-    /// </summary>
     internal static class Task05Farm
     {
         public const string AttackId = "action.t05.attack";
@@ -69,9 +42,9 @@ namespace ProjectHero.Authoring.Tests.Task05
         public const int GuardRecovery = 30;
         public const int MoveBaseStepTicks = 5;
         public const int MoveRecovery = 10;
-        public const int BlockReactionWindup = 60;
+        public const int BlockDuration = 60;
         public const int BlockRecovery = 20;
-        public const int DodgeReactionWindup = 30;
+        public const int DodgeDuration = 30;
         public const int DodgeRecovery = 10;
 
         /// <summary>动作速度基准（= <c>BattleRules.ReferenceActionSpeed</c>）；测试可改写。</summary>
@@ -127,7 +100,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             actions.Add(new ActionSpec(
                 new ActionSpecId(GuardId), ActionType.Guard,
-                new GuardTimingSpec(GuardWindup, GuardActive, GuardRecovery),
+                new GuardTimingSpec(GuardActive),
                 new GuardPayloadSpec(
                     new Dictionary<DamageChannelId, int>(), 512,
                     DefenseTagMask.Blockable | DefenseTagMask.Guardable),
@@ -141,13 +114,13 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             actions.Add(new ActionSpec(
                 new ActionSpecId(BlockId), ActionType.Block,
-                new BlockReactionTimingSpec(BlockReactionWindup, BlockRecovery),
+                new BlockReactionTimingSpec(BlockDuration),
                 new BlockPayloadSpec(DefenseTagMask.Blockable),
                 AdrenalineCost: FrozenDesignValues.BlockAdrenalineCost));
 
             actions.Add(new ActionSpec(
                 new ActionSpecId(DodgeId), ActionType.Dodge,
-                new DodgeReactionTimingSpec(DodgeReactionWindup, DodgeRecovery),
+                new DodgeReactionTimingSpec(DodgeDuration),
                 new DodgePayloadSpec(2, AnyMovementPattern()),
                 AdrenalineCost: FrozenDesignValues.DodgeAdrenalineCost));
 
@@ -354,7 +327,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
         /// <summary>
         /// 创建一个位于固定触发 Tick 的反应计划（Block/Dodge）。
-        /// <c>TriggerTick</c> 只能由来源攻击的 <c>ImpactTick</c> 推导，测试也必须显式给出它。
+        /// <c>SourceImpactTick</c> 只能由来源攻击的 <c>ImpactTick</c> 推导，测试也必须显式给出它。
         /// </summary>
         public ActionPlanCreationResult CreateReaction(
             string actionSpecId, long triggerTick, long responseDeadlineTick,

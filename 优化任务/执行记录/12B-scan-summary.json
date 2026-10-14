@@ -1,0 +1,48 @@
+{
+  "pattern": "ReactionWindup|ActiveStartTick|ActiveEndTick|(?<!en)CounterWindow",
+  "caseInsensitive": true,
+  "excludedFalsePositive": "EncounterWindow means encounter turn window, not counter window.",
+  "excludedGeneratedTrees": [
+    ".git",
+    "Library",
+    "Temp",
+    "Logs",
+    "obj",
+    "bin",
+    ".vs",
+    ".idea",
+    "node_modules",
+    "UserSettings"
+  ],
+  "repositoryHits": 171,
+  "productionHits": [
+    {
+      "path": "Assets/Scripts/UnityView/ShadowCasePolicy.cs",
+      "line": 395,
+      "text": "                    foreach (string field in new[] { \"plans[i].activeStartTick\", \"plans[i].activeEndTick\",",
+      "explanation": "R2/R3 RemovedRepresentation 的逐字段名称；无生产字段、事件或分支。"
+    },
+    {
+      "path": "Assets/Scripts/UnityView/ShadowCasePolicy.cs",
+      "line": 396,
+      "text": "                        \"plans[i].reactionWindupTicks\", \"plans[i].activeTicks\", \"events.DodgeCounterWindowOpenedEvent\", \"staged.CounterWindows\" })",
+      "explanation": "R2/R3 RemovedRepresentation 的逐字段名称；无生产字段、事件或分支。"
+    }
+  ],
+  "scannedTextSuffixes": [
+    ".asmdef",
+    ".asset",
+    ".cs",
+    ".json",
+    ".log",
+    ".md",
+    ".ps1",
+    ".py",
+    ".txt",
+    ".unity",
+    ".xml",
+    ".yaml",
+    ".yml"
+  ],
+  "perLineExplanation": "12B-scan-repository.csv"
+}

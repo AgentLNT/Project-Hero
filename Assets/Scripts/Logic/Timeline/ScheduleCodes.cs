@@ -62,6 +62,12 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public const string SCHEDULE_START_TICK_BEFORE_COMMAND_TICK = "SCHEDULE_START_TICK_BEFORE_COMMAND_TICK";
 
+        /// <summary>
+        /// 普通计划的 <c>StartTick</c> 不在其来源窗口 <c>[OpenedAtTick, EndTick)</c> 内（R1、00 号规则 36）。
+        /// 显式编辑以此稳定码整批拒绝；系统自动延期以此为由终止到期计划（<c>DelayedBeyondSourceWindow</c>）。
+        /// </summary>
+        public const string SCHEDULE_START_OUTSIDE_SOURCE_WINDOW = "SCHEDULE_START_OUTSIDE_SOURCE_WINDOW";
+
         // —— 目标关系（创建 / 排程候选 / 启动门禁三处共用同一实现）——
 
         public const string SCHEDULE_PRIMARY_TARGET_REQUIRED = "SCHEDULE_PRIMARY_TARGET_REQUIRED";

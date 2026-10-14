@@ -348,9 +348,9 @@ namespace ProjectHero.Logic.Tests
 
             for (int i = 0; i < opportunities.Count; i++)
             {
-                Assert.That(opportunities[i].TriggerTick,
+                Assert.That(opportunities[i].SourceImpactTick,
                     Is.EqualTo(Task08AoeTargetPolicyIntegrationTests.ImpactTick),
-                    "机会的 TriggerTick 必须等于来源攻击的 ImpactTick（命令无法声明）");
+                    "机会的 SourceImpactTick 必须等于来源攻击的 ImpactTick（命令无法声明）");
                 Assert.That(opportunities[i].Options.Select(o => o.ReactionActionSpecId.Value),
                     Contains.Item(Task08AoeTargetPolicyIntegrationTests.BlockSpecId),
                     "Block 必须是已公开的选项（攻击载荷带 Blockable 标签）");

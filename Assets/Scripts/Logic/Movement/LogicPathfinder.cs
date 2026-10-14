@@ -7,14 +7,6 @@ using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Logic.Movement
 {
-    /// <summary>
-    /// 一次路径搜索的<strong>规范结果</strong>（任务包「必须产出」12）。
-    /// 成功时携带完整路径（含起点与终点）、边数与<strong>路径权重单位</strong>；
-    /// 失败时携带冻结的五类稳定失败码之一。
-    ///
-    /// <see cref="EdgeCount"/> 只用于 <c>MovementSegment</c> 的数量/索引；
-    /// 时长与预算成本<strong>只</strong>用 <see cref="PathWeightUnits"/>。
-    /// </summary>
     public sealed record PathSearchResult(
         bool Succeeded,
         string FailureCode,

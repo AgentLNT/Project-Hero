@@ -1,0 +1,76 @@
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:769:        /// <c>INVALID:SHADOW_BUDGET_OVERRUN</c>（比较根本不会执行），因此放预算不是放宽判据，
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:776:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:777:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:784:                    ShadowComparisonConfig.Strict(budget),
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:789:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:791:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:810:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:811:                report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:947:            Assert.That(report.BudgetOverrun, Is.False, report.Describe());
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:799:        /// `BudgetOverrun`、`ComparedCheckpoints == 0`、`claim=INVALID:`，
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:865:                Assert.That(current.InvalidatedByBudget, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1235:            Assert.That(Bootstrap.LastShadowReport.InvalidatedByBudget, Is.False);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1630:        public IEnumerator ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy()
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1657:                ShadowCasePolicy.CreateDefault("03B-shadow-budget", seed.RulesVersion));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1659:            Assert.That(report.BudgetOverrun, Is.True, "超出诊断预算必须标记预算超限");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1660:            Assert.That(report.InvalidatedByBudget, Is.True);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1661:            Assert.That(report.BudgetOverrunReason, Does.StartWith(ShadowComparisonCodes.ShadowBudgetOverrun));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1678:            Bootstrap.StopBattle("shadow-budget-test");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1770:            Assert.That(aligned.InvalidatedByBudget, Is.False);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3944:        /// <paramref name="checkpointBudget"/> 默认 64（既有用例的原值，逐字不变）。
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3946:        /// <c>INVALID:SHADOW_BUDGET_OVERRUN</c>（比较根本不会执行），
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3958:            ShadowCasePolicy policy, int checkpointBudget = 64,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3964:                    ShadowComparisonConfig.Strict(checkpointBudget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4863:            // 检查点数必然超过既有用例的 64；一旦超限报告会变成 INVALID:SHADOW_BUDGET_OVERRUN、
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4866:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4867:            Assert.That(budget, Is.GreaterThan(0));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4868:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4877:                budget, Task06ProfileLegacyObservations);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4878:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4880:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5460:            Assert.That(report.BudgetOverrun, Is.False, report.Describe());
+Assets/Tests\PlayMode\Task10WiredPresentationTests.cs:451:        [UnityTest] public IEnumerator DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease()
+Assets/Scripts\Core\Compatibility\Authoring\BattleSimulationSourceFactory.cs:61:        [UnityEngine.Serialization.FormerlySerializedAs("_shadowInitialWindowBudgetTicks")]
+Assets/Scripts\Logic\Turns\TurnWindow.cs:26:        BudgetExhausted = 3,
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:164:        [Test] public void InvalidOrBudgetExceededShadowRunCannotAuthorizeNewCutover()
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:173:                    ShadowCasePolicy.CreateDefault("task10-cutover-over-budget", sim.RulesVersion));
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:174:                Assert.That(report.BudgetOverrun, Is.True);
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:283:        public const string ShadowBudgetOverrun = "SHADOW_BUDGET_OVERRUN";
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:572:        public bool BudgetOverrun { get; internal set; }
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:574:        public string BudgetOverrunReason { get; internal set; }
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:576:        public bool InvalidatedByBudget => BudgetOverrun;
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:606:            !HasUnexpectedDifference && !InvalidatedByBudget && _rejections.Count == 0
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:634:                if (InvalidatedByBudget) return "INVALID:" + BudgetOverrunReason;
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:687:        internal void MarkBudgetOverrun(string reason)
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:689:            BudgetOverrun = true;
+Assets/Scripts\UnityView\ShadowComparisonReport.cs:690:            BudgetOverrunReason = reason;
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:57:                report.MarkBudgetOverrun(ShadowComparisonCodes.ShadowBudgetOverrun
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:59:                    + "|budget=" + configuration.MaxStepsPerComparison);
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:1237:                report.MarkBudgetOverrun(ShadowComparisonCodes.ShadowBudgetOverrun
+Assets/Scripts\UnityView\ShadowComparisonDetector.cs:1239:                    + "|budget=" + input.Configuration.MaxStepsPerComparison);
+Assets/Scripts\UnityView\ShadowCasePolicy.cs:599:                "windows[i].totalBudgetTicks", "windows[i].reservedBudgetTicks", "windows[i].spentBudgetTicks",
+Assets/Scripts\UnityView\ShadowCasePolicy.cs:600:                "windows[i].availableBudgetTicks", "windows[i].reservations", "windows[i].budgetIdentity",
+Assets/Scripts\UnityView\ShadowCasePolicy.cs:601:                "resources.turnBudgetAvailable", "resources.turnBudgetReserved", "resources.turnBudgetSpent",
+Assets/Scripts\UnityView\ShadowCasePolicy.cs:602:                "resources.turnBudgetIdentity", "plans[i].budgetCostTicks", "plans[i].reservedTurnBudgetTicks" })
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:205:        public bool BudgetOverrun { get; private set; }
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:207:        public string BudgetOverrunReason { get; private set; }
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:256:        public int BudgetCheckpointLimit { get; set; } = 4096;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:268:            BudgetCheckpointLimit = _configuration.MaxCheckpoints;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:316:            BudgetCheckpointLimit = _configuration.MaxCheckpoints;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:550:            if (_checkpoints.Count > BudgetCheckpointLimit)
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:554:                BudgetOverrun = true;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:555:                BudgetOverrunReason = ShadowComparisonCodes.ShadowBudgetOverrun
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:557:                    + "|limit=" + BudgetCheckpointLimit;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:625:            BudgetOverrun = false;
+Assets/Scripts\UnityView\ShadowBattleRunner.cs:626:            BudgetOverrunReason = null;
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:337:                "cost", "fee", "price", "adrenaline", "budget", "metaresource"
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:431:            string[] forbidden = { "TriggerTick", "Cost", "Adrenaline", "Budget", "MetaResource", "Price", "Fee" };
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:126:        public void WindowValidationSurvivesBudgetRemovalForPreviewAndCommit(bool preview)
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:313:        [Test] public void SnapshotHashAndEventsContainNoBudgetState()
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:316:                Assert.That(type.GetProperties().Where(p => p.Name.IndexOf("budget", StringComparison.OrdinalIgnoreCase) >= 0), Is.Empty, type.Name);
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:318:                && t.Name.IndexOf("budget", StringComparison.OrdinalIgnoreCase) >= 0), Is.Empty);
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:332:        [Test] public void StartCommitRemainsAtomicWithoutBudget()
+Assets/Tests\EditMode\Logic\Task07TurnWindowTests.cs:70:            Assert.That(windowType.GetProperties().Any(p => p.Name.IndexOf("Budget", StringComparison.Ordinal) >= 0), Is.False,
+Assets/Tests\EditMode\Logic\Task09CommandSurfaceTests.cs:31:            "TriggerTick", "Cost", "Price", "Fee", "Adrenaline", "Budget", "MetaResource"
+Assets/Tests\EditMode\Logic\Task09CommandSurfaceTests.cs:114:                "adrenaline", "budget", "metaresource"
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:151:                "Adrenaline", "Budget", "Sequence", "Ordinal", "Priority", "Controller", "Issuer", "Source"

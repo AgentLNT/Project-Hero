@@ -9,27 +9,6 @@ using ProjectHero.Logic.Timeline;
 
 namespace ProjectHero.Logic.Interactions
 {
-    /// <summary>
-    /// <strong><c>ForcedDisplacementCommitter</c></strong>（任务包「必须产出」20 + 21 的前半段）。
-    ///
-    /// 它是"求解器已经判定完、现在提交终态"的那一层：
-    /// <list type="number">
-    /// <item>只消费 <see cref="ForcedDisplacementBatch"/>（求解器给出的<strong>最终</strong> footprint 与
-    /// 每单位失效候选）；</item>
-    /// <item>按冻结的<strong>原因优先级</strong>给候选分类：实际被换位单位的非终态 <c>Move</c> 计划 ⇒
-    /// <c>MovementOriginInvalidated</c>；其余（最终 footprint 抢占了它的 Reservation）⇒
-    /// <c>ReservationPreemptedByForcedDisplacement</c>。同一计划同时属于两类时前者胜出，
-    /// 判据由 <see cref="ActionPlanTerminalCoordinator.ResolveForcedDisplacementReason"/> 唯一给出；</item>
-    /// <item>按 <see cref="ActionPlanId"/> <strong>升序</strong>逐个经统一终态协调器
-    /// <see cref="ActionPlanTerminalCoordinator.EnterTerminal"/> 请求终态；第一次原因胜出，
-    /// 后续请求（含本 Tick 稍后的 Intercept 等）幂等空操作；</item>
-    /// <item>返回<strong>实际</strong>进入终态的计划（升序）——候选里已经是终态的计划不计入。</item>
-    /// </list>
-    ///
-    /// 明确<strong>不</strong>做（任务包 :210、:212、:417）：不自己删 <c>MovementSegment</c> /
-    /// <c>Reservation</c> / Lane 项；不调用 ScheduleEdit；不做预算退款或窗口联动；
-    /// 释放由任务 05 协调器的固定清理参与者（500 移动/预留、600 预算）完成。
-    /// </summary>
     public sealed class ForcedDisplacementCommitter : IForcedDisplacementCommitter
     {
         private readonly ActionScheduleAuthority _authority;

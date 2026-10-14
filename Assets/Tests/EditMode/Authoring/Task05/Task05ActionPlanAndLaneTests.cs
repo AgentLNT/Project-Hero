@@ -89,11 +89,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.LockedAtTick, Is.EqualTo(0L), "反应锁定 Tick = 创建 Tick（可审计）");
         }
 
-        /// <summary>
-        /// <c>ReactionPlanUsesOpportunityBindingAndNullSubmittedWindowId</c>：
-        /// 反应计划带 <c>TriggerBinding</c>、<c>SubmittedWindowId</c> 恒为空、预算恒为 0，
-        /// 且固定区间严格等于 <c>[TriggerTick - ReactionWindup, TriggerTick + Recovery)</c>。
-        /// </summary>
         [Test]
         public void ReactionPlanUsesOpportunityBindingAndNullSubmittedWindowId()
         {
@@ -106,20 +101,18 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(block.ReactionOpportunityId.Value.Value, Is.EqualTo(1L));
             Assert.That(block.SourceThreatPlanId.HasValue, Is.True);
             Assert.That(block.SourceThreatPlanId.Value.Value, Is.EqualTo(1L));
-            Assert.That(block.TriggerTick, Is.EqualTo(200L));
+            Assert.That(block.SourceImpactTick, Is.EqualTo(200L));
 
-            Assert.That(block.StartTick, Is.EqualTo(200L - Task05Farm.BlockReactionWindup),
-                "Block：StartTick = TriggerTick - ReactionWindupTicks");
-            Assert.That(block.EndTick, Is.EqualTo(200L + Task05Farm.BlockRecovery),
-                "Block：EndTick = TriggerTick + RecoveryTicks");
-            Assert.That(block.BudgetCostTicks, Is.EqualTo(0), "反应计划预算成本恒为 0");
-            Assert.That(block.ReservedTurnBudgetTicks, Is.EqualTo(0), "反应计划不参与窗口预算");
+            Assert.That(block.StartTick, Is.EqualTo(200L),
+                "Block defaults to the source impact");
+            Assert.That(block.EndTick, Is.EqualTo(200L + Task05Farm.BlockDuration),
+                "Block：EndTick = SourceImpactTick + RecoveryTicks");
 
-            Assert.That(dodge.StartTick, Is.EqualTo(500L - Task05Farm.DodgeReactionWindup));
-            Assert.That(dodge.EndTick, Is.EqualTo(500L + Task05Farm.DodgeRecovery));
+            Assert.That(dodge.StartTick, Is.EqualTo(500L));
+            Assert.That(dodge.EndTick, Is.EqualTo(500L + Task05Farm.DodgeDuration));
             Assert.That(dodge.ReactionOpportunityId.Value.Value, Is.EqualTo(7L));
             Assert.That(dodge.SourceThreatPlanId.Value.Value, Is.EqualTo(2L));
-            Assert.That(dodge.TriggerTick, Is.EqualTo(500L));
+            Assert.That(dodge.SourceImpactTick, Is.EqualTo(500L));
         }
 
         // ————————————————————————————————————————————————————————————
@@ -186,13 +179,8 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(fast.RecoveryTicks, Is.EqualTo(30));
         }
 
-        /// <summary>
-        /// <c>AttackImpactOccursAtResolvedWindupEnd</c> 与
-        /// <c>AttackBudgetCostEqualsResolvedWindupPlusRecovery</c>：
-        /// <c>ImpactTick</c> 恰好在解析前摇的右端，预算成本严格等于 前摇 + 后摇。
-        /// </summary>
         [Test]
-        public void AttackImpactOccursAtResolvedWindupEndAndBudgetEqualsWindupPlusRecovery()
+        public void AttackImpactOccursAtResolvedWindupEndAndEndsAfterRecovery()
         {
             Task05Factory factory = Task05Farm.NewFactory();
             ActionPlan plan = factory.OrdinaryAttack(120L);
@@ -202,15 +190,11 @@ namespace ProjectHero.Authoring.Tests.Task05
                 "ImpactTick 必须恰好在 [StartTick, ImpactTick) 的右端");
             Assert.That(plan.EndTick, Is.EqualTo(plan.ImpactTick + plan.RecoveryTicks),
                 "Recovery 半开区间 [ImpactTick, EndTick)");
-            Assert.That(plan.BudgetCostTicks, Is.EqualTo(plan.ResolvedWindupTicks + plan.RecoveryTicks),
-                "预算成本严格等于 ResolvedWindupTicks + RecoveryTicks");
-            Assert.That(plan.BudgetCostTicks, Is.EqualTo(60), "冻结夹具下 = 30 + 30");
 
             // 速度变慢时预算也随之改变（预算用的是解析后的前摇，不是基准值）。
             var slowFacts = Task05Farm.Facts();
             slowFacts.SetActionSpeed(Task05Farm.Hero, 10f);
             ActionPlan slow = Task05Farm.NewFactory(slowFacts).OrdinaryAttack(120L);
-            Assert.That(slow.BudgetCostTicks, Is.EqualTo(60 + 30), "60 + 30");
             Assert.That(slow.ImpactTick, Is.EqualTo(120L + 60));
         }
 
@@ -225,7 +209,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             ActionPlan plan = factory.OrdinaryAttack(100L);
             int windup = plan.ResolvedWindupTicks;
             int recovery = plan.RecoveryTicks;
-            int budget = plan.BudgetCostTicks;
 
             // 直接重绑绝对 Tick（阶段 B 的 ScheduleEditor 会调用同一条内部入口）。
             plan.RebindAbsoluteTicks(300L);
@@ -235,7 +218,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.EndTick, Is.EqualTo(300L + windup + recovery));
             Assert.That(plan.ResolvedWindupTicks, Is.EqualTo(windup), "重绑不得重采样前摇");
             Assert.That(plan.RecoveryTicks, Is.EqualTo(recovery), "重绑不得重采样后摇");
-            Assert.That(plan.BudgetCostTicks, Is.EqualTo(budget), "重绑不得改变预算成本");
         }
 
         /// <summary>
@@ -252,7 +234,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             authority.RegisterPlan(plan);
 
             long start = plan.StartTick, impact = plan.ImpactTick, end = plan.EndTick;
-            int windup = plan.ResolvedWindupTicks, recovery = plan.RecoveryTicks, budget = plan.BudgetCostTicks;
+            int windup = plan.ResolvedWindupTicks, recovery = plan.RecoveryTicks;
 
             // 速度 Buff/Debuff、窗口切换与视觉缩放都归结为"事实变化"：不得改已接受计划。
             factory.Facts.SetActionSpeed(Task05Farm.Hero, 5f);
@@ -263,16 +245,10 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.EndTick, Is.EqualTo(end));
             Assert.That(plan.ResolvedWindupTicks, Is.EqualTo(windup));
             Assert.That(plan.RecoveryTicks, Is.EqualTo(recovery));
-            Assert.That(plan.BudgetCostTicks, Is.EqualTo(budget));
         }
 
-        /// <summary>
-        /// <c>GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce</c>：
-        /// Guard 的 Windup / Active / Recovery 是<strong>半开</strong>区间，三段都固定
-        /// （不读 ActionSpeed），预算等于三段之和。
-        /// </summary>
         [Test]
-        public void GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce()
+        public void GuardDurationResolvesOnceWithoutSpeedScaling()
         {
             var slowFacts = Task05Farm.Facts();
             slowFacts.SetActionSpeed(Task05Farm.Hero, 4f);   // 若 Guard 误读速度，前摇会变成 50
@@ -280,30 +256,22 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             ActionPlan guard = factory.CreatePlan(Guard, 200L).Plan;
             Assert.That(guard.ActionType, Is.EqualTo(ActionType.Guard));
-            Assert.That(guard.ResolvedWindupTicks, Is.EqualTo(Task05Farm.GuardWindup),
+            Assert.That(guard.ResolvedWindupTicks, Is.Zero,
                 "Guard 的前摇固定，不读 ActionSpeed");
-            Assert.That(guard.ActiveTicks, Is.EqualTo(Task05Farm.GuardActive));
-            Assert.That(guard.RecoveryTicks, Is.EqualTo(Task05Farm.GuardRecovery));
+            Assert.That(guard.DurationTicks, Is.EqualTo(Task05Farm.GuardActive));
+            Assert.That(guard.RecoveryTicks, Is.Zero);
 
-            Assert.That(guard.ActiveStartTick, Is.EqualTo(200L + Task05Farm.GuardWindup));
-            Assert.That(guard.ActiveEndTick, Is.EqualTo(guard.ActiveStartTick + Task05Farm.GuardActive));
-            Assert.That(guard.EndTick, Is.EqualTo(guard.ActiveEndTick + Task05Farm.GuardRecovery));
-            Assert.That(guard.BudgetCostTicks,
-                Is.EqualTo(Task05Farm.GuardWindup + Task05Farm.GuardActive + Task05Farm.GuardRecovery));
+            Assert.That(guard.StartTick, Is.EqualTo(200L));
+            Assert.That(guard.EndTick, Is.EqualTo(guard.StartTick + Task05Farm.GuardActive));
 
             // 半开区间：Active 起点在内、右端点在外。
-            Assert.That(guard.IsActiveAt(guard.ActiveStartTick), Is.True);
-            Assert.That(guard.IsActiveAt(guard.ActiveEndTick - 1L), Is.True);
-            Assert.That(guard.IsActiveAt(guard.ActiveEndTick), Is.False,
-                "Active 是半开区间 [ActiveStartTick, ActiveEndTick)：右端不属于 Active");
-            Assert.That(guard.IsActiveAt(guard.ActiveStartTick - 1L), Is.False);
+            Assert.That(guard.IsActiveAt(guard.StartTick), Is.True);
+            Assert.That(guard.IsActiveAt(guard.EndTick - 1L), Is.True);
+            Assert.That(guard.IsActiveAt(guard.EndTick), Is.False,
+                "Guard covers [StartTick, EndTick); the right endpoint is excluded");
+            Assert.That(guard.IsActiveAt(guard.StartTick - 1L), Is.False);
         }
 
-        /// <summary>
-        /// <c>MoveStepTicksResolveOnceButEditablePathCountCanRecompute</c>：
-        /// <c>ResolvedBaseStepTicks</c> 一次性采样后固定；Editable 期内路径边数/权重可重算，
-        /// 且预算与 <c>EndTick</c> 使用<strong>路径权重</strong>而不是边数。
-        /// </summary>
         [Test]
         public void MoveStepTicksResolveOnceButEditablePathCountCanRecompute()
         {
@@ -316,7 +284,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(move.ResolvedPathWeightUnits, Is.EqualTo(4));
             Assert.That(move.MoveDurationTicks, Is.EqualTo(4 * 5));
             Assert.That(move.EndTick, Is.EqualTo(100L + 20 + Task05Farm.MoveRecovery));
-            Assert.That(move.BudgetCostTicks, Is.EqualTo(20 + Task05Farm.MoveRecovery));
 
             // 采样后的基准固定：改写 MoveSpeed 不改 ResolvedBaseStepTicks。
             factory.Facts.Set(Task05Farm.Hero, FactionIds.Hero, Task05Farm.ReferenceSpeed, moveSpeed: 10f);
@@ -329,9 +296,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(move.ResolvedPathWeightUnits, Is.EqualTo(9));
             Assert.That(move.MoveDurationTicks, Is.EqualTo(9 * 5), "时长 = 路径权重 × BaseStepTicks");
             Assert.That(move.EndTick, Is.EqualTo(100L + 45 + Task05Farm.MoveRecovery));
-            Assert.That(move.BudgetCostTicks, Is.EqualTo(45 + Task05Farm.MoveRecovery),
-                "预算必须用路径权重而不是边数（7 边 ⇒ 若误用边数会得到 35）");
-            Assert.That(move.BudgetCostTicks, Is.Not.EqualTo(7 * Task05Farm.MoveBaseStepTicks + Task05Farm.MoveRecovery));
         }
 
         // ————————————————————————————————————————————————————————————
@@ -450,7 +414,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             // 向右避让：请求起点落在反应区间内部时必须被推到区间右端之后。
             long free = lane.FindEarliestFreeStartTick(
                 reaction.StartTick + 1L, reaction.IntervalLength, ignore: null);
-            Assert.That(free, Is.GreaterThanOrEqualTo(reaction.EndTick),
+            Assert.That(free, Is.GreaterThanOrEqualTo(reaction.HardEndTick),
                 "避让必须越过不可变障碍的右端，且只向右");
         }
 
@@ -668,11 +632,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(lanes.Sum(l => l.PendingPlanCount), Is.EqualTo(3));
         }
 
-        /// <summary>
-        /// <c>PlanTimingAppearsInCanonicalSnapshot</c>：
-        /// 五类动作的解析时序字段（前摇/后摇/命中/Active/路径/预算）都必须进入计划快照，
-        /// 否则"定时序差异"会撞成同一摘要。
-        /// </summary>
         [Test]
         public void PlanTimingAppearsInCanonicalSnapshot()
         {
@@ -694,12 +653,11 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(attackSnap.ImpactTick, Is.EqualTo(attack.ImpactTick));
             Assert.That(attackSnap.ResolvedWindupTicks, Is.EqualTo(Task05Farm.AttackWindup));
             Assert.That(attackSnap.RecoveryTicks, Is.EqualTo(Task05Farm.AttackRecovery));
-            Assert.That(attackSnap.BudgetCostTicks, Is.EqualTo(Task05Farm.AttackWindup + Task05Farm.AttackRecovery));
 
             ActionPlanSnapshot guardSnap = byId[guard.ActionPlanId.Value];
-            Assert.That(guardSnap.ActiveStartTick, Is.EqualTo(guard.ActiveStartTick));
-            Assert.That(guardSnap.ActiveEndTick, Is.EqualTo(guard.ActiveEndTick));
-            Assert.That(guardSnap.ActiveTicks, Is.EqualTo(Task05Farm.GuardActive));
+            Assert.That(guardSnap.StartTick, Is.EqualTo(guard.StartTick));
+            Assert.That(guardSnap.EndTick, Is.EqualTo(guard.EndTick));
+            Assert.That(guardSnap.DurationTicks, Is.EqualTo(Task05Farm.GuardActive));
 
             ActionPlanSnapshot moveSnap = byId[move.ActionPlanId.Value];
             Assert.That(moveSnap.ResolvedPathEdgeCount, Is.EqualTo(3));
@@ -708,8 +666,8 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(moveSnap.MoveDurationTicks, Is.EqualTo(5 * Task05Farm.MoveBaseStepTicks));
 
             ActionPlanSnapshot blockSnap = byId[blockPlan.ActionPlanId.Value];
-            Assert.That(blockSnap.ReactionWindupTicks, Is.EqualTo(Task05Farm.BlockReactionWindup));
-            Assert.That(blockSnap.TriggerTick, Is.EqualTo(500L));
+            Assert.That(blockSnap.DurationTicks, Is.EqualTo(Task05Farm.BlockDuration));
+            Assert.That(blockSnap.SourceImpactTick, Is.EqualTo(500L));
             Assert.That(blockSnap.ResponseDeadlineTick, Is.EqualTo(440L));
             Assert.That(blockSnap.ReactionOpportunityId, Is.EqualTo(1L));
             Assert.That(blockSnap.SourceThreatPlanId, Is.EqualTo(1L));
@@ -783,8 +741,8 @@ namespace ProjectHero.Authoring.Tests.Task05
         [Test]
         public void TerminationReasonsAndForcedDisplacementPriorityAreFrozen()
         {
-            Assert.That(ActionTerminationReasons.All.Count, Is.EqualTo(13),
-                "冻结原因集必须恰好 13 项");
+            Assert.That(ActionTerminationReasons.All.Count, Is.EqualTo(18),
+                "R1 新增来源窗口延期越界原因，共 14 项");
             Assert.That(ActionTerminationReasons.All, Does.Contain(ActionTerminationReason.MovementOriginInvalidatedByDodge),
                 "Dodge 终态接缝的原因必须存在");
             Assert.That(ActionTerminationReasons.All, Does.Contain(ActionTerminationReason.TargetInvalid));

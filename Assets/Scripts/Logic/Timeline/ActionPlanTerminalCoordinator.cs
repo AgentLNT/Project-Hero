@@ -93,7 +93,6 @@ namespace ProjectHero.Logic.Timeline
             plan.State = ActionPlanState.Terminated;
             plan.TerminationReason = reason;
             plan.TerminalTick = tick;
-            plan.ReservedTurnBudgetTicks = 0;   // 终态不再持有任何未消费预留
 
             _authority.MarkPlanTerminal(plan, tick);
             _authority.RecordTerminalOrder(plan.ActionPlanId);
@@ -121,7 +120,6 @@ namespace ProjectHero.Logic.Timeline
             plan.State = ActionPlanState.Completed;
             plan.TerminationReason = ActionTerminationReason.None;
             plan.TerminalTick = tick;
-            plan.ReservedTurnBudgetTicks = 0;
 
             _authority.MarkPlanTerminal(plan, tick);
             _authority.RecordTerminalOrder(plan.ActionPlanId);

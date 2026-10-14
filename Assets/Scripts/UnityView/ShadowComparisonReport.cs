@@ -340,7 +340,6 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public static ShadowComparisonConfig Default()
             => new ShadowComparisonConfig(1, 64, 4096, ShadowComparisonMode.Strict);
 
-        /// <summary>严格模式配置（单次比较覆盖上限显式给出，便于预算用例）。</summary>
         public static ShadowComparisonConfig Strict(int maxStepsPerComparison = 64, int maxCheckpoints = 4096)
             => new ShadowComparisonConfig(1, maxStepsPerComparison, maxCheckpoints, ShadowComparisonMode.Strict);
     }
@@ -574,7 +573,6 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         public string BudgetOverrunReason { get; internal set; }
 
-        /// <summary>预算超限时本次比较被标记为无效。</summary>
         public bool InvalidatedByBudget => BudgetOverrun;
 
         /// <summary>首个非预期差异（无则为 null）。</summary>

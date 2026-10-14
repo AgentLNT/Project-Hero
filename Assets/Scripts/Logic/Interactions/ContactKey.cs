@@ -14,10 +14,10 @@ namespace ProjectHero.Logic.Interactions
     /// </summary>
     public enum ContactType
     {
-        /// <summary>阶段 1：攻击 × TriggerTick 相同的 Dodge 计划。</summary>
+        /// <summary>阶段 1：攻击 × SourceImpactTick 相同的 Dodge 计划。</summary>
         AttackDodge = 0,
 
-        /// <summary>阶段 2：攻击 × TriggerTick 相同的 Block 计划。</summary>
+        /// <summary>阶段 2：攻击 × SourceImpactTick 相同的 Block 计划。</summary>
         AttackBlock = 1,
 
         /// <summary>阶段 3：两个攻击 Intent 的有效区域相交（直接交互，Clash 候选）。Intent↔Intent 边。</summary>

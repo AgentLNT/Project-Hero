@@ -7,20 +7,6 @@ using ProjectHero.Logic.Resources;
 
 namespace ProjectHero.Logic.Turns
 {
-    /// <summary>
-    /// <strong>普通动作提交授权</strong>（任务包「必须产出」3）。
-    ///
-    /// 两条路径<strong>正交且不可互相替代</strong>：
-    /// <list type="number">
-    /// <item><strong>天然窗口权限</strong>：窗口拥有者在自己窗口内可提交 Attack/Guard/Move 等普通动作；
-    /// 额度就是窗口预算。</item>
-    /// <item><strong>并发授权</strong>：非拥有者在他人窗口内，先以局外资源激活
-    /// <see cref="ConcurrentActionSystem"/> 才获得普通动作提交权；额度同样是<strong>共享的</strong>当前窗口预算。</item>
-    /// </list>
-    /// Block/Dodge <strong>不</strong>走本授权：它们只需要有效 <c>ReactionOpportunity</c>、受控单位、
-    /// Lane/状态合法与足够肾上腺素，不检查窗口，也不消费 TurnBudget。因此本类型
-    /// <strong>不</strong>授权反应族，越权请求在越界检查中以稳定码被拒。
-    /// </summary>
     public interface IActionAuthority
     {
         /// <summary>
@@ -30,25 +16,6 @@ namespace ProjectHero.Logic.Turns
         bool CanSubmitOrdinaryAction(ControllerId issuer, UnitId unitId, WindowId windowId, ActionType actionType);
     }
 
-    /// <summary>
-    /// <strong>并发行动系统</strong>（主方案 3.2.3；任务包「必须产出」5–6）。
-    ///
-    /// 唯一职责：给"主角在<strong>他人</strong>当前窗口内提交普通动作"这一件事授权。
-    /// 它<strong>不</strong>扣时间预算、<strong>不</strong>调用调度器、<strong>不</strong>实现第二套动作接受流程：
-    /// 授权只影响 <see cref="IActionAuthority"/> 的判定，真正的预算与排程仍走
-    /// <c>ScheduleEditor</c> 的唯一事务入口。
-    ///
-    /// 冻结语义：
-    /// <list type="bullet">
-    /// <item>激活顺序：来源控制权 → <c>ExpectedWindowId</c> → 当前窗口状态 → 能力配置 →
-    /// 单位是主角 → 尚未激活 → 非窗口拥有者 → 权威费用消费；任一步失败都<strong>不</strong>扣局外资源、
-    /// 也<strong>不</strong>留下授权。</item>
-    /// <item>费用<strong>只</strong>来自权威 <see cref="ConcurrentActionDefinition"/>；
-    /// 命令载荷与调用参数不得携带或覆盖费用。</item>
-    /// <item>窗口关闭即撤销授权，但<strong>已接受</strong>的计划继续存在并独立执行。</item>
-    /// <item>它<strong>不能</strong>授权 Block/Dodge（见 <see cref="IActionAuthority"/>）。</item>
-    /// </list>
-    /// </summary>
     public sealed class ConcurrentActionSystem : IActionAuthority
     {
         private readonly ConcurrentActionDefinition _definition;

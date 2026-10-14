@@ -31,9 +31,9 @@ namespace ProjectHero.Logic.Tests
             => new CommandRequest(targetTick, new ScheduleEditScope(revision, window),
                 new ScheduleEditPayload(operations));
 
-        private static WindowId OpenHeroWindow(BattleSimulation sim, int budget = Task09A2Fixture.WindowBudget)
+        private static WindowId OpenHeroWindow(BattleSimulation sim, int duration = Task09A2Fixture.WindowDuration)
         {
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, budget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, duration);
             Task09A2Fixture.Step(sim, 0L);
             Assert.That(sim.CurrentTurnWindow, Is.Not.Null, "夹具前提：Tick 0 必须打开窗口");
             return sim.CurrentTurnWindow.WindowId;
@@ -68,9 +68,8 @@ namespace ProjectHero.Logic.Tests
 
             ActionPlan plan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
             Assert.That(plan.IsEditable, Is.True, "夹具前提：计划仍可编辑");
-            int cost = plan.BudgetCostTicks;
-            int reservedBefore = sim.WindowManager.FindWindow(window).ReservedFor(plan.ActionPlanId);
-            Assert.That(reservedBefore, Is.EqualTo(cost), "夹具前提：计划持有真实预留");
+
+
             Assert.That(plan.TerminationReason, Is.EqualTo(ActionTerminationReason.None));
 
             long revision = sim.ScheduleAuthority.ScheduleRevision;
@@ -107,10 +106,6 @@ namespace ProjectHero.Logic.Tests
 
             // 未消费预留在锁定前释放，且回到计划自己的窗口账本。
             TurnWindow owner = sim.WindowManager.FindWindow(window);
-            Assert.That(owner.ReservedFor(plan.ActionPlanId), Is.Zero);
-            Assert.That(owner.ReservedBudgetTicks, Is.Zero);
-            Assert.That(owner.AvailableBudgetTicks, Is.EqualTo(Task09A2Fixture.WindowBudget),
-                "释放额必须回到原窗口的 Available");
             Assert.That(sim.ScheduleAuthority.ScheduleRevision, Is.EqualTo(revision + 1L),
                 "删除是一个成功的排程事务：修订号恰好 +1");
 
@@ -124,15 +119,6 @@ namespace ProjectHero.Logic.Tests
         // 必需测试 49：RemoveEditablePlanDoesNotPullLaterPlansLeft
         // =====================================================================
 
-        /// <summary>
-        /// 删除计划<strong>不左吸</strong>：同 Lane 之后的计划保持自己的绝对 Tick
-        /// （起点、终点、预算、LastRequestedStartTick 全部不变），绝不自动前移。
-        ///
-        /// <para>
-        /// 会让它失败的实现缺陷：把删除实现成"紧凑化/重排 Lane"；删除后触发一次
-        /// 隐式 ripple 把后续计划左移；或者删除把后续计划的预留也一并释放。
-        /// </para>
-        /// </summary>
         [Test]
         public void RemoveEditablePlanDoesNotPullLaterPlansLeft()
         {
@@ -160,10 +146,10 @@ namespace ProjectHero.Logic.Tests
             long laterStart = later.StartTick;
             long laterEnd = later.EndTick;
             long laterImpact = later.ImpactTick;
-            int laterCost = later.BudgetCostTicks;
-            int laterReserved = later.ReservedTurnBudgetTicks;
+
+
             long laterLastRequested = later.LastRequestedStartTick;
-            int laterWindowReservation = sim.WindowManager.FindWindow(window).ReservedFor(later.ActionPlanId);
+
             long revision = sim.ScheduleAuthority.ScheduleRevision;
 
             // —— 被测：删除**前一个**计划 ——
@@ -178,19 +164,12 @@ namespace ProjectHero.Logic.Tests
             Assert.That(later.StartTick, Is.EqualTo(laterStart), "后续计划绝不左吸");
             Assert.That(later.EndTick, Is.EqualTo(laterEnd));
             Assert.That(later.ImpactTick, Is.EqualTo(laterImpact));
-            Assert.That(later.BudgetCostTicks, Is.EqualTo(laterCost));
-            Assert.That(later.ReservedTurnBudgetTicks, Is.EqualTo(laterReserved));
             Assert.That(later.LastRequestedStartTick, Is.EqualTo(laterLastRequested));
             Assert.That(later.IsEditable, Is.True, "后续计划仍可编辑");
             Assert.That(later.IsTerminal, Is.False);
             Assert.That(sim.ScheduleAuthority.LaneOfPlan(later.ActionPlanId), Is.Not.Null);
 
             TurnWindow owner = sim.WindowManager.FindWindow(window);
-            Assert.That(owner.ReservedFor(later.ActionPlanId), Is.EqualTo(laterWindowReservation),
-                "后续计划的预留不得被前一个计划的删除波及");
-            Assert.That(owner.ReservedBudgetTicks, Is.EqualTo(laterCost),
-                "窗口只剩后续计划的预留");
-            Assert.That(owner.AvailableBudgetTicks, Is.EqualTo(Task09A2Fixture.WindowBudget - laterCost));
 
             // 后续计划到期仍能正常启动（左吸会把它提前，从而错过或提前触发门禁）。
             Task09A2Fixture.AdvanceTo(sim, laterStart);
@@ -257,7 +236,6 @@ namespace ProjectHero.Logic.Tests
 
             string scheduleBefore = Task09A2Fixture.ScheduleFingerprint(sim);
             long revision = sim.ScheduleAuthority.ScheduleRevision;
-            int windowReservedBefore = sim.WindowManager.FindWindow(window).ReservedFor(running.ActionPlanId);
 
             // —— 被测：玩家删 Running 的普通计划（含"先移动再删除"的组合载荷）——
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Edit(
@@ -292,8 +270,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(sim.ScheduleAuthority.LaneOfPlan(running.ActionPlanId), Is.Not.Null);
             Assert.That(sim.ScheduleAuthority.LaneOfPlan(reaction.ActionPlanId), Is.Not.Null);
             Assert.That(sim.ScheduleAuthority.ScheduleRevision, Is.EqualTo(revision));
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedFor(running.ActionPlanId),
-                Is.EqualTo(windowReservedBefore), "被拒的删除不得释放任何预留");
         }
     }
 }

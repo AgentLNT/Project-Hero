@@ -21,7 +21,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
     /// 绝不用"当前窗口"顶替。</item>
     /// </list>
     /// 视图<strong>不</strong>填写身份、来源、优先级、ProducerOrdinal、CommandSequence、
-    /// 规则费用或反应 TriggerTick——这些字段在类型上就不存在。
+    /// 规则费用或反应 SourceImpactTick——这些字段在类型上就不存在。
     /// </summary>
     public sealed class ViewCommandFactory : IViewCommandFactory
     {
@@ -53,15 +53,6 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
                 NextTargetTick,
                 new ReactionCommandScope(opportunityId),
                 payload);
-        }
-
-        public CommandRequest CreateCloseWindow(WindowId windowId)
-        {
-            if (_logic == null || _logic.IsPaused || _logic.IsBattleEnded || !windowId.IsValid) return null;
-            return new CommandRequest(
-                NextTargetTick,
-                new WindowCommandScope(windowId),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow));
         }
 
         public CommandRequest CreateActivateConcurrent(WindowId windowId)

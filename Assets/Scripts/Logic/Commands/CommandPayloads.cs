@@ -5,16 +5,6 @@ using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Logic.Commands
 {
-    /// <summary>
-    /// 命令载荷标记接口。载荷只描述<strong>意图</strong>：
-    /// <list type="bullet">
-    /// <item>不携带任何应由权威定义读取的费用（肾上腺素、并发行动局外资源、预算 Tick）；</item>
-    /// <item>不携带反应 TriggerTick（它只能由来源攻击的 ImpactTick 推导）；</item>
-    /// <item>不携带 ControllerId、来源种类、来源优先级、ProducerOrdinal 或 CommandSequence。</item>
-    /// </list>
-    /// 因此"生产者自报身份/顺序/费用"在类型上不可能发生。
-    /// <see cref="Kind"/> 必须与其 scope 的 <see cref="CommandScopeKind"/> 一致。
-    /// </summary>
     public interface ICommandPayload
     {
         CommandScopeKind Kind { get; }
@@ -28,11 +18,6 @@ namespace ProjectHero.Logic.Commands
         Remove = 2
     }
 
-    /// <summary>
-    /// 一条排程编辑操作。任务 03 只冻结<strong>判别结构</strong>与
-    /// "不携带费用/反应 Tick"的边界；权威时序、路径、目标与预算字段由任务 05
-    /// 在同一判别联合上扩展（新增字段必须在 <see cref="ScheduleEditScope"/> 语义内）。
-    /// </summary>
     public abstract record ScheduleEditOperation
     {
         public abstract ScheduleEditOperationKind Kind { get; }
@@ -83,29 +68,6 @@ namespace ProjectHero.Logic.Commands
         public override ScheduleEditOperationKind Kind => ScheduleEditOperationKind.Remove;
     }
 
-    /// <summary>
-    /// 【任务 05 在任务 03 冻结的同一判别联合上扩展的权威排程编辑操作】
-    ///
-    /// 任务 03 原文：「任务 03 只冻结判别结构与"不携带费用/反应 Tick"的边界；
-    /// 权威时序、路径、目标与预算字段由任务 05 在同一判别联合上扩展
-    /// （新增字段必须在 <see cref="ScheduleEditScope"/> 语义内）」。
-    /// 因此这里<strong>只做纯新增</strong>，不改动既有的
-    /// <see cref="ScheduleAddOperation"/>/<see cref="ScheduleMoveOperation"/>/
-    /// <see cref="ScheduleRemoveOperation"/> 三个记录与
-    /// <see cref="ScheduleEditPayload"/> 本身。
-    ///
-    /// 边界仍然成立：这些操作<strong>不</strong>携带 ControllerId、来源种类、优先级、
-    /// ProducerOrdinal、CommandSequence、规则费用或反应 TriggerTick。
-    ///
-    /// 任务 09 A 流补齐（产出 1）：<see cref="AddOrdinaryPlanOperation"/> 的
-    /// <c>RequestedStartTick</c> 为<strong>可空</strong>（<c>null</c> = 本次事务该 Lane 的尾部，
-    /// 由排程事务解析，生产者不声明绝对排程）。可空插入锚点仍用
-    /// <c>default(ActionPlanId)</c> 哨兵表达（<c>IsValid</c> 为 false = 无锚点，
-    /// <c>HasAnchor</c> 是唯一判据）；Facing / Destination / PrimaryTargetUnitId 为判别载荷字段，
-    /// 不含费用、不含反应 TriggerTick、不含任何身份或顺序。
-    /// <see cref="ScheduleEditOperation.PlanId"/> 对 Add 恒为
-    /// <c>default</c>（无效值）：正式 <c>ActionPlanId</c> 由 Logic 在事务校验通过后分配。
-    /// </summary>
     public sealed record AddOrdinaryPlanOperation(
         long TemporaryPlanKey,
         UnitId OwnerUnitId,
@@ -192,20 +154,19 @@ namespace ProjectHero.Logic.Commands
     /// <summary>窗口命令种类。</summary>
     public enum WindowCommandKind
     {
-        /// <summary>关闭自己拥有的窗口（正式关闭在战斗仍继续时的第 17 阶段执行）。</summary>
-        CloseOwnWindow = 0,
+        // Value 0 is retired; the gateway rejects it and it must never be reused.
 
         /// <summary>在其他单位窗口期间激活一次并发行动（费用来自权威定义）。</summary>
         ActivateConcurrentAction = 1
     }
 
-    /// <summary>窗口载荷：关窗/并发激活。要求 <see cref="WindowCommandScope"/>。</summary>
+    /// <summary>窗口载荷：并发激活。要求 <see cref="WindowCommandScope"/>。</summary>
     public sealed record WindowCommandPayload(WindowCommandKind WindowKind) : ICommandPayload
     {
         public CommandScopeKind Kind => CommandScopeKind.Window;
     }
 
-    /// <summary>高阶反应种类（首版只有这两种；它们的 TriggerTick 只能由规则推导）。</summary>
+    /// <summary>高阶反应种类（首版只有这两种；它们的 SourceImpactTick 只能由规则推导）。</summary>
     public enum ReactionCommandKind
     {
         Block = 0,
@@ -215,7 +176,7 @@ namespace ProjectHero.Logic.Commands
     /// <summary>
     /// 反应载荷：Block/Dodge。要求 <see cref="ReactionCommandScope"/>。
     /// <list type="bullet">
-    /// <item>没有 TriggerTick 字段——它等于来源攻击的 <c>ImpactTick</c>，生产者无法声明。</item>
+    /// <item>没有 SourceImpactTick 字段——它等于来源攻击的 <c>ImpactTick</c>，生产者无法声明。</item>
     /// <item>没有费用字段——Block/Dodge 的肾上腺素费用来自权威动作定义。</item>
     /// <item>Dodge 必须给出目的格；Block 不得携带目的格。</item>
     /// </list>
@@ -223,7 +184,7 @@ namespace ProjectHero.Logic.Commands
     public sealed record ReactionCommandPayload(
         ReactionCommandKind ReactionKind,
         ActionSpecId ReactionActionSpecId,
-        GridPoint? DodgeDestination = null) : ICommandPayload
+        GridPoint? DodgeDestination = null, long? StartTick = null) : ICommandPayload
     {
         public CommandScopeKind Kind => CommandScopeKind.Reaction;
     }

@@ -235,7 +235,7 @@ namespace ProjectHero.Logic.Timeline
             {
                 ActionPlan plan = _plans[i];
                 if (ignore.HasValue && plan.ActionPlanId == ignore.Value) continue;
-                if (plan.StartTick < endTick && startTick < plan.EndTick)
+                if (plan.StartTick < endTick && startTick < plan.HardEndTick)
                 {
                     conflict = plan;
                     return true;
@@ -250,7 +250,7 @@ namespace ProjectHero.Logic.Timeline
         /// 但允许调用方声明<strong>哪些重叠是可容忍的</strong>（<paramref name="tolerated"/> 为 true 表示该计划
         /// 的重叠不构成本次拒绝）。
         ///
-        /// 用途（任务 07 裁定 A）：Dodge 的固定反应区间可以覆盖"它自己会在 TriggerTick 失效掉的
+        /// 用途（任务 07 裁定 A）：Dodge 的固定反应区间可以覆盖"它自己会在 SourceImpactTick 失效掉的
         /// 后续 Editable 移动族"，因为那正是设计内的机制而不是冲突；除该判据之外的一切重叠
         /// （Locked/Running、非移动族、非后续）仍然是硬冲突。
         /// </summary>
@@ -263,7 +263,7 @@ namespace ProjectHero.Logic.Timeline
             {
                 ActionPlan plan = _plans[i];
                 if (ignore.HasValue && plan.ActionPlanId == ignore.Value) continue;
-                if (plan.StartTick >= endTick || startTick >= plan.EndTick) continue;
+                if (plan.StartTick >= endTick || startTick >= plan.HardEndTick) continue;
                 if (tolerated != null && tolerated(plan)) continue;
                 conflict = plan;
                 return true;
@@ -303,9 +303,9 @@ namespace ProjectHero.Logic.Timeline
                     ActionPlan plan = _plans[i];
                     if (ignore.HasValue && plan.ActionPlanId == ignore.Value) continue;
                     if (plan.StartTick >= candidate + length) continue;
-                    if (plan.EndTick <= candidate) continue;
+                    if (plan.HardEndTick <= candidate) continue;
 
-                    candidate = plan.EndTick;
+                    candidate = plan.HardEndTick;
                     moved = true;
                 }
             }
@@ -314,20 +314,31 @@ namespace ProjectHero.Logic.Timeline
         }
 
         /// <summary>
-        /// 运行时不变量检查：Lane 内任意两个计划的区间不重叠，且不存在终态计划残留。
+        /// 运行时不变量检查：区间不重叠，唯一例外是接受 Dodge 时同谓词容忍的 Editable 移动；
+        /// 实际换位会通过统一终态入口清理这些移动。不存在终态计划残留。
         /// 返回失败描述（null = 通过）。
         /// </summary>
+        public static bool HardIntervalsConflict(ActionPlan left, long leftStart, ActionPlan right, long rightStart)
+        {
+            long leftEnd = left.IsReaction ? left.HardEndTick : checked(leftStart + left.IntervalLength);
+            long rightEnd = right.IsReaction ? right.HardEndTick : checked(rightStart + right.IntervalLength);
+            if (leftStart >= rightEnd || rightStart >= leftEnd) return false;
+            return !((left.IsReaction && DodgeMovementInvalidationSeam.DodgeMayInvalidate(right, left.ActionType, leftStart))
+                || (right.IsReaction && DodgeMovementInvalidationSeam.DodgeMayInvalidate(left, right.ActionType, rightStart)));
+        }
+
         public string ValidateNonOverlapping()
         {
             var sorted = new List<ActionPlan>(_plans);
             sorted.Sort(Compare);
-            for (int i = 1; i < sorted.Count; i++)
+            for (int i = 0; i < sorted.Count; i++)
             {
-                if (sorted[i - 1].EndTick > sorted[i].StartTick)
+                for (int j = i + 1; j < sorted.Count && sorted[j].StartTick < sorted[i].EndTick; j++)
                 {
+                    if (!HardIntervalsConflict(sorted[i], sorted[i].StartTick, sorted[j], sorted[j].StartTick)) continue;
                     return "overlap lane=" + UnitId.Value.ToString(CultureInfo.InvariantCulture) +
-                           " a=" + sorted[i - 1].ActionPlanId.Value.ToString(CultureInfo.InvariantCulture) +
-                           " b=" + sorted[i].ActionPlanId.Value.ToString(CultureInfo.InvariantCulture);
+                           " a=" + sorted[i].ActionPlanId.Value.ToString(CultureInfo.InvariantCulture) +
+                           " b=" + sorted[j].ActionPlanId.Value.ToString(CultureInfo.InvariantCulture);
                 }
             }
             for (int i = 0; i < sorted.Count; i++)

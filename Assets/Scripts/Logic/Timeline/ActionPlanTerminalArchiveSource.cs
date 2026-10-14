@@ -12,26 +12,6 @@ using System.Text;
 
 namespace ProjectHero.Logic.Timeline
 {
-    /// <summary>
-    /// 任务 05 的归档候选来源（接入任务 03 阶段 19 的
-    /// <see cref="IHistoryArchiveCandidateSource"/>）。
-    ///
-    /// 契约（任务包「必须产出」4 的最后一段）：
-    /// <list type="bullet">
-    /// <item>候选<strong>只</strong>含本 Tick 新进入终态、且已完成全部清理的计划
-    /// （由 <see cref="ActionPlanTerminalCoordinator.FrozenTickCandidates"/> 提供）；</item>
-    /// <item>稳定键使用 <c>ActionPlanRegistry.StableKeyOf(plan)</c>
-    /// （<c>ActionPlanId</c> 的十进制文本），与注册表的 <c>TerminalDigest</c> <strong>同源</strong>；</item>
-    /// <item><c>ArchivedAtTick</c> = 计划的 <c>TerminalTick</c>；</item>
-    /// <item>终态记录<strong>只追加一次</strong>：候选集合按 <c>ActionPlanId</c> 去重，
-    /// 归档器自身也会以规范化键拒绝重复（<c>HISTORY_RECORD_DUPLICATE</c>）；</item>
-    /// <item>无新增终态时返回空列表 ⇒ 归档器<strong>不读取、不复制、不哈希</strong>任何旧记录。</item>
-    /// </list>
-    ///
-    /// 格式 v4 保存完整、深度不可变的最终计划投影（含时序、scope、预算和终止原因）。
-    /// 注册表 TerminalPlanDigest 仍是终态键/时间的计数索引摘要；完整记录由
-    /// LogicSnapshot.History 的摘要覆盖，两者不再要求相等。冻结只发生在清理完成的阶段 19。
-    /// </summary>
     public sealed class ActionPlanTerminalArchiveSource : IHistoryArchiveCandidateSource
     {
         private readonly ActionScheduleAuthority _authority;

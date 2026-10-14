@@ -23,14 +23,14 @@ namespace ProjectHero.Tests.PlayMode
 
         [Test] public void EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence()
         {
-            var policy = ShadowCasePolicy.CreateDefault("task11-final-classification", "battle-def-v2-turn180", true, true, true, true);
-            Assert.That(policy.TemporarilyUncomparable.Count, Is.EqualTo(60));
+            var policy = ShadowCasePolicy.CreateDefault("task12B-final-classification", "battle-def-v4-defense-duration", true, true, true, true);
+            Assert.That(policy.TemporarilyUncomparable.Count, Is.EqualTo(73));
             Assert.That(policy.Approvals, Is.Empty, "Classifying new structures cannot approve old/new equality.");
-            var catalog = JsonUtility.FromJson<Catalog>(File.ReadAllText("优化任务/执行记录/11-shadow-classification.json"));
+            var catalog = JsonUtility.FromJson<Catalog>(File.ReadAllText("优化任务/执行记录/12B-shadow-classification.json"));
             Assert.That(catalog.caseId, Is.EqualTo(policy.CaseId));
             Assert.That(catalog.sceneCaseId, Is.EqualTo(ShadowBattleRunner.DefaultCaseId));
             Assert.That(catalog.rulesVersion, Is.EqualTo(policy.RulesVersion));
-            Assert.That(catalog.definitionHash, Is.EqualTo("ed4c3e21b1488e60"));
+            Assert.That(catalog.definitionHash, Is.EqualTo("e04b3c0946ad3035"));
             Assert.That(catalog.entries.Length, Is.EqualTo(policy.TemporarilyUncomparable.Count));
             var byKey = catalog.entries.ToDictionary(e => e.legacyObjectPath + "#" + e.field, StringComparer.Ordinal);
             Assert.That(typeof(ProjectHero.Logic.Snapshots.UnitSnapshot).GetProperties()
@@ -41,7 +41,7 @@ namespace ProjectHero.Tests.PlayMode
             foreach (var field in policy.TemporarilyUncomparable)
             {
                 var entry = byKey[field.LegacyObjectPath + "#" + field.Field];
-                Assert.That(new[] { "NewRule", "ReplacedRepresentation", "RemovedResource", "DiagnosticOnly" }, Does.Contain(entry.category));
+                Assert.That(new[] { "NewRule", "ReplacedRepresentation", "RemovedResource", "RemovedRepresentation", "DiagnosticOnly" }, Does.Contain(entry.category));
                 Assert.That(entry.reason, Is.Not.Empty); Assert.That(entry.tests.Length, Is.GreaterThan(0));
                 Assert.That(File.Exists(entry.legacySource), Is.True, entry.field + " legacy source");
                 Assert.That(File.Exists(entry.newSource), Is.True, entry.field + " new source");
@@ -49,7 +49,7 @@ namespace ProjectHero.Tests.PlayMode
                     Assert.That(Directory.EnumerateFiles("Assets/Tests", "*.cs", SearchOption.AllDirectories)
                         .Any(path => File.ReadAllText(path).Contains(" " + test + "(")), Is.True, entry.field + " evidence=" + test);
             }
-            TestContext.WriteLine("Classification rows=60; approvals=0; production temporary registrations retained=60; this audit does not claim Legacy/New equivalence.");
+            TestContext.WriteLine("Classification rows=73; approvals=0; production temporary registrations retained=73; this audit does not claim Legacy/New equivalence.");
         }
 
         [UnityTest] public IEnumerator MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation()
@@ -65,7 +65,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.ShadowReports.All(r => r.ComparedCheckpoints > 0 && r.InfrastructureDifferences == 0
                 && r.UnalignedCheckpoints == 0 && r.Rejections.Count == 0), Is.True);
             var report = Bootstrap.LastShadowReport;
-            File.WriteAllText("优化任务/执行记录/11-shadow-scene-observations.txt",
+            File.WriteAllText("优化任务/执行记录/12B-shadow-scene-observations.txt",
                 "scene=LegacyComparisonScene (Editor-only diagnostic copy)\nmode=Shadow\nframes=120\nlegacyAdvanceDelta=120\nnewDriverAdvance=0\nshadowWrites="
                 + Bootstrap.ShadowWrites.Total + "\nobservations=" + Bootstrap.LegacyObservations.Count
                 + "\n" + report.Describe() + "\n" + string.Join("\n", report.Differences.Select(d => d.ToString())));

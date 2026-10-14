@@ -142,7 +142,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
     /// <summary>
     /// 反应选择（<see cref="ViewInputMode.ReactionSelection"/> / <see cref="ViewInputMode.DodgeDestinationSelection"/>）
     /// 的纯数据状态：指向一个<strong>已公开</strong>的机会与其中一项反应规格。
-    /// 它<strong>没有</strong> TriggerTick 字段——触发 Tick 只能由 Logic 从来源攻击的 ImpactTick 推导。
+    /// 它<strong>没有</strong> SourceImpactTick 字段——触发 Tick 只能由 Logic 从来源攻击的 ImpactTick 推导。
     /// </summary>
     public sealed class ViewReactionSelection
     {

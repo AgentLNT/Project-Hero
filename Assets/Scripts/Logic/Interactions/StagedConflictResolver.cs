@@ -21,7 +21,7 @@ namespace ProjectHero.Logic.Interactions
     /// 与空间复核。位置提交本身发生在阶段 9（构图<strong>之前</strong>，主方案明确规定的唯一世界写入）；
     /// 本阶段只用阶段 9 冻结的<b>提交前</b>/<b>提交后</b>两份快照 + 冻结 Intent 复核四格表与标签。</item>
     /// <item><see cref="ConflictResolutionPhase.BlockFullResistance"/>：Block 合格载荷完全抵抗
-    /// （TriggerTick 内全部入射接触同时处理）。</item>
+    /// （SourceImpactTick 内全部入射接触同时处理）。</item>
     /// <item><see cref="ConflictResolutionPhase.ClashSimultaneousSolve"/>：全部 Clash <strong>同时</strong>求解
     /// （<see cref="MomentumClashSolver"/>：每个攻击从原始动量一次性累计全部反向损耗）。</item>
     /// <item><see cref="ConflictResolutionPhase.MoveIntercept"/>：Move 拦截/逃脱（按覆盖标记）。</item>
@@ -163,7 +163,7 @@ namespace ProjectHero.Logic.Interactions
                 // 图本身随求解结果一起冻结（构图后不再变更）：消费者（语义事件、
                 // 位移请求、伤害提交）据此把接触/聚合投影回冲突组键，而**不**需要
                 // 各自再扫一遍图或保留第二份"计划 → 组"的权威。
-                graph);
+                graph, BuildGuardDebits(context, factsByPlan, remainingHits));
         }
 
         // ==================================================================
@@ -648,7 +648,7 @@ namespace ProjectHero.Logic.Interactions
                 ActionPlanId blockPlanId = default;
                 if (type == ContactType.AttackBlock && counterpartyPlanId.IsValid
                     && factsByPlan.TryGetValue(counterpartyPlanId.Value, out InteractionPlanFacts blockFacts)
-                    && blockFacts.TriggerTick == graph.Tick)
+                    && blockFacts.OccupiesTick(graph.Tick))
                 {
                     blockSpecId = RequireSpecId(context, counterpartyPlanId);
                     blockPlanId = counterpartyPlanId;
@@ -717,6 +717,22 @@ namespace ProjectHero.Logic.Interactions
                     {
                         if (own[a].AttackPlanId == own[b].AttackPlanId && own[a].ContactKind == own[b].ContactKind)
                         {
+                            ActionPlanId sideA = ResolveCounterpartyPlanId(own[a].Key, own[a].AttackPlanId);
+                            ActionPlanId sideB = ResolveCounterpartyPlanId(own[b].Key, own[b].AttackPlanId);
+                            bool defenseA = factsByPlan.TryGetValue(sideA.Value,out var factsA)
+                                && (factsA.ActionType == ActionType.Block || factsA.ActionType == ActionType.Dodge);
+                            bool defenseB = factsByPlan.TryGetValue(sideB.Value,out var factsB)
+                                && (factsB.ActionType == ActionType.Block || factsB.ActionType == ActionType.Dodge);
+                            if (defenseA && defenseB)
+                            {
+                                // Distinct soft-overlapping reactions can observe the same payload. The
+                                // target receives it once; retain Block's resistance and a canonical key.
+                                if ((own[b].BlockPlanId.IsValid && !own[a].BlockPlanId.IsValid)
+                                    || (own[b].BlockPlanId.IsValid == own[a].BlockPlanId.IsValid && own[b].Key.CompareTo(own[a].Key) < 0))
+                                    own[a] = own[b];
+                                own.RemoveAt(b--);
+                                continue;
+                            }
                             throw new LogicDefinitionException(
                                 StagedResolutionCodes.STAGED_RESOLUTION_DUPLICATE_DIRECT_HIT,
                                 "plan=" + own[a].AttackPlanId.Value.ToString(CultureInfo.InvariantCulture)
@@ -743,6 +759,8 @@ namespace ProjectHero.Logic.Interactions
                         : FindGuardPayloadBySpecId(context, hit.GuardSpecId);
                     BlockPayloadSpec blockPayload = hit.BlockSpecId == null ? null
                         : RequireBlockPayload(new Dictionary<string, BlockPayloadSpec>(StringComparer.Ordinal), context, hit.BlockPlanId);
+                    if (guardPayload != null && factsByPlan.TryGetValue(hit.GuardPlanId.Value, out var quotaFacts))
+                        guardPayload = GuardQuota.EffectivePayload(guardPayload, quotaFacts.DefenseQuotaRemainingQ10);
                     inputs.Add(TargetAggregator.BuildDefendedContact(
                         new TargetContactKey(hit.ContactKind, hit.AttackerUnitId,
                             hit.AttackPlanId, targetUnitId, hit.RecipientPlanId.IsValid ? hit.RecipientPlanId
@@ -763,6 +781,26 @@ namespace ProjectHero.Logic.Interactions
                     results.Add(hit with { Aggregate = aggregate });
                 }
             }
+        }
+
+        private static IReadOnlyList<GuardQuotaConsumption> BuildGuardDebits(StagedResolutionContext context,
+            Dictionary<long, InteractionPlanFacts> facts, IReadOnlyList<RemainingHitResolution> hits)
+        {
+            var debits = new SortedDictionary<long, int>();
+            foreach (var hit in hits)
+            {
+                if (!hit.GuardPlanId.IsValid || hit.IsDirectHitSuppressed) continue;
+                var payload = GuardQuota.EffectivePayload(FindGuardPayloadBySpecId(context, hit.GuardSpecId),
+                    facts[hit.GuardPlanId.Value].DefenseQuotaRemainingQ10);
+                int debit = GuardQuota.ContactDebit(payload, hit.DamageComponents, hit.AttackTags, hit.IncomingMomentumUnits);
+                debits.TryGetValue(hit.GuardPlanId.Value, out int previous);
+                debits[hit.GuardPlanId.Value] = Math.Max(previous, debit);
+            }
+            var result = new List<GuardQuotaConsumption>();
+            foreach (var entry in debits)
+                if (entry.Value > 0) result.Add(new GuardQuotaConsumption(new ActionPlanId(entry.Key), entry.Value,
+                    facts[entry.Key].DefenseQuotaRemainingQ10 - entry.Value));
+            return result.AsReadOnly();
         }
 
         private static IReadOnlyList<RemainingHitResolution> CanonicalizeRemainingHits(            List<RemainingHitResolution> hits)

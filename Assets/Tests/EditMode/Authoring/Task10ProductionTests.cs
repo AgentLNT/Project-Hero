@@ -32,11 +32,10 @@ namespace ProjectHero.Authoring.Tests
                 var preview = (ProjectHero.Core.Compatibility.Runtime.Input.IViewPreviewPort)ports.Logic;
                 var adrenaline = preview.OwnAdrenaline;
                 Assert.That(preview.OwnAdrenaline, Is.SameAs(adrenaline));
-                Assert.That(ports.Logic.SubmitCommand(ports.Commands.CreateCloseWindow(ports.Logic.OpenWindowId.Value)), Is.Null);
                 driver.AdvanceFrame(new BattleFrameDelta(1f / 60, false, true));
                 Assert.That(ports.Logic.DecisionSnapshot, Is.Not.SameAs(first));
                 Assert.That(ports.Logic.DecisionSnapshot.Tick, Is.EqualTo(1));
-                Assert.That(preview.CurrentWindow, Is.Null);
+                Assert.That(preview.CurrentWindow, Is.Not.Null, "R1：180 Tick 的窗口在 Tick 1 仍然打开");
             }
             finally { driver.ResetForNewBattle(); }
         }
@@ -47,31 +46,30 @@ namespace ProjectHero.Authoring.Tests
             public BattleSimulationSeed BuildSeed() => new BattleSimulationSeed(Task03.Task03.Definition,
                 Task03.Task03.EncounterId, Task03.Task03.Inputs, "real authoring");
         }
-        [Test] public void ProductionWindowUsesExplicit180TickBudgetAndInitializerHeroSlot()
+        [Test] public void ProductionWindowUsesExplicit180TickDurationAndInitializerHeroSlot()
         {
             var definition = Task03.Task03.Definition; var encounter = Task03.Task03.Encounter;
-            Assert.That(encounter.TurnSubmission.BudgetTicks, Is.EqualTo(180));
+            Assert.That(encounter.TurnSubmission.WindowDurationTicks, Is.EqualTo(180));
             Assert.That(encounter.TurnSubmission.ConcurrentHeroSlot.Value, Is.EqualTo("hero"));
             using (var sim = ProductionBattleComposition.Create(definition, encounter.EncounterId, Task03.Task03.Inputs))
             {
                 var result = Task03.Task03.StepNext(sim);
                 Assert.That(sim.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(Task03.Task03.HeroUnitId));
-                Assert.That(sim.CurrentTurnWindow.TotalBudgetTicks, Is.EqualTo(180));
+                Assert.That(sim.CurrentTurnWindow.EndTick, Is.EqualTo(180L));
                 Assert.That(result.Snapshot.AiControllers.Count, Is.EqualTo(1));
                 Assert.That(result.Events.Events.All(e => e.Tick == result.Tick), Is.True,
                     "Resource events must carry the executing Tick, not the previously completed Tick.");
             }
         }
-        [Test] public void ProductionWindowClosesWithoutWaitingForActionsAndAiSubmitsThroughIngress()
+        [Test] public void ProductionWindowExpiresWithoutWaitingForActionsAndAiSubmitsThroughIngress()
         {
             using (var sim = ProductionBattleComposition.Create(Task03.Task03.Definition, Task03.Task03.EncounterId, Task03.Task03.Inputs))
             {
-                Task03.Task03.StepNext(sim);
-                Task03.Task03.PlayerEntry(sim).Submit(new CommandRequest(1, new WindowCommandScope(sim.CurrentTurnWindow.WindowId),
-                    new WindowCommandPayload(WindowCommandKind.CloseOwnWindow)));
-                Task03.Task03.StepNext(sim); Assert.That(sim.CurrentTurnWindow, Is.Null);
+                // R1：英雄窗口 [0,180) 在 Tick 179 末到期，Tick 180 轮到敌方。
+                while (sim.Tick < 179) Task03.Task03.StepNext(sim);
+                Assert.That(sim.CurrentTurnWindow, Is.Null);
                 Task03.Task03.StepNext(sim); Assert.That(sim.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(Task03.Task03.EnemyUnitId));
-                Assert.That(sim.CurrentSnapshot.CommandIngresses.FutureBuckets.Any(b => b.TargetTick == 3 && b.PendingCount > 0), Is.True);
+                Assert.That(sim.CurrentSnapshot.CommandIngresses.FutureBuckets.Any(b => b.TargetTick == 181 && b.PendingCount > 0), Is.True);
                 Task03.Task03.StepNext(sim);
                 Assert.That(sim.LastCommandSet.Envelopes.Any(e => e.SourceKind == CommandSourceKind.Ai), Is.True);
             }
@@ -87,10 +85,10 @@ namespace ProjectHero.Authoring.Tests
                 var ports = driver.CreatePlayerInputPorts(new ControllerId("controller.player"));
                 Assert.That(ports.Logic.DecisionSnapshot.ControllerId, Is.EqualTo(new ControllerId("controller.player")));
                 driver.SetPaused(true);
-                Assert.That(ports.Commands.CreateCloseWindow(ports.Logic.OpenWindowId.Value), Is.Null);
+                Assert.That(ports.Commands.CreateActivateConcurrent(ports.Logic.OpenWindowId.Value), Is.Null);
                 Assert.That(ports.Commands.CreateScheduleEdit(new ScheduleEditPayload(Array.Empty<ScheduleEditOperation>())), Is.Null);
                 driver.SetPaused(false);
-                var request = ports.Commands.CreateCloseWindow(ports.Logic.OpenWindowId.Value);
+                var request = ports.Commands.CreateActivateConcurrent(ports.Logic.OpenWindowId.Value);
                 Assert.That(ports.Logic.SubmitCommand(request), Is.Null);
                 driver.AdvanceFrame(new BattleFrameDelta(1f / 60, false, true));
                 Assert.That(driver.RecordedReplay.Submissions.Count, Is.EqualTo(1));
@@ -103,10 +101,9 @@ namespace ProjectHero.Authoring.Tests
             using (var sim = ProductionBattleComposition.Create(definition, Task03.Task03.EncounterId, Task03.Task03.Inputs))
             {
                 var recorder = new ReplayRecorder(sim);
-                for (int tick = 0; tick < 120; tick++)
+                for (int tick = 0; tick < 400; tick++)
                 {
-                    if (tick == 1) Task03.Task03.PlayerEntry(sim).Submit(new CommandRequest(1,
-                        new WindowCommandScope(sim.CurrentTurnWindow.WindowId), new WindowCommandPayload(WindowCommandKind.CloseOwnWindow)));
+                    // R1：玩家不提交命令，英雄窗口在 Tick 179 末到期，之后由 AI 行动。
                     recorder.CaptureBeforeStep(); var result = Task03.Task03.StepNext(sim); recorder.RecordCommittedStep(result);
                     if (sim.IsEnded) break;
                 }
@@ -121,12 +118,12 @@ namespace ProjectHero.Authoring.Tests
                 Assert.That(replay.Submissions.All(s => s.Fact.SourceKind == CommandSourceKind.Player), Is.True);
             }
         }
-        [Test] public void BudgetAndConcurrentHeroSlotParticipateInDefinitionHash()
+        [Test] public void WindowDurationEntersDefinitionHash()
         {
             var encounter = Task03.Task03.Encounter;
             var baseline = new CanonicalHashWriter(); encounter.WriteHashComponents(baseline);
             var changed = new CanonicalHashWriter();
-            (encounter with { TurnSubmission = encounter.TurnSubmission with { BudgetTicks = 181 } }).WriteHashComponents(changed);
+            (encounter with { TurnSubmission = encounter.TurnSubmission with { WindowDurationTicks = 181 } }).WriteHashComponents(changed);
             Assert.That(changed.ToDigestHex(), Is.Not.EqualTo(baseline.ToDigestHex()));
             Assert.That((encounter.TurnSubmission with { ConcurrentHeroSlot = new EncounterSlotId("unknown") }).Validate(encounter),
                 Is.EqualTo("ENCOUNTER_CONCURRENT_HERO_SLOT_UNKNOWN"));
@@ -141,8 +138,8 @@ namespace ProjectHero.Authoring.Tests
                     definition.Actions, definition.AttackPatterns, definition.Volumes, definition.MovementPatterns,
                     definition.ActionSets, definition.StatusEffects, encounters, definition.DefaultDynamicSpawnPolicy);
             Assert.That(Compute("battle-def-v1", definition.Encounters.Select(e => e with { TurnSubmission = null }).ToArray()),
-                Is.EqualTo("d997b13b18573e15"), "Retain the task08 characterization anchor with its original inputs.");
-            Assert.That(Compute(definition.RulesVersion, definition.Encounters), Is.EqualTo("ed4c3e21b1488e60"));
+                Is.EqualTo("cc32becd9f0f8ceb"), "R2 duration schema encoded with the characterization rules label; historical native anchor remains in task08 evidence.");
+            Assert.That(Compute(definition.RulesVersion, definition.Encounters), Is.EqualTo("e04b3c0946ad3035"));
         }
         [Test] public void EmptyShadowReportCannotAuthorizeNewCutover()
         {

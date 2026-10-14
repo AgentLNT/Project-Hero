@@ -47,7 +47,7 @@ namespace ProjectHero.Logic.Timeline
 
     /// <summary>
     /// 反应计划的创建请求（只能由 <c>ReactionPlanner</c> 构造）。
-    /// <strong>不提供</strong> <c>TriggerTick</c>：它由来源攻击的 <c>ImpactTick</c> 唯一推导。
+    /// <strong>不提供</strong> <c>SourceImpactTick</c>：它由来源攻击的 <c>ImpactTick</c> 唯一推导。
     /// </summary>
     public sealed record ReactionPlanRequest(
         UnitId OwnerUnitId,
@@ -56,10 +56,11 @@ namespace ProjectHero.Logic.Timeline
         GridPoint? Destination,
         ReactionOpportunityId ReactionOpportunityId,
         ActionPlanId SourceThreatPlanId,
-        long TriggerTick,
+        long SourceImpactTick,
         long ResponseDeadlineTick,
         int PathEdgeCount = 0,
-        int PathWeightUnits = 0);
+        int PathWeightUnits = 0,
+        long? StartTick = null);
 
     /// <summary>计划创建结果（结构化；失败<strong>不</strong>分配 ID、不写注册表）。</summary>
     public sealed record ActionPlanCreationResult(ActionPlan Plan, string RejectionCode)
@@ -69,25 +70,6 @@ namespace ProjectHero.Logic.Timeline
         public static ActionPlanCreationResult Rejected(string code) => new ActionPlanCreationResult(null, code);
     }
 
-    /// <summary>
-    /// <c>ActionPlan</c> 工厂（任务包「工作步骤」1）。
-    ///
-    /// 契约：
-    /// <list type="bullet">
-    /// <item><strong>普通计划</strong>：创建即获得稳定 <see cref="ActionPlanId"/> 并进入
-    /// <c>Editable</c>；首次进入 Editable 时<strong>一次性</strong>解析速度相关相对时序
-    /// （Attack 的 <c>ResolvedWindupTicks</c>、Move 的 <c>ResolvedBaseStepTicks</c>）。
-    /// 这里<strong>没有</strong> DraftPlan/ScheduledAction，也不存在第二个计划对象。</item>
-    /// <item><strong>反应计划</strong>：创建时解析固定时序、按
-    /// <c>StartTick = TriggerTick - ReactionWindupTicks</c> 建立固定区间，并<strong>直接 Locked</strong>；
-    /// <c>SubmittedWindowId</c> 恒为空、<c>BudgetCostTicks = 0</c>。</item>
-    /// <item><strong>PrimaryTarget 权威校验</strong>：创建时就必须满足 Attack 载荷的
-    /// <c>AllowedTargetRelations</c> 与唯一 <see cref="IFactionRelationResolver"/>；
-    /// 不合法即<strong>拒绝创建</strong>（永不改选目标）。</item>
-    /// <item>工厂<strong>不</strong>写 Lane、不改 ScheduleRevision、不分配机会 ID：
-    /// 那些都属于排程事务与反应系统的职责。</item>
-    /// </list>
-    /// </summary>
     public sealed class ActionPlanFactory
     {
         private readonly BattleDefinition _definition;
@@ -184,7 +166,6 @@ namespace ProjectHero.Logic.Timeline
             plan.RebindAbsoluteTicks(request.StartTick);
             plan.LastRequestedStartTick = plan.StartTick;
             plan.LastEditedScheduleRevision = 0L;
-            plan.SyncEditableReservation();
 
             return new ActionPlanCreationResult(plan, null);
         }
@@ -214,10 +195,14 @@ namespace ProjectHero.Logic.Timeline
             string actionSetError = ValidateActionSetMembership(spec, facts);
             if (actionSetError != null) return ActionPlanCreationResult.Rejected(actionSetError);
 
+            string intervalError = ReactionPlanner.TryResolveReactionInterval(spec, request.SourceImpactTick,
+                request.StartTick, createdAtTick, out _, out _);
+            if (intervalError != null) return ActionPlanCreationResult.Rejected(intervalError);
+
             ActionPlanId planId = _ids.NextActionPlanId();
             var binding = new ActionPlanTriggerBinding(
                 request.ReactionOpportunityId, request.SourceThreatPlanId,
-                request.TriggerTick, request.ResponseDeadlineTick);
+                request.SourceImpactTick, request.ResponseDeadlineTick);
 
             var plan = new ActionPlan(
                 planId,
@@ -236,7 +221,7 @@ namespace ProjectHero.Logic.Timeline
             if (spec.Type == ActionType.Dodge && (request.PathEdgeCount > 0 || request.PathWeightUnits > 0))
                 plan.SetPathProjection(request.PathEdgeCount, request.PathWeightUnits);
 
-            plan.ApplyReactionInterval();
+            plan.ApplyReactionInterval(request.StartTick);
             plan.LastRequestedStartTick = plan.StartTick;
             plan.LastEditedScheduleRevision = 0L;
 

@@ -12,15 +12,6 @@ namespace ProjectHero.Logic.Timeline
     /// </summary>
     public sealed record MovementPathProjection(int EdgeCount, int WeightUnits);
 
-    /// <summary>
-    /// 移动链路径重算端口（任务包「必须规范」：受影响 Move 链的
-    /// <strong>起止位置、路径、边数、路径权重、绝对 Tick 与预算/Reservation 接缝一起重算</strong>）。
-    ///
-    /// 任务 05 <strong>不</strong>实现寻路：它只定义接入面，并在其缺失时把
-    /// <see cref="NotImplementedMovementPathCalculator"/> 作为默认实现。
-    /// 任务 06 提供真实现（<c>LogicGridMovementPathCalculator</c> 消费唯一的纯逻辑
-    /// <c>LogicPathfinder</c>），<strong>不改变</strong>本求值器的任何其他语义。
-    /// </summary>
     public interface IMovementPathCalculator
     {
         /// <summary>
@@ -137,23 +128,6 @@ namespace ProjectHero.Logic.Timeline
                 : null;
     }
 
-    /// <summary>
-    /// <strong>权威排程求值器</strong>（任务包「必须产出」6、7 与「核心规则」最后一段）。
-    ///
-    /// 它是唯一的规范化实现：显式排程事务、系统自动延期、预览与位置依赖闭包查询
-    /// <strong>全部</strong>调用它。它只做两件事：
-    /// <list type="number">
-    /// <item>把直接操作的起点放到请求位置（<strong>只有直接移动的计划可以早于旧投影</strong>）；</item>
-    /// <item>从当前 Lane 投影开始<strong>只向右</strong> ripple 重叠。Locked/Running/终态与固定反应区间
-    /// 是<strong>不可变障碍</strong>，永不移动、永不被推挤。</item>
-    /// </list>
-    ///
-    /// 它<strong>不</strong>：分配 ID、改 <c>ScheduleRevision</c>、写注册表、写 Lane、
-    /// 决定预算或 Reservation——那些是 <c>ScheduleEditor</c> 事务、启动门禁与系统延期事务的职责。
-    /// 它<strong>不</strong>做"删除后向左压缩"：删除只移除目标并重算必要的空间依赖。
-    ///
-    /// 半开区间语义：区间为 <c>[StartTick, EndTick)</c>，相邻不算重叠。
-    /// </summary>
     public sealed class ScheduleEvaluator
     {
         private readonly ActionScheduleAuthority _authority;
@@ -561,7 +535,7 @@ namespace ProjectHero.Logic.Timeline
                     ActionPlan right = obstacles[j];
                     long rightStart = right.StartTick;
                     long rightEnd = rightStart + right.IntervalLength;
-                    if (leftStart < rightEnd && rightStart < leftEnd)
+                    if (ActorLane.HardIntervalsConflict(left, leftStart, right, rightStart))
                         return ScheduleCodes.SCHEDULE_LANE_OVERLAP;
                 }
             }
@@ -583,8 +557,8 @@ namespace ProjectHero.Logic.Timeline
                         ActionPlan other = placed[i];
                         long otherStart = finalStart[other.ActionPlanId.Value];
                         long otherEnd = otherStart + other.IntervalLength;
-                        if (candidate >= otherEnd || otherStart >= candidate + plan.IntervalLength) continue;
-                        candidate = otherEnd;
+                        if (!ActorLane.HardIntervalsConflict(plan, candidate, other, otherStart)) continue;
+                        candidate = other.IsReaction ? other.HardEndTick : otherEnd;
                         advanced = true;
                     }
                 }
@@ -610,6 +584,10 @@ namespace ProjectHero.Logic.Timeline
             {
                 ActionPlan plan = pins[i];
                 long requested = desired.TryGetValue(plan.ActionPlanId.Value, out long wished) ? wished : plan.StartTick;
+                foreach (ActionPlan obstacle in obstacles)
+                    if (obstacle.IsReaction && requested < obstacle.HardEndTick
+                        && obstacle.StartTick < checked(requested + plan.IntervalLength))
+                        return ScheduleCodes.SCHEDULE_LANE_OVERLAP;
                 long resolved = EarliestFeasible(requested, plan);
                 finalStart[plan.ActionPlanId.Value] = resolved;
                 finalEnd[plan.ActionPlanId.Value] = resolved + plan.IntervalLength;

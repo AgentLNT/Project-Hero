@@ -14,7 +14,7 @@ namespace ProjectHero.Logic.Resources
     /// <list type="bullet">
     /// <item>按 <c>UnitId</c> 升序维护每单位一份 <see cref="AdrenalineLedger"/>（稳定顺序，不依赖字典枚举）；</item>
     /// <item>实现 <see cref="IAdrenalineLedgerPort"/>：反应接受 = <c>Available -&gt; Reservation</c>、
-    /// TriggerTick = 消费、来源威胁取消 = 按周期规则释放；</item>
+    /// SourceImpactTick = 消费、来源威胁取消 = 按周期规则释放；</item>
     /// <item>拥有单位自己窗口打开时的"周期 +1 且 Available 清零"入口；</item>
     /// <item>拥有 Tick 末<strong>唯一</strong>批量入账入口 <see cref="ApplyTickEndAccrual"/>：
     /// 它只接受任务 08 规范聚合后的 <see cref="AdrenalineAccrualFacts"/>，
@@ -167,6 +167,6 @@ namespace ProjectHero.Logic.Resources
 
         /// <summary>按 <c>UnitId</c> 升序的规范快照（Available、周期号与逐计划预留明细）。</summary>
         public IReadOnlyList<AdrenalineLedgerSnapshot> BuildSnapshots()
-            => TurnBudgetLedger.BuildAdrenalineSnapshots(_ordered);
+            => AdrenalineSnapshotBuilder.BuildAdrenalineSnapshots(_ordered);
     }
 }

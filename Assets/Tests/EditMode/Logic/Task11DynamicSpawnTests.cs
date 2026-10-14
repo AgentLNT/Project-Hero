@@ -154,16 +154,11 @@ namespace ProjectHero.Logic.Tests
 
         [Test] public void DynamicSpawnReceivesProductionWindowAndAcceptsOnlyItsControllersCommands()
         {
-            var d = Definition(false); using var s = Create(d);
-            for (int tick = 0; tick < 3; tick++) s.Step(tick, s.CommandIngress.FreezeTick(tick));
-            var close = new CommandRequest(3, new WindowCommandScope(s.CurrentTurnWindow.WindowId),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow));
-            Assert.That(s.CommandIngress.FindEntry(Task09A2Fixture.PlayerId).Submit(close), Is.Null);
-            s.Step(3, s.CommandIngress.FreezeTick(3)); s.Step(4, s.CommandIngress.FreezeTick(4));
-            Assert.That(s.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(Task09A2Fixture.Monster));
-            Assert.That(s.CommandIngress.FindEntry(Task09A2Fixture.AiId).Submit(new CommandRequest(5,
-                new WindowCommandScope(s.CurrentTurnWindow.WindowId), new WindowCommandPayload(WindowCommandKind.CloseOwnWindow))), Is.Null);
-            s.Step(5, s.CommandIngress.FreezeTick(5)); s.Step(6, s.CommandIngress.FreezeTick(6));
+            var d = Definition(false);
+            d = Rehash(d with { Encounters = d.Encounters.Select(e => e with {
+                TurnSubmission = new TurnSubmissionDefinition(3, new EncounterSlotId("a_hero")) }).ToArray() });
+            using var s = Create(d);
+            for (int tick = 0; tick <= 6; tick++) s.Step(tick, s.CommandIngress.FreezeTick(tick));
             Assert.That(s.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(new UnitId(5)));
             Assert.That(s.CurrentSnapshot.Units.Single(u => u.UnitId == 5).AdrenalineCycleId, Is.EqualTo(1));
             var request = new CommandRequest(7, new ScheduleEditScope(s.ScheduleRevision, s.CurrentTurnWindow.WindowId),
@@ -174,8 +169,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(result.Events.EventsInSequenceOrder.OfType<CommandRejectedEvent>()
                 .Any(f => f.ReasonCode == CommandCodes.COMMAND_ISSUER_CANNOT_CONTROL_UNIT), Is.True);
             Assert.That(s.ScheduleAuthority.Registry.ActivePlans.Count(p => p.OwnerUnitId == new UnitId(5)), Is.EqualTo(1));
-            Assert.That(s.CurrentSnapshot.Units.Single(u => u.UnitId == 5).FactionId,
-                Is.EqualTo(Task09A2Fixture.MonsterFaction.Value), "Player control must not turn a fixed hostile faction into an ally.");
+            Assert.That(s.CurrentSnapshot.Units.Single(u => u.UnitId == 5).FactionId, Is.EqualTo(Task09A2Fixture.MonsterFaction.Value));
         }
 
         [Test] public void DynamicSpawnCannotReviveDeadSourceAndKeepsOtherFactionAlive()

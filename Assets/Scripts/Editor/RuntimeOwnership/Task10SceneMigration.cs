@@ -13,6 +13,29 @@ namespace ProjectHero.Editor.RuntimeOwnership
 {
     public static class Task10SceneMigration
     {
+        public static void MigrateWindowDurationUi()
+        {
+            foreach (string path in new[] { RuntimeOwnershipSceneTool.MainScenePath,
+                RuntimeOwnershipSceneTool.HiddenValidationScenePath, Task11ProductionMigration.LegacyScene })
+            {
+                if (!System.IO.File.Exists(path)) continue;
+                var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                var removed = new List<GameObject>();
+                foreach (var root in scene.GetRootGameObjects())
+                    foreach (var transform in root.GetComponentsInChildren<Transform>(true))
+                        if (transform.name == "End turn") removed.Add(transform.gameObject);
+                foreach (var button in removed) UnityEngine.Object.DestroyImmediate(button);
+                foreach (var root in scene.GetRootGameObjects())
+                    foreach (var view in root.GetComponentsInChildren<BattlePresentationView>(true))
+                        EditorUtility.SetDirty(view);
+                // Unity serializes the current schema, dropping the removed _close field.
+                // FormerlySerializedAs on the factory preserves existing scene duration values.
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log("12A_UI_MIGRATED " + path + " removed=" + removed.Count);
+            }
+            AssetDatabase.SaveAssets();
+        }
         public static void WireMainScene()
         {
             var scene = EditorSceneManager.OpenScene(RuntimeOwnershipSceneTool.MainScenePath, OpenSceneMode.Single);
@@ -97,7 +120,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             var controls = Panel(canvasGo.transform, "Controls", new Vector2(.67f, .29f), new Vector2(.99f, .34f));
             var controlsLayout = controls.gameObject.AddComponent<UnityEngine.UI.HorizontalLayoutGroup>(); controlsLayout.childControlWidth = true; controlsLayout.childForceExpandWidth = true; controlsLayout.spacing = 4;
             var confirm = Button(controls, "Confirm", font); var cancel = Button(controls, "Cancel", font);
-            var close = Button(controls, "End turn", font); var concurrent = Button(controls, "Concurrent", font);
+            var concurrent = Button(controls, "Concurrent", font);
             var pause = Button(controls, "Pause", font); var rotate = Button(controls, "Turn", font);
             var actionToggle = Button(controls, "Actions", font);
             var replayToggle = Button(controls, "Replay", font);
@@ -121,7 +144,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
                         && (component.GetType().Namespace.StartsWith("ProjectHero.UI", StringComparison.Ordinal)
                         || component.GetType().Namespace.StartsWith("ProjectHero.Visuals", StringComparison.Ordinal))) legacyPresentation.Add(component);
             presentation.Configure(bootstrap, registry, grid, camera, "controller.player", canvasGo, actions, targets, timeline, reactions,
-                status, preview, debug, font, legacyPresentation.ToArray(), confirm, cancel, close, concurrent, pause, rotate);
+                status, preview, debug, font, legacyPresentation.ToArray(), confirm, cancel, concurrent, pause, rotate);
             presentation.ConfigureLegacyCanvases(legacyCanvases.ToArray()); presentation.ConfigureActionToggle(actionToggle);
             presentation.ConfigureReplay(replayPanel.gameObject, replayToggle, path, replayStatus, saveReplay, loadReplay,
                 playReplay, pauseReplay, restartReplay, speedReplay);

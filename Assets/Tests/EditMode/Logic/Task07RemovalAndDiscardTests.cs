@@ -22,32 +22,6 @@ using ProjectHero.Logic.Turns;
 
 namespace ProjectHero.Logic.Tests
 {
-    /// <summary>
-    /// 任务 07 本轮两项生产修复的<strong>仓库内自动化证据</strong>（文件所有权：本文件是本轮唯一新增的测试文件）。
-    ///
-    /// <list type="number">
-    /// <item><strong>裁定 A：排程删除必须经唯一终态协调器收口</strong>
-    /// （00 号规则 19：排程删除是终态之一，Step 返回时不得有任何活动产物引用它）。
-    /// 分工：<c>ScheduleEditor</c> 独占预算释放（事务里"移出 Lane + 释放未消费预留 + 归零计划字段"），
-    /// <c>BattleSimulation.TerminateRemovedPlans</c> 只把计划对象置为终态
-    /// （<c>_terminalCoordinator.EnterTerminal(plan, CancelledByCommand, tick)</c>），
-    /// 二者挂在<strong>同一个</strong> <c>_planCommandProcessor.CommittedTransactionSink</c> 上。
-    /// 证据路线 = <strong>真实 <see cref="BattleSimulation"/></strong>：命令网关冻结批次 → Step 阶段 6
-    /// 真实排程事务 → 真实 sink → 真实协调器，因此本文件的用例 1–3
-    /// <strong>对本轮那个 sink 调用点本身敏感</strong>（去掉它，用例 2 立刻变红，见文件末 §回归敏感性）。</item>
-    /// <item><strong>裁定 B：肾上腺素新增"终态作废"入口（删除但不退款）</strong>
-    /// （<c>AdrenalineChangeKind.ReservationDiscarded = 7</c>、<c>IAdrenalineLedgerPort.DiscardReservation</c>、
-    /// <see cref="BudgetAndAdrenalineCleanupParticipant"/> 的反应分支二分）。
-    /// 证据路线 = <strong>真实机会系统</strong>（<c>TryOpenForTelegraph</c> + <c>TryAcceptById</c>）
-    /// 造出真实 Locked 反应计划与真实肾上腺素预留，再由<strong>真实协调器</strong>以非来源取消原因终结，
-    /// 观察真实账本与真实端口载荷。</item>
-    /// </list>
-    ///
-    /// 本文件<strong>不</strong>复制任何生产算法、<strong>不</strong>改 <c>Assets/Scripts/**</c>、
-    /// 不建立第二套预算/肾上腺素模型；断言观察点全部是权威对象
-    /// （<c>ActionPlan</c> 字段、<c>ActionScheduleAuthority</c> 注册表/Lane/不变量、
-    /// <c>TurnWindow</c> 账本、<c>AdrenalineLedger</c>、以及各生产端口发射的载荷/事件）。
-    /// </summary>
     public class Task07RemovalAndDiscardTests
     {
         // ================= 夹具常量 =================
@@ -78,8 +52,7 @@ namespace ProjectHero.Logic.Tests
         private const int AttackBaseWindupTicks = 100;
         private const int AttackRecoveryTicks = 10;
 
-        /// <summary>窗口预算：必须 &gt; GuardCost，且为构造"锁定前释放"留出可观察差额。</summary>
-        private const int WindowBudget = 60;
+        private const int WindowDuration = 60;
 
         /// <summary>AdrenalineRules.FrozenV1 的 Block 费用（生产 <c>ActionSpec.AdrenalineCost</c>）。</summary>
         private const int BlockCost = FrozenDesignValues.BlockAdrenalineCost;   // 2
@@ -138,7 +111,7 @@ namespace ProjectHero.Logic.Tests
 
             var guardSpec = new ActionSpec(
                 Spec(GuardSpecId), ActionType.Guard,
-                new GuardTimingSpec(GuardWindupTicks, GuardActiveTicks, GuardRecoveryTicks),
+                new GuardTimingSpec(GuardActiveTicks),
                 new GuardPayloadSpec(
                     new Dictionary<DamageChannelId, int>(), 512,
                     DefenseTagMask.Blockable | DefenseTagMask.Guardable),
@@ -157,13 +130,13 @@ namespace ProjectHero.Logic.Tests
 
             var blockSpec = new ActionSpec(
                 Spec(BlockSpecId), ActionType.Block,
-                new BlockReactionTimingSpec(FrozenDesignValues.BlockReactionWindupTicks, 10),
+                new BlockReactionTimingSpec(FrozenDesignValues.BlockDurationTicks),
                 new BlockPayloadSpec(DefenseTagMask.Blockable),
                 AdrenalineCost: BlockCost);
 
             var dodgeSpec = new ActionSpec(
                 Spec(DodgeSpecId), ActionType.Dodge,
-                new DodgeReactionTimingSpec(FrozenDesignValues.DodgeReactionWindupTicks, 10),
+                new DodgeReactionTimingSpec(FrozenDesignValues.DodgeDurationTicks),
                 new DodgePayloadSpec(MaxDistanceSteps: 4, Pattern: MovementPattern()),
                 AdrenalineCost: FrozenDesignValues.DodgeAdrenalineCost);
 
@@ -321,11 +294,11 @@ namespace ProjectHero.Logic.Tests
             };
 
             // Tick 0：打开主角自己的窗口（窗口必须在**排程事务之前**处于"接受提交"状态）。
-            sim.WindowManager.ScheduleWindow(0L, heroId, WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, heroId, WindowDuration);
             StepSim(rig, 0L);
             Assert.That(sim.CurrentTurnWindow, Is.Not.Null, "夹具前提：Tick 0 必须打开主角窗口");
             Assert.That(sim.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(heroId));
-            Assert.That(sim.CurrentTurnWindow.TotalBudgetTicks, Is.EqualTo(WindowBudget));
+            Assert.That(sim.CurrentTurnWindow.DurationTicks, Is.EqualTo(WindowDuration));
             Assert.That(sim.CurrentTurnWindow.IsAcceptingSubmissions, Is.True);
             rig.Window = sim.CurrentTurnWindow;
             return rig;
@@ -381,7 +354,6 @@ namespace ProjectHero.Logic.Tests
                 new RemoveEditablePlanOperation(planId, ActionTerminationReason.CancelledByCommand)
             });
 
-        /// <summary>经真实命令阶段新增一个普通 Guard（预算由任务 07 的账本端口原子预留）。</summary>
         private static ActionPlan AddGuardThroughCommand(SimRig rig, long tick, long startTick)
         {
             long revisionBefore = rig.Sim.ScheduleAuthority.ScheduleRevision;
@@ -429,55 +401,19 @@ namespace ProjectHero.Logic.Tests
             public ActionPlan Plan;
             public long AddTick = 1L;
             public long RemoveTick = 2L;
-            public int AvailableAfterAdd;
-            public int ReservedAfterAdd;
-            public int SpentAfterAdd;
             public StepResult RemoveStep;
         }
 
         private static RemovalScenario ArrangeRemovedPlan()
         {
             SimRig rig = NewSimRig();
-            ActionPlan plan = AddGuardThroughCommand(rig, tick: 1L, startTick: 400L);
+            ActionPlan plan = AddGuardThroughCommand(rig, tick: 1L, startTick: 40L);
 
             var scenario = new RemovalScenario { Rig = rig, Plan = plan };
-            scenario.AvailableAfterAdd = rig.Window.AvailableBudgetTicks;
-            scenario.ReservedAfterAdd = rig.Window.ReservedBudgetTicks;
-            scenario.SpentAfterAdd = rig.Window.SpentBudgetTicks;
-            Assert.That(scenario.ReservedAfterAdd, Is.EqualTo(GuardCost), "夹具前提：新增计划预留了权威成本");
-            Assert.That(scenario.AvailableAfterAdd, Is.EqualTo(WindowBudget - GuardCost));
-            Assert.That(scenario.SpentAfterAdd, Is.Zero, "夹具前提：锁前预留不是消费");
+            Assert.That(plan.SubmittedWindowId, Is.EqualTo(rig.Window.WindowId), "夹具前提：新增计划以当前窗口为来源");
 
             scenario.RemoveStep = RemoveThroughCommand(rig, scenario.RemoveTick, plan.ActionPlanId);
             return scenario;
-        }
-
-        private static int CountBudgetEvents(
-            SimRig rig, TurnBudgetChangeKind kind, ActionPlanId planId)
-        {
-            int count = 0;
-            for (int i = 0; i < rig.Events.Count; i++)
-            {
-                if (!(rig.Events[i] is TurnBudgetChangedEvent change)) continue;
-                if (change.ChangeKind != kind) continue;
-                if (change.ActionPlanId != planId.Value) continue;
-                count++;
-            }
-            return count;
-        }
-
-        private static int CountBudgetEventsBySource(
-            SimRig rig, ResourceChangeSource source, ActionPlanId planId)
-        {
-            int count = 0;
-            for (int i = 0; i < rig.Events.Count; i++)
-            {
-                if (!(rig.Events[i] is TurnBudgetChangedEvent change)) continue;
-                if (change.Source != source) continue;
-                if (change.ActionPlanId != planId.Value) continue;
-                count++;
-            }
-            return count;
         }
 
         // =====================================================================
@@ -485,7 +421,7 @@ namespace ProjectHero.Logic.Tests
         //
         // 反应计划由**真实机会系统**（TryOpenForTelegraph + TryAcceptById）创建并注册，
         // 肾上腺素预留由**真实账本端口**（IAdrenalineLedgerPort）在同一条接受事务里完成，
-        // 终态由**真实协调器**（含固定槽位 600 的 BudgetAndAdrenalineCleanupParticipant）提交。
+        // 终态由**真实协调器**（含固定槽位 600 的 AdrenalineCleanupParticipant）提交。
         // 本夹具不构造 BattleSimulation：反应计划的终态原因在生产里由控制/死亡等阶段驱动，
         // 无法在"纯 Logic + 无阶段驱动"的边界内稳定复现（见 §反射点说明）。
         // =====================================================================
@@ -500,9 +436,8 @@ namespace ProjectHero.Logic.Tests
             public LogicGridMovementAuthority Movement;
             public ScheduleEditor Editor;
             public TurnWindowManager Windows;
-            public TurnWindowBudgetAuthority Budget;
             public AdrenalineLedgerRegistry Adrenaline;
-            public BudgetAndAdrenalineCleanupParticipant BudgetParticipant;
+            public AdrenalineCleanupParticipant AdrenalineParticipant;
             public ActionPlanTerminalCoordinator Coordinator;
             public ReactionOpportunitySystem Reactions;
 
@@ -531,9 +466,8 @@ namespace ProjectHero.Logic.Tests
 
             var world = new WorldView();
             var windows = new TurnWindowManager(world, ids.NextWindowId);
-            var budget = new TurnWindowBudgetAuthority(windows, null);
             var adrenaline = new AdrenalineLedgerRegistry(definition.AdrenalineRules);
-            var participant = new BudgetAndAdrenalineCleanupParticipant();
+            var participant = new AdrenalineCleanupParticipant();
             var bindingParticipant = new OpportunityBindingCleanupParticipant();
             var coordinator = new ActionPlanTerminalCoordinator(schedule, new IActionPlanCleanupParticipant[]
             {
@@ -556,16 +490,15 @@ namespace ProjectHero.Logic.Tests
                 Movement = movement,
                 Editor = editor,
                 Windows = windows,
-                Budget = budget,
                 Adrenaline = adrenaline,
-                BudgetParticipant = participant,
+                AdrenalineParticipant = participant,
                 Coordinator = coordinator,
                 Reactions = reactions
             };
 
             adrenaline.ChangedSink = rig.AdrenalineChanges.Add;
             // 与生产同一装配模式：先建参与者 → 建协调器 → 依赖就绪后回填。
-            participant.Bind(budget, windows, adrenaline);
+            participant.Bind(adrenaline);
             bindingParticipant.Opportunities = reactions;
 
             windows.RegisterControllerBinding(Player, Hero);
@@ -621,7 +554,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(attack.StartTick, Is.EqualTo(telegraphTick),
                 "夹具前提：空 Lane 里新增攻击的权威起点 = 请求起点");
             Assert.That(attack.ImpactTick, Is.EqualTo(telegraphTick + AttackBaseWindupTicks),
-                "夹具前提：ImpactTick = StartTick + 解析前摇（= 反应 TriggerTick）");
+                "夹具前提：ImpactTick = StartTick + 解析前摇（= 反应 SourceImpactTick）");
             MarkLockedAndRunning(attack, telegraphTick);
             Assert.That(attack.IsEditable, Is.False, "夹具前提：已 Telegraph 的来源攻击不是 Editable");
 
@@ -676,7 +609,7 @@ namespace ProjectHero.Logic.Tests
         // ProjectHero.Authoring.Tests），而"来源攻击必须已经 Locked/Running"是
         // ReactionOpportunitySystem.TryOpenForTelegraph 的硬前提。
         //
-        // 这里与 Task07BudgetTransactionTests / Task07ForcedDisplacementBudgetTests 采用**同一取舍**：
+        // 这里沿用生命周期夹具的同一取舍：
         // 只写这两个生命周期标记（不复制、不绕过任何生产校验，也不触碰任何资源事实）——
         // 用例 4–6 的肾上腺素预留与释放全部由真实账本端口完成。用例 1–3 不使用本反射点。
         // =====================================================================
@@ -796,80 +729,6 @@ namespace ProjectHero.Logic.Tests
         }
 
         // =====================================================================
-        // 用例 3（裁定 A 的分工）：
-        // RemovalReleasesReservationExactlyOnceAndEditorOwnsRelease
-        //
-        // 分工断言：唯一的释放事件必须来自显式排程编辑（ResourceChangeSource.ExplicitScheduleEdit），
-        // 且该计划在整个场景里**没有**任何 TerminalCleanup 来源的账本事件——
-        // 600 槽位的参与者只是幂等空转（账本已无该计划的预留 ⇒ held &lt;= 0 ⇒ return）。
-        //
-        // 失败模式：若把释放挪进终态参与者（或让参与者第二次释放），
-        // ReleasedBeforeLock 计数会变成 2、或出现 TerminalCleanup 来源事件、或 Spent/Available 被改写。
-        // =====================================================================
-        [Test]
-        public void RemovalReleasesReservationExactlyOnceAndEditorOwnsRelease()
-        {
-            RemovalScenario scenario = ArrangeRemovedPlan();
-            ActionPlan plan = scenario.Plan;
-            SimRig rig = scenario.Rig;
-            TurnWindow window = rig.Window;
-
-            // —— 账本事实：预留归零、Spent 不变、释放额回到原窗口 ——
-            Assert.That(window.ReservedFor(plan.ActionPlanId), Is.Zero);
-            Assert.That(window.HasReservation(plan.ActionPlanId), Is.False);
-            Assert.That(window.ReservedBudgetTicks, Is.Zero, "该窗口只有这一个计划，释放后预留必须归零");
-            Assert.That(window.SpentBudgetTicks, Is.EqualTo(scenario.SpentAfterAdd),
-                "删除是锁定前释放，绝不是消费");
-            Assert.That(window.SpentBudgetTicks, Is.Zero);
-            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(scenario.AvailableAfterAdd + GuardCost),
-                "释放额必须恰好回到原窗口账本一次");
-            Assert.That(window.AvailableBudgetTicks, Is.EqualTo(window.TotalBudgetTicks));
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.Zero, "被删除计划的预留投影必须归零");
-
-            // —— 事件事实：恰好一条释放，且来源是显式排程编辑 ——
-            Assert.That(CountBudgetEvents(rig, TurnBudgetChangeKind.ReleasedBeforeLock, plan.ActionPlanId),
-                Is.EqualTo(1), "编辑器独占释放：恰好一次 ReleasedBeforeLock");
-            Assert.That(CountBudgetEvents(rig, TurnBudgetChangeKind.ConsumedAtLock, plan.ActionPlanId), Is.Zero);
-            Assert.That(CountBudgetEvents(rig, TurnBudgetChangeKind.ReservationAdjusted, plan.ActionPlanId), Is.Zero);
-
-            int terminalCleanupEvents = CountBudgetEventsBySource(
-                rig, ResourceChangeSource.TerminalCleanup, plan.ActionPlanId);
-            Assert.That(terminalCleanupEvents, Is.Zero,
-                "600 槽位的预算参与者必须幂等空转：不得出现第二次释放（TerminalCleanup 来源事件）");
-
-            int releasedByEditor = 0;
-            for (int i = 0; i < rig.Events.Count; i++)
-            {
-                if (!(rig.Events[i] is TurnBudgetChangedEvent change)) continue;
-                if (change.ActionPlanId != plan.ActionPlanId.Value) continue;
-                if (change.ChangeKind != TurnBudgetChangeKind.ReleasedBeforeLock) continue;
-                Assert.That(change.Source, Is.EqualTo(ResourceChangeSource.ExplicitScheduleEdit));
-                Assert.That(change.WindowId, Is.EqualTo(window.WindowId));
-                Assert.That(change.ReservedBefore, Is.EqualTo(GuardCost));
-                Assert.That(change.ReservedAfter, Is.Zero);
-                releasedByEditor++;
-            }
-            Assert.That(releasedByEditor, Is.EqualTo(1));
-
-            // 该计划总共恰好两条账本事件：Add 时的 Reserved + Remove 时的 ReleasedBeforeLock。
-            int totalLedgerEventsForPlan = 0;
-            for (int i = 0; i < rig.Events.Count; i++)
-            {
-                if (rig.Events[i] is TurnBudgetChangedEvent change &&
-                    change.ActionPlanId == plan.ActionPlanId.Value) totalLedgerEventsForPlan++;
-            }
-            Assert.That(totalLedgerEventsForPlan, Is.EqualTo(2),
-                "该计划的账本事件 = Reserved(Add) + ReleasedBeforeLock(Remove)，不存在第二次释放");
-            Assert.That(CountBudgetEvents(rig, TurnBudgetChangeKind.Reserved, plan.ActionPlanId), Is.EqualTo(1));
-
-            // 账本恒等式（窗口级）：Reserved + Spent + Available == Total。
-            Assert.That(window.ReservedBudgetTicks + window.SpentBudgetTicks + window.AvailableBudgetTicks,
-                Is.EqualTo(window.TotalBudgetTicks));
-
-            Assert.That(rig.Sim.ScheduleAuthority.CheckNoActiveArtifactReferencesTerminalPlan(), Is.Null);
-        }
-
-        // =====================================================================
         // 用例 4（裁定 B 的回归钉子）：
         // ReactionTerminalWithoutSourceCancelDiscardsReservationWithoutRefund
         //
@@ -877,7 +736,7 @@ namespace ProjectHero.Logic.Tests
         // 预留被**删除**（不留悬挂预留），但 Available **不变**（不退款），
         // 事件类别是 ReservationDiscarded（既不是 Refunded，也不是 StaleCycleReservationRemoved）。
         //
-        // 失败模式（回归敏感性）：把 BudgetAndAdrenalineCleanupParticipant 的反应分支改回
+        // 失败模式（回归敏感性）：把 AdrenalineCleanupParticipant 的反应分支改回
         // "非来源取消什么都不做"（即注释掉 `_adrenaline?.DiscardReservation(...)`），
         // 本用例立刻变红：预留仍在账本里（ReservationOf != null、ReservedAdrenaline == BlockCost）、
         // 事件计数为 0（CountAdrenalineEvents(..., ReservationDiscarded, ...) == 1 失败）。
@@ -1106,7 +965,7 @@ namespace ProjectHero.Logic.Tests
         //   还原后用 SHA-256 复核 BattleSimulation.cs 与探针前**完全一致**
         //   （6EBC703039E9F57D069E295691BFD1A9236274410CC43903B22E4ABB72E6619D）。
         //
-        // 探针 B —— 把 BudgetAndAdrenalineCleanupParticipant 的反应分支改回
+        // 探针 B —— 把 AdrenalineCleanupParticipant 的反应分支改回
         //   "非来源取消什么都不做"（注掉 `_adrenaline?.DiscardReservation(...)`）后重跑本类：
         //     total=6 passed=5 failed=1，唯一失败 = ReactionTerminalWithoutSourceCancelDiscardsReservationWithoutRefund
         //     （"Expected: null / But was: AdrenalineReservationEntry { ActionPlanId = 2, ReservedAmount = 2, ... }"）；

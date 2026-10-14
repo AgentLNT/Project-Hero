@@ -18,7 +18,7 @@ namespace ProjectHero.Logic.Units
     /// 延期由任务 05 的 <c>ScheduleEvaluator</c> 原子提交，不在这里。</item>
     /// <item><strong>不提供免伤</strong>：<see cref="CanReceiveDirectHit"/> 只回答
     /// "尚未被特殊交互消解的直接 Hit 能否进入 Remaining Hit 结算"；
-    /// Guard 的部分抵抗来自计划 Active 区间、Block 的完全抵抗来自匹配 TriggerTick 的反应 Intent、
+    /// Guard 的部分抵抗来自计划 Active 区间、Block 的完全抵抗来自匹配 SourceImpactTick 的反应 Intent、
     /// Dodge 的避伤来自换格后的空间复核，三者都<strong>不</strong>由状态实现。</item>
     /// <item><strong>不提供通用的交互参与资格</strong>：没有 <c>IsTargetableByInteraction</c>。
     /// 特殊交互（Block/Dodge 反应、AOE 目标聚合等）的参与资格各自读取自己的权威来源。</item>

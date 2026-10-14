@@ -16,7 +16,7 @@ namespace ProjectHero.Logic.Replay
     /// <summary>Versioned developer file format. Closed command tags; never resolves runtime types from files.</summary>
     public static class ReplayFile
     {
-        private const string Magic = "ProjectHero.DeveloperReplay.v4";
+        private const string Magic = "ProjectHero.DeveloperReplay.v6";
         private const int MaximumRecords = 2000000;
         public static void Save(Stream stream, BattleReplay replay)
         {
@@ -54,7 +54,10 @@ namespace ProjectHero.Logic.Replay
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
             {
                 if (reader.ReadString() != Magic) throw new LogicDefinitionException(ReplayCodes.REPLAY_FORMAT_VERSION_MISMATCH, "file magic");
-                var header = new ReplayHeader(reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadInt32(),
+                int version = reader.ReadInt32();
+                if (version != Determinism.ReplayFormat.Version)
+                    throw new LogicDefinitionException(ReplayCodes.REPLAY_FORMAT_VERSION_MISMATCH);
+                var header = new ReplayHeader(version, reader.ReadString(), reader.ReadString(), reader.ReadInt32(),
                     new EncounterDefinitionId(reader.ReadString()), new BattleRuntimeInputs(reader.ReadUInt64(), reader.ReadInt32()), reader.ReadUInt64());
                 string error = ReplayHeaderValidation.Validate(header, definition);
                 if (error != null) throw new LogicDefinitionException(error, "");
@@ -117,7 +120,7 @@ namespace ProjectHero.Logic.Replay
                     break;
                 case WindowCommandPayload window: w.Write(1); w.Write((int)window.WindowKind); break;
                 case ReactionCommandPayload reaction:
-                    w.Write(2); w.Write((int)reaction.ReactionKind); w.Write(reaction.ReactionActionSpecId.Value); WritePoint(w, reaction.DodgeDestination); break;
+                    w.Write(2); w.Write((int)reaction.ReactionKind); w.Write(reaction.ReactionActionSpecId.Value); WritePoint(w, reaction.DodgeDestination); w.Write(reaction.StartTick.HasValue); if (reaction.StartTick.HasValue) w.Write(reaction.StartTick.Value); break;
                 default: throw new LogicDefinitionException("REPLAY_PAYLOAD_UNSUPPORTED", "");
             }
         }
@@ -140,8 +143,11 @@ namespace ProjectHero.Logic.Replay
                     var operations = new ScheduleEditOperation[ReadCount(r)];
                     for (int i = 0; i < operations.Length; i++) operations[i] = ReadOperation(r);
                     payload = new ScheduleEditPayload(Array.AsReadOnly(operations)); break;
-                case 1: payload = new WindowCommandPayload((WindowCommandKind)r.ReadInt32()); break;
-                case 2: payload = new ReactionCommandPayload((ReactionCommandKind)r.ReadInt32(), new ActionSpecId(r.ReadString()), ReadPoint(r)); break;
+                case 1:
+                    var kind = (WindowCommandKind)r.ReadInt32();
+                    if ((int)kind == 0) throw new LogicDefinitionException(Turns.TurnWindowCodes.WINDOW_CLOSE_NOT_PERMITTED);
+                    payload = new WindowCommandPayload(kind); break;
+                case 2: payload = new ReactionCommandPayload((ReactionCommandKind)r.ReadInt32(), new ActionSpecId(r.ReadString()), ReadPoint(r), r.ReadBoolean() ? (long?)r.ReadInt64() : null); break;
                 default: throw new LogicDefinitionException("REPLAY_PAYLOAD_UNSUPPORTED", "");
             }
             return new CommandRequest(target, scope, payload);

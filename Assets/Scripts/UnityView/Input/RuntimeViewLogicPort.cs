@@ -85,37 +85,30 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
                                 return candidate.DodgeDestinations?.Candidates ?? Array.Empty<GridPoint>();
             return Array.Empty<GridPoint>();
         }
-        public DodgeCancellationPreview PreviewDodge(ReactionOpportunityId id, ActionSpecId action, GridPoint destination)
+        public DodgeCancellationPreview PreviewDodge(ReactionOpportunityId id, ActionSpecId action, GridPoint destination, long? startTick = null)
         {
             ReactionOpportunitySnapshot opportunity = null;
             foreach (var item in ReactionOpportunitiesOf(ControllerId))
                 if (item.ReactionOpportunityId == id.Value) opportunity = item;
             var spec = _simulation.Definition.FindAction(action);
             if (opportunity == null || !(spec?.Timing is DodgeReactionTimingSpec timing))
-                return new DodgeCancellationPreview("REACTION_OPPORTUNITY_CLOSED", Array.Empty<ActionPlanId>(), Array.Empty<ConditionalBudgetRelease>());
+                return new DodgeCancellationPreview("REACTION_OPPORTUNITY_CLOSED", Array.Empty<ActionPlanId>());
             bool offered = false;
             foreach (var option in opportunity.Options ?? Array.Empty<ReactionOptionSnapshot>())
                 if (option.ActionSpecId == action.Value && option.IsOpen && option.IsPublished
                     && _simulation.CommandIngress.NextDefaultTargetTick <= option.ResponseDeadlineTick) offered = true;
-            if (!offered) return new DodgeCancellationPreview("REACTION_OPPORTUNITY_CLOSED", Array.Empty<ActionPlanId>(), Array.Empty<ConditionalBudgetRelease>());
-            string error = EvaluateDodgeDestination(opportunity, action, destination);
-            if (error != null) return new DodgeCancellationPreview(error, Array.Empty<ActionPlanId>(), Array.Empty<ConditionalBudgetRelease>());
+            if (!offered) return new DodgeCancellationPreview("REACTION_OPPORTUNITY_CLOSED", Array.Empty<ActionPlanId>());
+            var interval = _simulation.ReactionOpportunities.PreviewStart(id,action,_simulation.CommandIngress.NextDefaultTargetTick,startTick);
+            if (!interval.Succeeded) return new DodgeCancellationPreview(interval.RejectionCode,Array.Empty<ActionPlanId>());
+            string error = EvaluateDodgeDestination(opportunity, action, destination, interval.EndTick);
+            if (error != null) return new DodgeCancellationPreview(error, Array.Empty<ActionPlanId>());
             var ids = new List<ActionPlanId>();
-            var totals = new SortedDictionary<long, long>();
             foreach (var move in _simulation.DodgeMovementInvalidation.QueryFutureEditableMoves(
-                new UnitId(opportunity.DefenderUnitId), opportunity.TriggerTick - timing.ReactionWindupTicks))
+                new UnitId(opportunity.DefenderUnitId), interval.StartTick))
             {
                 ids.Add(move.ActionPlanId);
-                if (!move.SubmittedWindowId.HasValue) continue;
-                long key = move.SubmittedWindowId.Value.Value;
-                totals.TryGetValue(key, out long value);
-                totals[key] = checked(value + move.ReservedTurnBudgetTicks);
             }
-            var releases = new List<ConditionalBudgetRelease>();
-            foreach (var total in totals)
-                releases.Add(new ConditionalBudgetRelease(new WindowId(total.Key), total.Value,
-                    _simulation.WindowManager.FindWindow(new WindowId(total.Key))?.IsOpen == true));
-            return new DodgeCancellationPreview(null, ids.AsReadOnly(), releases.AsReadOnly());
+            return new DodgeCancellationPreview(null, ids.AsReadOnly());
         }
 
         public CommandIngressRejection SubmitCommand(CommandRequest request)
@@ -174,7 +167,7 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
             }
             return "REACTION_OPPORTUNITY_CLOSED";
         }
-        private string EvaluateDodgeDestination(ReactionOpportunitySnapshot opportunity, ActionSpecId specId, GridPoint destination)
+        private string EvaluateDodgeDestination(ReactionOpportunitySnapshot opportunity, ActionSpecId specId, GridPoint destination, long? endTick = null)
         {
             var defender = new UnitId(opportunity.DefenderUnitId);
             if (!_simulation.CommandAuthority.CanControl(ControllerId, defender)) return "ISSUER_CANNOT_CONTROL_UNIT";
@@ -184,7 +177,8 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
             return _simulation.DodgeRelocation.EvaluateDestination(new DodgeDestinationReservation(
                 new ReactionOpportunityId(opportunity.ReactionOpportunityId), default, defender, facing,
                 from, destination, dodge.MaxDistanceSteps, dodge.Pattern.Directions,
-                opportunity.TriggerTick, _simulation.CommandIngress.NextDefaultTargetTick, 0));
+                opportunity.SourceImpactTick, _simulation.CommandIngress.NextDefaultTargetTick, 0,
+                endTick ?? checked(opportunity.SourceImpactTick + ((DodgeReactionTimingSpec)_simulation.Definition.FindAction(specId).Timing).DurationTicks)));
         }
         public ScheduleEditTransactionResult Preview(IReadOnlyList<ScheduleEditOperation> operations)
         {

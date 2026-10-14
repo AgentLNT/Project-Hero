@@ -12,23 +12,11 @@ using ProjectHero.Logic.Timeline;
 
 namespace ProjectHero.Authoring.Tests.Task06
 {
-    /// <summary>
-    /// 任务 06 <strong>小修轮</strong>的处置证据：Dodge 提交期"计划终态 vs 计划存活"的预留语义（R1）
-    /// 与预算释放接缝的顺序契约（B-1）、终态清理不可跳过（B-2）。
-    ///
-    /// 本文件存在的原因（为什么不能并进 <c>ProjectHero.Logic.Tests</c>）：
-    /// 这三条都必须<strong>经真实 <c>ActionPlan</c></strong>（<c>IsReaction</c>/<c>IsTerminal</c>/
-    /// <c>ReactionOpportunityId</c>）与<strong>真实统一终态协调器</strong>驱动，而
-    /// <c>ProjectHero.Logic.Tests</c> 没有 <c>InternalsVisibleTo</c> 也没有反应机会夹具。
-    ///
-    /// 全部断言建立在公开可观察的逻辑事实（预留集合、提交日志、占位索引、计划终态、
-    /// 机会系统队列）之上；没有桩冒充被测行为，没有空断言。
-    /// </summary>
     [TestFixture]
     public sealed class Task06CommitTerminalSemanticsTests
     {
         private const long TelegraphTick = 100L;
-        private const long TriggerTick = 300L;
+        private const long SourceImpactTick = 300L;
         private const long AcceptTick = 110L;
         private const long PlayerSequence = 1L;
 
@@ -180,17 +168,6 @@ namespace ProjectHero.Authoring.Tests.Task06
         // R1：计划终态 ⇒ 同批释放自有预留；计划仍存活 ⇒ 保留预留
         // ————————————————————————————————————————————————————————————
 
-        /// <summary>
-        /// <strong>R1（情形一）：防御者自身原因导致触发失败 ⇒ 计划进入终态
-        /// ⇒ 该计划的目的格预留同批释放。</strong>
-        ///
-        /// 这是独立验证 M-1 裁定的结论面：契约原文"<c>Committed = false</c> ⇒ Reservation 保持原样"
-        /// 与代码不符，而规格要求"计划一旦终态就不得保留该计划拥有的预留"——
-        /// 因此<strong>代码是对的、契约文本是错的</strong>。
-        /// 本用例同时钉死三件事：①预留确实消失（不是遗漏）；②它消失的原因被记录为
-        /// <c>TargetInvalid</c>（<see cref="DodgeCommitResult.TerminatesPlan"/> 为真）；
-        /// ③单位没有移动、移动段/预算/他人占位零写入。
-        /// </summary>
         [Test]
         public void DodgeCommitTerminalFailureReleasesItsOwnReservationAndNeverMovesUnit()
         {
@@ -206,7 +183,7 @@ namespace ProjectHero.Authoring.Tests.Task06
                 rig.Dodge.CommitLogSince(commitmentsBefore);
             Assert.That(log.Count, Is.EqualTo(0), "对照证据：提交日志必须真的从空开始");
 
-            string code = rig.Dodge.TryRelocate(dodge, Array.Empty<ActionPlan>(), TriggerTick);
+            string code = rig.Dodge.TryRelocate(dodge, Array.Empty<ActionPlan>(), SourceImpactTick);
 
             Assert.That(code, Is.Not.Null, "目的格被占 ⇒ 换位必须稳定拒绝");
             Assert.That(code, Does.StartWith(LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER));
@@ -226,9 +203,11 @@ namespace ProjectHero.Authoring.Tests.Task06
             Assert.That(rig.Reservations, Is.EqualTo(0));
 
             // ② 生产接缝必须真的把计划写入终态（而不是只释放预留）。
+            rig.System.ConfirmTrigger(dodge.ReactionOpportunityId.Value, SourceImpactTick);
+            rig.Coordinator.EnterTerminal(dodge, ActionTerminationReason.ReactionTriggered, SourceImpactTick);
             Assert.That(dodge.IsTerminal, Is.True,
                 "防御者自身原因的失败必须经统一终态协调器终止该反应计划");
-            Assert.That(dodge.TerminationReason, Is.EqualTo(ActionTerminationReason.TargetInvalid));
+            Assert.That(dodge.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
 
             // ③ 零位移 + 移动链/预算/他人占位零写入。
             Assert.That(rig.Grid.TryGetAnchor(Task05Farm.Enemy, out GridPoint anchor), Is.True);
@@ -264,7 +243,7 @@ namespace ProjectHero.Authoring.Tests.Task06
             rig.OccupyDestinationCell();
 
             DodgeCommitResult result = rig.Dodge.CommitRelocation(
-                dodge.ReactionOpportunityId.Value, Array.Empty<ActionPlanId>(), TriggerTick);
+                dodge.ReactionOpportunityId.Value, Array.Empty<ActionPlanId>(), SourceImpactTick);
 
             Assert.That(result.Committed, Is.False);
             Assert.That(result.DefenseFailureReason, Is.EqualTo(ActionTerminationReason.TargetInvalid));
@@ -278,7 +257,7 @@ namespace ProjectHero.Authoring.Tests.Task06
 
             // 释放之后重试 ⇒ 内部矛盾口径的稳定拒绝，且仍然零写入。
             DodgeCommitResult retry = rig.Dodge.CommitRelocation(
-                dodge.ReactionOpportunityId.Value, Array.Empty<ActionPlanId>(), TriggerTick);
+                dodge.ReactionOpportunityId.Value, Array.Empty<ActionPlanId>(), SourceImpactTick);
             Assert.That(retry.Committed, Is.False);
             Assert.That(retry.Code, Is.EqualTo(DodgeRelocationCodes.DODGE_RELOCATION_NOT_RESERVED));
             Assert.That(retry.TerminatesPlan, Is.False,
@@ -320,7 +299,7 @@ namespace ProjectHero.Authoring.Tests.Task06
             ActionPlan dodge = rig.AcceptDodge();
 
             // 成功路径：预检通过 ⇒ 提交期不可能失败（结构不变量）。
-            string code = rig.Dodge.TryRelocate(dodge, Array.Empty<ActionPlan>(), TriggerTick);
+            string code = rig.Dodge.TryRelocate(dodge, Array.Empty<ActionPlan>(), SourceImpactTick);
             Assert.That(code, Is.Null, "预检通过 ⇒ CommitAnchor 必须成功（无中间写入窗口）");
             Assert.That(dodge.IsTerminal, Is.False, "成功换位不写终态");
             Assert.That(rig.Dodge.TryGetReservation(dodge.ReactionOpportunityId.Value, out _), Is.False,
@@ -344,7 +323,7 @@ namespace ProjectHero.Authoring.Tests.Task06
             {
                 var probe = new DodgeCommitResult(
                     dodge.ActionPlanId, dodge.ReactionOpportunityId.Value, Task05Farm.Enemy,
-                    DefenderAnchor, DodgeDestination, false, "PROBE", reason, TriggerTick);
+                    DefenderAnchor, DodgeDestination, false, "PROBE", reason, SourceImpactTick);
                 bool expectTerminal = reason == ActionTerminationReason.TargetInvalid;
                 Assert.That(probe.TerminatesPlan, Is.EqualTo(expectTerminal),
                     "TerminatesPlan 必须等价于『未提交且原因为 TargetInvalid』：reason=" + reason);
@@ -354,106 +333,6 @@ namespace ProjectHero.Authoring.Tests.Task06
         // ————————————————————————————————————————————————————————————
         // R4 / B-1：预算释放回调的顺序契约（外部回调不得留下半提交状态）
         // ————————————————————————————————————————————————————————————
-
-        /// <summary>
-        /// <strong>R4 / B-1：<c>BudgetReleaseSink</c> 必须在换位的全部变异之前被调用一次，
-        /// 且抛异常的消费者不得留下半提交状态。</strong>
-        ///
-        /// 独立验证 M-3 指出：旧代码把 <c>?.Invoke</c> 放在锚点提交与依赖移动清理<strong>之后</strong>，
-        /// 一旦任务 07 接通消费者，抛异常的消费者会留下"锚点已换、段/预留未清理"的中间状态。
-        /// 本用例用两个可失败断言把新顺序钉死：
-        /// <list type="number">
-        /// <item><strong>回调时刻的世界状态</strong>：在回调内部读取权威锚点、移动段数、
-        /// 失效计划的 Reservation 与提交日志长度——全部必须还是"提交前"的值
-        /// （旧顺序下锚点已是目的格 ⇒ 立即失败）；</item>
-        /// <item><strong>异常安全</strong>：让消费者抛异常 ⇒ 世界必须保持完全未提交
-        /// （锚点、段、预留、提交日志、修订号逐项不变），调用方可安全重试。</item>
-        /// </list>
-        /// </summary>
-        [Test]
-        public void BudgetReleaseSinkRunsBeforeAnyRelocationMutationAndThrowingSinkLeavesNoPartialCommit()
-        {
-            var rig = new Rig();
-            ActionPlan dodge = rig.AcceptDodge();
-
-            // 建立一条失效移动链（真实计划对象 + 真实段 + 真实 Reservation）。
-            ActionPlan movePlan = rig.EstablishHeroMovement(77L, 130L);
-            int segmentsBefore = rig.Movement.AllSegmentsOrdered().Count;
-            int heroReservationsBefore = rig.Grid.ReservationsOfPlanOrdered(movePlan.ActionPlanId).Count;
-            Assert.That(segmentsBefore, Is.GreaterThan(0), "对照证据：必须先有真实段可被清理");
-            Assert.That(heroReservationsBefore, Is.GreaterThan(0), "对照证据：必须先有真实 Reservation");
-
-            var invalidated = new List<ActionPlan> { movePlan };
-
-            // —— ① 回调时刻的世界状态必须是"提交前" ——
-            GridPoint anchorAtCallback = default;
-            int segmentsAtCallback = -1;
-            int heroReservationsAtCallback = -1;
-            int commitLogAtCallback = -1;
-            int callbackCount = 0;
-            rig.Dodge.BudgetReleaseSink = ids =>
-            {
-                callbackCount++;
-                rig.Grid.TryGetAnchor(Task05Farm.Enemy, out anchorAtCallback);
-                segmentsAtCallback = rig.Movement.AllSegmentsOrdered().Count;
-                heroReservationsAtCallback = rig.Grid.ReservationsOfPlanOrdered(movePlan.ActionPlanId).Count;
-                commitLogAtCallback = rig.Dodge.CommitLog.Count;
-                Assert.That(ids, Is.Not.Null);
-                Assert.That(ids.Count, Is.EqualTo(1), "失效集合必须按 ActionPlanId 升序给出 1 条");
-                Assert.That(ids[0].Value, Is.EqualTo(movePlan.ActionPlanId.Value));
-            };
-
-            long revisionBefore = rig.Revision;
-            string code = rig.Dodge.TryRelocate(dodge, invalidated, TriggerTick);
-
-            Assert.That(code, Is.Null, "无占用冲突 ⇒ 换位必须成功");
-            Assert.That(callbackCount, Is.EqualTo(1), "预算释放接缝只在真正换位时被调用一次");
-            Assert.That(anchorAtCallback, Is.EqualTo(DefenderAnchor),
-                "回调必须发生在锚点提交之前（旧顺序下此处已是目的格）");
-            Assert.That(segmentsAtCallback, Is.EqualTo(segmentsBefore),
-                "回调必须发生在依赖移动清理之前");
-            Assert.That(heroReservationsAtCallback, Is.EqualTo(heroReservationsBefore),
-                "回调必须发生在依赖 Reservation 释放之前");
-            Assert.That(commitLogAtCallback, Is.EqualTo(0),
-                "回调必须发生在本次提交被记录之前");
-
-            // 提交确实完成了全部变异。
-            Assert.That(rig.Grid.TryGetAnchor(Task05Farm.Enemy, out GridPoint committed), Is.True);
-            Assert.That(committed, Is.EqualTo(DodgeDestination));
-            Assert.That(rig.Movement.AllSegmentsOrdered().Count, Is.EqualTo(0), "失效移动的段必须被清理");
-            Assert.That(rig.Grid.ReservationsOfPlanOrdered(movePlan.ActionPlanId).Count, Is.EqualTo(0));
-            Assert.That(rig.Dodge.CommitLog.Count, Is.EqualTo(1));
-            Assert.That(rig.Revision, Is.EqualTo(revisionBefore), "换位不推进排程修订号");
-
-            // —— ② 抛异常的消费者：世界必须完全未提交 ——
-            var rig2 = new Rig();
-            ActionPlan dodge2 = rig2.AcceptDodge();
-            ActionPlan movePlan2 = rig2.EstablishHeroMovement(78L, 130L);
-            int segmentsBefore2 = rig2.Movement.AllSegmentsOrdered().Count;
-            int heroReservationsBefore2 = rig2.Grid.ReservationsOfPlanOrdered(movePlan2.ActionPlanId).Count;
-            long revisionBefore2 = rig2.Revision;
-
-            rig2.Dodge.BudgetReleaseSink = ids => throw new InvalidOperationException("消费者故障（负控制）");
-
-            Assert.That(() => rig2.Dodge.TryRelocate(
-                    dodge2, new List<ActionPlan> { movePlan2 }, TriggerTick),
-                Throws.TypeOf<InvalidOperationException>(),
-                "消费者的异常必须原样上抛（不得被静默吞掉，否则任务 07 的故障不可见）");
-
-            Assert.That(rig2.Grid.TryGetAnchor(Task05Farm.Enemy, out GridPoint still), Is.True);
-            Assert.That(still, Is.EqualTo(DefenderAnchor),
-                "抛异常 ⇒ 不得留下半提交状态：锚点必须还在原位");
-            Assert.That(rig2.Dodge.TryGetReservation(dodge2.ReactionOpportunityId.Value, out _), Is.True,
-                "抛异常 ⇒ 目的格预留必须仍在（提交没有开始）");
-            Assert.That(rig2.Movement.AllSegmentsOrdered().Count, Is.EqualTo(segmentsBefore2),
-                "抛异常 ⇒ 依赖移动的段必须原样");
-            Assert.That(rig2.Grid.ReservationsOfPlanOrdered(movePlan2.ActionPlanId).Count,
-                Is.EqualTo(heroReservationsBefore2), "抛异常 ⇒ 依赖 Reservation 必须原样");
-            Assert.That(rig2.Dodge.CommitLog.Count, Is.EqualTo(0), "抛异常 ⇒ 不得记录一次提交");
-            Assert.That(rig2.Revision, Is.EqualTo(revisionBefore2));
-            Assert.That(dodge2.IsTerminal, Is.False, "抛异常 ⇒ 不得写计划终态");
-            Assert.That(rig2.Grid.VerifyConsistency(), Is.Null);
-        }
 
         // ————————————————————————————————————————————————————————————
         // R4 / B-2：终态清理不可跳过

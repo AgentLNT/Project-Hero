@@ -144,9 +144,9 @@ namespace ProjectHero.Logic.AI
             }
             if (eligible.Count == 0)
             {
-                var close = context.NormalPreview != null ? AiCommandRequestBuilder.BuildCloseOwnWindowRequest(context) : null;
-                reason = close == null ? ReasonNoEligibleCandidate : null;
-                return close;
+                // R1：窗口不能被主动结束，没有可接受动作时 AI 不发任何命令，等待窗口到期。
+                reason = ReasonNoEligibleCandidate;
+                return null;
             }
 
             AiCandidate chosen = eligible[rng.PickIndex(eligible.Count)];
@@ -178,7 +178,7 @@ namespace ProjectHero.Logic.AI
             AiReactionOptionView chosen = ordered[rng.PickIndex(ordered.Count)];
             return new CommandRequest(targetTick,
                 new ReactionCommandScope(chosen.ReactionOpportunityId),
-                new ReactionCommandPayload(chosen.ReactionKind, chosen.ActionSpecId, chosen.SelectedDestination));
+                new ReactionCommandPayload(chosen.ReactionKind, chosen.ActionSpecId, chosen.SelectedDestination, chosen.StartTick));
         }
     }
 }

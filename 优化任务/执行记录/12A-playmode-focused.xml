@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.4861256">
+  <test-suite type="TestSuite" id="1080" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="61" result="Failed" site="Child" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.486126" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1073" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="61" result="Failed" site="Child" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.465469" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="46296" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1074" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="61" result="Failed" site="Child" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.464221" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1075" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="61" result="Failed" site="Child" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.457040" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1076" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="61" result="Failed" site="Child" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.449073" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1051" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="9" result="Failed" site="Child" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:45Z" duration="1.446460" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1059" name="DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease" methodname="DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="1639106829" result="Failed" start-time="2026-10-13 19:24:43Z" end-time="2026-10-13 19:24:44Z" duration="0.951889" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Real reaction was not accepted: Dodge chain=0 tick=1531 resources=AdrenalineLedgerSnapshot { UnitId = 2, AvailableAdrenaline = 0, CycleId = 5, Reservations = System.Collections.Generic.List`1[ProjectHero.Logic.Snapshots.AdrenalineReservationSnapshot], ReservedTotal = 0 } rejection=STALE_SCHEDULE_REVISION units=UnitSnapshot { UnitId = 1, DefinitionId = unit.monster.radius_2, FactionId = monster, X = 5, Y = 5, Facing = 0, HealthQ10 = 204800, IsAlive = True, AvailableAdrenaline = 0, AdrenalineCycleId = 4, State = 0, StateStartTick = 1531, StateEndTick = 9223372036854775807, CanReceiveDirectHit = True, StateValue = Idle };UnitSnapshot { UnitId = 2, DefinitionId = unit.hero.radius_1, FactionId = hero, X = 0, Y = 2, Facing = 0, HealthQ10 = -25600, IsAlive = False, AvailableAdrenaline = 0, AdrenalineCycleId = 5, State = 10, StateStartTick = 1531, StateEndTick = 9223372036854775807, CanReceiveDirectHit = False, StateValue = Dead } window= plans= damage= selected=((0, 2), 5);((0, 4), 5);((0, 6), 5);((0, 8), 5)
+  Expected: greater than 0
+  But was:  0
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneReaction>d__17.MoveNext () [0x014b5] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:677
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Canvas combination fixture definition=fe67492d47081f83; uniform per-direction pattern union; forceMultiplier=0.000001; attack timing=60/30; reaction timing=1/30; unchanged grid/body/180 Tick/hero; not the unchanged formal encounter.
+]]></output>
+              </test-case>
+              <test-case id="1052" name="FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection" methodname="FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="298341959" result="Passed" start-time="2026-10-13 19:24:44Z" end-time="2026-10-13 19:24:45Z" duration="0.478857" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\12A-window-rejection.png device=Intel(R) Arc(TM) B390 GPU
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

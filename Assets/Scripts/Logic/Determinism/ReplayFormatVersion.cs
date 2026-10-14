@@ -63,9 +63,12 @@ namespace ProjectHero.Logic.Determinism
         // v3: future ingress buckets include full canonical requests; recordings preserve
         // original submission boundaries independently of target Tick. Rules remain unchanged.
         // v4: frozen closed ledgers are archived once; future window inputs and the compact
-        // last-owner/budget state remain in the active snapshot. Full terminal payloads and
+        // last-owner state remain in the active snapshot. Full terminal payloads and
         // movement segment StartTick are encoded. Gameplay rule definitions are unchanged.
-        public const int Version = 4;
+        // v5 (R1): windows carry DurationTicks/EndTick and ordinary actions have no time cost.
+        // The frozen window domain is FrozenWindowLedger.v5. Window command kind 0 is retired
+        // and rejected. v4 recordings are rejected without migration.
+        public const int Version = 6;
 
         public const string HashAlgorithmId = "fnv1a64";
         public const int DigestHexWidth = 16;

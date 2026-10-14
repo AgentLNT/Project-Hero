@@ -9,7 +9,7 @@ namespace ProjectHero.Logic.AI
     /// <strong>一条普通动作候选</strong>：种类、来源单位、ActionSpec、可空目标、可空目的格与可空计划 ID。
     ///
     /// 它是<strong>纯只读值对象</strong>：不携带 ControllerId、来源种类、优先级、
-    /// <c>ProducerOrdinal</c>、<c>CommandSequence</c>、规则费用或反应 TriggerTick——
+    /// <c>ProducerOrdinal</c>、<c>CommandSequence</c>、规则费用或反应 SourceImpactTick——
     /// 这些字段在类型上不存在，因此 AI 无法自报身份或顺序。
     ///
     /// <para>

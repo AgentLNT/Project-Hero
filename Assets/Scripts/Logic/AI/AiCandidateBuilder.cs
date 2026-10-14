@@ -21,7 +21,7 @@ namespace ProjectHero.Logic.AI
     /// <item><c>Move</c> 候选<strong>必须</strong>经任务 06 的同一
     /// <see cref="IMovementPathCalculator.Recompute"/> 求路径投影；端口缺失 ⇒ fail-closed，
     /// <strong>绝不用距离、速度或自建权重估算路线</strong>；</item>
-    /// <item>反应候选只来自<strong>已公开且仍开放</strong>的机会；AI 无法新增机会、推导 TriggerTick
+    /// <item>反应候选只来自<strong>已公开且仍开放</strong>的机会；AI 无法新增机会、推导 SourceImpactTick
     /// 或自造 Dodge 目的格（目的格只能取自 Logic 公布列表）。</item>
     /// <item>本类<strong>不</strong>使用 RNG、不提交命令、不写任何权威状态。</item>
     /// </list>
@@ -70,6 +70,8 @@ namespace ProjectHero.Logic.AI
         private static void AppendAddCandidates(
             AiDecisionContext context, UnitId owner, List<AiCandidate> container)
         {
+            if (context.HasSubmissionWindow && context.LaneTailStartTickOf(owner) >= context.OwnWindow.EndTick)
+                return;
             IReadOnlyList<ActionSpecId> specIds = context.Snapshot.ActionSetOf(owner);
             IReadOnlyList<UnitId> universe = context.Snapshot.VisibleUnitIds;
 
@@ -98,9 +100,10 @@ namespace ProjectHero.Logic.AI
             if (code == ScheduleCodes.TARGET_RELATION_NOT_ALLOWED)
                 return AiCandidateEligibility.TargetRelationNotAllowed;
             if (code != null) return AiCandidateEligibility.SpecHasNoTargetRelationMask;
-            return context.HasSubmissionWindow
+            if (!context.HasSubmissionWindow) return AiCandidateEligibility.NoSubmissionWindow;
+            return context.LaneTailStartTickOf(owner) < context.OwnWindow.EndTick
                 ? AiCandidateEligibility.Eligible
-                : AiCandidateEligibility.NoSubmissionWindow;
+                : AiCandidateEligibility.LaneTailBeyondWindow;
         }
 
         private static void AppendRemoveCandidates(

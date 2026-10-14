@@ -19,62 +19,44 @@ namespace ProjectHero.Logic.Tests
 {
     public sealed class Task11WindowHistoryTests
     {
-        [Test] public void AiUsesTheRealSchedulePreviewAndClosesUnaffordableRemainderThroughItsTrustedEntry()
+        [Test] public void AiIssuesNoCommandWhenNoCandidateFitsWindow()
         {
-            using (var sim = Task09A2Fixture.NewSim())
-            {
-                sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Monster, 13);
-                Step(sim);
-                var ai = new AiControllerLogic(Task09A2Fixture.Inputs.InitialRngSeed);
-                ai.AttachPorts(sim.AiReactionOpportunities, sim.AiActionPlanLookup, sim.MovementPathCalculator,
-                    (issuer, request) => {
-                        var scope = (ScheduleEditScope)request.Scope;
-                        return sim.ScheduleEditor.Apply(((ScheduleEditPayload)request.Payload).Operations, request.TargetTick,
-                            scope.ExpectedScheduleRevision, sim.ScheduleRevision, preview: true,
-                            expectedWindowId: scope.ExpectedWindowId, issuer: issuer).RejectionCode;
-                    });
-                var first = AiDecisionFunction.Decide(ai.BuildContext(sim.DecisionSnapshotFor(Task09A2Fixture.AiId), Task09A2Fixture.AiId), ai.BattleSeed);
-                Assert.That(first.Selected.Payload, Is.TypeOf<ScheduleEditPayload>());
-                Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, first.Selected);
-                Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1)), Is.Empty);
-                Assert.That(sim.CurrentTurnWindow.AvailableBudgetTicks, Is.EqualTo(1));
-                var plans = Task09A2Fixture.ScheduleFingerprint(sim);
-                var window = Task09A2Fixture.WindowFingerprint(sim, sim.CurrentTurnWindow.WindowId);
-                var second = AiDecisionFunction.Decide(ai.BuildContext(sim.DecisionSnapshotFor(Task09A2Fixture.AiId), Task09A2Fixture.AiId), ai.BattleSeed);
-                Assert.That(second.Selected.Payload, Is.TypeOf<WindowCommandPayload>());
-                Assert.That(((WindowCommandPayload)second.Selected.Payload).WindowKind, Is.EqualTo(WindowCommandKind.CloseOwnWindow));
-                Assert.That(Task09A2Fixture.ScheduleFingerprint(sim), Is.EqualTo(plans), "Candidate preview cannot schedule plans.");
-                Assert.That(Task09A2Fixture.WindowFingerprint(sim, sim.CurrentTurnWindow.WindowId), Is.EqualTo(window), "AI cannot directly close a window.");
-                Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, second.Selected);
-                var closed = Task09A2Fixture.Step(sim, 2);
-                Assert.That(Task09A2Fixture.AllRejectionCodes(closed), Is.Empty);
-                Assert.That(closed.Events.Events.OfType<TurnWindowClosedEvent>().Single().Reason, Is.EqualTo(TurnWindowCloseReason.OwnerRequested));
-                Assert.That(sim.CurrentTurnWindow, Is.Null);
-                Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Count, Is.EqualTo(1), "Execution survives submission-window closure.");
-            }
+            using var sim = Task09A2Fixture.NewSim();
+            sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Monster, 13); Step(sim);
+            var ai = new AiControllerLogic(Task09A2Fixture.Inputs.InitialRngSeed);
+            ai.AttachPorts(sim.AiReactionOpportunities, sim.AiActionPlanLookup, sim.MovementPathCalculator,
+                (issuer, request) => {
+                    var scope = (ScheduleEditScope)request.Scope;
+                    return sim.ScheduleEditor.Apply(((ScheduleEditPayload)request.Payload).Operations, request.TargetTick,
+                        scope.ExpectedScheduleRevision, sim.ScheduleRevision, preview: true,
+                        expectedWindowId: scope.ExpectedWindowId, issuer: issuer).RejectionCode;
+                });
+            var first = AiDecisionFunction.Decide(ai.BuildContext(sim.DecisionSnapshotFor(Task09A2Fixture.AiId), Task09A2Fixture.AiId), ai.BattleSeed);
+            Assert.That(first.Selected.Payload, Is.TypeOf<ScheduleEditPayload>());
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, first.Selected);
+            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1)), Is.Empty);
+            var plans = Task09A2Fixture.ScheduleFingerprint(sim);
+            var second = AiDecisionFunction.Decide(ai.BuildContext(sim.DecisionSnapshotFor(Task09A2Fixture.AiId), Task09A2Fixture.AiId), ai.BattleSeed);
+            Assert.That(second.Selected, Is.Null);
+            Assert.That(second.NormalCandidates.Any(c => c.Kind == AiCandidateKind.Add), Is.False);
+            Assert.That(Task09A2Fixture.ScheduleFingerprint(sim), Is.EqualTo(plans));
+            Assert.That(sim.CurrentTurnWindow.IsOpen, Is.True);
+            while (sim.Tick < 12) Step(sim);
+            Assert.That(sim.CurrentTurnWindow, Is.Null);
         }
-        [Test] public void FullyReservedWindowClosesWithBudgetExhaustedWithoutCancellingItsFutureAttack()
+        [Test] public void WindowExpiresWithoutCancellingItsRunningAttack()
         {
-            using (var sim = Task09A2Fixture.NewSim())
-            {
-                sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero,
-                    Task09A2Fixture.AttackWindupTicks + Task09A2Fixture.AttackRecoveryTicks);
-                Step(sim);
-                Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(1, 0, sim.CurrentTurnWindow.WindowId,
-                    Task09A2Fixture.Hero, Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 10));
-                var result = Task09A2Fixture.Step(sim, 1);
-                Assert.That(Task09A2Fixture.AllRejectionCodes(result), Is.Empty);
-                Assert.That(sim.CurrentTurnWindow, Is.Null);
-                var closed = result.Events.Events.OfType<TurnWindowClosedEvent>().Single();
-                Assert.That(closed.Reason, Is.EqualTo(TurnWindowCloseReason.BudgetExhausted));
-                var plan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
-                Assert.That(plan.State, Is.EqualTo(ActionPlanState.Editable));
-                Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(12));
-                Assert.That(sim.CurrentSnapshot.WindowManager.Windows.Single().ReservedBudgetTicks, Is.EqualTo(12));
-                while (sim.Tick < plan.EndTick) Step(sim);
-                Assert.That(plan.State, Is.EqualTo(ActionPlanState.Completed));
-                Assert.That(sim.WindowManager.FindWindow(new WindowId(1)).SpentBudgetTicks, Is.EqualTo(12));
-            }
+            using var sim = Create(); Step(sim);
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(1, 0, sim.CurrentTurnWindow.WindowId,
+                Task09A2Fixture.Hero, Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 1));
+            var result = Task09A2Fixture.Step(sim, 1);
+            Assert.That(Task09A2Fixture.AllRejectionCodes(result), Is.Empty);
+            Assert.That(sim.CurrentTurnWindow, Is.Null);
+            Assert.That(result.Events.Events.OfType<TurnWindowClosedEvent>().Single().Reason, Is.EqualTo(TurnWindowCloseReason.Expired));
+            var plan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
+            Assert.That(plan.IsRunning, Is.True);
+            while (sim.Tick < plan.EndTick) Step(sim);
+            Assert.That(plan.State, Is.EqualTo(ActionPlanState.Completed));
         }
         [Test] public void ExpiredOpportunityFreezesCompletePayloadOnlyAfterItsSourceCompletes()
         {
@@ -108,7 +90,7 @@ namespace ProjectHero.Logic.Tests
                 var result = Task09A2Fixture.Step(sim, 2);
                 Assert.That(Task09A2Fixture.AllRejectionCodes(result), Is.Empty);
                 Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Accepted));
-                while (sim.Tick < opportunity.TriggerTick) Step(sim);
+                while (sim.Tick < opportunity.SourceImpactTick) Step(sim);
                 Assert.That(opportunity.State, Is.EqualTo(ReactionOpportunityState.Triggered));
                 Assert.That(sim.CurrentSnapshot.ReactionOpportunities.Count, Is.EqualTo(1));
                 while (sim.Tick < attack.EndTick) Step(sim);
@@ -205,7 +187,7 @@ namespace ProjectHero.Logic.Tests
                     {
                         var request = new CommandRequest(1, new ScheduleEditScope(0, new WindowId(1)),
                             new ScheduleEditPayload(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, Task09A2Fixture.Hero,
-                                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 10, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
+                                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 1, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
                         Assert.That(original.CommandIngress.FindEntry(Task09A2Fixture.PlayerId).Submit(request), Is.Null);
                     }
                     recorder.CaptureBeforeStep();
@@ -242,8 +224,10 @@ namespace ProjectHero.Logic.Tests
         }
         private sealed class Schedule : ITurnWindowSchedule
         {
-            public WindowOpenRequest TryOpenDue(long tick) => tick == 0 ? new WindowOpenRequest(Task09A2Fixture.Hero, 400) : null;
-            public bool ShouldCloseCurrentWindow(long tick) => tick == 1;
+            // R1：窗口 [0,2) 在 Tick 1 末到期（原脚本在 Tick 1 关窗）。
+            private readonly int duration;
+            public Schedule(int duration = 2) { this.duration = duration; }
+            public WindowOpenRequest TryOpenDue(long tick) => tick == 0 ? new WindowOpenRequest(Task09A2Fixture.Hero, duration) : null;
         }
         private static BattleSimulation Create() => BattleSimulation.Create(Task09A2Fixture.BuildDefinition(),
             Task09A2Fixture.EncounterId, Task09A2Fixture.Inputs, new BattleSimulationAssembly(turnWindowSchedule: new Schedule()));
@@ -265,24 +249,18 @@ namespace ProjectHero.Logic.Tests
                 Assert.That(sim.RecomputeHistoryDigestForDiagnostics().ToString("x16"), Is.EqualTo(sim.History.Digest));
             }
         }
-        [Test] public void ClosedWindowWithEditableReservationRemainsActiveUntilItsFinalConsumption()
+        [Test] public void ClosedWindowFreezesImmediatelyWhileItsRunningActionContinues()
         {
-            using (var sim = Create())
-            {
-                Step(sim);
-                var request = new CommandRequest(1, new ScheduleEditScope(0, new WindowId(1)),
-                    new ScheduleEditPayload(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, Task09A2Fixture.Hero,
-                        Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 10, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
-                Assert.That(sim.CommandIngress.FindEntry(Task09A2Fixture.PlayerId).Submit(request), Is.Null);
-                Step(sim);
-                var ledger = sim.CurrentSnapshot.WindowManager.Windows.Single();
-                Assert.That(ledger.IsOpen, Is.False); Assert.That(ledger.ReservedBudgetTicks, Is.GreaterThan(0));
-                Assert.That(sim.History.RecordCount, Is.Zero, "A closed ledger that may still consume or refund must not freeze.");
-                while (sim.Tick < 10) Step(sim);
-                Assert.That(sim.CurrentSnapshot.WindowManager.Windows, Is.Empty);
-                Assert.That(sim.WindowManager.FindWindow(new WindowId(1)).SpentBudgetTicks, Is.GreaterThan(0));
-                Assert.That(sim.History.RecordCount, Is.EqualTo(1));
-            }
+            using var sim = Create(); Step(sim);
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(1, 0, sim.CurrentTurnWindow.WindowId,
+                Task09A2Fixture.Hero, Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 1));
+            Step(sim);
+            Assert.That(sim.CurrentSnapshot.WindowManager.Windows, Is.Empty);
+            Assert.That(sim.History.RecordCount, Is.EqualTo(1));
+            var plan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
+            Assert.That(plan.IsRunning, Is.True);
+            var prefix = sim.History;
+            Step(sim); Assert.That(sim.History, Is.EqualTo(prefix));
         }
         [Test] public void TerminalCleanupPendingBetweenTicksIsNotLostAtTheNextBeginTick()
         {
@@ -291,21 +269,21 @@ namespace ProjectHero.Logic.Tests
                 Step(sim);
                 var request = new CommandRequest(1, new ScheduleEditScope(0, new WindowId(1)),
                     new ScheduleEditPayload(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, Task09A2Fixture.Hero,
-                        Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 10, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
+                        Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 1, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
                 Assert.That(sim.CommandIngress.FindEntry(Task09A2Fixture.PlayerId).Submit(request), Is.Null);
                 Step(sim);
                 var plan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
                 sim.TerminalCoordinator.EnterTerminal(plan, ProjectHero.Logic.Actions.ActionTerminationReason.CancelledByCommand, 2);
                 Step(sim);
                 var records = sim.ReadHistoryForDiagnostics();
-                Assert.That(records.Count, Is.EqualTo(2), "Both the released closed ledger and the pending terminal payload must freeze.");
+                Assert.That(records.Count, Is.EqualTo(3), "The closed window, cancelled source opportunity and terminal plan all freeze.");
                 var terminal = records.Single(r => r.Kind == ProjectHero.Logic.Determinism.HistoryRecordKind.ActionPlanTerminal);
                 Assert.That(terminal.PayloadLength, Is.GreaterThan(0));
                 Assert.That(terminal.ArchivedAtTick, Is.EqualTo(2));
                 Assert.That(sim.ScheduleAuthority.Registry.FindFrozenTerminal(plan.ActionPlanId).TerminationReason,
                     Is.EqualTo((int)ProjectHero.Logic.Actions.ActionTerminationReason.CancelledByCommand));
                 Step(sim);
-                Assert.That(sim.History.RecordCount, Is.EqualTo(2), "Consumed candidates must not append twice.");
+                Assert.That(sim.History.RecordCount, Is.EqualTo(3), "Consumed candidates must not append twice.");
             }
         }
         [Test] public void EmptyInteractionFastPathKeepsAllEventsAndHashesAgainstFullReferencePipeline()
@@ -322,7 +300,7 @@ namespace ProjectHero.Logic.Tests
                     {
                         var request = new CommandRequest(1, new ScheduleEditScope(0, new WindowId(1)),
                             new ScheduleEditPayload(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, Task09A2Fixture.Hero,
-                                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 10, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
+                                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 1, PrimaryTargetUnitId: Task09A2Fixture.Monster) }));
                         Assert.That(fast.CommandIngress.FindEntry(Task09A2Fixture.PlayerId).Submit(request), Is.Null);
                         Assert.That(reference.CommandIngress.FindEntry(Task09A2Fixture.PlayerId).Submit(request), Is.Null);
                     }
@@ -339,15 +317,15 @@ namespace ProjectHero.Logic.Tests
         {
             var definition = Task09A2Fixture.BuildDefinition();
             var guardId = new ActionSpecId("action.fixture_guard");
-            var guard = new ActionSpec(guardId, ActionType.Guard, new GuardTimingSpec(2, 2, 2),
+            var guard = new ActionSpec(guardId, ActionType.Guard, new GuardTimingSpec(2),
                 new GuardPayloadSpec(new System.Collections.Generic.Dictionary<DamageChannelId, int> {
                     [DamageChannels.PhysicalBlunt] = 512 }, 512, DefenseTagMask.Blockable | DefenseTagMask.Guardable), 0);
             definition = definition with { Actions = definition.Actions.Concat(new[] { guard }).ToArray(),
                 ActionSets = definition.ActionSets.Select(set => set with { ActionSpecIds = set.ActionSpecIds.Concat(new[] { guardId }).ToArray() }).ToArray() };
             using (var fast = BattleSimulation.Create(definition, Task09A2Fixture.EncounterId, Task09A2Fixture.Inputs,
-                new BattleSimulationAssembly(turnWindowSchedule: new Schedule(), useEmptyInteractionFastPath: true)))
+                new BattleSimulationAssembly(turnWindowSchedule: new Schedule(22), useEmptyInteractionFastPath: true)))
             using (var reference = BattleSimulation.Create(definition, Task09A2Fixture.EncounterId, Task09A2Fixture.Inputs,
-                new BattleSimulationAssembly(turnWindowSchedule: new Schedule(), useEmptyInteractionFastPath: false)))
+                new BattleSimulationAssembly(turnWindowSchedule: new Schedule(22), useEmptyInteractionFastPath: false)))
             {
                 for (int tick = 0; tick < 40; tick++)
                 {

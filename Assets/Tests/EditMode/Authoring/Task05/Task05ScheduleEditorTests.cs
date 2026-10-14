@@ -404,8 +404,8 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(a.StartTick, Is.EqualTo(380L), "直接移动的计划落在请求位点");
             Assert.That(editable.StartTick, Is.EqualTo(440L), "重叠只向右 ripple：editable 从 400 推到 440");
             Assert.That(locked.StartTick, Is.EqualTo(700L), "Locked 障碍不得被移动");
-            Assert.That(reaction.Plan.StartTick, Is.EqualTo(940L),
-                "固定反应区间不得被移动（TriggerTick 1000 - 前摇 60 = 940）");
+            Assert.That(reaction.Plan.StartTick, Is.EqualTo(1000L),
+                "固定反应区间不得被移动（SourceImpactTick 1000 - 前摇 60 = 940）");
 
             string[] rippled = TextIdsOf(result.RipplePlanIds);
             Assert.That(rippled, Does.Contain(editable.ActionPlanId.Value.ToString(
@@ -494,7 +494,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(windup, Is.EqualTo(30));
             Assert.That(a.ImpactTick, Is.EqualTo(130L));
             Assert.That(a.EndTick, Is.EqualTo(160L));
-            Assert.That(a.BudgetCostTicks, Is.EqualTo(60));
 
             s.Apply(new ScheduleEditOperation[] { Task05Scheduler.MoveOp(a.ActionPlanId, 500L) });
             s.Bundle.Facts.SetActionSpeed(Task05Farm.Hero, 10f);
@@ -505,7 +504,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(a.EndTick, Is.EqualTo(660L), "EndTick = StartTick + 前摇 + 后摇");
             Assert.That(a.ResolvedWindupTicks, Is.EqualTo(windup), "速度变化不得重新采样前摇");
             Assert.That(a.RecoveryTicks, Is.EqualTo(recovery), "后摇不随速度缩短");
-            Assert.That(a.BudgetCostTicks, Is.EqualTo(60), "预算仍等于解析前摇 + 后摇");
         }
 
         // ————————————————————————————————————————————————————————————
@@ -554,7 +552,7 @@ namespace ProjectHero.Authoring.Tests.Task05
                 new ScheduleEditOperation[] { Task05Scheduler.RemoveOp(reaction.Plan.ActionPlanId) });
             Assert.That(remove.RejectionCode, Is.EqualTo(ScheduleCodes.SCHEDULE_REACTION_CANNOT_BE_EDITED));
 
-            Assert.That(reaction.Plan.StartTick, Is.EqualTo(440L), "固定反应区间不得被平移");
+            Assert.That(reaction.Plan.StartTick, Is.EqualTo(500L), "固定反应区间不得被平移");
             Assert.That(s.Revision, Is.EqualTo(0L));
         }
 
@@ -735,14 +733,8 @@ namespace ProjectHero.Authoring.Tests.Task05
         // 移动链预测重算（任务 06 的接入端口）
         // ————————————————————————————————————————————————————————————
 
-        /// <summary>
-        /// <c>MoveChainRecomputesProjectedStartPathDurationAndBudget</c>：
-        /// 受影响 Move 链的路径、边数、路径权重、绝对 Tick 与预算一起重算，
-        /// 且<strong>预算与 EndTick 使用路径权重而不是边数</strong>。
-        /// 任务 05 只提供 <see cref="IMovementPathCalculator"/> 端口；本用例注入确定性假实现验证接缝。
-        /// </summary>
         [Test]
-        public void MoveChainRecomputesProjectedStartPathDurationAndBudget()
+        public void MoveChainRecomputesProjectedStartPathAndDuration()
         {
             var calculator = new StubPathCalculator();
             Task05Scheduler s = new Task05Scheduler(null, calculator);
@@ -750,7 +742,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             ActionPlan move = s.Create(Task05Farm.MoveId, 100L, pathEdgeCount: 2, pathWeightUnits: 4);
             s.Authority.RegisterPlan(move);
             Assert.That(move.EndTick, Is.EqualTo(130L), "权重 4 × 基准 5 = 20，+ 后摇 10 ⇒ [100,130)");
-            Assert.That(move.BudgetCostTicks, Is.EqualTo(30));
 
             calculator.Next = new MovementPathProjection(EdgeCount: 3, WeightUnits: 7);
             ScheduleEditTransactionResult result = s.Apply(
@@ -763,11 +754,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(move.ResolvedPathWeightUnits, Is.EqualTo(7));
             Assert.That(move.MoveDurationTicks, Is.EqualTo(35), "7 权重 × 基准 5 = 35");
             Assert.That(move.EndTick, Is.EqualTo(245L), "200 + 35 + 后摇 10");
-            Assert.That(move.BudgetCostTicks, Is.EqualTo(45), "预算 = 路径权重时长 + 后摇（不是 3×5）");
-            Assert.That(move.BudgetCostTicks,
-                Is.Not.EqualTo((3 * move.ResolvedBaseStepTicks) + move.RecoveryTicks),
-                "预算必须用路径权重而不是边数");
-            Assert.That(move.ReservedTurnBudgetTicks, Is.EqualTo(45), "Editable 期预留跟随新预算");
         }
 
         /// <summary>

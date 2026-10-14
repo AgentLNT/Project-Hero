@@ -33,12 +33,12 @@ namespace ProjectHero.Authoring.Tests.Task05
             {
                 s.Authority.RegisterPlan(plan);
                 var before = (plan.StartTick, plan.ImpactTick, plan.EndTick, plan.State,
-                    plan.ReservedTurnBudgetTicks, plan.LastRequestedStartTick, plan.AutomaticDeferralCount);
+                    plan.LastRequestedStartTick, plan.AutomaticDeferralCount);
                 var result = s.Editor.ApplySystemAutoDeferral(plan, 700, T, null);
                 Assert.That(result.Committed, Is.False);
                 Assert.That(result.RejectionCode, Is.EqualTo(ScheduleCodes.SCHEDULE_PLAN_NOT_EDITABLE));
                 Assert.That((plan.StartTick, plan.ImpactTick, plan.EndTick, plan.State,
-                    plan.ReservedTurnBudgetTicks, plan.LastRequestedStartTick, plan.AutomaticDeferralCount), Is.EqualTo(before));
+                    plan.LastRequestedStartTick, plan.AutomaticDeferralCount), Is.EqualTo(before));
             }
             Assert.That(s.Revision, Is.Zero);
         }
@@ -76,8 +76,8 @@ namespace ProjectHero.Authoring.Tests.Task05
             var a = system.Editor.ApplySystemAutoDeferral(systemPlans[0], 160, T, null);
             var b = explicitEdit.Apply(new ScheduleEditOperation[] { Task05Scheduler.MoveOp(userPlans[0].ActionPlanId, 160) }, T);
             Assert.That(a.Committed && b.Committed, Is.True);
-            Assert.That(systemPlans.Select(p => (p.StartTick, p.ImpactTick, p.EndTick, p.BudgetCostTicks)),
-                Is.EqualTo(userPlans.Select(p => (p.StartTick, p.ImpactTick, p.EndTick, p.BudgetCostTicks))));
+            Assert.That(systemPlans.Select(p => (p.StartTick, p.ImpactTick, p.EndTick)),
+                Is.EqualTo(userPlans.Select(p => (p.StartTick, p.ImpactTick, p.EndTick))));
             Assert.That(system.LanePlanIds(Task05Farm.Hero), Is.EqualTo(explicitEdit.LanePlanIds(Task05Farm.Hero)));
             Assert.That(systemPlans[0].LastRequestedStartTick, Is.EqualTo(100));
             Assert.That(userPlans[0].LastRequestedStartTick, Is.EqualTo(160));
@@ -137,11 +137,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(((ActionStartGateResult.Retryable)blocked).RetryAtTick, Is.EqualTo(T + 30L));
         }
 
-        /// <summary>
-        /// <c>NoFiniteRetryTickTerminatesPlanAsActorUnavailableAtStart</c>：
-        /// 没有有限恢复边界的阻塞（授权/预算不可用）<strong>不</strong>返回 Retryable，
-        /// 而是以 <c>ActorUnavailableAtStart</c> 终止——绝不"下一 Tick 再试"。
-        /// </summary>
         [Test]
         public void NoFiniteRetryTickTerminatesPlanAsActorUnavailableAtStart()
         {
@@ -268,38 +263,6 @@ namespace ProjectHero.Authoring.Tests.Task05
         // ————————————————————————————————————————————————————————————
         // 原子提交端口
         // ————————————————————————————————————————————————————————————
-
-        /// <summary>
-        /// <c>StartGateLockAndRunningCommitIsAtomic</c>（端口层证据）：
-        /// 预留消费与计划字段必须由<strong>同一个</strong>提交端口一次完成；
-        /// 端口失败时预留必须被回滚，绝不留下部分消费。
-        /// </summary>
-        [Test]
-        public void StartGateLockAndRunningCommitIsAtomic()
-        {
-            Task05Scheduler s = new Task05Scheduler();
-            ActionPlan plan = s.Attack(T);
-            s.Authority.RegisterPlan(plan);
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(60), "Editable 期预留 = 预算成本");
-
-            int reservedBefore = plan.ReservedTurnBudgetTicks;
-            ActionPlanState stateBefore = plan.State;
-            long lockedBefore = plan.LockedAtTick;
-
-            var failing = new FailingCommitPort();
-
-            string error = failing.Commit(plan, T, rollback => rollback.ReservedTurnBudgetTicks = reservedBefore);
-            Assert.That(error, Is.Not.Null, "失败端口必须返回稳定错误码");
-            Assert.That(failing.RollbackCount, Is.EqualTo(1), "端口必须先回滚它自己的副作用");
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(reservedBefore), "预留必须被回滚");
-            Assert.That(plan.State, Is.EqualTo(stateBefore), "失败的提交不得把计划留在 Locked");
-            Assert.That(plan.LockedAtTick, Is.EqualTo(lockedBefore));
-
-            // 成功端口：预留归零（Reserved -> Spent 的可观察结果）。
-            string ok = NoTurnBudgetCommitPort.Instance.Commit(plan, T, _ => { });
-            Assert.That(ok, Is.Null);
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(0), "启动提交把预留转为已消费");
-        }
 
         // ————————————————————————————————————————————————————————————
         // 唯一终态协调器
@@ -651,8 +614,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(blocked.AutomaticDeferralCount, Is.EqualTo(deferralsBefore + 1));
             Assert.That(s.Revision, Is.EqualTo(revisionBefore + 1L), "成功系统延期恰好 +1");
             Assert.That(blocked.IsEditable, Is.True, "延期后必须保持 Editable");
-            Assert.That(blocked.ReservedTurnBudgetTicks, Is.EqualTo(blocked.BudgetCostTicks),
-                "系统延期期间保持 Reserved（不消费）");
             Assert.That(blocked.LastEditedScheduleRevision, Is.EqualTo(s.Revision),
                 "编辑修订号与事务一致");
         }
@@ -698,14 +659,12 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(conflict.RejectionCode, Is.EqualTo(ScheduleCodes.SCHEDULE_EDIT_CONFLICT_IN_BATCH));
             Assert.That(s.Revision, Is.EqualTo(revisionBefore));
 
-            // 失败后经统一协调器终止：释放锁定前预留，且不增加修订号。
+            // 失败后经统一协调器终止，且不增加修订号。
             plan.AutomaticDeferralCount = 0;
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.GreaterThan(0), "Editable 期持有未消费预留");
             var coordinator = new ActionPlanTerminalCoordinator(s.Authority);
             coordinator.EnterTerminal(plan, ActionTerminationReason.ActorUnavailableAtStart, T);
 
             Assert.That(plan.IsTerminal, Is.True);
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(0), "终态必须释放未消费预留");
             Assert.That(s.Revision, Is.EqualTo(revisionBefore), "终止不是排程编辑，修订号不变");
         }
 
@@ -732,19 +691,6 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.StartTick, Is.EqualTo(400L));
             Assert.That(plan.LastRequestedStartTick, Is.EqualTo(250L),
                 "系统延期不得覆盖 LastRequestedStartTick（请求起点仍是用户要的 250）");
-        }
-
-        private sealed class FailingCommitPort : IActionPlanStartCommitPort
-        {
-            public int RollbackCount;
-
-            public string Commit(ActionPlan plan, long tick, Action<ActionPlan> rollback)
-            {
-                plan.ReservedTurnBudgetTicks = 0;   // 先做一半副作用
-                rollback?.Invoke(plan);             // 再回滚
-                RollbackCount++;
-                return ActionStartGateCommitCodes.RESOURCE_COMMIT_ERROR;
-            }
         }
 
         private sealed class RecordingParticipant : IActionPlanCleanupParticipant

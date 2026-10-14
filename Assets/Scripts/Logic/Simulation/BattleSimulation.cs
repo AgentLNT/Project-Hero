@@ -231,10 +231,6 @@ namespace ProjectHero.Logic.Simulation
         private readonly HistoryArchive _history = new HistoryArchive();
         private readonly StepPhaseTrace _trace = new StepPhaseTrace();
 
-        /// <summary>
-        /// 任务 07：唯一的窗口管理器与预算账本（含并发授权）。
-        /// 窗口<strong>不</strong>拥有动作，也不是执行/结算边界；它只控制提交权限与整数 Tick 预算。
-        /// </summary>
         private readonly TurnWindowManager _windowManager;
         private readonly ConcurrentActionSystem _concurrentAction;
 
@@ -245,24 +241,22 @@ namespace ProjectHero.Logic.Simulation
         private readonly AdrenalineLedgerRegistry _adrenaline;
 
         /// <summary>
-        /// 任务 07：TurnBudget 窗口账本的<strong>唯一</strong>写入通道
-        /// （排程事务、启动门禁原子提交与终态清理参与者共用同一份账本）。
+        /// R1：排程事务的窗口权威（新增普通计划的提交校验 + 起点必须落在来源窗口内）。
+        /// 它只读窗口管理器与并发授权，不保存第二份窗口状态。
         /// </summary>
-        private readonly TurnWindowBudgetAuthority _budgetAuthority;
+        private readonly TurnWindowSubmissionAuthority _windowAuthority;
 
         /// <summary>
-        /// 任务 07：统一终态协调器的"状态感知预算参与者"（固定槽位 600）。
-        /// 它在协调器构造时先建、依赖在预算权威建好后回填（与机会绑定参与者同一装配模式）；
+        /// 任务 07：统一终态协调器的肾上腺素清理参与者（固定槽位 600）。
+        /// 它在协调器构造时先建、依赖在肾上腺素账本建好后回填（与机会绑定参与者同一装配模式）；
         /// 回填之前不存在任何终态请求，因此不存在"漏清理"的中间态。
         /// </summary>
-        private readonly BudgetAndAdrenalineCleanupParticipant _budgetParticipant =
-            new BudgetAndAdrenalineCleanupParticipant();
+        private readonly AdrenalineCleanupParticipant _adrenalineParticipant =
+            new AdrenalineCleanupParticipant();
 
         /// <summary>任务 07：本场局外资源（并发能力费用从这里原子消费；初始值来自运行时输入）。</summary>
         private int _metaResource;
 
-        /// <summary>任务 07：战斗结束 Finalizer 实际清空的窗口预算预留总额（诊断与报告）。</summary>
-        private long _windowBudgetClearedAtBattleEnd;
 
         /// <summary>整场唯一的效果推进器（任务 04；后续任务必须复用，不得另建第二套）。</summary>
         private readonly BuffSystem _buffSystem;
@@ -278,7 +272,6 @@ namespace ProjectHero.Logic.Simulation
         private readonly ScheduleEditor _scheduleEditor;
         private readonly ActionStartGate _startGate = new ActionStartGate();
         private readonly ActionPlanTerminalCoordinator _terminalCoordinator;
-        private readonly IActionPlanStartCommitPort _startCommitPort;
         private readonly ActionPlanTerminalArchiveSource _terminalArchiveSource;
         private readonly ActionPlanCommandProcessor _planCommandProcessor;
 
@@ -549,21 +542,20 @@ namespace ProjectHero.Logic.Simulation
                 // 任务 06 的移动段/Reservation 清理参与者：插在任务 05 冻结的固定位置
                 // （MovementAndReservation = 500），不新建第二条清理路径。
                 _movementAuthority,
-                // 任务 07 的状态感知预算参与者：固定槽位 BudgetAndAdrenaline = 600，
-                // 在空间清理之后按"计划当前状态"结算 Reserved/Spent，绝不重开窗口或退款。
-                _budgetParticipant
+                // 任务 07 的肾上腺素清理参与者：固定槽位 Adrenaline = 600，在空间清理之后执行。
+                _adrenalineParticipant
             });
 
-            // —— 任务 07：唯一窗口管理器 + 唯一预算账本 + 独立肾上腺素账本 + 并发授权 ——
+            // —— 任务 07：唯一窗口管理器 + 独立肾上腺素账本 + 并发授权（R1：窗口没有预算）——
             //
-            // 窗口管理器只持有"提交权限与整数 Tick 预算"；它不持有任何计划、Intent 或 Reservation。
+            // 窗口管理器只持有"提交权限与窗口区间"；它不持有任何计划、Intent 或 Reservation。
             // 窗口 ID 的唯一分配器仍是任务 03 契约的 LogicIdGenerator（不建第二份计数状态）。
             //
             // 创建顺序（无环，且不依赖"稍后回填"）：
             //   ① 肾上腺素账本集合（窗口打开时要递增个人周期并清零 Available）；
             //   ② 窗口管理器（它的关闭回调以闭包读字段，因此并发系统可以稍后赋值）；
             //   ③ 并发授权系统（需要窗口管理器做控制权与当前窗口判定）；
-            //   ④ 预算权威（账本唯一写入通道 + 启动门禁的原子提交端口）与终态清理参与者。
+            //   ④ 排程窗口权威与终态清理参与者。
             _metaResource = runtimeInputs.InitialMetaResource;
             _adrenaline = new AdrenalineLedgerRegistry(definition.AdrenalineRules)
             {
@@ -590,8 +582,8 @@ namespace ProjectHero.Logic.Simulation
                 {
                     WindowId windowId = window.WindowId;
                     UnitId ownerId = window.OwnerUnitId;
-                    int budget = window.TotalBudgetTicks;
-                    _outbox.Emit(sequence => new TurnWindowOpenedEvent(openedTick, sequence, windowId, ownerId, budget));
+                    int duration = window.DurationTicks;
+                    _outbox.Emit(sequence => new TurnWindowOpenedEvent(openedTick, sequence, windowId, ownerId, duration));
                 },
                 WindowClosedSink = (window, reason, closedTick) =>
                 {
@@ -600,6 +592,7 @@ namespace ProjectHero.Logic.Simulation
                     _outbox.Emit(sequence => new TurnWindowClosedEvent(closedTick, sequence, windowId, ownerId, reason));
                 },
                 OwnerCycleResetSink = (unitId, tick) => _adrenaline.BeginOwnWindow(unitId),
+                BeforeCloseInvariantCheck = RequireNoEditablePlanFromClosedWindow,
                 WindowClosedAuthoritySink = (windowId, tick) => _concurrentAction?.RevokeForWindow(windowId)
             };
 
@@ -616,25 +609,15 @@ namespace ProjectHero.Logic.Simulation
             };
             _concurrentAction.BindMetaResource(() => _metaResource, value => _metaResource = value);
 
-            // 预算权威 = 账本的唯一写入通道 + 启动门禁的原子提交端口（Reserved -> Spent）。
-            // 装配显式注入的端口优先（任务 05 的既有测试夹具），否则用本任务的真实实现。
-            _budgetAuthority = new TurnWindowBudgetAuthority(_windowManager, _concurrentAction);
-            _budgetAuthority.ChangedSink = change => _outbox.Emit(sequence => new TurnBudgetChangedEvent(
-                _eventTick, sequence, change.WindowId, change.OwnerUnitId,
-                change.ActionPlanId.HasValue ? change.ActionPlanId.Value.Value : 0L,
-                change.ChangeKind, change.Source,
-                change.AvailableBefore, change.AvailableAfter,
-                change.ReservedBefore, change.ReservedAfter,
-                change.SpentBefore, change.SpentAfter));
-            _startCommitPort = assembly.StartCommitPort ?? (IActionPlanStartCommitPort)_budgetAuthority;
+            // R1：排程窗口权威 = 新增普通计划的提交校验 + 起点区间校验（只读，不保存状态）。
+            _windowAuthority = new TurnWindowSubmissionAuthority(_windowManager, _concurrentAction);
 
-            // 统一终态协调器的"状态感知预算参与者"（固定槽位 600）：Editable 释放未消费预留，
-            // Locked/Running 保持 Spent；它不重开窗口、不转移额度、不前移后续计划。
-            _budgetParticipant.Bind(_budgetAuthority, _windowManager, _adrenaline);
+            // 统一终态协调器的肾上腺素清理参与者（固定槽位 600）。
+            _adrenalineParticipant.Bind(_adrenaline);
 
             // 控制权注册：唯一来源是已验证定义里的 ControllerBinding（与阵营/胜负/目标资格正交）。
             // 没有这一步，窗口的提交授权与并发激活都会以 WINDOW_ISSUER_CANNOT_CONTROL_UNIT
-            // 拒绝一切带账本效果的显式排程编辑——那是"没接线"，不是"权限模型生效"。
+            // 拒绝一切新增普通计划——那是"没接线"，不是"权限模型生效"。
             //
             // 任务 09（产出 6）：同一份投影同时填入命令入口的**唯一**控制权权威
             // （ControllerId -> UnitId 集合）。它是"载荷里的单位 ID 只表达意图目标、不证明权限"
@@ -649,33 +632,22 @@ namespace ProjectHero.Logic.Simulation
                     _windowManager.RegisterControllerBinding(controllerBinding.Key, controlled[i]);
             }
 
-            // 排程事务的预算上下文：显式编辑必须验证 ExpectedWindowId 与提交授权；
-            // 系统自动延期由上下文来源区分（它不要求发行者授权，也不得重开已关闭窗口）。
-            _scheduleEditor.BudgetContextFactory = (source, targetTick, expectedWindowId, issuer) =>
-                new ScheduleBudgetContext(
-                    source,
-                    _budgetAuthority,
-                    expectedWindowId,
-                    _windowManager.CurrentWindow != null ? _windowManager.CurrentWindow.WindowId : (WindowId?)null,
-                    issuer);
+            // 排程事务的窗口权威：显式新增必须验证 ExpectedWindowId 与提交授权；
+            // 一切改变起点的编辑与系统自动延期都必须让起点留在来源窗口内（R1）。
+            _scheduleEditor.WindowAuthority = _windowAuthority;
             _terminalArchiveSource = new ActionPlanTerminalArchiveSource(_scheduleAuthority, _terminalCoordinator, _factionResolver);
             _planCommandProcessor = new ActionPlanCommandProcessor(_scheduleAuthority, _scheduleEditor, assembly.CommandProcessor);
 
             // 任务 06：Dodge 目的格预留与换位事务的**真实实现**（默认装配；任务 08 可整体替换）。
             // 它同时是：
-            //   1. 反应接受事务的目的格预留端口（按 ReactionOpportunityId/TriggerTick 冻结）；
+            //   1. 反应接受事务的目的格预留端口（按 ReactionOpportunityId/SourceImpactTick 冻结）；
             //   2. 来源威胁取消的预留释放接收方（SourceThreatCancelled）；
             //   3. 移动终态清理槽位（MovementAndReservation = 500）上的 Dodge 预留释放端口；
-            //   4. 任务 05 冻结的 IDodgeRelocationTransaction（TriggerTick 原子换位）。
+            //   4. 任务 05 冻结的 IDodgeRelocationTransaction（SourceImpactTick 原子换位）。
             _dodgeRelocation = new DodgeRelocationAuthority(
                 _logicGrid, _movementAuthority, _scheduleAuthority, _terminalCoordinator,
                 specId => DodgeDestinationRules.FromPayload(
                     _definition.FindAction(specId)?.Payload as DodgePayloadSpec));
-            // 任务 06 小修轮 R4/B-1：预算释放接缝在**装配点**接通（而不是留给下游记得赋值）。
-            // 默认 assembly.BudgetReleaseSink 为 null ⇒ `?.Invoke` 不产生任何调用：
-            // 这是"任务 06 不实现 TurnBudget 账本"的显式口径，不是漏接线
-            // （接缝由 BattleSimulationAssembly.BudgetReleaseSink 显式声明，任务 07 只注入消费者）。
-            _dodgeRelocation.BudgetReleaseSink = assembly.BudgetReleaseSink;
             _movementAuthority.DodgeDestinationReservations = _dodgeRelocation;
 
             // 任务 08（R4，照 MovementPathCalculator 先例）：装配点未显式注入时**绑本场真实现**，
@@ -741,7 +713,7 @@ namespace ProjectHero.Logic.Simulation
                 PreparationPort = assembly.ReactionPreparationPort,
                 ReservationReleaseSink = assembly.ReactionReservationReleaseSink,
                 // 任务 07：反应接受把费用从 Available 原子转入带个人周期的计划预留，
-                // TriggerTick 消费、来源威胁取消按周期返还。唯一的肾上腺素权威是 _adrenaline。
+                // SourceImpactTick 消费、来源威胁取消按周期返还。唯一的肾上腺素权威是 _adrenaline。
                 AdrenalinePort = _adrenaline
             };
             // 任务 06：Dodge 目的格预留端口。装配方注入的实现若同时提供该端口则优先使用，
@@ -1104,10 +1076,9 @@ namespace ProjectHero.Logic.Simulation
         public ActionPlanTerminalCoordinator TerminalCoordinator => _terminalCoordinator;
 
         /// <summary>
-        /// 任务 07：本场<strong>唯一</strong>的窗口管理器（含已关闭窗口的可审计账本）。
+        /// 任务 07：本场<strong>唯一</strong>的窗口管理器（含已关闭窗口的历史）。
         ///
-        /// 它是只读观察入口：账本写入全部经 <c>TurnWindowBudgetAuthority</c>，
-        /// 且只允许在 <c>ProjectHero.Logic</c> 内调用。命令生产者<strong>不得</strong>用它
+        /// 它是只读观察入口：窗口状态只在 Step 的固定阶段内变化。命令生产者<strong>不得</strong>用它
         /// 自报窗口身份——<c>ExpectedWindowId</c> 仍由命令 scope 声明并逐条校验。
         /// </summary>
         public TurnWindowManager WindowManager => _windowManager;
@@ -1117,7 +1088,7 @@ namespace ProjectHero.Logic.Simulation
         /// <strong>已公开且仍开放</strong>的选项投影成 AI 层自己的只读值对象。
         ///
         /// 它<strong>只</strong>投影公开事实（开放状态、公开标志、逐选项截止、Dodge 的已公布逻辑
-        /// 目的格），<strong>不</strong>暴露机会系统本身，因此 AI 无法用它创建机会、推导 TriggerTick
+        /// 目的格），<strong>不</strong>暴露机会系统本身，因此 AI 无法用它创建机会、推导 SourceImpactTick
         /// 或直接调 <c>TryAcceptById</c>。装配方把它注入 <c>AiControllerLogic</c> 即可。
         /// </summary>
         public AI.IAiReactionOpportunitySource AiReactionOpportunities { get; }
@@ -1157,7 +1128,7 @@ namespace ProjectHero.Logic.Simulation
 
         /// <summary>
         /// 任务 06：<strong>Dodge 目的格预留与换位事务</strong>（反应接受事务的目的格冻结、
-        /// TriggerTick 原子换位、来源威胁取消释放、统一只读空间快照）。
+        /// SourceImpactTick 原子换位、来源威胁取消释放、统一只读空间快照）。
         /// </summary>
         public DodgeRelocationAuthority DodgeRelocation => _dodgeRelocation;
 
@@ -1587,8 +1558,9 @@ namespace ProjectHero.Logic.Simulation
             {
                 if (!plan.IsRunning || plan.EndTick > tick) continue;
                 if (beforeResolution && ((plan.ActionType == ActionType.Attack && plan.ImpactTick == tick)
-                    || (plan.IsReaction && plan.TriggerTick == tick))) continue;
-                _terminalCoordinator.EnterCompletion(plan, tick);
+                    )) continue;
+                if (plan.IsReaction) _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.ReactionExpired, tick);
+                else _terminalCoordinator.EnterCompletion(plan, tick);
             }
         }
 
@@ -1899,7 +1871,7 @@ namespace ProjectHero.Logic.Simulation
             // 只刷新<strong>此前已公开</strong>的机会：新 Attack 仍可能被本 Tick 的排程编辑移动或删除，
             // 因此它只能在阶段 7 原子锁定/启动之后才 Telegraph（见 EvaluateStartGatesAndReactionTriggers）。
             //
-            // 刷新内容 = "来源失效"：来源攻击已在 TriggerTick 之前进入终态（死亡清理、强制位移
+            // 刷新内容 = "来源失效"：来源攻击已在 SourceImpactTick 之前进入终态（死亡清理、强制位移
             // 失效、战斗结束前的终态等）⇒ 关闭机会、经统一终态协调器以 SourceThreatCancelled
             // 终止绑定反应，并向任务 07 请求释放未消费预留。
             //
@@ -1914,7 +1886,7 @@ namespace ProjectHero.Logic.Simulation
             {
                 ReactionOpportunityRuntime opportunity = active[i];
                 if (!opportunity.IsOpen && opportunity.State != ReactionOpportunityState.Accepted) continue;
-                if (tick >= opportunity.TriggerTick) continue;   // TriggerTick 之后由触发/终态路径决定
+                if (tick > opportunity.SourceImpactTick) continue;
                 ActionPlan source = _scheduleAuthority.Registry.Find(opportunity.SourceAttackPlanId);
                 if (source == null || !source.IsTerminal) continue;
                 if (!ContainsPlanId(invalidSources, opportunity.SourceAttackPlanId))
@@ -2024,6 +1996,7 @@ namespace ProjectHero.Logic.Simulation
         {
             _openedOpportunitiesThisTick.Clear();
             InterruptControlledRunningPlans(tick);
+            AdvanceFixedReactions(tick);
             List<ActionPlan> due = CollectDueEditablePlans(tick);
 
             // 任务 06：把本 Tick 到期 Move 的声明的目的格登记为"待进入格"，
@@ -2052,6 +2025,12 @@ namespace ProjectHero.Logic.Simulation
                 ActionPlan plan = due[i];
                 if (!plan.IsEditable || plan.StartTick != tick) continue;   // 本 Tick 内已被前一项改写
 
+                // Soft occupancy yields before the ordinary start gate reads actor availability.
+                foreach (ActionPlan reaction in _scheduleAuthority.Registry.ActivePlans)
+                    if (reaction.IsReaction && reaction.OwnerUnitId == plan.OwnerUnitId
+                        && reaction.StartTick <= tick && tick > reaction.SourceImpactTick && tick < reaction.EndTick
+                        && reaction.ReactionTriggeredAtTick < 0)
+                        _terminalCoordinator.EnterTerminal(reaction, ActionTerminationReason.ReactionYieldedLane, tick);
                 ActionStartGateResult result = _startGate.Evaluate(plan, context);
                 switch (result)
                 {
@@ -2078,7 +2057,6 @@ namespace ProjectHero.Logic.Simulation
                             ScheduleCodes.SCHEDULE_START_GATE_COMMIT_INCONSISTENT, "unknown gate result");
                 }
             }
-            AdvanceFixedReactions(tick);
             foreach (ActionPlan running in _scheduleAuthority.Registry.ActivePlans)
                 if (running.IsRunning) StartActorPhase(running, tick);
         }
@@ -2112,7 +2090,7 @@ namespace ProjectHero.Logic.Simulation
                     continue;
                 }
                 ActionPlan source = _scheduleAuthority.Registry.Find(plan.SourceThreatPlanId.Value);
-                if (tick <= plan.TriggerTick && (source == null || source.IsTerminal))
+                if (tick <= plan.SourceImpactTick && (source == null || source.IsTerminal))
                 {
                     _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.SourceThreatCancelled, tick);
                     continue;
@@ -2122,11 +2100,7 @@ namespace ProjectHero.Logic.Simulation
                     plan.State = ActionPlanState.Running;
                     StartActorPhase(plan, tick);
                 }
-                if (plan.ActionType == ActionType.Block && plan.TriggerTick == tick)
-                {
-                    string error = _reactionSystem.ConfirmTrigger(plan.ReactionOpportunityId.Value, tick);
-                    if (error != null) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION, error);
-                }
+
             }
         }
 
@@ -2141,8 +2115,7 @@ namespace ProjectHero.Logic.Simulation
                     if (tick < plan.ImpactTick) { state = UnitState.Windup; phaseEnd = plan.ImpactTick; }
                     break;
                 case ActionType.Guard:
-                    if (tick < plan.ActiveStartTick) { state = UnitState.Windup; phaseEnd = plan.ActiveStartTick; }
-                    else if (tick < plan.ActiveEndTick) { state = UnitState.Guarding; phaseEnd = plan.ActiveEndTick; }
+                    state = UnitState.Guarding;
                     break;
                 case ActionType.Move:
                     long moveEnd = checked(plan.StartTick + plan.MoveDurationTicks);
@@ -2150,11 +2123,7 @@ namespace ProjectHero.Logic.Simulation
                     break;
                 case ActionType.Block:
                 case ActionType.Dodge:
-                    if (tick < plan.TriggerTick)
-                    {
-                        state = plan.ActionType == ActionType.Block ? UnitState.Blocking : UnitState.Dodging;
-                        phaseEnd = plan.TriggerTick;
-                    }
+                    state = plan.ActionType == ActionType.Block ? UnitState.Blocking : UnitState.Dodging;
                     break;
             }
             UnitStateMachine machine = FindUnitStateMachine(plan.OwnerUnitId);
@@ -2178,41 +2147,21 @@ namespace ProjectHero.Logic.Simulation
         }
 
         /// <summary>
-        /// 原子启动提交：门禁通过后<strong>一次</strong>完成资源消费与
-        /// <c>Locked -&gt; Running</c>。任一步失败即整体失败并回滚资源，绝不留下
-        /// Locked-but-not-Running。
+        /// 原子启动提交：门禁通过后<strong>一次</strong>完成 <c>Locked -&gt; Running</c>，
+        /// 绝不留下 Locked-but-not-Running。普通动作没有时间费用（R1），因此这里不消费任何资源。
         /// </summary>
         private void CommitStart(ActionPlan plan, long tick)
-        {            if (!plan.IsEditable || plan.StartTick != tick)
+        {
+            if (!plan.IsEditable || plan.StartTick != tick)
             {
                 throw new LogicDefinitionException(
                     ScheduleCodes.SCHEDULE_START_GATE_COMMIT_INCONSISTENT,
                     "plan=" + plan.ActionPlanId.Value.ToString(CultureInfo.InvariantCulture));
             }
 
-            long previousLockedAtTick = plan.LockedAtTick;
-            int previousReserved = plan.ReservedTurnBudgetTicks;
-            ActionPlanState previousState = plan.State;
-
-            string error = _startCommitPort.Commit(plan, tick, rollback =>
-            {
-                rollback.ReservedTurnBudgetTicks = previousReserved;
-            });
-
-            if (error != null)
-            {
-                // 端口负责回滚它自己的副作用；这里恢复计划字段并令 Step 失败。
-                plan.ReservedTurnBudgetTicks = previousReserved;
-                plan.State = previousState;
-                plan.LockedAtTick = previousLockedAtTick;
-                throw new LogicDefinitionException(
-                    ScheduleCodes.SCHEDULE_START_GATE_COMMIT_INCONSISTENT, error);
-            }
-
             // 同一原子提交内建立 Locked 边界并立即 Running（不存在可观察的中间态）。
             plan.State = ActionPlanState.Running;
             plan.LockedAtTick = tick;
-            plan.ReservedTurnBudgetTicks = 0;
             _claimedThisTick.Add(plan.ActionPlanId.Value);
 
             // 语义事件：锁定/启动事件与原子提交同一次发生，且只在此处发射。
@@ -2224,9 +2173,12 @@ namespace ProjectHero.Logic.Simulation
         /// 系统自动延期：复用<strong>同一 <c>ScheduleEvaluator</c></strong> 把到期计划整体推到
         /// <c>RetryAtTick</c> 并只向右 ripple 后续 Editable 依赖闭包。
         ///
-        /// 成功：保持 Editable/未消费预留，<c>AutomaticDeferralCount</c> 与 <c>ScheduleRevision</c>
+        /// 成功：保持 Editable，<c>AutomaticDeferralCount</c> 与 <c>ScheduleRevision</c>
         /// 各 +1，<c>LastRequestedStartTick</c> <strong>不变</strong>。
-        /// 失败：经统一终态协调器以冻结原因终止（释放锁定前预留，<strong>不</strong>增加修订号）。
+        /// 失败：经统一终态协调器以冻结原因终止（<strong>不</strong>增加修订号）。
+        /// 候选会使任一计划起点越出来源窗口时（R1），整份候选不提交；越界计划以
+        /// <see cref="ActionTerminationReason.DelayedBeyondSourceWindow"/> 终止，依赖走统一终态清理。
+        /// 若到期计划仍存活，清理完成后才重新求值一份新的延期候选。
         /// </summary>
         private void ApplyAutoDeferral(ActionStartGateResult.Retryable retryable, long tick)
         {
@@ -2247,9 +2199,27 @@ namespace ProjectHero.Logic.Simulation
                 return;
             }
 
-            ActionTerminationReason reason = deferred.RejectionCode == ScheduleCodes.SCHEDULE_HORIZON_EXCEEDED
-                ? ActionTerminationReason.AutoDeferralLimitExceeded
-                : ActionTerminationReason.ActorUnavailableAtStart;
+            ActionTerminationReason reason;
+            switch (deferred.RejectionCode)
+            {
+                case ScheduleCodes.SCHEDULE_HORIZON_EXCEEDED:
+                    reason = ActionTerminationReason.AutoDeferralLimitExceeded;
+                    break;
+                case ScheduleCodes.SCHEDULE_START_OUTSIDE_SOURCE_WINDOW:
+                    foreach (ActionPlanId id in deferred.OutOfWindowPlanIds)
+                    {
+                        ActionPlan outside = _scheduleAuthority.Registry.Find(id);
+                        if (outside != null && !outside.IsTerminal)
+                            _terminalCoordinator.EnterTerminal(outside, ActionTerminationReason.DelayedBeyondSourceWindow, tick);
+                    }
+                    // No projection from the rejected candidate has been written. Cleanup is
+                    // complete before evaluating a fresh candidate for the still-due plan.
+                    if (!plan.IsTerminal) ApplyAutoDeferral(retryable, tick);
+                    return;
+                default:
+                    reason = ActionTerminationReason.ActorUnavailableAtStart;
+                    break;
+            }
             _terminalCoordinator.EnterTerminal(plan, reason, tick);
         }
 
@@ -2261,20 +2231,6 @@ namespace ProjectHero.Logic.Simulation
             return result;
         }
 
-        /// <summary>
-        /// 已创建事件：只对<strong>成功提交</strong>的排程事务新增的计划发射（一次一个）。
-        /// 计划对象从权威注册表读取，事件只携带不可变值与稳定 ID。
-        /// </summary>
-        /// <summary>
-        /// 任务 07 裁定 A（排程删除的终态收口）：一次成功提交里被 Remove 的普通计划必须经
-        /// <strong>唯一且幂等的终态协调器</strong>结束（00 号规则 19：排程删除是终态之一，
-        /// 且 Step 返回时不得有任何活动产物引用它）。
-        ///
-        /// 分工（裁定：编辑器独占预算释放）：<c>ScheduleEditor</c> 在事务里负责"移出 Lane +
-        /// 释放未消费预留 + 归零计划字段"；本方法只负责把计划对象**置为终态**。
-        /// 600 槽位的预算参与者随后会发现账本里已无该计划的预留，因此幂等空转——
-        /// 不存在第二次释放，也不存在"已删除但仍活动"的中间态。
-        /// </summary>
         private void TerminateRemovedPlans(ScheduleEditTransactionResult result, long tick)
         {
             if (result == null || result.RemovedPlanIds == null || result.RemovedPlanIds.Count == 0) return;
@@ -2303,9 +2259,9 @@ namespace ProjectHero.Logic.Simulation
         ///
         /// 冻结语义：
         /// <list type="bullet">
-        /// <item>命令<strong>不提供</strong> <c>TriggerTick</c>（它等于来源攻击的 <c>ImpactTick</c>），
+        /// <item>命令<strong>不提供</strong> <c>SourceImpactTick</c>（它等于来源攻击的 <c>ImpactTick</c>），
         /// 也不提供单位：防御者由机会自身决定（"谁能替该单位提交"是任务 07 的提交权限）；</item>
-        /// <item>命令的 <c>DodgeDestination</c> 落到计划的目的格字段，供任务 06/08 的 TriggerTick
+        /// <item>命令的 <c>DodgeDestination</c> 落到计划的目的格字段，供任务 06/08 的 SourceImpactTick
         /// 换位事务使用；本任务<strong>不</strong>换位、<strong>不</strong>伪造触发；</item>
         /// <item>返回 null = 已接受；否则返回稳定拒绝码（处理器据此发 <c>CommandRejectedEvent</c>）。</item>
         /// </list>
@@ -2328,8 +2284,9 @@ namespace ProjectHero.Logic.Simulation
 
             switch (payload.WindowKind)
             {
-                case WindowCommandKind.CloseOwnWindow:
-                    return _windowManager.TryRequestCloseForIssuer(envelope.ControllerId, scope.ExpectedWindowId);
+                case (WindowCommandKind)0:
+                    // R1：窗口不能被主动结束；数值 0 保留不复用，旧回放或越权生产者在这里稳定拒绝。
+                    return TurnWindowCodes.WINDOW_CLOSE_NOT_PERMITTED;
 
                 case WindowCommandKind.ActivateConcurrentAction:
                     if (!_concurrentAction.HeroUnitId.HasValue)
@@ -2382,6 +2339,11 @@ namespace ProjectHero.Logic.Simulation
         private long? BlockingUntilTickOf(UnitId unitId)
         {
             UnitStateMachine machine = FindUnitStateMachine(unitId);
+            if (machine != null && !IsControlState(machine.CurrentState))
+                foreach (ActionPlan reaction in _scheduleAuthority.FindLane(unitId)?.Plans ?? Array.Empty<ActionPlan>())
+                    if (reaction.IsReaction && reaction.StartTick <= _eventTick && _eventTick < reaction.HardEndTick
+                        && reaction.ReactionTriggeredAtTick < 0)
+                        return reaction.HardEndTick;
             return machine == null ? (long?)null : machine.BlockingUntilTick;
         }
 
@@ -2526,8 +2488,14 @@ namespace ProjectHero.Logic.Simulation
             // 1. 统一只读空间快照（任何 Dodge 提交之前）。任务 08 稍后用它与冻结 Intent 建立旧接触。
             DodgeSpaceSnapshot before = _dodgeRelocation.CaptureSpaceSnapshot(tick);
 
-            // 2. 全部到期预留，按 (TriggerTick, Destination.X, Destination.Y, CommandSequence, OpportunityId) 升序。
-            IReadOnlyList<DodgeDestinationReservation> due = _dodgeRelocation.DueReservationsOrdered(tick);
+            // 2. 全部到期预留，按 (SourceImpactTick, Destination.X, Destination.Y, CommandSequence, OpportunityId) 升序。
+            var oldInput = new ConflictGraphInput(tick, _intentQueue.Intents, BuildInteractionPlanFacts(),
+                BuildOccupancy(before), BuildOccupancy(before), _factionResolver);
+            var oldResult = ConflictGraphBuilder.TryBuild(oldInput, out ConflictGraph oldGraph);
+            IReadOnlyList<ActionPlanId> triggering = oldResult.Succeeded
+                ? DefenseContactDetector.Detect(oldGraph, ActionType.Dodge, BuildPlanSpecEntries(), _definition)
+                : Array.Empty<ActionPlanId>();
+            IReadOnlyList<DodgeDestinationReservation> due = _dodgeRelocation.TriggeredReservationsOrdered(triggering, tick);
             if (_assembly.UseEmptyInteractionFastPath && !_scheduleAuthority.Registry.HasDefensePlans && (_intentQueue?.Count ?? 0) == 0 && due.Count == 0)
             {
                 // Preserve the complete diagnostic occupancy surface. With no mutation, the immutable
@@ -2550,6 +2518,8 @@ namespace ProjectHero.Logic.Simulation
 
                 // 唯一的换位入口：试换位 → （成功才）统一终态失效依赖移动 → 触发确认。
                 _dodgeSeam.TryCommit(plan, reservation.OpportunityId, tick);
+                string triggerError = _reactionSystem.ConfirmTrigger(reservation.OpportunityId, tick);
+                if (triggerError != null) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION, triggerError);
             }
 
             // 3. 提交后快照 + 本阶段全部提交结果（From/Destination/结果/新位置）。
@@ -2649,6 +2619,13 @@ namespace ProjectHero.Logic.Simulation
             }
 
             _conflictGraph = graph;
+            foreach (ActionPlanId id in DefenseContactDetector.Detect(graph, ActionType.Block, BuildPlanSpecEntries(), _definition))
+            {
+                ActionPlan reaction = _scheduleAuthority.Registry.Find(id);
+                string triggerError = _reactionSystem.ConfirmTrigger(reaction.ReactionOpportunityId.Value, tick);
+                if (triggerError != null) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION, triggerError);
+            }
+            planFacts = BuildInteractionPlanFacts();
 
             // 分阶段求解（任务 08「必须产出」8–11）：
             //   1 Dodge 空间复核 → 2 Block 完全抵抗 → 3 Clash 同时求解 → 4 Move → 5 Remaining Hits 聚合。
@@ -2692,10 +2669,6 @@ namespace ProjectHero.Logic.Simulation
             if (staged == null || staged.Failed) return;
 
             EmitDodgeResolvedEvents(tick, staged);
-            foreach (DodgeCounterWindowResolution window in staged.CounterWindows)
-                _outbox.Emit(sequence => new DodgeCounterWindowOpenedEvent(tick, sequence, window.ConflictGroupKey,
-                    window.DefenderUnitId, window.DodgePlanId, window.CounterTargetUnitId,
-                    window.CounterTargetPlanId, window.AvoidedAttackPlanIds));
             EmitBlockResolvedEvents(tick, staged);
             EmitGuardResistanceEvents(tick, staged);
             EmitClashEvents(tick, staged);
@@ -2706,7 +2679,7 @@ namespace ProjectHero.Logic.Simulation
         /// <summary>
         /// Dodge 旧/新位置与失效接触（任务包 08:72）。
         ///
-        /// 每个<strong>实际进入 TriggerTick 提交尝试</strong>的 Dodge 计划恰好一条：
+        /// 每个<strong>实际进入 SourceImpactTick 提交尝试</strong>的 Dodge 计划恰好一条：
         /// 提交成功的发 <c>ReactionTriggeredEvent</c> 的语义由任务 05/06 承担，
         /// 本处只发"求解后的结算事实"。提前终止不伪造触发（没有计划就没有事件）。
         /// </summary>
@@ -3232,6 +3205,13 @@ namespace ProjectHero.Logic.Simulation
 
         private void CommitDamageAndBuildForcedDisplacementRequests(long tick)
         {
+            foreach (var quota in _stagedResolution.GuardQuotaConsumptions ?? Array.Empty<GuardQuotaConsumption>())
+            {
+                ActionPlan plan = _scheduleAuthority.Registry.Find(quota.PlanId);
+                plan.DefenseQuotaRemainingQ10 = quota.RemainingQ10;
+                _outbox.Emit(sequence => new GuardQuotaConsumedEvent(tick, sequence, quota.PlanId, quota.DebitQ10, quota.RemainingQ10));
+            }
+
             _resolutionCommit.CommitDamageAndAggregationOrdered(tick,
                 _assembly.UseEmptyInteractionFastPath && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
 
@@ -3444,6 +3424,11 @@ namespace ProjectHero.Logic.Simulation
                     tick, sequence, groupKey, planId, ownerUnitId, reason));
             }
 
+            foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
+                if (plan.IsReaction && plan.ReactionTriggeredAtTick == tick)
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.ReactionTriggered, tick);
+                else if (plan.ActionType == ActionType.Guard && plan.DefenseQuotaRemainingQ10 == 0)
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.GuardQuotaExhausted, tick);
             CommitResolvedControlsAndIntercepts(tick);
 
             // 任务 07：肾上腺素 Available 的唯一入账入口。它只接受任务 08 在全部 Resolution
@@ -3510,28 +3495,28 @@ namespace ProjectHero.Logic.Simulation
 
         private void CloseRequestedWindowAndScheduleNext(long tick)
         {
-            // Exhaustion closes submission authority, never execution authority. Future plans and
-            // their reservations keep running across the next owner's window.
-            if (_windowManager.CurrentWindow?.AvailableBudgetTicks == 0)
-                _windowManager.RequestCloseForBudgetExhaustion();
-            // 脚本窗口可以在任意 Tick 请求关闭当前窗口；请求与正式关闭分离：
-            // 请求立即停止接受提交（本 Tick 后续命令稳定拒绝），正式关闭在本阶段完成。
-            if (_assembly.TurnWindowSchedule.ShouldCloseCurrentWindow(tick))
-                _windowManager.CurrentWindow?.RequestClose(TurnWindowCloseReason.OwnerRequested);
+            // R1：窗口在 EndTick - 1 的 Tick 末到期关闭。关闭只收回提交权限，不触碰任何计划；
+            // 已启动的长动作照常跨入下一个拥有者的窗口。
+            _windowManager.RequestCloseIfExpired(tick);
 
             _windowManager.FinalizeRequestedClose(tick);
         }
 
         /// <summary>
-        /// 关闭当前窗口（唯一实现）。它只撤销属于该窗口的并发授权、翻转窗口位并发射关闭事件；
-        /// <strong>不</strong>查询、取消、移动或结算任何 <c>ActionPlan</c>，也不清零肾上腺素。
+        /// 到期关闭的不变量（00 号规则 36）：窗口覆盖到 <c>EndTick - 1</c>，而每个来源于它的普通计划
+        /// 起点都在区间内，因此到期时它们都已经过启动门禁——启动、延期越界终止或其他终止。
+        /// 仍有 Editable 计划说明门禁或起点校验有漏洞：以不变量错误令 Step 失败，绝不在这里静默终止。
         /// </summary>
-        private void CloseWindow(long tick, TurnWindowCloseReason reason)
+        private void RequireNoEditablePlanFromClosedWindow(TurnWindow window)
         {
-            TurnWindow window = _windowManager.CurrentWindow;
-            if (window == null) return;
-            window.RequestClose(reason);
-            _windowManager.FinalizeRequestedClose(tick);
+            foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
+            {
+                if (!plan.IsOrdinary || !plan.IsEditable) continue;
+                if (!plan.SubmittedWindowId.HasValue || plan.SubmittedWindowId.Value != window.WindowId) continue;
+                throw new LogicDefinitionException(TurnWindowCodes.WINDOW_INVARIANT,
+                    "editable plan " + plan.ActionPlanId.Value.ToString(CultureInfo.InvariantCulture)
+                    + " outlives expired window " + window.WindowId.Value.ToString(CultureInfo.InvariantCulture));
+            }
         }
 
         /// <summary>
@@ -3607,11 +3592,6 @@ namespace ProjectHero.Logic.Simulation
             _ingress.MarkBattleEnded();
 
             bool closedWindow = _windowManager.CurrentWindow != null;
-            _windowManager.CloseAllForBattleEnd(tick);
-
-            // 未消费的窗口预算预留随战斗结束清空：保留已消费的 Spent（不退款），
-            // 逐窗口发射 BattleEndCleared（含 WindowId 与 Available/Reserved/Spent 前后值）。
-            _windowBudgetClearedAtBattleEnd = _budgetAuthority.ClearReservationsForBattleEnd(tick);
 
             // 并发提交授权随窗口关闭一并撤销；它不取消任何计划。
             _concurrentAction.RevokeAll();
@@ -3627,6 +3607,7 @@ namespace ProjectHero.Logic.Simulation
             _terminalCoordinator.BeginTick(tick);
             _scheduleAuthority.LockAllLaneSubmissions(LaneLockReasonBattleEnded);
             _terminalCoordinator.TerminateAllPlans(ActionTerminationReason.BattleEnded, tick);
+            _windowManager.CloseAllForBattleEnd(tick);
 
             // 战斗结束也关闭全部仍未关闭的机会（<strong>同一个</strong> Finalizer，
             // 不另写一套机会清理）；已接受但未触发的绑定反应已随上面统一终止。
@@ -3877,7 +3858,7 @@ namespace ProjectHero.Logic.Simulation
         /// 会按 <c>(ActionPlanId, X, Y)</c> 重新规范排序，因此构造顺序不影响摘要。
         ///
         /// 边界：Dodge 目的格预留<strong>不</strong>在此列（它属于
-        /// <c>DodgeRelocationAuthority</c> 的独立表，且其生命周期只到 TriggerTick）；
+        /// <c>DodgeRelocationAuthority</c> 的独立表，且其生命周期只到 SourceImpactTick）；
         /// 它进入 <c>DodgeSpaceSnapshot</c> 与任务 08 的接触复核，不进入本快照的 Reservation 列表。
         /// </summary>
         private IReadOnlyList<ReservationSnapshot> BuildReservationSnapshots()
@@ -3978,19 +3959,9 @@ namespace ProjectHero.Logic.Simulation
             var windows = new List<TurnWindowSnapshot>();
             if (_windowManager.CurrentWindow != null)
                 windows.Add(ToWindowSnapshot(_windowManager.CurrentWindow));
-            foreach (var window in _windowManager.MutableClosedWindows)
+            foreach (var window in _windowManager.PendingArchiveWindows)
                 windows.Add(ToWindowSnapshot(window));
             windows.Sort((a, b) => a.WindowId.CompareTo(b.WindowId));
-
-            long total = _windowManager.FrozenBudgetSummary.TotalBudgetTicks;
-            long reserved = 0L;
-            long spent = _windowManager.FrozenBudgetSummary.SpentBudgetTicks;
-            for (int i = 0; i < windows.Count; i++)
-            {
-                total += windows[i].TotalBudgetTicks;
-                reserved += windows[i].ReservedBudgetTicks;
-                spent += windows[i].SpentBudgetTicks;
-            }
 
             var windowManager = new TurnWindowManagerSnapshot(
                 _windowManager.CurrentWindow != null ? _windowManager.CurrentWindow.WindowId.Value : 0L,
@@ -3998,7 +3969,7 @@ namespace ProjectHero.Logic.Simulation
                 _windowManager.NextWindowOrdinal,
                 _windowManager.LastClosedWindowId,
                 windows.AsReadOnly(), _windowManager.LastClosedOwnerUnitId.Value, _windowManager.LastClosedAtTick,
-                _windowManager.FrozenBudgetSummary, _windowManager.CaptureFutureSchedule());
+                _windowManager.FrozenWindowCount, _windowManager.CaptureFutureSchedule());
 
             // 任务 08 快照契约：快照取"本 Tick 冻结后的队列"（阶段 8 的 _intentQueue）与
             // "本 Tick 的构图产物"（阶段 10 的 _conflictGraph），二者都是**只读入口**的投影，
@@ -4020,9 +3991,7 @@ namespace ProjectHero.Logic.Simulation
                 BuildEffectSnapshots(),
                 windowManager,
                 _concurrentAction.BuildSnapshot(),
-                new BattleResourceSnapshot(
-                    _metaResource, total - reserved - spent, reserved, spent,
-                    _adrenaline.BuildSnapshots()),
+                new BattleResourceSnapshot(_metaResource, _adrenaline.BuildSnapshots()),
                 _scheduleRevision,
                 BuildActionPlanSnapshots(),
                 _reactionSystem.BuildSnapshots(),
@@ -4207,7 +4176,7 @@ namespace ProjectHero.Logic.Simulation
                     options.Sort((a, b) => a.CompareStableKeyTo(b));
                     views.Add(new AI.AiOpportunityView(
                         opportunity.Id, opportunity.DefenderUnitId, opportunity.SourceAttackPlanId,
-                        opportunity.TriggerTick, options)
+                        opportunity.SourceImpactTick, options)
                     {
                         DodgeDestinations = dodge
                     });

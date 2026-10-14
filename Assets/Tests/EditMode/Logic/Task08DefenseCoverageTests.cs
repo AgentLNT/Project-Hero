@@ -50,7 +50,7 @@ namespace ProjectHero.Logic.Tests
                     DamageComponents = components, ForceMultiplier = force,
                     Tags = ineffectiveBlock ? AttackTagMask.Reactable | AttackTagMask.Dodgeable
                         : AttackTagMask.Reactable | AttackTagMask.Blockable | AttackTagMask.Dodgeable } } : a).ToList();
-            actions.Add(new ActionSpec(GuardId, ActionType.Guard, new GuardTimingSpec(2, 10, 2),
+            actions.Add(new ActionSpec(GuardId, ActionType.Guard, new GuardTimingSpec(10),
                 new GuardPayloadSpec(new Dictionary<DamageChannelId, int> { { DamageChannels.PhysicalBlunt, 512 } },
                     512, DefenseTagMask.Guardable), 0));
             actions.Add(new ActionSpec(MoveId, ActionType.Move, new MoveTimingSpec(20, 1),
@@ -122,23 +122,23 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void FailedDodgeCommitEmitsResolutionButNoTriggerOrReward()
+        public void FailedDodgeCommitEmitsConsumedTriggerWithoutReward()
         {
             using var r = ReactionRig(beforeImpact: rig => Assert.That(rig.Sim.LogicGrid.CommitAnchor(
                 Task09A2Fixture.Neutral, Destination, GridDirection.East), Is.Null));
-            Assert.That(Events<ReactionTriggeredEvent>(r), Is.Empty);
+            Assert.That(Events<ReactionTriggeredEvent>(r).Count, Is.EqualTo(1));
             Assert.That(Events<DodgeResolvedEvent>(r).Single().DestinationCommitted, Is.False); AssertNoSuccess(r);
-            Assert.That(r.Reaction.TerminationReason, Is.EqualTo(ActionTerminationReason.TargetInvalid));
+            Assert.That(r.Reaction.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
             Assert.That(Health(r.Sim, Defender), Is.EqualTo(1990 * 1024));
         }
 
         [Test]
-        public void DodgeWithoutContactsEmitsOneResolutionWithNullGroup()
+        public void DodgeWithoutContactsDoesNotRelocateOrProduceResolution()
         {
             using var r = ReactionRig(definition: Definition(farArea: true));
-            var e = Events<DodgeResolvedEvent>(r).Single();
-            Assert.That(e.ConflictGroupKey, Is.Zero); Assert.That(e.DestinationCommitted, Is.True);
-            Assert.That(e.ParticipatingPlanIds, Is.EqualTo(new[] { r.Reaction.ActionPlanId })); AssertNoSuccess(r);
+            Assert.That(Events<DodgeResolvedEvent>(r), Is.Empty); AssertNoSuccess(r);
+            Assert.That(r.Reaction.ReactionTriggeredAtTick, Is.EqualTo(-1));
+            Assert.That(r.Reaction.IsRunning, Is.True);
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void BlockZeroesAllEligibleDamageAndMomentumOnTriggerTick()
+        public void BlockZeroesAllEligibleDamageAndMomentumOnSourceImpactTick()
         {
             using var r = ReactionRig(ReactionCommandKind.Block);
             var c = r.Sim.StagedResolution.BlockPlans.Single().Contacts.Single();
@@ -200,12 +200,12 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void BlockingStateOutsideTriggerTickProvidesNoResistance()
+        public void BlockIntervalCanResistEarlierContact()
         {
             var context = Task08RemainingCoverageTests.DefenseContext(ActionType.Block, triggerTick: 12);
             var result = StagedConflictResolver.Resolve(context);
-            Assert.That(result.BlockPlans, Is.Empty);
-            Assert.That(result.Aggregations.Single().TotalDamageQ10, Is.EqualTo(10 * 1024));
+            Assert.That(result.BlockPlans.Count, Is.EqualTo(1));
+            Assert.That(result.BlockPlans.Single().Contacts.Single().AfterBlockDamageQ10, Is.Zero);
         }
 
         [Test]

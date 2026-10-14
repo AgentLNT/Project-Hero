@@ -17,47 +17,6 @@ using ProjectHero.Logic.Turns;
 
 namespace ProjectHero.Logic.Tests
 {
-    /// <summary>
-    /// 任务 07 <strong>两项已落地生产修复</strong>的仓库内回归证据（纯 Logic 侧、单一文件）：
-    ///
-    /// <list type="number">
-    /// <item><strong>裁定 B：首版支持排队 Move 链。</strong>
-    /// <c>LogicGridMovementAuthority.EstablishMovement</c> 新增 <c>expectedOrigin</c> 尾参，
-    /// 并且 <c>RebuildMovementSpace</c> 把 <c>ProjectedChainOriginOf(working, i)</c> 同时用于
-    /// <strong>算路径</strong>与<strong>校验起点</strong>。此前只用于算路径 ⇒ 链内第二条 Move
-    /// 稳定以 <c>MOVEMENT_SEGMENT_ORIGIN_MISMATCH</c> 被拒（本文件用例 1 钉住"修好之后能提交"，
-    /// 用例 2 钉住"放宽不是取消校验"）。</item>
-    /// <item><strong>裁定 A：Dodge 的固定反应区间允许覆盖"它自己在 TriggerTick 会失效掉的
-    /// 后续 Editable 移动族"。</strong><c>ActorLane.TryFindOverlapExcept</c> + 唯一共享容忍判据
-    /// <c>DodgeMovementInvalidationSeam.DodgeMayInvalidate</c>（接受预检与规划器复核共用它，
-    /// 且它与 <c>QueryInvalidatedMoves</c> 的闭包过滤器逐字一致）。
-    /// 用例 3/6 钉住"容忍 + 一定被清理"，用例 4/5 钉住"Block 与不可失效者绝不容忍"。</item>
-    /// </list>
-    ///
-    /// 装配口径<strong>逐字沿用</strong>仓库既有夹具（不发明第三套）：
-    /// <c>Task07BudgetTransactionTests</c> 的真实定义 + 真实
-    /// <see cref="ActionScheduleAuthority"/>/<see cref="ActionPlanFactory"/>/
-    /// <see cref="ScheduleEditor"/>（含真实 <see cref="LogicGridMovementAuthority"/> 空间端口）+
-    /// 真实 <see cref="TurnWindowManager"/>/<see cref="TurnWindowBudgetAuthority"/>
-    /// （它同时是 <c>IActionPlanStartCommitPort</c> 的真实实现）+ 真实
-    /// <see cref="ActionPlanTerminalCoordinator"/> 与真实 <see cref="ReactionOpportunitySystem"/>/
-    /// <see cref="DodgeMovementInvalidationSeam"/>。
-    ///
-    /// 全部观察点都是生产对象：计划的 <c>IsEditable</c>/<c>State</c>/<c>StartTick</c>、
-    /// Lane 的 <c>Plans</c>、窗口账本的 <c>ReservedFor</c>、
-    /// <see cref="LogicGridMovementAuthority.SegmentsOfPlanOrdered"/> 与
-    /// <c>Grid.ReservationsOfPlanOrdered</c>、以及生产接受入口返回的稳定拒绝码。
-    ///
-    /// <para>
-    /// ⚠ <strong>本文件曾实测定位的第三个独立缺口（已由生产修复，保留为记录）</strong>：
-    /// 用例 1 的 (B) 段（回程链：链内第二条重新经过前一条进入过的格）在修复前稳定报
-    /// <c>LOGIC_GRID_RESERVED_BY_OTHER</c>——它既不是链内起点判据（那一半由
-    /// <c>expectedOrigin</c> 修复，见 (A) 段与用例 2），也不是夹具问题，
-    /// 而是"网格 Reservation 一格一持有者 + <c>LogicPathfinder</c> 对本单位自己的预留放行"
-    /// 这一对语义的组合。该形态现在通过（生产侧已允许同一格上的共存预留），
-    /// 机制记录见文件末尾 §生产缺陷登记 ①。
-    /// </para>
-    /// </summary>
     public class Task07QueueAndReactionLaneTests
     {
         // ================= 夹具常量 =================
@@ -88,8 +47,8 @@ namespace ProjectHero.Logic.Tests
 
         private const long TelegraphTick = 0L;
 
-        /// <summary>攻击 <c>ImpactTick</c> = 0 + 100 ⇒ 反应 <c>TriggerTick</c> 恒等于它。</summary>
-        private const long TriggerTick = AttackBaseWindupTicks;
+        /// <summary>攻击 <c>ImpactTick</c> = 0 + 100 ⇒ 反应 <c>SourceImpactTick</c> 恒等于它。</summary>
+        private const long SourceImpactTick = AttackBaseWindupTicks;
 
         /// <summary>被容忍/被容忍地重叠的 Editable Move 的起点（必须落在 Dodge 固定区间内）。</summary>
         private const long OverlappingMoveStartTick = 80L;
@@ -117,11 +76,6 @@ namespace ProjectHero.Logic.Tests
         private static MovementPatternSpec MovementPattern()
             => new MovementPatternSpec(new MovementPatternId("movement_pattern.t07ql"), Directions());
 
-        /// <summary>
-        /// 与 <c>Task07BudgetTransactionTests.BuildDefinition</c> 同形的定义，只有两处任务 07 需要的差异：
-        /// 攻击的 <c>StartTick = 0</c>（TelegraphTick 0、ImpactTick = 前摇 100）被本文件当作
-        /// "已经锁定/启动的来源攻击"，并且 Dodge/Block 的固定区间由冻结前摇唯一决定。
-        /// </summary>
         private static BattleDefinition BuildDefinition()
         {
             var factionModel = new FactionModelDefinition(
@@ -143,7 +97,7 @@ namespace ProjectHero.Logic.Tests
 
             var guardSpec = new ActionSpec(
                 Spec(GuardSpecId), ActionType.Guard,
-                new GuardTimingSpec(GuardWindupTicks, GuardActiveTicks, GuardRecoveryTicks),
+                new GuardTimingSpec(GuardActiveTicks),
                 new GuardPayloadSpec(
                     new Dictionary<DamageChannelId, int>(), 512,
                     DefenseTagMask.Blockable | DefenseTagMask.Guardable),
@@ -162,13 +116,13 @@ namespace ProjectHero.Logic.Tests
 
             var blockSpec = new ActionSpec(
                 Spec(BlockSpecId), ActionType.Block,
-                new BlockReactionTimingSpec(FrozenDesignValues.BlockReactionWindupTicks, ReactionRecoveryTicks),
+                new BlockReactionTimingSpec(FrozenDesignValues.BlockDurationTicks),
                 new BlockPayloadSpec(DefenseTagMask.Blockable),
                 AdrenalineCost: FrozenDesignValues.BlockAdrenalineCost);
 
             var dodgeSpec = new ActionSpec(
                 Spec(DodgeSpecId), ActionType.Dodge,
-                new DodgeReactionTimingSpec(FrozenDesignValues.DodgeReactionWindupTicks, ReactionRecoveryTicks),
+                new DodgeReactionTimingSpec(FrozenDesignValues.DodgeDurationTicks),
                 new DodgePayloadSpec(MaxDistanceSteps: 4, Pattern: MovementPattern()),
                 AdrenalineCost: FrozenDesignValues.DodgeAdrenalineCost);
 
@@ -257,10 +211,7 @@ namespace ProjectHero.Logic.Tests
             public DodgeMovementInvalidationSeam Seam;
             public TurnWindowManager Windows;
             public WorldView World;
-            public TurnWindowBudgetAuthority Budget;
-
-            /// <summary>生产预算端口发射的账本变化载荷。</summary>
-            public readonly List<TurnBudgetChange> Ledger = new List<TurnBudgetChange>();
+            public TurnWindowSubmissionAuthority WindowAuthority;
 
             /// <summary>最近一次公开机会时新建的机会对象（生产入口的 out 收集器）。</summary>
             public readonly List<ReactionOpportunityRuntime> Opened = new List<ReactionOpportunityRuntime>();
@@ -276,14 +227,6 @@ namespace ProjectHero.Logic.Tests
             return new FactionRelationResolver(definition.FactionModel, unitFactions);
         }
 
-        /// <summary>
-        /// 生产形状的装配：真实排程事务（<c>MovementSpacePort = LogicGridMovementAuthority</c>，
-        /// 与 <c>BattleSimulation</c> 第 385 行同一行代码）、真实预算端口、真实机会系统与真实 Dodge 接缝。
-        /// 肾上腺素端口刻意留空：<c>ReactionOpportunitySystem</c> 的文档化语义是"未设置时保持
-        /// 任务 05/06 既有语义"（既不改变任何既有拒绝码、也不改变预留行为），
-        /// 因此本文件聚焦的"Lane 固定区间占位判据"与"链内预测起点"两条被测行为
-        /// 不会被肾上腺素账本的预留/回滚分支干扰（本文件也不对肾上腺素做任何断言）。
-        /// </summary>
         private static Rig NewRig()
         {
             BattleDefinition definition = BuildDefinition();
@@ -306,7 +249,7 @@ namespace ProjectHero.Logic.Tests
 
             var world = new WorldView();
             var windows = new TurnWindowManager(world, ids.NextWindowId);
-            var budget = new TurnWindowBudgetAuthority(windows, null);
+            var windowAuthority = new TurnWindowSubmissionAuthority(windows, null);
             var coordinator = new ActionPlanTerminalCoordinator(schedule, new IActionPlanCleanupParticipant[]
             {
                 StopSchedulingCleanupParticipant.Instance,
@@ -334,17 +277,11 @@ namespace ProjectHero.Logic.Tests
                 Seam = seam,
                 Windows = windows,
                 World = world,
-                Budget = budget
+                WindowAuthority = windowAuthority
             };
 
-            budget.ChangedSink = rig.Ledger.Add;
-
-            // 排程事务的预算上下文 = 生产装配的同一形状（BattleSimulation 构造函数里的那个闭包）。
-            editor.BudgetContextFactory = (source, targetTick, expectedWindowId, issuer) =>
-                new ScheduleBudgetContext(
-                    source, budget, expectedWindowId,
-                    windows.CurrentWindow != null ? windows.CurrentWindow.WindowId : (WindowId?)null,
-                    issuer);
+            // 排程事务的窗口权威 = 生产装配的同一形状（BattleSimulation 构造函数里的那一行）。
+            editor.WindowAuthority = windowAuthority;
 
             windows.RegisterControllerBinding(Player, Hero);
             windows.RegisterControllerBinding(EnemyAi, Enemy);
@@ -415,37 +352,31 @@ namespace ProjectHero.Logic.Tests
                     AnchorAfterPlanId: default, PrimaryTargetUnitId: target,
                     Facing: GridDirection.East, Destination: null));
 
-        private static TurnWindow OpenWindow(Rig rig, long tick, UnitId owner, int budget)
+        private static TurnWindow OpenWindow(Rig rig, long tick, UnitId owner, int duration)
         {
-            rig.Windows.ScheduleWindow(tick, owner, budget);
+            rig.Windows.ScheduleWindow(tick, owner, duration);
             TurnWindow window = rig.Windows.TryOpenDueWindow(tick);
             Assert.That(window, Is.Not.Null, "夹具前提：tick " + tick + " 应当打开窗口");
             Assert.That(window.OwnerUnitId, Is.EqualTo(owner));
-            Assert.That(window.TotalBudgetTicks, Is.EqualTo(budget));
+            Assert.That(window.DurationTicks, Is.EqualTo(duration));
             return window;
         }
 
         private static void CloseWindow(Rig rig, TurnWindow window, long tick)
         {
-            window.RequestClose(TurnWindowCloseReason.OwnerRequested);
+            window.RequestClose(TurnWindowCloseReason.Expired);
             Assert.That(rig.Windows.FinalizeRequestedClose(tick), Is.SameAs(window));
             Assert.That(window.IsOpen, Is.False);
         }
 
         /// <summary>
-        /// 经<strong>生产</strong>启动提交端口（<see cref="TurnWindowBudgetAuthority.Commit"/>，
-        /// 即 <c>IActionPlanStartCommitPort</c> 的真实实现）完成 <c>Reserved -&gt; Spent</c>，
-        /// 再写入"启动门禁已经成功"的两个生命周期标记（见 §反射点说明）。
+        /// 写入"启动门禁已经成功"的两个生命周期标记（见 §反射点说明）。R1 后普通动作没有时间费用，
+        /// 启动提交不再消费任何资源。
         /// </summary>
         private static void StartAndLock(Rig rig, ActionPlan plan, long tick)
         {
             Assert.That(plan.IsEditable, Is.True, "夹具前提：只有 Editable 计划需要启动提交");
             Assert.That(plan.SubmittedWindowId.HasValue, Is.True, "夹具前提：计划必须有来源窗口");
-            int cost = plan.BudgetCostTicks;
-            Assert.That(cost, Is.GreaterThan(0), "夹具前提：普通计划成本必须为正整数 Tick");
-
-            string error = rig.Budget.Commit(plan, tick, _ => { });
-            Assert.That(error, Is.Null, "生产启动提交端口必须成功：" + error);
             MarkLockedAndRunning(plan, tick);
         }
 
@@ -455,9 +386,7 @@ namespace ProjectHero.Logic.Tests
         // ProjectHero.Logic.Tests 没有 InternalsVisibleTo（见 Assets/Scripts/Logic/AssemblyInfo.cs：
         // 该授权只给 ProjectHero.Authoring.Tests）。生产路径里唯一写这两个字段的位置是
         // BattleSimulation.CommitStart，它需要完整的 Encounter/Controller/资产初始化链。
-        // 因此这里按 Task07BudgetTransactionTests / Task07ForcedDisplacementBudgetTests 的
-        // 既有口径，只写这两个生命周期标记；资源侧的 Reserved -> Spent 完全由生产端口
-        // TurnWindowBudgetAuthority.Commit 完成，本文件不做任何账本/排程推断。
+        // 因此这里只写这两个生命周期标记，不做任何排程推断。
         // =====================================================================================
 
         private static readonly PropertyInfo StateSetter = typeof(ActionPlan).GetProperty(nameof(ActionPlan.State));
@@ -509,25 +438,25 @@ namespace ProjectHero.Logic.Tests
         /// 因此 Dodge/Block 计划落在 <strong>Hero</strong> 的 Lane 上）。
         ///
         /// 夹具时序（由生产规则唯一推导，方法内逐条断言）：
-        /// <c>StartTick = 0</c>、<c>ImpactTick = 100 = TriggerTick</c>、
-        /// Dodge 固定区间 = <c>[TriggerTick - 30, TriggerTick + 10) = [70, 110)</c>、
-        /// Block 固定区间 = <c>[TriggerTick - 60, TriggerTick + 10) = [40, 110)</c>。
+        /// <c>StartTick = 0</c>、<c>ImpactTick = 100 = SourceImpactTick</c>、
+        /// Dodge 固定区间 = <c>[SourceImpactTick - 30, SourceImpactTick + 10) = [70, 110)</c>、
+        /// Block 固定区间 = <c>[SourceImpactTick - 60, SourceImpactTick + 10) = [40, 110)</c>。
         /// </summary>
         private static ReactionOpportunityId OpenTelegraphedAttack(Rig rig)
         {
             TurnWindow window = OpenWindow(rig, 0L, Enemy, 400);
             ActionPlan attack = AddAttack(rig, 0L, AttackStartTick, Enemy, Hero, window.WindowId);
             StartAndLock(rig, attack, AttackStartTick);
-            Assert.That(attack.ImpactTick, Is.EqualTo(TriggerTick),
-                "夹具前提：TriggerTick 只能等于来源攻击的 ImpactTick");
-            Assert.That(attack.EndTick, Is.EqualTo(TriggerTick + AttackRecoveryTicks));
+            Assert.That(attack.ImpactTick, Is.EqualTo(SourceImpactTick),
+                "夹具前提：SourceImpactTick 只能等于来源攻击的 ImpactTick");
+            Assert.That(attack.EndTick, Is.EqualTo(SourceImpactTick + AttackRecoveryTicks));
 
             rig.Opened.Clear();
             string openError = rig.Reactions.TryOpenForTelegraph(attack, TelegraphTick, rig.Opened);
             Assert.That(openError, Is.Null, "已锁定/启动的反应攻击必须公开机会：" + openError);
             Assert.That(rig.Opened.Count, Is.EqualTo(1));
             Assert.That(rig.Opened[0].DefenderUnitId, Is.EqualTo(Hero), "夹具前提：防御者必须是 Hero");
-            Assert.That(rig.Opened[0].TriggerTick, Is.EqualTo(TriggerTick));
+            Assert.That(rig.Opened[0].SourceImpactTick, Is.EqualTo(SourceImpactTick));
             Assert.That(rig.Opened[0].OpenOptionCount, Is.EqualTo(2),
                 "夹具前提：Block 与 Dodge 两个选项都必须被公开");
 
@@ -537,16 +466,16 @@ namespace ProjectHero.Logic.Tests
             return rig.Opened[0].Id;
         }
 
-        /// <summary>Dodge 的固定反应区间左端（= TriggerTick - 反应前摇）。</summary>
+        /// <summary>Dodge 的固定反应区间左端（= SourceImpactTick - 反应前摇）。</summary>
         private static long DodgeIntervalStart()
-            => TriggerTick - FrozenDesignValues.DodgeReactionWindupTicks;
+            => SourceImpactTick - FrozenDesignValues.DodgeDurationTicks + 1;
 
-        /// <summary>Dodge 的固定反应区间右端（半开区间 = TriggerTick + 后摇）。</summary>
-        private static long DodgeIntervalEnd() => TriggerTick + ReactionRecoveryTicks;
+        /// <summary>Dodge 的固定反应区间右端（半开区间 = SourceImpactTick + 后摇）。</summary>
+        private static long DodgeIntervalEnd() => DodgeIntervalStart() + FrozenDesignValues.DodgeDurationTicks;
 
         /// <summary>Block 的固定反应区间左端。</summary>
         private static long BlockIntervalStart()
-            => TriggerTick - FrozenDesignValues.BlockReactionWindupTicks;
+            => SourceImpactTick - FrozenDesignValues.BlockDurationTicks;
 
         // =====================================================================
         // 1. QueuedMoveChainCommitsBothPlansThroughRealSpacePort（裁定 B 的回归钉子）
@@ -578,8 +507,8 @@ namespace ProjectHero.Logic.Tests
             Assert.That(rig.Editor.MovementSpacePort, Is.SameAs(rig.Movement),
                 "装配前提：排程事务必须接真实空间端口（生产装配）");
 
-            // 窗口额度 90 覆盖链的两条计划（各 25）。
-            TurnWindow window = OpenWindow(rig, 0L, Hero, 90);
+            // 窗口时长 400 覆盖链的两条计划的起点（0 与 100；R1：起点必须落在窗口内）。
+            TurnWindow window = OpenWindow(rig, 0L, Hero, 400);
             // 链几何：x 从网格锚点 (0,0) 向北 4 格；y 从 x 的目的格 (0,4) 继续向北 4 格。
             // 这一段刻意让两条路径的**已占格集合不相交**（(0,2)/(0,4) 与 (0,6)/(0,8)），
             // 从而把"链内预测起点"这一半与下面的 (B) 预留批处理那一半隔离开。
@@ -592,27 +521,9 @@ namespace ProjectHero.Logic.Tests
             Assert.That(first.ActionType, Is.EqualTo(ActionType.Move));
             Assert.That(second.ActionType, Is.EqualTo(ActionType.Move));
 
-            // —— 窗口账本：各自在窗口里持有自己的预留 ——
-            Assert.That(window.ReservedFor(first.ActionPlanId), Is.EqualTo(first.BudgetCostTicks));
-            Assert.That(window.ReservedFor(second.ActionPlanId), Is.EqualTo(second.BudgetCostTicks));
-            Assert.That(first.ReservedTurnBudgetTicks, Is.EqualTo(first.BudgetCostTicks));
-            Assert.That(second.ReservedTurnBudgetTicks, Is.EqualTo(second.BudgetCostTicks));
-            Assert.That(window.SpentBudgetTicks, Is.Zero, "Editable 阶段绝不消费预算");
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(first.BudgetCostTicks + second.BudgetCostTicks));
-
-            // 账本变化载荷：恰好两条 Reserved（每条计划一条），且都来自显式排程编辑、都落在同一个窗口。
-            int reservedEvents = 0;
-            for (int i = 0; i < rig.Ledger.Count; i++)
-            {
-                TurnBudgetChange change = rig.Ledger[i];
-                Assert.That(change.SpentAfter, Is.Zero, "Editable 阶段不得出现任何消费");
-                if (change.ChangeKind != TurnBudgetChangeKind.Reserved) continue;
-                reservedEvents++;
-                Assert.That(change.Source, Is.EqualTo(ResourceChangeSource.ExplicitScheduleEdit));
-                Assert.That(change.WindowId, Is.EqualTo(window.WindowId));
-                Assert.That(change.ActionPlanId.HasValue, Is.True);
-            }
-            Assert.That(reservedEvents, Is.EqualTo(2), "两条排队 Move 各产生恰好一次首次预留");
+            // —— 来源窗口：两条计划都以当前窗口为来源（R1：起点必须落在其区间内）——
+            Assert.That(first.SubmittedWindowId, Is.EqualTo(window.WindowId));
+            Assert.That(second.SubmittedWindowId, Is.EqualTo(window.WindowId));
 
             // —— 链几何前提：第二条从"前一条的终点"起算（不是从锚点起算）——
             Assert.That(first.Destination, Is.EqualTo(new GridPoint(0, 4)));
@@ -622,8 +533,8 @@ namespace ProjectHero.Logic.Tests
             Assert.That(second.ResolvedPathWeightUnits, Is.EqualTo(4),
                 "链内第二条的路径权重是 4：(0,4) -> (0,8) 是两条边；" +
                 "若它按锚点 (0,0) 起算就会是 8（四条边）⇒ 该数字证明路径确实是用链内起点算出来的");
-            Assert.That(first.BudgetCostTicks, Is.EqualTo((4 * MoveBaseStepTicks) + MoveRecoveryTicks));
-            Assert.That(second.BudgetCostTicks, Is.EqualTo((4 * MoveBaseStepTicks) + MoveRecoveryTicks));
+            Assert.That(first.EndTick - first.StartTick, Is.EqualTo((4 * MoveBaseStepTicks) + MoveRecoveryTicks));
+            Assert.That(second.EndTick - second.StartTick, Is.EqualTo((4 * MoveBaseStepTicks) + MoveRecoveryTicks));
 
             // —— 段链：第二条的段链首点 == 第一条的目的格 ——
             IReadOnlyList<MovementSegment> firstSegments = rig.Movement.SegmentsOfPlanOrdered(first.ActionPlanId);
@@ -659,7 +570,7 @@ namespace ProjectHero.Logic.Tests
             //     它额外要求空间侧支持同一单位在同一格上的共存预留（见 §生产缺陷登记 ①）。
             // ————————————————————————————————————————————————————————————
             Rig reentrant = NewRig();
-            TurnWindow reentrantWindow = OpenWindow(reentrant, 0L, Hero, 90);
+            TurnWindow reentrantWindow = OpenWindow(reentrant, 0L, Hero, 400);
             ActionPlan head = AddMove(reentrant, 0L, 0L, 0, 4, expectedWindow: reentrantWindow.WindowId);
 
             ScheduleEditTransactionResult tailTx = Apply(
@@ -685,7 +596,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(tailSegments[0].From, Is.EqualTo(head.Destination.Value),
                 "回程链的第二条也必须从链内预测起点（前一条的目的格）接上");
             Assert.That(reentrant.Movement.VerifyInvariants(), Is.Null);
-            Assert.That(reentrantWindow.ReservedFor(tail.ActionPlanId), Is.EqualTo(tail.BudgetCostTicks));
+            Assert.That(tail.SubmittedWindowId, Is.EqualTo(reentrantWindow.WindowId));
         }
 
         // =====================================================================
@@ -708,7 +619,7 @@ namespace ProjectHero.Logic.Tests
         public void QueuedMoveChainOriginMismatchIsStillRejectedForNonChainedStart()
         {
             Rig rig = NewRig();
-            TurnWindow window = OpenWindow(rig, 0L, Hero, 90);
+            TurnWindow window = OpenWindow(rig, 0L, Hero, 400);
             // 链首：经真实事务提交（1 段：进入 (0,2)）。
             ActionPlan first = AddMove(rig, 0L, 0L, 0, 2, expectedWindow: window.WindowId);
             Assert.That(first.Destination, Is.EqualTo(new GridPoint(0, 2)));
@@ -810,8 +721,8 @@ namespace ProjectHero.Logic.Tests
 
             long intervalStart = DodgeIntervalStart();
             long intervalEnd = DodgeIntervalEnd();
-            Assert.That(intervalStart, Is.EqualTo(70L));
-            Assert.That(intervalEnd, Is.EqualTo(110L));
+            Assert.That(intervalStart, Is.EqualTo(71L));
+            Assert.That(intervalEnd, Is.EqualTo(101L));
 
             // —— 几何前提（否则用例退化成空断言）——
             Assert.That(move.IsEditable, Is.True);
@@ -850,10 +761,10 @@ namespace ProjectHero.Logic.Tests
 
             // —— 生产接受入口 ——
             string error = rig.Reactions.TryAcceptById(
-                opportunityId, Spec(DodgeSpecId), 1L, null, out ActionPlan dodge);
+                opportunityId, Spec(DodgeSpecId), 1L, null, out ActionPlan dodge, DodgeIntervalStart());
 
             Assert.That(error, Is.Null,
-                "裁定 A：Dodge 的固定反应区间必须容忍它自己在 TriggerTick 会失效掉的后续 Editable 移动族。" +
+                "裁定 A：Dodge 的固定反应区间必须容忍它自己在 SourceImpactTick 会失效掉的后续 Editable 移动族。" +
                 " geometry=" + LaneDump(rig, Hero) +
                 " move=[" + move.StartTick + "," + move.EndTick + ")" +
                 " dodgeInterval=[" + intervalStart + "," + intervalEnd + ")" +
@@ -866,9 +777,9 @@ namespace ProjectHero.Logic.Tests
             Assert.That(dodge.OwnerUnitId, Is.EqualTo(Hero));
             Assert.That(dodge.StartTick, Is.EqualTo(intervalStart));
             Assert.That(dodge.EndTick, Is.EqualTo(intervalEnd));
-            Assert.That(dodge.BudgetCostTicks, Is.Zero, "反应计划不消费 TurnBudget");
+            Assert.That(dodge.SubmittedWindowId, Is.Null, "反应计划没有来源窗口，不受窗口区间约束");
 
-            // —— 接受**不**失效任何移动：失效只发生在 TriggerTick 的终态接缝 ——
+            // —— 接受**不**失效任何移动：失效只发生在 SourceImpactTick 的终态接缝 ——
             Assert.That(move.IsEditable, Is.True, "接受 Dodge 之后那条 Move 必须仍然是 Editable");
             Assert.That(move.StartTick, Is.EqualTo(OverlappingMoveStartTick));
             Assert.That(lane.Contains(move.ActionPlanId), Is.True);
@@ -898,7 +809,7 @@ namespace ProjectHero.Logic.Tests
             long blockStart = BlockIntervalStart();
             long blockEnd = DodgeIntervalEnd();
             Assert.That(blockStart, Is.EqualTo(40L));
-            Assert.That(blockEnd, Is.EqualTo(110L));
+            Assert.That(blockEnd, Is.EqualTo(101L));
             Assert.That(move.StartTick, Is.GreaterThanOrEqualTo(blockStart));
             Assert.That(move.StartTick, Is.LessThan(blockEnd),
                 "夹具前提：同一个几何下那条 Move 也与 Block 固定区间相交");
@@ -961,10 +872,9 @@ namespace ProjectHero.Logic.Tests
             Assert.That(lane.Count, Is.EqualTo(1));
 
             long revisionBefore = rig.Schedule.ScheduleRevision;
-            int spentBefore = heroWindow.SpentBudgetTicks;
 
             string error = rig.Reactions.TryAcceptById(
-                opportunityId, Spec(DodgeSpecId), 1L, null, out ActionPlan dodge);
+                opportunityId, Spec(DodgeSpecId), 1L, null, out ActionPlan dodge, DodgeIntervalStart());
 
             Assert.That(error, Is.EqualTo(ReactionCodes.REACTION_LANE_INTERVAL_OCCUPIED),
                 "不可失效者（Locked/Running）的重叠绝不能被容忍。 geometry=" + LaneDump(rig, Hero) +
@@ -972,7 +882,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(dodge, Is.Null);
             Assert.That(guard.IsRunning, Is.True, "被拒绝的接受事务不得改动任何计划");
             Assert.That(rig.Schedule.ScheduleRevision, Is.EqualTo(revisionBefore));
-            Assert.That(heroWindow.SpentBudgetTicks, Is.EqualTo(spentBefore));
             Assert.That(rig.Reactions.FindOpportunity(opportunityId).State,
                 Is.EqualTo(ReactionOpportunityState.Open));
         }
@@ -990,7 +899,7 @@ namespace ProjectHero.Logic.Tests
             Rig rig = NewRig();
             ReactionOpportunityId opportunityId = OpenTelegraphedAttack(rig);
 
-            TurnWindow heroWindow = OpenWindow(rig, 1L, Hero, 400);
+            TurnWindow heroWindow = OpenWindow(rig, 1L, Hero, 1200);
             ActionPlan tolerated = AddMove(rig, 1L, OverlappingMoveStartTick, 0, 4,
                 expectedWindow: heroWindow.WindowId);
             Assert.That(tolerated.IsEditable, Is.True);
@@ -1001,9 +910,11 @@ namespace ProjectHero.Logic.Tests
 
             long revisionBefore = rig.Schedule.ScheduleRevision;
             string error = rig.Reactions.TryAcceptById(
-                opportunityId, Spec(DodgeSpecId), 1L, null, out ActionPlan dodge);
+                opportunityId, Spec(DodgeSpecId), 1L, null, out ActionPlan dodge, DodgeIntervalStart());
             Assert.That(error, Is.Null,
                 "本用例的前提是「接受上述 Dodge 成功」。" + LaneDump(rig, Hero) + " error=" + error);
+            Assert.That(rig.Schedule.CheckNoActiveArtifactReferencesTerminalPlan(), Is.Null,
+                "Runtime lane invariants must share the Dodge admission predicate.");
             Assert.That(dodge, Is.Not.Null);
             Assert.That(rig.Schedule.ScheduleRevision, Is.EqualTo(revisionBefore),
                 "反应接受不是排程编辑事务（修订号不变）");

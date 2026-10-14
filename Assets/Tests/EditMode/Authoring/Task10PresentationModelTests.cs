@@ -38,14 +38,14 @@ namespace ProjectHero.Authoring.Tests
             public List<ActionPlanSnapshot> Plans { get; } = new List<ActionPlanSnapshot> { new ActionPlanSnapshot(1, 10, "move", StartTick: 20, EndTick: 30),
                 new ActionPlanSnapshot(2, 20, "secret-attack", StartTick: 40, EndTick: 50) };
             public List<ReactionOpportunitySnapshot> Offered { get; } = new List<ReactionOpportunitySnapshot>();
-            public TurnWindowSnapshot CurrentWindow { get; } = new TurnWindowSnapshot(1, 10, 0, 180, 20, 30, 130, true, true, 0, Array.Empty<TurnWindowReservationSnapshot>());
+            public TurnWindowSnapshot CurrentWindow { get; } = new TurnWindowSnapshot(1, 10, 0, 180, 180, true, true, 4);
             public IReadOnlyList<AdrenalineLedgerSnapshot> OwnAdrenaline { get; } = new[] { new AdrenalineLedgerSnapshot(10, 7, 2, Array.Empty<AdrenalineReservationSnapshot>(), 3) };
             public DecisionSnapshot DecisionSnapshot => new DecisionSnapshot(CurrentTick, "view-fixture", "view-hash",
                 new[] { new UnitSnapshot(10, "unit", "hero", 0, 0, 0, 10240, true, 7, 2), new UnitSnapshot(20, "unit", "enemy", 2, 0, 0, 10240, true, 0, 0) },
                 Plans, ScheduleRevision, new BattleEndSnapshot(IsBattleEnded, -1, null), new Relations())
                 .ForController(ControllerId, new[] { new UnitId(10) }, CurrentWindow).WithDefinition(Definition());
             private static BattleDefinition Definition() => new BattleDefinition("view-fixture", 60, null, null, null, null, null, null, null, null,
-                new[] { new ActionSpec(new ActionSpecId("dodge"), ActionType.Dodge, new DodgeReactionTimingSpec(2, 3), null, 1) },
+                new[] { new ActionSpec(new ActionSpecId("dodge"), ActionType.Dodge, new DodgeReactionTimingSpec(2), null, 1) },
                 null, null, null, null, null, null, null, "view-hash");
             public CommandIngressRejection SubmitCommand(CommandRequest request) { Submitted.Add(request); return null; }
             public bool TryGetPlanSnapshot(ActionPlanId id, out ActionPlanSnapshot plan) { plan = Plans.FirstOrDefault(p => p.ActionPlanId == id.Value && p.OwnerUnitId == 10); return plan != null; }
@@ -57,8 +57,8 @@ namespace ProjectHero.Authoring.Tests
             public string DescribeDodgeDestinationRejection(UnitId defender, ActionSpecId spec, GridPoint destination) => null;
             public ScheduleEditTransactionResult Preview(IReadOnlyList<ScheduleEditOperation> operations) => new ScheduleEditTransactionResult(false, true, null,
                 ScheduleRevision, ScheduleRevision, Array.Empty<AppliedScheduleEdit>(), Array.Empty<ScheduleOperationEvaluation>(), Array.Empty<ActionPlanId>(), Array.Empty<ActionPlanId>(), Array.Empty<ActionPlanId>());
-            public DodgeCancellationPreview PreviewDodge(ReactionOpportunityId id, ActionSpecId action, GridPoint destination)
-                => new DodgeCancellationPreview(null, new[] { new ActionPlanId(1) }, new[] { new ConditionalBudgetRelease(new WindowId(1), 20, false) });
+            public DodgeCancellationPreview PreviewDodge(ReactionOpportunityId id, ActionSpecId action, GridPoint destination, long? startTick = null)
+                => new DodgeCancellationPreview(null, new[] { new ActionPlanId(1) });
             public IReadOnlyList<GridPoint> DodgeDestinations(ReactionOpportunityId id, ActionSpecId action) => new[] { new GridPoint(2, 0) };
             public bool TryGetOwnTerminalPlan(ActionPlanId id, out ActionPlanSnapshot snapshot) { snapshot = null; return false; }
         }
@@ -102,15 +102,15 @@ namespace ProjectHero.Authoring.Tests
             { port.Plans[0] = port.Plans[0] with { State = (int)state }; Assert.That(model.CanEdit(1), Is.False); }
             port.Plans[0] = port.Plans[0] with { State = 0, Origin = (int)ActionPlanOrigin.Reaction }; Assert.That(model.CanEdit(1), Is.False);
         }
-        [Test] public void TurnBudgetHudSeparatesAvailableReservedAndSpent()
-        { var model = Create(out var port); Assert.That(model.Window.AvailableBudgetTicks, Is.EqualTo(130)); Assert.That(model.Window.ReservedBudgetTicks, Is.EqualTo(20)); Assert.That(model.Window.SpentBudgetTicks, Is.EqualTo(30)); Assert.That(port.Submitted, Is.Empty); }
+        [Test] public void WindowHudShowsFixedDurationAndEndTick()
+        { var model = Create(out var port); Assert.That(model.Window.DurationTicks, Is.EqualTo(180)); Assert.That(model.Window.EndTick, Is.EqualTo(model.Window.OpenedAtTick + 180)); Assert.That(port.Submitted, Is.Empty); }
         [Test] public void AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation()
         { var model = Create(out var port); Assert.That(model.Adrenaline.Single().AvailableAdrenaline, Is.EqualTo(7)); Assert.That(model.Adrenaline.Single().ReservedTotal, Is.EqualTo(3)); Assert.That(port.Submitted, Is.Empty); }
-        [Test] public void DodgeConfirmationShowsLogicProvidedConditionalMoveCancellationAndBudgetByWindow()
+        [Test] public void DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation()
         {
             var model = Create(out var port); var preview = model.PreviewDodge(1, new ActionSpecId("dodge"), new GridPoint(2, 0));
-            Assert.That(preview.AffectedPlanIds.Single().Value, Is.EqualTo(1)); Assert.That(preview.ReleasesByWindow.Single().BudgetTicks, Is.EqualTo(20));
-            Assert.That(preview.ReleasesByWindow.Single().WindowIsOpen, Is.False); Assert.That(model.Timeline.Count, Is.EqualTo(1)); Assert.That(port.Submitted, Is.Empty);
+            Assert.That(preview.AffectedPlanIds.Single().Value, Is.EqualTo(1));
+            Assert.That(model.Timeline.Count, Is.EqualTo(1)); Assert.That(port.Submitted, Is.Empty);
         }
         [Test] public void PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems()
         {

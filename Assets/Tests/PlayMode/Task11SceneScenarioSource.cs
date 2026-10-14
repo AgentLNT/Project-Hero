@@ -31,8 +31,9 @@ namespace ProjectHero.Tests.PlayMode
                 ? a with { Timing = new AttackTimingSpec(60, aiReactionOnly ? 10 : 30),
                     Payload = ((AttackPayloadSpec)a.Payload) with { ForceMultiplier = 0.000001f, Pattern = uniform,
                         Tags = AttackTagMask.Reactable | AttackTagMask.Blockable | AttackTagMask.Dodgeable } }
-                : a.Type == ActionType.Dodge ? a with { Timing = new DodgeReactionTimingSpec(1, 30) }
-                : a.Type == ActionType.Block ? a with { Timing = new BlockReactionTimingSpec(1, 30) } : a).ToArray();
+                : !aiReactionOnly && a.Type == ActionType.Move ? a with { Timing = new MoveTimingSpec(1, 1) }
+                : a.Type == ActionType.Dodge ? a with { Timing = new DodgeReactionTimingSpec(1) }
+                : a.Type == ActionType.Block ? a with { Timing = new BlockReactionTimingSpec(1) } : a).ToArray();
             var sets = d.ActionSets;
             var units = d.Units;
             if (aiReactionOnly)

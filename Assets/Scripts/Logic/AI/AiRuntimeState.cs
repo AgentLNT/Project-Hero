@@ -32,6 +32,8 @@ namespace ProjectHero.Logic.AI
         /// <summary><c>null</c> = 不使用目的格（Block）。</summary>
         public GridPoint? SelectedDestination { get; init; }
 
+        public long StartTick { get; init; }
+
         /// <summary>目的格资格（由 Logic 公布面在构造时判定，AI 只是读它）。</summary>
         public AiReactionDestinationEligibility DestinationEligibility { get; init; }
             = AiReactionDestinationEligibility.NotApplicable;
@@ -81,7 +83,7 @@ namespace ProjectHero.Logic.AI
         ReactionOpportunityId ReactionOpportunityId,
         UnitId DefenderUnitId,
         ActionPlanId SourceAttackPlanId,
-        long TriggerTick,
+        long SourceImpactTick,
         IReadOnlyList<AiReactionOptionView> Options)
     {
         /// <summary>

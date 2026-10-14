@@ -14,7 +14,7 @@ namespace ProjectHero.Logic.Tests
 {
     /// <summary>
     /// 任务 06「必须产出」11 与「Dodge 换位与移动依赖的原子提交」：
-    /// Dodge 目的格预留（接受事务）、TriggerTick 原子换位、统一只读空间快照、
+    /// Dodge 目的格预留（接受事务）、SourceImpactTick 原子换位、统一只读空间快照、
     /// 失败零写入、来源威胁取消释放预留、防御者自身原因的 <c>TargetInvalid</c>。
     ///
     /// 全部用例只消费纯逻辑 API：<see cref="DodgeRelocationAuthority"/> 的空间事务不需要
@@ -57,8 +57,6 @@ namespace ProjectHero.Logic.Tests
             public LogicGridMovementAuthority Movement;
             public ActionScheduleAuthority Authority;
             public DodgeRelocationAuthority Dodge;
-            public readonly List<IReadOnlyList<ActionPlanId>> BudgetReleases =
-                new List<IReadOnlyList<ActionPlanId>>();
         }
 
         private static Harness NewHarness()
@@ -76,7 +74,6 @@ namespace ProjectHero.Logic.Tests
                 Authority = authority,
                 Dodge = dodge
             };
-            dodge.BudgetReleaseSink = ids => harness.BudgetReleases.Add(ids);
             return harness;
         }
 
@@ -107,30 +104,30 @@ namespace ProjectHero.Logic.Tests
         }
 
         // ————————————————————————————————————————————————————————————
-        // 1. 目的格按推导出的 TriggerTick 预留
+        // 1. 目的格按推导出的 SourceImpactTick 预留
         // ————————————————————————————————————————————————————————————
 
         [Test]
-        public void DodgeDestinationIsReservedForDerivedTriggerTick()
+        public void DodgeDestinationIsReservedForDerivedSourceImpactTick()
         {
             Harness h = NewHarness();
             Assert.That(h.Grid.RegisterUnitWithPointFootprint(U(1L), new GridPoint(0, 0), GridDirection.East),
                 Is.Null);
 
-            // TriggerTick 由来源攻击的 ImpactTick 推导（这里是 120），命令无法声明它。
+            // SourceImpactTick 由来源攻击的 ImpactTick 推导（这里是 120），命令无法声明它。
             DodgeDestinationRequest request = Request(7L, 10L, 1L, 0, 0, 4, 0, 120L);
             Assert.That(h.Dodge.ReserveDestination(request, Rules(), 100L), Is.Null);
 
             Assert.That(h.Dodge.TryGetReservation(Opp(7L), out DodgeDestinationReservation reservation), Is.True);
-            Assert.That(reservation.TriggerTick, Is.EqualTo(120L), "预留必须绑定推导出的 TriggerTick");
+            Assert.That(reservation.SourceImpactTick, Is.EqualTo(120L), "预留必须绑定推导出的 SourceImpactTick");
             Assert.That(reservation.From, Is.EqualTo(new GridPoint(0, 0)));
             Assert.That(reservation.Destination, Is.EqualTo(new GridPoint(4, 0)));
             Assert.That(reservation.ReservedAtTick, Is.EqualTo(100L));
             Assert.That(reservation.UnitId.Value, Is.EqualTo(1L));
 
-            // 未到 TriggerTick：不提交；到点：成为到期预留。
-            Assert.That(h.Dodge.DueReservationsOrdered(119L).Count, Is.EqualTo(0));
-            Assert.That(h.Dodge.DueReservationsOrdered(120L).Count, Is.EqualTo(1));
+            // 未到 SourceImpactTick：不提交；到点：成为到期预留。
+            Assert.That(h.Dodge.TriggeredReservationsOrdered(Array.Empty<ActionPlanId>(), 119L).Count, Is.EqualTo(0));
+            Assert.That(h.Dodge.TriggeredReservationsOrdered(new[] { new ActionPlanId(10L) }, 120L).Count, Is.EqualTo(1));
 
             // 预留窗口内的该格被标记为已预留；窗口之后不再标记。
             Assert.That(h.Dodge.IsCellReservedByDodge(new GridPoint(4, 0), 100L), Is.True);
@@ -222,15 +219,10 @@ namespace ProjectHero.Logic.Tests
                 "失效移动的全部 Reserve 必须同批清理");
             Assert.That(h.Movement.VerifyInvariants(), Is.Null);
             Assert.That(h.Grid.VerifyConsistency(), Is.Null);
-
-            // 任务 07 的预算释放接缝：只在真正换位时被调用一次，内容为按 id 升序的失效计划。
-            Assert.That(h.BudgetReleases.Count, Is.EqualTo(1));
-            Assert.That(h.BudgetReleases[0].Count, Is.EqualTo(1));
-            Assert.That(h.BudgetReleases[0][0].Value, Is.EqualTo(20L));
         }
 
         [Test]
-        public void DodgeCommitFailureLeavesDependentMovesReservationsAndBudgetsUnchanged()
+        public void DodgeCommitFailureLeavesDependentMovesAndReservationsUnchanged()
         {
             Harness h = NewHarness();
             Assert.That(h.Grid.RegisterUnitWithPointFootprint(U(1L), new GridPoint(0, 0), GridDirection.East),
@@ -258,7 +250,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(h.Grid.ReservationsOfPlanOrdered(P(20L)).Count, Is.EqualTo(reservationsBefore.Count),
                 "失败不得释放任何 Reservation");
             Assert.That(h.Grid.AllReservationsOrdered().Count, Is.EqualTo(allReservationsBefore));
-            Assert.That(h.BudgetReleases.Count, Is.EqualTo(0), "失败绝不触发预算释放接缝");
             Assert.That(h.Grid.TryGetAnchor(U(2L), out GridPoint other), Is.True);
             Assert.That(other, Is.EqualTo(new GridPoint(4, 0)), "其他单位的占位不得被改写");
         }
@@ -280,7 +271,7 @@ namespace ProjectHero.Logic.Tests
             IReadOnlyList<MovementSegment> segmentsBefore = h.Movement.AllSegmentsOrdered();
             IReadOnlyList<Reservation> reservationsBefore = h.Grid.ReservationsOfPlanOrdered(P(20L));
 
-            // 来源威胁在 TriggerTick 前取消：任务 05 发来释放通知（同一个接收方）。
+            // 来源威胁在 SourceImpactTick 前取消：任务 05 发来释放通知（同一个接收方）。
             var sink = (IReactionReservationReleaseSink)h.Dodge;
             sink.ReleaseFor(P(10L), Opp(7L), 110L);
 
@@ -299,7 +290,6 @@ namespace ProjectHero.Logic.Tests
                 Assert.That(actual.StartTick, Is.EqualTo(expected.StartTick));
                 Assert.That(actual.EndTick, Is.EqualTo(expected.EndTick));
             }
-            Assert.That(h.BudgetReleases.Count, Is.EqualTo(0), "取消绝不触发预算释放");
             AssertGridUntouched(h, U(1L), new GridPoint(0, 0));
 
             // 释放之后再次换位 ⇒ 明确拒绝（内部矛盾口径），且仍然零写入。
@@ -335,7 +325,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(h.Movement.AllSegmentsOrdered().Count, Is.EqualTo(2), "零位移不得失效任何移动段");
             Assert.That(h.Grid.ReservationsOfPlanOrdered(P(20L)).Count, Is.EqualTo(2),
                 "零位移不得释放任何 Reservation");
-            Assert.That(h.BudgetReleases.Count, Is.EqualTo(0), "零位移不得触发预算释放");
             Assert.That(h.Dodge.TryGetReservation(Opp(7L), out _), Is.False);
         }
 
@@ -365,10 +354,10 @@ namespace ProjectHero.Logic.Tests
             Assert.That(first.AffectedPlanIds.Count, Is.EqualTo(3));
             Assert.That(first.AffectedPlanIds[0].Value, Is.EqualTo(20L), "受影响列表必须按 ActionPlanId 升序规范");
             Assert.That(first.AffectedPlanIds[2].Value, Is.EqualTo(22L));
-            Assert.That(first.BudgetReleasePlanIds.Count, Is.EqualTo(3));
             Assert.That(second.WouldCommit, Is.EqualTo(first.WouldCommit));
             Assert.That(second.Code, Is.EqualTo(first.Code));
-            Assert.That(second.BudgetReleasePlanIds.Count, Is.EqualTo(first.BudgetReleasePlanIds.Count));
+            Assert.That(first.InvalidatedPlanIds.Count, Is.EqualTo(3), "实际换位时将失效的移动计划");
+            Assert.That(second.InvalidatedPlanIds.Count, Is.EqualTo(first.InvalidatedPlanIds.Count));
 
             // 预检绝不可写状态、绝不可分配 ID、绝不可推进修订号。
             Assert.That(h.Authority.ScheduleRevision, Is.EqualTo(revisionBefore));
@@ -383,7 +372,7 @@ namespace ProjectHero.Logic.Tests
                 Is.Null);
             DodgeDependencyPreview blocked = h.Dodge.PreviewDependencies(request, Rules(), moves, 100L);
             Assert.That(blocked.WouldCommit, Is.False);
-            Assert.That(blocked.BudgetReleasePlanIds.Count, Is.EqualTo(0), "预检失败时不得列出拟释放预算");
+            Assert.That(blocked.InvalidatedPlanIds.Count, Is.EqualTo(0), "预检失败时不得列出将失效的计划");
             Assert.That(h.Dodge.ReserveDestination(request, Rules(), 100L), Is.EqualTo(blocked.Code));
             Assert.That(h.Dodge.AllReservationsOrdered().Count, Is.EqualTo(0));
 
@@ -392,7 +381,7 @@ namespace ProjectHero.Logic.Tests
             DodgeDependencyPreview free = h.Dodge.PreviewDependencies(request, Rules(), moves, 100L);
             Assert.That(free.WouldCommit, Is.True, free.Code);
             Assert.That(h.Dodge.ReserveDestination(request, Rules(), 100L), Is.Null);
-            Assert.That(h.Dodge.CommitRelocation(Opp(7L), free.BudgetReleasePlanIds, 120L).Committed, Is.True);
+            Assert.That(h.Dodge.CommitRelocation(Opp(7L), free.InvalidatedPlanIds, 120L).Committed, Is.True);
         }
 
         // ————————————————————————————————————————————————————————————
@@ -570,7 +559,6 @@ namespace ProjectHero.Logic.Tests
                 "防御者自身原因导致的触发失败必须以 TargetInvalid 终止");
             AssertGridUntouched(h, U(1L), new GridPoint(0, 0));
             Assert.That(h.Dodge.TryGetReservation(Opp(5L), out _), Is.False);
-            Assert.That(h.BudgetReleases.Count, Is.EqualTo(0));
         }
 
         // ————————————————————————————————————————————————————————————

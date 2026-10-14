@@ -65,8 +65,7 @@ namespace ProjectHero.Logic.Tests
         private const int AttackBaseWindupTicks = 100;
         private const int AttackRecoveryTicks = 10;
 
-        /// <summary>窗口预算必须覆盖攻击的权威成本（前摇 100 + 后摇 10）。</summary>
-        private const int WindowBudget = 200;
+        private const int WindowDuration = 200;
 
         private const long WindowOpenTick = 0L;
         private const long SubmitTick = 1L;
@@ -285,7 +284,7 @@ namespace ProjectHero.Logic.Tests
 
             var rig = new Rig { Sim = sim, PlayerEntry = playerEntry };
 
-            sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowBudget);
+            sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowDuration);
             StepOnce(rig, WindowOpenTick);
             Assert.That(sim.CurrentTurnWindow, Is.Not.Null, "夹具前提：Tick 0 必须打开主角窗口");
             rig.Window = sim.CurrentTurnWindow;

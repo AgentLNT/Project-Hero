@@ -89,7 +89,8 @@ namespace ProjectHero.Logic.Combat
         int IncomingMomentumUnits,
         int ActionMomentumResistanceQ10,
         IReadOnlyDictionary<DamageChannelId, int> ActionDamageResistanceQ10,
-        IReadOnlyList<DamageComponentSpec> DamageComponents);
+        IReadOnlyList<DamageComponentSpec> DamageComponents,
+        DamageTagMask RequiredActionTag = DamageTagMask.None, bool ConservativeGuardRounding = false);
 
     /// <summary>目标侧聚合输入（被动抵抗来自目标定义；控制阻力已量化一次）。</summary>
     public sealed record TargetAggregationInput(
@@ -240,7 +241,9 @@ namespace ProjectHero.Logic.Combat
             for (int c = 0; c < contacts.Count; c++)
             {
                 TargetContact contact = contacts[c];
-                long afterMomentum = TickQuantization.RoundHalfUpDivide(
+                long afterMomentum = contact.ConservativeGuardRounding
+                    ? contact.IncomingMomentumUnits - (long)contact.IncomingMomentumUnits * contact.ActionMomentumResistanceQ10 / TickQuantizationQ10
+                    : TickQuantization.RoundHalfUpDivide(
                     (long)contact.IncomingMomentumUnits *
                     (TickQuantizationQ10 - contact.ActionMomentumResistanceQ10), TickQuantizationQ10);
 
@@ -262,6 +265,7 @@ namespace ProjectHero.Logic.Combat
                         : ResistanceFor(input.PassiveDamageResistanceQ10, component.ChannelId);
                     RequireResistanceQ10(passiveResistance, "passiveResistanceQ10");
                     int actionResistance = TagBypasses(component.Tags, DamageTagMask.BypassActionResistance)
+                        || (contact.RequiredActionTag != DamageTagMask.None && !TagBypasses(component.Tags,contact.RequiredActionTag))
                         ? 0
                         : ResistanceFor(contact.ActionDamageResistanceQ10, component.ChannelId);
                     RequireResistanceQ10(actionResistance, "actionResistanceQ10");
@@ -273,6 +277,7 @@ namespace ProjectHero.Logic.Combat
                             TickQuantizationQ10);
                     long afterAction = TagBypasses(component.Tags, DamageTagMask.BypassActionResistance)
                         ? afterPassive
+                        : contact.ConservativeGuardRounding ? afterPassive - afterPassive * actionResistance / TickQuantizationQ10
                         : TickQuantization.RoundHalfUpDivide(afterPassive * (TickQuantizationQ10 - actionResistance),
                             TickQuantizationQ10);
 
@@ -409,7 +414,8 @@ namespace ProjectHero.Logic.Combat
             {
                 momentumResistance = BattleRules.FullBlockResistanceQ10;
             }
-            else if (guard != null && HasDefenseTag(guard.EligibleTags, DefenseTagMask.Guardable))
+            else if (guard != null && HasDefenseTag(guard.EligibleTags, DefenseTagMask.Guardable)
+                && (attackTags & AttackTagMask.Blockable) != 0)
             {
                 // AttackTagMask（既有定义契约，冻结）只有 Reactable/Blockable/Dodgeable，
                 // **没有** Guardable 位，因此 Guard 的动量抵抗门槛只能来自防御方自己的
@@ -417,8 +423,9 @@ namespace ProjectHero.Logic.Combat
                 momentumResistance = guard.MomentumResistanceQ10;
             }
 
+            var requiredTag = block != null ? DamageTagMask.Blockable : guard != null ? DamageTagMask.Guardable : DamageTagMask.None;
             return new TargetContact(key, incomingDirection, incomingMomentumUnits, momentumResistance,
-                channelResistance, components);
+                channelResistance, components, requiredTag, guard != null && block == null);
         }
 
         private const int TickQuantizationQ10 = MomentumQuantizer.HealthQ10PerLifePoint;

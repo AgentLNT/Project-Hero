@@ -156,7 +156,7 @@ namespace ProjectHero.Logic.Tests
         /// AI 层在<strong>实现上</strong>完全不依赖排程写入面与窗口写方法：IL 里不存在对
         /// <c>ScheduleEditor</c>、<c>ActionScheduleAuthority</c>、<c>ActionPlanFactory</c>、
         /// <c>ActionPlanTerminalCoordinator</c>、<c>TurnWindowManager</c>、
-        /// <c>TurnWindowBudgetAuthority</c>/<c>ActionScheduler</c> 与
+        /// <c>TurnWindowSubmissionAuthority</c>/<c>ActionScheduler</c> 与
         /// <c>UnityEngine.Random</c>/<c>UnityEngine.Time</c> 的任何引用；
         /// 行为上，AI 决策之后排程增量<strong>只</strong>来自命令事务，且没有任何窗口被打开或关闭。
         ///
@@ -193,7 +193,7 @@ namespace ProjectHero.Logic.Tests
             BattleSimulation sim = Task09A2Fixture.NewSim(definition, assembly);
 
             // 窗口属于 **AI 的**单位（mon）：AI 因此拥有当前窗口的提交权限。
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             StepTo(sim, 0L);
             Assert.That(observations.Count, Is.EqualTo(1), "夹具前提：Tick 0 必须投递一次决策快照");
             Assert.That(controller.RegisteredControllerIds.Count, Is.EqualTo(1), "夹具前提：恰好一个 AI 控制者");
@@ -333,8 +333,6 @@ namespace ProjectHero.Logic.Tests
                 "反应计划必须绑定**已公开的那一条**机会，而不是 AI 自造的来源");
             Assert.That(opportunity.BoundActionPlanId.Value, Is.EqualTo(reaction.ActionPlanId.Value),
                 "机会与计划必须互相绑定（由同一个权威机会系统写入）");
-            Assert.That(reaction.ReservedTurnBudgetTicks, Is.Zero,
-                "反应计划不参与窗口预算（08 交接 §4.5 冻结口径）");
         }
 
         // =====================================================================
@@ -443,7 +441,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(playerEntry.SourcePriority, Is.EqualTo(CommandSourcePriority.Player));
 
             // 窗口属于 AI 的 mon ⇒ AI 每个 Tick 都有合法窗口，可逐 Tick 决策。
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
 
             // 逐 Tick 断言：同一个冻结水位上，两个入口读的是同一条默认目标 Tick 公式。
             for (long frozen = 0L; frozen <= 3L; frozen++)
@@ -793,8 +791,8 @@ namespace ProjectHero.Logic.Tests
             ai.AttachPorts(sim.AiReactionOpportunities, sim.AiActionPlanLookup, sim.MovementPathCalculator);
 
             // 两个单位各一扇窗口 ⇒ 两个 AI 控制者都有合法提交面。
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
-            sim.WindowManager.ScheduleWindow(1L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
+            sim.WindowManager.ScheduleWindow(1L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             StepTo(sim, 0L);
             StepTo(sim, 1L);
 
@@ -845,8 +843,8 @@ namespace ProjectHero.Logic.Tests
             BattleDefinition twinDefinition = Task09A2Fixture.BuildDefinition(Ai, Ai);
             var twinProbe = new Task09A2Fixture.CanonicalSnapshotProbe();
             BattleSimulation twin = Task09A2Fixture.NewSim(twinDefinition, twinProbe.Assembly);
-            twin.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
-            twin.WindowManager.ScheduleWindow(1L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            twin.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
+            twin.WindowManager.ScheduleWindow(1L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             StepTo(twin, 0L);
             StepTo(twin, 1L);
 
@@ -959,7 +957,7 @@ namespace ProjectHero.Logic.Tests
                 "ProjectHero.Logic.Timeline.ReactionPlanner",
                 "ProjectHero.Logic.Timeline.ReactionCommandPlanner",
                 "ProjectHero.Logic.Turns.TurnWindowManager",
-                "ProjectHero.Logic.Turns.TurnWindowBudgetAuthority",
+                "ProjectHero.Logic.Turns.TurnWindowSubmissionAuthority",
                 "ProjectHero.Logic.Turns.ActionScheduler",
                 "UnityEngine.Random",
                 "UnityEngine.Time",

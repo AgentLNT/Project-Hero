@@ -266,7 +266,7 @@ namespace ProjectHero.Logic.Tests
             public BattleSimulation Sim { get; }
 
             public void ScheduleOwnWindow(long tick)
-                => Sim.WindowManager.ScheduleWindow(tick, OwnUnit, Task09A2Fixture.WindowBudget);
+                => Sim.WindowManager.ScheduleWindow(tick, OwnUnit, Task09A2Fixture.WindowDuration);
 
             public DecisionSnapshot CanonicalAt(long tick)
             {
@@ -330,10 +330,8 @@ namespace ProjectHero.Logic.Tests
             if (window.OwnerUnitId.Value != unitId.Value) return null;
             return new TurnWindowSnapshot(
                 window.WindowId.Value, window.OwnerUnitId.Value, window.OpenedAtTick,
-                window.TotalBudgetTicks, window.ReservedBudgetTicks, window.SpentBudgetTicks,
-                window.AvailableBudgetTicks, window.IsOpen, window.IsAcceptingSubmissions,
-                (int)(window.CloseReason ?? TurnWindowCloseReason.OwnerRequested),
-                Array.Empty<TurnWindowReservationSnapshot>());
+                window.DurationTicks, window.EndTick, window.IsOpen, window.IsAcceptingSubmissions,
+                (int)(window.CloseReason ?? TurnWindowCloseReason.Expired), window.ClosedAtTick);
         }
 
         /// <summary>

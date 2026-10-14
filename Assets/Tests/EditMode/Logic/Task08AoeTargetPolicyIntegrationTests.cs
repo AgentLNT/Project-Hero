@@ -70,7 +70,7 @@ namespace ProjectHero.Logic.Tests
 
         internal const int AttackWindupTicks = 10;
         internal const int AttackRecoveryTicks = 2;
-        internal const int BlockReactionWindupTicks = 1;
+        internal const int BlockDurationTicks = 1;
         internal const int BlockRecoveryTicks = 1;
         internal const long ImpactTick = 11L;
         internal const long SubmitTick = 1L;
@@ -184,7 +184,7 @@ namespace ProjectHero.Logic.Tests
         internal static ActionSpec BlockSpec()
             => new ActionSpec(
                 Spec(BlockSpecId), ActionType.Block,
-                new BlockReactionTimingSpec(BlockReactionWindupTicks, BlockRecoveryTicks),
+                new BlockReactionTimingSpec(BlockDurationTicks),
                 new BlockPayloadSpec(DefenseTagMask.Blockable),
                 AdrenalineCost: 2);
 
@@ -1019,9 +1019,9 @@ namespace ProjectHero.Logic.Tests
                             "夹具前提：攻击已经过阶段 7 的原子启动；state=" + r.Plan.State);
                         ReactionOpportunityRuntime opportunity = sim.ReactionOpportunities.ActiveOpportunities
                             .Single(o => o.DefenderUnitId == defender && o.IsOpen);
-                        Assert.That(opportunity.TriggerTick,
+                        Assert.That(opportunity.SourceImpactTick,
                             Is.EqualTo(Task08AoeTargetPolicyIntegrationTests.ImpactTick),
-                            "机会的 TriggerTick 必须等于来源攻击的 ImpactTick（命令无法声明）");
+                            "机会的 SourceImpactTick 必须等于来源攻击的 ImpactTick（命令无法声明）");
                         Assert.That(opportunity.Options.Select(o => o.ReactionActionSpecId.Value),
                             Contains.Item(Task08AoeTargetPolicyIntegrationTests.BlockSpecId),
                             "Block 必须是该机会已公开的选项");
@@ -1052,9 +1052,9 @@ namespace ProjectHero.Logic.Tests
                 Task08AoeTargetPolicyIntegrationTests.Monster);
             Assert.That(blockPlan, Is.Not.Null, "夹具前提：真实 Block 计划已创建");
             Assert.That(blockPlan.IsReaction, Is.True);
-            Assert.That(blockPlan.IsRunning, Is.True, "TriggerTick已到，固定反应必须已启动");
+            Assert.That(blockPlan.TerminationReason, Is.EqualTo(ActionTerminationReason.ReactionTriggered));
             AdrenalineReservationEntry reservation = blockLedger.ReservationOf(blockPlanId);
-            Assert.That(reservation, Is.Null, "TriggerTick必须消费接受时按权威费用生成的预留");
+            Assert.That(reservation, Is.Null, "SourceImpactTick必须消费接受时按权威费用生成的预留");
 
             // ⑤ 求解面：被 Block 的接触写出 Blocked 结论。
             Assert.That(sim.StagedResolution.BlockPlans.Count, Is.EqualTo(1),

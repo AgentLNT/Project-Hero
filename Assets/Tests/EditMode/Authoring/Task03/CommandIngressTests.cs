@@ -426,9 +426,9 @@ namespace ProjectHero.Authoring.Tests.Task03
         }
 
         [Test]
-        public void ProducerCannotProvideReactionTriggerTickOrRuleCost()
+        public void ProducerCannotProvideReactionSourceImpactTickOrRuleCost()
         {
-            string[] forbidden = { "TriggerTick", "Cost", "Adrenaline", "Budget", "MetaResource", "Price", "Fee" };
+            string[] forbidden = { "SourceImpactTick", "Cost", "Adrenaline", "Budget", "MetaResource", "Price", "Fee" };
 
             var producerVisible = new[]
             {
@@ -444,12 +444,12 @@ namespace ProjectHero.Authoring.Tests.Task03
                 foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     Assert.That(forbidden.Any(f => property.Name.Contains(f)), Is.False,
-                        $"{type.Name}.{property.Name} 不得让生产者提供反应 TriggerTick 或规则费用");
+                        $"{type.Name}.{property.Name} 不得让生产者提供反应 SourceImpactTick 或规则费用");
                 }
                 foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
                 {
                     Assert.That(forbidden.Any(f => field.Name.Contains(f)), Is.False,
-                        $"{type.Name}.{field.Name} 不得让生产者提供反应 TriggerTick 或规则费用");
+                        $"{type.Name}.{field.Name} 不得让生产者提供反应 SourceImpactTick 或规则费用");
                 }
             }
 
@@ -457,8 +457,8 @@ namespace ProjectHero.Authoring.Tests.Task03
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Select(p => p.Name).ToArray();
             Assert.That(properties, Is.EquivalentTo(new[]
-                { "ReactionKind", "ReactionActionSpecId", "DodgeDestination", "Kind" }));
-            Assert.That(typeof(ReactionCommandPayload).GetProperty("TriggerTick"), Is.Null);
+                { "ReactionKind", "ReactionActionSpecId", "DodgeDestination", "StartTick", "Kind" }));
+            Assert.That(typeof(ReactionCommandPayload).GetProperty("SourceImpactTick"), Is.Null);
         }
 
         [Test]
@@ -471,7 +471,7 @@ namespace ProjectHero.Authoring.Tests.Task03
             player.Submit(new CommandRequest(0L, new WindowCommandScope(new WindowId(1L)),
                 new ScheduleEditPayload(new ScheduleEditOperation[] { new ScheduleAddOperation(new ActionPlanId(1L), 0L) })));
             player.Submit(new CommandRequest(0L, new ReactionCommandScope(new ReactionOpportunityId(1L)),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow)));
+                new WindowCommandPayload((WindowCommandKind)0)));
             player.Submit(new CommandRequest(0L, new ScheduleEditScope(0L, null),
                 new ReactionCommandPayload(ReactionCommandKind.Block, new ActionSpecId("action.block"))));
 
@@ -493,7 +493,7 @@ namespace ProjectHero.Authoring.Tests.Task03
             repeatedPlayer.Submit(new CommandRequest(0L, new WindowCommandScope(new WindowId(1L)),
                 new ScheduleEditPayload(new ScheduleEditOperation[] { new ScheduleAddOperation(new ActionPlanId(1L), 0L) })));
             repeatedPlayer.Submit(new CommandRequest(0L, new ReactionCommandScope(new ReactionOpportunityId(1L)),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow)));
+                new WindowCommandPayload((WindowCommandKind)0)));
 
             StepResult repeatedResult = Task03.StepNext(repeated);
             Assert.That(Task03.EventSignature(repeatedResult.Events),

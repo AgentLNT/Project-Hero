@@ -121,7 +121,7 @@ namespace ProjectHero.Logic.Combat
     }
 
     /// <summary>
-    /// 反应机会纯数据（主方案 0.4.1）。TriggerTick = 来源攻击 ImpactTick（Logic 固定推导）；
+    /// 反应机会纯数据（主方案 0.4.1）。SourceImpactTick = 来源攻击 ImpactTick（Logic 固定推导）；
     /// 选项按 ActionSpecId（StringComparer.Ordinal）排序。机会运行时创建与命令处理由任务 05/09 实现。
     /// </summary>
     public sealed record ReactionOpportunity(
@@ -129,7 +129,7 @@ namespace ProjectHero.Logic.Combat
         ActionPlanId SourceAttackPlanId,
         UnitId DefenderUnitId,
         long TelegraphTick,
-        long TriggerTick,
+        long SourceImpactTick,
         IReadOnlyList<ReactionOption> Options,
         ReactionOpportunityState State);
 
@@ -174,7 +174,6 @@ namespace ProjectHero.Logic.Combat
     /// <summary>命令判别式纯数据（主方案 2.2 / 00 号规则 18）。</summary>
     public abstract record CommandScope;
 
-    /// <summary>普通排程编辑：必须验证 ExpectedScheduleRevision；新增/增加预算时窗口必填。</summary>
     public sealed record ScheduleEditScope(long ExpectedScheduleRevision, WindowId? ExpectedWindowId) : CommandScope;
 
     /// <summary>反应命令：必须验证 ReactionOpportunityId。</summary>
@@ -182,7 +181,7 @@ namespace ProjectHero.Logic.Combat
 
     /// <summary>
     /// 反应肾上腺素预留（按 ActionPlan 归属、带 ReservationCycleId 的独立数据；00 号规则 27）。
-    /// 接受时从 Available 转入预留，TriggerTick 消费；账本事务由任务 07 实现。
+    /// 接受时从 Available 转入预留，SourceImpactTick 消费；账本事务由任务 07 实现。
     /// </summary>
     public sealed record AdrenalineReservation(
         ActionPlanId ActionPlanId,

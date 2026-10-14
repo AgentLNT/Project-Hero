@@ -51,39 +51,15 @@ namespace ProjectHero.Logic.Events
     public sealed record CommandRejectedEvent(long Tick, long Sequence, long CommandSequence, string ReasonCode)
         : LogicEvent(Tick, Sequence);
 
-    /// <summary>窗口打开。窗口只控制提交权限与预算，不拥有动作，也不是结算边界。</summary>
+    /// <summary>窗口打开。窗口只控制提交权限与起点区间 <c>[Tick, Tick + DurationTicks)</c>，不拥有动作，也不是结算边界。</summary>
     public sealed record TurnWindowOpenedEvent(
-        long Tick, long Sequence, WindowId WindowId, UnitId OwnerUnitId, int BudgetTicks)
+        long Tick, long Sequence, WindowId WindowId, UnitId OwnerUnitId, int DurationTicks)
         : LogicEvent(Tick, Sequence);
 
     /// <summary>窗口关闭。关闭不清零既有肾上腺素预留，也不取消任何计划。</summary>
     public sealed record TurnWindowClosedEvent(
         long Tick, long Sequence, WindowId WindowId, UnitId OwnerUnitId, TurnWindowCloseReason Reason)
         : LogicEvent(Tick, Sequence);
-
-    /// <summary>
-    /// TurnBudget 账本变化（任务 07「必须产出」8）。
-    ///
-    /// <see cref="ChangeKind"/> 区分 <c>Reserved</c>/<c>ReservationAdjusted</c>/
-    /// <c>ConsumedAtLock</c>/<c>ReleasedBeforeLock</c>/<c>BattleEndCleared</c>；
-    /// <see cref="Source"/> 再区分显式 <c>ScheduleEdit</c> 与 <c>SystemAutoDeferral</c>。
-    /// <c>ConsumedAtLock</c> 只会在任务 05 的原子启动提交成功时出现。
-    /// 事件记录 <c>WindowId</c>、<c>PlanId</c> 与 Available/Reserved/Spent 的前后值。
-    /// </summary>
-    public sealed record TurnBudgetChangedEvent(
-        long Tick,
-        long Sequence,
-        WindowId WindowId,
-        UnitId OwnerUnitId,
-        long ActionPlanId,
-        TurnBudgetChangeKind ChangeKind,
-        ResourceChangeSource Source,
-        int AvailableBefore,
-        int AvailableAfter,
-        int ReservedBefore,
-        int ReservedAfter,
-        int SpentBefore,
-        int SpentAfter) : LogicEvent(Tick, Sequence);
 
     /// <summary>
     /// 肾上腺素账本变化（任务 07「必须产出」8）。

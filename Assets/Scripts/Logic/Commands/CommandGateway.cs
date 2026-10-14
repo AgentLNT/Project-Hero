@@ -66,22 +66,6 @@ namespace ProjectHero.Logic.Commands
             => null;
     }
 
-    /// <summary>
-    /// 命令网关（任务 03「必须产出」2）：冻结、校验、规范化并生成可处理 Envelope。
-    ///
-    /// 处理顺序（冻结契约）：
-    /// <list type="number">
-    /// <item>按 <c>SourcePriority -&gt; ControllerId(StringComparer.Ordinal) -&gt; ProducerOrdinal</c>
-    /// 计算规范键；原始集合枚举顺序<strong>不得</strong>成为隐式末级键。</item>
-    /// <item>同一规范键重复 → <strong>整个碰撞组</strong>以
-    /// <see cref="CommandCodes.DUPLICATE_COMMAND_ORDINAL"/> 拒绝，不选择"先枚举者"。</item>
-    /// <item>序号低于入口冻结水位 → <see cref="CommandCodes.COMMAND_ORDINAL_REGRESSION"/>。</item>
-    /// <item>scope 与 payload 判别不匹配 / 载荷结构非法 → 入口级拒绝（不分配序号）。</item>
-    /// <item>只有通过入口校验的请求按规范顺序获得整场唯一、单调、不复用的
-    /// <c>CommandSequence</c>；处理器严格按该序号执行，它也是预算、Lane、ActionPlan 与
-    /// Reservation 等竞争资源的统一提交顺序。</item>
-    /// </list>
-    /// </summary>
     public sealed class CommandGateway
     {
         private struct KeyedFact

@@ -323,7 +323,7 @@ namespace ProjectHero.Authoring.Tests.Task03
             var closedEvents = Task03.EventsOfType<TurnWindowClosedEvent>(closed.Events)
                 .Cast<TurnWindowClosedEvent>().ToList();
             Assert.That(closedEvents.Count, Is.EqualTo(1));
-            Assert.That(closedEvents[0].Reason, Is.EqualTo(TurnWindowCloseReason.OwnerRequested));
+            Assert.That(closedEvents[0].Reason, Is.EqualTo(TurnWindowCloseReason.Expired));
             Assert.That(closed.Snapshot.WindowManager.CurrentWindowId, Is.EqualTo(0L));
             Assert.That(closed.Snapshot.NextWindowId, Is.EqualTo(2L), "关闭不回收 WindowId");
             Assert.That(sim.LastStepPhaseTrace.Select(e => e.Phase).ToList().IndexOf(StepPhase.WindowCloseAndScheduleNext),

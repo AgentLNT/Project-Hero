@@ -22,8 +22,7 @@ namespace ProjectHero.Logic.Timeline
         /// <summary>任务 06 的限时空间阻塞（目的格/路径被临时占据）。</summary>
         TimedSpaceBlock = 2,
 
-        /// <summary>任务 07 的窗口预算/授权暂不可用。</summary>
-        TurnBudgetUnavailable = 3
+        // Value 3 is retired and must not be reused.
     }
 
     /// <summary>启动阻塞原因的稳定字符串码（进入事件与快照；不得改名或复用）。</summary>
@@ -31,7 +30,6 @@ namespace ProjectHero.Logic.Timeline
     {
         public const string TimedControlState = "START_BLOCKER_TIMED_CONTROL_STATE";
         public const string TimedSpaceBlock = "START_BLOCKER_TIMED_SPACE_BLOCK";
-        public const string TurnBudgetUnavailable = "START_BLOCKER_TURN_BUDGET_UNAVAILABLE";
 
         /// <summary>原因 → 稳定字符串码（<see cref="ActionStartBlockerReason.None"/> 返回 null）。</summary>
         public static string CodeOf(ActionStartBlockerReason reason)
@@ -41,7 +39,6 @@ namespace ProjectHero.Logic.Timeline
                 case ActionStartBlockerReason.None: return null;
                 case ActionStartBlockerReason.TimedControlState: return TimedControlState;
                 case ActionStartBlockerReason.TimedSpaceBlock: return TimedSpaceBlock;
-                case ActionStartBlockerReason.TurnBudgetUnavailable: return TurnBudgetUnavailable;
                 default:
                     throw new LogicDefinitionException(ScheduleCodes.SCHEDULE_START_GATE_COMMIT_INCONSISTENT,
                         ((int)reason).ToString(CultureInfo.InvariantCulture));
@@ -55,10 +52,10 @@ namespace ProjectHero.Logic.Timeline
     ///
     /// <list type="bullet">
     /// <item><see cref="Startable"/>：原子提交（时序/路径/Reservation 冻结 +
-    /// TurnBudget <c>Reserved -&gt; Spent</c> + <c>LockedAtTick</c> + <c>Running</c>）后开始执行。</item>
+    /// <c>LockedAtTick</c> + <c>Running</c>）后开始执行。</item>
     /// <item><see cref="Retryable"/>：带<strong>有限且严格大于当前 Tick</strong>的
     /// <c>RetryAtTick</c>；计划保持 Editable 并经同一求值器原子向右延期。</item>
-    /// <item><see cref="Terminal"/>：以明确原因经统一终态协调器终止（释放锁定前预留）。</item>
+    /// <item><see cref="Terminal"/>：以明确原因经统一终态协调器终止。</item>
     /// <item><see cref="InvariantViolation"/>：内部矛盾（<strong>不是</strong>普通终态），
     /// 必须以稳定错误令 Step 失败，不得"终止计划后继续"。</item>
     /// </list>
@@ -151,7 +148,6 @@ namespace ProjectHero.Logic.Timeline
         /// <summary>任务 06 的限时空间阻塞（返回 null = 无空间阻塞）。</summary>
         public Func<UnitId, long?> SpaceBlockUntilTickOf { get; }
 
-        /// <summary>任务 07 的授权/预算可用性（默认恒为可用）。</summary>
         public Func<UnitId, bool> IsActorAvailable { get; }
 
         public ActionPlanFactory Factory { get; }
@@ -244,7 +240,7 @@ namespace ProjectHero.Logic.Timeline
 
             if (!actorAvailable && blocker == ActionStartBlockerReason.None)
             {
-                // 授权/预算不可用：没有权威的有限恢复边界 ⇒ 不能凭猜测延期。
+                // 执行者不可用：没有权威的有限恢复边界 ⇒ 不能凭猜测延期。
                 return new ActionStartGateResult.Terminal(plan, ActionTerminationReason.ActorUnavailableAtStart);
             }
 
@@ -288,7 +284,6 @@ namespace ProjectHero.Logic.Timeline
     /// <summary>原子启动提交的稳定失败码。</summary>
     public static class ActionStartGateCommitCodes
     {
-        public const string RESOURCE_COMMIT_ERROR = "START_GATE_RESOURCE_COMMIT_ERROR";
         public const string PLAN_NOT_EDITABLE = "START_GATE_PLAN_NOT_EDITABLE";
         public const string PLAN_NOT_DUE = "START_GATE_PLAN_NOT_DUE";
     }

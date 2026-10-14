@@ -77,7 +77,7 @@ namespace ProjectHero.UnityView.Replay
                 {
                     if (!model.Decision.OwnPlans.Any(p => p.OwnerUnitId == owner.Value) && DraftMigrationCombatAction(model))
                         Require(model.ConfirmDraft() == null, "NATIVE_PLAYER_CONFIRM_FAILED");
-                    else { lastClose = model.Window.WindowId; Require(model.CloseWindow() == null, "NATIVE_CLOSE_FAILED"); }
+                    else lastClose = model.Window.WindowId;   // R1：窗口不能主动结束，等待到期。
                 }
                 bootstrap.DriveFrameForTests(0, 1f / 60);
             }
@@ -224,12 +224,8 @@ namespace ProjectHero.UnityView.Replay
                 var wall = Stopwatch.StartNew();
                 for (int tick = 0; tick < elapsed.Length; tick++)
                 {
-                    // Empty-player combat diagnostic: close own windows; production AI still creates
-                    // its real plans/terminal history. No fabricated health, contact or reaction facts.
-                    var window = sim.CurrentTurnWindow;
-                    if (window != null && sim.CommandAuthority.CanControl(player.ControllerId, window.OwnerUnitId))
-                        Require(entry.Submit(new CommandRequest(tick, new WindowCommandScope(window.WindowId),
-                            new WindowCommandPayload(WindowCommandKind.CloseOwnWindow))) == null, "PLAYER_SUBMISSION_REJECTED");
+                    // Empty-player combat diagnostic: the player submits nothing and its windows expire (R1);
+                    // production AI still creates its real plans/terminal history. No fabricated facts.
                     recorder.CaptureBeforeStep();
                     long before = GC.GetAllocatedBytesForCurrentThread(); long start = Stopwatch.GetTimestamp();
                     var result = sim.Step(tick, sim.CommandIngress.FreezeTick(tick));
@@ -284,7 +280,7 @@ namespace ProjectHero.UnityView.Replay
             var model = presentation.Model;
             var hero = model.Decision.ControlledUnitIds.Single();
             CombatUnitView unitView = null;
-            Require(model.Window?.TotalBudgetTicks == 180 && presentation.Registry.TryGetView(hero.Value, out unitView)
+            Require(model.Window?.DurationTicks == 180 && presentation.Registry.TryGetView(hero.Value, out unitView)
                 && unitView.UnitId == hero, "NATIVE_SLOT_OR_WINDOW_BINDING_FAILED");
             bool drafted = false;
             foreach (var id in model.Decision.ActionSetOf(hero))

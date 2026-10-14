@@ -61,7 +61,6 @@ namespace ProjectHero.Logic.Tests
         {
             public WindowOpenRequest TryOpenDue(long tick) => tick == 0
                 ? new WindowOpenRequest(Task09A2Fixture.Hero, 400) : null;
-            public bool ShouldCloseCurrentWindow(long tick) => false;
         }
         private static BattleSimulation Create(BattleDefinition definition, ReplayHeader header = null)
             => BattleSimulation.Create(definition, Task09A2Fixture.EncounterId,

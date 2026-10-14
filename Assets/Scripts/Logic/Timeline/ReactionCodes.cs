@@ -6,6 +6,7 @@ namespace ProjectHero.Logic.Timeline
     /// </summary>
     public static class ReactionCodes
     {
+        public const string REACTION_START_OUT_OF_RANGE = "REACTION_START_OUT_OF_RANGE";
         public const string OPPORTUNITY_ID_INVALID = "REACTION_OPPORTUNITY_ID_INVALID";
         public const string OPPORTUNITY_NOT_OPEN = "REACTION_OPPORTUNITY_NOT_OPEN";
         public const string OPPORTUNITY_DEFENDER_MISMATCH = "REACTION_OPPORTUNITY_DEFENDER_MISMATCH";
@@ -29,7 +30,7 @@ namespace ProjectHero.Logic.Timeline
         /// <summary>最后一个选项过期后自然关闭。</summary>
         public const string AllOptionsExpired = "REACTION_CLOSE_ALL_OPTIONS_EXPIRED";
 
-        /// <summary>来源攻击在 TriggerTick 前终止。</summary>
+        /// <summary>来源攻击在 SourceImpactTick 前终止。</summary>
         public const string SourceThreatCancelled = "REACTION_CLOSE_SOURCE_THREAT_CANCELLED";
 
         /// <summary>战斗结束（唯一 Finalizer 关闭全部机会）。</summary>

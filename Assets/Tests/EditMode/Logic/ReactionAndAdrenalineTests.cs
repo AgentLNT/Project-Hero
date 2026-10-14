@@ -34,11 +34,11 @@ namespace ProjectHero.Logic.Tests
             // 动作集合整体校验（普通动作不参与反应费用校验）。
             var blockSpec = new ActionSpec(
                 new ActionSpecId("action.block.test"), ActionType.Block,
-                new BlockReactionTimingSpec(60, 10), new BlockPayloadSpec(DefenseTagMask.Blockable),
+                new BlockReactionTimingSpec(60), new BlockPayloadSpec(DefenseTagMask.Blockable),
                 FrozenDesignValues.BlockAdrenalineCost);
             var dodgeSpec = new ActionSpec(
                 new ActionSpecId("action.dodge.test"), ActionType.Dodge,
-                new DodgeReactionTimingSpec(30, 10),
+                new DodgeReactionTimingSpec(30),
                 new DodgePayloadSpec(2,
                     new ProjectHero.Logic.Grid.MovementPatternSpec(
                         new MovementPatternId("pattern.dodge.test"),

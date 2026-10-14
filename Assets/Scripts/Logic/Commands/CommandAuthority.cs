@@ -200,16 +200,14 @@ namespace ProjectHero.Logic.Commands
         /// 因此"有并发授权"绝不能替代控制权。把载荷的单位经
         /// <see cref="ConcurrentActionUnitResolver"/> 解析成权威 <c>UnitId</c> 后，
         /// 它走<strong>与排程/反应完全相同的</strong>控制权判定。
-        /// 关窗命令不声明单位：它是不是"自己的窗口"由任务 07 的窗口权威按
-        /// <c>ExpectedWindowId</c> + 发行者判定（<c>WINDOW_ISSUER_CANNOT_CONTROL_UNIT</c>），
-        /// 处理器<strong>不</strong>替它猜窗口拥有者。
+        /// 已废止的关窗命令不声明单位，由窗口命令处理入口以 <c>WINDOW_CLOSE_NOT_PERMITTED</c> 拒绝。
         /// </summary>
         private string TryCollectWindowUnits(WindowCommandPayload payload, out List<UnitId> unitIds)
         {
             unitIds = new List<UnitId>(0);
             switch (payload.WindowKind)
             {
-                case WindowCommandKind.CloseOwnWindow:
+                case (WindowCommandKind)0:
                     return null;
 
                 case WindowCommandKind.ActivateConcurrentAction:

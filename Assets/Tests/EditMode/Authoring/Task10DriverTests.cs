@@ -66,12 +66,12 @@ namespace ProjectHero.Authoring.Tests
             var policy = ShadowCasePolicy.CreateDefault("full-migration-guard", seed.RulesVersion, true, true, true, true);
             var report = ShadowDifferenceDetector.Compare(input, policy);
             Assert.That(report.CanClaimEquivalence, Is.True);
-            Assert.That(report.TemporarilyUncomparable.Count, Is.EqualTo(60));
+            Assert.That(report.TemporarilyUncomparable.Count, Is.EqualTo(73));
             Assert.That(report.HasCompleteMigrationCoverage, Is.False);
-            Assert.That(report.MigrationCoverageClaim, Is.EqualTo("INCOMPLETE_TEMPORARY_FIELDS:60"));
-            Assert.That(report.Describe(), Does.Contain("migrationCoverage=INCOMPLETE_TEMPORARY_FIELDS:60"));
+            Assert.That(report.MigrationCoverageClaim, Is.EqualTo("INCOMPLETE_TEMPORARY_FIELDS:73"));
+            Assert.That(report.Describe(), Does.Contain("migrationCoverage=INCOMPLETE_TEMPORARY_FIELDS:73"));
             Assert.That(NewCutoverGate.Rejections(report, seed.BattleDefinitionHash, seed.RulesVersion,
-                seed.EncounterId.Value).Count, Is.GreaterThanOrEqualTo(60));
+                seed.EncounterId.Value).Count, Is.GreaterThanOrEqualTo(73));
         }
 
         [Test] public void MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs()
@@ -84,7 +84,7 @@ namespace ProjectHero.Authoring.Tests
             ShadowCasePolicy Resolve(System.Collections.Generic.IReadOnlyList<ShadowMigrationObligation> entries)
                 => ShadowCasePolicy.ResolveMigrationObligations(caseId, seed.RulesVersion, seed.BattleDefinitionHash, entries);
             Assert.That(Resolve(proofs).TemporarilyUncomparable, Is.Empty);
-            Assert.That(Resolve(proofs.Take(59).ToArray()).TemporarilyUncomparable.Count, Is.EqualTo(1));
+            Assert.That(Resolve(proofs.Take(proofs.Length - 1).ToArray()).TemporarilyUncomparable.Count, Is.EqualTo(1));
             Assert.That(Resolve(proofs.Concat(new[] { proofs[0] }).ToArray()).Rejections, Is.Not.Empty);
             var first = proofs[0];
             foreach (var invalid in new[] {

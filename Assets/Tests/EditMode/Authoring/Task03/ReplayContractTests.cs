@@ -29,12 +29,12 @@ namespace ProjectHero.Authoring.Tests.Task03
             Assert.That(header.ReplayFormatVersion, Is.EqualTo(ReplayFormat.Version));
             Assert.That(header.RulesVersion, Is.EqualTo(Task03.Definition.RulesVersion));
             Assert.That(header.RulesVersion, Is.Not.EqualTo(ReplayFormat.Version.ToString()));
-            Assert.That(Task03.Definition.RulesVersion, Is.EqualTo("battle-def-v2-turn180"));
+            Assert.That(Task03.Definition.RulesVersion, Is.EqualTo("battle-def-v4-defense-duration"));
 
             // 两个版本互不派生：只改玩法规则版本不改变格式版本，反之亦然。
             // v4 archives frozen ledgers/full terminal payloads and encodes segment StartTick.
             // These are format/hash changes; the explicit turn180 gameplay definition remains unchanged.
-            Assert.That(ReplayFormat.Version, Is.EqualTo(4));
+            Assert.That(ReplayFormat.Version, Is.EqualTo(6));
             Assert.That(ReplayHeaderValidation.Validate(header with { ReplayFormatVersion = 3 }, Task03.Definition),
                 Is.EqualTo(ReplayCodes.REPLAY_FORMAT_VERSION_MISMATCH));
             var ruleChanged = header with { RulesVersion = "battle-def-v2" };

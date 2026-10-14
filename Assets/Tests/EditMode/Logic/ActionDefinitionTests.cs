@@ -61,7 +61,7 @@ namespace ProjectHero.Logic.Tests
             => new ActionSpec(
                 new ActionSpecId("action.guard.test"),
                 ActionType.Guard,
-                new GuardTimingSpec(windup, active, recovery),
+                new GuardTimingSpec(active),
                 new GuardPayloadSpec(
                     new Dictionary<DamageChannelId, int>
                     {
@@ -75,7 +75,7 @@ namespace ProjectHero.Logic.Tests
             => new ActionSpec(
                 new ActionSpecId("action.block.test"),
                 ActionType.Block,
-                new BlockReactionTimingSpec(windup, recovery),
+                new BlockReactionTimingSpec(windup),
                 new BlockPayloadSpec(DefenseTagMask.Blockable),
                 adrenalineCost);
 
@@ -83,7 +83,7 @@ namespace ProjectHero.Logic.Tests
             => new ActionSpec(
                 new ActionSpecId("action.dodge.test"),
                 ActionType.Dodge,
-                new DodgeReactionTimingSpec(windup, recovery),
+                new DodgeReactionTimingSpec(windup),
                 new DodgePayloadSpec(MaxDistanceSteps: 2, MakeMovementPattern("pattern.dodge.test")),
                 adrenalineCost);
 
@@ -126,35 +126,27 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void GuardTimingRequiresPositiveWindupActiveAndRecovery()
+        public void GuardTimingRequiresPositiveDuration()
         {
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(0, 10, 5)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_TIMING_INVALID));
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(5, 0, 5)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_TIMING_INVALID));
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(5, 10, 0)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_TIMING_INVALID));
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(-1, 10, 5)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_TIMING_INVALID));
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(5, 10, 5)), Is.Null);
+            foreach (int duration in new[] {0,-1})
+                Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(active: duration)), Is.EqualTo(ActionDefinitionCodes.GUARD_TIMING_INVALID));
+            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(active: 60)), Is.Null);
         }
 
         [Test]
         public void GuardEligibleResistanceMustBePartial()
         {
             // 分通道动作抵抗严格位于 [1,1023]。
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(channelResistance: 0)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL));
+            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(channelResistance: 0)), Is.Null);
             Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(channelResistance: 1024)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL));
+                Is.EqualTo(ActionDefinitionCodes.GUARD_RESISTANCE_NOT_BELOW_FULL));
             Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(channelResistance: 1)), Is.Null);
             Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(channelResistance: 1023)), Is.Null);
 
             // 动量抵抗同样严格位于 [1,1023]。
-            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(momentumResistance: 0)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL));
+            Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(momentumResistance: 0)), Is.Null);
             Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(momentumResistance: 1024)),
-                Is.EqualTo(ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL));
+                Is.EqualTo(ActionDefinitionCodes.GUARD_RESISTANCE_NOT_BELOW_FULL));
             Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(momentumResistance: 1)), Is.Null);
             Assert.That(ActionDefinitionValidation.ValidateGuard(MakeGuard(momentumResistance: 1023)), Is.Null);
 
@@ -221,7 +213,7 @@ namespace ProjectHero.Logic.Tests
                 Is.EqualTo(ActionDefinitionCodes.REACTION_ACTION_REQUIRES_POSITIVE_COST));
 
             // 闭合匹配矩阵：类型错配整体拒绝。
-            var mismatched = MakeAttack() with { Timing = new GuardTimingSpec(5, 10, 5) };
+            var mismatched = MakeAttack() with { Timing = new GuardTimingSpec(10) };
             Assert.That(ActionDefinitionValidation.ValidateTypePairing(mismatched),
                 Is.EqualTo(ActionDefinitionCodes.INVALID_ACTION_TYPE_COMBINATION));
             Assert.That(ActionDefinitionValidation.ValidateActionSpec(MakeAttack(30, 30), rules, 20f, null),

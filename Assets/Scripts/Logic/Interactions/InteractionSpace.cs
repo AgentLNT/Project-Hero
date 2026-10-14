@@ -23,11 +23,10 @@ namespace ProjectHero.Logic.Interactions
         long StartTick,
         long EndTick,
         long ImpactTick,
-        long ActiveStartTick,
-        long ActiveEndTick,
-        long TriggerTick,
+        long SourceImpactTick,
         UnitId? PrimaryTargetUnitId,
-        bool IsTerminal)
+        bool IsTerminal,
+        int DefenseQuotaRemainingQ10 = 1024, long ReactionTriggeredAtTick = -1L)
     {
         /// <summary>
         /// 节点资格用的有效区间判定：<c>StartTick &lt;= tick &lt;= EndTick</c>（<strong>闭</strong>区间）。
@@ -39,8 +38,7 @@ namespace ProjectHero.Logic.Interactions
         /// </summary>
         public bool CoversTick(long tick) => StartTick <= tick && tick <= EndTick;
 
-        /// <summary>Guard 判定用的 <c>[ActiveStartTick, ActiveEndTick)</c>（主方案 0.4 冻结语义）。</summary>
-        public bool IsActiveAt(long tick) => ActiveStartTick <= tick && tick < ActiveEndTick;
+        public bool IsActiveAt(long tick) => StartTick <= tick && tick < EndTick;
 
         /// <summary>Move 判定用的 <c>[StartTick, EndTick)</c>。</summary>
         public bool OccupiesTick(long tick) => StartTick <= tick && tick < EndTick;
@@ -59,11 +57,9 @@ namespace ProjectHero.Logic.Interactions
                 plan.StartTick,
                 plan.EndTick,
                 plan.ImpactTick,
-                plan.ActiveStartTick,
-                plan.ActiveEndTick,
-                plan.HasFixedTriggerTick ? plan.TriggerTick : 0L,
+                plan.HasSourceImpactTick ? plan.SourceImpactTick : 0L,
                 plan.PrimaryTargetUnitId,
-                plan.IsTerminal);
+                plan.IsTerminal, plan.DefenseQuotaRemainingQ10, plan.ReactionTriggeredAtTick);
         }
     }
 

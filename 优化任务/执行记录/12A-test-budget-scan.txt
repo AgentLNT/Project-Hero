@@ -1,0 +1,82 @@
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:799:        /// `BudgetOverrun`、`ComparedCheckpoints == 0`、`claim=INVALID:`，
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:869:                Assert.That(current.InvalidatedByBudget, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1239:            Assert.That(Bootstrap.LastShadowReport.InvalidatedByBudget, Is.False);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1634:        public IEnumerator ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy()
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1661:                ShadowCasePolicy.CreateDefault("03B-shadow-budget", seed.RulesVersion));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1663:            Assert.That(report.BudgetOverrun, Is.True, "超出诊断预算必须标记预算超限");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1664:            Assert.That(report.InvalidatedByBudget, Is.True);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1665:            Assert.That(report.BudgetOverrunReason, Does.StartWith(ShadowComparisonCodes.ShadowBudgetOverrun));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1682:            Bootstrap.StopBattle("shadow-budget-test");
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:1774:            Assert.That(aligned.InvalidatedByBudget, Is.False);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3948:        /// <paramref name="checkpointBudget"/> 默认 64（既有用例的原值，逐字不变）。
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3950:        /// <c>INVALID:SHADOW_BUDGET_OVERRUN</c>（比较根本不会执行），
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3962:            ShadowCasePolicy policy, int checkpointBudget = 64,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:3968:                    ShadowComparisonConfig.Strict(checkpointBudget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4867:            // 检查点数必然超过既有用例的 64；一旦超限报告会变成 INVALID:SHADOW_BUDGET_OVERRUN、
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4870:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4871:            Assert.That(budget, Is.GreaterThan(0));
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4872:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4881:                budget, Task06ProfileLegacyObservations);
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4882:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:4884:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\RuntimeOwnershipTests.cs:5464:            Assert.That(report.BudgetOverrun, Is.False, report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:770:        /// <c>INVALID:SHADOW_BUDGET_OVERRUN</c>（比较根本不会执行），因此放预算不是放宽判据，
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:777:            int budget = legacySide.Snapshots.Count;
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:778:            Assert.That(shadowSide.Snapshots.Count, Is.EqualTo(budget),
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:785:                    ShadowComparisonConfig.Strict(budget),
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:790:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:792:                + report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:811:            Assert.That(report.BudgetOverrun, Is.False,
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:812:                report.BudgetOverrunReason + " ; " + report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:948:            Assert.That(report.BudgetOverrun, Is.False, report.Describe());
+Assets/Tests\PlayMode\Task09ShadowProfileTests.cs:2057:                    + "替代证据：EditMode Task08OpeningAdrenalineContractTests / Task07TurnWindowAndBudgetTests。"
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:337:                "cost", "fee", "price", "adrenaline", "budget", "metaresource"
+Assets/Tests\EditMode\Authoring\Task03\CommandIngressTests.cs:431:            string[] forbidden = { "TriggerTick", "Cost", "Adrenaline", "Budget", "MetaResource", "Price", "Fee" };
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:189:        /// <c>AttackBudgetCostEqualsResolvedWindupPlusRecovery</c>：
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:193:        public void AttackImpactOccursAtResolvedWindupEndAndBudgetEqualsWindupPlusRecovery()
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:261:        /// <c>GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce</c>：
+Assets/Tests\EditMode\Authoring\Task05\Task05ActionPlanAndLaneTests.cs:266:        public void GuardTimingResolvesWindupActiveRecoveryAndBudgetOnce()
+Assets/Tests\EditMode\Authoring\Task05\Task05Fixture.cs:32:    /// <c>ImpactTick = Start + 30</c>、<c>EndTick = Start + 60</c>、<c>BudgetCostTicks = 60</c>。</item>
+Assets/Tests\EditMode\Logic\Task06LogicGridTests.cs:420:        public void MoveEndTickAndBudgetUsePathWeightNotEdgeCount()
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:164:        [Test] public void InvalidOrBudgetExceededShadowRunCannotAuthorizeNewCutover()
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:173:                    ShadowCasePolicy.CreateDefault("task10-cutover-over-budget", sim.RulesVersion));
+Assets/Tests\EditMode\Authoring\Task10ProductionTests.cs:174:                Assert.That(report.BudgetOverrun, Is.True);
+Assets/Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:426:        /// <c>ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept</c>（任务包 §11 第四段）。
+Assets/Tests\EditMode\Authoring\Task05\Task05ReactionOpportunityTests.cs:429:        public void ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept()
+Assets/Tests\EditMode\Logic\Task06DodgeRelocationTests.cs:225:        public void DodgeCommitFailureLeavesDependentMovesReservationsAndBudgetsUnchanged()
+Assets/Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:737:        /// <c>MoveChainRecomputesProjectedStartPathDurationAndBudget</c>：
+Assets/Tests\EditMode\Authoring\Task05\Task05ScheduleEditorTests.cs:743:        public void MoveChainRecomputesProjectedStartPathDurationAndBudget()
+Assets/Tests\EditMode\Logic\Task07QueueAndReactionLaneTests.cs:38:    /// 原 <c>Task07BudgetTransactionTests</c>（已随 R1 删除）的真实定义 + 真实
+Assets/Tests\EditMode\Logic\Task07QueueAndReactionLaneTests.cs:120:        /// 与原 <c>Task07BudgetTransactionTests.BuildDefinition</c> 同形的定义，只有两处任务 07 需要的差异：
+Assets/Tests\EditMode\Logic\Task07RemovalAndDiscardTests.cs:640:        // 这里与原 Task07BudgetTransactionTests（已随 R1 删除）采用**同一取舍**：
+Assets/Tests\EditMode\Logic\Task07TurnWindowAndBudgetTests.cs:23:    public class Task07TurnWindowAndBudgetTests
+Assets/Tests\EditMode\Logic\Task07TurnWindowAndBudgetTests.cs:78:            Assert.That(windowType.GetProperties().Any(p => p.Name.IndexOf("Budget", StringComparison.Ordinal) >= 0), Is.False,
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:48:    /// <c>BudgetCostTicks = 90</c>。
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:55:    /// <c>WINDOW_BUDGET_SOURCE_CLOSED_OR_MISMATCH</c> / <c>WINDOW_STALE_OR_CLOSED</c> /
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:56:    /// <c>WINDOW_INSUFFICIENT_BUDGET</c> / <c>WINDOW_ISSUER_CANNOT_CONTROL_UNIT</c>
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:96:        /// （解析后的攻击 <c>BudgetCostTicks = 90</c>），因此 1000 保证"预算不足"永远不是失败原因。
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:98:        private const int ScriptWindowBudget = 1000;
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:114:        /// <item>在 Tick 0 打开一个属于计划拥有者的脚本窗口（预算 <see cref="ScriptWindowBudget"/>、
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:206:            sim.WindowManager.ScheduleWindow(0L, owner, ScriptWindowBudget);
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:1238:            // 任务 07 接入第四个固定清理参与者：TurnBudget 账本与肾上腺素预留
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:1239:            // （ActionPlanCleanupOrder.BudgetAndAdrenaline = 600）。
+Assets/Tests\EditMode\Authoring\Task05\Task05SimulationWiringTests.cs:1464:        /// 固定区间、<c>BudgetCostTicks = 0</c>、<c>SubmittedWindowId = null</c>、
+Assets/Tests\EditMode\Logic\Task08ForcedDisplacementBatchTests.cs:30:    /// ⚠ 夹具必须绕开的一条生产接缝（与 <c>Task07ForcedDisplacementBudgetTests</c> 同一口径）：
+Assets/Tests\EditMode\Logic\Task08RemainingCoverageTests.cs:261:        public void InterruptedPlanLeavesLaneGapAndDoesNotRefundBudget()
+Assets/Tests\EditMode\Logic\Task09AiDecisionTests.cs:159:        /// <c>TurnWindowBudgetAuthority</c>/<c>ActionScheduler</c> 与
+Assets/Tests\EditMode\Logic\Task09AiDecisionTests.cs:960:                "ProjectHero.Logic.Turns.TurnWindowBudgetAuthority",
+Assets/Tests\EditMode\Logic\Task09CommandSurfaceTests.cs:31:            "TriggerTick", "Cost", "Price", "Fee", "Adrenaline", "Budget", "MetaResource"
+Assets/Tests\EditMode\Logic\Task09CommandSurfaceTests.cs:114:                "adrenaline", "budget", "metaresource"
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:57:        /// 反应计划直接 Locked、<c>SubmittedWindowId</c> 为空、<c>BudgetCostTicks</c> 与
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:58:        /// <c>ReservedTurnBudgetTicks</c> 恒为 0（08 交接 §4.5 冻结的
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:59:        /// <c>ReservedTurnBudgetTicks == 0</c> 口径），窗口账本一位不变。
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:66:        /// <item>反应计划参与窗口预算（<c>BudgetCostTicks != 0</c>）⇒ 账本断言红；</item>
+Assets/Tests\EditMode\Logic\Task09ReactionCommandTests.cs:169:                "Adrenaline", "Budget", "Sequence", "Ordinal", "Priority", "Controller", "Issuer", "Source"
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:25:    /// <c>AddOrBudgetIncreaseRequiresCurrentWindowScope</c>、
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:54:        private static Task09Fixture.ScriptedWindowSchedule WindowAtZero(int budget = Task09Fixture.WindowDuration)
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:56:                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, budget);
+Assets/Tests\EditMode\Logic\Task09ScheduleCommandTests.cs:295:        public void AddOrBudgetIncreaseRequiresCurrentWindowScope()
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:126:        public void WindowValidationSurvivesBudgetRemovalForPreviewAndCommit(bool preview)
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:262:        [Test] public void SnapshotHashAndEventsContainNoBudgetState()
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:265:                Assert.That(type.GetProperties().Where(p => p.Name.IndexOf("budget", StringComparison.OrdinalIgnoreCase) >= 0), Is.Empty, type.Name);
+Assets/Tests\EditMode\Logic\Task12AWindowDurationTests.cs:267:                && t.Name.IndexOf("budget", StringComparison.OrdinalIgnoreCase) >= 0), Is.Empty);

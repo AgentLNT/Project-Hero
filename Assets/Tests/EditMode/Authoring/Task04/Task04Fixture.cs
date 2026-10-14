@@ -440,18 +440,24 @@ namespace ProjectHero.Authoring.Tests.Task04
         }
     }
 
-    /// <summary>阶段 3/17 夹具：在指定 Tick 打开窗口、在指定 Tick 请求关闭。</summary>
+    /// <summary>阶段 3/17 夹具：在指定 Tick 打开窗口，窗口按时长到期关闭（R1）。</summary>
     internal sealed class WindowScheduleForTask04 : ITurnWindowSchedule
     {
         public long OpenTick = -1L;
         public long OwnerUnitId = -1L;
-        public int BudgetTicks = 60;
+        public int DurationTicks = 60;
+
+        /// <summary>
+        /// R1：窗口不能被主动关闭。<c>CloseTick</c> 被换算成打开时长（窗口在 <c>CloseTick</c> 的 Tick 末到期），
+        /// 因此既有脚本的关闭时点保持不变。
+        /// </summary>
         public long CloseTick = -1L;
 
         public WindowOpenRequest TryOpenDue(long tick)
-            => tick == OpenTick ? new WindowOpenRequest(new UnitId(OwnerUnitId), BudgetTicks) : null;
-
-        public bool ShouldCloseCurrentWindow(long tick) => tick == CloseTick;
+            => tick == OpenTick
+                ? new WindowOpenRequest(new UnitId(OwnerUnitId),
+                    CloseTick >= OpenTick ? checked((int)(CloseTick - OpenTick + 1)) : DurationTicks)
+                : null;
     }
 
     /// <summary>胜负评估夹具：统计调用与返回结果码，但导出到生产评估器（不复制规则）。</summary>

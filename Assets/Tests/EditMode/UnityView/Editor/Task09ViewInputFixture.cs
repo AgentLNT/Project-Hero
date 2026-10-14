@@ -102,11 +102,10 @@ namespace ProjectHero.Tests.UnityView.Editor
                 : BattleSimulation.Create(Definition, EncounterId, RuntimeInputs,
                     new BattleSimulationAssembly(turnWindowSchedule: schedule));
 
-        /// <summary>真实窗口预算（与任务 09 A 流夹具同值；窗口只在脚本 Tick 打开）。</summary>
-        public const int WindowBudget = 400;
+        public const int WindowDuration = 400;
 
         public static ScriptedWindowSchedule WindowAtZero()
-            => new ScriptedWindowSchedule().Open(0L, HeroUnitId, WindowBudget);
+            => new ScriptedWindowSchedule().Open(0L, HeroUnitId, WindowDuration);
 
         /// <summary>在指定 Tick 提交"给英雄新增一个普通攻击计划"（真实命令载荷）。</summary>
         public static CommandRequest AddHeroAttackCommand(
@@ -148,14 +147,15 @@ namespace ProjectHero.Tests.UnityView.Editor
         {
             private readonly Dictionary<long, WindowOpenRequest> _opens =
                 new Dictionary<long, WindowOpenRequest>();
-            private readonly HashSet<long> _closes = new HashSet<long>();
+            private readonly SortedSet<long> _closes = new SortedSet<long>();
 
-            public ScriptedWindowSchedule Open(long tick, UnitId owner, int budget)
+            public ScriptedWindowSchedule Open(long tick, UnitId owner, int duration)
             {
-                _opens[tick] = new WindowOpenRequest(owner, budget);
+                _opens[tick] = new WindowOpenRequest(owner, duration);
                 return this;
             }
 
+            /// <summary>R1：关闭时点换算成此前最近一次打开的时长（窗口在该 Tick 末到期）。</summary>
             public ScriptedWindowSchedule Close(long tick)
             {
                 _closes.Add(tick);
@@ -163,9 +163,12 @@ namespace ProjectHero.Tests.UnityView.Editor
             }
 
             public WindowOpenRequest TryOpenDue(long tick)
-                => _opens.TryGetValue(tick, out WindowOpenRequest request) ? request : null;
-
-            public bool ShouldCloseCurrentWindow(long tick) => _closes.Contains(tick);
+            {
+                if (!_opens.TryGetValue(tick, out WindowOpenRequest request)) return null;
+                foreach (long close in _closes)
+                    if (close >= tick) return request with { DurationTicks = checked((int)(close - tick + 1)) };
+                return request;
+            }
         }
 
         public static CommandIngressEntry PlayerEntry(BattleSimulation simulation)
@@ -244,17 +247,10 @@ namespace ProjectHero.Tests.UnityView.Editor
             {
                 TurnWindowSnapshot window = snapshot.WindowManager.Windows[i];
                 builder.Append("/w").Append(window.WindowId.ToString(System.Globalization.CultureInfo.InvariantCulture))
-                       .Append(':').Append(window.TotalBudgetTicks.ToString(System.Globalization.CultureInfo.InvariantCulture))
-                       .Append(':').Append(window.ReservedBudgetTicks.ToString(System.Globalization.CultureInfo.InvariantCulture))
-                       .Append(':').Append(window.SpentBudgetTicks.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                       .Append(':').Append(window.OpenedAtTick.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                       .Append(':').Append(window.EndTick.ToString(System.Globalization.CultureInfo.InvariantCulture))
                        .Append(':').Append(window.IsOpen ? "1" : "0")
                        .Append(':').Append(window.IsAcceptingSubmissions ? "1" : "0");
-                if (window.Reservations == null) continue;
-                for (int r = 0; r < window.Reservations.Count; r++)
-                {
-                    builder.Append("/wr").Append(window.Reservations[r].ActionPlanId.ToString(System.Globalization.CultureInfo.InvariantCulture))
-                           .Append(':').Append(window.Reservations[r].ReservedTicks.ToString(System.Globalization.CultureInfo.InvariantCulture));
-                }
             }
 
             builder.Append("|res=").Append(snapshot.Resources.MetaResource.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -282,10 +278,8 @@ namespace ProjectHero.Tests.UnityView.Editor
                        .Append(plan.EndTick.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(plan.LastRequestedStartTick.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(plan.LastEditedScheduleRevision.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
-                       .Append(plan.BudgetCostTicks.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
-                       .Append(plan.ReservedTurnBudgetTicks.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(plan.SubmittedWindowId.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
-                       .Append(plan.TriggerTick.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
+                       .Append(plan.SourceImpactTick.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(plan.PrimaryTargetUnitId.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(plan.DestinationX.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(',')
                        .Append(plan.DestinationY.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
@@ -358,7 +352,7 @@ namespace ProjectHero.Tests.UnityView.Editor
                 builder.Append(opportunity.ReactionOpportunityId.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(opportunity.DefenderUnitId.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(opportunity.State.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
-                       .Append(opportunity.TriggerTick.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
+                       .Append(opportunity.SourceImpactTick.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(opportunity.BoundActionPlanId.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(':')
                        .Append(opportunity.OpenOptionCount.ToString(System.Globalization.CultureInfo.InvariantCulture));
             }

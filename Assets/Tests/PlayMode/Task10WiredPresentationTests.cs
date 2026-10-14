@@ -29,6 +29,31 @@ namespace ProjectHero.Tests.PlayMode
         private static void Click(object button)
             => ((UnityEvent)button.GetType().GetProperty("onClick").GetValue(button)).Invoke();
 
+        [UnityTest] public IEnumerator FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection()
+        {
+            yield return LoadMainScene();
+            Bootstrap.StopBattle("window-hud-prepare"); Bootstrap.ReleaseBattle();
+            Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
+            Bootstrap.DriveFrameForTests(0, 1f / 60);
+            var presentation = UnityEngine.Object.FindFirstObjectByType<BattlePresentationView>();
+            var model = presentation.Model; var hero = model.Decision.ControlledUnitIds.Single();
+            Assert.That(presentation.GetComponentsInChildren<Transform>(true).Any(t => t.name == "End turn"), Is.False);
+            Assert.That(model.Window.DurationTicks, Is.EqualTo(180));
+            var guard = model.Decision.ActionSetOf(hero).First(id => model.Decision.FindAction(id).Type == ActionType.Guard);
+            Assert.That(model.SetDraft(new[] { new AddOrdinaryPlanOperation(1, hero, guard, model.Window.EndTick) }).RejectionCode,
+                Is.EqualTo("SCHEDULE_START_OUTSIDE_SOURCE_WINDOW"));
+            Bootstrap.DriveFrameForTests(0, 1f / 60);
+            presentation.GetType().GetMethod("Render", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(presentation, null);
+            var textType = Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true);
+            Assert.That((string)textType.GetProperty("text").GetValue(Field(presentation, "_status")), Does.Contain("Remaining"));
+            CaptureView(presentation, "12B-window-rejection");
+            while (model.Decision.Tick < 180) Bootstrap.DriveFrameForTests(0, 1f / 60);
+            Assert.That(model.Window.OpenedAtTick, Is.EqualTo(180));
+            Assert.That(model.Window.OwnerUnitId, Is.Not.EqualTo(hero.Value));
+            File.WriteAllText("优化任务/执行记录/12B-main-window-observations.txt",
+                "mode=New\nfirstWindow=[0,180)\nsecondWindowOpenedAtTick=180\nendTurnButtons=0\nstatus=remaining seconds\nrejection=SCHEDULE_START_OUTSIDE_SOURCE_WINDOW\n");
+        }
+
         private static void CaptureView(BattlePresentationView presentation, string name)
         {
             if (UnityEngine.Rendering.GraphicsDeviceType.Null == SystemInfo.graphicsDeviceType) return;
@@ -230,10 +255,10 @@ namespace ProjectHero.Tests.PlayMode
                     {
                         bool hasPlan = model.Decision.OwnPlans.Any(p => p.OwnerUnitId == own.Value);
                         if (!hasPlan && DraftCombatAction(model)) Assert.That(model.ConfirmDraft(), Is.Null);
-                        else { lastClose = model.Window.WindowId; Assert.That(model.CloseWindow(), Is.Null); }
+                        else { lastClose = model.Window.WindowId; Assert.That(WaitForWindowExpiry(model), Is.Null); }
                     }
                     Bootstrap.DriveFrameForTests(0, 1f / 60);
-                    if (run == 0 && frame == 0) CaptureView(presentation, "10-main-new-start");
+                    if (run == 0 && frame == 0) CaptureView(presentation, "12B-main-new-start");
                     if (frame % 120 == 0) yield return null;
                 }
                 Assert.That(model.Decision.BattleEnd.IsEnded, Is.True,
@@ -241,7 +266,7 @@ namespace ProjectHero.Tests.PlayMode
                     + string.Join(";", model.Decision.VisibleUnits) + " rejection=" + model.LastRejection);
                 Assert.That(model.SubmittedCommands, Is.GreaterThan(0));
                 Assert.That(feedback.EndFeedbackCount, Is.EqualTo(1));
-                if (run == 0) CaptureView(presentation, "10-main-new-ended");
+                if (run == 0) CaptureView(presentation, "12B-main-new-ended");
                 var finalHash = Bootstrap.NewDriver.CurrentSnapshot.ComputeHash();
                 for (int i = 0; i < 20; i++) Bootstrap.DriveFrameForTests(0, 1f / 60);
                 Assert.That(Bootstrap.NewDriver.CurrentSnapshot.ComputeHash(), Is.EqualTo(finalHash));
@@ -289,11 +314,10 @@ namespace ProjectHero.Tests.PlayMode
                 .SelectMany(root => root.GetComponentsInChildren<BattlePresentationView>(true)).Single();
             Bootstrap.DriveFrameForTests(0, 1f / 60);
             var model = presentation.Model;
-            CaptureView(presentation, "10-main-new-start");
+            CaptureView(presentation, "12B-main-new-start");
             var hero = model.Decision.ControlledUnitIds.Single();
             Assert.That(presentation.Registry.TryGetView(hero.Value, out var view), Is.True);
             Assert.That(view.UnitId, Is.EqualTo(hero));
-            Assert.That(model.Window.TotalBudgetTicks, Is.EqualTo(180));
             var legacyHudRoots = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(root => root.GetComponentsInChildren<Transform>(true)).Where(t => t.name.StartsWith("HUD_", StringComparison.Ordinal))
                 .Select(t => t.gameObject).ToArray();
@@ -309,7 +333,7 @@ namespace ProjectHero.Tests.PlayMode
                 Click(((GameObject)targets[0]).GetComponent(buttonType));
                 attempts.Add(attack.Value + ":" + (model.Preview.RejectionCode ?? "available"));
                 if (model.Preview.Succeeded) break;
-                Assert.That(model.Preview.RejectionCode, Is.EqualTo("WINDOW_INSUFFICIENT_BUDGET"));
+                Assert.That(model.Preview.RejectionCode, Is.EqualTo("SCHEDULE_START_OUTSIDE_SOURCE_WINDOW"));
             }
             Assert.That(model.Preview?.Succeeded, Is.True, "The real 180 Tick window needs an affordable Attack: " + string.Join(",", attempts));
             Assert.That(model.SubmittedCommands, Is.Zero, "Target selection only creates a local draft.");
@@ -343,8 +367,8 @@ namespace ProjectHero.Tests.PlayMode
                     if (x == 0 && y == 0 || ((x + y) & 1) != 0) continue;
                     var candidate = new GridPoint(owner.X + x, owner.Y + y);
                     if (model.SetDraft(new ScheduleEditOperation[] {
-                        new AddOrdinaryPlanOperation(1, hero, guard, 200),
-                        new AddOrdinaryPlanOperation(2, hero, move, 290, Destination: candidate) }).Succeeded)
+                        new AddOrdinaryPlanOperation(1, hero, guard, 10),
+                        new AddOrdinaryPlanOperation(2, hero, move, 70, Destination: candidate) }).Succeeded)
                         destination = candidate;
                 }
             Assert.That(destination.HasValue, Is.True, "The real footprint needs a valid affordable future Move.");
@@ -359,39 +383,39 @@ namespace ProjectHero.Tests.PlayMode
             long revision = model.Decision.ScheduleRevision, submissions = model.SubmittedCommands;
             var original = Bootstrap.NewDriver.CurrentSnapshot;
             row.OnBeginDrag(pointer);
-            for (int offset = 20; offset <= 440; offset += 20)
+            for (int offset = 20; offset <= 40; offset += 2)
             { pointer.position = new Vector2(100 + offset, 100); row.OnDrag(pointer); }
             row.OnEndDrag(pointer);
             Assert.That(model.Preview.Succeeded, Is.True);
             Assert.That(model.SubmittedCommands, Is.EqualTo(submissions), "Every drag position remains a local preview.");
             Assert.That(Bootstrap.NewDriver.CurrentSnapshot, Is.SameAs(original));
             var preview = model.Preview.PreviewPlans.Select(p => p.Plan).ToArray();
-            Assert.That(preview.Single(p => p.ActionPlanId == firstId).StartTick, Is.EqualTo(310));
-            Assert.That(preview.Single(p => p.ActionPlanId == secondId).StartTick, Is.EqualTo(400), "Logic previews right ripple.");
+            Assert.That(preview.Single(p => p.ActionPlanId == firstId).StartTick, Is.EqualTo(20));
+            Assert.That(preview.Single(p => p.ActionPlanId == secondId).StartTick, Is.EqualTo(80), "Logic previews right ripple after the 60-Tick Guard.");
             Click(Field(presentation, "_confirm")); Click(Field(presentation, "_confirm"));
             Assert.That(model.SubmittedCommands, Is.EqualTo(submissions + 1));
             Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(model.Decision.ScheduleRevision, Is.EqualTo(revision + 1));
-            Assert.That(model.Decision.OwnPlans.Single(p => p.ActionPlanId == secondId).StartTick, Is.EqualTo(400));
+            Assert.That(model.Decision.OwnPlans.Single(p => p.ActionPlanId == secondId).StartTick, Is.EqualTo(80));
 
             pointer.button = UnityEngine.EventSystems.PointerEventData.InputButton.Right; row.OnPointerClick(pointer);
             Assert.That(model.HasDraft, Is.True); Assert.That(model.SubmittedCommands, Is.EqualTo(submissions + 1));
             Click(Field(presentation, "_confirm")); Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(model.Decision.OwnPlans.Any(p => p.ActionPlanId == firstId), Is.False);
             Assert.That(model.Timeline.Single(p => p.ActionPlanId == firstId).State, Is.EqualTo((int)ActionPlanState.Terminated));
-            Assert.That(model.Decision.OwnPlans.Single(p => p.ActionPlanId == secondId).StartTick, Is.EqualTo(400), "Delete never compacts left.");
+            Assert.That(model.Decision.OwnPlans.Single(p => p.ActionPlanId == secondId).StartTick, Is.EqualTo(80), "Delete never compacts left.");
 
             // An accepted transaction is still pending while the next local draft is made.
-            Assert.That(model.SetDraft(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(3, hero, guard, 500) }).Succeeded, Is.True);
+            Assert.That(model.SetDraft(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(3, hero, guard, 165) }).Succeeded, Is.True);
             Click(Field(presentation, "_confirm"));
-            model.SetDraft(new ScheduleEditOperation[] { new MoveEditablePlanOperation(new ActionPlanId(secondId), 420) });
+            model.SetDraft(new ScheduleEditOperation[] { new MoveEditablePlanOperation(new ActionPlanId(secondId), 82) });
             submissions = model.SubmittedCommands;
             Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(model.HasDraft, Is.False, "A new committed revision discards the preceding local candidate.");
             Assert.That(model.SubmittedCommands, Is.EqualTo(submissions));
-            Assert.That(model.SetDraft(new ScheduleEditOperation[] { new MoveEditablePlanOperation(new ActionPlanId(secondId), 430) }).Succeeded, Is.True);
+            Assert.That(model.SetDraft(new ScheduleEditOperation[] { new MoveEditablePlanOperation(new ActionPlanId(secondId), 83) }).Succeeded, Is.True);
             Assert.That(model.Preview.BaseScheduleRevision, Is.EqualTo(model.Decision.ScheduleRevision));
-            TestContext.WriteLine("Real main timeline: future Guard/Move, 22 drag previews, one atomic confirmation, right ripple, delete without compaction, revision rebase.");
+            TestContext.WriteLine("Real main timeline: future Guard/Move, 20 drag previews, one atomic confirmation, right ripple, delete without compaction, revision rebase.");
             Bootstrap.StopBattle("timeline-complete"); Bootstrap.ReleaseBattle(); yield return null;
         }
 
@@ -424,7 +448,7 @@ namespace ProjectHero.Tests.PlayMode
         [UnityTest] public IEnumerator MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat()
         { yield return MainSceneReaction(ActionType.Dodge); }
 
-        [UnityTest] public IEnumerator MainCanvasDodgeCancelsFutureMoveChainAndReleasesClosedOriginalWindow()
+        [UnityTest] public IEnumerator DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease()
         { yield return MainSceneReaction(ActionType.Dodge, true); }
 
         [UnityTest] public IEnumerator MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts()
@@ -451,7 +475,7 @@ namespace ProjectHero.Tests.PlayMode
                 if (model.Window?.OwnerUnitId == hero.Value && !model.Decision.OwnPlans.Any())
                 {
                     if (DraftCombatAction(model)) { Click(Field(presentation, "_confirm")); }
-                    else Assert.That(model.CloseWindow(), Is.Null);
+                    else Assert.That(WaitForWindowExpiry(model), Is.Null);
                 }
                 Bootstrap.DriveFrameForTests(0, 1f / 60);
             }
@@ -467,7 +491,7 @@ namespace ProjectHero.Tests.PlayMode
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay);
-                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/11-scene-ai-reaction.heroReplay"), file.ToArray());
+                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12B-11-scene-ai-reaction.heroReplay"), file.ToArray());
                 file.Position = 0; var loaded = ReplayFile.Load(file, source.Seed.Definition);
                 using var player = new ReplayPlayer(source.Seed.Definition,
                     h => ProductionBattleComposition.Create(source.Seed.Definition, h.EncounterId, h.RuntimeInputs)); player.Load(loaded);
@@ -492,7 +516,7 @@ namespace ProjectHero.Tests.PlayMode
                 var source = NewGameObject("Task11MinimumMomentumScenario").AddComponent<Task11SceneScenarioSource>();
                 source.Seed = configured;
                 Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(Bootstrap, source);
-                TestContext.WriteLine("Canvas combination fixture definition=" + configured.Definition.BattleDefinitionHashValue + "; uniform per-direction pattern union; forceMultiplier=0.000001; attack timing=60/30; reaction timing=1/30; unchanged grid/body/180 Tick/hero; not the unchanged formal encounter.");
+                TestContext.WriteLine("Canvas combination fixture definition=" + configured.Definition.BattleDefinitionHashValue + "; uniform per-direction pattern union; forceMultiplier=0.000001; attack timing=60/30; reaction timing=1/30; move timing=1/1 so two future Moves fit R1; unchanged grid/body/180 Tick/hero; explicit fixture.");
             }
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
             Bootstrap.DriveFrameForTests(0, 1f / 60);
@@ -525,7 +549,7 @@ namespace ProjectHero.Tests.PlayMode
                 .ThenBy(c => Math.Abs(c.Point.X - owner.X) + Math.Abs(c.Point.Y - owner.Y)).ThenBy(c => c.Point.X).ThenBy(c => c.Point.Y))
             {
                 var preview = model.SetDraft(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, hero, move, Destination: candidate.Point) });
-                if (!preview.Succeeded && preview.RejectionCode != "WINDOW_INSUFFICIENT_BUDGET") continue;
+                if (!preview.Succeeded && preview.RejectionCode != "SCHEDULE_START_OUTSIDE_SOURCE_WINDOW") continue;
                 goal = candidate.Point; validGoal = true; break;
             }
             Assert.That(validGoal, Is.True, "A threat contact origin must also accommodate the full hero footprint.");
@@ -542,7 +566,7 @@ namespace ProjectHero.Tests.PlayMode
                     .OrderBy(Distance).ThenBy(p => p.X).ThenBy(p => p.Y))
                     if (model.SetDraft(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, hero, move, Destination: point) }).Succeeded)
                     { drafted = true; break; }
-                Assert.That(drafted, Is.True, "A real budget-limited Move must approach the production threat region: leg=" + leg
+                Assert.That(drafted, Is.True, "A real window-bound Move must approach the production threat region: leg=" + leg
                     + " origin=" + origin + " goal=" + goal + " window=" + model.Window + " rejection=" + model.LastRejection);
                 Click(Field(presentation, "_confirm")); Bootstrap.DriveFrameForTests(0, 1f / 60);
                 var movement = model.Decision.OwnPlans.Single(p => p.ActionSpecId == move.Value);
@@ -551,60 +575,67 @@ namespace ProjectHero.Tests.PlayMode
                 Assert.That(model.Timeline.Single(p => p.ActionPlanId == movement.ActionPlanId).State, Is.EqualTo((int)ActionPlanState.Completed));
                 owner = model.Decision.VisibleUnits.Single(u => u.UnitId == hero.Value);
                 if (new GridPoint(owner.X, owner.Y) == goal) break;
-                if (model.Window?.OwnerUnitId == hero.Value) Assert.That(model.CloseWindow(), Is.Null);
+                if (model.Window?.OwnerUnitId == hero.Value) Assert.That(WaitForWindowExpiry(model), Is.Null);
                 Bootstrap.DriveFrameForTests(0, 1f / 60);
             }
             owner = model.Decision.VisibleUnits.Single(u => u.UnitId == hero.Value);
             Assert.That(new GridPoint(owner.X, owner.Y), Is.EqualTo(goal), "Every leg uses the formal 180 Tick window.");
-            Assert.That(model.CloseWindow(), Is.Null);
-            long handledWindow = 0, acceptedOpportunity = 0; bool concurrent = false;
-            long chainWindow = 0, chainBudget = 0, guardId = 0, guardStart = 0;
+            Assert.That(WaitForWindowExpiry(model), Is.Null);
+            long activatedWindow = 0, acceptedOpportunity = 0; bool concurrent = false;
+            long chainWindow = 0, sourceEnd = 0, guardId = 0, guardStart = 0;
             long[] chainIds = Array.Empty<long>();
-            void PlaceChain()
+            void PlaceChain(long start)
             {
                 var current = model.Decision.VisibleUnits.Single(u => u.UnitId == hero.Value);
                 var guard = model.Decision.ActionSetOf(hero).Single(id => model.Decision.FindAction(id).Type == ActionType.Guard);
-                bool placed = false; long start = model.Decision.Tick + 800;
+                bool placed = false;
                 foreach (var delta in new[] { new GridPoint(2, 0), new GridPoint(-2, 0), new GridPoint(0, 2), new GridPoint(0, -2) })
                 {
                     var first = new GridPoint(current.X + delta.X, current.Y + delta.Y);
                     var second = new GridPoint(current.X + 2 * delta.X, current.Y + 2 * delta.Y);
                     if (!model.SetDraft(new ScheduleEditOperation[] {
                         new AddOrdinaryPlanOperation(101, hero, move, start, Destination: first),
-                        new AddOrdinaryPlanOperation(102, hero, guard, start + 100),
-                        new AddOrdinaryPlanOperation(103, hero, move, start + 250, Destination: second) }).Succeeded) continue;
+                        new AddOrdinaryPlanOperation(102, hero, move, start + 20, Destination: second),
+                        new AddOrdinaryPlanOperation(103, hero, guard, start + 40) }).Succeeded) continue;
                     placed = true; break;
                 }
                 Assert.That(placed, Is.True, "Real Move / Guard / Move chain: " + model.LastRejection);
-                chainWindow = model.Window.WindowId;
+                chainWindow = model.Window.WindowId; sourceEnd = model.Window.EndTick;
                 Click(Field(presentation, "_confirm")); Bootstrap.DriveFrameForTests(0, 1f / 60);
                 var added = model.Decision.OwnPlans.Where(p => p.StartTick >= start).ToArray();
                 chainIds = added.Where(p => p.ActionSpecId == move.Value).Select(p => p.ActionPlanId).OrderBy(id => id).ToArray();
                 Assert.That(chainIds.Length, Is.EqualTo(2));
                 var heldGuard = added.Single(p => p.ActionSpecId == guard.Value); guardId = heldGuard.ActionPlanId; guardStart = heldGuard.StartTick;
-                chainBudget = added.Where(p => chainIds.Contains(p.ActionPlanId)).Sum(p => p.ReservedTurnBudgetTicks);
-                Assert.That(chainBudget, Is.GreaterThan(0));
+
             }
             var buttonType = Type.GetType("UnityEngine.UI.Button, UnityEngine.UI", true);
             var textType = Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true);
+            var chainTrace = new System.Text.StringBuilder();
             for (frames = 0; frames < 3000 && acceptedOpportunity == 0 && !model.Decision.BattleEnd.IsEnded; frames++)
             {
                 var window = model.Window;
-                if (window != null && window.OwnerUnitId != hero.Value && !concurrent)
+                if (futureChain && model.Decision.Tick % 10 == 0)
+                    chainTrace.Append(model.Decision.Tick).Append(" window=").Append(window?.WindowId).Append(" owner=").Append(window?.OwnerUnitId)
+                        .Append(" end=").Append(window?.EndTick).Append(" auth=").Append(Bootstrap.NewDriver.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization)
+                        .Append(" available=").Append(model.Adrenaline.Single().AvailableAdrenaline).Append(" chain=").Append(chainWindow)
+                        .Append(" reactions=").Append(string.Join(",", model.Reactions.Select(o => o.SourceImpactTick))).Append('\n');
+                if (window != null && window.OwnerUnitId != hero.Value && window.WindowId != activatedWindow)
                 {
+                    activatedWindow = window.WindowId;
                     Click(Field(presentation, "_concurrent"));
                     Bootstrap.DriveFrameForTests(0, 1f / 60);
-                    concurrent = Bootstrap.NewDriver.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization;
+                    concurrent |= Bootstrap.NewDriver.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization;
                 }
-                // Keep a hero window open until a real incoming hit has earned the reaction cost;
-                // closing it preserves the personal-cycle resource through the following AI window.
-                if (model.Adrenaline.Single().AvailableAdrenaline >= (futureChain ? 1 : 2) && model.Window?.OwnerUnitId == hero.Value
-                    && model.Window.WindowId != handledWindow)
+                if (futureChain && chainWindow == 0 && model.Window != null
+                    && (model.Window.OwnerUnitId == hero.Value || Bootstrap.NewDriver.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization))
                 {
-                    if (futureChain && chainWindow == 0) PlaceChain();
-                    handledWindow = model.Window.WindowId; Assert.That(model.CloseWindow(), Is.Null);
-                    Bootstrap.DriveFrameForTests(0, 1f / 60);
+                    var incoming = model.Reactions.FirstOrDefault(o => o.SourceImpactTick > model.Decision.Tick + 2
+                        && o.SourceImpactTick + 45 < model.Window.EndTick);
+                    if (incoming != null && model.Adrenaline.Single().AvailableAdrenaline >= 1)
+                        PlaceChain(incoming.SourceImpactTick + 2);
                 }
+                if (!concurrent || (futureChain && chainWindow == 0))
+                { Bootstrap.DriveFrameForTests(0, 1f / 60); continue; }
                 var buttons = ((IList)Field(presentation, "_reactionButtons")).Cast<GameObject>().ToArray();
                 var label = kind.ToString();
                 foreach (var go in buttons)
@@ -625,10 +656,9 @@ namespace ProjectHero.Tests.PlayMode
                         {
                             Assert.That(chainWindow, Is.GreaterThan(0), "The chain must be created by a preceding real hero window.");
                             Assert.That(preview.AffectedPlanIds.Select(id => id.Value), Is.EqualTo(chainIds));
-                            var release = preview.ReleasesByWindow.Single(r => r.WindowId.Value == chainWindow);
-                            Assert.That(release.BudgetTicks, Is.EqualTo(chainBudget)); Assert.That(release.WindowIsOpen, Is.False);
+
                             var labelComponent = Field(presentation, "_previewText");
-                            Assert.That((string)textType.GetProperty("text").GetValue(labelComponent), Does.Contain("historical ticks released (closed turn)"));
+                            Assert.That((string)textType.GetProperty("text").GetValue(labelComponent), Does.Contain("future moves"));
                             Assert.That(chainIds.All(id => model.Decision.OwnPlans.Any(p => p.ActionPlanId == id)), Is.True, "Preview preserves both future Moves.");
                         }
                         Click(Field(presentation, "_confirm")); Click(Field(presentation, "_confirm"));
@@ -643,13 +673,14 @@ namespace ProjectHero.Tests.PlayMode
                 if (frames % 120 == 0) yield return null;
                 Bootstrap.DriveFrameForTests(0, 1f / 60);
             }
-            Assert.That(acceptedOpportunity, Is.GreaterThan(0), "Real reaction was not accepted: " + kind + " tick=" + model.Decision.Tick
+            if (futureChain) File.WriteAllText("优化任务/执行记录/12B-dodge-chain-trace.txt", chainTrace.ToString());
+            Assert.That(acceptedOpportunity, Is.GreaterThan(0), "Real reaction was not accepted: " + kind + " chain=" + chainWindow + " tick=" + model.Decision.Tick
                 + " resources=" + string.Join(";", model.Adrenaline) + " rejection=" + model.LastRejection
                 + " units=" + string.Join(";", model.Decision.VisibleUnits) + " window=" + model.Window
                 + " plans=" + string.Join(";", model.Decision.VisiblePlans)
                 + " damage=" + string.Join(";", Bootstrap.NewDriver.RecordedReplay.Records.SelectMany(t => t.Events).OfType<DamageChannelResolvedEvent>())
                 + " selected=" + string.Join(";", candidates.OrderByDescending(c => c.Contacts).Take(4)));
-            long trigger = model.Reactions.Single(o => o.ReactionOpportunityId == acceptedOpportunity).TriggerTick;
+            long trigger = model.Reactions.Single(o => o.ReactionOpportunityId == acceptedOpportunity).SourceImpactTick;
             while (model.Decision.Tick <= trigger + 35 && !model.Decision.BattleEnd.IsEnded) Bootstrap.DriveFrameForTests(0, 1f / 60);
             var replay = Bootstrap.NewDriver.RecordedReplay;
             var facts = feedbackFacts.ToArray();
@@ -672,10 +703,8 @@ namespace ProjectHero.Tests.PlayMode
                 var snapshot = Bootstrap.NewDriver.CurrentSnapshot;
                 Assert.That(snapshot.MovementSegments.Any(s => chainIds.Contains(s.ActionPlanId)), Is.False);
                 Assert.That(snapshot.Reservations.Any(s => chainIds.Contains(s.ActionPlanId)), Is.False);
-                Assert.That(snapshot.WindowManager.Windows.Single(w => w.WindowId == chainWindow).IsOpen, Is.False);
-                Assert.That(snapshot.WindowManager.Windows.Single(w => w.WindowId == chainWindow).ReservedBudgetTicks,
-                    Is.EqualTo(model.Decision.OwnPlans.Single(p => p.ActionPlanId == guardId).ReservedTurnBudgetTicks));
-                TestContext.WriteLine("Closed original window=" + chainWindow + "; released=" + chainBudget + "; invalidated=" + string.Join(",", chainIds) + "; unrelated Guard preserved.");
+                Assert.That(trigger, Is.LessThan(sourceEnd), "Both Editable Moves must be cancelled before their source window expires.");
+                TestContext.WriteLine("Source window=" + chainWindow + "; invalidated=" + string.Join(",", chainIds) + "; unrelated Guard preserved.");
             }
             if (kind == ActionType.Block)
                 Assert.That(facts.OfType<BlockResolvedEvent>().Any(e => e.DefenderUnitId == hero
@@ -683,7 +712,7 @@ namespace ProjectHero.Tests.PlayMode
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay); file.Position = 0;
-                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/11-scene-dodge-chain.heroReplay"), file.ToArray());
+                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12B-11-scene-dodge-chain.heroReplay"), file.ToArray());
                 var loaded = ReplayFile.Load(file, model.Decision.Definition);
                 using (var player = new ReplayPlayer(model.Decision.Definition,
                     h => ProductionBattleComposition.Create(model.Decision.Definition, h.EncounterId, h.RuntimeInputs)))
@@ -702,5 +731,13 @@ namespace ProjectHero.Tests.PlayMode
             TestContext.WriteLine((futureChain ? "Canvas fixture " : "Real main ") + kind + ": damage-earned resource, published opportunity, Player UI input, one trigger, hero concurrent authorization; tick=" + model.Decision.Tick);
             Bootstrap.StopBattle("reaction-complete"); Bootstrap.ReleaseBattle(); yield return null;
         }
+        private string WaitForWindowExpiry(BattlePresentationModel model)
+        {
+            long end = model.Window?.EndTick ?? model.Decision.Tick + 1;
+            while (model.Decision.Tick < end && !model.Decision.BattleEnd.IsEnded)
+                Bootstrap.DriveFrameForTests(0, 1f / 60);
+            return null;
+        }
+
     }
 }

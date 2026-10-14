@@ -19,10 +19,10 @@ namespace ProjectHero.Logic.Resources
         /// <summary>接受 Block/Dodge：Available -&gt; 按计划归属的带周期预留。</summary>
         Reserved = 1,
 
-        /// <summary>TriggerTick：预留被消费（删除预留，不退）。</summary>
+        /// <summary>SourceImpactTick：预留被消费（删除预留，不退）。</summary>
         Consumed = 2,
 
-        /// <summary>来源威胁在 TriggerTick 前取消且预留仍属当前周期：返还 Available。</summary>
+        /// <summary>来源威胁在 SourceImpactTick 前取消且预留仍属当前周期：返还 Available。</summary>
         Refunded = 3,
 
         /// <summary>拥有者自己的窗口打开：递增个人周期并把 Available 清零。</summary>
@@ -89,7 +89,7 @@ namespace ProjectHero.Logic.Resources
         /// <summary>接受反应：把 <paramref name="cost"/> 从 Available 转入带个人周期的计划预留。</summary>
         string TryReserveForReaction(UnitId unitId, ActionPlanId planId, int cost);
 
-        /// <summary>TriggerTick：消费该计划的预留（幂等：无预留时为无操作）。</summary>
+        /// <summary>SourceImpactTick：消费该计划的预留（幂等：无预留时为无操作）。</summary>
         void ConsumeAtTrigger(ActionPlanId planId);
 
         /// <summary>来源威胁终止：按"仍属当前周期才返还"规则释放该计划的预留。</summary>
@@ -103,25 +103,6 @@ namespace ProjectHero.Logic.Resources
         void DiscardReservation(ActionPlanId planId);
     }
 
-    /// <summary>
-    /// <strong>单位肾上腺素账本</strong>（主方案 0.2 / 00 号规则 27）。
-    ///
-    /// 冻结语义：
-    /// <list type="bullet">
-    /// <item><c>AvailableAdrenaline</c> 不随时间衰减，跨其他单位窗口保留；</item>
-    /// <item>该单位<strong>自己</strong>的下一次窗口打开时：先递增 <c>ReservationCycleId</c>
-    /// 并把 Available 清零，再授予新窗口预算；已有合法预留<strong>继续存在并可触发</strong>；</item>
-    /// <item>窗口关闭<strong>不</strong>清零；</item>
-    /// <item>接受反应时从 Available 原子转入带 <c>ReservationCycleId</c> 的计划预留；
-    /// TriggerTick 删除预留并视为已消费；</item>
-    /// <item>来源威胁在 TriggerTick 前取消时：预留仍属当前周期 ⇒ 返还 Available；
-    /// 已跨过拥有者自己下一窗口打开边界 ⇒ 只删除旧周期预留，
-    /// <strong>不</strong>把过期资源带入新周期；</item>
-    /// <item>防御者主动取消、被控制/死亡、目的格失效或反应已经触发 ⇒ <strong>不</strong>退款；</item>
-    /// <item>入账只按 <see cref="AdrenalineAccrualFacts"/> 聚合一次，并裁到
-    /// <see cref="AdrenalineRules.MaxAvailablePerCycle"/> 上限；裁剪<strong>不</strong>改变任何预留。</item>
-    /// </list>
-    /// </summary>
     public sealed class AdrenalineLedger
     {
         private readonly AdrenalineRules _rules;
@@ -218,7 +199,7 @@ namespace ProjectHero.Logic.Resources
             return null;
         }
 
-        /// <summary>TriggerTick：删除预留并视为已消费（幂等：没有预留时是无操作）。</summary>
+        /// <summary>SourceImpactTick：删除预留并视为已消费（幂等：没有预留时是无操作）。</summary>
         public void ConsumeAtTrigger(ActionPlanId planId)
         {
             if (!_reservations.TryGetValue(planId.Value, out ReactionReservation reservation)) return;
@@ -229,7 +210,7 @@ namespace ProjectHero.Logic.Resources
         }
 
         /// <summary>
-        /// 来源威胁在 TriggerTick 前取消：预留仍属当前个人周期 ⇒ 返还 Available；
+        /// 来源威胁在 SourceImpactTick 前取消：预留仍属当前个人周期 ⇒ 返还 Available；
         /// 否则只删除旧周期预留（<strong>不</strong>注入新周期）。
         /// </summary>
         public void ReleaseForSourceThreatCancelled(ActionPlanId planId)
@@ -269,10 +250,6 @@ namespace ProjectHero.Logic.Resources
                 AvailableAdrenaline, AvailableAdrenaline, planId, reservation.Amount));
         }
 
-        /// <summary>
-        /// 该单位<strong>自己</strong>的窗口打开：先递增个人周期、把 Available 清零，
-        /// 再（由调用方）授予新窗口预算。既有合法反应预留继续存在并可触发。
-        /// </summary>
         public void BeginOwnWindow()
         {
             int before = AvailableAdrenaline;
@@ -377,44 +354,9 @@ namespace ProjectHero.Logic.Resources
         ActionPlanId? ReservationPlanId,
         int ReservationAmount);
 
-    /// <summary>
-    /// 一次 TurnBudget 账本变化的<strong>值语义</strong>载荷（与 <c>TurnBudgetChangedEvent</c> 一一对应）。
-    /// </summary>
-    public sealed record TurnBudgetChange(
-        WindowId WindowId,
-        UnitId OwnerUnitId,
-        ActionPlanId? ActionPlanId,
-        TurnBudgetChangeKind ChangeKind,
-        ResourceChangeSource Source,
-        int AvailableBefore,
-        int AvailableAfter,
-        int ReservedBefore,
-        int ReservedAfter,
-        int SpentBefore,
-        int SpentAfter);
-
-    /// <summary>TurnBudget 账本变化的稳定来源判别式（显式命令 / 系统自动延期 / 终态清理 / 启动提交 / 结束）。</summary>
-    public enum ResourceChangeSource
+    /// <summary>肾上腺素账本集合的不可变快照投影（按 <c>UnitId</c> 升序）。</summary>
+    public static class AdrenalineSnapshotBuilder
     {
-        ExplicitScheduleEdit = 0,
-        SystemAutoDeferral = 1,
-        TerminalCleanup = 2,
-        StartCommit = 3,
-        BattleEndFinalizer = 4
-    }
-
-    /// <summary>
-    /// <strong>全部窗口账本的规范聚合视图</strong>（含已关闭窗口的历史账本）。
-    ///
-    /// 它<strong>不</strong>拥有窗口，只把 <c>TurnWindow</c> 的账本按 <c>WindowId</c> 升序投影
-    /// 为资源快照；<c>Reserved + Spent + Available == Σ Total</c> 是结构事实。
-    /// 窗口<strong>不</strong>持有计划对象，因此这里也只有可审计的按计划预留明细。
-    /// </summary>
-    public static class TurnBudgetLedger
-    {
-        public static BattleResourceSnapshotAccumulator Begin(int metaResource)
-            => new BattleResourceSnapshotAccumulator(metaResource);
-
         /// <summary>把一份肾上腺素账本集合投影为不可变快照（按 <c>UnitId</c> 升序）。</summary>
         public static IReadOnlyList<AdrenalineLedgerSnapshot> BuildAdrenalineSnapshots(
             IReadOnlyList<AdrenalineLedger> ledgers)
@@ -439,33 +381,5 @@ namespace ProjectHero.Logic.Resources
             }
             return result;
         }
-    }
-
-    /// <summary>预算聚合累加器（避免调用方手写求和顺序；顺序与数值无关，仅便于装配）。</summary>
-    public sealed class BattleResourceSnapshotAccumulator
-    {
-        public BattleResourceSnapshotAccumulator(int metaResource)
-        {
-            MetaResource = metaResource;
-        }
-
-        public int MetaResource { get; }
-
-        public long Total { get; private set; }
-
-        public long Reserved { get; private set; }
-
-        public long Spent { get; private set; }
-
-        public void Add(TurnWindow window)
-        {
-            if (window == null) return;
-            Total += window.TotalBudgetTicks;
-            Reserved += window.ReservedBudgetTicks;
-            Spent += window.SpentBudgetTicks;
-        }
-
-        public BattleResourceSnapshot Build(IReadOnlyList<AdrenalineLedgerSnapshot> adrenaline)
-            => new BattleResourceSnapshot(MetaResource, Total - Reserved - Spent, Reserved, Spent, adrenaline);
     }
 }

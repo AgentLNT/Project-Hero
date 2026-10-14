@@ -44,7 +44,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             binding.FindProperty("_source").objectReferenceValue = source;
             binding.ApplyModifiedPropertiesWithoutUndo();
             var configuration = new SerializedObject(source);
-            configuration.FindProperty("_shadowInitialWindowBudgetTicks").intValue = 600;
+            configuration.FindProperty("_shadowInitialWindowDurationTicks").intValue = 600;
             configuration.ApplyModifiedPropertiesWithoutUndo();
         }
     }

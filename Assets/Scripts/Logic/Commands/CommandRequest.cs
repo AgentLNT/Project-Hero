@@ -9,7 +9,7 @@ namespace ProjectHero.Logic.Commands
     /// 它<strong>只有三样东西</strong>：目标 Tick、作用域判别、载荷判别。
     /// 生产者<strong>不能</strong>填写 <c>ControllerId</c>、<c>CommandSourceKind</c>、
     /// <c>SourcePriority</c>、<c>ProducerOrdinal</c>、<c>CommandSequence</c>、
-    /// 规则费用或反应 <c>TriggerTick</c>——这些字段在类型上不存在。
+    /// 规则费用或反应 <c>SourceImpactTick</c>——这些字段在类型上不存在。
     /// 身份与顺序由 <see cref="CommandIngressRegistry"/>（唯一信任边界）与
     /// <see cref="CommandGateway"/> 派生。
     /// </summary>

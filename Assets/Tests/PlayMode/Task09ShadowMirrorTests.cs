@@ -620,7 +620,7 @@ namespace ProjectHero.Tests.PlayMode
             => new CommandRequest(
                 targetTick,
                 new WindowCommandScope(new WindowId(1L)),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow));
+                new WindowCommandPayload((WindowCommandKind)0));
 
         // =====================================================================
         // 反射接缝（生产入口是 internal / private；本程序集没有 InternalsVisibleTo）

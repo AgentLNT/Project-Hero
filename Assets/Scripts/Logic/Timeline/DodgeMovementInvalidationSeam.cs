@@ -28,7 +28,7 @@ namespace ProjectHero.Logic.Timeline
     }
 
     /// <summary>
-    /// <strong>TriggerTick 换位事务端口</strong>（任务 06/08 实现；任务 05 只冻结接缝）。
+    /// <strong>SourceImpactTick 换位事务端口</strong>（任务 06/08 实现；任务 05 只冻结接缝）。
     ///
     /// 契约（冻结）：
     /// <list type="bullet">
@@ -51,7 +51,7 @@ namespace ProjectHero.Logic.Timeline
         /// 只读位置依赖闭包给出的候选（按 <c>ActionPlanId</c> 升序）。它是<strong>预检输入</strong>：
         /// 事务成功之后才由接缝终止它们；事务失败时它们必须保持原样。
         /// </param>
-        /// <param name="tick">TriggerTick。</param>
+        /// <param name="tick">SourceImpactTick。</param>
         /// <returns>null = 换位成功；否则稳定拒绝码。</returns>
         string TryRelocate(ActionPlan dodgePlan, IReadOnlyList<ActionPlan> invalidatedCandidates, long tick);
     }
@@ -127,7 +127,7 @@ namespace ProjectHero.Logic.Timeline
         public bool HasTransaction => _transaction != null;
 
         /// <summary>
-        /// <strong>裁定 A 的统一容忍判据</strong>：Dodge 的固定反应区间可以覆盖"它自己在 TriggerTick
+        /// <strong>裁定 A 的统一容忍判据</strong>：Dodge 的固定反应区间可以覆盖"它自己在 SourceImpactTick
         /// 会失效掉的后续 Editable 移动族"。
         ///
         /// 判据与 <see cref="QueryInvalidatedMoves(ActionPlan)"/> 的闭包过滤器<strong>逐字一致</strong>
@@ -172,7 +172,7 @@ namespace ProjectHero.Logic.Timeline
             return result.AsReadOnly();
         }
 
-        /// <summary>只读查询的多种子重载（预检与 TriggerTick 共用同一实现）。</summary>
+        /// <summary>只读查询的多种子重载（预检与 SourceImpactTick 共用同一实现）。</summary>
         public IReadOnlyList<ActionPlan> QueryInvalidatedMoves(IReadOnlyList<ActionPlan> seeds)
         {
             if (seeds == null || seeds.Count == 0) return Array.Empty<ActionPlan>();

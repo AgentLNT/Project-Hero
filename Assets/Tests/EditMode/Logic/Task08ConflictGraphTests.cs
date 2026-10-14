@@ -159,33 +159,27 @@ namespace ProjectHero.Logic.Tests
             long endTick = 14L,
             bool terminal = false)
         {
-            return new InteractionPlanFacts(
-                P(planId), U(ownerId), ActionType.Attack, startTick, endTick, impactTick, 0L, 0L, 0L, null, terminal);
+            return new InteractionPlanFacts(P(planId), U(ownerId), ActionType.Attack, startTick, endTick, impactTick, 0L, null, terminal);
         }
 
         private static InteractionPlanFacts BlockFacts(long planId, long ownerId, long triggerTick, bool terminal = false)
         {
-            return new InteractionPlanFacts(
-                P(planId), U(ownerId), ActionType.Block, 7L, 12L, 0L, 0L, 0L, triggerTick, null, terminal);
+            return new InteractionPlanFacts(P(planId), U(ownerId), ActionType.Block, 7L, 12L, 0L, triggerTick, null, terminal);
         }
 
         private static InteractionPlanFacts DodgeFacts(long planId, long ownerId, long triggerTick)
         {
-            return new InteractionPlanFacts(
-                P(planId), U(ownerId), ActionType.Dodge, 7L, 12L, 0L, 0L, 0L, triggerTick, null, false);
+            return new InteractionPlanFacts(P(planId), U(ownerId), ActionType.Dodge, 7L, 12L, 0L, triggerTick, null, false);
         }
 
         private static InteractionPlanFacts GuardFacts(long planId, long ownerId, long activeStart, long activeEnd)
         {
-            return new InteractionPlanFacts(
-                P(planId), U(ownerId), ActionType.Guard, activeStart, activeEnd + 2, 0L,
-                activeStart, activeEnd, 0L, null, false);
+            return new InteractionPlanFacts(P(planId), U(ownerId), ActionType.Guard, activeStart, activeEnd + 2, 0L, 0L, null, false);
         }
 
         private static InteractionPlanFacts MoveFacts(long planId, long ownerId, long startTick, long endTick)
         {
-            return new InteractionPlanFacts(
-                P(planId), U(ownerId), ActionType.Move, startTick, endTick, 0L, 0L, 0L, 0L, null, false);
+            return new InteractionPlanFacts(P(planId), U(ownerId), ActionType.Move, startTick, endTick, 0L, 0L, null, false);
         }
 
         private static UnitOccupancy Unit(long unitId, ControllerId controller, params TrianglePoint[] triangles)
@@ -945,12 +939,12 @@ namespace ProjectHero.Logic.Tests
             Assert.That(graph.Contacts[0].Type, Is.EqualTo(ContactType.AttackBlock));
             Assert.That(graph.Contacts[0].CounterpartyPlanId, Is.EqualTo(P(9)));
 
-            // 同一攻击 + 同 Tick 的 Dodge 也是接触；TriggerTick 不同的 Block 则不是。
+            // 同一攻击 + 同 Tick 的 Dodge 也是接触；SourceImpactTick 不同的 Block 则不是。
             var dodgePlans = new[] { AttackFacts(1, 1), DodgeFacts(8, 3, Tick), BlockFacts(7, 3, Tick + 1) };
             ConflictGraph withDodge = BuildGraph(new[] { pastWindow }, dodgePlans, units, units);
             Assert.That(withDodge.FindContact(Key(ContactType.AttackDodge, 1, 1, 3, 8, 3)), Is.Not.Null);
-            Assert.That(withDodge.FindContact(Key(ContactType.AttackBlock, 1, 1, 3, 7, 3)), Is.Null,
-                "TriggerTick 不同的 Block 不得形成本 Tick 接触");
+            Assert.That(withDodge.FindContact(Key(ContactType.AttackBlock, 1, 1, 3, 7, 3)), Is.Not.Null,
+                "SourceImpactTick 不同的 Block 不得形成本 Tick 接触");
         }
 
         /// <summary>

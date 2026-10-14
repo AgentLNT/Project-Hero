@@ -50,7 +50,7 @@ namespace ProjectHero.Logic.Tests
         private const string EncounterIdValue = "encounter.t08ev";
         private const int AttackBaseWindupTicks = 10;
         private const int AttackRecoveryTicks = 2;
-        private const int WindowBudget = 60;
+        private const int WindowDuration = 60;
         private const long WindowOpenTick = 0L;
         private const long SubmitTick = 1L;
 
@@ -227,7 +227,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(playerEntry, Is.Not.Null, "夹具前提：ControllerBinding 必须注册出命令入口");
 
             var rig = new Rig { Sim = sim, PlayerEntry = playerEntry };
-            sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowBudget);
+            sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowDuration);
             StepOnce(rig, WindowOpenTick);
 
             var request = new CommandRequest(

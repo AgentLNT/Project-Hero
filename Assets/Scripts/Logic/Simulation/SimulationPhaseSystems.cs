@@ -507,14 +507,12 @@ namespace ProjectHero.Logic.Simulation
             StepPhaseTimingRecorder phaseTiming = null,
             IUnitLifecycleNoticeSink lifecycleNoticeSink = null,
             IPreCommandVictoryGate preCommandVictoryGate = null,
-            IActionPlanStartCommitPort startCommitPort = null,
             IDodgeRelocationTransaction dodgeRelocationTransaction = null,
             IAreaThreatCandidateSource areaThreatCandidateSource = null,
             IReactionPreparationPort reactionPreparationPort = null,
             IReactionReservationReleaseSink reactionReservationReleaseSink = null,
             IMovementPathCalculator movementPathCalculator = null,
             IUnitVolumeTableSource unitVolumeTables = null,
-            Action<IReadOnlyList<ActionPlanId>> budgetReleaseSink = null,
             UnitId? concurrentHeroUnitId = null,
             Resources.IAdrenalineAccrualFactSource adrenalineAccrualFactSource = null,
             // 任务 09 A 流（产出 15）：AI 未来决策状态的只读来源。刻意放在签名末尾并带默认值，
@@ -547,18 +545,12 @@ namespace ProjectHero.Logic.Simulation
             PhaseTiming = phaseTiming;
             UseEmptyInteractionFastPath = useEmptyInteractionFastPath;
             LifecycleNoticeSink = lifecycleNoticeSink;
-            // 未显式注入时保持 null：BattleSimulation 会把本场自己的预算权威接到该接缝上
-            // （任务 07 的真实 Reserved -> Spent 提交端口）。
-            // 注意：这里**不得**兜底成 NoTurnBudgetCommitPort——那会让
-            // "assembly.StartCommitPort ?? 预算权威" 变成死代码，任务 07 的启动提交永不生效。
-            StartCommitPort = startCommitPort;
             DodgeRelocationTransaction = dodgeRelocationTransaction;
             AreaThreatCandidateSource = areaThreatCandidateSource;
             ReactionPreparationPort = reactionPreparationPort;
             ReactionReservationReleaseSink = reactionReservationReleaseSink;
             MovementPathCalculator = movementPathCalculator;
             UnitVolumeTables = unitVolumeTables;
-            BudgetReleaseSink = budgetReleaseSink;
             ConcurrentHeroUnitId = concurrentHeroUnitId;
             AdrenalineAccrualFactSource = adrenalineAccrualFactSource;
             AiRuntimeStates = aiRuntimeStates;
@@ -641,14 +633,6 @@ namespace ProjectHero.Logic.Simulation
         public IPreCommandVictoryGate PreCommandVictoryGate { get; }
 
         /// <summary>
-        /// 任务 05 的启动门禁原子提交端口。<strong>默认 null</strong> ⇒ 由 <c>BattleSimulation</c>
-        /// 接上本场自己的预算权威（任务 07 的真实实现，把 <c>Reserved</c> 原子转为 <c>Spent</c>）；
-        /// 显式注入的端口优先（任务 05 的失败端口、诊断装配等）。它<strong>不改变</strong>
-        /// 门禁的四分结果、原子性要求或计划生命周期。
-        /// </summary>
-        public IActionPlanStartCommitPort StartCommitPort { get; }
-
-        /// <summary>
         /// 任务 07：可激活并发行动的<strong>主角</strong>单位（默认 null ⇒ 激活 fail-closed）。
         ///
         /// 它<strong>必须</strong>由装配方显式给出：Logic 绝不从 Controller、玩家标志、阵营或名称
@@ -670,7 +654,7 @@ namespace ProjectHero.Logic.Simulation
         public Resources.IAdrenalineAccrualFactSource AdrenalineAccrualFactSource { get; }
 
         /// <summary>
-        /// 任务 05 的 <strong>Dodge TriggerTick 换位事务端口</strong>（默认 null = 明确拒绝且零写入）。
+        /// 任务 05 的 <strong>Dodge SourceImpactTick 换位事务端口</strong>（默认 null = 明确拒绝且零写入）。
         ///
         /// 任务 06/08 提供真实实现：它必须在<strong>一个</strong>事务内完成换位与空间 Reservation 调整，
         /// 失败时零副作用；被失效的后续移动仍然<strong>只能</strong>由统一终态协调器以
@@ -717,24 +701,5 @@ namespace ProjectHero.Logic.Simulation
         /// 任务 02B/10 补齐"单位 → <c>VolumeSpec</c>"绑定后在此注入。
         /// </summary>
         public IUnitVolumeTableSource UnitVolumeTables { get; }
-
-        /// <summary>
-        /// 任务 07 的<strong>预算释放消费者</strong>（任务 06 小修轮 R4/B-1 新增的显式注册点）。
-        ///
-        /// 语义：Dodge 换位<strong>实际发生</strong>时被调用一次，参数为按 <c>ActionPlanId</c> 升序的
-        /// 失效计划；它表示"这些计划的 Editable 预算预留已被释放"。
-        /// 装配路径：<c>BattleSimulation</c> 把它接到
-        /// <c>DodgeRelocationAuthority.BudgetReleaseSink</c>。
-        ///
-        /// 默认 <c>null</c> 是<strong>有意</strong>的：任务 06 不实现 TurnBudget 账本，
-        /// 因此默认装配下没有"预算"这个对象可以被释放——该调用是<strong>语义上的 no-op，
-        /// 而不是被漏掉的接线</strong>；接缝本身已在生产装配里接通（见上），
-        /// 任务 07 只需注入真实消费者，<strong>不需要</strong>再改装配代码。
-        ///
-        /// <strong>顺序契约</strong>：回调整体在换位的全部变异<strong>之前</strong>被调用
-        /// （见 <c>DodgeRelocationAuthority.CommitReservation</c> 阶段 B′），
-        /// 因此抛异常的消费者不会留下半提交状态。
-        /// </summary>
-        public Action<IReadOnlyList<ActionPlanId>> BudgetReleaseSink { get; }
     }
 }

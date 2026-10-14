@@ -20,18 +20,10 @@ namespace ProjectHero.Logic.Actions
         }
     }
 
-    /// <summary>
-    /// Guard 时序：Windup / Active / Recovery 三段整数 Tick。
-    /// 部分抵抗只在半开 Active 区间 [ActiveStartTick, ActiveEndTick) 内提供。
-    /// </summary>
-    public sealed record GuardTimingSpec(int WindupTicks, int ActiveTicks, int RecoveryTicks) : ActionTimingSpec
+    public sealed record GuardTimingSpec(int DurationTicks) : ActionTimingSpec
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
-        {
-            writer.Write("guard_timing.windup_ticks", WindupTicks);
-            writer.Write("guard_timing.active_ticks", ActiveTicks);
-            writer.Write("guard_timing.recovery_ticks", RecoveryTicks);
-        }
+            => writer.Write("guard_timing.duration_ticks", DurationTicks);
     }
 
     /// <summary>
@@ -49,30 +41,15 @@ namespace ProjectHero.Logic.Actions
         }
     }
 
-    /// <summary>
-    /// Block 反应时序。TriggerTick = 来源攻击 ImpactTick（由 Logic 固定推导）；
-    /// StartTick = TriggerTick - ReactionWindupTicks；EndTick = TriggerTick + RecoveryTicks。
-    /// 冻结值：ReactionWindupTicks = 60（旧 BlockDuration 1.0s，01B 拍板 B3）。
-    /// </summary>
-    public sealed record BlockReactionTimingSpec(int ReactionWindupTicks, int RecoveryTicks) : ActionTimingSpec
+    public sealed record BlockReactionTimingSpec(int DurationTicks) : ActionTimingSpec
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
-        {
-            writer.Write("block_reaction.reaction_windup_ticks", ReactionWindupTicks);
-            writer.Write("block_reaction.recovery_ticks", RecoveryTicks);
-        }
+            => writer.Write("block_reaction.duration_ticks", DurationTicks);
     }
 
-    /// <summary>
-    /// Dodge 反应时序。冻结值：ReactionWindupTicks = 30（旧 DodgeDuration 0.5s，01B 拍板 B3）。
-    /// 只有 TriggerTick 一次换格判定，Windup/Recovery 不提供状态免伤。
-    /// </summary>
-    public sealed record DodgeReactionTimingSpec(int ReactionWindupTicks, int RecoveryTicks) : ActionTimingSpec
+    public sealed record DodgeReactionTimingSpec(int DurationTicks) : ActionTimingSpec
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
-        {
-            writer.Write("dodge_reaction.reaction_windup_ticks", ReactionWindupTicks);
-            writer.Write("dodge_reaction.recovery_ticks", RecoveryTicks);
-        }
+            => writer.Write("dodge_reaction.duration_ticks", DurationTicks);
     }
 }

@@ -63,7 +63,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(moves.Length, Is.EqualTo(2));
             Assert.That(r.Sim.StagedResolution.DodgeContacts.Single().Invalidated, Is.True);
             Assert.That(r.Sim.CurrentSnapshot.MovementSegments, Is.Empty); Assert.That(r.Sim.CurrentSnapshot.Reservations, Is.Empty);
-            Assert.That(r.Sim.CurrentTurnWindow.ReservedBudgetTicks, Is.Zero);
             Assert.That(moves.Max(e => e.Sequence), Is.LessThan(r.Result.Events.Events.OfType<DodgeResolvedEvent>().Single().Sequence));
         }
         [Test]
@@ -73,7 +72,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(r.Result.Events.Events.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.MovementOriginInvalidatedByDodge), Is.EqualTo(2));
             Assert.That(r.Result.Events.Events.OfType<DodgeResolvedEvent>().Single().RewardedSuccess, Is.False);
             Assert.That(Task08DefenseCoverageTests.Health(r.Sim, Task09A2Fixture.Hero), Is.EqualTo(1990 * 1024));
-            Assert.That(r.Sim.CurrentTurnWindow.ReservedBudgetTicks, Is.Zero);
         }
         [Test]
         public void ForcedDisplacementPlanInvalidationPrecedesLaterInterceptTerminalRequest()
@@ -184,15 +182,17 @@ namespace ProjectHero.Logic.Tests
         internal static Task08DefenseCoverageTests.Rig Guard()
         {
             var sim = Task09A2Fixture.NewSim(Task08DefenseCoverageTests.Definition(force: 0.1f));
-            sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Monster, 400); Task09A2Fixture.Step(sim, 0);
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.AddPlan(1, 0, sim.CurrentTurnWindow.WindowId,
-                Task09A2Fixture.Monster, Task08DefenseCoverageTests.GuardId, null, 9));
-            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1)), Is.Empty);
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.CloseWindow(2, sim.CurrentTurnWindow.WindowId));
-            Task09A2Fixture.Step(sim, 2); sim.WindowManager.ScheduleWindow(3, Task09A2Fixture.Hero, 400); Task09A2Fixture.Step(sim, 3);
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(4, sim.ScheduleAuthority.ScheduleRevision,
+            // R1：起点必须落在各自窗口内。英雄窗口 [0,5) 安排起点 4 的攻击（Tick 14 命中），
+            // 怪物窗口 [5,10) 安排起点 9 的 Guard（Active [11,21) 覆盖 Tick 14）。
+            sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero, 5); Task09A2Fixture.Step(sim, 0);
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(1, 0,
                 sim.CurrentTurnWindow.WindowId, Task09A2Fixture.Hero, new ActionSpecId(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 4));
-            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 4)), Is.Empty);
+            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1)), Is.Empty);
+            Task09A2Fixture.AdvanceTo(sim, 4);
+            sim.WindowManager.ScheduleWindow(5, Task09A2Fixture.Monster, 5); Task09A2Fixture.Step(sim, 5);
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.AddPlan(6, sim.ScheduleAuthority.ScheduleRevision,
+                sim.CurrentTurnWindow.WindowId, Task09A2Fixture.Monster, Task08DefenseCoverageTests.GuardId, null, 9));
+            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 6)), Is.Empty);
             var attack = sim.ScheduleAuthority.Registry.ActivePlans.Single(p => p.ActionType == ActionType.Attack);
             Task09A2Fixture.AdvanceTo(sim, 13); var impact = Task09A2Fixture.StepNext(sim);
             return new Task08DefenseCoverageTests.Rig { Sim = sim, Attack = attack, Result = impact };

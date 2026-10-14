@@ -51,24 +51,6 @@ namespace ProjectHero.Logic.Tests
         // 必需测试 14：ReactionCommandUsesOpportunityScopeWithoutWindowScope
         // =====================================================================
 
-        /// <summary>
-        /// 反应命令的 scope 只有 <c>ReactionOpportunityId</c>：<strong>没有</strong>窗口字段，
-        /// 处理器也<strong>不</strong>查询当前窗口。命令被接受时：
-        /// 反应计划直接 Locked、<c>SubmittedWindowId</c> 为空、<c>BudgetCostTicks</c> 与
-        /// <c>ReservedTurnBudgetTicks</c> 恒为 0（08 交接 §4.5 冻结的
-        /// <c>ReservedTurnBudgetTicks == 0</c> 口径），窗口账本一位不变。
-        ///
-        /// <para>
-        /// 会让它失败的实现缺陷：
-        /// <list type="bullet">
-        /// <item>把窗口校验加进反应路径（要求发行者拥有当前窗口 / 要求 <c>ExpectedWindowId</c>）
-        /// ⇒ 接受失败或反应计划带上了窗口预留；</item>
-        /// <item>反应计划参与窗口预算（<c>BudgetCostTicks != 0</c>）⇒ 账本断言红；</item>
-        /// <item>把反应 scope 当成 <c>WindowCommandScope</c> 处理（"按当前窗口猜"）⇒
-        /// 窗口 scope 错配用例的拒绝码断言红。</item>
-        /// </list>
-        /// </para>
-        /// </summary>
         [Test]
         public void ReactionCommandUsesOpportunityScopeWithoutWindowScope()
         {
@@ -104,11 +86,8 @@ namespace ProjectHero.Logic.Tests
             Assert.That(reaction.IsLocked, Is.True, "反应计划接受后直接 Locked");
             Assert.That(reaction.SubmittedWindowId.HasValue, Is.False,
                 "反应计划恒无 SubmittedWindowId（高阶反应不参与窗口预算）");
-            Assert.That(reaction.BudgetCostTicks, Is.Zero);
-            Assert.That(reaction.ReservedTurnBudgetTicks, Is.Zero,
-                "08 交接 §4.5：反应计划的窗口预留恒为 0，不得放宽");
             Assert.That(reaction.StartTick,
-                Is.EqualTo(Task09A2Fixture.AttackImpactTick - Task09A2Fixture.BlockReactionWindupTicks),
+                Is.EqualTo(Task09A2Fixture.AttackImpactTick),
                 "反应区间由来源攻击的 ImpactTick 推导，命令无法声明");
 
             Assert.That(Task09A2Fixture.WindowFingerprint(sim, windowId), Is.EqualTo(windowBefore),
@@ -152,13 +131,13 @@ namespace ProjectHero.Logic.Tests
         // =====================================================================
 
         /// <summary>
-        /// 反应载荷/scope 上<strong>不存在</strong> TriggerTick（BlockTick / EvadeTick）、窗口、
+        /// 反应载荷/scope 上<strong>不存在</strong> SourceImpactTick（BlockTick / EvadeTick）、窗口、
         /// 费用字段；Block 不得携带目的格；实际消费只来自权威
         /// <c>ActionSpec.AdrenalineCost</c>。
         ///
         /// <para>
         /// 会让它失败的实现缺陷：给 <c>ReactionCommandPayload</c> 加回
-        /// <c>TriggerTick</c>/<c>WindowId</c>/<c>Cost</c> 之类字段（生产者即可声明时机或费用）
+        /// <c>SourceImpactTick</c>/<c>WindowId</c>/<c>Cost</c> 之类字段（生产者即可声明时机或费用）
         /// ⇒ 字段扫描红；让 Block 携带目的格被静默接受 ⇒ 结构校验断言红；
         /// 让费用来自载荷而不是定义 ⇒ 账本断言红。
         /// </para>
@@ -168,7 +147,7 @@ namespace ProjectHero.Logic.Tests
         {
             string[] forbidden =
             {
-                "TriggerTick", "BlockTick", "EvadeTick", "WindowId", "Cost", "Price", "Fee",
+                "SourceImpactTick", "BlockTick", "EvadeTick", "WindowId", "Cost", "Price", "Fee",
                 "Adrenaline", "Budget", "Sequence", "Ordinal", "Priority", "Controller", "Issuer", "Source"
             };
 
@@ -190,13 +169,13 @@ namespace ProjectHero.Logic.Tests
                 }
             }
             Assert.That(offenders, Is.Empty,
-                "反应命令面上不得存在 TriggerTick/窗口/费用/身份/顺序字段：" + string.Join(",", offenders));
+                "反应命令面上不得存在 SourceImpactTick/窗口/费用/身份/顺序字段：" + string.Join(",", offenders));
 
             string[] payloadProperties = typeof(ReactionCommandPayload)
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Select(p => p.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray();
             Assert.That(payloadProperties,
-                Is.EqualTo(new[] { "DodgeDestination", "Kind", "ReactionActionSpecId", "ReactionKind" }),
+                Is.EqualTo(new[] { "DodgeDestination", "Kind", "ReactionActionSpecId", "ReactionKind", "StartTick" }),
                 "反应载荷恰好四样：判别标签 Kind、反应种类、动作定义 ID、可选的 Dodge 目的格");
 
             var sim = Task09A2Fixture.NewSim();
@@ -317,7 +296,7 @@ namespace ProjectHero.Logic.Tests
         public void ReactionAtOptionDeadlineIsAcceptedAndAfterDeadlineIsRejected()
         {
             long deadline = Task09A2Fixture.BlockOptionDeadlineTick;
-            Assert.That(deadline, Is.EqualTo(10L), "夹具前提：Block 选项截止 = ImpactTick − ReactionWindup");
+            Assert.That(deadline, Is.EqualTo(10L), "Block deadline is source impact minus ingress lead");
 
             // —— 世界 A：恰好截止 Tick ——
             var atDeadline = Task09A2Fixture.NewSim();
@@ -362,7 +341,7 @@ namespace ProjectHero.Logic.Tests
         // =====================================================================
 
         /// <summary>
-        /// 反应权与窗口<strong>正交</strong>：把当前窗口彻底关掉（并确认没有任何并发授权）之后，
+        /// 反应权与窗口<strong>正交</strong>：当前窗口到期关闭（并确认没有任何并发授权）之后，
         /// 仍然可以接受一条机会合法的反应命令。
         ///
         /// <para>
@@ -374,15 +353,13 @@ namespace ProjectHero.Logic.Tests
         public void ReactionDoesNotRequireOwnWindowOrConcurrentAuthority()
         {
             var sim = Task09A2Fixture.NewSim();
-            Task09A2Fixture.ArrangeStartedAttack(sim, Task09A2Fixture.Monster);
+            Task09A2Fixture.ArrangeStartedAttackInShortWindow(sim, Task09A2Fixture.Monster,
+                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), seedDefenderAdrenaline: true);
             ReactionOpportunityRuntime opportunity = Task09A2Fixture.OpenOpportunityFor(sim, Task09A2Fixture.Monster);
-            WindowId windowId = sim.CurrentTurnWindow.WindowId;
 
-            // 攻击所有者（hero 的控制者）在 Tick 2 关掉自己的窗口；Tick 2 结束时窗口正式关闭。
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.CloseWindow(2L, windowId));
-            StepResult closed = Task09A2Fixture.Step(sim, 2L);
-            Assert.That(Task09A2Fixture.RejectionCodes(closed), Is.Empty, "关窗命令本身必须被接受");
-            Assert.That(sim.CurrentTurnWindow, Is.Null, "夹具前提：Tick 2 结束时窗口已关闭");
+            // 攻击所有者的窗口 [0,2) 在 Tick 1 末到期（R1）；Tick 2 时已没有任何窗口。
+            Task09A2Fixture.Step(sim, 2L);
+            Assert.That(sim.CurrentTurnWindow, Is.Null, "夹具前提：窗口已到期关闭");
             Assert.That(sim.CurrentSnapshot.ConcurrentAction.HasActiveAuthorization, Is.False,
                 "夹具前提：不存在任何并发授权");
             Assert.That(opportunity.IsOpen, Is.True,
@@ -395,7 +372,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(Task09A2Fixture.RejectionCodes(accepted), Is.Empty,
                 "没有当前窗口、也没有并发授权时，机会合法的反应命令仍必须被接受");
             ActionPlan reaction = sim.ScheduleAuthority.Registry.ActivePlans.Single(p => p.IsReaction);
-            Assert.That(reaction.ReservedTurnBudgetTicks, Is.Zero);
             Assert.That(reaction.SubmittedWindowId.HasValue, Is.False);
         }
 
@@ -512,11 +488,9 @@ namespace ProjectHero.Logic.Tests
             ActionPlan playerReaction = playerWorld.ScheduleAuthority.Registry.ActivePlans.Single(p => p.IsReaction);
             Assert.That(aiReaction.ActionType, Is.EqualTo(playerReaction.ActionType));
             Assert.That(aiReaction.ActionSpecId, Is.EqualTo(playerReaction.ActionSpecId));
-            Assert.That(aiReaction.BudgetCostTicks, Is.EqualTo(playerReaction.BudgetCostTicks));
-            Assert.That(aiReaction.ReservedTurnBudgetTicks, Is.EqualTo(playerReaction.ReservedTurnBudgetTicks));
-            Assert.That(aiReaction.StartTick - aiReaction.TriggerTick,
-                Is.EqualTo(playerReaction.StartTick - playerReaction.TriggerTick),
-                "两侧的反应前摇（TriggerTick − StartTick）必须相同：差异只体现在来源与生产策略");
+            Assert.That(aiReaction.StartTick - aiReaction.SourceImpactTick,
+                Is.EqualTo(playerReaction.StartTick - playerReaction.SourceImpactTick),
+                "两侧的反应前摇（SourceImpactTick − StartTick）必须相同：差异只体现在来源与生产策略");
             Assert.That(aiReaction.IsLocked, Is.True);
             Assert.That(playerReaction.IsLocked, Is.True);
         }
@@ -541,7 +515,7 @@ namespace ProjectHero.Logic.Tests
         {
             // 他人（mon）的窗口：hero 不能天然提交，必须购买并发授权。
             var sim = Task09A2Fixture.NewSimWithMeta(ConcurrentActionDefinition.FrozenV1.MetaResourceCost);
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 0L);
 
             TurnWindow window = sim.CurrentTurnWindow;
@@ -555,7 +529,7 @@ namespace ProjectHero.Logic.Tests
                 turnWindowSchedule: null);
             var concurrentSim = Task09A2Fixture.NewSimWithMeta(
                 ConcurrentActionDefinition.FrozenV1.MetaResourceCost, assembly: assembly);
-            concurrentSim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            concurrentSim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(concurrentSim, 0L);
             WindowId concurrentWindowId = concurrentSim.CurrentTurnWindow.WindowId;
 

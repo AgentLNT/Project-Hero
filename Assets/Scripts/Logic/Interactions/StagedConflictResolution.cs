@@ -142,7 +142,7 @@ namespace ProjectHero.Logic.Interactions
         public bool RewardsBlock => Outcome == BlockContactOutcome.Blocked || Outcome == BlockContactOutcome.PartiallyBlocked;
     }
 
-    /// <summary>一个 Block 计划的结果：TriggerTick 内全部合格入射接触同时处理。</summary>
+    /// <summary>一个 Block 计划的结果：SourceImpactTick 内全部合格入射接触同时处理。</summary>
     public sealed record BlockPlanResolution(
         ActionPlanId BlockPlanId,
         UnitId DefenderUnitId,
@@ -217,11 +217,6 @@ namespace ProjectHero.Logic.Interactions
         TargetContactType ContactKind = TargetContactType.DirectHit,
         ActionPlanId RecipientPlanId = default);
 
-    // Counter windows are reaction facts, not TurnWindows; ordinary command authority still applies.
-    public sealed record DodgeCounterWindowResolution(
-        long ConflictGroupKey, UnitId DefenderUnitId, ActionPlanId DodgePlanId,
-        UnitId CounterTargetUnitId, ActionPlanId CounterTargetPlanId,
-        IReadOnlyList<ActionPlanId> AvoidedAttackPlanIds);
 
     /// <summary>
     /// 分阶段求解的不可变结果（任务包 08「必须产出」8–11）。
@@ -229,6 +224,8 @@ namespace ProjectHero.Logic.Interactions
     /// 五个阶段列表<strong>严格按 <see cref="ConflictResolutionPhase"/> 的顺序</strong>各自规范排序；
     /// 求解器只读输入、<strong>不</strong>修改任何世界状态（不扣血、不切状态、不移动、不终止计划、不发事件）。
     /// </summary>
+    public sealed record GuardQuotaConsumption(ActionPlanId PlanId, int DebitQ10, int RemainingQ10);
+
     public sealed record StagedConflictResolution(
         long Tick,
         string GraphErrorCode,
@@ -239,7 +236,7 @@ namespace ProjectHero.Logic.Interactions
         IReadOnlyList<ClashComponentResolution> Clashes,
         IReadOnlyList<MoveContactResolution> Moves,
         IReadOnlyList<RemainingHitResolution> RemainingHits,
-        ConflictGraph Graph = null)
+        ConflictGraph Graph = null, IReadOnlyList<GuardQuotaConsumption> GuardQuotaConsumptions = null)
     {
         public static StagedConflictResolution Empty(long tick)
             => new StagedConflictResolution(tick, null, 0L,
@@ -249,30 +246,6 @@ namespace ProjectHero.Logic.Interactions
 
         /// <summary>构图失败 ⇒ 整组失败（不丢边、不拆组），本 Tick 不产生任何 Resolution。</summary>
         public bool Failed => GraphErrorCode != null;
-
-        public IReadOnlyList<DodgeCounterWindowResolution> CounterWindows
-        {
-            get
-            {
-                var result = new List<DodgeCounterWindowResolution>();
-                if (Graph == null) return result.AsReadOnly();
-                foreach (ConflictGroup group in Graph.Groups)
-                {
-                    var contacts = DodgeContacts.Where(c => c.Invalidated && group.ContactKeys.Contains(c.Key));
-                    foreach (var defender in contacts.GroupBy(c => c.DefenderUnitId).OrderBy(g => g.Key.Value))
-                    {
-                        var avoided = defender.Select(c => c.AttackPlanId).Distinct().OrderBy(p => p.Value).ToArray();
-                        var selected = Graph.Nodes.Select(n => n.Intent).Where(i => avoided.Contains(i.ActionPlanId))
-                            .OrderByDescending(i => i.Momentum.MomentumUnits).ThenBy(i => i.OwnerUnitId.Value)
-                            .ThenBy(i => i.ActionPlanId.Value).First();
-                        result.Add(new DodgeCounterWindowResolution(group.GroupKey, defender.Key,
-                            defender.Select(c => c.DodgePlanId).OrderBy(p => p.Value).First(), selected.OwnerUnitId,
-                            selected.ActionPlanId, Array.AsReadOnly(avoided)));
-                    }
-                }
-                return result.AsReadOnly();
-            }
-        }
 
         /// <summary>参与 Clash 并因此终止的全部攻击计划（按 <c>ActionPlanId</c> 升序、已去重）。</summary>
         public IReadOnlyList<ActionPlanId> ClashTerminatedPlanIds

@@ -36,7 +36,9 @@ namespace ProjectHero.UnityView
         [SerializeField] private GameObject[] _legacyCanvases = Array.Empty<GameObject>();
         [SerializeField] private UnityEngine.UI.Button _actionToggle;
         [SerializeField] private Behaviour[] _legacyPresentation = Array.Empty<Behaviour>();
-        [SerializeField] private UnityEngine.UI.Button _confirm, _cancel, _close, _concurrent, _pause, _rotate;
+        [SerializeField] private UnityEngine.UI.Button _confirm, _cancel, _concurrent, _pause, _rotate;
+        // R1：窗口不能被主动结束。旧场景里序列化的"End turn"按钮只在绑定时隐藏，不再接任何命令。
+        [SerializeField, UnityEngine.Serialization.FormerlySerializedAs("_close")] private UnityEngine.UI.Button _retiredCloseButton;
         private readonly Dictionary<long, TimelinePlanView> _rows = new Dictionary<long, TimelinePlanView>();
         private readonly List<GameObject> _actionButtons = new List<GameObject>(), _targetButtons = new List<GameObject>(), _reactionButtons = new List<GameObject>();
         private readonly Queue<string> _debugLines = new Queue<string>();
@@ -126,13 +128,13 @@ namespace ProjectHero.UnityView
         public void Configure(BattleRuntimeBootstrap bootstrap, BattleViewRegistry registry, GridView grid, Camera camera,
             string controller, GameObject panel, RectTransform actions, RectTransform targets, RectTransform timeline,
             RectTransform reactions, TMP_Text status, TMP_Text preview, TMP_Text debug, TMP_FontAsset font,
-            Behaviour[] legacy, UnityEngine.UI.Button confirm, UnityEngine.UI.Button cancel, UnityEngine.UI.Button close,
+            Behaviour[] legacy, UnityEngine.UI.Button confirm, UnityEngine.UI.Button cancel,
             UnityEngine.UI.Button concurrent, UnityEngine.UI.Button pause, UnityEngine.UI.Button rotate)
         {
             _bootstrap = bootstrap; _registry = registry; _grid = grid; _camera = camera; _controllerId = controller;
             _panel = panel; _actions = actions; _targets = targets; _timeline = timeline; _reactions = reactions;
             _status = status; _previewText = preview; _debug = debug; _font = font; _legacyPresentation = legacy;
-            _confirm = confirm; _cancel = cancel; _close = close; _concurrent = concurrent; _pause = pause; _rotate = rotate;
+            _confirm = confirm; _cancel = cancel; _concurrent = concurrent; _pause = pause; _rotate = rotate;
         }
         public void Bind(BattleInitializationResult mapping, LogicSnapshot snapshot)
         {
@@ -153,12 +155,12 @@ namespace ProjectHero.UnityView
             LegacyVisualRegistry.SetNewViewActive(true);
             _panel.SetActive(true); _debugLines.Clear(); _lastDamageDebug = string.Empty; _reactionKey = null;
             _pauseLabel = _pause.GetComponentInChildren<TMP_Text>();
+            if (_retiredCloseButton != null) _retiredCloseButton.gameObject.SetActive(false);
             if (!_hooked)
             {
                 _registry.Feedback.FeedbackRequested += OnFeedback;
                 _confirm.onClick.AddListener(() => { if (_selectedReaction != 0) ConfirmSelectedReaction(); else Model.ConfirmDraft(); _selectedAction = default; RenderPreview(); });
                 _cancel.onClick.AddListener(() => { Model.CancelDraft(); _selectedAction = default; _selectedReaction = 0; _selectedDodgePreview = null; RenderPreview(); });
-                _close.onClick.AddListener(() => Model.CloseWindow());
                 _concurrent.onClick.AddListener(() => Model.ActivateConcurrent());
                 _pause.onClick.AddListener(() => _bootstrap.SetPaused(!_bootstrap.IsPaused));
                 _rotate.onClick.AddListener(() => { _facing = (GridDirection)(((int)_facing + 1) % 12); if (Model.HasDraft && !string.IsNullOrEmpty(_selectedAction.Value)) DraftAction(_draftDestination); RenderPreview(); });
@@ -278,15 +280,16 @@ namespace ProjectHero.UnityView
             foreach (var unit in Model.Decision.VisibleUnits)
                 text.Append("Unit ").Append(unit.UnitId).Append("  HP ").Append(unit.HealthQ10 / 1024f).Append("  ").Append(unit.StateValue).Append('\n');
             var window = Model.Window;
-            if (window != null) text.Append("Turn ").Append(window.OwnerUnitId).Append("  Available ").Append(window.AvailableBudgetTicks)
-                .Append("  Reserved ").Append(window.ReservedBudgetTicks).Append("  Spent ").Append(window.SpentBudgetTicks).Append('\n');
+            if (window != null) text.Append("Window owner ").Append(window.OwnerUnitId).Append(" · Remaining ")
+                .Append((Math.Max(0L, window.EndTick - Model.Decision.Tick - 1L)
+                    / (double)Model.Decision.Definition.TicksPerSecond).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))
+                .Append(" s\n");
             foreach (var ledger in Model.Adrenaline)
                 text.Append("Adrenaline ").Append(ledger.AvailableAdrenaline).Append("  Reserved ").Append(ledger.ReservedTotal).Append("  Cycle ").Append(ledger.CycleId).Append('\n');
             if (Model.Decision.BattleEnd.IsEnded) text.Append(Model.Decision.BattleEnd.ResultCode);
             _status.text = text.ToString();
             _confirm.interactable = ((Model.HasDraft && Model.Preview?.Succeeded == true)
                 || (_selectedReaction != 0 && _selectedDodgePreview?.RejectionCode == null)) && !_bootstrap.IsPaused && !Model.Decision.BattleEnd.IsEnded;
-            _close.interactable = window != null && window.OwnerUnitId == _owner.Value && !_bootstrap.IsPaused && !Model.Decision.BattleEnd.IsEnded;
             _concurrent.interactable = window != null && window.OwnerUnitId != _owner.Value && !_bootstrap.IsPaused && !Model.Decision.BattleEnd.IsEnded;
             if (_pauseLabel != null) _pauseLabel.text = _bootstrap.IsPaused ? "Resume" : "Pause";
             _debug.transform.parent.gameObject.SetActive((Debug.isDebugBuild || Application.isEditor) && _debugLines.Count > 0);
@@ -304,14 +307,13 @@ namespace ProjectHero.UnityView
             if (_selectedReaction != 0 && _selectedDodgePreview != null)
             {
                 text.Append("If Dodge relocates: cancel ").Append(_selectedDodgePreview.AffectedPlanIds.Count).Append(" future moves.");
-                foreach (var release in _selectedDodgePreview.ReleasesByWindow) text.Append("\nTurn ").Append(release.WindowId.Value).Append(": ").Append(release.BudgetTicks).Append(release.WindowIsOpen ? " ticks released" : " historical ticks released (closed turn)");
             }
             else if (!Model.HasDraft) text.Append("Select an action. Move: choose a ground cell.\nDrag a future plan to preview; confirm once.");
             else if (Model.Preview?.Succeeded != true) text.Append("Cannot confirm: ").Append(Model.Preview?.RejectionCode);
             else foreach (var projection in Model.Preview.PreviewPlans ?? Array.Empty<ProjectHero.Logic.Timeline.SchedulePlanPreview>())
             {
                 var plan = projection.Plan;
-                text.Append("Start ").Append(plan.StartTick).Append("  End ").Append(plan.EndTick).Append("  Budget ").Append(plan.BudgetCostTicks)
+                text.Append("Start ").Append(plan.StartTick).Append("  End ").Append(plan.EndTick)
                     .Append("  Weight ").Append(plan.ResolvedPathWeightUnits).Append("\nPath: ").Append(string.Join(" -> ", projection.Path)).Append('\n');
             }
             if (Model.LastRejection != null) text.Append("\nRejected: ").Append(Model.LastRejection);
@@ -356,7 +358,7 @@ namespace ProjectHero.UnityView
                     if (!option.IsOpen || !option.IsPublished || Model.LockLine > option.ResponseDeadlineTick) continue;
                     long id = opportunity.ReactionOpportunityId; var action = new ActionSpecId(option.ActionSpecId);
                     var spec = Model.Decision.FindAction(action);
-                    string label = spec.Type + "  cost " + spec.AdrenalineCost + "  impact " + opportunity.TriggerTick + "  deadline " + option.ResponseDeadlineTick;
+                    string label = spec.Type + "  cost " + spec.AdrenalineCost + "  deadline " + option.ResponseDeadlineTick + "  default start " + opportunity.SourceImpactTick;
                     if (spec.Type == ActionType.Block)
                         _reactionButtons.Add(CreateButton(_reactions, label, () => Model.ConfirmReaction(id, action, null)));
                     else foreach (var destination in Model.DodgeDestinations(id, action))

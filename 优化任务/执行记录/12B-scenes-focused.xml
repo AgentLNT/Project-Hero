@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.7466426">
+  <test-suite type="TestSuite" id="1085" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="65" result="Failed" site="Child" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.746643" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1078" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="65" result="Failed" site="Child" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.727746" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="61732" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1079" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="65" result="Failed" site="Child" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.726049" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1080" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="65" result="Failed" site="Child" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.725241" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1081" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="65" result="Failed" site="Child" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.717971" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1073" name="Task12BSceneEvidenceTests" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:43Z" duration="5.707345" total="4" passed="3" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1074" name="MainSceneBlockAtImpactCompletelyResistsHeavy" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneBlockAtImpactCompletelyResistsHeavy" methodname="MainSceneBlockAtImpactCompletelyResistsHeavy" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="1270289334" result="Passed" start-time="2026-10-14 05:07:37Z" end-time="2026-10-14 05:07:39Z" duration="2.365286" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\12B-main-defense-case-1.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+              <test-case id="1076" name="MainSceneCounterAttackStartsInsideReactionSoftSegment" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneCounterAttackStartsInsideReactionSoftSegment" methodname="MainSceneCounterAttackStartsInsideReactionSoftSegment" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="58442348" result="Passed" start-time="2026-10-14 05:07:39Z" end-time="2026-10-14 05:07:41Z" duration="1.745989" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\12B-main-defense-case-3.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+              <test-case id="1075" name="MainSceneEarlierLightConsumesBlockBeforeHeavy" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneEarlierLightConsumesBlockBeforeHeavy" methodname="MainSceneEarlierLightConsumesBlockBeforeHeavy" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="1939201900" result="Failed" label="Error" start-time="2026-10-14 05:07:41Z" end-time="2026-10-14 05:07:41Z" duration="0.134089" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.InvalidOperationException : Sequence contains more than one matching element]]></message>
+                  <stack-trace><![CDATA[  at System.Linq.Enumerable.Single[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] predicate) [0x0004a] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests+<Scenario>d__14.MoveNext () [0x00847] in C:\Users\1\repos\Project Hero\Project-Hero\Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs:148 
+  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1077" name="MainSceneGuardResistsTwiceThenThirdHitIsFull" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneGuardResistsTwiceThenThirdHitIsFull" methodname="MainSceneGuardResistsTwiceThenThirdHitIsFull" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="1684071465" result="Passed" start-time="2026-10-14 05:07:41Z" end-time="2026-10-14 05:07:43Z" duration="1.443063" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\12B-main-defense-case-4.png device=Intel(R) Arc(TM) B390 GPU
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

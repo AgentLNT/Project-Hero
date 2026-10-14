@@ -46,9 +46,9 @@ namespace ProjectHero.Logic.Tests
             => new CommandRequest(targetTick, new ScheduleEditScope(revision, window),
                 new ScheduleEditPayload(operations));
 
-        private static WindowId OpenHeroWindow(BattleSimulation sim, int budget = Task09A2Fixture.WindowBudget)
+        private static WindowId OpenHeroWindow(BattleSimulation sim, int duration = Task09A2Fixture.WindowDuration)
         {
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, budget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, duration);
             Task09A2Fixture.Step(sim, 0L);
             Assert.That(sim.CurrentTurnWindow, Is.Not.Null, "夹具前提：Tick 0 必须打开窗口");
             return sim.CurrentTurnWindow.WindowId;
@@ -146,7 +146,7 @@ namespace ProjectHero.Logic.Tests
             {
                 Task09A2Fixture.AddHeroAttack(1L, 40L, Task09A2Fixture.Hero, Attack(), Task09A2Fixture.Monster)
             });
-            ICommandPayload windowPayload = new WindowCommandPayload(WindowCommandKind.CloseOwnWindow);
+            ICommandPayload windowPayload = new WindowCommandPayload(WindowCommandKind.ActivateConcurrentAction);
             ICommandPayload reactionPayload =
                 new ReactionCommandPayload(ReactionCommandKind.Block, Task09A2Fixture.Spec(Task09A2Fixture.BlockSpecId));
 
@@ -206,10 +206,13 @@ namespace ProjectHero.Logic.Tests
         [Test]
         public void PlayerAndAiDisjointScheduleEditsFromSameSnapshotCanBothSucceed()
         {
-            var sim = Task09A2Fixture.NewSim();
+            // R1：一个控制者的窗口关闭时它的 Editable 计划都已启动，因此"两个控制者的计划同时可编辑"
+            // 只能发生在同一个窗口里——hero 经并发授权在 mon 的窗口内提交。
+            var assembly = new BattleSimulationAssembly(concurrentHeroUnitId: Task09A2Fixture.Hero);
+            var sim = Task09A2Fixture.NewSimWithMeta(ConcurrentActionDefinition.FrozenV1.MetaResourceCost, assembly: assembly);
 
-            // —— 准备：mon 的窗口里建立 mon 的计划；hero 的窗口里建立 hero 的计划 ——
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            // —— 准备：mon 的窗口里建立 mon 的计划；hero 经并发授权在同一窗口建立 hero 的计划 ——
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 0L);
             WindowId aiWindow = sim.CurrentTurnWindow.WindowId;
             Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.AddPlan(
@@ -217,14 +220,13 @@ namespace ProjectHero.Logic.Tests
                 Attack(), Task09A2Fixture.Hero, 80L));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1L)), Is.Empty);
 
-            // mon 关窗 → hero 开窗 → hero 建立自己的计划。
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.CloseWindow(2L, aiWindow));
+            // hero 激活并发授权 → 在 mon 的窗口里建立自己的计划。
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, new CommandRequest(
+                2L, new WindowCommandScope(aiWindow), new WindowCommandPayload(WindowCommandKind.ActivateConcurrentAction)));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 2L)), Is.Empty);
-            sim.WindowManager.ScheduleWindow(3L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
             Task09A2Fixture.Step(sim, 3L);
-            WindowId heroWindow = sim.CurrentTurnWindow.WindowId;
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(
-                4L, sim.ScheduleAuthority.ScheduleRevision, heroWindow, Task09A2Fixture.Hero,
+                4L, sim.ScheduleAuthority.ScheduleRevision, aiWindow, Task09A2Fixture.Hero,
                 Attack(), Task09A2Fixture.Monster, 80L));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 4L)), Is.Empty);
 
@@ -266,21 +268,16 @@ namespace ProjectHero.Logic.Tests
         }
 
         // =====================================================================
-        // 必需测试 10：CostNeutralMoveOrRemoveDoesNotRequireOriginWindowOpen
+        // 必需测试 10：MoveOrRemoveNeedsNoWindowScopeButMoveMustStayInSourceWindow（R1 修订）
         // =====================================================================
 
         /// <summary>
-        /// 纯 Move / Remove 在<strong>成本不增加</strong>时不要求原窗口仍打开：
-        /// 窗口关闭后仍可移动、仍可删除（释放额回到它自己的 <c>SubmittedWindowId</c> 账本，
-        /// 绝不转移、绝不重开）。对照：Add 缺窗口 scope 时被稳定拒绝。
-        ///
-        /// <para>
-        /// 会让它失败的实现缺陷：把"窗口必须开放"当成所有排程编辑的统一前置
-        /// （关闭窗口后连删除都做不了）；或者让释放额落到"当前窗口"而不是原窗口。
-        /// </para>
+        /// R1 修订：Move / Remove 不需要在 scope 里声明窗口（它们只校验控制权、Editable 与修订号），
+        /// 但 Move 的新起点必须仍在计划的来源窗口内；Add 缺窗口 scope 时被稳定拒绝，绝不回退成当前窗口。
+        /// （原"窗口关闭后仍可移动/删除"在 R1 下不再可能：窗口关闭时来源于它的普通计划都已启动。）
         /// </summary>
         [Test]
-        public void CostNeutralMoveOrRemoveDoesNotRequireOriginWindowOpen()
+        public void MoveOrRemoveNeedsNoWindowScopeButMoveMustStayInSourceWindow()
         {
             var sim = Task09A2Fixture.NewSim();
             WindowId window = OpenHeroWindow(sim);
@@ -289,58 +286,40 @@ namespace ProjectHero.Logic.Tests
                 1L, sim.ScheduleAuthority.ScheduleRevision, window, Task09A2Fixture.Hero,
                 Attack(), Task09A2Fixture.Monster, 80L));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1L)), Is.Empty);
-
             ActionPlan plan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
-            int cost = plan.BudgetCostTicks;
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedFor(plan.ActionPlanId), Is.EqualTo(cost));
 
-            // 关窗。
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.CloseWindow(2L, window));
-            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 2L)), Is.Empty);
-            TurnWindow closed = sim.WindowManager.FindWindow(window);
-            Assert.That(closed.IsOpen, Is.False, "夹具前提：原窗口已关闭");
+            // —— 被测 1：scope 不声明窗口的 Move（目标仍在来源窗口内）⇒ 接受 ——
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Edit(
+                2L, sim.ScheduleAuthority.ScheduleRevision, null,
+                new MoveEditablePlanOperation(plan.ActionPlanId, 90L)));
+            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 2L)), Is.Empty,
+                "Move 不需要声明窗口 scope");
+            Assert.That(plan.StartTick, Is.EqualTo(90L));
 
-            // —— 被测 1：纯 Move（成本中性）且 scope 不声明窗口 ⇒ 接受 ——
+            // —— 被测 2：把起点移出来源窗口 ⇒ 稳定拒绝、零写入 ——
+            string before = Task09A2Fixture.ScheduleFingerprint(sim);
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Edit(
                 3L, sim.ScheduleAuthority.ScheduleRevision, null,
-                new MoveEditablePlanOperation(plan.ActionPlanId, 90L)));
-            StepResult moved = Task09A2Fixture.Step(sim, 3L);
+                new MoveEditablePlanOperation(plan.ActionPlanId, Task09A2Fixture.WindowDuration)));
+            Assert.That(Task09A2Fixture.RejectionCodes(Task09A2Fixture.Step(sim, 3L)).ToArray(),
+                Is.EqualTo(new[] { ScheduleCodes.SCHEDULE_START_OUTSIDE_SOURCE_WINDOW }));
+            Assert.That(Task09A2Fixture.ScheduleFingerprint(sim), Is.EqualTo(before), "被拒绝的 Move 必须零局部写入");
 
-            Assert.That(Task09A2Fixture.AllRejectionCodes(moved), Is.Empty,
-                "成本中性的 Move 不要求原窗口仍打开");
-            Assert.That(plan.StartTick, Is.EqualTo(90L));
-            Assert.That(plan.BudgetCostTicks, Is.EqualTo(cost), "成本中性：预算一位不变");
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedFor(plan.ActionPlanId), Is.EqualTo(cost));
-
-            // —— 被测 2：纯 Remove 且 scope 不声明窗口 ⇒ 接受，释放额回到原窗口账本 ——
+            // —— 被测 3：scope 不声明窗口的 Remove ⇒ 接受并经统一终态协调器收口 ——
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Edit(
                 4L, sim.ScheduleAuthority.ScheduleRevision, null,
                 new RemoveEditablePlanOperation(plan.ActionPlanId)));
-            StepResult removed = Task09A2Fixture.Step(sim, 4L);
-
-            Assert.That(Task09A2Fixture.AllRejectionCodes(removed), Is.Empty,
-                "成本中性的 Remove 不要求原窗口仍打开");
+            Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 4L)), Is.Empty,
+                "Remove 不需要声明窗口 scope");
             Assert.That(plan.IsTerminal, Is.True, "Remove 必须经统一终态协调器收口");
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedFor(plan.ActionPlanId), Is.Zero,
-                "释放额回到计划自己的 SubmittedWindowId 账本");
-            Assert.That(sim.WindowManager.FindWindow(window).IsOpen, Is.False,
-                "释放不得重开已关闭的窗口");
-            Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Count, Is.Zero);
 
-            // —— 对照：窗口**已重新打开**，但命令不声明窗口 scope ⇒ 新增/增费必须被稳定拒绝 ——
-            sim.WindowManager.ScheduleWindow(5L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
-            Task09A2Fixture.Step(sim, 5L);
-            Assert.That(sim.CurrentTurnWindow, Is.Not.Null, "夹具前提：新窗口已打开");
-
+            // —— 对照：窗口打开，但新增不声明窗口 scope ⇒ 稳定拒绝 ——
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(
-                6L, sim.ScheduleAuthority.ScheduleRevision, null, Task09A2Fixture.Hero,
+                5L, sim.ScheduleAuthority.ScheduleRevision, null, Task09A2Fixture.Hero,
                 Attack(), Task09A2Fixture.Monster, 120L));
-            StepResult addWithoutWindow = Task09A2Fixture.Step(sim, 6L);
-
-            Assert.That(Task09A2Fixture.RejectionCodes(addWithoutWindow).ToArray(),
-                Is.EqualTo(new[] { TurnWindowCodes.BUDGET_SOURCE_CLOSED_OR_MISMATCH }),
-                "窗口打开时缺窗口 scope 的新增必须稳定拒绝，绝不回退到当前窗口"
-                + "（对照：成本中性的 Move/Remove 根本不需要声明窗口）");
+            Assert.That(Task09A2Fixture.RejectionCodes(Task09A2Fixture.Step(sim, 5L)).ToArray(),
+                Is.EqualTo(new[] { TurnWindowCodes.EXPECTED_WINDOW_REQUIRED }),
+                "缺窗口 scope 的新增必须稳定拒绝，绝不回退到当前窗口");
             Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Count, Is.Zero);
         }
 
@@ -440,14 +419,14 @@ namespace ProjectHero.Logic.Tests
         ///
         /// <para>
         /// 会让它失败的实现缺陷：把"当前窗口 / 计划来源窗口"当作计划存续或新窗口打开的条件；
-        /// 新窗口的预算被旧窗口的预留污染。
+        /// 新窗口的提交被旧窗口的计划污染。
         /// </para>
         /// </summary>
         [Test]
         public void RunningPlanFromPastWindowDoesNotBlockAiWindow()
         {
             var sim = Task09A2Fixture.NewSim();
-            WindowId heroWindow = OpenHeroWindow(sim);
+            WindowId heroWindow = OpenHeroWindow(sim, 6);   // [0,6)：Tick 5 末到期（R1）
 
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(
                 1L, sim.ScheduleAuthority.ScheduleRevision, heroWindow, Task09A2Fixture.Hero,
@@ -460,17 +439,14 @@ namespace ProjectHero.Logic.Tests
             Assert.That(heroPlan.State, Is.EqualTo(ActionPlanState.Running),
                 "夹具前提：hero 的攻击已启动（计划在旧窗口里 Running）");
 
-            // 关闭 hero 的窗口。
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId,
-                Task09A2Fixture.CloseWindow(5L, heroWindow));
+            // hero 的窗口在 Tick 5 末到期关闭。
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 5L)), Is.Empty);
             Assert.That(sim.CurrentTurnWindow, Is.Null);
             TurnWindow pastWindow = sim.WindowManager.FindWindow(heroWindow);
             Assert.That(pastWindow.IsOpen, Is.False);
-            int pastReserved = pastWindow.ReservedFor(heroPlan.ActionPlanId);
 
             // mon 的新窗口在 Tick 6 打开。
-            sim.WindowManager.ScheduleWindow(6L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(6L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 6L);
             TurnWindow aiWindow = sim.CurrentTurnWindow;
             Assert.That(aiWindow, Is.Not.Null, "旧窗口关闭后必须能打开新窗口");
@@ -488,31 +464,16 @@ namespace ProjectHero.Logic.Tests
             ActionPlan aiPlan = sim.ScheduleAuthority.Registry.ActivePlans
                 .Single(p => p.OwnerUnitId == Task09A2Fixture.Monster);
             Assert.That(aiPlan.SubmittedWindowId.Value, Is.EqualTo(aiWindow.WindowId));
-            Assert.That(aiWindow.ReservedFor(aiPlan.ActionPlanId), Is.EqualTo(aiPlan.BudgetCostTicks),
-                "新窗口的账本只包含它自己的计划");
 
             // 旧计划与旧窗口账本一位不变，且它仍然是活动计划（未被关窗终止）。
             Assert.That(heroPlan.State, Is.EqualTo(ActionPlanState.Running));
             Assert.That(heroPlan.IsTerminal, Is.False);
-            Assert.That(pastWindow.ReservedFor(heroPlan.ActionPlanId), Is.EqualTo(pastReserved),
-                "旧窗口账本不得被新窗口的提交污染");
         }
 
         // =====================================================================
         // 必需测试 51：ConcurrentActionScheduleEditUsesNormalSubmissionPath
         // =====================================================================
 
-        /// <summary>
-        /// 并发行动排程编辑走<strong>普通提交路径</strong>：拿到并发授权后，
-        /// 一条普通的 <c>ScheduleEditPayload</c> 经同一个 <c>BattleCommandProcessor</c>
-        /// 与同一个 <c>ScheduleEditor</c> 事务被接受，计划带 <c>SubmittedWindowId</c> 并预留窗口预算。
-        /// 对照：没有并发授权时同一条编辑以 <c>NO_SUBMISSION_AUTHORITY</c> 稳定拒绝。
-        ///
-        /// <para>
-        /// 会让它失败的实现缺陷：为并发行动建立第二套动作调度器/写入路径；
-        /// 把并发授权当成"跳过窗口与预算校验"的万能钥匙（那样预订额会漏记）。
-        /// </para>
-        /// </summary>
         [Test]
         public void ConcurrentActionScheduleEditUsesNormalSubmissionPath()
         {
@@ -520,7 +481,7 @@ namespace ProjectHero.Logic.Tests
             var assembly = new BattleSimulationAssembly(concurrentHeroUnitId: Task09A2Fixture.Hero);
             BattleSimulation sim = Task09A2Fixture.NewSimWithMeta(
                 ConcurrentActionDefinition.FrozenV1.MetaResourceCost, assembly: assembly);
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 0L);
             WindowId enemyWindow = sim.CurrentTurnWindow.WindowId;
 
@@ -542,9 +503,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(plan.OwnerUnitId, Is.EqualTo(Task09A2Fixture.Hero));
             Assert.That(plan.SubmittedWindowId.Value, Is.EqualTo(enemyWindow),
                 "并发编辑的计划仍记录它实际预留的窗口");
-            Assert.That(sim.WindowManager.FindWindow(enemyWindow).ReservedFor(plan.ActionPlanId),
-                Is.EqualTo(plan.BudgetCostTicks),
-                "并发编辑必须照常预留窗口预算（不是绕过账本）");
             Assert.That(sim.ScheduleAuthority.ScheduleRevision, Is.EqualTo(revision + 1L));
             Assert.That(sim.CommandProcessor.CommittedTransactionCount, Is.EqualTo(1),
                 "同一次提交由唯一的命令处理器计数");
@@ -556,7 +514,7 @@ namespace ProjectHero.Logic.Tests
             var noAuthorityAssembly = new BattleSimulationAssembly(concurrentHeroUnitId: Task09A2Fixture.Hero);
             BattleSimulation control = Task09A2Fixture.NewSimWithMeta(
                 ConcurrentActionDefinition.FrozenV1.MetaResourceCost, assembly: noAuthorityAssembly);
-            control.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            control.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(control, 0L);
             WindowId controlWindow = control.CurrentTurnWindow.WindowId;
             long controlRevision = control.ScheduleAuthority.ScheduleRevision;
@@ -571,7 +529,6 @@ namespace ProjectHero.Logic.Tests
                 "没有并发授权时，他人窗口里的新增必须以稳定码拒绝");
             Assert.That(control.ScheduleAuthority.Registry.ActivePlans.Count, Is.Zero);
             Assert.That(control.ScheduleAuthority.ScheduleRevision, Is.EqualTo(controlRevision));
-            Assert.That(control.WindowManager.FindWindow(controlWindow).ReservedBudgetTicks, Is.Zero);
         }
 
         // =====================================================================
@@ -788,32 +745,23 @@ namespace ProjectHero.Logic.Tests
         // =====================================================================
 
         /// <summary>
-        /// <strong>R-A1-D1 回归</strong>：构造「事务被拒 → 求值覆盖到一个既有 Attack 计划 → 回滚」，
-        /// 断言该计划的 <c>EndTick</c>/<c>BudgetCostTicks</c>/<c>ReservedTurnBudgetTicks</c>
-        /// 与其窗口预留额<strong>逐字段不变</strong>，且它到期仍能通过 <c>ActionStartGate</c>。
+        /// <strong>R-A1-D1 回归</strong>：构造「事务被拒 → 求值覆盖到一个既有 Attack 计划 → 整批拒绝」，
+        /// 断言该计划的 <c>StartTick</c>/<c>EndTick</c>/<c>ImpactTick</c><strong>逐字段不变</strong>，
+        /// 且它到期仍能通过 <c>ActionStartGate</c>。
         ///
         /// <para>
-        /// 构造方式：同一个批次里 [移动既有 Attack 计划] + [新增一条计划使窗口预算不足]。
-        /// 求值阶段把既有计划重绑到新起点，随后预算校验以
-        /// <c>INSUFFICIENT_WINDOW_BUDGET</c> 整批拒绝并回滚投影。
-        /// </para>
-        ///
-        /// <para>
-        /// <strong>变异探针（冻结件 §8.4 第 1 条）</strong>：去掉
-        /// <c>ScheduleEditor.SpaceProjectionSnapshot.Restore()</c> 里的动作族门控
-        /// （改回无条件 <c>SetPathProjection</c>）⇒ 本用例必须红：既有 Attack 计划的
-        /// <c>EndTick</c> 会被写成 <c>StartTick + RecoveryTicks</c>、
-        /// <c>BudgetCostTicks</c> 会被写成 <c>RecoveryTicks</c>，与窗口预留额不再相等，
-        /// 到期门禁也会以资源提交错误失败。
+        /// 构造方式（R1 修订）：同一个批次里 [移动既有 Attack 计划] + [新增一条起点落在窗口外的计划]，
+        /// 窗口规则以 <c>SCHEDULE_START_OUTSIDE_SOURCE_WINDOW</c> 整批拒绝。窗口规则在投影写入之前判定，
+        /// 因此本用例不再经过投影回滚路径；回滚路径只剩空间整批替换失败一种入口。
         /// </para>
         /// </summary>
         [Test]
         public void RejectedTransactionRollbackDoesNotCorruptExistingNonMovePlan()
         {
-            // 窗口预算刻意只够第一份计划：第二条新增必定以预算不足整批拒绝。
+            // 窗口 [0,160)：第一条计划与移动目标都在窗口内，第二条新增的起点 200 落在窗口外。
             var sim = Task09A2Fixture.NewSim();
             const long firstStart = 100L;
-            WindowId window = OpenHeroWindow(sim, budget: 20);
+            WindowId window = OpenHeroWindow(sim, 160);
 
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(
                 1L, sim.ScheduleAuthority.ScheduleRevision, window, Task09A2Fixture.Hero,
@@ -826,18 +774,12 @@ namespace ProjectHero.Logic.Tests
             long startTick = existing.StartTick;
             long endTick = existing.EndTick;
             long impactTick = existing.ImpactTick;
-            int budgetCost = existing.BudgetCostTicks;
-            int reserved = existing.ReservedTurnBudgetTicks;
             long lastRequested = existing.LastRequestedStartTick;
-            int windowReserved = sim.WindowManager.FindWindow(window).ReservedFor(existing.ActionPlanId);
 
-            Assert.That(budgetCost, Is.EqualTo(Task09A2Fixture.AttackWindupTicks + Task09A2Fixture.AttackRecoveryTicks),
-                "夹具前提：攻击的权威成本 = 前摇 + 后摇");
-            Assert.That(windowReserved, Is.EqualTo(budgetCost), "夹具前提：窗口预留额 = 计划成本");
 
             long revision = sim.ScheduleAuthority.ScheduleRevision;
 
-            // —— 被测事务（**单条命令**同时移动既有计划并新增一条使预算不足的计划）——
+            // —— 被测事务（**单条命令**同时移动既有计划并新增一条起点在窗口外的计划）——
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Edit(
                 2L, revision, window,
                 new MoveEditablePlanOperation(existing.ActionPlanId, 150L),
@@ -846,8 +788,8 @@ namespace ProjectHero.Logic.Tests
             StepResult rejected = Task09A2Fixture.Step(sim, 2L);
 
             Assert.That(Task09A2Fixture.RejectionCodes(rejected).ToArray(),
-                Is.EqualTo(new[] { TurnWindowCodes.INSUFFICIENT_WINDOW_BUDGET }),
-                "夹具前提：这条命令必须因预算不足被拒（而不是别的码）");
+                Is.EqualTo(new[] { ScheduleCodes.SCHEDULE_START_OUTSIDE_SOURCE_WINDOW }),
+                "夹具前提：这条命令必须因起点在窗口外被拒（而不是别的码）");
             Assert.That(sim.ScheduleAuthority.Registry.ActivePlans.Count, Is.EqualTo(1),
                 "被拒事务不得新增计划");
             Assert.That(sim.ScheduleAuthority.ScheduleRevision, Is.EqualTo(revision),
@@ -858,27 +800,14 @@ namespace ProjectHero.Logic.Tests
             Assert.That(existing.EndTick, Is.EqualTo(endTick),
                 "EndTick 必须逐字段不变（无条件路径投影会把它写成 StartTick + RecoveryTicks）");
             Assert.That(existing.ImpactTick, Is.EqualTo(impactTick));
-            Assert.That(existing.BudgetCostTicks, Is.EqualTo(budgetCost),
-                "BudgetCostTicks 必须逐字段不变（无条件路径投影会把它写成 RecoveryTicks）");
-            Assert.That(existing.ReservedTurnBudgetTicks, Is.EqualTo(reserved));
             Assert.That(existing.LastRequestedStartTick, Is.EqualTo(lastRequested));
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedFor(existing.ActionPlanId),
-                Is.EqualTo(windowReserved),
-                "窗口账本的预留额必须与计划自己的成本仍然相等");
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedFor(existing.ActionPlanId),
-                Is.EqualTo(existing.BudgetCostTicks),
-                "冻结契约：预留额 == BudgetCostTicks（不相等即触发资源提交错误）");
 
             // —— 到期仍能通过启动门禁 ——
             for (long tick = 3L; tick <= startTick; tick++) Task09A2Fixture.Step(sim, tick);
 
             Assert.That(existing.State, Is.EqualTo(ActionPlanState.Running),
-                "到期必须能通过 ActionStartGate 进入 Running（RESOURCE_COMMIT_ERROR 会让它停在 Editable）");
+                "到期必须能通过 ActionStartGate 进入 Running");
             Assert.That(existing.LockedAtTick, Is.EqualTo(startTick));
-            Assert.That(existing.ReservedTurnBudgetTicks, Is.Zero);
-            Assert.That(sim.WindowManager.FindWindow(window).SpentBudgetTicks, Is.EqualTo(budgetCost),
-                "启动提交必须把预留原子转成 Spent");
-            Assert.That(sim.WindowManager.FindWindow(window).ReservedBudgetTicks, Is.Zero);
         }
 
         // =====================================================================
@@ -947,11 +876,11 @@ namespace ProjectHero.Logic.Tests
             long revisionAfterTail = sim.ScheduleAuthority.ScheduleRevision;
             Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(
                 3L, revisionAfterTail, window, Task09A2Fixture.Hero,
-                Attack(), Task09A2Fixture.Monster, requestedStartTick: 400L, temporaryKey: 3L));
+                Attack(), Task09A2Fixture.Monster, requestedStartTick: 399L, temporaryKey: 3L));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 3L)), Is.Empty);
             ActionPlan explicitPlan = sim.ScheduleAuthority.Registry.ActivePlans
-                .Single(p => p.StartTick == 400L);
-            Assert.That(explicitPlan.LastRequestedStartTick, Is.EqualTo(400L));
+                .Single(p => p.StartTick == 399L);
+            Assert.That(explicitPlan.LastRequestedStartTick, Is.EqualTo(399L));
         }
     }
 }

@@ -42,29 +42,20 @@ namespace ProjectHero.Logic.Tests
                 Assert.That(sim.MovementAuthority.VerifyInvariants(), Is.Null);
             }
         }
-        [Test] public void WindowProjectionReusesUnchangedRowsAndKeepsOldCloseAndRefundFactsImmutable()
+        [Test] public void WindowProjectionReusesUnchangedRowsAndKeepsClosedFactsImmutable()
         {
-            using (var sim = BattleSimulation.Create(Task09A2Fixture.BuildDefinition(), Task09A2Fixture.EncounterId,
-                Task09A2Fixture.Inputs, new BattleSimulationAssembly()))
-            {
-                sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero, 400); sim.WindowManager.TryOpenDueWindow(0);
-                var added = sim.ScheduleEditor.Apply(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1,
-                    Task09A2Fixture.Hero, Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), 100,
-                    PrimaryTargetUnitId: Task09A2Fixture.Monster) }, 1, 0, 0, expectedWindowId: new WindowId(1), issuer: Task09A2Fixture.PlayerId);
-                Assert.That(added.Succeeded, Is.True);
-                var open = sim.Step(0, sim.CommandIngress.FreezeTick(0)).Snapshot.WindowManager.Windows.Single();
-                Assert.That(sim.Step(1, sim.CommandIngress.FreezeTick(1)).Snapshot.WindowManager.Windows.Single(), Is.SameAs(open));
-                sim.CurrentTurnWindow.RequestClose(ProjectHero.Logic.Turns.TurnWindowCloseReason.OwnerRequested);
-                var closed = sim.Step(2, sim.CommandIngress.FreezeTick(2)).Snapshot.WindowManager.Windows.Single();
-                Assert.That(closed.IsOpen, Is.False); Assert.That(closed.ClosedAtTick, Is.EqualTo(2));
-                Assert.That(open.IsOpen, Is.True); Assert.That(open.ClosedAtTick, Is.EqualTo(-1));
-                Assert.That(sim.Step(3, sim.CommandIngress.FreezeTick(3)).Snapshot.WindowManager.Windows.Single(), Is.SameAs(closed));
-                var plan = sim.ScheduleAuthority.Registry.Find(added.AddedPlanIds.Single());
-                sim.TerminalCoordinator.EnterTerminal(plan, ActionTerminationReason.CancelledByCommand, 4);
-                Assert.That(sim.Step(4, sim.CommandIngress.FreezeTick(4)).Snapshot.WindowManager.Windows, Is.Empty);
-                Assert.That(closed.ReservedBudgetTicks, Is.GreaterThan(0)); Assert.That(closed.Reservations.Count, Is.EqualTo(1));
-                Assert.That(sim.WindowManager.FindWindow(new WindowId(1)).ReservedBudgetTicks, Is.Zero);
-            }
+            using var sim = Task09A2Fixture.NewSim();
+            sim.WindowManager.ScheduleWindow(0, Task09A2Fixture.Hero, 3);
+            var open = sim.Step(0, sim.CommandIngress.FreezeTick(0)).Snapshot.WindowManager.Windows.Single();
+            Assert.That(sim.Step(1, sim.CommandIngress.FreezeTick(1)).Snapshot.WindowManager.Windows.Single(), Is.SameAs(open));
+            Assert.That(sim.Step(2, sim.CommandIngress.FreezeTick(2)).Snapshot.WindowManager.Windows, Is.Empty);
+            var closed = sim.WindowManager.FindWindow(new WindowId(1));
+            Assert.That(closed.IsOpen, Is.False); Assert.That(closed.ClosedAtTick, Is.EqualTo(2));
+            Assert.That(closed.IsFrozenForHistory, Is.True);
+            Assert.That(open.IsOpen, Is.True); Assert.That(open.ClosedAtTick, Is.EqualTo(-1));
+            var history = sim.History;
+            sim.Step(3, sim.CommandIngress.FreezeTick(3));
+            Assert.That(sim.History, Is.EqualTo(history));
         }
 
         [Test] public void MovementInvariantRejectsInternalGapBeforeCountMismatchButAllowsCommittedPrefix()
@@ -101,7 +92,7 @@ namespace ProjectHero.Logic.Tests
                 var plan = sim.ScheduleAuthority.Registry.Find(added.AddedPlanIds.Single());
                 var match = typeof(ActionPlanSnapshot).GetMethod("MatchesAuthoritative", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var properties = typeof(ActionPlanSnapshot).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-                Assert.That(properties.Length, Is.EqualTo(38), "A new canonical field requires a cache invalidation check.");
+                Assert.That(properties.Length, Is.EqualTo(35), "A new canonical field requires a cache invalidation check.");
                 foreach (var property in properties)
                 {
                     var independentCopy = ActionPlanSnapshot.From(plan, sim.FactionResolver);
@@ -169,7 +160,6 @@ namespace ProjectHero.Logic.Tests
                 var source = new ActionPlanTerminalArchiveSource(sim.ScheduleAuthority, sim.TerminalCoordinator, sim.FactionResolver);
                 var candidate = source.CollectOrdered(2).Single();
                 snapshot = sim.ScheduleAuthority.Registry.FindFrozenTerminal(plan.ActionPlanId);
-                Assert.That(snapshot.ReservedTurnBudgetTicks, Is.Zero, "Freeze must occur after budget cleanup.");
                 Assert.That(snapshot.TerminationReason, Is.EqualTo((int)reason));
                 Assert.That(snapshot.StartTick, Is.EqualTo(start));
                 Assert.That(source.CollectOrdered(2).Single().Payload, Is.EqualTo(candidate.Payload));

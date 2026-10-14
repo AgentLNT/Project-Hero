@@ -9,10 +9,8 @@ using ProjectHero.Logic.Simulation;
 
 namespace ProjectHero.Logic.Events
 {
-    public sealed record DodgeCounterWindowOpenedEvent(
-        long Tick, long Sequence, long ConflictGroupKey, UnitId DefenderUnitId,
-        ActionPlanId DodgePlanId, UnitId CounterTargetUnitId, ActionPlanId CounterTargetPlanId,
-        IReadOnlyList<ActionPlanId> AvoidedAttackPlanIds) : LogicEvent(Tick, Sequence);
+    public sealed record GuardQuotaConsumedEvent(long Tick, long Sequence, ActionPlanId PlanId,
+        int DebitQ10, int RemainingQ10) : LogicEvent(Tick, Sequence);
     /// <summary>
     /// 任务 08「必须产出」15 的<strong>语义事件族</strong>（交互与 Resolution 段）。
     ///
@@ -133,7 +131,7 @@ namespace ProjectHero.Logic.Events
     /// <summary>
     /// <strong>Dodge 旧/新位置与失效接触事件</strong>（任务包 08:72）。
     ///
-    /// 每个<strong>实际进入 TriggerTick 提交尝试</strong>的 Dodge 计划恰好一条；
+    /// 每个<strong>实际进入 SourceImpactTick 提交尝试</strong>的 Dodge 计划恰好一条；
     /// 提前终止不伪造触发。<see cref="InvalidatedAttackPlanIds"/> 是稳定升序、
     /// 已去重的失效攻击计划集合；<see cref="StillHitAttackPlanIds"/> 与
     /// <see cref="RetainedUndodgeablePlanIds"/> 提供四格表的可审计分解。

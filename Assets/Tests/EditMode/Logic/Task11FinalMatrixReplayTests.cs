@@ -24,11 +24,12 @@ namespace ProjectHero.Logic.Tests
         // use Player registrations, so saved replay contains every authoritative input.
         private sealed class Windows : ITurnWindowSchedule
         {
-            public WindowOpenRequest TryOpenDue(long tick) => tick == 0 || tick == 14
+            // R1：窗口按时长到期关闭；原脚本在 Tick 2、5、8 关窗，换算为三个 [t, t+3) 窗口。
+            public WindowOpenRequest TryOpenDue(long tick) => tick == 14
                 ? new WindowOpenRequest(Task09A2Fixture.Hero, 400)
-                : tick == 3 ? new WindowOpenRequest(Task09A2Fixture.Monster, 400)
-                : tick == 6 ? new WindowOpenRequest(Task09A2Fixture.Ally, 400) : null;
-            public bool ShouldCloseCurrentWindow(long tick) => tick == 2 || tick == 5 || tick == 8;
+                : tick == 0 ? new WindowOpenRequest(Task09A2Fixture.Hero, 3)
+                : tick == 3 ? new WindowOpenRequest(Task09A2Fixture.Monster, 3)
+                : tick == 6 ? new WindowOpenRequest(Task09A2Fixture.Ally, 3) : null;
         }
         private static BattleDefinition Definition(string kind)
         {
@@ -71,8 +72,14 @@ namespace ProjectHero.Logic.Tests
                 d.StatusEffects, d.Encounters, d.DefaultDynamicSpawnPolicy) };
         }
         private static BattleSimulation Create(BattleDefinition d, ReplayHeader header = null)
-            => BattleSimulation.Create(d, Task09A2Fixture.EncounterId, header?.RuntimeInputs ?? Task09A2Fixture.Inputs,
+        {
+            var sim = BattleSimulation.Create(d, Task09A2Fixture.EncounterId, header?.RuntimeInputs ?? Task09A2Fixture.Inputs,
                 new BattleSimulationAssembly(turnWindowSchedule: new Windows()));
+            // This replay matrix isolates simultaneous combat. The standalone editor permits
+            // multi-owner fixtures; production source-window permissions are tested by Task12A.
+            sim.ScheduleEditor.WindowAuthority = null;
+            return sim;
+        }
         private static void Add(BattleSimulation sim, UnitId owner, long targetTick, params ScheduleEditOperation[] operations)
         {
             var controller = owner == Task09A2Fixture.Monster ? Task09A2Fixture.AiId : Task09A2Fixture.PlayerId;
@@ -88,12 +95,12 @@ namespace ProjectHero.Logic.Tests
             for (int tick = 0; tick < 210 && !sim.IsEnded; tick++)
             {
                 if (tick == 1) Add(sim, Task09A2Fixture.Hero, tick, Attack(Task09A2Fixture.Hero, Task09A2Fixture.Monster,
-                    kind == "Clash3" || kind == "Flank" ? 10 : 1,
+                    kind == "Clash3" ? 16 : kind == "Flank" ? 10 : 1,
                     kind == "FacingAoe" ? GridDirection.West : GridDirection.East));
                 if (tick == 4)
                 {
                     if (kind == "Clash3") Add(sim, Task09A2Fixture.Monster, tick,
-                        Attack(Task09A2Fixture.Monster, Task09A2Fixture.Hero, 10, GridDirection.West));
+                        Attack(Task09A2Fixture.Monster, Task09A2Fixture.Hero, 18, GridDirection.West));
                     if (kind == "Guard" || kind == "AutoDeferral") Add(sim, Task09A2Fixture.Monster, tick,
                         new AddOrdinaryPlanOperation(1, Task09A2Fixture.Monster, Task08DefenseCoverageTests.GuardId,
                             kind == "Guard" ? 4 : 12));
@@ -105,7 +112,7 @@ namespace ProjectHero.Logic.Tests
                 if (tick == 7)
                 {
                     if (kind == "Clash3" || kind == "Flank") Add(sim, Task09A2Fixture.Ally, tick,
-                        Attack(Task09A2Fixture.Ally, Task09A2Fixture.Monster, 10, kind == "Clash3" ? (GridDirection)4 : GridDirection.West));
+                        Attack(Task09A2Fixture.Ally, Task09A2Fixture.Monster, kind == "Clash3" ? 20 : 10, kind == "Clash3" ? (GridDirection)4 : GridDirection.West));
                     if (kind == "Reservation") Add(sim, Task09A2Fixture.Ally, tick,
                         new AddOrdinaryPlanOperation(1, Task09A2Fixture.Ally, Task08DefenseCoverageTests.MoveId, 60, Destination: new GridPoint(14, 0)));
                     if (kind == "MixedDodge") Add(sim, Task09A2Fixture.Ally, tick,
@@ -117,7 +124,7 @@ namespace ProjectHero.Logic.Tests
                 if (tick == 22 && (kind == "Block" || kind == "PartialBlock" || kind.Contains("Dodge")))
                 {
                     var opportunity = sim.ReactionOpportunities.ActiveOpportunities.Single(o => o.DefenderUnitId == Task09A2Fixture.Monster
-                        && o.TriggerTick == 30 && o.State == ProjectHero.Logic.Combat.ReactionOpportunityState.Open
+                        && o.SourceImpactTick == 30 && o.State == ProjectHero.Logic.Combat.ReactionOpportunityState.Open
                         && (kind != "MixedDodge" || o.Options.Any(option => option.ReactionActionSpecId.Value == Task09A2Fixture.DodgeSpecId)));
                     bool dodge = kind.Contains("Dodge");
                     Assert.That(sim.AdrenalineLedgerOf(Task09A2Fixture.Monster).AvailableAdrenaline, Is.GreaterThanOrEqualTo(dodge ? 1 : 2), "Resource must come from the warm-up hit.");
@@ -131,7 +138,10 @@ namespace ProjectHero.Logic.Tests
                 Assert.That(result.Events.Events.OfType<CommandRejectedEvent>(), Is.Empty, kind + " tick=" + tick);
             }
             Assert.That(facts.OfType<DamageChannelResolvedEvent>().Any() || facts.OfType<ClashParticipantResolvedEvent>().Any(), Is.True, "Non-empty real combat required.");
-            if (kind == "Clash3") Assert.That(facts.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.InterruptedByClash), Is.EqualTo(3));
+            if (kind == "Clash3") {
+                File.WriteAllLines("优化任务/执行记录/12B-clash3-events.txt", facts.Select(ReplayEventComparison.Canonical));
+                Assert.That(facts.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.InterruptedByClash), Is.EqualTo(3));
+            }
             if (kind == "Block" || kind == "PartialBlock") Assert.That(facts.OfType<BlockResolvedEvent>().Any(), Is.True);
             if (kind.Contains("Dodge")) Assert.That(facts.OfType<DodgeResolvedEvent>().Count(), Is.EqualTo(1));
             if (kind == "AoeDodge") Assert.That(facts.OfType<DamageChannelResolvedEvent>().Any(e => e.Tick == 30 && e.TargetUnitId != Task09A2Fixture.Monster), Is.True);
@@ -168,7 +178,7 @@ namespace ProjectHero.Logic.Tests
         public void FinalCombatClassFileReplaysOneHundredTimesFromTickZero(string kind)
         {
             var d = Definition(kind); var recorded = Record(kind, d);
-            var path = Path.GetFullPath("优化任务/执行记录/11-final-replay-" + kind + ".heroReplay");
+            var path = Path.GetFullPath("优化任务/执行记录/12B-11-final-replay-" + kind + ".heroReplay");
             using (var file = File.Create(path)) ReplayFile.Save(file, recorded);
             BattleReplay loaded; using (var file = File.OpenRead(path)) loaded = ReplayFile.Load(file, d);
             using var player = new ReplayPlayer(d, h => Create(d, h)); player.Load(loaded);

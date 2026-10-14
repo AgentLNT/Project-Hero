@@ -28,7 +28,7 @@ namespace ProjectHero.Logic.Tests
         {
             "SourcePriority", "CommandSequence", "ProducerOrdinal", "FrozenProducerOrdinal",
             "ControllerId", "SourceKind", "Issuer",
-            "TriggerTick", "Cost", "Price", "Fee", "Adrenaline", "Budget", "MetaResource"
+            "SourceImpactTick", "Cost", "Price", "Fee", "Adrenaline", "Budget", "MetaResource"
         };
 
         /// <summary>生产者可以构造的全部类型（UI/AI 唯一能拿到的命令面）。</summary>
@@ -141,7 +141,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(CommandSourcePriority.Ai, Is.LessThan(CommandSourcePriority.System));
 
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             CommandIngressEntry ai = Task09Fixture.AiEntry(sim);
@@ -226,7 +226,7 @@ namespace ProjectHero.Logic.Tests
             RawOrder order, out string rawBatchOrder, out long[] commandSequences)
         {
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             CommandIngressEntry ai = Task09Fixture.AiEntry(sim);

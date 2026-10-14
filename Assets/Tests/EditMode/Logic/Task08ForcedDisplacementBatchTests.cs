@@ -16,23 +16,6 @@ using ProjectHero.Logic.Timeline;
 
 namespace ProjectHero.Logic.Tests
 {
-    /// <summary>
-    /// 任务 08 ·「同时强制位移协议」的<strong>批次 / 抢占 / 原子提交用例</strong>
-    /// （任务包 :349-353、:355、:356、:359、:360，以及架构审查 R9 建议的补充用例）。
-    ///
-    /// 观察点是<strong>生产对象</strong>：<see cref="ForcedDisplacementSolver"/> 的
-    /// <c>InvalidatedPlanIds</c>、<see cref="ForcedDisplacementCommitter"/> 经
-    /// <see cref="ActionPlanTerminalCoordinator"/> 实际写入的终态原因、
-    /// <see cref="LogicGrid.ReservationsOfPlanOrdered"/> 的剩余预留，以及
-    /// <see cref="ForcedDisplacementBatch"/> 的 <c>Resolutions</c>/<c>Relocations</c> 分工。
-    ///
-    /// <para>
-    /// ⚠ 夹具必须绕开的一条生产接缝（与 <c>Task07ForcedDisplacementBudgetTests</c> 同一口径）：
-    /// <c>ActionScheduleAuthority.RegisterPlan</c> 是 <c>internal</c>，而
-    /// <c>ProjectHero.Logic.Tests</c> 没有 <c>InternalsVisibleTo</c>。因此本文件只用反射完成
-    /// "把计划接入权威"这一步；被测的求解、抢占、终态、释放代码路径<strong>没有</strong>任何放宽。
-    /// </para>
-    /// </summary>
     public class Task08ForcedDisplacementBatchTests
     {
         private static readonly GridBoundaryDefinition Wide =

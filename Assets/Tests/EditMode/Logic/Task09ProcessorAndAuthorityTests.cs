@@ -93,7 +93,7 @@ namespace ProjectHero.Logic.Tests
         {
             // —— 世界 1：玩家发行（hero 攻击 mon）——
             var playerWorld = Task09A2Fixture.NewSim();
-            playerWorld.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
+            playerWorld.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(playerWorld, 0L);
             WindowId playerWindow = playerWorld.CurrentTurnWindow.WindowId;
             Task09A2Fixture.Submit(playerWorld, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(
@@ -104,7 +104,7 @@ namespace ProjectHero.Logic.Tests
 
             // —— 世界 2：AI 发行（mon 攻击 hero）——
             var aiWorld = Task09A2Fixture.NewSim();
-            aiWorld.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            aiWorld.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(aiWorld, 0L);
             WindowId aiWindow = aiWorld.CurrentTurnWindow.WindowId;
             Task09A2Fixture.Submit(aiWorld, Task09A2Fixture.AiId, Task09A2Fixture.AddPlan(
@@ -151,33 +151,20 @@ namespace ProjectHero.Logic.Tests
             Assert.That(playerPlan.StartTick, Is.EqualTo(aiPlan.StartTick));
             Assert.That(playerPlan.EndTick, Is.EqualTo(aiPlan.EndTick));
             Assert.That(playerPlan.ImpactTick, Is.EqualTo(aiPlan.ImpactTick));
-            Assert.That(playerPlan.BudgetCostTicks, Is.EqualTo(aiPlan.BudgetCostTicks));
-            Assert.That(playerPlan.ReservedTurnBudgetTicks, Is.EqualTo(aiPlan.ReservedTurnBudgetTicks));
             Assert.That(playerPlan.State, Is.EqualTo(aiPlan.State));
 
             // 两侧的窗口账本变化也相同（预算语义同源）。
-            Assert.That(playerWorld.WindowManager.FindWindow(playerWindow).ReservedFor(playerPlan.ActionPlanId),
-                Is.EqualTo(aiWorld.WindowManager.FindWindow(aiWindow).ReservedFor(aiPlan.ActionPlanId)));
         }
 
         // =====================================================================
         // 必需测试 28：PlayerCannotCommandAnotherControllersUnit
         // =====================================================================
 
-        /// <summary>
-        /// 玩家不能命令别人控制的单位：载荷里的单位 ID 只表达意图目标。
-        /// 与"自己的单位"的对照只差一个 OwnerUnitId，得到的却是稳定拒绝 + 零局部写入。
-        ///
-        /// <para>
-        /// 会让它失败的实现缺陷：把载荷里的单位 ID 当作权限依据（"提交方说他控制 mon"）；
-        /// 控制权解析失败时跳过校验继续处理；拒绝时留下半提交（计划/预算/修订号任一变化）。
-        /// </para>
-        /// </summary>
         [Test]
         public void PlayerCannotCommandAnotherControllersUnit()
         {
             var sim = Task09A2Fixture.NewSim();
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 0L);
             WindowId window = sim.CurrentTurnWindow.WindowId;
             long revision = sim.ScheduleAuthority.ScheduleRevision;
@@ -240,13 +227,13 @@ namespace ProjectHero.Logic.Tests
         {
             var sim = Task09A2Fixture.NewSim();
 
-            // Tick 0：mon 自己的窗口；Tick 1 AI 建立一个属于自己的可编辑计划。
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowBudget);
+            // Tick 0：mon 自己的窗口 [0,4)（R1：到期自动关闭）；Tick 1 AI 建立一个属于自己的可编辑计划。
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, 4);
             Task09A2Fixture.Step(sim, 0L);
             WindowId aiWindow = sim.CurrentTurnWindow.WindowId;
             Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.AddPlan(
                 1L, sim.ScheduleAuthority.ScheduleRevision, aiWindow, Task09A2Fixture.Monster,
-                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Hero, 80L));
+                Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Hero, 3L));
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 1L)), Is.Empty,
                 "夹具前提：AI 在自己的窗口里新增必须成功");
             ActionPlan aiPlan = sim.ScheduleAuthority.Registry.ActivePlans.Single();
@@ -259,18 +246,19 @@ namespace ProjectHero.Logic.Tests
             Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.AddPlan(
                 2L, revision, aiWindow, Task09A2Fixture.Hero,
                 Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId), Task09A2Fixture.Monster, 60L));
+            // —— 对照（同一 Tick）：AI 在自己的窗口内把自己的计划从 3 提前到 2 必须成功 ——
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId,
+                Edit(2L, revision, aiWindow, new MoveEditablePlanOperation(aiPlan.ActionPlanId, 2L)));
             StepResult impersonation = Task09A2Fixture.Step(sim, 2L);
             Assert.That(Task09A2Fixture.RejectionCodes(impersonation).ToArray(),
                 Is.EqualTo(new[] { CommandCodes.COMMAND_ISSUER_CANNOT_CONTROL_UNIT }),
                 "AI 与玩家必须有完全相同的控制权拒绝码");
 
-            // Tick 2：AI 关掉自己的窗口，Tick 3 打开 hero 的窗口，Tick 4 hero 建立自己的计划。
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId,
-                Task09A2Fixture.CloseWindow(3L, aiWindow));
+            Assert.That(aiPlan.StartTick, Is.EqualTo(2L), "对照：AI 移动自己的计划必须成功");
             Assert.That(Task09A2Fixture.AllRejectionCodes(Task09A2Fixture.Step(sim, 3L)), Is.Empty);
-            Assert.That(sim.CurrentTurnWindow, Is.Null, "夹具前提：Tick 3 结束时 AI 的窗口已关闭");
+            Assert.That(sim.CurrentTurnWindow, Is.Null, "夹具前提：AI 的窗口在 Tick 3 末到期关闭（R1）");
 
-            sim.WindowManager.ScheduleWindow(4L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(4L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 4L);
             WindowId heroWindow = sim.CurrentTurnWindow.WindowId;
             Assert.That(sim.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(Task09A2Fixture.Hero));
@@ -310,12 +298,6 @@ namespace ProjectHero.Logic.Tests
             Assert.That(heroPlan.IsTerminal, Is.False);
             Assert.That(heroPlan.StartTick, Is.EqualTo(150L));
             Assert.That(sim.ScheduleAuthority.ScheduleRevision, Is.EqualTo(revisionAtSix));
-
-            // —— 对照：AI 移动自己的计划必须成功 ——
-            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId,
-                Edit(8L, revisionAtSix, null, new MoveEditablePlanOperation(aiPlan.ActionPlanId, 300L)));
-            Task09A2Fixture.Step(sim, 8L);
-            Assert.That(aiPlan.StartTick, Is.EqualTo(300L), "对照：AI 移动自己的计划必须成功");
         }
 
         // =====================================================================
@@ -463,7 +445,7 @@ namespace ProjectHero.Logic.Tests
                 Is.EqualTo(hostileOnly.Select(u => u.Value).ToArray()));
 
             // 命令层与筛面对同一个非法目标给同一个拒绝码。
-            sim.WindowManager.ScheduleWindow(1L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(1L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 1L);
             WindowId window = sim.CurrentTurnWindow.WindowId;
 
@@ -567,7 +549,7 @@ namespace ProjectHero.Logic.Tests
         private static string CommandLayerRejectionFor(BattleDefinition definition, UnitId target)
         {
             BattleSimulation sim = Task09A2Fixture.NewSim(definition);
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 0L);
             WindowId window = sim.CurrentTurnWindow.WindowId;
 
@@ -651,7 +633,7 @@ namespace ProjectHero.Logic.Tests
                 Is.EqualTo(ScheduleCodes.TARGET_RELATION_NOT_ALLOWED));
 
             // 命令层：友军/中立目标必须靠显式位放行（同一个掩码语义）。
-            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowBudget);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Hero, Task09A2Fixture.WindowDuration);
             Task09A2Fixture.Step(sim, 0L);
             WindowId window = sim.CurrentTurnWindow.WindowId;
 

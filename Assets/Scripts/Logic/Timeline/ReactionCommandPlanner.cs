@@ -31,7 +31,7 @@ namespace ProjectHero.Logic.Timeline
     /// 它<strong>不</strong>（00 号规则 26、任务 08 交接 §4.5）：
     /// <list type="bullet">
     /// <item>检查当前窗口、<c>ExpectedWindowId</c> 或并发授权——反应权与窗口正交；</item>
-    /// <item>读取或推导 <c>TriggerTick</c>（它恒等于来源攻击的 <c>ImpactTick</c>，
+    /// <item>读取或推导 <c>SourceImpactTick</c>（它恒等于来源攻击的 <c>ImpactTick</c>，
     /// 载荷里根本没有该字段）；</item>
     /// <item>自己拼装 <c>ActionPlan</c>、写终态或创建机会。</item>
     /// </list>
@@ -105,7 +105,7 @@ namespace ProjectHero.Logic.Timeline
 
             string error = _opportunities.TryAcceptByIdWithCommandSequence(
                 scope.ReactionOpportunityId, payload.ReactionActionSpecId, envelope.CommandSequence, tick,
-                isDodge ? payload.DodgeDestination : (GridPoint?)null, out ActionPlan plan);
+                isDodge ? payload.DodgeDestination : (GridPoint?)null, out ActionPlan plan, payload.StartTick);
             if (error != null) return error;
 
             AcceptedCount++;

@@ -13,6 +13,8 @@ namespace ProjectHero.Logic.Actions
     /// </summary>
     public static class ActionDefinitionCodes
     {
+        public const string GUARD_RESISTANCE_NOT_BELOW_FULL = "GUARD_RESISTANCE_NOT_BELOW_FULL";
+        public const string GUARDABLE_COMPONENT_NOT_BLOCKABLE = "GUARDABLE_COMPONENT_NOT_BLOCKABLE";
         public const string ACTION_ID_INVALID = "ACTION_ID_INVALID";
         public const string INVALID_ACTION_TYPE_COMBINATION = "INVALID_ACTION_TYPE_COMBINATION";
         public const string ATTACK_TIMING_OUT_OF_RANGE = "ATTACK_TIMING_OUT_OF_RANGE";
@@ -115,6 +117,8 @@ namespace ProjectHero.Logic.Actions
                 return ActionDefinitionCodes.ATTACK_DAMAGE_COMPONENT_INVALID;
             foreach (var component in payload.DamageComponents)
             {
+                if ((component.Tags & DamageTagMask.Guardable) != 0 && (component.Tags & DamageTagMask.Blockable) == 0)
+                    return ActionDefinitionCodes.GUARDABLE_COMPONENT_NOT_BLOCKABLE;
                 string componentError = DamageComponentValidation.Validate(component);
                 if (componentError != null)
                     return componentError == DamageTagCodes.CONTRADICTORY_DAMAGE_TAGS ||
@@ -157,14 +161,16 @@ namespace ProjectHero.Logic.Actions
             if (pairing != null) return pairing;
 
             var timing = (GuardTimingSpec)spec.Timing;
-            if (timing.WindupTicks <= 0 || timing.ActiveTicks <= 0 || timing.RecoveryTicks <= 0)
+            if (timing.DurationTicks <= 0)
                 return ActionDefinitionCodes.GUARD_TIMING_INVALID;
 
             var payload = (GuardPayloadSpec)spec.Payload;
             string tagsError = ValidateDefenseTags(payload.EligibleTags, ActionDefinitionCodes.GUARD_ELIGIBLE_TAGS_INVALID);
             if (tagsError != null) return tagsError;
 
-            if (payload.MomentumResistanceQ10 < 1 || payload.MomentumResistanceQ10 > 1023)
+            if (payload.MomentumResistanceQ10 >= 1024)
+                return ActionDefinitionCodes.GUARD_RESISTANCE_NOT_BELOW_FULL;
+            if (payload.MomentumResistanceQ10 < 0)
                 return ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL;
 
             if (payload.DamageResistanceQ10 != null)
@@ -173,7 +179,9 @@ namespace ProjectHero.Logic.Actions
                 {
                     if (DefinitionIdValidation.ValidateFormat(pair.Key.Value) != null)
                         return ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL;
-                    if (pair.Value < 1 || pair.Value > 1023)
+                    if (pair.Value >= 1024)
+                        return ActionDefinitionCodes.GUARD_RESISTANCE_NOT_BELOW_FULL;
+                    if (pair.Value < 0)
                         return ActionDefinitionCodes.GUARD_RESISTANCE_MUST_BE_PARTIAL;
                 }
             }
@@ -215,7 +223,7 @@ namespace ProjectHero.Logic.Actions
             if (pairing != null) return pairing;
 
             var timing = (BlockReactionTimingSpec)spec.Timing;
-            if (timing.ReactionWindupTicks <= 0 || timing.RecoveryTicks <= 0)
+            if (timing.DurationTicks <= 0)
                 return ActionDefinitionCodes.BLOCK_TIMING_INVALID;
 
             var payload = (BlockPayloadSpec)spec.Payload;
@@ -232,7 +240,7 @@ namespace ProjectHero.Logic.Actions
             if (pairing != null) return pairing;
 
             var timing = (DodgeReactionTimingSpec)spec.Timing;
-            if (timing.ReactionWindupTicks <= 0 || timing.RecoveryTicks <= 0)
+            if (timing.DurationTicks <= 0)
                 return ActionDefinitionCodes.DODGE_TIMING_INVALID;
 
             var payload = (DodgePayloadSpec)spec.Payload;

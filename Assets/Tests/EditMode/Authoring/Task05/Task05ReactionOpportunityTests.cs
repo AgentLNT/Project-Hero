@@ -245,9 +245,8 @@ namespace ProjectHero.Authoring.Tests.Task05
         // 选项截止与公开门槛
         // ————————————————————————————————————————————————————————————
 
-        /// <summary><c>ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup</c>。</summary>
         [Test]
-        public void ReactionOptionDeadlineIsDerivedFromImpactAndReactionWindup()
+        public void ReactionOptionDeadlineIsDerivedFromImpactAndIngressLead()
         {
             Rig rig = new Rig();
             ActionPlan attack = rig.Telegraph(Task05Farm.LongTelegraphAttackId, 100L);
@@ -258,9 +257,9 @@ namespace ProjectHero.Authoring.Tests.Task05
             ReactionOptionRuntime block = rig.Option(0, Task05Farm.BlockId);
             ReactionOptionRuntime dodge = rig.Option(0, Task05Farm.DodgeId);
 
-            Assert.That(block.ResponseDeadlineTick, Is.EqualTo(impact - Task05Farm.BlockReactionWindup));
-            Assert.That(dodge.ResponseDeadlineTick, Is.EqualTo(impact - Task05Farm.DodgeReactionWindup));
-            Assert.That(rig.Opened[0].TriggerTick, Is.EqualTo(impact), "TriggerTick 恒等于来源 ImpactTick");
+            Assert.That(block.ResponseDeadlineTick, Is.EqualTo(impact - IngressLead));
+            Assert.That(dodge.ResponseDeadlineTick, Is.EqualTo(impact - IngressLead));
+            Assert.That(rig.Opened[0].SourceImpactTick, Is.EqualTo(impact), "SourceImpactTick 恒等于来源 ImpactTick");
 
             // 选项按 ActionSpecId Ordinal 升序。
             Assert.That(rig.Opened[0].Options[0].ReactionActionSpecId.Value,
@@ -269,7 +268,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
         /// <summary><c>ReactionOptionWithoutCommandIngressLeadIsNotPublished</c>。</summary>
         [Test]
-        public void ReactionOptionWithoutCommandIngressLeadIsNotPublished()
+        public void ReactionDurationDoesNotSubtractFromIngressDeadline()
         {
             Rig rig = new Rig();
             // 基础攻击前摇 30 ⇒ 即使 Dodge 截止也只有 StartTick + 0，达不到命令提前量。
@@ -278,8 +277,8 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(IngressLead, Is.GreaterThan(0));
 
             string error = rig.Open(attack, 100L);
-            Assert.That(error, Is.EqualTo(ReactionOpportunityCodes.NO_REACHABLE_OPTION));
-            Assert.That(rig.System.ActiveOpportunities.Count, Is.EqualTo(0),
+            Assert.That(error, Is.Null);
+            Assert.That(rig.System.ActiveOpportunities.Count, Is.EqualTo(1),
                 "没有任何选项满足命令提前量时不得创建机会");
         }
 
@@ -337,7 +336,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             late.System.ExpireDueOptions(lateDodge.ResponseDeadlineTick);
             Assert.That(ExpiredCountOf(late.System, Task05Farm.DodgeId), Is.EqualTo(0),
                 "截止 Tick 的命令阶段尚未结束，不得过期");
-            Assert.That(ExpiredCountOf(late.System, Task05Farm.BlockId), Is.EqualTo(1),
+            Assert.That(ExpiredCountOf(late.System, Task05Farm.BlockId), Is.EqualTo(0),
                 "更早截止的 Block 在同一 Tick 上本来就应该过期（对照）");
         }
 
@@ -347,23 +346,14 @@ namespace ProjectHero.Authoring.Tests.Task05
         [Test]
         public void EachReactionOptionEmitsExpiryOnceAndLastOptionClosesOpportunity()
         {
-            Rig rig = new Rig();
-            ActionPlan attack = rig.Telegraph(Task05Farm.LongTelegraphAttackId, 100L);
+            Rig rig = new Rig(); var attack = rig.Telegraph(Task05Farm.LongTelegraphAttackId, 100L);
             Assert.That(rig.Open(attack, 100L), Is.Null);
-            ReactionOptionRuntime block = rig.Option(0, Task05Farm.BlockId);
-            ReactionOptionRuntime dodge = rig.Option(0, Task05Farm.DodgeId);
-            Assert.That(block.ResponseDeadlineTick, Is.LessThan(dodge.ResponseDeadlineTick));
-
-            rig.System.ExpireDueOptions(block.ResponseDeadlineTick + 1L);
-            Assert.That(CountOf<ReactionOptionExpiredEvent>(rig.System), Is.EqualTo(1));
-            Assert.That(rig.Opened[0].IsOpen, Is.True, "仍有开放选项 ⇒ 机会不得关闭");
-            Assert.That(CountOf<ReactionOpportunityClosedEvent>(rig.System), Is.EqualTo(0));
-
-            // 同一选项不得重复过期（用一个 > block 截止但 <= dodge 截止的 Tick，只考察 block）。
-            rig.System.ExpireDueOptions(dodge.ResponseDeadlineTick);
-            Assert.That(CountOf<ReactionOptionExpiredEvent>(rig.System), Is.EqualTo(1));
-
-            rig.System.ExpireDueOptions(dodge.ResponseDeadlineTick + 1L);
+            var block = rig.Option(0, Task05Farm.BlockId); var dodge = rig.Option(0, Task05Farm.DodgeId);
+            Assert.That(block.ResponseDeadlineTick, Is.EqualTo(dodge.ResponseDeadlineTick));
+            rig.System.ExpireDueOptions(block.ResponseDeadlineTick);
+            Assert.That(CountOf<ReactionOptionExpiredEvent>(rig.System), Is.Zero);
+            rig.System.ExpireDueOptions(block.ResponseDeadlineTick + 1);
+            rig.System.ExpireDueOptions(block.ResponseDeadlineTick + 2);
             Assert.That(CountOf<ReactionOptionExpiredEvent>(rig.System), Is.EqualTo(2));
             Assert.That(rig.Opened[0].State, Is.EqualTo(ReactionOpportunityState.Expired));
             Assert.That(rig.Opened[0].CloseReason, Is.EqualTo(ReactionCloseReasons.AllOptionsExpired));
@@ -393,19 +383,19 @@ namespace ProjectHero.Authoring.Tests.Task05
         }
 
         // ————————————————————————————————————————————————————————————
-        // 接受：Locked 计划、固定区间、TriggerTick 推导
+        // 接受：Locked 计划、固定区间、SourceImpactTick 推导
         // ————————————————————————————————————————————————————————————
 
-        /// <summary><c>ReactionCommandCannotProvideTriggerTick</c>。</summary>
+        /// <summary><c>ReactionCommandCannotProvideSourceImpactTick</c>。</summary>
         [Test]
-        public void ReactionCommandCannotProvideTriggerTick()
+        public void ReactionCommandCannotProvideSourceImpactTick()
         {
             Type payload = typeof(ProjectHero.Logic.Commands.ReactionCommandPayload);
             MemberInfo[] members = payload.GetMembers(BindingFlags.Public | BindingFlags.Instance);
             for (int i = 0; i < members.Length; i++)
             {
-                Assert.That(members[i].Name.Contains("TriggerTick"), Is.False,
-                    "反应命令载荷在类型上不可能提供 TriggerTick：" + members[i].Name);
+                Assert.That(members[i].Name.Contains("SourceImpactTick"), Is.False,
+                    "反应命令载荷在类型上不可能提供 SourceImpactTick：" + members[i].Name);
             }
 
             Rig rig = new Rig();
@@ -416,17 +406,17 @@ namespace ProjectHero.Authoring.Tests.Task05
                 out ActionPlan plan), Is.Null);
 
             Assert.That(plan.TriggerBinding, Is.Not.Null);
-            Assert.That(plan.TriggerBinding.TriggerTick, Is.EqualTo(attack.ImpactTick),
-                "TriggerTick 只能由来源攻击的 ImpactTick 推导");
+            Assert.That(plan.TriggerBinding.SourceImpactTick, Is.EqualTo(attack.ImpactTick),
+                "SourceImpactTick 只能由来源攻击的 ImpactTick 推导");
             Assert.That(plan.TriggerBinding.SourceThreatPlanId, Is.EqualTo(attack.ActionPlanId));
             Assert.That(plan.TriggerBinding.ReactionOpportunityId, Is.EqualTo(rig.Opened[0].Id));
         }
 
         /// <summary>
-        /// <c>ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept</c>（任务包 §11 第四段）。
+        /// <c>ReactionPlanIsCreatedLockedWithNullSourceWindowOnAccept</c>（任务包 §11 第四段）。
         /// </summary>
         [Test]
-        public void ReactionPlanIsCreatedLockedWithZeroBudgetAndNullWindowOnAccept()
+        public void ReactionPlanIsCreatedLockedWithNullSourceWindowOnAccept()
         {
             Rig rig = new Rig();
             ActionPlan attack = rig.Telegraph(Task05Farm.LongTelegraphAttackId, 100L);
@@ -440,9 +430,8 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(plan.State, Is.EqualTo(ActionPlanState.Locked), "反应计划接受后直接 Locked");
             Assert.That(plan.IsEditable, Is.False, "不存在可观察的 Editable 反应计划");
             Assert.That(plan.SubmittedWindowId, Is.Null, "SubmittedWindowId 恒为空");
-            Assert.That(plan.BudgetCostTicks, Is.EqualTo(0), "BudgetCostTicks 恒为 0");
-            Assert.That(plan.StartTick, Is.EqualTo(attack.ImpactTick - Task05Farm.BlockReactionWindup));
-            Assert.That(plan.EndTick, Is.EqualTo(attack.ImpactTick + Task05Farm.BlockRecovery));
+            Assert.That(plan.StartTick, Is.EqualTo(attack.ImpactTick));
+            Assert.That(plan.EndTick, Is.EqualTo(attack.ImpactTick + Task05Farm.BlockDuration));
             Assert.That(rig.S.Revision, Is.EqualTo(revisionBefore), "接受反应不是排程编辑，不推进修订号");
             Assert.That(rig.Opened[0].State, Is.EqualTo(ReactionOpportunityState.Accepted));
             Assert.That(rig.Opened[0].BoundActionPlanId, Is.EqualTo(plan.ActionPlanId));
@@ -461,9 +450,9 @@ namespace ProjectHero.Authoring.Tests.Task05
             ReactionOptionRuntime block = rig.Option(0, Task05Farm.BlockId);
 
             // 在<strong>防御者</strong> Lane 上放一个覆盖固定区间的 Locked 障碍。
-            long intervalStart = attack.ImpactTick - Task05Farm.BlockReactionWindup;
+            long intervalStart = attack.ImpactTick;
             ActionPlanCreationResult obstacleResult = rig.S.Bundle.CreatePlan(
-                Task05Farm.AttackId, intervalStart + 10L, owner: Task05Farm.Enemy, target: Task05Farm.Hero);
+                Task05Farm.AttackId, intervalStart, owner: Task05Farm.Enemy, target: Task05Farm.Hero);
             Assert.That(obstacleResult.Succeeded, Is.True, obstacleResult.RejectionCode);
             ActionPlan obstacle = obstacleResult.Plan;
             rig.S.Authority.RegisterPlan(obstacle);
@@ -477,7 +466,7 @@ namespace ProjectHero.Authoring.Tests.Task05
                 "固定区间与 Lane 投影重叠必须稳定拒绝，绝不平移反应区间");
             Assert.That(plan, Is.Null);
             Assert.That(rig.S.Authority.Registry.ActiveCount, Is.EqualTo(activeBefore), "拒绝必须零局部写入");
-            Assert.That(obstacle.StartTick, Is.EqualTo(intervalStart + 10L), "障碍绝不被抢占");
+            Assert.That(obstacle.StartTick, Is.EqualTo(intervalStart), "障碍绝不被抢占");
             Assert.That(block.IsOpen, Is.True, "被拒后选项必须仍然开放");
         }
 
@@ -534,7 +523,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             Assert.That(deferred.Committed, Is.False);
             Assert.That(deferred.RejectionCode, Is.EqualTo(ScheduleCodes.SCHEDULE_PLAN_NOT_EDITABLE));
-            Assert.That(reaction.StartTick, Is.EqualTo(240L), "固定区间不得被平移");
+            Assert.That(reaction.StartTick, Is.EqualTo(300L), "固定区间不得被平移");
             Assert.That(rig.S.Revision, Is.EqualTo(revisionBefore));
         }
 
@@ -597,7 +586,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(snapshots[0].ReactionOpportunityId, Is.EqualTo(rig.Opened[0].Id.Value));
             Assert.That(snapshots[0].State, Is.EqualTo((int)ReactionOpportunityState.Open));
             Assert.That(snapshots[0].TelegraphTick, Is.EqualTo(attack.StartTick));
-            Assert.That(snapshots[0].TriggerTick, Is.EqualTo(attack.ImpactTick));
+            Assert.That(snapshots[0].SourceImpactTick, Is.EqualTo(attack.ImpactTick));
             Assert.That(snapshots[0].SourceAttackPlanId, Is.EqualTo(attack.ActionPlanId.Value));
             Assert.That(snapshots[0].Options.Count, Is.EqualTo(rig.Opened[0].Options.Count));
             Assert.That(snapshots[0].OpenOptionCount, Is.EqualTo(rig.Opened[0].Options.Count));

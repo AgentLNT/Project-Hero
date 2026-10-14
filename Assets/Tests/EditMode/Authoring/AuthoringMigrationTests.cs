@@ -675,7 +675,7 @@ namespace ProjectHero.Authoring.Tests
                 mutate: action => new ActionSpec(
                     action.ActionSpecId,
                     action.Type,
-                    new GuardTimingSpec(15, 61, 15),     // 60 → 61
+                    new GuardTimingSpec(61),     // 60 → 61
                     action.Payload,
                     action.AdrenalineCost));
 

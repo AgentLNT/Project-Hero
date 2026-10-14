@@ -12,7 +12,7 @@ namespace ProjectHero.Logic.AI
     /// 冻结语义：
     /// <list type="bullet">
     /// <item>候选项只来自<strong>已公开且仍开放</strong>的机会，且该机会的防御者必须是本控制者
-    /// 当前可控制的单位；AI <strong>不</strong>能新增机会、选项，也不能推导 TriggerTick；</item>
+    /// 当前可控制的单位；AI <strong>不</strong>能新增机会、选项，也不能推导 SourceImpactTick；</item>
     /// <item>Block <strong>绝不</strong>带目的格；Dodge 的目的格只能取自 Logic
     /// <strong>公布列表</strong>（<see cref="AiOpportunityView.DodgeDestinations"/>）——
     /// 这里是"从公布面里挑一个"，<strong>不是</strong>"算一个"：不读网格、不算距离、不建权重；</item>
@@ -38,7 +38,22 @@ namespace ProjectHero.Logic.AI
                 for (int i = 0; i < (options?.Count ?? 0); i++)
                 {
                     AiReactionOptionView option = options[i];
-                    if (option == null || !option.IsAvailableAt(tick)) continue;
+                    if (option == null || !option.IsAvailableAt(context.NextTick)) continue;
+                    if (opportunity.SourceImpactTick < context.NextTick + 1) continue;
+                    bool occupied = false;
+                    foreach (var plan in context.Snapshot?.OwnPlansOf(context.ControllerId)
+                        ?? Array.Empty<Snapshots.ActionPlanSnapshot>())
+                    {
+                        if (plan.OwnerUnitId != opportunity.DefenderUnitId.Value) continue;
+                        long hardEnd = plan.Origin == (int)Actions.ActionPlanOrigin.Reaction ? plan.SourceImpactTick + 1 : plan.EndTick;
+                        bool dodgeMayInvalidate = option.ReactionKind == ReactionCommandKind.Dodge
+                            && plan.State == (int)Actions.ActionPlanState.Editable && plan.StartTick >= opportunity.SourceImpactTick
+                            && context.Snapshot.FindAction(new ActionSpecId(plan.ActionSpecId))?.Type == Actions.ActionType.Move;
+                        if (plan.StartTick <= opportunity.SourceImpactTick && opportunity.SourceImpactTick < hardEnd
+                            && !dodgeMayInvalidate) { occupied = true; break; }
+                    }
+                    if (occupied) continue;
+                    option = option with { StartTick = opportunity.SourceImpactTick };
 
                     if (option.ReactionKind == ReactionCommandKind.Dodge)
                     {

@@ -417,7 +417,7 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void MoveEndTickAndBudgetUsePathWeightNotEdgeCount()
+        public void MoveEndTickUsesPathWeightNotEdgeCount()
         {
             LogicGrid grid = NewGrid();
             Assert.That(grid.RegisterUnitWithPointFootprint(U(1L), new GridPoint(0, 0), GridDirection.East), Is.Null);

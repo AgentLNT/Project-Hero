@@ -92,7 +92,7 @@ namespace ProjectHero.Logic.Simulation
             if (_simulation == null || _simulation.IsEnded || _simulation.CurrentTurnWindow != null) return null;
             var manager = _simulation.WindowManager;
             if (tick <= manager.LastClosedAtTick) return null;
-            // The latest closed window is already captured in the authoritative window ledger.
+            // The latest closed window is already captured in the authoritative window history.
             // Advance from its actual owner; skipped dead slots must not cause repeated turns.
             int first = manager.LastClosedWindowId == 0 ? 0
                 : (_order.IndexOf(manager.LastClosedOwnerUnitId) + 1) % _order.Count;
@@ -101,11 +101,10 @@ namespace ProjectHero.Logic.Simulation
                 UnitId id = _order[(first + i) % _order.Count];
                 var state = _simulation.FindUnitStateMachine(id);
                 if (state != null && state.CurrentState != Units.UnitState.Dead)
-                    return new WindowOpenRequest(id, _encounter.TurnSubmission.BudgetTicks);
+                    return new WindowOpenRequest(id, _encounter.TurnSubmission.WindowDurationTicks);
             }
             return null;
         }
-        public bool ShouldCloseCurrentWindow(long tick) => false;
         public IReadOnlyList<AiControllerRuntimeState> CaptureRuntimeStatesOrdered()
         {
             var states = new List<AiControllerRuntimeState>();

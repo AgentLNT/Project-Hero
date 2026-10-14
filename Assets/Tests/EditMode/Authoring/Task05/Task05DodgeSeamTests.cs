@@ -24,7 +24,7 @@ namespace ProjectHero.Authoring.Tests.Task05
     /// 冻结时序（夹具动作，见 <c>Task05Fixture</c>）：
     /// <c>action.t05.attack.long</c> 前摇 200 / 后摇 30 ⇒ 起点 100 时
     /// <c>ImpactTick = 300</c>；<c>action.t05.dodge</c> 反应前摇 30 / 后摇 10 ⇒
-    /// Dodge 固定区间 <c>[270, 310)</c>（<c>TriggerTick = 300</c>）。
+    /// Dodge 固定区间 <c>[270, 310)</c>（<c>SourceImpactTick = 300</c>）。
     /// <c>action.t05.move</c>：基准步长 5、后摇 10 ⇒ 区间长度 = <c>权重 × 5 + 10</c>。
     /// </summary>
     [TestFixture]
@@ -33,9 +33,9 @@ namespace ProjectHero.Authoring.Tests.Task05
         private static readonly ActionSpecId DodgeSpec = new ActionSpecId(Task05Farm.DodgeId);
 
         private const long TelegraphTick = 100L;
-        private const long TriggerTick = 300L;
-        private const long DodgeStart = TriggerTick - Task05Farm.DodgeReactionWindup;   // 270
-        private const long DodgeEnd = TriggerTick + Task05Farm.DodgeRecovery;           // 310
+        private const long SourceImpactTick = 300L;
+        private const long DodgeStart = SourceImpactTick - Task05Farm.DodgeDuration + 1;   // 270
+        private const long DodgeEnd = DodgeStart + Task05Farm.DodgeDuration;           // 310
 
         // ————————————————————————————————————————————————————————————
         // 夹具
@@ -88,7 +88,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             {
                 TelegraphAttack();
                 string error = System.TryAccept(
-                    Opened[0].Id, Task05Farm.Enemy, DodgeSpec, tick, destination, out ActionPlan dodge);
+                    Opened[0].Id, Task05Farm.Enemy, DodgeSpec, tick, destination, out ActionPlan dodge, DodgeStart);
                 Assert.That(error, Is.Null, error);
                 Assert.That(dodge, Is.Not.Null);
                 Assert.That(dodge.StartTick, Is.EqualTo(DodgeStart));
@@ -192,7 +192,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             long afterStart = after.StartTick;
 
             // 没有换位事务 ⇒ 明确拒绝且零写入；本任务绝不伪造"已触发"。
-            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, TriggerTick);
+            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, SourceImpactTick);
             Assert.That(outcome.Committed, Is.False);
             Assert.That(outcome.RejectionCode, Is.EqualTo(DodgeSeamCodes.DODGE_SEAM_TRANSACTION_UNAVAILABLE));
             Assert.That(inside.IsTerminal, Is.False, "缺端口时不得终止任何移动");
@@ -274,7 +274,7 @@ namespace ProjectHero.Authoring.Tests.Task05
         ///
         /// 触发时读取<strong>当前</strong>排程：接受 Dodge 之后新增的移动会出现，
         /// 之后被权威排程事务改出固定区间的移动会消失，传递依赖仍然成立。
-        /// 因此预检与 TriggerTick 共用同一实现，且不需要"提前快照依赖集合"。
+        /// 因此预检与 SourceImpactTick 共用同一实现，且不需要"提前快照依赖集合"。
         /// </summary>
         [Test]
         public void DodgeOriginInvalidationUsesCurrentScheduleIncludingLaterEdits()
@@ -335,12 +335,12 @@ namespace ProjectHero.Authoring.Tests.Task05
             ActionPlan through = rig.Register(Task05Farm.MoveId, 320L, pathWeightUnits: 2);
 
             long revisionBefore = rig.S.Revision;
-            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, TriggerTick);
+            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, SourceImpactTick);
 
             Assert.That(outcome.Committed, Is.True, outcome.RejectionCode);
             Assert.That(transaction.Calls, Is.EqualTo(1));
             Assert.That(transaction.LastDodge, Is.SameAs(dodge));
-            Assert.That(transaction.LastTick, Is.EqualTo(TriggerTick));
+            Assert.That(transaction.LastTick, Is.EqualTo(SourceImpactTick));
             Assert.That(transaction.LastDodge.Destination.HasValue, Is.True,
                 "目的格必须由命令在接缝之前权威记录");
             Assert.That(transaction.LastDodge.Destination.Value.X, Is.EqualTo(destination.X));
@@ -352,8 +352,8 @@ namespace ProjectHero.Authoring.Tests.Task05
                 Is.EqualTo(ActionTerminationReason.MovementOriginInvalidatedByDodge));
             Assert.That(through.TerminationReason,
                 Is.EqualTo(ActionTerminationReason.MovementOriginInvalidatedByDodge));
-            Assert.That(dependent.TerminalTick, Is.EqualTo(TriggerTick));
-            Assert.That(through.TerminalTick, Is.EqualTo(TriggerTick));
+            Assert.That(dependent.TerminalTick, Is.EqualTo(SourceImpactTick));
+            Assert.That(through.TerminalTick, Is.EqualTo(SourceImpactTick));
             Assert.That(outcome.NewlyTerminatedPlans.Count, Is.EqualTo(2));
             Assert.That(outcome.NewlyTerminatedPlans[0].Value, Is.EqualTo(dependent.ActionPlanId.Value));
             Assert.That(outcome.NewlyTerminatedPlans[1].Value, Is.EqualTo(through.ActionPlanId.Value),
@@ -367,7 +367,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             long dependentTerminalTick = dependent.TerminalTick;
             // —— 幂等：第二次调用返回同一结果，且绝不再调用换位事务 ——
-            DodgeRelocationOutcome again = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, TriggerTick);
+            DodgeRelocationOutcome again = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, SourceImpactTick);
 
             Assert.That(again.Committed, Is.True);
             Assert.That(transaction.Calls, Is.EqualTo(1), "第一次换位事务胜出：不得再次调用端口");
@@ -384,7 +384,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(conflicting.EnteredTerminal, Is.False);
             Assert.That(dependent.TerminationReason,
                 Is.EqualTo(ActionTerminationReason.MovementOriginInvalidatedByDodge));
-            Assert.That(dependent.TerminalTick, Is.EqualTo(TriggerTick));
+            Assert.That(dependent.TerminalTick, Is.EqualTo(SourceImpactTick));
             Assert.That(rig.S.Revision, Is.EqualTo(revisionBefore));
         }
 
@@ -421,7 +421,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(rig.QueryIds(dodge), Is.EqualTo(new[] { dependent.ActionPlanId.Value }),
                 "Locked 移动不属于'会被失效的 Editable 移动'，因此不在候选中");
 
-            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, TriggerTick);
+            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, SourceImpactTick);
 
             Assert.That(outcome.Committed, Is.True, outcome.RejectionCode);
             Assert.That(outcome.InvalidatedCandidates.Count, Is.EqualTo(1));
@@ -448,13 +448,13 @@ namespace ProjectHero.Authoring.Tests.Task05
         // ————————————————————————————————————————————————————————————
 
         /// <summary>
-        /// <c>DodgeRelocationFailureLeavesMovementChainUntouched</c>（附加护栏）。
+        /// <c>DodgeWithoutRelocationDoesNotInvalidateMoves</c>（无换位不得失效移动族）。
         ///
         /// 换位事务失败/取消时，<strong>没有</strong>任何真实计划进入终态，
         /// 机会也不得离开 Accepted：不允许"计划先终态、换位随后失败"。
         /// </summary>
         [Test]
-        public void DodgeRelocationFailureLeavesMovementChainUntouched()
+        public void DodgeWithoutRelocationDoesNotInvalidateMoves()
         {
             var transaction = new StubRelocation { Reject = "TEST_RELOCATION_REJECTED" };
             Rig rig = new Rig(transaction);
@@ -462,7 +462,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             ActionPlan dependent = rig.Register(Task05Farm.MoveId, 275L, pathWeightUnits: 4);
             long start = dependent.StartTick;
 
-            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, TriggerTick);
+            DodgeRelocationOutcome outcome = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, SourceImpactTick);
 
             Assert.That(outcome.Committed, Is.False);
             Assert.That(outcome.RejectionCode, Is.EqualTo("TEST_RELOCATION_REJECTED"));
@@ -475,7 +475,7 @@ namespace ProjectHero.Authoring.Tests.Task05
 
             // 失败之后仍然可以重试（第一次"成功"的事务才算胜出）。
             transaction.Reject = null;
-            DodgeRelocationOutcome retry = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, TriggerTick);
+            DodgeRelocationOutcome retry = rig.Seam.TryCommit(dodge, rig.Opened[0].Id, SourceImpactTick);
             Assert.That(retry.Committed, Is.True, retry.RejectionCode);
             Assert.That(transaction.Calls, Is.EqualTo(2));
             Assert.That(dependent.TerminationReason,

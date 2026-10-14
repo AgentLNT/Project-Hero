@@ -159,8 +159,7 @@ namespace ProjectHero.Logic.Tests
         }
 
         private static InteractionPlanFacts AttackFacts(long planId, long ownerId, long impactTick = Tick)
-            => new InteractionPlanFacts(
-                P(planId), U(ownerId), ActionType.Attack, 5L, 14L, impactTick, 0L, 0L, 0L, null, false);
+            => new InteractionPlanFacts(P(planId), U(ownerId), ActionType.Attack, 5L, 14L, impactTick, 0L, null, false);
 
         private static UnitOccupancy UnitAt(long unitId, ControllerId controller, CombatIntent intent, int pointIndex)
             => new UnitOccupancy(U(unitId), new[] { intent.AreaPoints[pointIndex] }, controller);

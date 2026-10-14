@@ -74,22 +74,16 @@ namespace ProjectHero.Logic.Snapshots
         int DurationTicks = 0,
         long EndTick = 0L);
 
-    /// <summary>窗口快照（任务 07 扩展预算/并发授权字段）。窗口不拥有动作，也不是结算边界。</summary>
     public sealed record TurnWindowSnapshot(
         long WindowId,
         long OwnerUnitId,
         long OpenedAtTick,
-        int TotalBudgetTicks,
-        int ReservedBudgetTicks,
-        int SpentBudgetTicks,
-        int AvailableBudgetTicks,
+        int DurationTicks,
+        long EndTick,
         bool IsOpen,
         bool IsAcceptingSubmissions,
         int CloseReason,
-        IReadOnlyList<TurnWindowReservationSnapshot> Reservations, long ClosedAtTick = -1);
-
-    /// <summary>窗口账本里的一条按计划归属的预留明细（审计用；窗口不保存计划对象）。</summary>
-    public sealed record TurnWindowReservationSnapshot(long ActionPlanId, int ReservedTicks);
+        long ClosedAtTick = -1);
 
     /// <summary>窗口管理器快照。<see cref="CurrentWindowId"/> = 0 表示当前没有打开窗口。</summary>
     public sealed record TurnWindowManagerSnapshot(
@@ -100,14 +94,13 @@ namespace ProjectHero.Logic.Snapshots
         IReadOnlyList<TurnWindowSnapshot> Windows,
         long LastClosedOwnerUnitId = 0,
         long LastClosedAtTick = -1,
-        ClosedWindowBudgetSummary FrozenBudget = null,
+        long FrozenWindowCount = 0,
         IReadOnlyList<ScheduledWindowSnapshot> FutureWindows = null)
     {
         public static TurnWindowManagerSnapshot None()
             => new TurnWindowManagerSnapshot(0L, -1L, 0L, 0L, Array.Empty<TurnWindowSnapshot>());
     }
-    public sealed record ClosedWindowBudgetSummary(long WindowCount, long TotalBudgetTicks, long SpentBudgetTicks, long AvailableBudgetTicks);
-    public sealed record ScheduledWindowSnapshot(long TargetTick, long OwnerUnitId, int BudgetTicks);
+    public sealed record ScheduledWindowSnapshot(long TargetTick, long OwnerUnitId, int DurationTicks);
 
     /// <summary>并发行动授权快照（任务 07 扩展版本化内部状态）。</summary>
     public sealed record ConcurrentActionSnapshot(bool HasActiveAuthorization, long WindowId, long PlayerUnitId)
@@ -126,34 +119,14 @@ namespace ProjectHero.Logic.Snapshots
     /// <summary>一条反应肾上腺素预留快照（按 <see cref="ActionPlanId"/> 与个人周期归属）。</summary>
     public sealed record AdrenalineReservationSnapshot(long ActionPlanId, int ReservedAmount, long ReservationCycleId);
 
-    /// <summary>
-    /// 资源账本快照。<see cref="TurnBudgetAvailable"/>/<see cref="TurnBudgetReserved"/>/
-    /// <see cref="TurnBudgetSpent"/> 是<strong>全部窗口</strong>的规范聚合（含已关闭窗口的审计账本），
-    /// 因此恒有 <c>Reserved + Spent + Available == Σ Total</c>。
-    /// </summary>
     public sealed record BattleResourceSnapshot(
         int MetaResource,
-        long TurnBudgetAvailable,
-        long TurnBudgetReserved,
-        long TurnBudgetSpent,
         IReadOnlyList<AdrenalineLedgerSnapshot> AdrenalineLedgers = null)
     {
         public static BattleResourceSnapshot None(int metaResource)
-            => new BattleResourceSnapshot(metaResource, 0L, 0L, 0L, Array.Empty<AdrenalineLedgerSnapshot>());
+            => new BattleResourceSnapshot(metaResource, Array.Empty<AdrenalineLedgerSnapshot>());
     }
 
-    /// <summary>
-    /// 未归档（活动）计划快照（任务 05 扩展 State/编辑/锁定 Tick/AutomaticDeferralCount/Timing/预算/TriggerBinding）。
-    ///
-    /// 边界（任务包「必须产出」4 的最后一段）：
-    /// <list type="bullet">
-    /// <item>它<strong>只</strong>包含非终态计划；进入终态的计划立即离开活动索引，
-    /// 只留在<strong>历史记录数与摘要</strong>（<see cref="LogicSnapshot.TerminalPlanRecordCount"/> /
-    /// <see cref="LogicSnapshot.TerminalPlanDigest"/>）与不可变归档里。</item>
-    /// <item>逐 Tick 快照<strong>不</strong>遍历旧终态记录，因此它不会随战斗长度线性增长。</item>
-    /// <item>全部字段参与规范化哈希：任一投影、修订或时序字段变化都改变摘要。</item>
-    /// </list>
-    /// </summary>
     public sealed record ActionPlanSnapshot(
         long ActionPlanId,
         long OwnerUnitId,
@@ -163,12 +136,10 @@ namespace ProjectHero.Logic.Snapshots
         long SubmittedWindowId = 0L,
         long ReactionOpportunityId = 0L,
         long SourceThreatPlanId = 0L,
-        long TriggerTick = 0L,
+        long SourceImpactTick = 0L,
         long ResponseDeadlineTick = 0L,
         long StartTick = 0L,
         long EndTick = 0L,
-        long ActiveStartTick = 0L,
-        long ActiveEndTick = 0L,
         long LastRequestedStartTick = 0L,
         long CreatedAtTick = 0L,
         long LastEditedScheduleRevision = 0L,
@@ -177,14 +148,10 @@ namespace ProjectHero.Logic.Snapshots
         long ImpactTick = 0L,
         int ResolvedWindupTicks = 0,
         int RecoveryTicks = 0,
-        int ActiveTicks = 0,
         int ResolvedPathEdgeCount = 0,
         int ResolvedPathWeightUnits = 0,
         int ResolvedBaseStepTicks = 0,
         int MoveDurationTicks = 0,
-        int ReactionWindupTicks = 0,
-        int BudgetCostTicks = 0,
-        int ReservedTurnBudgetTicks = 0,
         long PrimaryTargetUnitId = 0L,
         int PrimaryTargetRelation = 0,
         int Facing = 0,
@@ -192,7 +159,8 @@ namespace ProjectHero.Logic.Snapshots
         int DestinationY = 0,
         bool HasDestination = false,
         long TerminalTick = -1L,
-        int TerminationReason = 0)
+        int TerminationReason = 0,
+        int DurationTicks = 0, int DefenseQuotaRemainingQ10 = 0, long ReactionTriggeredAtTick = -1L)
     {
         internal bool MatchesAuthoritative(ProjectHero.Logic.Actions.ActionPlan plan,
             ProjectHero.Logic.Definitions.IFactionRelationResolver factions)
@@ -202,19 +170,20 @@ namespace ProjectHero.Logic.Snapshots
             return ActionPlanId == plan.ActionPlanId.Value && OwnerUnitId == plan.OwnerUnitId.Value
                 && ActionSpecId == (plan.ActionSpecId.Value ?? string.Empty) && Origin == (int)plan.Origin && State == (int)plan.State
                 && SubmittedWindowId == (plan.SubmittedWindowId?.Value ?? 0) && ReactionOpportunityId == (plan.ReactionOpportunityId?.Value ?? 0)
-                && SourceThreatPlanId == (plan.SourceThreatPlanId?.Value ?? 0) && TriggerTick == plan.TriggerTick
+                && SourceThreatPlanId == (plan.SourceThreatPlanId?.Value ?? 0) && SourceImpactTick == plan.SourceImpactTick
                 && ResponseDeadlineTick == (plan.TriggerBinding?.ResponseDeadlineTick ?? 0) && StartTick == plan.StartTick && EndTick == plan.EndTick
-                && ActiveStartTick == plan.ActiveStartTick && ActiveEndTick == plan.ActiveEndTick && LastRequestedStartTick == plan.LastRequestedStartTick
+                && LastRequestedStartTick == plan.LastRequestedStartTick
                 && CreatedAtTick == plan.CreatedAtTick && LastEditedScheduleRevision == plan.LastEditedScheduleRevision
                 && AutomaticDeferralCount == plan.AutomaticDeferralCount && LockedAtTick == plan.LockedAtTick && ImpactTick == plan.ImpactTick
-                && ResolvedWindupTicks == plan.ResolvedWindupTicks && RecoveryTicks == plan.RecoveryTicks && ActiveTicks == plan.ActiveTicks
+                && ResolvedWindupTicks == plan.ResolvedWindupTicks && RecoveryTicks == plan.RecoveryTicks
                 && ResolvedPathEdgeCount == plan.ResolvedPathEdgeCount && ResolvedPathWeightUnits == plan.ResolvedPathWeightUnits
                 && ResolvedBaseStepTicks == plan.ResolvedBaseStepTicks && MoveDurationTicks == plan.MoveDurationTicks
-                && ReactionWindupTicks == plan.ReactionWindupTicks && BudgetCostTicks == plan.BudgetCostTicks
-                && ReservedTurnBudgetTicks == plan.ReservedTurnBudgetTicks && PrimaryTargetUnitId == (plan.PrimaryTargetUnitId?.Value ?? 0)
+                && PrimaryTargetUnitId == (plan.PrimaryTargetUnitId?.Value ?? 0)
                 && PrimaryTargetRelation == relation && Facing == (int)plan.Facing && DestinationX == (plan.Destination?.X ?? 0)
                 && DestinationY == (plan.Destination?.Y ?? 0) && HasDestination == plan.Destination.HasValue
-                && TerminalTick == plan.TerminalTick && TerminationReason == (int)plan.TerminationReason;
+                && TerminalTick == plan.TerminalTick && TerminationReason == (int)plan.TerminationReason
+                && DurationTicks == plan.DurationTicks && DefenseQuotaRemainingQ10 == plan.DefenseQuotaRemainingQ10
+                && ReactionTriggeredAtTick == plan.ReactionTriggeredAtTick;
         }
         /// <summary>
         /// 从权威计划投影快照。它是<strong>唯一</strong>的字段映射处：
@@ -239,12 +208,10 @@ namespace ProjectHero.Logic.Snapshots
                 plan.SubmittedWindowId.HasValue ? plan.SubmittedWindowId.Value.Value : 0L,
                 plan.ReactionOpportunityId.HasValue ? plan.ReactionOpportunityId.Value.Value : 0L,
                 plan.SourceThreatPlanId.HasValue ? plan.SourceThreatPlanId.Value.Value : 0L,
-                plan.TriggerTick,
+                plan.SourceImpactTick,
                 plan.TriggerBinding != null ? plan.TriggerBinding.ResponseDeadlineTick : 0L,
                 plan.StartTick,
                 plan.EndTick,
-                plan.ActiveStartTick,
-                plan.ActiveEndTick,
                 plan.LastRequestedStartTick,
                 plan.CreatedAtTick,
                 plan.LastEditedScheduleRevision,
@@ -253,14 +220,10 @@ namespace ProjectHero.Logic.Snapshots
                 plan.ImpactTick,
                 plan.ResolvedWindupTicks,
                 plan.RecoveryTicks,
-                plan.ActiveTicks,
                 plan.ResolvedPathEdgeCount,
                 plan.ResolvedPathWeightUnits,
                 plan.ResolvedBaseStepTicks,
                 plan.MoveDurationTicks,
-                plan.ReactionWindupTicks,
-                plan.BudgetCostTicks,
-                plan.ReservedTurnBudgetTicks,
                 plan.PrimaryTargetUnitId.HasValue ? plan.PrimaryTargetUnitId.Value.Value : 0L,
                 relation,
                 (int)plan.Facing,
@@ -268,7 +231,7 @@ namespace ProjectHero.Logic.Snapshots
                 plan.Destination.HasValue ? plan.Destination.Value.Y : 0,
                 plan.Destination.HasValue,
                 plan.TerminalTick,
-                (int)plan.TerminationReason);
+                (int)plan.TerminationReason, plan.DurationTicks, plan.DefenseQuotaRemainingQ10, plan.ReactionTriggeredAtTick);
         }
     }
 
@@ -282,7 +245,7 @@ namespace ProjectHero.Logic.Snapshots
         long ReactionOpportunityId,
         long DefenderUnitId,
         long SourceAttackPlanId,
-        long TriggerTick,
+        long SourceImpactTick,
         long TelegraphTick = 0L,
         int State = 0,
         string CloseReason = null,
@@ -675,7 +638,17 @@ namespace ProjectHero.Logic.Snapshots
         /// 指定 <c>ReplayFormatVersion</c> 的哈希，只用于格式版本护栏测试：
         /// 同一份活动状态在两个格式版本下必须得到不同摘要。
         /// </summary>
-        public ulong ComputeHash(int replayFormatVersion)
+        public ulong ComputeHash(int replayFormatVersion) => ComputeHash(replayFormatVersion, null);
+
+        /// <summary>Independent copy of the canonical encoding for hash audits; never a restorable state.</summary>
+        public byte[] CanonicalBytesForDiagnostics(int replayFormatVersion)
+        {
+            byte[] bytes = null;
+            ComputeHash(replayFormatVersion, value => bytes = value);
+            return bytes;
+        }
+
+        private ulong ComputeHash(int replayFormatVersion, Action<byte[]> diagnosticSink)
         {
             var encoder = new CanonicalEncoder(2048);
             encoder.BeginDomain(ReplayFormat.LogicSnapshotDomain);
@@ -741,12 +714,10 @@ namespace ProjectHero.Logic.Snapshots
             encoder.WriteInt64(WindowManager.NextWindowOrdinal);
             encoder.WriteInt64(WindowManager.LastClosedWindowId);
             encoder.WriteInt64(WindowManager.LastClosedOwnerUnitId).WriteInt64(WindowManager.LastClosedAtTick);
-            var frozenBudget = WindowManager.FrozenBudget ?? new ClosedWindowBudgetSummary(0, 0, 0, 0);
-            encoder.WriteInt64(frozenBudget.WindowCount).WriteInt64(frozenBudget.TotalBudgetTicks)
-                .WriteInt64(frozenBudget.SpentBudgetTicks).WriteInt64(frozenBudget.AvailableBudgetTicks);
+            encoder.WriteInt64(WindowManager.FrozenWindowCount);
             encoder.WriteInt32(WindowManager.FutureWindows?.Count ?? 0);
             foreach (var future in WindowManager.FutureWindows ?? Array.Empty<ScheduledWindowSnapshot>())
-                encoder.WriteInt64(future.TargetTick).WriteInt64(future.OwnerUnitId).WriteInt32(future.BudgetTicks);
+                encoder.WriteInt64(future.TargetTick).WriteInt64(future.OwnerUnitId).WriteInt32(future.DurationTicks);
             var windows = new List<TurnWindowSnapshot>(WindowManager.Windows);
             windows.Sort((a, b) => a.WindowId.CompareTo(b.WindowId));
             encoder.WriteCount(windows.Count);
@@ -756,24 +727,12 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt64(window.WindowId);
                 encoder.WriteInt64(window.OwnerUnitId);
                 encoder.WriteInt64(window.OpenedAtTick);
-                encoder.WriteInt32(window.TotalBudgetTicks);
-                encoder.WriteInt32(window.ReservedBudgetTicks);
-                encoder.WriteInt32(window.SpentBudgetTicks);
-                encoder.WriteInt32(window.AvailableBudgetTicks);
+                encoder.WriteInt32(window.DurationTicks);
+                encoder.WriteInt64(window.EndTick);
                 encoder.WriteBool(window.IsOpen);
                 encoder.WriteBool(window.IsAcceptingSubmissions);
                 encoder.WriteInt32(window.CloseReason);
                 encoder.WriteInt64(window.ClosedAtTick);
-                // 账本明细按 ActionPlanId 升序（窗口不持有计划对象，只持有这份可审计预留明细）。
-                var windowReservations = new List<TurnWindowReservationSnapshot>(
-                    window.Reservations ?? Array.Empty<TurnWindowReservationSnapshot>());
-                windowReservations.Sort((a, b) => a.ActionPlanId.CompareTo(b.ActionPlanId));
-                encoder.WriteCount(windowReservations.Count);
-                for (int r = 0; r < windowReservations.Count; r++)
-                {
-                    encoder.WriteInt64(windowReservations[r].ActionPlanId);
-                    encoder.WriteInt32(windowReservations[r].ReservedTicks);
-                }
             }
 
             encoder.WriteBool(ConcurrentAction.HasActiveAuthorization);
@@ -781,9 +740,6 @@ namespace ProjectHero.Logic.Snapshots
             encoder.WriteInt64(ConcurrentAction.PlayerUnitId);
 
             encoder.WriteInt32(Resources.MetaResource);
-            encoder.WriteInt64(Resources.TurnBudgetAvailable);
-            encoder.WriteInt64(Resources.TurnBudgetReserved);
-            encoder.WriteInt64(Resources.TurnBudgetSpent);
             // 肾上腺素账本：Available、每条反应预留与 ReservationCycleId 全部进入规范快照。
             var ledgers = new List<AdrenalineLedgerSnapshot>(
                 Resources.AdrenalineLedgers ?? Array.Empty<AdrenalineLedgerSnapshot>());
@@ -824,13 +780,11 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt64(plan.SubmittedWindowId);
                 encoder.WriteInt64(plan.ReactionOpportunityId);
                 encoder.WriteInt64(plan.SourceThreatPlanId);
-                encoder.WriteInt64(plan.TriggerTick);
+                encoder.WriteInt64(plan.SourceImpactTick);
                 encoder.WriteInt64(plan.ResponseDeadlineTick);
                 // 权威投影（半开区间 [StartTick, EndTick)）与 Guard Active 区间
                 encoder.WriteInt64(plan.StartTick);
                 encoder.WriteInt64(plan.EndTick);
-                encoder.WriteInt64(plan.ActiveStartTick);
-                encoder.WriteInt64(plan.ActiveEndTick);
                 encoder.WriteInt64(plan.LastRequestedStartTick);
                 // 创建/编辑/锁定/延期记账
                 encoder.WriteInt64(plan.CreatedAtTick);
@@ -841,15 +795,10 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt64(plan.ImpactTick);
                 encoder.WriteInt32(plan.ResolvedWindupTicks);
                 encoder.WriteInt32(plan.RecoveryTicks);
-                encoder.WriteInt32(plan.ActiveTicks);
                 encoder.WriteInt32(plan.ResolvedPathEdgeCount);
                 encoder.WriteInt32(plan.ResolvedPathWeightUnits);
                 encoder.WriteInt32(plan.ResolvedBaseStepTicks);
                 encoder.WriteInt32(plan.MoveDurationTicks);
-                encoder.WriteInt32(plan.ReactionWindupTicks);
-                // 预算与预留
-                encoder.WriteInt32(plan.BudgetCostTicks);
-                encoder.WriteInt32(plan.ReservedTurnBudgetTicks);
                 // 目标、朝向与目的格
                 encoder.WriteInt64(plan.PrimaryTargetUnitId);
                 encoder.WriteInt32(plan.PrimaryTargetRelation);
@@ -860,6 +809,9 @@ namespace ProjectHero.Logic.Snapshots
                 // 终态字段（活动索引里应当恒为初值；写进去是为了让"不该出现却出现"可失败）
                 encoder.WriteInt64(plan.TerminalTick);
                 encoder.WriteInt32(plan.TerminationReason);
+                encoder.WriteInt32(plan.DurationTicks);
+                encoder.WriteInt32(plan.DefenseQuotaRemainingQ10);
+                encoder.WriteInt64(plan.ReactionTriggeredAtTick);
             }
 
             // 终态计划历史：只写记录数与摘要，绝不展开旧终态记录。
@@ -875,7 +827,7 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt64(opportunity.ReactionOpportunityId);
                 encoder.WriteInt64(opportunity.DefenderUnitId);
                 encoder.WriteInt64(opportunity.SourceAttackPlanId);
-                encoder.WriteInt64(opportunity.TriggerTick);
+                encoder.WriteInt64(opportunity.SourceImpactTick);
                 encoder.WriteInt64(opportunity.TelegraphTick);
                 encoder.WriteInt32(opportunity.State);
                 encoder.WriteString(opportunity.CloseReason);
@@ -1114,6 +1066,7 @@ namespace ProjectHero.Logic.Snapshots
             encoder.WriteInt64(History.RecordCount);
             encoder.WriteUInt64(History.DigestValue);
 
+            diagnosticSink?.Invoke(encoder.ToArray());
             return encoder.ToDigest();
         }
 

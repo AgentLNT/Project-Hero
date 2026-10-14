@@ -72,13 +72,12 @@ namespace ProjectHero.UnityView
             if (error == null) SubmittedCommands++;
             return LastRejection;
         }
-        public string CloseWindow() => Window == null ? "VIEW_WINDOW_MISSING" : Submit(_ports.Commands.CreateCloseWindow(new WindowId(Window.WindowId)));
         public string ActivateConcurrent() => Window == null ? "VIEW_WINDOW_MISSING" : Submit(_ports.Commands.CreateActivateConcurrent(new WindowId(Window.WindowId)));
-        public DodgeCancellationPreview PreviewDodge(long opportunity, ActionSpecId action, GridPoint destination)
-            => _preview.PreviewDodge(new ReactionOpportunityId(opportunity), action, destination);
+        public DodgeCancellationPreview PreviewDodge(long opportunity, ActionSpecId action, GridPoint destination, long? startTick = null)
+            => _preview.PreviewDodge(new ReactionOpportunityId(opportunity), action, destination, startTick);
         public IReadOnlyList<GridPoint> DodgeDestinations(long opportunity, ActionSpecId action)
             => _preview.DodgeDestinations(new ReactionOpportunityId(opportunity), action);
-        public string ConfirmReaction(long opportunity, ActionSpecId action, GridPoint? destination)
+        public string ConfirmReaction(long opportunity, ActionSpecId action, GridPoint? destination, long? startTick = null)
         {
             var spec = Decision.FindAction(action);
             if (spec == null || (spec.Type != ActionType.Block && spec.Type != ActionType.Dodge)) return "REACTION_ACTION_INVALID";
@@ -86,11 +85,11 @@ namespace ProjectHero.UnityView
             if (spec.Type == ActionType.Dodge)
             {
                 if (!destination.HasValue) return "DODGE_DESTINATION_MISSING";
-                conditional = PreviewDodge(opportunity, action, destination.Value);
+                conditional = PreviewDodge(opportunity, action, destination.Value, startTick);
                 if (conditional.RejectionCode != null) return conditional.RejectionCode;
             }
             string code = Submit(_ports.Commands.CreateReaction(new ReactionOpportunityId(opportunity),
-                new ReactionCommandPayload(spec.Type == ActionType.Dodge ? ReactionCommandKind.Dodge : ReactionCommandKind.Block, action, destination)));
+                new ReactionCommandPayload(spec.Type == ActionType.Dodge ? ReactionCommandKind.Dodge : ReactionCommandKind.Block, action, destination, startTick)));
             if (code == null && conditional != null) _pendingDodge[opportunity] = conditional.AffectedPlanIds;
             return code;
         }

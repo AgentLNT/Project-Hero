@@ -213,7 +213,7 @@ namespace ProjectHero.Logic.Interactions
 
         /// <summary>
         /// 对手计划与本 Tick 该攻击是否形成接触：
-        /// Block/Dodge 必须 <c>TriggerTick == 攻击 ImpactTick</c>；Guard 必须处于 Active 区间；
+        /// Block/Dodge 必须 <c>SourceImpactTick == 攻击 ImpactTick</c>；Guard 必须处于 Active 区间；
         /// Move 必须仍占用本 Tick（<c>[StartTick, EndTick)</c>）。
         /// 只读生命周期事实，不读任何状态布尔值。
         /// </summary>
@@ -223,14 +223,14 @@ namespace ProjectHero.Logic.Interactions
             switch (facts.ActionType)
             {
                 case ActionType.Dodge:
-                    if (facts.TriggerTick > 0 && facts.TriggerTick == intent.ImpactTick)
+                    if (facts.OccupiesTick(tick) && (facts.ReactionTriggeredAtTick < 0 || facts.ReactionTriggeredAtTick == tick))
                     {
                         type = ContactType.AttackDodge;
                         return true;
                     }
                     break;
                 case ActionType.Block:
-                    if (facts.TriggerTick > 0 && facts.TriggerTick == intent.ImpactTick)
+                    if (facts.OccupiesTick(tick) && (facts.ReactionTriggeredAtTick < 0 || facts.ReactionTriggeredAtTick == tick))
                     {
                         type = ContactType.AttackBlock;
                         return true;

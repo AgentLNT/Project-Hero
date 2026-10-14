@@ -9,31 +9,6 @@ using ProjectHero.Logic.Snapshots;
 
 namespace ProjectHero.Core.Compatibility.Runtime.Input
 {
-    /// <summary>
-    /// 输入模式状态机 + 本地草稿 → 原子 Operations 编译层（任务 09「必须产出」8）。
-    ///
-    /// <strong>它是视图对象，不是逻辑对象</strong>：类中没有任何 <c>UnityEditor</c>、
-    /// 没有 <c>MonoBehaviour</c>、没有任何对 ActionPlan/Intent/MovementSegment/
-    /// Reservation/预算/位置/窗口的写方法。它唯一能触碰 Logic 的路径是
-    /// <see cref="IViewLogicPort.SubmitCommand"/>，且只接受
-    /// <see cref="CommandRequest"/>（只有 <c>TargetTick</c>/<c>Scope</c>/<c>Payload</c> 三样）。
-    ///
-    /// 语义要点（逐条对应任务包「核心命令语义」）：
-    /// <list type="bullet">
-    /// <item><strong>默认目标 Tick = CurrentTick + 1</strong>：由 <see cref="IViewLogicPort.CurrentTick"/>
-    /// 推导（<see cref="IViewCommandFactory"/> 计算），视图<strong>不自造 Tick 桶</strong>，
-    /// 也不把过期命令顺延到当前 Tick。</item>
-    /// <item><strong>本地草稿可含多次鼠标移动/吸附/预览</strong>：每次
-    /// <see cref="PreviewPlacementTick"/> 只改视图状态，<strong>零</strong> Logic 写入、
-    /// 零命令提交；只有 <see cref="ConfirmDraft"/> 才产生一次原子 Operations 提交。</item>
-    /// <item><strong>手势取消/返回/关闭面板只是视图状态</strong>：<see cref="CancelGesture"/>
-    /// 不写逻辑、不暂停执行、不产生命令。</item>
-    /// <item><strong>锁定线显示 = 快照 CurrentTick + 1</strong>：<see cref="LockedLineTick"/>
-    /// 只做提前反馈；越线编辑由 Logic 以命令目标 Tick、计划 State 与启动门禁最终拒绝。</item>
-    /// <item><strong>Block/Dodge 不会出现在普通时间线的 Move/Remove/TriggerTick 编辑面</strong>：
-    /// 重排/删除只接受 Editable <strong>普通</strong>计划；反应载荷类型上没有 TriggerTick 字段。</item>
-    /// </list>
-    /// </summary>
     public sealed class ViewInputController
     {
         private ViewInputPorts _ports;
@@ -740,39 +715,6 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
             }
 
             CommandRequest request = commands.CreateActivateConcurrent(window.Value);
-            if (request == null)
-            {
-                _lastOutcome = ViewSubmissionOutcome.Blocked(ViewInputCodes.NO_OPEN_WINDOW);
-                return _lastOutcome;
-            }
-
-            CommandIngressRejection rejection = logic.SubmitCommand(request);
-            _confirmedGestureCount++;
-            _lastOutcome = rejection == null
-                ? ViewSubmissionOutcome.Accepted()
-                : ViewSubmissionOutcome.Rejected(rejection.ReasonCode, true);
-            return _lastOutcome;
-        }
-
-        /// <summary>关闭自己拥有的窗口。</summary>
-        public ViewSubmissionOutcome CloseOwnWindow()
-        {
-            IViewLogicPort logic = Logic;
-            IViewCommandFactory commands = Commands;
-            if (logic == null || commands == null)
-            {
-                _lastOutcome = ViewSubmissionOutcome.Blocked(ViewInputCodes.NO_LOGIC_PORT);
-                return _lastOutcome;
-            }
-
-            WindowId? window = logic.OpenWindowId;
-            if (!window.HasValue || !window.Value.IsValid)
-            {
-                _lastOutcome = ViewSubmissionOutcome.Blocked(ViewInputCodes.NO_OPEN_WINDOW);
-                return _lastOutcome;
-            }
-
-            CommandRequest request = commands.CreateCloseWindow(window.Value);
             if (request == null)
             {
                 _lastOutcome = ViewSubmissionOutcome.Blocked(ViewInputCodes.NO_OPEN_WINDOW);

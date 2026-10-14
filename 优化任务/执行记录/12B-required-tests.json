@@ -1,0 +1,94 @@
+{
+  "GuardHasNoWindupAndIsEffectiveFromStartTick": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardHasNoWindupAndIsEffectiveFromStartTick"
+  ],
+  "GuardEndTickExclusiveGivesNoResistance": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardEndTickExclusiveGivesNoResistance"
+  ],
+  "GuardQuotaDeductsOncePerTickRegardlessOfContactCount": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardQuotaDeductsOncePerTickRegardlessOfContactCount"
+  ],
+  "GuardQuotaUsesMaxActualRatioAcrossChannelsAndMomentum": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardQuotaUsesMaxActualRatioAcrossChannelsAndMomentum"
+  ],
+  "GuardTerminatesWithQuotaExhaustedAfterResolvingThatTick": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardTerminatesWithQuotaExhaustedAfterResolvingThatTick"
+  ],
+  "GuardCumulativeResistanceNeverExceedsLargestSingleTickPayload": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardCumulativeResistanceNeverExceedsLargestSingleTickPayload"
+  ],
+  "GuardMomentumResistanceRequiresBlockableAttack": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardMomentumResistanceRequiresBlockableAttack"
+  ],
+  "BuilderRejectsGuardResistanceAtOrAboveFull": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BuilderRejectsGuardResistanceAtOrAboveFull"
+  ],
+  "BuilderRejectsGuardableComponentWithoutBlockable": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BuilderRejectsGuardableComponentWithoutBlockable"
+  ],
+  "ReactionDefaultStartIsSourceImpactTick": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionDefaultStartIsSourceImpactTick"
+  ],
+  "ReactionStartBeforeNextTickOrAfterImpactIsRejected": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionStartBeforeNextTickOrAfterImpactIsRejected(2)",
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionStartBeforeNextTickOrAfterImpactIsRejected(12)"
+  ],
+  "ReactionIntervalMustCoverSourceImpact": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionIntervalMustCoverSourceImpact"
+  ],
+  "OptionDeadlineIsImpactMinusIngressLead": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OptionDeadlineIsImpactMinusIngressLead"
+  ],
+  "BlockTriggersOnFirstEligibleContactEvenIfNotSource": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BlockTriggersOnFirstEligibleContactEvenIfNotSource"
+  ],
+  "BlockResistsAllEligiblePayloadsInTriggerTickThenTerminates": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BlockResistsAllEligiblePayloadsInTriggerTickThenTerminates"
+  ],
+  "BlockNotTriggeredUntilEndExpiresWithoutRefund": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BlockNotTriggeredUntilEndExpiresWithoutRefund"
+  ],
+  "DodgeTriggersOnFirstDodgeableOldCellContact": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.DodgeTriggersOnFirstDodgeableOldCellContact"
+  ],
+  "DodgeDestinationRecheckFailureConsumesAndTerminates": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.DodgeDestinationRecheckFailureConsumesAndTerminates"
+  ],
+  "DodgeWithoutRelocationDoesNotInvalidateMoves": [
+    "ProjectHero.Authoring.Tests.Task05.Task05DodgeSeamTests.DodgeWithoutRelocationDoesNotInvalidateMoves"
+  ],
+  "SourceCancelledBeforeImpactRefundsSameCycleOnly": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SourceCancelledBeforeImpactRefundsSameCycleOnly(False)",
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SourceCancelledBeforeImpactRefundsSameCycleOnly(True)"
+  ],
+  "OrdinaryPlanMayStartInsideReactionSoftSegment": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OrdinaryPlanMayStartInsideReactionSoftSegment"
+  ],
+  "OrdinaryPlanOverlappingReactionHardSegmentIsRejected": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OrdinaryPlanOverlappingReactionHardSegmentIsRejected"
+  ],
+  "UntriggeredReactionYieldsLaneWhenOrdinaryPlanStarts": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.UntriggeredReactionYieldsLaneWhenOrdinaryPlanStarts"
+  ],
+  "TriggeredReactionFreesLaneImmediately": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.TriggeredReactionFreesLaneImmediately"
+  ],
+  "NoCounterWindowEventIsEverEmitted": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.NoCounterWindowEventIsEverEmitted"
+  ],
+  "SuccessfulDodgeRewardStillAccruesOnce": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SuccessfulDodgeRewardStillAccruesOnce"
+  ],
+  "MultiAttackMultiDefenseInputPermutationInvariance": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.MultiAttackMultiDefenseInputPermutationInvariance"
+  ],
+  "AiReactionCommandCarriesExplicitStartTick": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.AiReactionCommandCarriesExplicitStartTick"
+  ],
+  "AiDoesNotProposeReactionPreemptedByKnownEarlierContact": [
+    "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.AiDoesNotProposeReactionPreemptedByKnownEarlierContact"
+  ],
+  "DefenseDurationShadowProfileHasNoUnclassifiedDifference": [
+    "ProjectHero.Tests.PlayMode.Task11MigrationContractTests.DefenseDurationShadowProfileHasNoUnclassifiedDifference"
+  ]
+}

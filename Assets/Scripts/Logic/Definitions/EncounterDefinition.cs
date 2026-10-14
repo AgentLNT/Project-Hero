@@ -126,7 +126,7 @@ namespace ProjectHero.Logic.Definitions
             }
             if (TurnSubmission != null)
             {
-                writer.Write("encounter.turn_budget_ticks", TurnSubmission.BudgetTicks);
+                writer.Write("encounter.turn_window_duration_ticks", TurnSubmission.WindowDurationTicks);
                 writer.Write("encounter.concurrent_hero_slot", TurnSubmission.ConcurrentHeroSlot.Value);
                 writer.Write("encounter.turn_order", "player-first-action-speed-desc-unit-id-v1");
             }
@@ -172,11 +172,15 @@ namespace ProjectHero.Logic.Definitions
         }
     }
 
-    public sealed record TurnSubmissionDefinition(int BudgetTicks, EncounterSlotId ConcurrentHeroSlot)
+    /// <summary>
+    /// 回合窗口提交定义（R1）：每个窗口固定打开 <see cref="WindowDurationTicks"/>，普通动作的起点必须落在窗口内；
+    /// <see cref="ConcurrentHeroSlot"/> 是可在他人窗口购买并发行动的主角槽位。
+    /// </summary>
+    public sealed record TurnSubmissionDefinition(int WindowDurationTicks, EncounterSlotId ConcurrentHeroSlot)
     {
         public string Validate(EncounterDefinition encounter)
         {
-            if (BudgetTicks <= 0) return "ENCOUNTER_TURN_BUDGET_INVALID";
+            if (WindowDurationTicks <= 0) return "ENCOUNTER_TURN_WINDOW_DURATION_INVALID";
             if (Ids.DefinitionIdValidation.ValidateFormat(ConcurrentHeroSlot.Value) != null)
                 return "ENCOUNTER_CONCURRENT_HERO_SLOT_INVALID";
             if (encounter?.Slots == null) return "ENCOUNTER_CONCURRENT_HERO_SLOT_UNKNOWN";

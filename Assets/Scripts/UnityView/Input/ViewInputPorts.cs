@@ -8,26 +8,6 @@ using ProjectHero.Logic.Turns;
 
 namespace ProjectHero.Core.Compatibility.Runtime.Input
 {
-    /// <summary>
-    /// 表现/输入层与 Logic 之间的<strong>唯一</strong>只读观察面 + 唯一写入口
-    /// （任务 09「必须产出」8；00 号规则 18 的"生产者只能提交 CommandRequest"）。
-    ///
-    /// 边界（逐条可复核）：
-    /// <list type="bullet">
-    /// <item><strong>唯一写路径</strong>是 <see cref="SubmitCommand"/>：它只接受
-    /// <see cref="CommandRequest"/>（只有 <c>TargetTick</c>/<c>Scope</c>/<c>Payload</c> 三样），
-    /// 由宿主把它接到已注册的 <c>CommandIngressEntry.Submit</c>。
-    /// 本接口<strong>没有</strong>任何直接写计划/预算/位置/预留/窗口的方法。</item>
-    /// <item>其余成员全部是<strong>只读</strong>查询：当前 Tick、可编辑计划、
-    /// 已公开的反应机会、Dodge 目的格合法性。它们是"提前反馈"，
-    /// <strong>不是</strong>授权——确认时 Logic 必须重验。</item>
-    /// <item>UI 依赖的阵营分类来自 <see cref="DecisionSnapshot.FactionResolver"/> 本身
-    /// （整场唯一实例），不复制矩阵、不按 Controller/名称/Tag 猜关系。</item>
-    /// <item>本接口<strong>不含</strong>任何 Legacy 具体类型（<c>CombatUnit</c>/
-    /// <c>TacticsController</c>/<c>BattleTimeline</c>），因此
-    /// <c>ProjectHero.Compatibility.Runtime</c> 不反向依赖旧程序集。</item>
-    /// </list>
-    /// </summary>
     public interface IViewLogicPort
     {
         /// <summary>权威当前 Tick（本 Tick 已完成）。设备输入默认目标 <c>CurrentTick + 1</c>。</summary>
@@ -119,9 +99,6 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
 
         /// <summary>反应命令：<c>ReactionCommandScope(ReactionOpportunityId)</c>；不带窗口 scope。</summary>
         CommandRequest CreateReaction(ReactionOpportunityId opportunityId, ReactionCommandPayload payload);
-
-        /// <summary>关闭自己拥有的窗口：<c>WindowCommandScope(ExpectedWindowId)</c>。</summary>
-        CommandRequest CreateCloseWindow(WindowId windowId);
 
         /// <summary>并发行动激活：<c>WindowCommandScope(ExpectedWindowId)</c>；费用来自权威定义。</summary>
         CommandRequest CreateActivateConcurrent(WindowId windowId);

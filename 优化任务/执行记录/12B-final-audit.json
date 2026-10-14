@@ -1,0 +1,148 @@
+{
+  "tests": {
+    "editmode": {
+      "baseline": 889,
+      "current": 929,
+      "passed": 929,
+      "removed": 0,
+      "added": 40,
+      "renamed": 20
+    },
+    "playmode": {
+      "baseline": 61,
+      "current": 65,
+      "passed": 65,
+      "removed": 0,
+      "added": 4,
+      "renamed": 1
+    }
+  },
+  "requiredTestCount": 30,
+  "classificationCount": 73,
+  "sourceFingerprintVerified": true,
+  "nativeResultsFingerprintVerified": true,
+  "archived12AResultsUnchanged": true,
+  "hashAnchors": {
+    "oldRulesVersion": "battle-def-v3-window180",
+    "oldDefinitionHash": "c5d1058b7b19720a",
+    "oldInitialStateHash": "e6f9af498bff9600",
+    "oldProductionInitialStateHash": "29c03922dab5c689",
+    "oldEvidence": "12A-hash-anchors.json (archived native R1 execution)",
+    "rulesVersion": "battle-def-v4-defense-duration",
+    "definitionHash": "e04b3c0946ad3035",
+    "initialStateHash": "2046e404a6fb708f",
+    "productionInitialStateHash": "63e751856fe458e8",
+    "ticksPerSecond": 60,
+    "initialRngSeed": 20260922,
+    "initialMetaResource": 10,
+    "replayFormatVersion": 6
+  },
+  "mainSceneEvidence": [
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-1.heroReplay",
+      "sha256": "B6FAB8D257612BDB5C78937803D769F20F53918F1E6E791DE197D3DA972BDD5D"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-1.png",
+      "sha256": "03B2C984DFC55F961E085FFAA83A32C0800B15083C2EB9869DFDBAAE9757B5C1"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-1.txt",
+      "sha256": "3858234FE5FAB251EB519792C0613B54F7D005A2CB9FCA0126E37E887C3DF019"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-2.heroReplay",
+      "sha256": "22C90D90D28838C10C6942A7E5F2BDC4334D3F929493ED0EB5B8187C59735AD0"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-2.png",
+      "sha256": "C7961EC6C2F55B1DD7AB773BEC42ED448675DF37073FFB8EC64496C23E9306C5"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-2.txt",
+      "sha256": "AC9CC70FE69E1CF92ACB67FCEABAFC2BB36F8AC3F0FB6B535C7E54ED6AF4E775"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-3.heroReplay",
+      "sha256": "05E18804E02D0450AB70C3A5F3F13D97E11DAF8F03448B53335C8F78897C9665"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-3.png",
+      "sha256": "D045290D2209203A9519ED83C0BCDC3ABEA90D804354FADD026BC6683DECF367"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-3.txt",
+      "sha256": "A61041C442E59A76CB5A7536758D72C025A17602146E872EC8908F32B00EB774"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-4.heroReplay",
+      "sha256": "F5046705E824D6A6CEAD5BCB2F6FECB5CA070C08DE3529640CE5170668E65FC3"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-4.png",
+      "sha256": "B0B1321586DCD6C404FDAF28E196FE80D0C9DE3CAEC07356F397672A7794D004"
+    },
+    {
+      "path": "优化任务/执行记录/12B-main-defense-case-4.txt",
+      "sha256": "D89A2DF50C2C9AF4AA5367E64FC336841E7487F123C427666DD7B9710E190790"
+    }
+  ],
+  "finalNativeResults": [
+    {
+      "path": "12B-editmode.xml",
+      "sha256": "72573478C19986F9592FEC8B55764CFBCF4E42D8A482C53CB3F1269E9EF2A9B4"
+    },
+    {
+      "path": "12B-playmode.xml",
+      "sha256": "E30B73604FE78B45D7EF4E13C56D32FF518EC78DEBEC900283F6039AB50D79A1"
+    }
+  ],
+  "scanSummary": {
+    "pattern": "ReactionWindup|ActiveStartTick|ActiveEndTick|(?<!en)CounterWindow",
+    "caseInsensitive": true,
+    "excludedFalsePositive": "EncounterWindow means encounter turn window, not counter window.",
+    "excludedGeneratedTrees": [
+      ".git",
+      "Library",
+      "Temp",
+      "Logs",
+      "obj",
+      "bin",
+      ".vs",
+      ".idea",
+      "node_modules",
+      "UserSettings"
+    ],
+    "repositoryHits": 171,
+    "productionHits": [
+      {
+        "path": "Assets/Scripts/UnityView/ShadowCasePolicy.cs",
+        "line": 395,
+        "text": "                    foreach (string field in new[] { \"plans[i].activeStartTick\", \"plans[i].activeEndTick\",",
+        "explanation": "R2/R3 RemovedRepresentation 的逐字段名称；无生产字段、事件或分支。"
+      },
+      {
+        "path": "Assets/Scripts/UnityView/ShadowCasePolicy.cs",
+        "line": 396,
+        "text": "                        \"plans[i].reactionWindupTicks\", \"plans[i].activeTicks\", \"events.DodgeCounterWindowOpenedEvent\", \"staged.CounterWindows\" })",
+        "explanation": "R2/R3 RemovedRepresentation 的逐字段名称；无生产字段、事件或分支。"
+      }
+    ],
+    "scannedTextSuffixes": [
+      ".asmdef",
+      ".asset",
+      ".cs",
+      ".json",
+      ".log",
+      ".md",
+      ".ps1",
+      ".py",
+      ".txt",
+      ".unity",
+      ".xml",
+      ".yaml",
+      ".yml"
+    ],
+    "perLineExplanation": "12B-scan-repository.csv"
+  }
+}

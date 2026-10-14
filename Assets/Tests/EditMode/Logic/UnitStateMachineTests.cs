@@ -325,7 +325,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(UnitStateMachine.CanReceiveDirectHitIn(UnitState.Guarding), Is.True,
                 "Guard 的部分抵抗来自计划 Active 区间，状态本身不免伤");
             Assert.That(UnitStateMachine.CanReceiveDirectHitIn(UnitState.Blocking), Is.True,
-                "Block 的完全抵抗来自匹配 TriggerTick 的反应 Intent，状态本身不免伤");
+                "Block 的完全抵抗来自匹配 SourceImpactTick 的反应 Intent，状态本身不免伤");
             Assert.That(UnitStateMachine.CanReceiveDirectHitIn(UnitState.Dodging), Is.True,
                 "Dodge 的避伤来自换格后的空间复核，状态本身不免伤");
 
@@ -348,7 +348,7 @@ namespace ProjectHero.Logic.Tests
         /// 必需测试：<strong>防御状态本身既不减伤也不作废接触</strong>。
         ///
         /// 冻结规则（任务包核心规则）：Guard 的部分抵抗来自计划 Active 区间，Block 的完全抵抗
-        /// 来自匹配 TriggerTick 的反应 Intent，Dodge 的避伤来自 TriggerTick 原子换格后的空间复核；
+        /// 来自匹配 SourceImpactTick 的反应 Intent，Dodge 的避伤来自 SourceImpactTick 原子换格后的空间复核；
         /// <see cref="UnitState"/> 本身不提供任何免伤面，也不改变"能否进入 Remaining Hit 结算"。
         ///
         /// 三条可证伪证据：① 三个防御状态的直接命中资格都是 true；② 状态机不含任何

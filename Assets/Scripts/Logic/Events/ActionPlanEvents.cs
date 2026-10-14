@@ -84,7 +84,7 @@ namespace ProjectHero.Logic.Events
         long SourceAttackPlanId,
         long DefenderUnitId,
         long TelegraphTick,
-        long TriggerTick,
+        long SourceImpactTick,
         IReadOnlyList<string> PublishedOptionSpecIds) : LogicEvent(Tick, Sequence);
 
     /// <summary>第一次离开 <c>Open</c> 时恰好发射一次。</summary>
@@ -112,7 +112,7 @@ namespace ProjectHero.Logic.Events
         bool ClosedOpportunity) : LogicEvent(Tick, Sequence);
 
     /// <summary>
-    /// 反应<strong>实际触发</strong>。它必须等到任务 06/08 的 TriggerTick 位置事务成功之后才发射：
+    /// 反应<strong>实际触发</strong>。它必须等到任务 06/08 的 SourceImpactTick 位置事务成功之后才发射：
     /// "生成反应 Intent"不等于"实际触发"，不允许伪造。
     /// </summary>
     public sealed record ReactionTriggeredEvent(
@@ -122,6 +122,6 @@ namespace ProjectHero.Logic.Events
         long ReactionActionPlanId,
         long SourceAttackPlanId,
         long DefenderUnitId,
-        long TriggerTick,
+        long SourceImpactTick,
         int ReactionType) : LogicEvent(Tick, Sequence);
 }

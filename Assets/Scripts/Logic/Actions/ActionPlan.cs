@@ -59,7 +59,14 @@ namespace ProjectHero.Logic.Actions
         MovementOriginInvalidated = 10,
         MovementOriginInvalidatedByDodge = 11,
         OwnerDied = 12,
-        BattleEnded = 13
+        BattleEnded = 13,
+
+        /// <summary>系统自动延期会使 <c>StartTick</c> 越出来源窗口区间（R1）：计划不延期而终止。</summary>
+        DelayedBeyondSourceWindow = 14,
+        ReactionTriggered = 15,
+        ReactionExpired = 16,
+        ReactionYieldedLane = 17,
+        GuardQuotaExhausted = 18
     }
 
     /// <summary>
@@ -82,6 +89,15 @@ namespace ProjectHero.Logic.Actions
             "ACTION_TERMINATION_MOVEMENT_ORIGIN_INVALIDATED_BY_DODGE";
         public const string OwnerDied = "ACTION_TERMINATION_OWNER_DIED";
         public const string BattleEnded = "ACTION_TERMINATION_BATTLE_ENDED";
+        public const string DelayedBeyondSourceWindow = "ACTION_TERMINATION_DELAYED_BEYOND_SOURCE_WINDOW";
+
+        public const string ReactionTriggered = "ACTION_TERMINATION_REACTION_TRIGGERED";
+
+        public const string ReactionExpired = "ACTION_TERMINATION_REACTION_EXPIRED";
+
+        public const string ReactionYieldedLane = "ACTION_TERMINATION_REACTION_YIELDED_LANE";
+
+        public const string GuardQuotaExhausted = "ACTION_TERMINATION_GUARD_QUOTA_EXHAUSTED";
 
         /// <summary>原因 → 稳定字符串码（<see cref="ActionTerminationReason.None"/> 返回 null）。</summary>
         public static string CodeOf(ActionTerminationReason reason)
@@ -103,6 +119,11 @@ namespace ProjectHero.Logic.Actions
                 case ActionTerminationReason.MovementOriginInvalidatedByDodge: return MovementOriginInvalidatedByDodge;
                 case ActionTerminationReason.OwnerDied: return OwnerDied;
                 case ActionTerminationReason.BattleEnded: return BattleEnded;
+                case ActionTerminationReason.DelayedBeyondSourceWindow: return DelayedBeyondSourceWindow;
+                case ActionTerminationReason.ReactionTriggered: return ReactionTriggered;
+                case ActionTerminationReason.ReactionExpired: return ReactionExpired;
+                case ActionTerminationReason.ReactionYieldedLane: return ReactionYieldedLane;
+                case ActionTerminationReason.GuardQuotaExhausted: return GuardQuotaExhausted;
                 default:
                     throw new LogicDefinitionException(ActionPlanCodes.ACTION_TERMINATION_REASON_UNKNOWN,
                         ((int)reason).ToString(CultureInfo.InvariantCulture));
@@ -124,7 +145,12 @@ namespace ProjectHero.Logic.Actions
             ActionTerminationReason.MovementOriginInvalidated,
             ActionTerminationReason.MovementOriginInvalidatedByDodge,
             ActionTerminationReason.OwnerDied,
-            ActionTerminationReason.BattleEnded
+            ActionTerminationReason.BattleEnded,
+            ActionTerminationReason.DelayedBeyondSourceWindow,
+            ActionTerminationReason.ReactionTriggered,
+            ActionTerminationReason.ReactionExpired,
+            ActionTerminationReason.ReactionYieldedLane,
+            ActionTerminationReason.GuardQuotaExhausted
         };
 
         /// <summary>
@@ -144,13 +170,13 @@ namespace ProjectHero.Logic.Actions
     }
 
     /// <summary>
-    /// 固定反应触发绑定（Block/Dodge 必填）。<see cref="TriggerTick"/> 只能由来源攻击的
+    /// 固定反应触发绑定（Block/Dodge 必填）。<see cref="SourceImpactTick"/> 只能由来源攻击的
     /// <c>ImpactTick</c> 推导；命令生产者无法声明它。
     /// </summary>
     public sealed record ActionPlanTriggerBinding(
         ReactionOpportunityId ReactionOpportunityId,
         ActionPlanId SourceThreatPlanId,
-        long TriggerTick,
+        long SourceImpactTick,
         long ResponseDeadlineTick);
 
     /// <summary>
@@ -170,26 +196,9 @@ namespace ProjectHero.Logic.Actions
         public const string ACTION_PLAN_NOT_FOUND = "ACTION_PLAN_NOT_FOUND";
         public const string ACTION_PLAN_REACTION_REQUIRES_BINDING = "ACTION_PLAN_REACTION_REQUIRES_BINDING";
         public const string ACTION_PLAN_ORDINARY_FORBIDS_BINDING = "ACTION_PLAN_ORDINARY_FORBIDS_BINDING";
-        public const string ACTION_PLAN_REACTION_REQUIRES_ZERO_BUDGET = "ACTION_PLAN_REACTION_REQUIRES_ZERO_BUDGET";
         public const string ACTION_PLAN_ID_RESERVATION_MISMATCH = "ACTION_PLAN_ID_RESERVATION_MISMATCH";
     }
 
-    /// <summary>
-    /// 全局 <c>ActionPlan</c>（任务包「必须产出」1）。<strong>单一身份</strong>：
-    /// 创建即获得稳定 <see cref="ActionPlanId"/> 并进入 <see cref="ActionPlanState.Editable"/>，
-    /// 执行门禁通过时<strong>在同一原子提交</strong>中建立 Locked 边界并立即 Running。
-    ///
-    /// 禁止事项（结构上不可能发生）：
-    /// <list type="bullet">
-    /// <item>没有 <c>DraftPlan</c>/<c>ScheduledAction</c> 之类的第二次复制：本类型是唯一形态；</item>
-    /// <item><see cref="RebindAbsoluteTicks"/> <strong>只</strong>重绑绝对 Tick，
-    /// <strong>不</strong>重采样任何相对时长（速度、窗口切换、视觉时间缩放都不得影响它）；</item>
-    /// <item>终态字段（<see cref="State"/>/<see cref="TerminationReason"/>/<see cref="TerminalTick"/>）
-    /// 的写入面是 <c>internal</c>，只有统一终态协调器（同一程序集内）能改；</item>
-    /// <item>计划<strong>不</strong>持有任何场景/MonoBehaviour/视图引用，也不引用 <c>SubmittedWindowId</c>
-    /// 做执行过滤（它只用于预算来源与审计）。</item>
-    /// </list>
-    /// </summary>
     public sealed class ActionPlan
     {
         internal ActionPlan(
@@ -251,7 +260,6 @@ namespace ProjectHero.Logic.Actions
 
         public ActionPlanOrigin Origin { get; }
 
-        /// <summary>普通计划用于预算来源与审计；高阶反应恒为 <c>null</c>。</summary>
         public WindowId? SubmittedWindowId { get; }
 
         /// <summary>固定反应触发绑定（普通计划为 <c>null</c>）。</summary>
@@ -263,10 +271,10 @@ namespace ProjectHero.Logic.Actions
         public ActionPlanId? SourceThreatPlanId
             => TriggerBinding == null ? (ActionPlanId?)null : TriggerBinding.SourceThreatPlanId;
 
-        /// <summary>是否为带固定 <c>TriggerTick</c> 的反应计划（Block/Dodge）。</summary>
-        public bool HasFixedTriggerTick => TriggerBinding != null;
+        /// <summary>是否为带固定 <c>SourceImpactTick</c> 的反应计划（Block/Dodge）。</summary>
+        public bool HasSourceImpactTick => TriggerBinding != null;
 
-        public long TriggerTick => TriggerBinding == null ? 0L : TriggerBinding.TriggerTick;
+        public long SourceImpactTick => TriggerBinding == null ? 0L : TriggerBinding.SourceImpactTick;
 
         public UnitId OwnerUnitId { get; }
 
@@ -292,11 +300,12 @@ namespace ProjectHero.Logic.Actions
 
         public long EndTick { get; internal set; }
 
-        /// <summary>Guard Active 半开区间起点；非 Guard 恒为 0。</summary>
-        public long ActiveStartTick { get; internal set; }
+        public int DurationTicks { get; internal set; }
+        public int DefenseQuotaRemainingQ10 { get; internal set; }
+        public long ReactionTriggeredAtTick { get; internal set; } = -1L;
+        public long HardEndTick => IsReaction ? checked(SourceImpactTick + 1L) : EndTick;
 
-        /// <summary>Guard Active 半开区间右端；非 Guard 恒为 0。</summary>
-        public long ActiveEndTick { get; internal set; }
+
 
         // —— 已解析的相对时序（首次进入 Editable 时一次性采样）——
 
@@ -309,8 +318,6 @@ namespace ProjectHero.Logic.Actions
         /// <summary>Attack 命中 Tick（恰好产生一次 AttackIntent）；非 Attack 恒为 0。</summary>
         public long ImpactTick { get; internal set; }
 
-        /// <summary>Guard 的 Active 时长；非 Guard 恒为 0。</summary>
-        public int ActiveTicks { get; internal set; }
 
         /// <summary>Move 每路径权重单位的 Tick 基准（<c>ReferenceMoveSpeed = 20</c> 一次性解析）。</summary>
         public int ResolvedBaseStepTicks { get; internal set; }
@@ -318,22 +325,12 @@ namespace ProjectHero.Logic.Actions
         /// <summary>已解析路径边数（Editable 期可随依赖重算；Locked 后冻结）。</summary>
         public int ResolvedPathEdgeCount { get; internal set; }
 
-        /// <summary>已解析路径权重单位（预算与 EndTick 使用它，而不是边数）。</summary>
+        /// <summary>已解析路径权重单位（EndTick 使用它，而不是边数）。</summary>
         public int ResolvedPathWeightUnits { get; internal set; }
 
         /// <summary>Move 的移动段总时长 = <c>ResolvedPathWeightUnits × ResolvedBaseStepTicks</c>。</summary>
         public int MoveDurationTicks { get; internal set; }
 
-        /// <summary>Block/Dodge 的反应前摇。</summary>
-        public int ReactionWindupTicks { get; internal set; }
-
-        // —— 预算 ——
-
-        /// <summary>本计划的窗口预算成本（Attack = 前摇+后摇；Guard 三段；Move = 路径权重×基准+后摇；反应 = 0）。</summary>
-        public int BudgetCostTicks { get; internal set; }
-
-        /// <summary>尚未消费的 TurnBudget 预留（Editable 期为 <see cref="BudgetCostTicks"/>，启动提交后归 0）。</summary>
-        public int ReservedTurnBudgetTicks { get; internal set; }
 
         // —— 生命周期记账 ——
 
@@ -396,7 +393,7 @@ namespace ProjectHero.Logic.Actions
 
         /// <summary>该计划在给定 Tick 是否处于 Guard 的 Active 半开区间。</summary>
         public bool IsActiveAt(long tick)
-            => ActionType == ActionType.Guard && tick >= ActiveStartTick && tick < ActiveEndTick;
+            => ActionType == ActionType.Guard && tick >= StartTick && tick < EndTick;
 
         // —— 相对时序解析与绝对重绑（唯一的写入口；只有工厂/编辑器/协调器调用）——
 
@@ -436,9 +433,8 @@ namespace ProjectHero.Logic.Actions
                         throw new LogicDefinitionException(ActionPlanCodes.ACTION_PLAN_SPEC_NOT_FOUND,
                             ActionSpecId.Value ?? string.Empty);
                     // Guard 的相对时序固定：不读 ActionSpeed，也不读 MoveSpeed。
-                    ResolvedWindupTicks = timing.WindupTicks;
-                    ActiveTicks = timing.ActiveTicks;
-                    RecoveryTicks = timing.RecoveryTicks;
+                    DurationTicks = timing.DurationTicks;
+                    DefenseQuotaRemainingQ10 = BattleRules.GuardInitialQuotaQ10;
                     break;
                 }
                 case ActionType.Move:
@@ -460,9 +456,7 @@ namespace ProjectHero.Logic.Actions
                     if (timing == null)
                         throw new LogicDefinitionException(ActionPlanCodes.ACTION_PLAN_SPEC_NOT_FOUND,
                             ActionSpecId.Value ?? string.Empty);
-                    ReactionWindupTicks = timing.ReactionWindupTicks;
-                    RecoveryTicks = timing.RecoveryTicks;
-                    BudgetCostTicks = 0;
+                    DurationTicks = timing.DurationTicks;
                     break;
                 }
                 case ActionType.Dodge:
@@ -471,10 +465,8 @@ namespace ProjectHero.Logic.Actions
                     if (timing == null)
                         throw new LogicDefinitionException(ActionPlanCodes.ACTION_PLAN_SPEC_NOT_FOUND,
                             ActionSpecId.Value ?? string.Empty);
-                    ReactionWindupTicks = timing.ReactionWindupTicks;
-                    RecoveryTicks = timing.RecoveryTicks;
+                    DurationTicks = timing.DurationTicks;
                     ResolvedBaseStepTicks = rules.ReferenceMoveSpeed;
-                    BudgetCostTicks = 0;
                     break;
                 }
                 default:
@@ -488,8 +480,8 @@ namespace ProjectHero.Logic.Actions
             // 真正的起点由排程事务/工厂随后重绑）。
             //
             // 反应计划：<strong>不</strong>在这里重绑——它的绝对区间只能由
-            // <see cref="ApplyReactionInterval"/> 从固定 TriggerTick 推导
-            // （<c>StartTick = TriggerTick - ReactionWindupTicks</c>），
+            // <see cref="ApplyReactionInterval"/> 从固定 SourceImpactTick 推导
+            // StartTick is chosen once; the immutable interval covers SourceImpactTick.
             // 而 <see cref="RebindAbsoluteTicks"/> 对反应计划是显式禁止的
             // （<see cref="ActionPlanCodes.ACTION_PLAN_REACTION_CANNOT_REBIND"/>）。
             // 若这里无条件调用，反应计划将永远无法创建。
@@ -514,29 +506,23 @@ namespace ProjectHero.Logic.Actions
                 case ActionType.Attack:
                     ImpactTick = checked(startTick + ResolvedWindupTicks);
                     EndTick = checked(ImpactTick + RecoveryTicks);
-                    BudgetCostTicks = ResolvedWindupTicks + RecoveryTicks;
                     break;
                 case ActionType.Guard:
-                    ActiveStartTick = checked(startTick + ResolvedWindupTicks);
-                    ActiveEndTick = checked(ActiveStartTick + ActiveTicks);
-                    EndTick = checked(ActiveEndTick + RecoveryTicks);
-                    BudgetCostTicks = ResolvedWindupTicks + ActiveTicks + RecoveryTicks;
+                    EndTick = checked(startTick + DurationTicks);
                     break;
                 case ActionType.Move:
                     MoveDurationTicks = checked(ResolvedPathWeightUnits * ResolvedBaseStepTicks);
                     EndTick = checked(startTick + MoveDurationTicks + RecoveryTicks);
-                    BudgetCostTicks = MoveDurationTicks + RecoveryTicks;
                     break;
                 default:
                     EndTick = checked(startTick + RecoveryTicks);
-                    BudgetCostTicks = RecoveryTicks;
                     break;
             }
         }
 
         /// <summary>
         /// 重算 Move 的路径投影（边数与<strong>路径权重单位</strong>）。
-        /// 预算与 <c>EndTick</c> 使用路径权重而不是边数（00 号规则 32）。
+        /// <c>EndTick</c> 使用路径权重而不是边数（00 号规则 32）。
         /// 冻结后调用以稳定码拒绝。
         /// </summary>
         internal void SetPathProjection(int edgeCount, int pathWeightUnits)
@@ -547,36 +533,19 @@ namespace ProjectHero.Logic.Actions
             ResolvedPathWeightUnits = pathWeightUnits;
             MoveDurationTicks = checked(ResolvedPathWeightUnits * ResolvedBaseStepTicks);
             EndTick = checked(StartTick + MoveDurationTicks + RecoveryTicks);
-            BudgetCostTicks = MoveDurationTicks + RecoveryTicks;
         }
 
-        /// <summary>
-        /// 按固定触发绑定建立反应区间：<c>StartTick = TriggerTick - ReactionWindupTicks</c>、
-        /// <c>EndTick = TriggerTick + RecoveryTicks</c>、<c>BudgetCostTicks = 0</c>。
-        /// 反应区间<strong>不能</strong>被 Lane 或时间线编辑器平移。
-        /// </summary>
-        internal void ApplyReactionInterval()
+        internal void ApplyReactionInterval(long? requestedStartTick = null)
         {
             if (!IsReaction)
                 throw new LogicDefinitionException(ActionPlanCodes.ACTION_PLAN_REACTION_REQUIRES_BINDING,
                     ActionPlanId.Value.ToString(CultureInfo.InvariantCulture));
 
-            StartTick = TriggerTick - ReactionWindupTicks;
-            EndTick = TriggerTick + RecoveryTicks;
-            BudgetCostTicks = 0;
-            ReservedTurnBudgetTicks = 0;
-            if (StartTick < 0L)
+            StartTick = requestedStartTick ?? SourceImpactTick;
+            EndTick = checked(StartTick + DurationTicks);
+            if (StartTick < 0L || StartTick > SourceImpactTick || EndTick <= SourceImpactTick)
                 throw new LogicDefinitionException(ActionPlanCodes.ACTION_PLAN_REACTION_INTERVAL_MISMATCH,
                     StartTick.ToString(CultureInfo.InvariantCulture));
-        }
-
-        /// <summary>
-        /// 由 <see cref="ActionLifecycleSystem"/> 在 Editable 期同步预留额（未消费）。
-        /// 反应计划不参与窗口预算（恒为 0）。
-        /// </summary>
-        internal void SyncEditableReservation()
-        {
-            ReservedTurnBudgetTicks = IsEditable && IsOrdinary ? BudgetCostTicks : 0;
         }
 
         /// <summary>

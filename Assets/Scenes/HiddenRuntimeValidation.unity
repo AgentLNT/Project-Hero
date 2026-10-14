@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &155113195
+--- !u!1 &21937824
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,15 +127,15 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 155113203}
-  - component: {fileID: 155113202}
-  - component: {fileID: 155113201}
-  - component: {fileID: 155113200}
-  - component: {fileID: 155113199}
-  - component: {fileID: 155113198}
-  - component: {fileID: 155113197}
-  - component: {fileID: 155113196}
-  - component: {fileID: 155113204}
+  - component: {fileID: 21937833}
+  - component: {fileID: 21937832}
+  - component: {fileID: 21937831}
+  - component: {fileID: 21937830}
+  - component: {fileID: 21937829}
+  - component: {fileID: 21937828}
+  - component: {fileID: 21937827}
+  - component: {fileID: 21937826}
+  - component: {fileID: 21937825}
   m_Layer: 0
   m_Name: CombatDemo
   m_TagString: Untagged
@@ -143,78 +143,94 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &155113196
+--- !u!114 &21937825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbf0e2a427a75744d8c40b584c8cda3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.ShadowSceneInputBridge
+  _bootstrap: {fileID: 21937826}
+  _source: {fileID: 21937827}
+--- !u!114 &21937826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f0dbdb122b4ce44f8097d79093a3b8f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectHero.Compatibility.Runtime::ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap
+  m_EditorClassIdentifier: ProjectHero.UnityView::ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap
   _requestedMode: 0
-  _legacyFrameAdapterSlot: {fileID: 155113198}
-  _simulationSourceSlot: {fileID: 155113197}
+  _productionNewOnly: 0
+  _legacyFrameAdapterSlot: {fileID: 21937828}
+  _simulationSourceSlot: {fileID: 21937827}
+  _viewConsumerSlot: {fileID: 0}
   _autoStart: 0
   _shadowComparisonConfigVersion: 1
   _shadowMaxStepsPerComparison: 64
   _shadowMaxCheckpoints: 4096
   _shadowComparisonMode: 0
---- !u!114 &155113197
+--- !u!114 &21937827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3983bc2cd0fe6647a128343b489eba7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.BattleSimulationSourceFactory
-  _heroUnit: {fileID: 1195679152}
-  _enemyUnit: {fileID: 599212357}
+  _heroUnit: {fileID: 184071925}
+  _enemyUnit: {fileID: 43010781}
   _initialRngSeed: 20260922
   _initialMetaResource: 10
-  _shadowInitialWindowBudgetTicks: 600
---- !u!114 &155113198
+  _shadowInitialWindowDurationTicks: 600
+--- !u!114 &21937828
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36b5844c231027947bbff204d06de000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Demos.CombatDemo
-  Player: {fileID: 1195679152}
-  Enemy: {fileID: 599212357}
-  Timeline: {fileID: 155113202}
+  Player: {fileID: 184071925}
+  Enemy: {fileID: 43010781}
+  Timeline: {fileID: 21937832}
   DebugTimeDisplay: 0
---- !u!114 &155113199
+--- !u!114 &21937829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3880bb61fb0a4cd4f89e33382d1bf570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Gameplay.BattleManager
---- !u!114 &155113200
+--- !u!114 &21937830
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7c7012490d74d64cbf9e35ac5b85b2a, type: 3}
@@ -228,13 +244,13 @@ MonoBehaviour:
     m_Bits: 1
   inputActions: {fileID: 0}
   _mainCamera: {fileID: 0}
---- !u!114 &155113201
+--- !u!114 &21937831
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b2887d546179b04c87a3f4bdebee38c, type: 3}
@@ -244,25 +260,25 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
---- !u!114 &155113202
+--- !u!114 &21937832
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a882c992b3d461940a83cbedf7c7073c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Timeline.BattleTimeline
---- !u!4 &155113203
+--- !u!4 &21937833
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
+  m_GameObject: {fileID: 21937824}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -271,21 +287,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &155113204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155113195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbf0e2a427a75744d8c40b584c8cda3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.ShadowSceneInputBridge
-  _bootstrap: {fileID: 155113196}
-  _source: {fileID: 155113197}
---- !u!1 &599212356
+--- !u!1 &43010780
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -293,8 +295,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 599212358}
-  - component: {fileID: 599212357}
+  - component: {fileID: 43010782}
+  - component: {fileID: 43010781}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -302,13 +304,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &599212357
+--- !u!114 &43010781
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599212356}
+  m_GameObject: {fileID: 43010780}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
@@ -342,13 +344,13 @@ MonoBehaviour:
   InRecovery: 0
   IsMoving: 0
   IsRecoveringAction: 0
---- !u!4 &599212358
+--- !u!4 &43010782
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599212356}
+  m_GameObject: {fileID: 43010780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -357,7 +359,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1195679151
+--- !u!1 &184071924
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -365,8 +367,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1195679153}
-  - component: {fileID: 1195679152}
+  - component: {fileID: 184071926}
+  - component: {fileID: 184071925}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -374,13 +376,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1195679152
+--- !u!114 &184071925
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195679151}
+  m_GameObject: {fileID: 184071924}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
@@ -414,13 +416,13 @@ MonoBehaviour:
   InRecovery: 0
   IsMoving: 0
   IsRecoveringAction: 0
---- !u!4 &1195679153
+--- !u!4 &184071926
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195679151}
+  m_GameObject: {fileID: 184071924}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -433,6 +435,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 155113203}
-  - {fileID: 1195679153}
-  - {fileID: 599212358}
+  - {fileID: 21937833}
+  - {fileID: 184071926}
+  - {fileID: 43010782}

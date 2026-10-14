@@ -102,8 +102,8 @@ namespace ProjectHero.Logic.Tests
         public void ReactionTimingAndMinimumLeadParticipateInDefinitionHash()
         {
             var reactionRules = new ReactionRules(6, 30);
-            var blockTiming = new BlockReactionTimingSpec(60, 10);
-            var dodgeTiming = new DodgeReactionTimingSpec(30, 10);
+            var blockTiming = new BlockReactionTimingSpec(60);
+            var dodgeTiming = new DodgeReactionTimingSpec(30);
             string baseline = BattleDefinitionHash.OfReactionTimingRules(reactionRules, blockTiming, dodgeTiming);
 
             Assert.That(
@@ -116,19 +116,19 @@ namespace ProjectHero.Logic.Tests
                 Is.Not.EqualTo(baseline), "CommandIngressLeadTicks 必须参与哈希");
             Assert.That(
                 BattleDefinitionHash.OfReactionTimingRules(
-                    reactionRules, blockTiming with { ReactionWindupTicks = 61 }, dodgeTiming),
-                Is.Not.EqualTo(baseline), "Block ReactionWindupTicks 必须参与哈希");
+                    reactionRules, blockTiming with { DurationTicks = 61 }, dodgeTiming),
+                Is.Not.EqualTo(baseline), "Block duration participates in the hash");
             Assert.That(
                 BattleDefinitionHash.OfReactionTimingRules(
-                    reactionRules, blockTiming, dodgeTiming with { ReactionWindupTicks = 31 }),
-                Is.Not.EqualTo(baseline), "Dodge ReactionWindupTicks 必须参与哈希");
+                    reactionRules, blockTiming, dodgeTiming with { DurationTicks = 31 }),
+                Is.Not.EqualTo(baseline), "Dodge duration participates in the hash");
             Assert.That(
                 BattleDefinitionHash.OfReactionTimingRules(
-                    reactionRules, blockTiming with { RecoveryTicks = 11 }, dodgeTiming),
+                    reactionRules, blockTiming with { DurationTicks = 11 }, dodgeTiming),
                 Is.Not.EqualTo(baseline), "Block RecoveryTicks 必须参与哈希");
             Assert.That(
                 BattleDefinitionHash.OfReactionTimingRules(
-                    reactionRules, blockTiming, dodgeTiming with { RecoveryTicks = 11 }),
+                    reactionRules, blockTiming, dodgeTiming with { DurationTicks = 11 }),
                 Is.Not.EqualTo(baseline), "Dodge RecoveryTicks 必须参与哈希");
         }
 

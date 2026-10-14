@@ -50,5 +50,22 @@ namespace ProjectHero.Logic.AI
         /// <summary>本次事务的窗口前提（Add/Move/Remove 都要把它带进 scope）。</summary>
         public WindowId? ExpectedWindowId
             => OwnWindow == null ? (WindowId?)null : new WindowId(OwnWindow.WindowId);
+
+        /// <summary>
+        /// 一条不指定起点的新增计划会落到的起点：<c>max(目标 Tick, 该单位全部非终态计划的最大 EndTick)</c>，
+        /// 与 <c>ScheduleEditor</c> 的 Lane 尾部解析同一口径（只读本控制者可见的计划）。
+        /// </summary>
+        public long LaneTailStartTickOf(UnitId owner)
+        {
+            long tail = NextTick;
+            IReadOnlyList<ActionPlanSnapshot> plans = Snapshot?.OwnPlansOf(ControllerId);
+            if (plans == null) return tail;
+            for (int i = 0; i < plans.Count; i++)
+            {
+                ActionPlanSnapshot plan = plans[i];
+                if (plan != null && plan.OwnerUnitId == owner.Value && plan.EndTick > tail) tail = plan.EndTick;
+            }
+            return tail;
+        }
     }
 }

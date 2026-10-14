@@ -20,7 +20,7 @@ namespace ProjectHero.Logic.Movement
         /// <summary>Dodge 载荷缺失或不是 Dodge（调用方给了错误的计划/规格）。</summary>
         public const string DODGE_RELOCATION_PLAN_NOT_CANONICAL = "DODGE_RELOCATION_PLAN_NOT_CANONICAL";
 
-        /// <summary>计划没有目的格，或没有固定的 <c>TriggerTick</c> 绑定。</summary>
+        /// <summary>计划没有目的格，或没有固定的 <c>SourceImpactTick</c> 绑定。</summary>
         public const string DODGE_DESTINATION_MISSING = "DODGE_DESTINATION_MISSING";
 
         /// <summary>目的格越界（Encounter 边界或完整 footprint 越界）。</summary>
@@ -42,7 +42,7 @@ namespace ProjectHero.Logic.Movement
         /// <summary>同一机会重复预留，或同一目的格已被<strong>本批更早的规范序</strong>预留。</summary>
         public const string DODGE_DESTINATION_ALREADY_RESERVED = "DODGE_DESTINATION_ALREADY_RESERVED";
 
-        /// <summary>预留区间非法（<c>TriggerTick</c> 不严格晚于预留时刻）。</summary>
+        /// <summary>预留区间非法（<c>SourceImpactTick</c> 不严格晚于预留时刻）。</summary>
         public const string DODGE_DESTINATION_INTERVAL_INVALID = "DODGE_DESTINATION_INTERVAL_INVALID";
 
         /// <summary>换位时单位已不在预留记录的 <c>From</c>（内部矛盾 ⇒ InvariantViolation）。</summary>
@@ -99,16 +99,16 @@ namespace ProjectHero.Logic.Movement
         GridDirection Facing,
         GridPoint From,
         GridPoint Destination,
-        long TriggerTick,
-        long CommandSequence);
+        long SourceImpactTick,
+        long CommandSequence, long EndTick = 0L);
 
     /// <summary>
     /// <strong>Dodge 目的格预留</strong>：反应接受事务按
-    /// <c>ReactionOpportunityId</c>/<c>ActionPlanId</c> 为 <c>TriggerTick</c> 冻结的合法目的格。
+    /// <c>ReactionOpportunityId</c>/<c>ActionPlanId</c> 为 <c>SourceImpactTick</c> 冻结的合法目的格。
     ///
-    /// 时间窗固定为 <c>[ReservedAtTick, TriggerTick]</c>（含端点）：它覆盖"从现在到换位那一刻"，
+    /// 时间窗固定为 <c>[ReservedAtTick, SourceImpactTick]</c>（含端点）：它覆盖"从现在到换位那一刻"，
     /// 冲突判定只在这个窗口与既有 Reservation 的
-    /// <c>[StartTick, EndTick)</c> 相交时成立。窗口之外（例如 <c>StartTick &gt;= TriggerTick</c>
+    /// <c>[StartTick, EndTick)</c> 相交时成立。窗口之外（例如 <c>StartTick &gt;= SourceImpactTick</c>
     /// 的纯未来预留）不构成冲突，但<strong>权威占位</strong>冲突仍然成立（Dodge 无抢占权限）。
     /// </summary>
     public sealed record DodgeDestinationReservation(
@@ -120,13 +120,14 @@ namespace ProjectHero.Logic.Movement
         GridPoint Destination,
         int MaxDistanceSteps,
         IReadOnlyList<DirectionalTriangleSet> PatternDirections,
-        long TriggerTick,
+        long SourceImpactTick,
         long ReservedAtTick,
-        long CommandSequence)
+        long CommandSequence, long EndTick = 0L)
     {
+        public long LastReservedTick => EndTick > 0 ? EndTick - 1 : SourceImpactTick;
         /// <summary>该预留是否与 <c>[startTick, endTick)</c> 相交。</summary>
         public bool Overlaps(long startTick, long endTick)
-            => startTick <= TriggerTick && ReservedAtTick < endTick;
+            => startTick <= LastReservedTick && ReservedAtTick < endTick;
 
         public DodgeDestinationRules Rules => new DodgeDestinationRules(MaxDistanceSteps, PatternDirections);
 
@@ -135,7 +136,7 @@ namespace ProjectHero.Logic.Movement
                " plan#" + ReactionPlanId.Value.ToString(CultureInfo.InvariantCulture) +
                " unit#" + UnitId.Value.ToString(CultureInfo.InvariantCulture) +
                " " + From + "->" + Destination +
-               "@" + TriggerTick.ToString(CultureInfo.InvariantCulture);
+               "@" + SourceImpactTick.ToString(CultureInfo.InvariantCulture);
     }
 
     /// <summary>一次预留尝试的只读结果（按规范顺序返回）。</summary>
@@ -185,33 +186,6 @@ namespace ProjectHero.Logic.Movement
         }
     }
 
-    /// <summary>
-    /// 一次 Dodge 换位提交的结果。
-    ///
-    /// <strong><c>Committed = false</c> 的精确含义（任务 06 小修轮 R1 更正，旧文案"零局部写入
-    /// ⇒ Reservation 保持原样"与代码不符，已废除）</strong>：
-    /// <list type="bullet">
-    /// <item><strong>不</strong>保证"零局部写入"这一句话本身；它保证的是
-    /// <strong>计划终态 ⇒ 不保留该计划拥有的任何预留</strong>（任务包「逻辑与表现边界」：
-    /// "任意计划终态后都不存在该计划的活动/未来 MovementSegment 或 Reservation"）；</item>
-    /// <item><see cref="DefenseFailureReason"/> 为
-    /// <see cref="ActionTerminationReason.TargetInvalid"/> 的失败分支，
-    /// <strong>只</strong>出现在"该 Dodge 计划必随之进入终态"的语义上
-    /// （见 <see cref="DodgeRelocationAuthority.TryRelocate"/> 的终态写入）；
-    /// 此时本计划的目的格预留被<strong>同批释放</strong>（幂等），因为它已无消费者。
-    /// 这不违反上面那条不变量，恰恰是它的要求；</item>
-    /// <item>其余失败分支（<c>DefenseFailureReason = None</c>，例如
-    /// <c>DODGE_RELOCATION_ORIGIN_MISMATCH</c> 与
-    /// <c>DODGE_RELOCATION_INVARIANT_VIOLATION</c>）<strong>不</strong>释放本预留：
-    /// 没有任何证据表明计划已终态，预留按"计划仍存活"保留下来供重试/后续释放路径处理；</item>
-    /// <item>无论哪条分支，<strong>占位、他人的 Reservation、移动段与预算始终原样</strong>：
-    /// 换位本身从未开始（唯一的锚点变异是 <c>CommitAnchor</c>，它在全部失败分支之后）。</item>
-    /// </list>
-    ///
-    /// 判定谓词是 <see cref="DodgeCommitResult.TerminatesPlan"/>：调用方（接缝/任务 08）
-    /// 必须用它区分"计划已终态 ⇒ 预留已被释放"与"计划仍存活 ⇒ 预留仍在"两种情形，
-    /// 不得再用"失败 ⇒ 预留保持原样"的旧假设编排重试。
-    /// </summary>
     public sealed record DodgeCommitResult(
         ActionPlanId ReactionPlanId,
         ReactionOpportunityId OpportunityId,
@@ -287,7 +261,7 @@ namespace ProjectHero.Logic.Movement
         bool WouldCommit,
         string Code,
         IReadOnlyList<ActionPlanId> AffectedPlanIds,
-        IReadOnlyList<ActionPlanId> BudgetReleasePlanIds);
+        IReadOnlyList<ActionPlanId> InvalidatedPlanIds);
 
     /// <summary>
     /// 终态清理参与者对 Dodge 目的格预留的释放端口（任务 06 内部接线：
@@ -298,43 +272,6 @@ namespace ProjectHero.Logic.Movement
         void ReleaseForPlan(ActionPlan plan);
     }
 
-    /// <summary>
-    /// <strong>Dodge 换位事务的真实实现</strong>（任务包「必须产出」11 与
-    /// 「Dodge 换位与移动依赖的原子提交」）。
-    ///
-    /// 它同时是：
-    /// <list type="bullet">
-    /// <item>任务 05 冻结的 <see cref="IDodgeRelocationTransaction"/>（TriggerTick 换位端口）；</item>
-    /// <item>反应接受事务的目的格预留端口 <see cref="IDodgeDestinationReservationPort"/>；</item>
-    /// <item>来源威胁取消的预留释放接收方 <see cref="IReactionReservationReleaseSink"/>
-    /// （任务 05 的 <c>SourceThreatCancelled</c> 通知）；</item>
-    /// <item>统一终态清理的 Dodge 预留释放端口 <see cref="IDodgeDestinationReservationSink"/>
-    /// （挂在既有的 <c>MovementAndReservation = 500</c> 槽位上，不新增参与者）。</item>
-    /// </list>
-    ///
-    /// 冻结语义：
-    /// <list type="number">
-    /// <item><strong>预留</strong>：接受事务按 <c>ReactionOpportunityId</c>/<c>ActionPlanId</c> 为
-    /// <c>TriggerTick</c> 冻结合法目的格；目的格必须满足距离/Pattern、Encounter 边界、
-    /// 占位与时间窗冲突规则。冲突胜者<strong>只</strong>由调用方给出的规范命令序
-    /// <c>CommandSequence</c> 决定（同批按 <c>(CommandSequence, ActionPlanId)</c> 升序处理，
-    /// 与原始枚举顺序无关）；后到者稳定拒绝，<strong>不可抢占</strong>。</item>
-    /// <item><strong>换位</strong>：固定阶段先用 <see cref="CaptureSpaceSnapshot"/> 冻结只读快照，
-    /// 再用与预检<strong>完全相同</strong>的求值函数复检，然后<strong>原子</strong>提交
-    /// "占位 From → Destination + 释放该目的格预留 + 失效依赖移动的全部未来段/预留 +
-    /// 预算释放接缝 + 待进入格清理"。任一内部失败 ⇒ <strong>零局部写入</strong>并以
-    /// <see cref="DodgeRelocationCodes.DODGE_RELOCATION_INVARIANT_VIOLATION"/> 失败。</item>
-    /// <item><strong>失败/取消/未换位</strong>：不因本 Dodge 清理任何移动。来源威胁在触发前取消 ⇒
-    /// 只释放预留；防御者自身原因（目的格已越界/被占/体积非法）导致触发失败 ⇒ 以
-    /// <see cref="ActionTerminationReason.TargetInvalid"/> 终止该反应且<strong>不移动单位</strong>，
-    /// 并因其进入终态而<strong>同批释放该计划自己的目的格预留</strong>
-    /// （"计划终态后不存在该计划拥有的任何 Reservation"是不变量；见
-    /// <see cref="DodgeCommitResult.TerminatesPlan"/>）。</item>
-    /// <item><strong>不</strong>生成持续移动段、<strong>不</strong>逐步插值逻辑位置、
-    /// <strong>不</strong>改 <c>ScheduleRevision</c>、<strong>不</strong>泄漏"无敌/Dodging"状态、
-    /// <strong>不</strong>把攻击标为已闪避（接触复核仍是任务 08 的职责）。</item>
-    /// </list>
-    /// </summary>
     public sealed class DodgeRelocationAuthority :
         IDodgeRelocationTransaction,
         IDodgeDestinationReservationPort,
@@ -373,22 +310,6 @@ namespace ProjectHero.Logic.Movement
             _rulesResolver = rulesResolver;
         }
 
-        /// <summary>
-        /// 任务 07 的<strong>预算释放接缝</strong>（可留接缝）。
-        /// 只在换位<strong>实际发生</strong>时被调用一次，参数为按 <c>ActionPlanId</c> 升序的
-        /// 失效计划；失败/取消/未换位时<strong>绝不</strong>被调用。
-        ///
-        /// <strong>顺序契约（任务 06 小修轮 R4/B-1）</strong>：它在换位提交的
-        /// <strong>全部变异之前</strong>被调用（锚点提交已成功、依赖移动清理与待进入格清理尚未开始）。
-        /// 因此即便消费者抛异常，世界也处在"完全未提交"的状态，调用方可安全重试，
-        /// 不会出现"锚点已换、段/预留未清理"的半提交状态。
-        ///
-        /// 装配：生产装配点见 <c>BattleSimulationAssembly.BudgetReleaseSink</c>
-        /// （<c>BattleSimulation</c> 在构造 <c>DodgeRelocationAuthority</c> 时接通）；
-        /// 未注入时为 <c>null</c> ⇒ 不调用任何消费者（本任务不实现预算账本，见交接记录 §13.1）。
-        /// </summary>
-        public Action<IReadOnlyList<ActionPlanId>> BudgetReleaseSink { get; set; }
-
         /// <summary>从权威定义投影规则的解析器（装配回填；缺失时只能走纯数据预留入口）。</summary>
         public Func<ActionSpecId, DodgeDestinationRules> RulesResolver => _rulesResolver;
 
@@ -398,7 +319,7 @@ namespace ProjectHero.Logic.Movement
         // 只读查询
         // ————————————————————————————————————————————————————————————
 
-        /// <summary>全部目的格预留的规范快照（按稳定空间键 <c>(TriggerTick, X, Y, OpportunityId)</c> 升序）。</summary>
+        /// <summary>全部目的格预留的规范快照（按稳定空间键 <c>(SourceImpactTick, X, Y, OpportunityId)</c> 升序）。</summary>
         public IReadOnlyList<DodgeDestinationReservation> AllReservationsOrdered()
         {
             var result = new List<DodgeDestinationReservation>(_reservations.Count);
@@ -407,15 +328,20 @@ namespace ProjectHero.Logic.Movement
             return result;
         }
 
-        /// <summary>本 Tick 到期（<c>TriggerTick &lt;= tick</c>）的预留，按规范顺序。</summary>
-        public IReadOnlyList<DodgeDestinationReservation> DueReservationsOrdered(long tick)
+        /// <summary>本 Tick 到期（<c>SourceImpactTick &lt;= tick</c>）的预留，按规范顺序。</summary>
+        public IReadOnlyList<DodgeDestinationReservation> TriggeredReservationsOrdered(IReadOnlyList<ActionPlanId> triggering, long tick)
         {
+            var ids = new HashSet<long>();
+            foreach (ActionPlanId id in triggering) ids.Add(id.Value);
             var result = new List<DodgeDestinationReservation>();
-            foreach (KeyValuePair<long, DodgeDestinationReservation> pair in _reservations)
-            {
-                if (pair.Value.TriggerTick <= tick) result.Add(pair.Value);
-            }
-            result.Sort(CompareCanonical);
+            foreach (var pair in _reservations)
+                if (ids.Contains(pair.Value.ReactionPlanId.Value)) result.Add(pair.Value);
+            result.Sort((a,b) => {
+                int c = a.Destination.X.CompareTo(b.Destination.X); if (c != 0) return c;
+                c = a.Destination.Y.CompareTo(b.Destination.Y); if (c != 0) return c;
+                c = a.CommandSequence.CompareTo(b.CommandSequence); if (c != 0) return c;
+                return a.OpportunityId.Value.CompareTo(b.OpportunityId.Value);
+            });
             return result;
         }
 
@@ -428,7 +354,7 @@ namespace ProjectHero.Logic.Movement
             foreach (KeyValuePair<long, DodgeDestinationReservation> pair in _reservations)
             {
                 DodgeDestinationReservation reservation = pair.Value;
-                if (reservation.ReservedAtTick > tick || reservation.TriggerTick < tick) continue;
+                if (reservation.ReservedAtTick > tick || reservation.LastReservedTick < tick) continue;
                 IReadOnlyList<GridPoint> cells = _grid.ResolveDestinationCells(
                     reservation.UnitId, reservation.Destination, reservation.Facing);
                 for (int c = 0; c < cells.Count; c++)
@@ -555,7 +481,8 @@ namespace ProjectHero.Logic.Movement
         {
             if (request == null) return DodgeRelocationCodes.DODGE_DESTINATION_MISSING;
             if (rules == null) return DodgeRelocationCodes.DODGE_RELOCATION_PLAN_NOT_CANONICAL;
-            if (request.TriggerTick <= tick) return DodgeRelocationCodes.DODGE_DESTINATION_INTERVAL_INVALID;
+            if (request.SourceImpactTick <= tick) return DodgeRelocationCodes.DODGE_DESTINATION_INTERVAL_INVALID;
+            if (request.EndTick > 0 && request.EndTick <= request.SourceImpactTick) return DodgeRelocationCodes.DODGE_DESTINATION_INTERVAL_INVALID;
             if (_reservations.ContainsKey(request.OpportunityId.Value))
                 return DodgeRelocationCodes.DODGE_DESTINATION_ALREADY_RESERVED;
             if (!_grid.Contains(request.UnitId)) return LogicGridCodes.LOGIC_GRID_UNIT_UNKNOWN;
@@ -563,7 +490,7 @@ namespace ProjectHero.Logic.Movement
             var provisional = new DodgeDestinationReservation(
                 request.OpportunityId, request.ReactionPlanId, request.UnitId, request.Facing,
                 request.From, request.Destination, rules.MaxDistanceSteps, rules.PatternDirections,
-                request.TriggerTick, tick, request.CommandSequence);
+                request.SourceImpactTick, tick, request.CommandSequence, request.EndTick);
 
             string error = EvaluateDestination(provisional);
             if (error != null) return error;
@@ -580,7 +507,7 @@ namespace ProjectHero.Logic.Movement
             GridPoint destination,
             long triggerTick,
             long commandSequence,
-            long tick)
+            long tick, long? endTick = null)
         {
             DodgeDestinationRules rules = _rulesResolver?.Invoke(dodgeSpecId);
             if (rules == null) return DodgeRelocationCodes.DODGE_RELOCATION_PLAN_NOT_CANONICAL;
@@ -592,7 +519,7 @@ namespace ProjectHero.Logic.Movement
                 return LogicGridCodes.LOGIC_GRID_UNIT_UNKNOWN;
 
             var request = new DodgeDestinationRequest(
-                opportunityId, default, defenderUnitId, facing, from, destination, triggerTick, commandSequence);
+                opportunityId, default, defenderUnitId, facing, from, destination, triggerTick, commandSequence, endTick ?? 0L);
             return ReserveDestination(request, rules, tick);
         }
 
@@ -605,7 +532,8 @@ namespace ProjectHero.Logic.Movement
         {
             if (!_reservations.TryGetValue(opportunityId.Value, out DodgeDestinationReservation existing)) return;
             if (existing.ReactionPlanId.Value == reactionPlanId.Value) return;
-            _reservations[opportunityId.Value] = existing with { ReactionPlanId = reactionPlanId };
+            _reservations[opportunityId.Value] = existing with { ReactionPlanId = reactionPlanId,
+                EndTick = _authority.Registry.Find(reactionPlanId)?.EndTick ?? 0L };
         }
 
         /// <summary>释放单个机会的预留（幂等）。返回是否真的存在并释放。</summary>
@@ -692,7 +620,7 @@ namespace ProjectHero.Logic.Movement
             {
                 DodgeDestinationReservation other = pair.Value;
                 if (other.OpportunityId.Value == provisional.OpportunityId.Value) continue;
-                if (!other.Overlaps(provisional.ReservedAtTick, provisional.TriggerTick + 1L)) continue;
+                if (!other.Overlaps(provisional.ReservedAtTick, provisional.LastReservedTick + 1L)) continue;
                 IReadOnlyList<GridPoint> otherCells = _grid.ResolveDestinationCells(
                     other.UnitId, other.Destination, other.Facing);
                 for (int c = 0; c < otherCells.Count; c++)
@@ -708,11 +636,6 @@ namespace ProjectHero.Logic.Movement
             return null;
         }
 
-        /// <summary>
-        /// <strong>同源只读条件预检</strong>：与提交共用 <see cref="EvaluateDestination"/>，
-        /// 列出受影响 Move PlanId 与任务 07 的拟释放预算分组。
-        /// 它不写状态、不分配 ID、不推进修订号（可由 UI/AI 反复调用）。
-        /// </summary>
         public DodgeDependencyPreview PreviewDependencies(
             DodgeDestinationRequest request,
             DodgeDestinationRules rules,
@@ -727,7 +650,7 @@ namespace ProjectHero.Logic.Movement
             var provisional = new DodgeDestinationReservation(
                 request.OpportunityId, request.ReactionPlanId, request.UnitId, request.Facing,
                 request.From, request.Destination, rules.MaxDistanceSteps, rules.PatternDirections,
-                request.TriggerTick, tick, request.CommandSequence);
+                request.SourceImpactTick, tick, request.CommandSequence, request.EndTick);
 
             string code = EvaluateDestination(provisional);
             bool wouldCommit = code == null;
@@ -738,7 +661,7 @@ namespace ProjectHero.Logic.Movement
         }
 
         // ————————————————————————————————————————————————————————————
-        // TriggerTick 原子提交
+        // SourceImpactTick 原子提交
         // ————————————————————————————————————————————————————————————
 
         /// <summary>
@@ -766,24 +689,6 @@ namespace ProjectHero.Logic.Movement
             return CommitReservation(reservation, dependentMoves, tick);
         }
 
-        /// <summary>
-        /// 任务 05 冻结的换位端口。返回 null = 换位成功；否则稳定拒绝码。
-        ///
-        /// <paramref name="invalidatedCandidates"/> 是<strong>预检输入</strong>：只有换位成功后
-        /// 才按 <c>ActionPlanId</c> 升序释放它们的全部未来段/预留；失败时它们保持原样。
-        ///
-        /// <strong>失败语义（R1 更正后）</strong>：
-        /// <list type="bullet">
-        /// <item>防御者自身原因失败（<see cref="DodgeCommitResult.TerminatesPlan"/>）⇒ 本方法把该反应计划
-        /// 经统一终态协调器终止为 <see cref="ActionTerminationReason.TargetInvalid"/>；
-        /// 该计划的目的格预留已在提交内同批释放（"终态不留预留"不变量）。
-        /// <paramref name="invalidatedCandidates"/> <strong>不</strong>被清理——未换位就不因本 Dodge
-        /// 清理任何移动；</item>
-        /// <item><c>DefenseFailureReason = None</c> 的失败（内部矛盾）⇒ 本方法<strong>不</strong>写终态，
-        /// 预留按"计划仍存活"保留，调用方可重试或走来源威胁取消路径释放；</item>
-        /// <item>无论哪条分支，占位、他人的 Reservation、段与预算都保持原样。</item>
-        /// </list>
-        /// </summary>
         public string TryRelocate(ActionPlan dodgePlan, IReadOnlyList<ActionPlan> invalidatedCandidates, long tick)
         {
             if (dodgePlan == null || dodgePlan.ActionType != ActionType.Dodge || !dodgePlan.IsReaction)
@@ -807,14 +712,6 @@ namespace ProjectHero.Logic.Movement
             DodgeCommitResult result = CommitReservation(reservation, ids, tick);
             if (result.Committed) return null;
 
-            // 防御者自身原因导致触发失败：以 TargetInvalid 终止该反应计划；**不**移动单位，
-            // **不**清理任何移动。来源威胁取消等外部原因不在这里写终态（由任务 05 的
-            // SourceThreatCancelled 路径负责）。
-            if (result.DefenseFailureReason == ActionTerminationReason.TargetInvalid &&
-                _coordinator != null && !dodgePlan.IsTerminal)
-            {
-                _coordinator.EnterTerminal(dodgePlan, ActionTerminationReason.TargetInvalid, tick);
-            }
             return result.Code;
         }
 
@@ -862,19 +759,6 @@ namespace ProjectHero.Logic.Movement
             IReadOnlyList<ActionPlanId> affected = moves ? Canonical(dependentMoves) : Array.Empty<ActionPlanId>();
 
             // —— 阶段 B：原子提交（阶段 A 已把全部可失败条件排除，因此本阶段不可能失败）——
-            //
-            // 任务 06 小修轮 R4/B-1 的**顺序契约**：预算释放是外部回调，可能抛异常，
-            // 因此它必须在**本方法的第一处变异之前**被调用：
-            // <list type="number">
-            // <item>此前的全部工作都是只读的（阶段 A 的预检 + 这里的规范排序），
-            // 因此"回调抛异常 ⇒ 世界完全未提交"，调用方可安全重试；</item>
-            // <item>此后的全部工作都不再可失败（<c>CommitAnchor</c> 的失败已在提交期分支处理），
-            // 因此不存在"回调已发、变异做了一半"的半提交窗口；</item>
-            // <item>旧实现把回调留在锚点提交与依赖移动清理<strong>之后</strong>：
-            // 一旦任务 07 接通消费者，抛异常的消费者会留下"锚点已换、段/预留未清理"的状态。</item>
-            // </list>
-            // 参数与最终提交的失效集合逐字相同（同为 <c>moves ? Canonical(...) : 空</c>）。
-            if (moves) BudgetReleaseSink?.Invoke(affected);
 
             string commit = _grid.CommitAnchor(unitId, destination, reservation.Facing);
             if (commit != null)
@@ -988,7 +872,7 @@ namespace ProjectHero.Logic.Movement
 
         private static int CompareCanonical(DodgeDestinationReservation a, DodgeDestinationReservation b)
         {
-            int byTrigger = a.TriggerTick.CompareTo(b.TriggerTick);
+            int byTrigger = a.SourceImpactTick.CompareTo(b.SourceImpactTick);
             if (byTrigger != 0) return byTrigger;
             int byX = a.Destination.X.CompareTo(b.Destination.X);
             if (byX != 0) return byX;

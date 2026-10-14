@@ -7,29 +7,6 @@ using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Logic.Timeline
 {
-    /// <summary>
-    /// <strong><c>ReactionPlanner</c></strong>（任务包「必须产出」11 第四段）。
-    ///
-    /// 它是"把一条已公开、仍可达、已通过全部权威校验的选项变成一个真实计划"的<strong>唯一</strong>入口：
-    /// <list type="bullet">
-    /// <item>调用 <see cref="ActionPlanFactory.TryCreateReaction"/> —— 因此反应计划
-    /// <strong>直接处于 Locked</strong>、<c>SubmittedWindowId</c> 为空、<c>BudgetCostTicks = 0</c>、
-    /// 固定区间为 <c>StartTick = TriggerTick - ReactionWindupTicks</c>、
-    /// <c>EndTick = TriggerTick + RecoveryTicks</c>；</item>
-    /// <item>固定区间必须先通过 Lane 重叠检查：首版<strong>不抢占</strong>，
-    /// 也不因反应插入而重排普通计划；</item>
-    /// <item>它<strong>不</strong>自己拼装 <c>ActionPlan</c>，也不写终态。</item>
-    /// </list>
-    /// 资源/目的格的冻结属于任务 07/06 的接缝（<see cref="IReactionPreparationPort"/>），
-    /// 由调用方在调用本类之前完成。
-    ///
-    /// <strong>任务 07 追加（「必须产出」7 第二段 + §原子性与关闭语义）</strong>：
-    /// <see cref="TryPlanWithReservation"/> 把"候选计划解析 → 肾上腺素预留 → 创建并注册计划"
-    /// 合成<strong>一个</strong>接受事务。预留<strong>只</strong>发生在全部可预期校验之后、任何写入之前，
-    /// 因此预留失败时整条接受失败且<strong>零副作用</strong>：不注册计划、不写 Lane、
-    /// 不占用 <c>ActionPlanId</c>、不消费反应机会。它<strong>不</strong>校验窗口、
-    /// <c>ExpectedWindowId</c> 或 <c>ConcurrentActionSystem</c> 授权（00 号规则 26）。
-    /// </summary>
     public sealed class ReactionPlanner
     {
         private readonly ActionScheduleAuthority _authority;
@@ -59,13 +36,13 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         /// <param name="destination">
         /// Dodge 的目的格（命令携带；Block 必须为 null）。它只被记录到计划的
-        /// <c>Destination</c> 字段：真正的换位属于任务 06/08 的 TriggerTick 事务，
+        /// <c>Destination</c> 字段：真正的换位属于任务 06/08 的 SourceImpactTick 事务，
         /// 本方法<strong>不</strong>换位、也<strong>不</strong>伪造触发。
         /// </param>
         public string TryPlan(
             ReactionOpportunityRuntime opportunity, ReactionOptionRuntime option,
-            ActionPlan sourcePlan, long tick, GridPoint? destination, out ActionPlan plan)
-            => TryPlanCore(opportunity, option, sourcePlan, tick, destination, default, out plan);
+            ActionPlan sourcePlan, long tick, GridPoint? destination, out ActionPlan plan, long? startTick = null)
+            => TryPlanCore(opportunity, option, sourcePlan, tick, destination, default, out plan, startTick);
 
         /// <summary>
         /// <strong>07-A：接受反应（Block/Dodge）的原子提交入口。</strong>
@@ -88,7 +65,7 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         public string TryPlanWithReservation(
             ReactionOpportunityRuntime opportunity, ReactionOptionRuntime option, ActionPlan sourcePlan,
-            long tick, GridPoint? destination, ActionPlanId candidatePlanId, out ActionPlan plan)
+            long tick, GridPoint? destination, ActionPlanId candidatePlanId, out ActionPlan plan, long? startTick = null)
         {
             plan = null;
             if (opportunity == null || option == null || sourcePlan == null || !candidatePlanId.IsValid)
@@ -103,6 +80,15 @@ namespace ProjectHero.Logic.Timeline
             //    （与 ActionPlanFactory 同规则、同拒绝码），因此预留之后不再有可失败的校验。
             string preconditionError = ValidateBeforeReservation(opportunity.DefenderUnitId, spec);
             if (preconditionError != null) return preconditionError;
+
+            string intervalError = TryResolveReactionInterval(spec, opportunity.SourceImpactTick,
+                startTick, tick, out long start, out _);
+            if (intervalError != null) return intervalError;
+            ActorLane targetLane = _authority.FindLane(opportunity.DefenderUnitId);
+            if (targetLane != null && targetLane.IsSubmissionLocked) return ReactionCodes.REACTION_LANE_SUBMISSION_LOCKED;
+            if (targetLane != null && targetLane.TryFindOverlapExcept(start, opportunity.SourceImpactTick + 1L - start,
+                null, p => DodgeMovementInvalidationSeam.DodgeMayInvalidate(p, spec.Type, start), out _))
+                return ReactionCodes.REACTION_LANE_INTERVAL_OCCUPIED;
 
             bool reserved = false;
             if (AdrenalinePort != null)
@@ -120,7 +106,7 @@ namespace ProjectHero.Logic.Timeline
 
             // ③ 提交：创建并注册计划（ID 必须恰好是候选值）。
             string commitError = TryPlanCore(
-                opportunity, option, sourcePlan, tick, destination, candidatePlanId, out plan);
+                opportunity, option, sourcePlan, tick, destination, candidatePlanId, out plan, startTick);
             if (commitError == null) return null;
 
             plan = null;
@@ -132,41 +118,20 @@ namespace ProjectHero.Logic.Timeline
                 commitError + " plan=" + candidatePlanId.Value.ToString(CultureInfo.InvariantCulture));
         }
 
-        /// <summary>
-        /// <strong>07-A：候选固定区间的只读推导</strong>（与 <c>ActionPlan.ApplyReactionInterval</c> 同规则）：
-        /// <c>StartTick = TriggerTick - ReactionWindupTicks</c>、<c>EndTick = TriggerTick + RecoveryTicks</c>。
-        ///
-        /// 它让调用方在<strong>创建计划之前</strong>完成 Lane 固定区间占位判定，
-        /// 因此"区间被占用"这一拒绝路径既不占用 <c>ActionPlanId</c>，也不触碰任何资源。
-        /// 返回 null = 成功；否则返回稳定拒绝码。
-        /// </summary>
-        public static string TryResolveReactionInterval(
-            ActionSpec spec, long triggerTick, out long startTick, out long intervalLength)
+        public static string TryResolveReactionInterval(ActionSpec spec, long sourceImpactTick,
+            out long startTick, out long intervalLength)
+            => TryResolveReactionInterval(spec, sourceImpactTick, null, -1L, out startTick, out intervalLength);
+
+        public static string TryResolveReactionInterval(ActionSpec spec, long sourceImpactTick,
+            long? requestedStartTick, long tick, out long startTick, out long intervalLength)
         {
-            startTick = 0L;
-            intervalLength = 0L;
-            if (spec == null) return ActionPlanCodes.ACTION_PLAN_SPEC_NOT_FOUND;
-
-            int windup;
-            int recovery;
-            switch (spec.Timing)
-            {
-                case BlockReactionTimingSpec block:
-                    windup = block.ReactionWindupTicks;
-                    recovery = block.RecoveryTicks;
-                    break;
-                case DodgeReactionTimingSpec dodge:
-                    windup = dodge.ReactionWindupTicks;
-                    recovery = dodge.RecoveryTicks;
-                    break;
-                default:
-                    return ReactionCodes.REACTION_ACTION_NOT_BLOCK_OR_DODGE;
-            }
-
-            startTick = triggerTick - windup;
-            if (startTick < 0L) return ActionPlanCodes.ACTION_PLAN_REACTION_INTERVAL_MISMATCH;
-
-            intervalLength = checked(triggerTick + recovery) - startTick;
+            startTick = requestedStartTick ?? sourceImpactTick;
+            intervalLength = spec?.Timing is BlockReactionTimingSpec block ? block.DurationTicks
+                : spec?.Timing is DodgeReactionTimingSpec dodge ? dodge.DurationTicks : 0;
+            if (intervalLength <= 0) return ReactionCodes.REACTION_ACTION_NOT_BLOCK_OR_DODGE;
+            if (startTick <= tick || startTick > sourceImpactTick || startTick < 0
+                || startTick > long.MaxValue - intervalLength || startTick + intervalLength <= sourceImpactTick)
+                return ReactionCodes.REACTION_START_OUT_OF_RANGE;
             return null;
         }
 
@@ -180,7 +145,7 @@ namespace ProjectHero.Logic.Timeline
         private string TryPlanCore(
             ReactionOpportunityRuntime opportunity, ReactionOptionRuntime option,
             ActionPlan sourcePlan, long tick, GridPoint? destination,
-            ActionPlanId expectedPlanId, out ActionPlan plan)
+            ActionPlanId expectedPlanId, out ActionPlan plan, long? startTick = null)
         {
             plan = null;
             if (opportunity == null || option == null || sourcePlan == null)
@@ -191,11 +156,18 @@ namespace ProjectHero.Logic.Timeline
             if (spec.Type != ActionType.Block && spec.Type != ActionType.Dodge)
                 return ReactionCodes.REACTION_ACTION_NOT_BLOCK_OR_DODGE;
 
+            string rangeError = TryResolveReactionInterval(spec,opportunity.SourceImpactTick,startTick,tick,out long start,out _);
+            if (rangeError != null) return rangeError;
+            var targetLane = _authority.FindLane(opportunity.DefenderUnitId);
+            if (targetLane != null && targetLane.IsSubmissionLocked) return ReactionCodes.REACTION_LANE_SUBMISSION_LOCKED;
+            if (targetLane != null && targetLane.TryFindOverlapExcept(start,opportunity.SourceImpactTick + 1L - start,
+                null,p=>DodgeMovementInvalidationSeam.DodgeMayInvalidate(p,spec.Type,start),out _))
+                return ReactionCodes.REACTION_LANE_INTERVAL_OCCUPIED;
             ActionPlanCreationResult created = _factory.TryCreateReaction(
                 new ReactionPlanRequest(
                     opportunity.DefenderUnitId, option.ReactionActionSpecId, sourcePlan.Facing, destination,
                     opportunity.Id, opportunity.SourceAttackPlanId,
-                    opportunity.TriggerTick, option.ResponseDeadlineTick),
+                    opportunity.SourceImpactTick, option.ResponseDeadlineTick, StartTick: startTick),
                 tick);
             if (!created.Succeeded) return created.RejectionCode;
 
@@ -217,7 +189,7 @@ namespace ProjectHero.Logic.Timeline
             // （DodgeMovementInvalidationSeam.DodgeMayInvalidate，与失效闭包过滤器逐字一致）。
             // 判据必须一致，否则会出现"预检放行、复核拒绝"的死路，或容忍了不会被清理的 Move。
             if (lane != null && lane.TryFindOverlapExcept(
-                    reaction.StartTick, reaction.IntervalLength, null,
+                    reaction.StartTick, reaction.HardEndTick - reaction.StartTick, null,
                     overlapping => DodgeMovementInvalidationSeam.DodgeMayInvalidate(
                         overlapping, reaction.ActionType, reaction.StartTick),
                     out _))

@@ -48,18 +48,18 @@ namespace ProjectHero.Logic.Tests
 
         public const int AttackWindupTicks = 10;
         public const int AttackRecoveryTicks = 2;
-        public const int BlockReactionWindupTicks = 1;
+        public const int BlockDurationTicks = 1;
         public const int BlockRecoveryTicks = 1;
-        public const int DodgeReactionWindupTicks = 1;
+        public const int DodgeDurationTicks = 1;
         public const int DodgeRecoveryTicks = 1;
 
         /// <summary>攻击起点 = 1 ⇒ ImpactTick = 11；Block 选项截止 = 11 − 1 = 10。</summary>
         public const long WindowOpenTick = 0L;
         public const long AttackSubmitTick = 1L;
         public const long AttackImpactTick = AttackSubmitTick + AttackWindupTicks;
-        public const long BlockOptionDeadlineTick = AttackImpactTick - BlockReactionWindupTicks;
+        public const long BlockOptionDeadlineTick = AttackImpactTick - BlockDurationTicks;
 
-        public const int WindowBudget = 400;
+        public const int WindowDuration = 400;
         public const int InitialHealth = 2000;
         public const string EncounterIdValue = "encounter.t09a2";
         public const string VolumeSpecIdValue = "unit_volume.t09a2";
@@ -232,12 +232,12 @@ namespace ProjectHero.Logic.Tests
                 AttackSpecOf(NeutralAttackSpecId, TargetRelationMask.Hostile | TargetRelationMask.Neutral, reactable: false),
                 new ActionSpec(
                     Spec(BlockSpecId), ActionType.Block,
-                    new BlockReactionTimingSpec(BlockReactionWindupTicks, BlockRecoveryTicks),
+                    new BlockReactionTimingSpec(BlockDurationTicks),
                     new BlockPayloadSpec(DefenseTagMask.Blockable),
                     AdrenalineCost: FrozenDesignValues.BlockAdrenalineCost),
                 new ActionSpec(
                     Spec(DodgeSpecId), ActionType.Dodge,
-                    new DodgeReactionTimingSpec(DodgeReactionWindupTicks, DodgeRecoveryTicks),
+                    new DodgeReactionTimingSpec(DodgeDurationTicks),
                     new DodgePayloadSpec(MaxDistanceSteps: 4, Pattern: MovementPattern()),
                     AdrenalineCost: FrozenDesignValues.DodgeAdrenalineCost)
             };
@@ -385,10 +385,11 @@ namespace ProjectHero.Logic.Tests
                 targetTick, new ReactionCommandScope(opportunityId),
                 new ReactionCommandPayload(kind, specId, dodgeDestination));
 
-        public static CommandRequest CloseWindow(long targetTick, WindowId windowId)
+        /// <summary>已废止的关窗命令（数值 0）：R1 下必须被稳定拒绝，只用于负向测试。</summary>
+        public static CommandRequest RetiredCloseWindowCommand(long targetTick, WindowId windowId)
             => new CommandRequest(
                 targetTick, new WindowCommandScope(windowId),
-                new WindowCommandPayload(WindowCommandKind.CloseOwnWindow));
+                new WindowCommandPayload((WindowCommandKind)0));
 
         // ================= 事件与账本助手 =================
 
@@ -508,12 +509,12 @@ namespace ProjectHero.Logic.Tests
 
         public static ActionPlan ArrangeStartedAttack(
             BattleSimulation sim, UnitId target, ActionSpecId specId, UnitId owner,
-            bool seedDefenderAdrenaline)
+            bool seedDefenderAdrenaline, int windowDuration = WindowDuration)
         {
             UnitId attacker = owner;
             // 窗口属于攻击者自己（提交授权的最简合法形态）；窗口与反应权正交这一点
             // 由 ReactionDoesNotRequireOwnWindowOrConcurrentAuthority 单独覆盖。
-            sim.WindowManager.ScheduleWindow(WindowOpenTick, attacker, WindowBudget);
+            sim.WindowManager.ScheduleWindow(WindowOpenTick, attacker, windowDuration);
             Step(sim, WindowOpenTick);
             Assert.That(sim.CurrentTurnWindow, Is.Not.Null, "夹具前提：Tick 0 必须打开窗口");
 
@@ -547,6 +548,17 @@ namespace ProjectHero.Logic.Tests
         /// </summary>
         public static ActionPlan ArrangeStartedAttackOnly(BattleSimulation sim, UnitId target)
             => ArrangeStartedAttack(sim, target, Spec(AttackSpecId), Hero, seedDefenderAdrenaline: false);
+
+        /// <summary>
+        /// 窗口时长 = <see cref="ShortWindowDuration"/> 的版本：攻击者的窗口 <c>[0, 2)</c> 在 Tick 1 末到期（R1），
+        /// 调用方推进到 Tick 2 后即可在 Tick 3 为另一个单位打开窗口（取代旧的"主动关窗"）。
+        /// </summary>
+        public static ActionPlan ArrangeStartedAttackInShortWindow(
+            BattleSimulation sim, UnitId target, ActionSpecId specId, bool seedDefenderAdrenaline)
+            => ArrangeStartedAttack(sim, target, specId, Hero, seedDefenderAdrenaline, ShortWindowDuration);
+
+        /// <summary>只容纳 Tick 0、1 的攻击者窗口时长（R1：到期即关闭）。</summary>
+        public const int ShortWindowDuration = 2;
 
         /// <summary>该单位所属的控制者（唯一来源 = 已验证定义里的 ControllerBinding）。</summary>
         public static ControllerId EntryControllerOf(BattleSimulation sim, UnitId unitId)
@@ -592,8 +604,6 @@ namespace ProjectHero.Logic.Tests
                     .Append(plan.StartTick).Append(':')
                     .Append(plan.EndTick).Append(':')
                     .Append(plan.ImpactTick).Append(':')
-                    .Append(plan.BudgetCostTicks).Append(':')
-                    .Append(plan.ReservedTurnBudgetTicks).Append(':')
                     .Append(plan.LastRequestedStartTick).Append(':')
                     .Append(plan.SubmittedWindowId.HasValue ? plan.SubmittedWindowId.Value.Value : -1L)
                     .Append(';');
@@ -601,14 +611,14 @@ namespace ProjectHero.Logic.Tests
             return builder.ToString();
         }
 
-        /// <summary>权威窗口账本指纹。</summary>
+        /// <summary>权威窗口指纹。</summary>
         public static string WindowFingerprint(BattleSimulation sim, WindowId windowId)
         {
             TurnWindow window = sim.WindowManager.FindWindow(windowId);
             if (window == null) return "<none>";
             return window.WindowId.Value + "|" + window.OwnerUnitId.Value + "|" +
-                   window.AvailableBudgetTicks + "|" + window.ReservedBudgetTicks + "|" +
-                   window.SpentBudgetTicks;
+                   window.OpenedAtTick + "|" + window.EndTick + "|" +
+                   window.IsOpen + "|" + window.IsAcceptingSubmissions;
         }
     }
 }

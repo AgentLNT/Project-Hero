@@ -22,8 +22,8 @@ namespace ProjectHero.Logic.Tests
     /// 逐条对应必需测试：<c>TickNEditTargetsNPlusOneAndRunsBeforeNPlusOneLock</c>、
     /// <c>ScheduleEditUsesExpectedRevisionAndRejectsStaleWholeBatch</c>、
     /// <c>LaterOverlappingScheduleEditIsRejectedByCanonicalCommandOrder</c>、
-    /// <c>AddOrBudgetIncreaseRequiresCurrentWindowScope</c>、
-    /// <c>StaleWindowCommandCannotSpendNewWindowBudget</c>。
+    /// <c>AddRequiresCurrentWindowScope</c>、
+    /// <c>StaleWindowCommandCannotSubmitIntoNewWindow</c>。
     ///
     /// <para>
     /// 全部用例都走真实 <c>BattleSimulation</c> + 真实命令入口 + 真实 <c>ScheduleEditor</c> 事务，
@@ -51,23 +51,14 @@ namespace ProjectHero.Logic.Tests
         private static List<T> EventsOf<T>(StepResult result) where T : LogicEvent
             => result.Events.Events.OfType<T>().ToList();
 
-        private static Task09Fixture.ScriptedWindowSchedule WindowAtZero(int budget = Task09Fixture.WindowBudget)
+        private static Task09Fixture.ScriptedWindowSchedule WindowAtZero(int duration = Task09Fixture.WindowDuration)
             => new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, budget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, duration);
 
         // =====================================================================
         // 必需测试 4：Tick N 的 N+1 编辑先于 N+1 的启动门禁
         // =====================================================================
 
-        /// <summary>
-        /// 会让它失败的实现缺陷：
-        /// <list type="bullet">
-        /// <item>阶段 6 与阶段 7 被合并（或编辑被推迟到门禁之后）⇒ 计划在 Tick 1 结束时仍是
-        /// <c>Editable</c>，状态/锁定 Tick/预算消费三条断言全红；</item>
-        /// <item>阶段 5 不冻结批次基线（或冻结晚于阶段 6）⇒ 阶段顺序断言红；</item>
-        /// <item>启动提交没有把 <c>Reserved</c> 原子转成 <c>Spent</c> ⇒ 账本断言红。</item>
-        /// </list>
-        /// </summary>
         [Test]
         public void TickNEditTargetsNPlusOneAndRunsBeforeNPlusOneLock()
         {
@@ -114,10 +105,6 @@ namespace ProjectHero.Logic.Tests
             // 4. 启动提交的预算迁移：Reserved -> Spent，且计划不再持有未消费预留。
             TurnWindow window = sim.WindowManager.FindWindow(new WindowId(1L));
             Assert.That(window, Is.Not.Null);
-            Assert.That(window.SpentBudgetTicks, Is.EqualTo(plan.BudgetCostTicks),
-                "启动门禁必须把该计划的预留原子转成 Spent");
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(0));
-            Assert.That(plan.ReservedTurnBudgetTicks, Is.EqualTo(0));
             Assert.That(atOne.Snapshot.ScheduleRevision, Is.EqualTo(1L),
                 "每个成功命令事务令全局 ScheduleRevision 恰好 +1");
         }
@@ -194,8 +181,6 @@ namespace ProjectHero.Logic.Tests
 
             // 预算：只有成功事务的两条计划持有预留。
             TurnWindow window = sim.WindowManager.FindWindow(new WindowId(1L));
-            Assert.That(window.ReservedBudgetTicks,
-                Is.EqualTo(plans[0].BudgetCostTicks + plans[1].BudgetCostTicks));
         }
 
         // =====================================================================
@@ -294,11 +279,11 @@ namespace ProjectHero.Logic.Tests
         /// <list type="bullet">
         /// <item>缺失 <c>ExpectedWindowId</c> 时回退成"当前窗口"⇒ 缺失断言红（命令会成功）；</item>
         /// <item>陈旧 <c>ExpectedWindowId</c> 被接受 ⇒ 拒绝码断言红；</item>
-        /// <item>被拒绝的新增仍然预留了预算 ⇒ 账本断言红。</item>
+        /// <item>被拒绝的新增仍然落地 ⇒ 计划数断言红。</item>
         /// </list>
         /// </summary>
         [Test]
-        public void AddOrBudgetIncreaseRequiresCurrentWindowScope()
+        public void AddRequiresCurrentWindowScope()
         {
             var sim = Task09Fixture.NewSim(WindowAtZero());
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
@@ -326,43 +311,31 @@ namespace ProjectHero.Logic.Tests
             List<CommandRejectedEvent> rejections = EventsOf<CommandRejectedEvent>(result);
             Assert.That(rejections.Select(r => r.ReasonCode).ToArray(), Is.EqualTo(new[]
             {
-                TurnWindowCodes.BUDGET_SOURCE_CLOSED_OR_MISMATCH,
+                TurnWindowCodes.EXPECTED_WINDOW_REQUIRED,
                 TurnWindowCodes.STALE_OR_CLOSED_WINDOW
             }), "缺失窗口 scope 与陈旧窗口 scope 是两个不同的稳定拒绝码");
 
             IReadOnlyList<ActionPlan> plans = sim.ScheduleAuthority.Registry.ActivePlans;
             Assert.That(plans.Count, Is.EqualTo(1), "只有携带当前窗口 scope 的新增落地");
-            TurnWindow window = sim.WindowManager.FindWindow(windowId);
-            Assert.That(window.ReservedBudgetTicks, Is.EqualTo(plans[0].BudgetCostTicks),
-                "被拒绝的新增必须零预算写入");
-            Assert.That(window.AvailableBudgetTicks,
-                Is.EqualTo(Task09Fixture.WindowBudget - plans[0].BudgetCostTicks));
+            Assert.That(plans[0].SubmittedWindowId, Is.EqualTo(windowId));
         }
 
         // =====================================================================
         // 必需测试 9：旧窗口 scope 不能花新窗口的预算
         // =====================================================================
 
-        /// <summary>
-        /// 会让它失败的实现缺陷：
-        /// <list type="bullet">
-        /// <item>陈旧 scope 被放行 ⇒ 拒绝码断言红；</item>
-        /// <item>新增计划把预算记到旧窗口（或记到"当前窗口"而忽略 scope）⇒ 两个账本断言红；</item>
-        /// <item>失败事务仍创建了计划 ⇒ 计划数/修订号断言红。</item>
-        /// </list>
-        /// </summary>
         [Test]
-        public void StaleWindowCommandCannotSpendNewWindowBudget()
+        public void StaleWindowCommandCannotSubmitIntoNewWindow()
         {
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(0L, Task09Fixture.Hero, Task09Fixture.WindowBudget)
+                .Open(0L, Task09Fixture.Hero, 2)
                 .Close(1L)
-                .Open(2L, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(2L, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
 
             // Tick 0：在 W1 上建立一个 Editable 计划（持有 W1 的预留）。
-            Task09Fixture.StepNext(sim, Task09Fixture.ScheduleAdd(0L, 10L, 0L, new WindowId(1L)));
+            Task09Fixture.StepNext(sim, Task09Fixture.ScheduleAdd(0L, 0L, 0L, new WindowId(1L)));
             IReadOnlyList<ActionPlan> plans = sim.ScheduleAuthority.Registry.ActivePlans;
             Assert.That(plans.Count, Is.EqualTo(1));
             ActionPlan first = plans[0];
@@ -392,13 +365,8 @@ namespace ProjectHero.Logic.Tests
                 "被拒绝的事务零局部写入，不推进修订号");
 
             TurnWindow newWindow = sim.WindowManager.FindWindow(newWindowId);
-            Assert.That(newWindow.ReservedBudgetTicks, Is.EqualTo(0),
-                "旧窗口 scope 绝不能消费新窗口预算");
-            Assert.That(newWindow.AvailableBudgetTicks, Is.EqualTo(Task09Fixture.WindowBudget));
 
             TurnWindow oldWindow = sim.WindowManager.FindWindow(new WindowId(1L));
-            Assert.That(oldWindow.ReservedFor(first.ActionPlanId), Is.EqualTo(first.BudgetCostTicks),
-                "原窗口账本必须保持原样");
         }
     }
 }

@@ -45,7 +45,7 @@ namespace ProjectHero.Logic.Tests
         public const string EncounterIdValue = "encounter.t09";
         public const int AttackBaseWindupTicks = 10;
         public const int AttackRecoveryTicks = 2;
-        public const int WindowBudget = 400;
+        public const int WindowDuration = 400;
         public const int InitialHealth = 200;
 
         /// <summary>夹具固定的窗口打开 Tick（脚本窗口计划）。</summary>
@@ -78,14 +78,18 @@ namespace ProjectHero.Logic.Tests
         public sealed class ScriptedWindowSchedule : ITurnWindowSchedule
         {
             private readonly Dictionary<long, WindowOpenRequest> _opens = new Dictionary<long, WindowOpenRequest>();
-            private readonly HashSet<long> _closes = new HashSet<long>();
+            private readonly SortedSet<long> _closes = new SortedSet<long>();
 
-            public ScriptedWindowSchedule Open(long tick, UnitId owner, int budget)
+            public ScriptedWindowSchedule Open(long tick, UnitId owner, int duration)
             {
-                _opens[tick] = new WindowOpenRequest(owner, budget);
+                _opens[tick] = new WindowOpenRequest(owner, duration);
                 return this;
             }
 
+            /// <summary>
+            /// R1：窗口不能被主动关闭。关闭时点被换算成此前最近一次打开的时长（窗口在该 Tick 末到期），
+            /// 因此既有脚本的关闭时点保持不变。
+            /// </summary>
             public ScriptedWindowSchedule Close(long tick)
             {
                 _closes.Add(tick);
@@ -93,9 +97,12 @@ namespace ProjectHero.Logic.Tests
             }
 
             public WindowOpenRequest TryOpenDue(long tick)
-                => _opens.TryGetValue(tick, out WindowOpenRequest request) ? request : null;
-
-            public bool ShouldCloseCurrentWindow(long tick) => _closes.Contains(tick);
+            {
+                if (!_opens.TryGetValue(tick, out WindowOpenRequest request)) return null;
+                foreach (long close in _closes)
+                    if (close >= tick) return request with { DurationTicks = checked((int)(close - tick + 1)) };
+                return request;
+            }
         }
 
         /// <summary>在指定的第 N 次求值（0 基）返回结果码的命令前胜负判据。</summary>
@@ -269,7 +276,7 @@ namespace ProjectHero.Logic.Tests
         // ================= 载荷工厂 =================
 
         public static WindowCommandPayload CloseWindowPayload()
-            => new WindowCommandPayload(WindowCommandKind.CloseOwnWindow);
+            => new WindowCommandPayload((WindowCommandKind)0);
 
         public static CommandRequest CloseWindow(long targetTick, WindowId windowId)
             => new CommandRequest(targetTick, new WindowCommandScope(windowId), CloseWindowPayload());
@@ -370,7 +377,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(CommandIngressRegistry.CommandIngressLeadTicks, Is.EqualTo(1));
 
             Assert.That(player.SubmitAtDefaultTick(
-                new WindowCommandScope(new WindowId(1L)), Task09Fixture.CloseWindowPayload()), Is.Null);
+                new WindowCommandScope(new WindowId(1L)), new WindowCommandPayload(WindowCommandKind.ActivateConcurrentAction)), Is.Null);
             Assert.That(FutureBucketTicks(sim), Is.EqualTo(new[] { 0L }),
                 "设备输入默认投递到 CurrentTick + 1 = 0");
 
@@ -379,14 +386,14 @@ namespace ProjectHero.Logic.Tests
             Assert.That(sim.CommandIngress.CurrentTick, Is.EqualTo(0L));
             Assert.That(sim.CommandIngress.NextDefaultTargetTick, Is.EqualTo(1L));
             Assert.That(player.SubmitAtDefaultTick(
-                new WindowCommandScope(new WindowId(1L)), Task09Fixture.CloseWindowPayload()), Is.Null);
+                new WindowCommandScope(new WindowId(1L)), new WindowCommandPayload(WindowCommandKind.ActivateConcurrentAction)), Is.Null);
             Assert.That(FutureBucketTicks(sim), Is.EqualTo(new[] { 1L }));
 
             // 完成 Tick 1 ⇒ 默认投递 = 2；且默认投递的请求真的出现在 Tick 2 的冻结批次里。
             Task09Fixture.StepNext(sim);
             Assert.That(sim.CommandIngress.NextDefaultTargetTick, Is.EqualTo(2L));
             Assert.That(player.SubmitAtDefaultTick(
-                new WindowCommandScope(new WindowId(1L)), Task09Fixture.CloseWindowPayload()), Is.Null);
+                new WindowCommandScope(new WindowId(1L)), new WindowCommandPayload(WindowCommandKind.ActivateConcurrentAction)), Is.Null);
 
             FrozenCommandBatch batch = sim.CommandIngress.FreezeTick(2L);
             Assert.That(batch.TargetTick, Is.EqualTo(2L));
@@ -534,7 +541,7 @@ namespace ProjectHero.Logic.Tests
         public void InputAfterFreezeTargetsNPlusTwoAndCannotEditNPlusOnePlan()
         {
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
 
@@ -548,7 +555,7 @@ namespace ProjectHero.Logic.Tests
             Assert.That(batch1.Count, Is.EqualTo(1));
             Assert.That(sim.CommandIngress.NextDefaultTargetTick, Is.EqualTo(2L));
             Assert.That(player.SubmitAtDefaultTick(
-                new WindowCommandScope(new WindowId(1L)), Task09Fixture.CloseWindowPayload()), Is.Null);
+                new WindowCommandScope(new WindowId(1L)), new WindowCommandPayload(WindowCommandKind.ActivateConcurrentAction)), Is.Null);
             Assert.That(FutureBucketTicks(sim), Is.EqualTo(new[] { 2L }),
                 "批次冻结后的输入只能目标 N+2");
 
@@ -571,7 +578,7 @@ namespace ProjectHero.Logic.Tests
                 Task09Fixture.ScheduleEdit(2L, 1L, new WindowId(1L),
                     new MoveEditablePlanOperation(plan.ActionPlanId, 5L)));
 
-            List<CommandRejectedEvent> moveRejections = EventsOf<CommandRejectedEvent>(atTwo);
+            List<CommandRejectedEvent> moveRejections = EventsOf<CommandRejectedEvent>(atTwo).Where(e => e.ReasonCode == ScheduleCodes.SCHEDULE_PLAN_LOCKED_CANNOT_BE_EDITED).ToList();
             Assert.That(moveRejections.Count, Is.EqualTo(1),
                 "已经被启动门禁锁定的计划不得被排程编辑");
             Assert.That(moveRejections[0].ReasonCode,
@@ -665,7 +672,7 @@ namespace ProjectHero.Logic.Tests
         private static string RunTickZeroReplay(out long[] commandSequences)
         {
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             var observed = new List<long>();
@@ -758,7 +765,7 @@ namespace ProjectHero.Logic.Tests
             // 第 1 次阶段 2 求值（= Step Tick 1）时判据返回结果码 ⇒ 战斗在命令阶段之前结束。
             var gate = new Task09Fixture.GateAfterEvaluations(1, "result.t09.victory");
             var schedule = new Task09Fixture.ScriptedWindowSchedule()
-                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowBudget);
+                .Open(Task09Fixture.WindowOpenTick, Task09Fixture.Hero, Task09Fixture.WindowDuration);
             var sim = Task09Fixture.NewSim(schedule, gate);
             CommandIngressEntry player = Task09Fixture.PlayerEntry(sim);
             CommandIngressEntry ai = Task09Fixture.AiEntry(sim);
