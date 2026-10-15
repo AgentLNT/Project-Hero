@@ -1,0 +1,27 @@
+{
+  "status": "completed",
+  "duration": 9.95,
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow",
+      "Status": "Passed",
+      "Duration": 3.7036146,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M3HudPlayModeTests.InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause",
+      "Status": "Failed",
+      "Duration": 6.2206645,
+      "Message": "  Expected: not <empty>\r\n  But was:  <empty>\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.M3HudPlayModeTests+<InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause>d__6.MoveNext () [0x0009e] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\M3HudPlayModeTests.cs:58\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    }
+  ]
+}

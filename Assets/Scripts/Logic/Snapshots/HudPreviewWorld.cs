@@ -130,6 +130,8 @@ namespace ProjectHero.Logic.Simulation
 {
     public sealed partial class BattleSimulation
     {
+        internal void CloseHudScheduleTransaction(ProjectHero.Logic.Timeline.ScheduleEditTransactionResult result, long tick)
+        { TerminateRemovedPlans(result, tick); SyncScheduleRevision(); }
         private LogicSnapshot _hudCacheSnapshot;
         private readonly Dictionary<ControllerId, HudPreviewService> _hudServices = new Dictionary<ControllerId, HudPreviewService>();
 

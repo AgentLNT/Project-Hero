@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ProjectHero.Core.Compatibility.Runtime.Input;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Commands;
@@ -24,6 +25,21 @@ namespace ProjectHero.UnityView
         public string LastCommandStatus { get; private set; }
         private readonly List<(long Opportunity, ActionSpecId Action, GridPoint? Destination, long? Start)> _stagedReactions = new List<(long, ActionSpecId, GridPoint?, long?)>();
         public int StagedReactionCount => _stagedReactions.Count;
+        public IReadOnlyList<ReactionPlacement> StagedReactions => _stagedReactions.ConvertAll(r =>
+            new ReactionPlacement(r.Opportunity, r.Action, r.Start ?? Reactions.FindImpact(r.Opportunity), r.Destination)).AsReadOnly();
+        private readonly Dictionary<long, (ReactionPlacement Placement, long Tick, long Ordinal)> _pendingReactions = new Dictionary<long, (ReactionPlacement, long, long)>();
+        private readonly Dictionary<long, string> _reactionStatuses = new Dictionary<long, string>();
+        public string ReactionStatus(long id) => _reactionStatuses.TryGetValue(id, out var status) ? status : null;
+        public IReadOnlyList<ReactionPlacement> PendingReactions => new List<ReactionPlacement>(_pendingReactions.Values.Select(r => r.Placement)).AsReadOnly();
+        public void RemoveStagedReaction(long opportunity) { _stagedReactions.RemoveAll(r => r.Opportunity == opportunity); _reactionStatuses.Remove(opportunity); }
+        public ReactionFeasibility ReactionFeasibility(ReactionPlacement placement) => HudPreviews.PreviewReactionPlacement(placement,
+            Drafts.HasIntent ? Drafts.Operations : Array.Empty<ScheduleEditOperation>(), StagedReactions);
+        private long _stagedConcurrentWindow, _concurrentTick, _concurrentOrdinal;
+        private bool _concurrentPauseRequested;
+        public string ConcurrentStatus { get; private set; }
+        public bool ConcurrentPending => _stagedConcurrentWindow != 0 || _concurrentOrdinal != 0;
+        public bool PauseForConcurrentReceipt { get; private set; }
+        public void AcknowledgeConcurrentPause() => PauseForConcurrentReceipt = false;
         public bool CanPlan => _ports != null && !_ports.Logic.IsBattleEnded
             && (!_ports.Logic.IsPaused || _clock?.State == BattleClockState.TacticalPlanning);
         public void BindClock(BattleClockController clock) => _clock = clock;
@@ -68,6 +84,9 @@ namespace ProjectHero.UnityView
             _ports = ports; _preview = preview; Drafts.Reset(); Preview = null; _pendingTick = _pendingOrdinal = 0; _stagedReactions.Clear(); LastRejection = null;
             _terminal.Clear(); _previous.Clear(); _pendingDodge.Clear(); SubmittedCommands = 0;
             _pendingCommands.Clear(); LastCommandStatus = null;
+            _stagedConcurrentWindow = _concurrentTick = _concurrentOrdinal = 0; ConcurrentStatus = null; PauseForConcurrentReceipt = false;
+            _concurrentPauseRequested = false;
+            _pendingReactions.Clear(); _reactionStatuses.Clear();
             Synchronize(new EventBatch(-1, Array.Empty<LogicEvent>()));
         }
         public bool CanEdit(long planId) => _ports != null && _ports.Logic.TryFindEditablePlan(new ActionPlanId(planId), out _);
@@ -141,11 +160,22 @@ namespace ProjectHero.UnityView
         public string SubmitOnResume()
         {
             string error = null;
+            if (_stagedReactions.Count > 0)
+            {
+                var combined = HudPreviews.PreviewDefensePlacements(Drafts.State == ScheduleDraftState.AwaitingResume ? Drafts.Operations : Array.Empty<ScheduleEditOperation>(), StagedReactions);
+                if (combined.RejectionCode != null) return LastRejection = combined.RejectionCode;
+            }
+            if (_stagedConcurrentWindow != 0)
+            {
+                long window = _stagedConcurrentWindow; _stagedConcurrentWindow = 0;
+                if (Window?.WindowId != window) return LastRejection = "STALE_OR_CLOSED_WINDOW";
+                error = ActivateConcurrent(); if (error != null) return error;
+            }
             if (Drafts.State == ScheduleDraftState.AwaitingResume) error = ConfirmDraft();
             if (error != null) return error;
             foreach (var r in _stagedReactions.ToArray())
             {
-                error = ConfirmReaction(r.Opportunity, r.Action, r.Destination, r.Start);
+                error = SubmitReaction(new ReactionPlacement(r.Opportunity, r.Action, r.Start ?? Reactions.FindImpact(r.Opportunity), r.Destination));
                 if (error != null) return error;
                 _stagedReactions.Remove(r);
             }
@@ -163,32 +193,65 @@ namespace ProjectHero.UnityView
             }
             return LastRejection;
         }
-        public string ActivateConcurrent() => Window == null ? "VIEW_WINDOW_MISSING" : Submit(_ports.Commands.CreateActivateConcurrent(new WindowId(Window.WindowId)));
+        public string ActivateConcurrent()
+        {
+            if (!CanPlan || Window == null) return LastRejection = "VIEW_INPUT_UNAVAILABLE";
+            if (_concurrentOrdinal != 0 || _stagedConcurrentWindow != 0) return null;
+            if (_clock?.State == BattleClockState.TacticalPlanning)
+            { _stagedConcurrentWindow = Window.WindowId; _concurrentPauseRequested = true; ConcurrentStatus = "介入待恢复提交"; return null; }
+            var request = _ports.Commands.CreateActivateConcurrent(new WindowId(Window.WindowId));
+            string code = Submit(request);
+            if (code == null)
+            { _concurrentTick = request.TargetTick; _concurrentOrdinal = (_ports.Logic as IViewCommandReceiptPort)?.LastSubmittedOrdinal ?? 0; ConcurrentStatus = "介入待采纳"; }
+            return code;
+        }
         public DodgeCancellationPreview PreviewDodge(long opportunity, ActionSpecId action, GridPoint destination, long? startTick = null)
             => _preview.PreviewDodge(new ReactionOpportunityId(opportunity), action, destination, startTick);
         public IReadOnlyList<GridPoint> DodgeDestinations(long opportunity, ActionSpecId action)
             => _preview.DodgeDestinations(new ReactionOpportunityId(opportunity), action);
         public string ConfirmReaction(long opportunity, ActionSpecId action, GridPoint? destination, long? startTick = null)
         {
+            if (!CanPlan) return LastRejection = "VIEW_INPUT_UNAVAILABLE";
+            if (_pendingReactions.ContainsKey(opportunity)) return LastRejection = "REACTION_AWAITING_ACCEPTANCE";
             var spec = Decision.FindAction(action);
             if (spec == null || (spec.Type != ActionType.Block && spec.Type != ActionType.Dodge)) return "REACTION_ACTION_INVALID";
             DodgeCancellationPreview conditional = null;
             if (spec.Type == ActionType.Dodge)
             {
                 if (!destination.HasValue) return "DODGE_DESTINATION_MISSING";
-                conditional = PreviewDodge(opportunity, action, destination.Value, startTick);
-                if (conditional.RejectionCode != null) return conditional.RejectionCode;
+                if (_clock?.State != BattleClockState.TacticalPlanning)
+                {
+                    conditional = PreviewDodge(opportunity, action, destination.Value, startTick);
+                    if (conditional.RejectionCode != null) return conditional.RejectionCode;
+                }
             }
             if (_clock?.State == BattleClockState.TacticalPlanning)
             {
-                var feasible = HudPreviews?.PreviewReaction(new ReactionOpportunityId(opportunity), action, startTick);
+                var feasible = ReactionFeasibility(new ReactionPlacement(opportunity, action, startTick ?? Reactions.FindImpact(opportunity), destination));
                 if (feasible != null && !feasible.IsFeasible) return LastRejection = feasible.RejectionCode;
+                var proposed = new List<ReactionPlacement>(StagedReactions);
+                proposed.RemoveAll(r => r.OpportunityId == opportunity);
+                proposed.Add(new ReactionPlacement(opportunity, action, startTick ?? Reactions.FindImpact(opportunity), destination));
+                var projected = HudPreviews.PreviewDefensePlacements(Drafts.HasIntent ? Drafts.Operations : Array.Empty<ScheduleEditOperation>(), proposed);
+                if (projected.RejectionCode != null) return LastRejection = projected.RejectionCode;
                 _stagedReactions.RemoveAll(r => r.Opportunity == opportunity);
-                _stagedReactions.Add((opportunity, action, destination, startTick)); return null;
+                _stagedReactions.Add((opportunity, action, destination, startTick)); _reactionStatuses[opportunity] = "待恢复提交"; LastRejection = null; return null;
             }
-            string code = Submit(_ports.Commands.CreateReaction(new ReactionOpportunityId(opportunity),
-                new ReactionCommandPayload(spec.Type == ActionType.Dodge ? ReactionCommandKind.Dodge : ReactionCommandKind.Block, action, destination, startTick)));
+            string code = SubmitReaction(new ReactionPlacement(opportunity, action, startTick ?? Reactions.FindImpact(opportunity), destination));
             if (code == null && conditional != null) _pendingDodge[opportunity] = conditional.AffectedPlanIds;
+            return code;
+        }
+        private string SubmitReaction(ReactionPlacement placement)
+        {
+            var spec = Decision.FindAction(placement.Action);
+            var request = _ports.Commands.CreateReaction(new ReactionOpportunityId(placement.OpportunityId), new ReactionCommandPayload(
+                spec.Type == ActionType.Dodge ? ReactionCommandKind.Dodge : ReactionCommandKind.Block, placement.Action, placement.Destination, placement.StartTick));
+            string code = Submit(request);
+            if (code == null)
+            {
+                _pendingReactions[placement.OpportunityId] = (placement, request.TargetTick, (_ports.Logic as IViewCommandReceiptPort)?.LastSubmittedOrdinal ?? 0);
+                _reactionStatuses[placement.OpportunityId] = "待采纳";
+            }
             return code;
         }
         public bool IsConditionallyInvalidated(long planId)
@@ -211,6 +274,24 @@ namespace ProjectHero.UnityView
         public void Synchronize(EventBatch batch)
         {
             if (_ports == null) return;
+            if (_ports.Logic is IViewCommandReceiptPort reactionReceipts)
+                foreach (var pair in _pendingReactions.ToArray())
+                {
+                    var receipt = reactionReceipts.ReceiptFor(pair.Value.Tick, pair.Value.Ordinal, batch); if (receipt == null) continue;
+                    _reactionStatuses[pair.Key] = receipt.Accepted ? "权威已接受" : "权威已拒绝：" + receipt.Reason;
+                    _pendingReactions.Remove(pair.Key);
+                }
+            if (_concurrentOrdinal != 0 && _ports.Logic is IViewCommandReceiptPort concurrentReceipts)
+            {
+                var receipt = concurrentReceipts.ReceiptFor(_concurrentTick, _concurrentOrdinal, batch);
+                if (receipt != null)
+                {
+                    ConcurrentStatus = receipt.Accepted && _preview.ConcurrentAction.HasActiveAuthorization ? "介入授权已接受" : "介入被拒绝：" + receipt.Reason;
+                    PauseForConcurrentReceipt = receipt.Accepted && _preview.ConcurrentAction.HasActiveAuthorization && _concurrentPauseRequested;
+                    _concurrentPauseRequested = false;
+                    _concurrentOrdinal = 0;
+                }
+            }
             if (_ports.Logic is IViewCommandReceiptPort commandReceipts)
                 foreach (var pending in _pendingCommands.ToArray())
                 {
@@ -267,5 +348,10 @@ namespace ProjectHero.UnityView
             }
             foreach (var id in remove) _pendingDodge.Remove(id);
         }
+    }
+    internal static class ReactionSnapshotLookup
+    {
+        internal static long FindImpact(this IReadOnlyList<ReactionOpportunitySnapshot> reactions, long id)
+        { foreach (var reaction in reactions) if (reaction.ReactionOpportunityId == id) return reaction.SourceImpactTick; return 0; }
     }
 }

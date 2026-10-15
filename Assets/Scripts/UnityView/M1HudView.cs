@@ -140,6 +140,7 @@ namespace ProjectHero.UnityView
             _draftStatus.text = "草稿 " + model.Drafts.Entries.Count + " 条 · " + DraftState(model.Drafts.State)
                 + (model.LastCommandStatus == null ? "" : " · " + model.LastCommandStatus)
                 + (model.StagedReactionCount == 0 ? "" : " · 反应待恢复 " + model.StagedReactionCount)
+                + (model.ConcurrentStatus == null ? "" : " · " + model.ConcurrentStatus)
                 + (model.LastRejection == null ? "" : "\n" + Explain(model.LastRejection));
             RefreshDrafts(); RefreshWindows();
             if (_view.TimelineView != null) { _windowBar.gameObject.SetActive(false); _view.TimelineView.Refresh(); }
@@ -219,6 +220,16 @@ namespace ProjectHero.UnityView
         public static string Explain(string code) => code switch
         {
             null => "", "STALE_SCHEDULE_REVISION" => "快照或窗口已变化，请重验草稿",
+            "REACTION_OPTION_DEADLINE_ELAPSED" => "已过输入截止", "REACTION_OPPORTUNITY_NOT_OPEN" => "反应机会已关闭",
+            "REACTION_OPPORTUNITY_ALREADY_ACCEPTED" => "反应已被接受", "REACTION_OPTION_NOT_PUBLISHED" => "选项尚未公开",
+            "REACTION_START_OUT_OF_RANGE" => "起点过早，持续区间须覆盖命中点", "REACTION_AWAITING_ACCEPTANCE" => "反应待采纳",
+            "DODGE_DESTINATION_MISSING" => "请先在战场选择闪避落点", "DODGE_DESTINATION_OUT_OF_BOUNDS" => "闪避落点超出战斗边界",
+            "DODGE_DESTINATION_TOO_FAR" => "闪避落点超出距离", "DODGE_DESTINATION_DIRECTION_NOT_IN_PATTERN" => "不能向这个方向闪避",
+            "DODGE_DESTINATION_OCCUPIED" => "闪避落点已被占用", "DODGE_DESTINATION_RESERVED_BY_OTHER" => "闪避落点已被其他计划预留",
+            "DODGE_DESTINATION_ALREADY_RESERVED" => "闪避落点已有预留", "DODGE_DESTINATION_INTERVAL_INVALID" => "闪避落点的生效区间无效",
+            "REACTION_OPPORTUNITY_CLOSED" => "反应机会已关闭或截止", "DODGE_NO_LEGAL_DESTINATION" => "没有合法闪避落点",
+            "REACTION_LANE_INTERVAL_OCCUPIED" => "硬占用段与其他计划冲突",
+            "INSUFFICIENT_META_RESOURCE" => "介入所需局外资源不足", "STALE_OR_CLOSED_WINDOW" => "来源窗口已关闭，请重新申请介入",
             "SCHEDULE_START_OUTSIDE_SOURCE_WINDOW" => "动作起点必须在来源窗口内",
             "PLAN_NOT_EDITABLE" => "计划已锁定或不可编辑", "ADRENALINE_INSUFFICIENT" => "肾上腺素不足",
             "VIEW_INPUT_UNAVAILABLE" => "当前不能提交", _ => code

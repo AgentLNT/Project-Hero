@@ -16,12 +16,14 @@ namespace ProjectHero.Logic.Snapshots
     {
         private ScheduleEditOperation[] _timelineOperations;
         private TimelineContactsPreview _timelineContacts;
+        private ReactionPlacement[] _timelineReactions;
         /// <summary>Exact Step events from the existing filtered Logic preview fork. View never infers clashes from alignment.</summary>
-        public TimelineContactsPreview PreviewTimelineContacts(IReadOnlyList<ScheduleEditOperation> operations)
+        public TimelineContactsPreview PreviewTimelineContacts(IReadOnlyList<ScheduleEditOperation> operations, IReadOnlyList<ReactionPlacement> reactions = null)
         {
             operations ??= Array.Empty<ScheduleEditOperation>();
-            if (_timelineOperations != null && _timelineOperations.SequenceEqual(operations)) return _timelineContacts;
-            _timelineOperations = operations.ToArray();
+            reactions ??= Array.Empty<ReactionPlacement>();
+            if (_timelineOperations != null && _timelineOperations.SequenceEqual(operations) && _timelineReactions.SequenceEqual(reactions)) return _timelineContacts;
+            _timelineOperations = operations.ToArray(); _timelineReactions = reactions.ToArray();
             using var world = _fork();
             var displayIds = new Dictionary<long, long>();
             var temporaryKeys = new Dictionary<long, long>();
@@ -33,6 +35,7 @@ namespace ProjectHero.Logic.Snapshots
                 var applied = world.ScheduleEditor.Apply(operations, Decision.Tick + world.Definition.ReactionRules.CommandIngressLeadTicks,
                     world.ScheduleRevision, world.ScheduleRevision, expectedWindowId: world.CurrentTurnWindow?.WindowId, issuer: Decision.ControllerId);
                 if (!applied.Succeeded) return _timelineContacts = new TimelineContactsPreview(applied.RejectionCode, Array.Empty<TimelineContactPreview>());
+                world.CloseHudScheduleTransaction(applied, Decision.Tick + world.Definition.ReactionRules.CommandIngressLeadTicks);
                 // Keep the exact IDs used by ScheduleEditor preview, including candidate Add identities.
                 for (int i = 0; i < operations.Count; i++)
                     if (operations[i] is AddOrdinaryPlanOperation add)
@@ -41,6 +44,8 @@ namespace ProjectHero.Logic.Snapshots
                         temporaryKeys[applied.AppliedEdits[i].PlanId.Value] = add.TemporaryPlanKey;
                     }
             }
+            string reactionError = ApplyPlacements(world, Array.Empty<ScheduleEditOperation>(), reactions);
+            if (reactionError != null) return _timelineContacts = new TimelineContactsPreview(reactionError, Array.Empty<TimelineContactPreview>());
             long Id(long value) => displayIds.TryGetValue(value, out var id) ? id : value;
             var contacts = new Dictionary<(long, long, long), TimelineContactPreview>();
             var ranks = new Dictionary<(long, long, long), int>();

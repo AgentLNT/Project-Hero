@@ -112,7 +112,7 @@ namespace ProjectHero.Logic.Snapshots
             long commandTick = Decision.Tick + world.Definition.ReactionRules.CommandIngressLeadTicks;
             var interval = world.ReactionOpportunities.PreviewStart(opportunity.Id, action, commandTick, startTick);
             var spec = world.Definition.FindAction(action);
-            var ledger = Decision.AdrenalineLedgers.FirstOrDefault(l => l.UnitId == opportunity.DefenderUnitId.Value);
+            var ledger = world.AdrenalineLedgerOf(opportunity.DefenderUnitId);
             var conflicts = new List<ActionPlanSnapshot>();
             if (spec != null && interval.EndTick > interval.StartTick)
             {

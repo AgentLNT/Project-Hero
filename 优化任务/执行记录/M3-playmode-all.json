@@ -1,0 +1,580 @@
+{
+  "status": "completed",
+  "duration": 395.26,
+  "summary": {
+    "total": 81,
+    "passed": 76,
+    "failed": 5,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M1HudPlayModeTests.BattlefieldAttackSelectionUsesPointerFacingWithoutWritingSnapshot",
+      "Status": "Passed",
+      "Duration": 1.1644573,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M1HudPlayModeTests.MainScenePausesPlansMultipleActionsAndExecutesHeavyAcrossWindow",
+      "Status": "Passed",
+      "Duration": 7.3092274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M1HudPlayModeTests.MainSceneResumeChoiceKeepsIntentAndSystemPauseBlocksPlanning",
+      "Status": "Passed",
+      "Duration": 0.9314387,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M1HudPlayModeTests.NativeKeyboardEventsRespectInputFocusAndSystemPauseRestoresPreviousClock",
+      "Status": "Passed",
+      "Duration": 0.5175982,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M2HudPlayModeTests.DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause",
+      "Status": "Passed",
+      "Duration": 0.6463596,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M2HudPlayModeTests.MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot",
+      "Status": "Passed",
+      "Duration": 0.5958544,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M2HudPlayModeTests.NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks",
+      "Status": "Passed",
+      "Duration": 0.653874,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow",
+      "Status": "Passed",
+      "Duration": 3.0052691,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M3HudPlayModeTests.DodgeSelectsBattlefieldDestinationAndCanCancelOrConfirmWithoutClearingDrafts",
+      "Status": "Passed",
+      "Duration": 3.7091698,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M3HudPlayModeTests.FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance",
+      "Status": "Passed",
+      "Duration": 3.8315954,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M3HudPlayModeTests.InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause",
+      "Status": "Passed",
+      "Duration": 2.857875,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Failed",
+      "Duration": 0.1911047,
+      "Message": "Unhandled log message: '[Exception] MissingReferenceException: The object of type 'UnityEngine.RectTransform' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object.'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at <0e80f59860fa45278948cc6ebb8e9196>:0)\r\nUnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at <0e80f59860fa45278948cc6ebb8e9196>:0)\r\nUnityEngine.Component.get_gameObject () (at <0e80f59860fa45278948cc6ebb8e9196>:0)\r\nProjectHero.UnityView.M3ReactionView.Release () (at Assets/Scripts/UnityView/M3ReactionView.cs:318)\r\nProjectHero.UnityView.BattlePresentationView.ReleaseVisuals () (at Assets/Scripts/UnityView/BattlePresentationView.cs:255)\r\nProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.ReleaseSimulation () (at Assets/Scripts/UnityView/UnityBattleDriver.cs:69)\r\nProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.ReleaseBattle () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:118)\r\nProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.OnDestroy () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:125)\r\nUnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)\r\n\r\n"
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.BroadDifferenceAllowlistIsRejected",
+      "Status": "Passed",
+      "Duration": 0.1157884,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.CombatDemoNoLongerOwnsAutonomousUpdate",
+      "Status": "Passed",
+      "Duration": 0.1005673,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DestroyingBattleStopsActiveAdaptersExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.097269,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DuplicateRuntimeBootstrapFailsFast",
+      "Status": "Passed",
+      "Duration": 0.1016226,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.EquivalentShadowScenarioUsesLogicalCheckpointAlignment",
+      "Status": "Passed",
+      "Duration": 0.0990243,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap",
+      "Status": "Passed",
+      "Duration": 0.0980296,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneProvidesResolvableLegacyGateTargets",
+      "Status": "Passed",
+      "Duration": 0.0905269,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyAndShadowModesEnableTheRecordedLegacyWriterSet",
+      "Status": "Passed",
+      "Duration": 0.0887474,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyLogicCallbacksAreClassifiedBeforeNewCanStart",
+      "Status": "Passed",
+      "Duration": 0.1001988,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyModeNeverCallsBattleSimulationStep",
+      "Status": "Passed",
+      "Duration": 0.0914128,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyUsesScaledDeltaTimeAndNewUsesUnscaledDeltaTime",
+      "Status": "Passed",
+      "Duration": 0.0875044,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 8.5623927,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash",
+      "Status": "Passed",
+      "Duration": 0.142602,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneRunsLegacyThroughBootstrapWithoutVisibleChange",
+      "Status": "Passed",
+      "Duration": 1.0868157,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeDisablesEveryRegisteredLegacyLogicWriter",
+      "Status": "Passed",
+      "Duration": 0.0922421,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime",
+      "Status": "Passed",
+      "Duration": 0.0825482,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.PausedBootstrapDoesNotAdvanceEitherSide",
+      "Status": "Passed",
+      "Duration": 0.0799586,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleAdvancesLegacyClockInBothModes",
+      "Status": "Passed",
+      "Duration": 0.0869146,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleKeepsUserPauseButClearsSystemPause",
+      "Status": "Passed",
+      "Duration": 0.0859694,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.RuntimeModeCannotChangeDuringActiveBattle",
+      "Status": "Passed",
+      "Duration": 0.0831962,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.SceneHasExactlyOneMigrationBattleHost",
+      "Status": "Passed",
+      "Duration": 0.1761143,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy",
+      "Status": "Passed",
+      "Duration": 0.0913494,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonRunsAfterEveryRegisteredLegacyWriter",
+      "Status": "Passed",
+      "Duration": 0.0933822,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonStaysBoundedAndComparableOverLongBattle",
+      "Status": "Passed",
+      "Duration": 0.3678523,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock",
+      "Status": "Passed",
+      "Duration": 0.0848204,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority",
+      "Status": "Passed",
+      "Duration": 0.0855237,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowProductionComparisonHasRealContentAndCanFail",
+      "Status": "Passed",
+      "Duration": 0.0859306,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportClassifiesExpectedAndUnexpectedDifferences",
+      "Status": "Passed",
+      "Duration": 0.0887512,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportFindsFirstUnexpectedDifference",
+      "Status": "Passed",
+      "Duration": 0.0850453,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotBindViewsOrPlayFeedback",
+      "Status": "Passed",
+      "Duration": 0.0899065,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotMutateLegacyOrUnityState",
+      "Status": "Passed",
+      "Duration": 0.0900164,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail",
+      "Status": "Passed",
+      "Duration": 0.0919658,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowWriteWallRejectsForbiddenWritesAndCountsThem",
+      "Status": "Passed",
+      "Duration": 62.4562455,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 0.3986807,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate",
+      "Status": "Passed",
+      "Duration": 0.3427137,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowDurationShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 0.379632,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.VisualTimeScaleIsolationDoesNotLeakIntoNewSimulation",
+      "Status": "Passed",
+      "Duration": 0.3441393,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.ShadowSplitDiagnosticFailureTests.FailedNewDiagnosticRestoresLegacyVisualsAndCanRetry",
+      "Status": "Passed",
+      "Duration": 0.3382398,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests.InactiveDiagnosticHostCannotCreateASecondProductionWorld",
+      "Status": "Passed",
+      "Duration": 0.8194427,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests.NewRunsWithoutObserverAndPreservesPauseReleaseAndRestart",
+      "Status": "Passed",
+      "Duration": 0.8144496,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.ActualScenePlayerConfirmationEntersShadowExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.3797491,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.ArbitrationDamageAndDefenseShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 0.4885233,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.MainSceneKeepsLegacyAndExplicitShadowBindings",
+      "Status": "Passed",
+      "Duration": 0.3494178,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task08SceneCoverageTests.SceneShadowInputDropsPauseAndExcludesLegacyAiRequests",
+      "Status": "Passed",
+      "Duration": 0.3387894,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task09ShadowMirrorTests.ShadowMirrorsPlayerRequestsButRebuildsAiAndSystemExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.3361152,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task09ShadowProfileTests.CommandAndAiShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 5.630062,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10MigrationTests.NewModeBlocksLegacyUiWritesEvenWhenPortsAreMissing",
+      "Status": "Passed",
+      "Duration": 0.3301044,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease",
+      "Status": "Failed",
+      "Duration": 183.6262173,
+      "Message": "Timeout value of 180000 ms was exceeded. If this is intended, increase the timeout value using a TimeoutAttribute.",
+      "StackTrace": ""
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection",
+      "Status": "Passed",
+      "Duration": 2.7530945,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts",
+      "Status": "Passed",
+      "Duration": 6.819638,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline",
+      "Status": "Passed",
+      "Duration": 22.8423477,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat",
+      "Status": "Passed",
+      "Duration": 23.2306788,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback",
+      "Status": "Failed",
+      "Duration": 0.7271674,
+      "Message": "  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.ProductionRuntimeTestBase.LegacyTimelineAdvanceTimeCalls () [0x00046] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\ProductionRuntimeTestBase.cs:264\r\nat ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback>d__9.MoveNext () [0x000d8] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\Task10WiredPresentationTests.cs:238\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce",
+      "Status": "Failed",
+      "Duration": 0.724437,
+      "Message": "  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.ProductionRuntimeTestBase.LegacyTimelineAdvanceTimeCalls () [0x00046] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\ProductionRuntimeTestBase.cs:264\r\nat ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce>d__10.MoveNext () [0x0006d] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\Task10WiredPresentationTests.cs:312\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneTimelineDragDeleteAndRevisionRebaseUseRealPlayerPort",
+      "Status": "Passed",
+      "Duration": 0.9823994,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneTimelinePreservesDraftWhenPlanStartsWithoutRevisionChange",
+      "Status": "Passed",
+      "Duration": 1.1862641,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests.MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays",
+      "Status": "Passed",
+      "Duration": 4.2939526,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11IndependentSourceSceneTests.IndependentSourceRejectsMissingAuthoringInsteadOfReadingSceneUnits",
+      "Status": "Passed",
+      "Duration": 0.0279163,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11IndependentSourceSceneTests.NewAuthoringSourceKeepsDefinitionAndStartsAfterLegacyFactoryIsDestroyed",
+      "Status": "Passed",
+      "Duration": 0.9666144,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11MigrationContractTests.DefenseDurationShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Failed",
+      "Duration": 0.6403201,
+      "Message": "System.Reflection.TargetInvocationException : Exception has been thrown by the target of an invocation.\r\n  ----> System.InvalidOperationException : MIGRATION_EVIDENCE_SOURCE_SET_CHANGED",
+      "StackTrace": "  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00083] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 \r\n  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 \r\n  at ProjectHero.Tests.PlayMode.Task11MigrationContractTests+<DefenseDurationShadowProfileHasNoUnclassifiedDifference>d__0.MoveNext () [0x0008d] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\Task11MigrationContractTests.cs:22 \r\n  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52 \r\n--InvalidOperationException\r\n  at ProjectHero.Editor.RuntimeOwnership.Task11MigrationEvidence.Load (System.String caseId, System.String rules, System.String definitionHash) [0x0042e] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Scripts\\Editor\\RuntimeOwnership\\Task11MigrationEvidence.cs:63 \r\n  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)\r\n  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 "
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11ProductionSceneTests.ProductionSceneUsesOnlyNewAndRejectsLegacyStartup",
+      "Status": "Passed",
+      "Duration": 0.7644532,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence",
+      "Status": "Passed",
+      "Duration": 3.0738399,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation",
+      "Status": "Passed",
+      "Duration": 0.5150692,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneBlockAtImpactCompletelyResistsHeavy",
+      "Status": "Passed",
+      "Duration": 4.5507729,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneCounterAttackStartsInsideReactionSoftSegment",
+      "Status": "Passed",
+      "Duration": 4.8752702,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneEarlierLightConsumesBlockBeforeHeavy",
+      "Status": "Passed",
+      "Duration": 4.7571885,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneGuardResistsTwiceThenThirdHitIsFull",
+      "Status": "Passed",
+      "Duration": 4.0352667,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests.MainSceneInsufficientAdrenalinePreviewMatchesHeavyResult",
+      "Status": "Passed",
+      "Duration": 7.4998286,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests.MainSceneShowsBothSidesAdrenaline",
+      "Status": "Passed",
+      "Duration": 4.2776207,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

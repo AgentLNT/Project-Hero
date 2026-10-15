@@ -261,7 +261,8 @@ namespace ProjectHero.Tests.PlayMode
             {
                 var owners = UnityEngine.Object.FindObjectsByType<BattleRuntimeBootstrap>(FindObjectsInactive.Include);
                 Assert.That(owners.Length, Is.EqualTo(1));
-                Assert.That(owners[0].NewDriver.SimulationCreated, Is.True);
+                Assert.That(!owners[0].BattleCreated || owners[0].NewDriver.SimulationCreated, Is.True,
+                    "An active production battle must own its New simulation; a released battle has none.");
                 Assert.That(FindProductionComponent("ProjectHero.Core.Entities.CombatUnit"), Is.Null,
                     "A missing counter is valid only after the production Legacy components are actually removed.");
                 return 0;

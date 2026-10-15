@@ -1,0 +1,4199 @@
+{
+  "status": "completed",
+  "duration": 22.98,
+  "summary": {
+    "total": 598,
+    "passed": 598,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.ActionPayloadKeepsDamageComponentsSeparateFromMomentumProfile",
+      "Status": "Passed",
+      "Duration": 0.0031431,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.AttackTimingRejectsNonPositiveOrNonFiniteActionSpeed",
+      "Status": "Passed",
+      "Duration": 0.0004372,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.AttackTimingRejectsNonPositiveWindupOrRecovery",
+      "Status": "Passed",
+      "Duration": 0.0005931,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.BlockEligibleResistanceIsFixedFull",
+      "Status": "Passed",
+      "Duration": 0.0008636,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.GuardEligibleResistanceMustBePartial",
+      "Status": "Passed",
+      "Duration": 0.0003737,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.GuardTimingRequiresPositiveDuration",
+      "Status": "Passed",
+      "Duration": 0.0001243,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.OrdinaryActionsCannotDeclareAdrenalineCost",
+      "Status": "Passed",
+      "Duration": 0.0004794,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ActionDefinitionTests.ResistanceRejectsValuesOutsideQ10Range",
+      "Status": "Passed",
+      "Duration": 0.0004449,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.AssemblyBoundaryTests.LogicAssemblyHasNoUnityEngineReference",
+      "Status": "Passed",
+      "Duration": 0.1617014,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.AssemblyBoundaryTests.LogicDefinitionContainsNoUnityObjectReference",
+      "Status": "Passed",
+      "Duration": 0.1357254,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.DefinitionIdTests.DamageChannelAndImpactProfileIdsCannotBeInterchanged",
+      "Status": "Passed",
+      "Duration": 0.0012236,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.DefinitionIdTests.DefinitionIdRejectsDuplicateWithinNamespace",
+      "Status": "Passed",
+      "Duration": 0.0003367,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.DefinitionIdTests.DefinitionIdRejectsEmptyOrInvalidFormat",
+      "Status": "Passed",
+      "Duration": 0.0007721,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.DefinitionIdTests.DistinctIdTypesCannotBeInterchanged",
+      "Status": "Passed",
+      "Duration": 0.0008882,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.DefinitionIdTests.InstanceIdsUseZeroAsInvalidAndStartAtOne",
+      "Status": "Passed",
+      "Duration": 0.0004917,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.EncounterAndFactionTests.EncounterRejectsDuplicateSlotId",
+      "Status": "Passed",
+      "Duration": 0.0003184,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.EncounterAndFactionTests.EncounterSlotOrderingUsesStringComparerOrdinal",
+      "Status": "Passed",
+      "Duration": 0.0011161,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.EncounterAndFactionTests.EncounterSlotRequiresFactionId",
+      "Status": "Passed",
+      "Duration": 0.0002405,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.EncounterAndFactionTests.FactionDispositionAndUnitRelationUseStableExplicitValues",
+      "Status": "Passed",
+      "Duration": 0.0002191,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.EncounterAndFactionTests.TargetRelationMaskRejectsEmptyOrUnknownBits",
+      "Status": "Passed",
+      "Duration": 0.0001571,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.EncounterAndFactionTests.TargetRelationMaskUsesStableExplicitBitValues",
+      "Status": "Passed",
+      "Duration": 0.000211,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ForcedDisplacementTests.ForcedDisplacementStopReasonEncodingIsStableAndUnique",
+      "Status": "Passed",
+      "Duration": 0.0006754,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.GridGeometryTests.DirectionalTriangleTableRequiresCanonicalTwelveDirections",
+      "Status": "Passed",
+      "Duration": 0.00366,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.GridGeometryTests.GridPointRejectsOddCoordinateParity",
+      "Status": "Passed",
+      "Duration": 0.000513,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.GridGeometryTests.IntegerSixtyDegreeExpansionPreservesTriangleLattice",
+      "Status": "Passed",
+      "Duration": 0.0005865,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.GridGeometryTests.LogicDirectionalGeometryHasNoRuntimeRotationDependency",
+      "Status": "Passed",
+      "Duration": 0.0017925,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.GridGeometryTests.SixIntegerRotationsReturnOriginalTriangle",
+      "Status": "Passed",
+      "Duration": 0.0002958,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.GridGeometryTests.TrianglePointRejectsInvalidOrientationOrParity",
+      "Status": "Passed",
+      "Duration": 0.000461,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.HashParticipationTests.AdrenalineRulesParticipateInDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.000407,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.HashParticipationTests.AttackTimingRulesParticipateInBattleDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0006768,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.HashParticipationTests.ForcedDisplacementProtocolAndStopReasonEncodingParticipateInDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0004188,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.HashParticipationTests.MoveTimingAndReferenceSpeedParticipateInDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0003909,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.HashParticipationTests.ReactionTimingAndMinimumLeadParticipateInDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0004087,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.M2TimelineContactTests.AlignedOpposingAttacksShowClashOnlyWhenExactLogicResolvesIt",
+      "Status": "Passed",
+      "Duration": 0.017703,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.M2TimelineContactTests.NewDraftAttackAlsoProjectsItsContactBeforeAnyCommittedAttackExists",
+      "Status": "Passed",
+      "Duration": 0.0111634,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.M2TimelineContactTests.RejectedTimelineEditDoesNotProduceInventedContacts",
+      "Status": "Passed",
+      "Duration": 0.0027341,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.M2TimelineContactTests.TimelineContactComesFromExactResolutionAndDoesNotWriteAuthoritativeWorld",
+      "Status": "Passed",
+      "Duration": 0.0021757,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.LegacyPerEdgeDurationClampIsNotANewTimingRule",
+      "Status": "Passed",
+      "Duration": 0.0006357,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.MoveMaxPathWeightCannotExceedSearchRuleLimit",
+      "Status": "Passed",
+      "Duration": 0.0003199,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.MoveReferenceSpeedIsFrozenAtTwenty",
+      "Status": "Passed",
+      "Duration": 0.0001632,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.MoveSpeedIsNotAPathCostInput",
+      "Status": "Passed",
+      "Duration": 0.0011183,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.PathCostAndSearchRulesParticipateInDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0004528,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.PathCostRulesFreezeEvenOddDirectionWeightsAtOneAndTwo",
+      "Status": "Passed",
+      "Duration": 0.0003053,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.PathRulesTests.PathSearchRulesRejectNonPositiveLimits",
+      "Status": "Passed",
+      "Duration": 0.0002753,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.AdrenalineRulesRejectBlockOrDodgeRewardAtOrAboveCost",
+      "Status": "Passed",
+      "Duration": 0.0004788,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.AdrenalineRulesRejectCostAboveCycleMaximum",
+      "Status": "Passed",
+      "Duration": 0.000238,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.ContradictoryDamageEligibilityAndBypassTagsAreRejected",
+      "Status": "Passed",
+      "Duration": 0.0002175,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.ReactionOptionsAreSortedByActionSpecId",
+      "Status": "Passed",
+      "Duration": 0.0011764,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.ReactionAndAdrenalineTests.TrueDamageBypassesPassiveAndActionResistance",
+      "Status": "Passed",
+      "Duration": 0.0004314,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.ApplyEmitsAppliedEventWithEffectIdentityAndInterval",
+      "Status": "Passed",
+      "Duration": 0.0042126,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.EffectIdsAreUniqueAndMonotonicAcrossUnitsAndSpecs",
+      "Status": "Passed",
+      "Duration": 0.0007494,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.EffectMutationDuringIterationIsDeferredAndOrdered",
+      "Status": "Passed",
+      "Duration": 0.0034364,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.EffectSpecRejectsInvalidDurationPayloadOrSpecId",
+      "Status": "Passed",
+      "Duration": 0.0003721,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.EffectUnitsAreAdvancedInUnitIdOrder",
+      "Status": "Passed",
+      "Duration": 0.0004656,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.ExpiredEffectDoesNotTickAtEndTick",
+      "Status": "Passed",
+      "Duration": 0.0020905,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.InsertionOrderDoesNotChangeOutcomeOrEventSequence",
+      "Status": "Passed",
+      "Duration": 0.0008217,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.StatusEffectKernelTests.SeparateInstancesOfSameSpecAreIndependentlyRemovable",
+      "Status": "Passed",
+      "Duration": 0.0003081,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackAreaAndMomentumUseFrozenPlanFacing",
+      "Status": "Passed",
+      "Duration": 0.0019572,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.AttackPhaseStateAdvancesFromWindupThroughRecoveryToIdle",
+      "Status": "Passed",
+      "Duration": 0.0014597,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BatchRelocationCannotMistakePlanIdForReservationOwnerUnitId",
+      "Status": "Passed",
+      "Duration": 0.0010918,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BattleEndClosesWindowRevokesAuthorityAndClearsFutureScheduleWithoutRefund",
+      "Status": "Passed",
+      "Duration": 0.002392,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BlockTriggersConsumesAndTerminatesThroughProductionStep",
+      "Status": "Passed",
+      "Duration": 0.0029824,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.BlockWithoutContactsRemainsReservedUntilExpiryWithoutReward",
+      "Status": "Passed",
+      "Duration": 0.0015774,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ControlInvalidatesLockedReactionAsInterruptedByControl",
+      "Status": "Passed",
+      "Duration": 0.001084,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.DeathTerminatesOwnersPlansBeforeReturningTheSameStep",
+      "Status": "Passed",
+      "Duration": 0.0006138,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.FailedDodgeConsumesAndTerminatesWithoutAvoidance",
+      "Status": "Passed",
+      "Duration": 0.001531,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.GuardPhaseCoversWholeDuration",
+      "Status": "Passed",
+      "Duration": 0.0010942,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.InterceptedMovementReleasesReservationAndNeverCommitsFormerDestination",
+      "Status": "Passed",
+      "Duration": 0.0039991,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.KnockdownUsesConfiguredDurationAndInterruptsRunningVictimPlan",
+      "Status": "Passed",
+      "Duration": 0.0023408,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.PreCommandDeathWithoutVictoryCannotOpenWindowOrAcceptDeadOwnersCommand",
+      "Status": "Passed",
+      "Duration": 0.0011866,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ResolutionControlIsCommittedAfterDamageAndExpiresAtConfiguredTick",
+      "Status": "Passed",
+      "Duration": 0.0018237,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.RunningReactionInterruptedBeforeTriggerNeverBlocksOrRefunds",
+      "Status": "Passed",
+      "Duration": 0.0011358,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.SuccessfulDodgeConsumesAndCompletesWithoutCancellingSourceAttack",
+      "Status": "Passed",
+      "Duration": 0.0012974,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task0108LifecycleRegressionTests.ZeroWindupOrRecoveryReactionIsNotOfferedOrReserved",
+      "Status": "Passed",
+      "Duration": 0.0007735,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.BattleEndReleasesReservationsAndRemovesActiveMovementSegmentsInStableOrder",
+      "Status": "Passed",
+      "Duration": 0.0162349,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.DetachedSchedulePreviewDoesNotChangePlansSpaceRevisionOrInvokeCommitHooks",
+      "Status": "Passed",
+      "Duration": 0.0074013,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.EditableMoveChainRecomputesPathCountFromProjectedPredecessorPosition",
+      "Status": "Passed",
+      "Duration": 0.0086825,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.GridStateAppearsCanonicallyInSnapshot",
+      "Status": "Passed",
+      "Duration": 0.0055953,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.LockedMovePathAndSegmentsCannotBeRecomputed",
+      "Status": "Passed",
+      "Duration": 0.0110606,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.MovementSpaceBatchUsesEachUnitsOwnOriginWhenChainsAreInterleaved",
+      "Status": "Passed",
+      "Duration": 0.0011941,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.MoveSegmentCountMatchesLockedPlanResolvedPathEdgeCount",
+      "Status": "Passed",
+      "Duration": 0.0006279,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.MoveSegmentWeightSumMatchesLockedPlanResolvedPathWeightUnits",
+      "Status": "Passed",
+      "Duration": 0.0005875,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.MoveTimingOverflowRejectsWholeCandidateWithoutClamp",
+      "Status": "Passed",
+      "Duration": 0.0006246,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.NewMoveTimingDoesNotApplyLegacyPointTwoToFourSecondEdgeClamp",
+      "Status": "Passed",
+      "Duration": 0.0008337,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.NoActiveMovementArtifactReferencesTerminalPlanAtStepEnd",
+      "Status": "Passed",
+      "Duration": 0.0010686,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.PlanTerminalBeforeMovementEndKeepsLastCommittedCell",
+      "Status": "Passed",
+      "Duration": 0.0011269,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.PlanTerminalRemovesActiveAndFutureMovementSegments",
+      "Status": "Passed",
+      "Duration": 0.0006242,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.ProductionVolumeBindingConsumesCanonicalTableForMultiCellOccupancy",
+      "Status": "Passed",
+      "Duration": 0.0018619,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.RemovingMovePredecessorRecomputesPathCostWithoutLeftCompactingItsSuccessor",
+      "Status": "Passed",
+      "Duration": 0.0016615,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests.ReorderingMoveChainRecomputesEveryCandidatePathFromTheNewPredecessor",
+      "Status": "Passed",
+      "Duration": 0.0016841,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.AreaAttackCanStillHitCommittedDodgeDestination",
+      "Status": "Passed",
+      "Duration": 0.0016221,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.CancelledDodgePreservesFutureMovementChain",
+      "Status": "Passed",
+      "Duration": 0.0010717,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeCommitFailureLeavesDependentMovesAndReservationsUnchanged",
+      "Status": "Passed",
+      "Duration": 0.0005027,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeCommitsDestinationAtomicallyBeforeContactRecheck",
+      "Status": "Passed",
+      "Duration": 0.0016299,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeDependencyPreviewIsReadOnlyAndUsesCommitDependencyQuery",
+      "Status": "Passed",
+      "Duration": 0.0011961,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeDestinationConflictFollowsCanonicalCommandOrder",
+      "Status": "Passed",
+      "Duration": 0.001208,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeDestinationIsReservedForDerivedSourceImpactTick",
+      "Status": "Passed",
+      "Duration": 0.0010651,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeDoesNotCreateContinuousMovementOrInvulnerability",
+      "Status": "Passed",
+      "Duration": 0.0009932,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeRelocationAndDependentMoveCleanupCommitAtomically",
+      "Status": "Passed",
+      "Duration": 0.0004438,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.DodgeWithoutPositionChangeDoesNotInvalidateMoves",
+      "Status": "Passed",
+      "Duration": 0.0005377,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.InvalidDodgeDestinationTerminatesReactionWithoutMovingUnit",
+      "Status": "Passed",
+      "Duration": 0.0005315,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06DodgeRelocationTests.SourceThreatCancellationReleasesDodgeDestinationReservation",
+      "Status": "Passed",
+      "Duration": 0.000633,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.AreaQueryReturnsUnitsOrderedByUnitId",
+      "Status": "Passed",
+      "Duration": 0.0005349,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationDoesNotUsePathfinderSegmentsOrReservationArbitration",
+      "Status": "Passed",
+      "Duration": 0.0003738,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationFailureLeavesGridUnchanged",
+      "Status": "Passed",
+      "Duration": 0.0005573,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationRejectsOverlapWithStationaryOccupancy",
+      "Status": "Passed",
+      "Duration": 0.000586,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationRemovesAllOldFootprintsBeforeAddingNewFootprints",
+      "Status": "Passed",
+      "Duration": 0.0008316,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationRequiresPreemptedReservationsToBeCleared",
+      "Status": "Passed",
+      "Duration": 0.0003084,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationValidatesAllSourcesBeforeMutation",
+      "Status": "Passed",
+      "Duration": 0.000388,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.BatchRelocationValidatesWholeMultiCellFootprint",
+      "Status": "Passed",
+      "Duration": 0.000521,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.DestinationRemainsReservedDuringMovementSegment",
+      "Status": "Passed",
+      "Duration": 0.0006129,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.FactionRelationDoesNotImplicitlyDisableOccupancyOrReservation",
+      "Status": "Passed",
+      "Duration": 0.0005713,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.FailedPathReservationRollsBackAllSegments",
+      "Status": "Passed",
+      "Duration": 0.0008702,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.LaterCommandCannotPreemptCommittedReservation",
+      "Status": "Passed",
+      "Duration": 0.0004602,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.LogicGridRegistrationRejectsUnknownUnitsAndDuplicates",
+      "Status": "Passed",
+      "Duration": 0.0002571,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.LogicGridUsesCanonicalVolumeTableForEveryDirection",
+      "Status": "Passed",
+      "Duration": 0.0010798,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.MoveEndTickUsesPathWeightNotEdgeCount",
+      "Status": "Passed",
+      "Duration": 0.0004574,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.MovementCommitsToDestinationAtEndTickBeforeCommands",
+      "Status": "Passed",
+      "Duration": 0.0005994,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.MoveSegmentsUsePlanResolvedBaseStepTicksWithoutRecalculation",
+      "Status": "Passed",
+      "Duration": 0.0003768,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.MovingOccupancyReleasesCellAtFiniteEndTick",
+      "Status": "Passed",
+      "Duration": 0.0006154,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.MovingUnitOccupiesFromUntilEndTick",
+      "Status": "Passed",
+      "Duration": 0.0004023,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.MultiStepPathUsesIndependentSegments",
+      "Status": "Passed",
+      "Duration": 0.0005494,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.NonCanonicalVolumeTableIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0003662,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.PlanTerminalReleasesAllOwnedReservations",
+      "Status": "Passed",
+      "Duration": 0.0007075,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.RepeatedPlanTerminalCleanupIsIdempotent",
+      "Status": "Passed",
+      "Duration": 0.0003375,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.ReservationConflictIgnoresRawBatchEnumerationOrder",
+      "Status": "Passed",
+      "Duration": 0.0003797,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.RuntimeGridHasNoLegacyFloatRotationDependency",
+      "Status": "Passed",
+      "Duration": 0.0040081,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.StaticOrUnknownSpatialBlockerIsNotRetryable",
+      "Status": "Passed",
+      "Duration": 0.000823,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.TerminalPlanNeverCommitsDestinationAtFormerEndTick",
+      "Status": "Passed",
+      "Duration": 0.0004946,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.TimedReservationBlockerExposesFiniteReleaseTick",
+      "Status": "Passed",
+      "Duration": 0.0007243,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.VisualInterpolationDoesNotAffectInterruptedMovementResult",
+      "Status": "Passed",
+      "Duration": 0.0005207,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.VolumeOccupancyOnlyIndexesAndTranslatesIntegerPoints",
+      "Status": "Passed",
+      "Duration": 0.0008888,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06LogicGridTests.WeightTwoSegmentTakesTwiceWeightOneSegmentTicks",
+      "Status": "Passed",
+      "Duration": 0.0004515,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.EqualCostPathUsesCanonicalNeighborOrder",
+      "Status": "Passed",
+      "Duration": 0.0004964,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.EqualFAndHPathUsesGridPointLexicographicOrder",
+      "Status": "Passed",
+      "Duration": 0.0005765,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.EqualTentativeGKeepsFirstCanonicalParent",
+      "Status": "Passed",
+      "Duration": 0.0004162,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.EvenGridDirectionsHaveOneWeightUnit",
+      "Status": "Passed",
+      "Duration": 0.0001833,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.IntegerHeuristicMatchesUnobstructedOneTwoCostLowerBound",
+      "Status": "Passed",
+      "Duration": 0.0003827,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.InvalidDestinationIsDistinctFromPathNotFound",
+      "Status": "Passed",
+      "Duration": 0.0002115,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.InvalidStartIsRejectedBeforeInvalidDestinationAndSearch",
+      "Status": "Passed",
+      "Duration": 0.0002381,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.MoveSpeedDoesNotChangeChosenPath",
+      "Status": "Passed",
+      "Duration": 0.0006102,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.MoveSpeedOnlyChangesResolvedBaseStepTicks",
+      "Status": "Passed",
+      "Duration": 0.0002496,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.NeighborEnumerationUsesCanonicalGridDirectionOrder",
+      "Status": "Passed",
+      "Duration": 0.0005206,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.NoPathIsDistinctFromSearchLimitFailure",
+      "Status": "Passed",
+      "Duration": 0.0003674,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.OddGridDirectionsHaveTwoWeightUnits",
+      "Status": "Passed",
+      "Duration": 0.0001574,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.OpenSetTieDoesNotDependOnInsertionSequence",
+      "Status": "Passed",
+      "Duration": 0.0008986,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathCostOverflowReturnsStableFailureWithoutMutation",
+      "Status": "Passed",
+      "Duration": 0.000381,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathEdgeLimitReturnsStableFailure",
+      "Status": "Passed",
+      "Duration": 0.0013689,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathFailurePriorityIsOverflowThenEdgeThenWeight",
+      "Status": "Passed",
+      "Duration": 0.0009928,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathfinderChecksCompleteBodyWhenAnchorIsFree",
+      "Status": "Passed",
+      "Duration": 0.0008684,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathfinderRejectsBodyOutsideBoundaryEvenWithLegalAnchor",
+      "Status": "Passed",
+      "Duration": 0.0002873,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathfinderSearchesOnlyInsideEncounterGridBoundary",
+      "Status": "Passed",
+      "Duration": 0.0002538,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathfinderUsesNoFloatingPointCostOrHeuristic",
+      "Status": "Passed",
+      "Duration": 0.0007498,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathSearchAllowsExactly192Edges",
+      "Status": "Passed",
+      "Duration": 0.0008652,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathSearchAllowsExactly256WeightUnits",
+      "Status": "Passed",
+      "Duration": 0.0005962,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathSearchAllowsExactly4096ExpandedNodes",
+      "Status": "Passed",
+      "Duration": 0.0088462,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathSearchNodeLimitReturnsStableFailure",
+      "Status": "Passed",
+      "Duration": 0.0005175,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathWeightEqualsCheckedSumOfEdgeWeights",
+      "Status": "Passed",
+      "Duration": 0.0005342,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.PathWeightLimitReturnsStableFailure",
+      "Status": "Passed",
+      "Duration": 0.0022893,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task06PathfinderTests.SkippedIllegalNeighborDoesNotReorderRemainingDirections",
+      "Status": "Passed",
+      "Duration": 0.0004631,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.BlockAcceptanceStillRejectsSubsequentMoveOverlap",
+      "Status": "Passed",
+      "Duration": 0.004491,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeAcceptanceStillRejectsLockedPlanOverlap",
+      "Status": "Passed",
+      "Duration": 0.0008313,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeAcceptanceToleratesSubsequentEditableMoveOverlap",
+      "Status": "Passed",
+      "Duration": 0.0019691,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeInvalidationClosureCoversToleratedPlan",
+      "Status": "Passed",
+      "Duration": 0.0021701,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainCommitsBothPlansThroughRealSpacePort",
+      "Status": "Passed",
+      "Duration": 0.0043882,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainOriginMismatchIsStillRejectedForNonChainedStart",
+      "Status": "Passed",
+      "Duration": 0.0049184,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests.DiscardReservationIsIdempotentAndNeverInjectsAdrenaline",
+      "Status": "Passed",
+      "Duration": 0.001416,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests.ReactionTerminalWithoutSourceCancelDiscardsReservationWithoutRefund",
+      "Status": "Passed",
+      "Duration": 0.0039928,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests.RemovedPlanEntersTerminalThroughCoordinatorWithCancelledByCommand",
+      "Status": "Passed",
+      "Duration": 0.0026907,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests.RemovedPlanLeavesNoActiveArtifactReference",
+      "Status": "Passed",
+      "Duration": 0.0008925,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests.SourceThreatCancellationStillRefundsThroughReleasePath",
+      "Status": "Passed",
+      "Duration": 0.001222,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.AdrenalineDamageGainAggregatesOncePerUnitPerTick",
+      "Status": "Passed",
+      "Duration": 0.0010274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.AdrenalineOutcomeRewardOccursOncePerPlanOrConflictGroup",
+      "Status": "Passed",
+      "Duration": 0.0002506,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.AdrenalinePersistsAcrossOtherUnitsWindowsAndOwnWindowClose",
+      "Status": "Passed",
+      "Duration": 0.0004266,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.AdrenalineSnapshotsAreOrderedAndCarryCycleAndReservations",
+      "Status": "Passed",
+      "Duration": 0.0006913,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.AvailableAdrenalineIsCappedWithoutChangingReservations",
+      "Status": "Passed",
+      "Duration": 0.000307,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.BattleEndClearsAdrenalineWithoutRefund",
+      "Status": "Passed",
+      "Duration": 0.0004313,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.BattleEndClosesWindowWithoutOpeningNewOnes",
+      "Status": "Passed",
+      "Duration": 0.0008575,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.CloseRequestRejectsLaterCommandsInSameTick",
+      "Status": "Passed",
+      "Duration": 0.0003876,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ConcurrentActivationRejectsControlledNonHeroUnit",
+      "Status": "Passed",
+      "Duration": 0.0004602,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ConcurrentActivationRejectsOwnWindow",
+      "Status": "Passed",
+      "Duration": 0.0002894,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ConcurrentActivationRejectsStaleWindow",
+      "Status": "Passed",
+      "Duration": 0.0004118,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ConcurrentAuthorityCannotSubmitBlockOrDodge",
+      "Status": "Passed",
+      "Duration": 0.0003648,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ConcurrentAuthorityEndsWithWindowButScheduledPlanSurvives",
+      "Status": "Passed",
+      "Duration": 0.000426,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ConcurrentCostComesFromAbilityDefinition",
+      "Status": "Passed",
+      "Duration": 0.0003302,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ExpiryAndOwnerDeathMapToExplicitCloseReasons",
+      "Status": "Passed",
+      "Duration": 0.0005189,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.InterruptedOrInvalidReactionDoesNotRefundAdrenaline",
+      "Status": "Passed",
+      "Duration": 0.0007107,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.IssuerCannotActivateForUncontrolledUnit",
+      "Status": "Passed",
+      "Duration": 0.0003374,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.NextWindowOpensNoEarlierThanNextTick",
+      "Status": "Passed",
+      "Duration": 0.0004325,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.OldCycleReservationSurvivesToTriggerButCannotRefundIntoNewCycle",
+      "Status": "Passed",
+      "Duration": 0.0006581,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.OwnersNextWindowOpenClearsAvailableAdrenalineBeforeCommands",
+      "Status": "Passed",
+      "Duration": 0.0001564,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ReactionAcceptanceReservesAdrenalineExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.0003083,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ReactionTriggerConsumesReservationExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.0002169,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.RejectedConcurrentActivationDoesNotSpendMetaResource",
+      "Status": "Passed",
+      "Duration": 0.0002027,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.ScheduledWindowOwnerDiesBeforeOpenDoesNotOpenWindow",
+      "Status": "Passed",
+      "Duration": 0.0008422,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.SourceThreatCancellationRefundsOnlyCurrentCycleReservation",
+      "Status": "Passed",
+      "Duration": 0.0003456,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.SuccessfulBlockRewardIsLowerThanCostAndCannotSelfLoop",
+      "Status": "Passed",
+      "Duration": 0.0002605,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.SuccessfulDodgeRewardIsLowerThanCostAndCannotSelfLoop",
+      "Status": "Passed",
+      "Duration": 0.0002108,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task07TurnWindowTests.TurnWindowHoldsNoActionPlanIntentOrReservationCollections",
+      "Status": "Passed",
+      "Duration": 0.0006427,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeDefenseIntegrationTests.FullyDefendedAoeTargetDoesNotSuppressResolutionForOtherTargets",
+      "Status": "Passed",
+      "Duration": 0.0065686,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeDefenseIntegrationTests.PartiallyDefendedAoeTargetIsResolvedIndependentlyFromUndefendedTargets",
+      "Status": "Passed",
+      "Duration": 0.0013408,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests.AoeResolveLeavesWorldUntouchedUntilCommit",
+      "Status": "Passed",
+      "Duration": 0.0013857,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests.AoeSelfAndFriendlyFireAreDecidedOnlyByTheExplicitRelationMask",
+      "Status": "Passed",
+      "Duration": 0.0032176,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests.AreaAndPrimaryTargetPoliciesShareTheSameFactionRelationResolverAsTheCommandLayer",
+      "Status": "Passed",
+      "Duration": 0.0032945,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests.AreaAttackKeepsHitsOnTargetsThatDidNotBlockOrDodge",
+      "Status": "Passed",
+      "Duration": 0.0023102,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests.PrimaryTargetOnlyHitsExactlyThePlanFixedPrimaryTargetAndSparesOtherHostilesInArea",
+      "Status": "Passed",
+      "Duration": 0.0012674,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AoeTargetPolicyIntegrationTests.SelfTargetingInAreaRequiresTheExplicitSelfBit",
+      "Status": "Passed",
+      "Duration": 0.001935,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08AreaThreatCandidateWiringTests.RealAssemblyOpensReactionOpportunitiesForEveryUnitInTheArea",
+      "Status": "Passed",
+      "Duration": 0.0017115,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.AllDodgesUseSamePreCommitContactSnapshot",
+      "Status": "Passed",
+      "Duration": 0.0034748,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.AttackUsesMovementSegmentInsteadOfVisualPosition",
+      "Status": "Passed",
+      "Duration": 0.0029241,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.DodgeRelocationInvalidatesDependentMovesBeforeContactGraphBuild",
+      "Status": "Passed",
+      "Duration": 0.0025187,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.DodgeStillHitByAreaAttackInvalidatesOldOriginMovesWithoutSuccessReward",
+      "Status": "Passed",
+      "Duration": 0.0019228,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.ForcedDisplacementBatchCommitsBeforeEventsStateControlAndDeath",
+      "Status": "Passed",
+      "Duration": 0.001544,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.ForcedDisplacementPlanInvalidationPrecedesLaterInterceptTerminalRequest",
+      "Status": "Passed",
+      "Duration": 0.0013226,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.GuardBlockOrDodgeDoesNotTerminateSourceAttackPlan",
+      "Status": "Passed",
+      "Duration": 0.0070531,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.LethalHitTerminatesVictimsEditableLockedAndRunningPlans",
+      "Status": "Passed",
+      "Duration": 0.0029201,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.LethalTargetIsDisplacedBeforeDeathRemovesFinalFootprint",
+      "Status": "Passed",
+      "Duration": 0.0015914,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08CommitCoverageTests.NaturalDamageAccrualFundsNextRealBlockWithoutFixtureSeeding",
+      "Status": "Passed",
+      "Duration": 0.0019815,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ArbitrationHasNoLegacyPatternRotationDependency",
+      "Status": "Passed",
+      "Duration": 0.0033011,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.AttackAreaOnlyIndexesAndTranslatesIntegerPoints",
+      "Status": "Passed",
+      "Duration": 0.0007657,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.AttackAreaUsesCanonicalPreExpandedPatternForEveryDirection",
+      "Status": "Passed",
+      "Duration": 0.0004194,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.AttackAttackClashDoesNotInferEligibilityFromControllerKind",
+      "Status": "Passed",
+      "Duration": 0.0019507,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.AttackImpactTickEntersRecoveryAndStillArbitrates",
+      "Status": "Passed",
+      "Duration": 0.0005541,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.AttackIntentExistsOnlyAtImpactTick",
+      "Status": "Passed",
+      "Duration": 0.0006572,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ConflictGraphSerializationIsInvariantUnderAllIntentPermutations",
+      "Status": "Passed",
+      "Duration": 0.0012612,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ConflictGroupKeyIsMinimumIntentSequence",
+      "Status": "Passed",
+      "Duration": 0.000486,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ConflictGroupLimitsFailWithStableReasonCodes",
+      "Status": "Passed",
+      "Duration": 0.0032022,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ConflictGroupsAreIndependentOfNodeAndEdgeInsertionOrder",
+      "Status": "Passed",
+      "Duration": 0.0025149,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ControllerChangesDoNotChangeAttackContactCandidates",
+      "Status": "Passed",
+      "Duration": 0.0007054,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.DodgeIntoAnotherAttackAreaCreatesNewContact",
+      "Status": "Passed",
+      "Duration": 0.0005329,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ExplicitFriendlyFireMaskIncludesAlliedButNotNeutralTargets",
+      "Status": "Passed",
+      "Duration": 0.0002867,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.HostileOnlyAreaAttackExcludesSelfAlliedAndNeutralUnits",
+      "Status": "Passed",
+      "Duration": 0.0003245,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.ImpactTickClashTerminatesAfterIntentParticipates",
+      "Status": "Passed",
+      "Duration": 0.0004312,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.NeutralTargetRequiresExplicitNeutralRelationBit",
+      "Status": "Passed",
+      "Duration": 0.0003379,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.OldAndNewContactForSameAttackAndTargetResolvesOnce",
+      "Status": "Passed",
+      "Duration": 0.0003804,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.PastWindowAttackInteractsWithCurrentWindowDefense",
+      "Status": "Passed",
+      "Duration": 0.0004564,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.PreImpactTerminationProducesNoAttackContact",
+      "Status": "Passed",
+      "Duration": 0.0006178,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.PrimaryAndAreaPoliciesUseSameFactionRelationResolver",
+      "Status": "Passed",
+      "Duration": 0.0004605,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.SharedTargetAttacksEnterOneConflictGroup",
+      "Status": "Passed",
+      "Duration": 0.0005198,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.TerminalResolutionDoesNotRetroactivelyRemoveFrozenCurrentTickIntent",
+      "Status": "Passed",
+      "Duration": 0.0004558,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.TypedContactsAreCanonicallyOrderedAndDeduplicatedByContactKey",
+      "Status": "Passed",
+      "Duration": 0.0006437,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.UndodgeableDoesNotTrackTargetsAbsentFromBothContactSets",
+      "Status": "Passed",
+      "Duration": 0.000281,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ConflictGraphTests.WindowAPlanHitsDuringWindowC",
+      "Status": "Passed",
+      "Duration": 0.0004883,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DeathFootprintRemovalTests.DeadUnitFootprintNoLongerBlocksForcedDisplacementCommit",
+      "Status": "Passed",
+      "Duration": 0.0037718,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DeathFootprintRemovalTests.DeathRemovesFinalFootprintFromLogicGrid",
+      "Status": "Passed",
+      "Duration": 0.0011967,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.BlockIntervalCanResistEarlierContact",
+      "Status": "Passed",
+      "Duration": 0.0023064,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.BlockOrDodgeDoesNotTerminateAttackingPlan(Block)",
+      "Status": "Passed",
+      "Duration": 0.0014516,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.BlockOrDodgeDoesNotTerminateAttackingPlan(Dodge)",
+      "Status": "Passed",
+      "Duration": 0.0011664,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.BlockZeroesAllEligibleDamageAndMomentumOnSourceImpactTick",
+      "Status": "Passed",
+      "Duration": 0.0014161,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DamageEventContainsConflictGroupPlanAndUnitIds",
+      "Status": "Passed",
+      "Duration": 0.0012341,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DamageEventContainsPerChannelAndMomentumBeforeAfterValues",
+      "Status": "Passed",
+      "Duration": 0.0060078,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgeCancelledBeforeTriggerDoesNotEmitTriggerOrResolution",
+      "Status": "Passed",
+      "Duration": 0.0020182,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgeCommitEmitsOneTriggerEvenWithoutSuccessfulAvoidance",
+      "Status": "Passed",
+      "Duration": 0.0022472,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgedAoeTargetDoesNotProtectOtherTargets",
+      "Status": "Passed",
+      "Duration": 0.0062557,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgeInvalidatesOnlyDodgeableContactsMissingCommittedDestination",
+      "Status": "Passed",
+      "Duration": 0.0046745,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgeStillGetsHitWhenAttackCoversCommittedDestination",
+      "Status": "Passed",
+      "Duration": 0.0132682,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgeWithoutContactsDoesNotRelocateOrProduceResolution",
+      "Status": "Passed",
+      "Duration": 0.0014672,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.DodgingStateWithoutTriggerCommitProvidesNoAvoidance",
+      "Status": "Passed",
+      "Duration": 0.0006041,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.FailedBlockOrDodgeProducesNoSuccessAccrualFact",
+      "Status": "Passed",
+      "Duration": 0.0032523,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.FailedDodgeCommitEmitsConsumedTriggerWithoutReward",
+      "Status": "Passed",
+      "Duration": 0.0014452,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.FullyUnblockableContactIsIneffectiveHitAndDoesNotRewardBlock",
+      "Status": "Passed",
+      "Duration": 0.0003598,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08DefenseCoverageTests.PartiallyBlockedContactKeepsBypassComponents",
+      "Status": "Passed",
+      "Duration": 0.0014853,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.AccrualFactSourceProducesAtMostOneEntryPerUnitPerTick",
+      "Status": "Passed",
+      "Duration": 0.0024534,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.AdrenalineAccrualUsesFinalCommittedDamageForBothSides",
+      "Status": "Passed",
+      "Duration": 0.0036815,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.CommittedDodgeWithInvalidationGrantsExactlyOneSuccessKey",
+      "Status": "Passed",
+      "Duration": 0.0006236,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.CommittedDodgeWithoutInvalidationProducesNoSuccessFact",
+      "Status": "Passed",
+      "Duration": 0.0004128,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.DisplacementRequestBuilderDrivesRealRelocationAndEmitsResolvedEvent",
+      "Status": "Passed",
+      "Duration": 0.0027489,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.DuplicateUnitCommitIsRejectedWithStableCode",
+      "Status": "Passed",
+      "Duration": 0.0003573,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.FailedBlockProducesNoSuccessFact",
+      "Status": "Passed",
+      "Duration": 0.000576,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.NegativeControlAccrualSourceLeavesAvailableUntouched",
+      "Status": "Passed",
+      "Duration": 0.0009174,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.NegativeControlCommitSystemSilencesRequestsButNotResolveEvents",
+      "Status": "Passed",
+      "Duration": 0.0008817,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.RequestNumbersEqualAggregateProduct",
+      "Status": "Passed",
+      "Duration": 0.0010053,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.StageTenEmitsDamageChannelAndTargetAggregateEvents",
+      "Status": "Passed",
+      "Duration": 0.0016067,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.SuccessKeysAreDeduplicatedPerPlanAndPerConflictGroup",
+      "Status": "Passed",
+      "Duration": 0.0009376,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.UncommittedDodgeProducesNoSuccessFact",
+      "Status": "Passed",
+      "Duration": 0.0004043,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08EventAndAccrualIntegrationTests.ZeroKnockbackProducesNoRequest",
+      "Status": "Passed",
+      "Duration": 0.0003521,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.AssemblyLeavesForcedDisplacementPortsOpenForTheRealImplementation",
+      "Status": "Passed",
+      "Duration": 0.0002237,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.BatchRelocationsAreExactlyTheNonZeroEntriesAndCommitAtomically",
+      "Status": "Passed",
+      "Duration": 0.0026183,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ConflictingDodgeDestinationReservationIsPreemptedButPassThroughIsNot",
+      "Status": "Passed",
+      "Duration": 0.0010598,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.DisplacedUnitsOldOriginMovePlansTerminateAsMovementOriginInvalidated",
+      "Status": "Passed",
+      "Duration": 0.0004492,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ForcedDisplacementEventContainsCanonicalStopReasonAndInvalidatedPlans",
+      "Status": "Passed",
+      "Duration": 0.0005542,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ForcedDisplacementPreemptsEveryHolderOnMultiHolderCell",
+      "Status": "Passed",
+      "Duration": 0.0004182,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ForcedDisplacementRulesParticipateInBattleDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0007397,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.MovementOriginInvalidatedWinsWhenSamePlanAlsoOwnsConflictingReservation",
+      "Status": "Passed",
+      "Duration": 0.0003171,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.NonSpatialAttackGuardAndBlockPlansSurviveOwnerDisplacement",
+      "Status": "Passed",
+      "Duration": 0.0004319,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.OnlyFinalFootprintReservationConflictsArePreempted",
+      "Status": "Passed",
+      "Duration": 0.0005027,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ReservationPreemptionReleasesAllFutureSegmentsAndReservations",
+      "Status": "Passed",
+      "Duration": 0.0003833,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ReservationPreemptionTerminatesPlansInActionPlanIdOrder",
+      "Status": "Passed",
+      "Duration": 0.0006595,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementBatchTests.ZeroAppliedStepsStillEmitsForcedDisplacementResolutionEvent",
+      "Status": "Passed",
+      "Duration": 0.0004739,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.BranchingDependencyMovesOnlyWhenEveryBranchSucceeds",
+      "Status": "Passed",
+      "Duration": 0.0022084,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.CompletedShorterDisplacementBecomesStationaryBlockerForLaterRounds",
+      "Status": "Passed",
+      "Duration": 0.0004931,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.DependencyChainEndingInEmptyCellMovesSimultaneously",
+      "Status": "Passed",
+      "Duration": 0.0005326,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.DuplicateForcedDisplacementRequestForUnitIsInvariantViolation",
+      "Status": "Passed",
+      "Duration": 0.0007755,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementDoesNotImplicitlyPushUnitWithoutOwnRequest",
+      "Status": "Passed",
+      "Duration": 0.0003255,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementIgnoresReservationDuringSpatialSolve",
+      "Status": "Passed",
+      "Duration": 0.0002651,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementInputAndResolutionPermutationsProduceIdenticalResults",
+      "Status": "Passed",
+      "Duration": 0.0008581,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementKeepsSuccessfulPrefixWhenLaterStepFails",
+      "Status": "Passed",
+      "Duration": 0.000286,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementStepUsesCanonicalDirectionDeltaNotPathWeight",
+      "Status": "Passed",
+      "Duration": 0.0003971,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementStopsAtBoundaryOnFirstOrLaterStep",
+      "Status": "Passed",
+      "Duration": 0.0003966,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementStopsAtStaticObstacleOnFirstOrLaterStep",
+      "Status": "Passed",
+      "Duration": 0.0007673,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ForcedDisplacementTranslatesCurrentFootprintWithoutChangingFacing",
+      "Status": "Passed",
+      "Duration": 0.0002618,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.MultiCellUnitCannotMoveWhenAnyFootprintPointIsIllegal",
+      "Status": "Passed",
+      "Duration": 0.000521,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.OverlappingMultiCellDestinationFootprintsFailAllProposals",
+      "Status": "Passed",
+      "Duration": 0.0025478,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ResolveAllDoesNotMutateWorldBeforeCommit",
+      "Status": "Passed",
+      "Duration": 0.0003615,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.SameAnchorContentionFailsAllProposalsWithoutWinner",
+      "Status": "Passed",
+      "Duration": 0.0005336,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.SolverRecordsPerformanceStatisticsWithoutAffectingResults",
+      "Status": "Passed",
+      "Duration": 0.0004146,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.StationaryUnitHardBlocksForcedDisplacement",
+      "Status": "Passed",
+      "Duration": 0.0003641,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.ThreeUnitPositionCycleStopsAllParticipants",
+      "Status": "Passed",
+      "Duration": 0.0004648,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08ForcedDisplacementSolverTests.TwoUnitSwapStopsBothAsDependencyCycle",
+      "Status": "Passed",
+      "Duration": 0.0002168,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests.BuildConflictGraphAndResolveBuildsGraphFromFrozenQueueAndDodgeSnapshot",
+      "Status": "Passed",
+      "Duration": 0.0057819,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests.DrainIntentsMaterializesExactlyAtImpactTickAndDoesNotFilterByWindow",
+      "Status": "Passed",
+      "Duration": 0.0035391,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests.EncounterSlotWithoutControllerBindingDoesNotFailOccupancyProjection",
+      "Status": "Passed",
+      "Duration": 0.0011084,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests.OccupancyProjectionComesFromDodgeCommitReportSnapshots",
+      "Status": "Passed",
+      "Duration": 0.0029476,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08IntentAndConflictGraphIntegrationTests.SnapshotCarriesFrozenQueueAndConflictGraphAndTickZeroStaysEmpty",
+      "Status": "Passed",
+      "Duration": 0.004521,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumAggregationTests.ControlThresholdsAndKnockbackUseQuantizedResistance",
+      "Status": "Passed",
+      "Duration": 0.0015887,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumAggregationTests.DamageAggregationUsesContactThenChannelCanonicalOrder",
+      "Status": "Passed",
+      "Duration": 0.0015503,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumAggregationTests.EqualOppositeImpulsesCancelKnockbackButNotDamageOrImpact",
+      "Status": "Passed",
+      "Duration": 0.0006627,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumAggregationTests.PassiveAndActionResistanceMultiplyInDeclaredOrder",
+      "Status": "Passed",
+      "Duration": 0.0007858,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumAggregationTests.TrueDamageBypassesPassiveGuardAndBlockResistance",
+      "Status": "Passed",
+      "Duration": 0.0006106,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumAggregationTests.TwoAttackersFlankingOneTargetBothDealDamage",
+      "Status": "Passed",
+      "Duration": 0.0004245,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumClashTests.ClashingAttackCannotAlsoHitUnrelatedAoeTarget",
+      "Status": "Passed",
+      "Duration": 0.0007808,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumClashTests.ClashResidualMomentumIsDistributedWithoutLossOrDuplication",
+      "Status": "Passed",
+      "Duration": 0.0018123,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumClashTests.LegacyHeadOnPairKeepsScalarSubtractionAndTerminatesBothPlans",
+      "Status": "Passed",
+      "Duration": 0.0008096,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumClashTests.ThreeWayAttackResultIsIndependentOfAllIntentPermutations",
+      "Status": "Passed",
+      "Duration": 0.001274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumClashTests.ThreeWayClashUsesAllOriginalMomentaSimultaneously",
+      "Status": "Passed",
+      "Duration": 0.0009537,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.DamageChannelDoesNotChangeMomentumProfileAndViceVersa",
+      "Status": "Passed",
+      "Duration": 0.0010533,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.DirectionAndOppositionTablesMatchCanonicalQ10Values",
+      "Status": "Passed",
+      "Duration": 0.0019013,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.LargeMomentumAndConflictGroupCannotOverflowOrWrap",
+      "Status": "Passed",
+      "Duration": 0.003265,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.MomentumQuantizationMatchesLegacyImpactProfileScaleAndHalfUp",
+      "Status": "Passed",
+      "Duration": 0.0006066,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.MomentumQuantizationOccursOnceBeforeArbitration",
+      "Status": "Passed",
+      "Duration": 0.0022516,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.MomentumRuleTablesParticipateInBattleDefinitionHash",
+      "Status": "Passed",
+      "Duration": 0.0012223,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MomentumTests.NormalAndResidualDamageUseFrozenDivisors",
+      "Status": "Passed",
+      "Duration": 0.0007274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MultiPartyCoverageTests.ActualImpactPreemptsFutureReservationInProductionStep",
+      "Status": "Passed",
+      "Duration": 0.0077316,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MultiPartyCoverageTests.MixedSameTickBlockReportsPartialSuccessAndAccruesOnce",
+      "Status": "Passed",
+      "Duration": 0.0040257,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MultiPartyCoverageTests.OppositeFlankingContactsKeepPerAttackEventsAndZeroResultant",
+      "Status": "Passed",
+      "Duration": 0.0037555,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08MultiPartyCoverageTests.ThreeWayClashTerminatesThreeRealScheduledAttacks",
+      "Status": "Passed",
+      "Duration": 0.0052439,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08OpeningAdrenalineContractTests.InsufficientAvailableIsRejectedWithStableCodeAndZeroSideEffects",
+      "Status": "Passed",
+      "Duration": 0.0014684,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08OpeningAdrenalineContractTests.OpeningAvailableAndCycleAreZeroFromTheAuthoritativeSnapshot",
+      "Status": "Passed",
+      "Duration": 0.0013249,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08OpeningAdrenalineContractTests.OpeningValuesComeFromTheDefinitionChainNotFromRuntimeInputs",
+      "Status": "Passed",
+      "Duration": 0.0014074,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08OpeningAdrenalineContractTests.RealReservationSucceedsOnceAvailableCoversTheAuthoritativeCost",
+      "Status": "Passed",
+      "Duration": 0.0012334,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RealBlockIntegrationTests.BlockedAoeTargetDoesNotProtectOtherTargets",
+      "Status": "Passed",
+      "Duration": 0.0146975,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RealBlockIntegrationTests.RealBlockPlanNullifiesItsOwnTargetAndLeavesOthersUntouched",
+      "Status": "Passed",
+      "Duration": 0.0029067,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.ActionTerminalResolutionUsesUnifiedLifecycleEntry",
+      "Status": "Passed",
+      "Duration": 0.0033476,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.AdrenalineAccrualUsesCommittedFinalDamageAggregatedOncePerUnit",
+      "Status": "Passed",
+      "Duration": 0.0027206,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.BlockHandlesAllSameTickEligibleContactsIndependentOfOrder",
+      "Status": "Passed",
+      "Duration": 0.0015592,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.ClashAndSuccessfulReactionAccrualKeysCannotDuplicate",
+      "Status": "Passed",
+      "Duration": 0.0025713,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.ClashResidualReachesHealthWithoutReapplyingBaseDamage",
+      "Status": "Passed",
+      "Duration": 0.0017228,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.ClashTerminationRemovesUnfrozenAndFutureIntents",
+      "Status": "Passed",
+      "Duration": 0.001494,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.DefenseEffectsComeFromPlanTickAndPayloadNotStateEligibility",
+      "Status": "Passed",
+      "Duration": 0.0007304,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.DirectHitEligibilityIsCheckedOnlyAfterSpecialInteractionStages",
+      "Status": "Passed",
+      "Duration": 0.000317,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.DodgeContactSetsEventsAndRewardsArePermutationInvariant",
+      "Status": "Passed",
+      "Duration": 0.0028842,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.GuardDoesNotInvalidateContact",
+      "Status": "Passed",
+      "Duration": 0.0003307,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.GuardPartiallyReducesEligibleDamageAndMomentumOnlyWhileActive",
+      "Status": "Passed",
+      "Duration": 0.0005033,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.InterruptedPlanLeavesLaneGap",
+      "Status": "Passed",
+      "Duration": 0.0012407,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.OrdinaryMoveOutsideAreaBeforeDodgeDoesNotCreateTrackingContact",
+      "Status": "Passed",
+      "Duration": 0.0003206,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.ResolutionCommitLeavesNoActiveArtifactReferencingTerminalPlan",
+      "Status": "Passed",
+      "Duration": 0.0013399,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.RetainedUndodgeableContactStillObeysClashAndResistanceRules",
+      "Status": "Passed",
+      "Duration": 0.0004174,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.SimultaneousLethalHitsAllowMutualDeath",
+      "Status": "Passed",
+      "Duration": 0.0022989,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.SuccessfulDodgeOnlyProducesRewardFacts(100,1L,1L)",
+      "Status": "Passed",
+      "Duration": 0.0019419,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.SuccessfulDodgeOnlyProducesRewardFacts(200,4L,2L)",
+      "Status": "Passed",
+      "Duration": 0.0013179,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.TargetDamageAndImpulseCommitOnceInStableOrder",
+      "Status": "Passed",
+      "Duration": 0.0021107,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08RemainingCoverageTests.UndodgeableRetainsPreDodgeContactOutsideNewArea",
+      "Status": "Passed",
+      "Duration": 0.000383,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08SnapshotContractTests.ConflictGroupAndContactSnapshotsParticipateInHash",
+      "Status": "Passed",
+      "Duration": 0.0042394,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08SnapshotContractTests.ContactSnapshotOrderingMatchesContactKeyOrdering",
+      "Status": "Passed",
+      "Duration": 0.0020079,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08SnapshotContractTests.IntentSnapshotCarriesEveryFrozenFieldAndEachOneParticipatesInHash",
+      "Status": "Passed",
+      "Duration": 0.002935,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08SnapshotContractTests.MissingQueueAndGraphProjectToEmptyCollectionsThatStillParticipateInHash",
+      "Status": "Passed",
+      "Duration": 0.0005375,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08SnapshotContractTests.SameConflictGroupInAnyInputPermutationProducesByteIdenticalSnapshotHash",
+      "Status": "Passed",
+      "Duration": 0.0024173,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08SnapshotContractTests.TwoConflictGroupsInAnyInputPermutationProduceByteIdenticalSnapshotHash",
+      "Status": "Passed",
+      "Duration": 0.0032118,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests.ResolutionIsIndependentOfIntentSubmissionOrder",
+      "Status": "Passed",
+      "Duration": 0.0069934,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests.ResolveDoesNotMutateWorldBeforeCommit",
+      "Status": "Passed",
+      "Duration": 0.0019071,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests.SameDirectionAreaOverlapProducesEdgeButNoEffectiveClash",
+      "Status": "Passed",
+      "Duration": 0.0032686,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task08StagedResolutionIntegrationTests.StagedResolutionRunsAllFivePhasesAndCommitsDamageOncePerUnit",
+      "Status": "Passed",
+      "Duration": 0.0014941,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiAndPlayerAvailabilityUsesSameActionSetRules",
+      "Status": "Passed",
+      "Duration": 0.0061186,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCandidatePermutationDoesNotChangeDecisionWithSameSeed",
+      "Status": "Passed",
+      "Duration": 0.0034695,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCannotCreateOpportunityOrReactionPlanDirectly",
+      "Status": "Passed",
+      "Duration": 0.0088834,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCannotReactToOpportunityInItsOpeningTick",
+      "Status": "Passed",
+      "Duration": 0.0012689,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCanReactDuringAnotherUnitsWindow",
+      "Status": "Passed",
+      "Duration": 0.0018902,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiDoesNotSchedulePlanOrCloseWindowDirectly",
+      "Status": "Passed",
+      "Duration": 0.0041079,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.AiReactionCandidatePermutationDoesNotChangeDecisionWithSameSeed",
+      "Status": "Passed",
+      "Duration": 0.0037626,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiDecisionTests.PlayerAndAiShareOneTickReactionIngressLead",
+      "Status": "Passed",
+      "Duration": 0.0035938,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiSnapshotTests.AiRuntimeStateAppearsInCanonicalSnapshot",
+      "Status": "Passed",
+      "Duration": 0.002798,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09AiSnapshotTests.DecisionSnapshotDoesNotLeakOtherControllerEditablePlans",
+      "Status": "Passed",
+      "Duration": 0.0048733,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.BattleEndFinalizerClearsFutureRequestBuckets",
+      "Status": "Passed",
+      "Duration": 0.0040789,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.CommandAfterBattleEndIsRejectedBeforeTickBucketAndReplayLog",
+      "Status": "Passed",
+      "Duration": 0.0011234,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.CommandSequenceMatchesAcrossFreshTickZeroRuns",
+      "Status": "Passed",
+      "Duration": 0.0031284,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.DeviceInputTargetsNextTick",
+      "Status": "Passed",
+      "Duration": 0.0052521,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.DuplicateProducerOrdinalRejectsEntireGroup",
+      "Status": "Passed",
+      "Duration": 0.0023657,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.FrozenRequestsAreRejectedWhenBattleEndsBeforeCommandPhase",
+      "Status": "Passed",
+      "Duration": 0.0016233,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.InputAfterFreezeTargetsNPlusTwoAndCannotEditNPlusOnePlan",
+      "Status": "Passed",
+      "Duration": 0.0015091,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.LateCommandProducesStableRejection",
+      "Status": "Passed",
+      "Duration": 0.0018407,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandIngressTests.StepReceivesOnlyFrozenCurrentTickBatch",
+      "Status": "Passed",
+      "Duration": 0.0033831,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandSurfaceTests.ProducerCannotChooseSourcePriorityOrCommandSequence",
+      "Status": "Passed",
+      "Duration": 0.0051454,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09CommandSurfaceTests.RawRequestPermutationDoesNotChangeCommandOrder",
+      "Status": "Passed",
+      "Duration": 0.0064611,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.AiCannotCommandAnotherControllersUnit",
+      "Status": "Passed",
+      "Duration": 0.0051843,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.ControllerBindingRegistrationIsUnionAndCannotBypassAuthority",
+      "Status": "Passed",
+      "Duration": 0.002781,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.ControllerKindChangeDoesNotChangeUiAiOrCommandTargetEligibility",
+      "Status": "Passed",
+      "Duration": 0.0069827,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.FriendlyAndNeutralTargetsRequireExplicitActionMaskBits",
+      "Status": "Passed",
+      "Duration": 0.0037565,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.PlayerAndAiActionsUseSameProcessor",
+      "Status": "Passed",
+      "Duration": 0.0038565,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.PlayerCannotCommandAnotherControllersUnit",
+      "Status": "Passed",
+      "Duration": 0.0026808,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ProcessorAndAuthorityTests.UiAndAiCandidateFiltersUseDecisionSnapshotFactionResolver",
+      "Status": "Passed",
+      "Duration": 0.0062138,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ConcurrentAuthorityDoesNotPermitReactionWithoutOpportunity",
+      "Status": "Passed",
+      "Duration": 0.0042311,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.PlayerAndAiReactionsUseSameProcessorAndPlanner",
+      "Status": "Passed",
+      "Duration": 0.0047874,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.PlayerCannotIssueReactionForUnitItDoesNotControl",
+      "Status": "Passed",
+      "Duration": 0.0021102,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ReactionAtOptionDeadlineIsAcceptedAndAfterDeadlineIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0063866,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ReactionBeforeOpportunityExistsIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0012679,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ReactionCommandCannotCarryBlockTickEvadeTickOrCost",
+      "Status": "Passed",
+      "Duration": 0.0035051,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ReactionCommandUsesOpportunityScopeWithoutWindowScope",
+      "Status": "Passed",
+      "Duration": 0.0029775,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ReactionDoesNotRequireOwnWindowOrConcurrentAuthority",
+      "Status": "Passed",
+      "Duration": 0.0022187,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReactionCommandTests.ReactionPayloadWithWindowScopeIsRejectedAsMismatch",
+      "Status": "Passed",
+      "Duration": 0.0017202,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09RemovalSemanticsTests.RemoveEditablePlanDoesNotPullLaterPlansLeft",
+      "Status": "Passed",
+      "Duration": 0.0097153,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09RemovalSemanticsTests.RemoveEditablePlanUsesCommandAndUnifiedTerminalCoordinator",
+      "Status": "Passed",
+      "Duration": 0.0026301,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09RemovalSemanticsTests.UiCannotRemoveLockedRunningOrReactionPlan",
+      "Status": "Passed",
+      "Duration": 0.0029594,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReplayInputTests.ConfirmedScheduleEditRecordsOnlyFinalOperations",
+      "Status": "Passed",
+      "Duration": 0.0075247,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReplayInputTests.ReplayAuthorityInputExcludesAiAndSystemRequests",
+      "Status": "Passed",
+      "Duration": 0.0035447,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ReplayInputTests.UncommittedDragTrajectoryIsAbsentFromReplayInput",
+      "Status": "Passed",
+      "Duration": 0.0020209,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleCommandTests.AddRequiresCurrentWindowScope",
+      "Status": "Passed",
+      "Duration": 0.0015575,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleCommandTests.LaterOverlappingScheduleEditIsRejectedByCanonicalCommandOrder",
+      "Status": "Passed",
+      "Duration": 0.0035495,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleCommandTests.ScheduleEditUsesExpectedRevisionAndRejectsStaleWholeBatch",
+      "Status": "Passed",
+      "Duration": 0.0020712,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleCommandTests.StaleWindowCommandCannotSubmitIntoNewWindow",
+      "Status": "Passed",
+      "Duration": 0.0023457,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleCommandTests.TickNEditTargetsNPlusOneAndRunsBeforeNPlusOneLock",
+      "Status": "Passed",
+      "Duration": 0.0028462,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.ConcurrentActionScheduleEditUsesNormalSubmissionPath",
+      "Status": "Passed",
+      "Duration": 0.0020129,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.MoveOrRemoveNeedsNoWindowScopeButMoveMustStayInSourceWindow",
+      "Status": "Passed",
+      "Duration": 0.0014871,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.NullRequestedStartTickResolvesToLaneTail",
+      "Status": "Passed",
+      "Duration": 0.0016492,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.PlayerAndAiDisjointScheduleEditsFromSameSnapshotCanBothSucceed",
+      "Status": "Passed",
+      "Duration": 0.0014854,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.PrimaryTargetOnlyCommandRequiresStableTargetUnitId",
+      "Status": "Passed",
+      "Duration": 0.0022935,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.PrimaryTargetRelationMustBeAllowedByActionSpec",
+      "Status": "Passed",
+      "Duration": 0.002455,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.PrimaryTargetRelationRejectionDoesNotAutoRetarget",
+      "Status": "Passed",
+      "Duration": 0.0008633,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.RejectedTransactionRollbackDoesNotCorruptExistingNonMovePlan",
+      "Status": "Passed",
+      "Duration": 0.0036293,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.RunningPlanFromPastWindowDoesNotBlockAiWindow",
+      "Status": "Passed",
+      "Duration": 0.001429,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.ScheduleEditCannotTouchLockedRunningOrReactionPlan",
+      "Status": "Passed",
+      "Duration": 0.0015691,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.ScheduleScopePayloadMismatchIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0009542,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task09ScheduleSemanticsTests.ScopePayloadMismatchIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0014164,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCannotReviveDeadSourceAndKeepsOtherFactionAlive",
+      "Status": "Passed",
+      "Duration": 0.00459,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCanonicalOrderAndDefinitionHashIgnoreInputEnumeration",
+      "Status": "Passed",
+      "Duration": 0.0052485,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies(True)",
+      "Status": "Passed",
+      "Duration": 0.3381671,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnCreatesAuthoritativeUnitAndKeepsVictoryPendingUntilItDies(False)",
+      "Status": "Passed",
+      "Duration": 0.3200599,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnDefinitionRejectsUnknownConflictingFactionAndSourceBeforeWorldCreation",
+      "Status": "Passed",
+      "Duration": 0.0011435,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnFailureConsumesNoUnitIdAndDoesNotRetryOnLaterTicks",
+      "Status": "Passed",
+      "Duration": 0.0013633,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11DynamicSpawnTests.DynamicSpawnReceivesProductionWindowAndAcceptsOnlyItsControllersCommands",
+      "Status": "Passed",
+      "Duration": 0.0019604,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"Block\")",
+      "Status": "Passed",
+      "Duration": 1.298028,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"PartialBlock\")",
+      "Status": "Passed",
+      "Duration": 1.3391204,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"Dodge\")",
+      "Status": "Passed",
+      "Duration": 1.3765028,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"AoeDodge\")",
+      "Status": "Passed",
+      "Duration": 1.4815231,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"DodgeChain\")",
+      "Status": "Passed",
+      "Duration": 1.57892,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"Guard\")",
+      "Status": "Passed",
+      "Duration": 1.2573257,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"Clash3\")",
+      "Status": "Passed",
+      "Duration": 1.3656969,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"Flank\")",
+      "Status": "Passed",
+      "Duration": 1.3431054,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"DisplacementDeath\")",
+      "Status": "Passed",
+      "Duration": 0.2018279,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"Reservation\")",
+      "Status": "Passed",
+      "Duration": 1.3892855,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"AutoDeferral\")",
+      "Status": "Passed",
+      "Duration": 1.3240202,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"MixedDodge\")",
+      "Status": "Passed",
+      "Duration": 1.3925043,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"FriendlyAoe\")",
+      "Status": "Passed",
+      "Duration": 1.3855475,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11FinalMatrixReplayTests.FinalCombatClassFileReplaysOneHundredTimesFromTickZero(\"FacingAoe\")",
+      "Status": "Passed",
+      "Duration": 1.3615459,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.AiDecisionDiagnosticsAreBoundedWhileAuthoritativeCountsRemainComplete",
+      "Status": "Passed",
+      "Duration": 0.0404804,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.AllocationDiagnosticProviderDoesNotChangeEventsOrSnapshotHash",
+      "Status": "Passed",
+      "Duration": 0.0034334,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.CanonicalEventComparisonIncludesGridPointPublicFields",
+      "Status": "Passed",
+      "Duration": 0.0004234,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.DuplicateOrRegressingProducerOrdinalsCannotLoad",
+      "Status": "Passed",
+      "Duration": 0.0087619,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.EventPayloadMutationIsDetectedEvenWithMatchingSnapshotHash",
+      "Status": "Passed",
+      "Duration": 0.0187254,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.FirstSnapshotDeviationStopsAtExactTick",
+      "Status": "Passed",
+      "Duration": 0.0028662,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.FutureBucketsWithEqualCountsAndDifferentPayloadsHaveDifferentHashes",
+      "Status": "Passed",
+      "Duration": 0.0008015,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.FutureRequestKeepsOriginalSubmissionBoundaryAndEveryCheckpoint",
+      "Status": "Passed",
+      "Duration": 0.0050959,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.IncompatibleHeaderIsRejectedBeforeCreatingWorld(\"format\")",
+      "Status": "Passed",
+      "Duration": 0.0022827,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.IncompatibleHeaderIsRejectedBeforeCreatingWorld(\"rules\")",
+      "Status": "Passed",
+      "Duration": 0.0016889,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.IncompatibleHeaderIsRejectedBeforeCreatingWorld(\"definition\")",
+      "Status": "Passed",
+      "Duration": 0.0016884,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.PauseDoesNotAdvanceReplayAndRestartCreatesFreshWorld",
+      "Status": "Passed",
+      "Duration": 0.0039008,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.PriorV3ReplayIsRejectedBeforeCreatingWorld",
+      "Status": "Passed",
+      "Duration": 0.0022441,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.ReplayCannotAuthorizeAiOrSystemInputs(Ai)",
+      "Status": "Passed",
+      "Duration": 0.0032351,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.ReplayCannotAuthorizeAiOrSystemInputs(System)",
+      "Status": "Passed",
+      "Duration": 0.0022682,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.ReplayCannotPlayBeforeACompatibleFileHasBeenLoaded",
+      "Status": "Passed",
+      "Duration": 0.0006019,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.ReplayRepeatsOneHundredTimesWithFullEventPayloadAndHashes",
+      "Status": "Passed",
+      "Duration": 0.2249958,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.SavedReplayLoadsAndReplaysWithoutRuntimeTypeDeserialization",
+      "Status": "Passed",
+      "Duration": 0.007761,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.UnknownControllerCannotLoad",
+      "Status": "Passed",
+      "Duration": 0.0093235,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11ReplayTests.WrongInitialHashIsRejectedBeforeFirstStep",
+      "Status": "Passed",
+      "Duration": 0.013873,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.ActivePlanProjectionReuseChecksEveryFrozenField",
+      "Status": "Passed",
+      "Duration": 0.0028292,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.ActiveProjectionReusesImmutableRowsAndDropsTerminalCacheEntry",
+      "Status": "Passed",
+      "Duration": 0.0012269,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.FullTerminalHistoryDistinguishesReasonAndFinalTimingForTheSameKeyAndTick",
+      "Status": "Passed",
+      "Duration": 0.0036492,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.MovementInvariantRejectsInternalGapBeforeCountMismatchButAllowsCommittedPrefix",
+      "Status": "Passed",
+      "Duration": 0.0008643,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.MovementSnapshotPreservesStartTickAfterEarlierSegmentsHaveBeenCommitted",
+      "Status": "Passed",
+      "Duration": 0.0003356,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.PublicArchivedRecordConstructorCannotAliasTheCallersMutableArray",
+      "Status": "Passed",
+      "Duration": 0.0001632,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.SpaceProjectionReusePreservesBeforeMovementAndMatchesFreshSourcesAfterCommit",
+      "Status": "Passed",
+      "Duration": 0.0019582,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.TerminalArchiveOwnsItsPayloadAndEmptyTicksLeaveOldRecordsUntouched",
+      "Status": "Passed",
+      "Duration": 0.0017159,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11TerminalHistoryTests.WindowProjectionReusesUnchangedRowsAndKeepsClosedFactsImmutable",
+      "Status": "Passed",
+      "Duration": 0.0007773,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.AiIssuesNoCommandWhenNoCandidateFitsWindow",
+      "Status": "Passed",
+      "Duration": 0.0021728,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.ClosedWindowFreezesImmediatelyWhileItsRunningActionContinues",
+      "Status": "Passed",
+      "Duration": 0.0009177,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.EmptyInteractionFastPathKeepsAllEventsAndHashesAgainstFullReferencePipeline",
+      "Status": "Passed",
+      "Duration": 0.0130377,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.ExpiredOpportunityFreezesCompletePayloadOnlyAfterItsSourceCompletes",
+      "Status": "Passed",
+      "Duration": 0.0052058,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.FileReplayRegeneratesFrozenClosedLedgersAndCompleteTerminalPayloadsOneHundredTimes",
+      "Status": "Passed",
+      "Duration": 0.2571906,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.FrozenClosedWindowLeavesActiveSnapshotAndEmptyTicksNeverReadOldHistory",
+      "Status": "Passed",
+      "Duration": 0.0031109,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.FutureGuardUsesEmptyFastPathUntilStartAndStillMatchesFullPipeline",
+      "Status": "Passed",
+      "Duration": 0.0067672,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.PendingReleasePreventsOpportunitySealingUntilTheReceiverConsumesIt",
+      "Status": "Passed",
+      "Duration": 0.007551,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.SourceCancellationArchivesOnlyAfterReservationReleaseAndKeepsClosedCommandAuthorization",
+      "Status": "Passed",
+      "Duration": 0.0118832,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.TerminalCleanupPendingBetweenTicksIsNotLostAtTheNextBeginTick",
+      "Status": "Passed",
+      "Duration": 0.0101905,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.TriggeredBlockRemainsMutableUntilSourceAndBoundPlanFinish",
+      "Status": "Passed",
+      "Duration": 0.0040462,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.TriggeredDodgeRemainsMutableUntilSourceAndBoundPlanFinish",
+      "Status": "Passed",
+      "Duration": 0.0035225,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task11WindowHistoryTests.WindowExpiresWithoutCancellingItsRunningAttack",
+      "Status": "Passed",
+      "Duration": 0.0015212,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.AddWhoseLaneTailIsBeyondWindowEndIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0009145,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.AiNeverProposesStartBeyondWindowEnd",
+      "Status": "Passed",
+      "Duration": 0.000951,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.AutoDeferralBeyondSourceWindowTerminatesWithDelayedBeyondSourceWindow",
+      "Status": "Passed",
+      "Duration": 0.0028274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.AutoDeferralWithinSourceWindowStillDefers",
+      "Status": "Passed",
+      "Duration": 0.0006849,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.ClosedWindowCommandKindZeroIsRejectedAndNotReused",
+      "Status": "Passed",
+      "Duration": 0.0004606,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.ConcurrentHeroPlanIsBoundToOwnersWindowRange",
+      "Status": "Passed",
+      "Duration": 0.0005818,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.ConsecutiveWindowsTileWithoutGapOrOverlap",
+      "Status": "Passed",
+      "Duration": 0.0026928,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.EditMovingStartTickOutsideSourceWindowIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0005632,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.LongActionStartingInLastTickExtendsBeyondWindowAndContinues",
+      "Status": "Passed",
+      "Duration": 0.0014875,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.MoveChainRecomputePushingStartBeyondWindowRejectsWholeTransaction",
+      "Status": "Passed",
+      "Duration": 0.0022263,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.NoEditableOrdinaryPlanSurvivesItsSourceWindowClose",
+      "Status": "Passed",
+      "Duration": 0.0010043,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.OwnerDeathClosesWindowEarlyAndNextOpensNextTick",
+      "Status": "Passed",
+      "Duration": 0.0006903,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.ReplayFormatV4IsRejected",
+      "Status": "Passed",
+      "Duration": 0.0003079,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.RippleDeferralBeyondWindowCommitsNoPartialCandidate",
+      "Status": "Passed",
+      "Duration": 0.0009128,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.RippleOverflowTerminatesOffendingPlanAndRetriesDuePlanAtomically",
+      "Status": "Passed",
+      "Duration": 0.0008284,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.SnapshotHashAndEventsContainNoBudgetState",
+      "Status": "Passed",
+      "Duration": 0.0018364,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.StartCommitRemainsAtomicWithoutBudget",
+      "Status": "Passed",
+      "Duration": 0.001123,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.StartTickAtEndTickIsRejectedWithStableCode(True)",
+      "Status": "Passed",
+      "Duration": 0.0005252,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.StartTickAtEndTickIsRejectedWithStableCode(False)",
+      "Status": "Passed",
+      "Duration": 0.0002923,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.StartTickAtEndTickMinusOneIsAccepted",
+      "Status": "Passed",
+      "Duration": 0.0003747,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.UnlimitedActionsWithinWindowAreAcceptedWithoutCost",
+      "Status": "Passed",
+      "Duration": 0.0006828,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.WindowCannotBeClosedEarlyByPlayerOrAi",
+      "Status": "Passed",
+      "Duration": 0.0007723,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.WindowClosesAtEndOfLastTickAndNextOpensAtEndTick",
+      "Status": "Passed",
+      "Duration": 0.000549,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.WindowEndTickEqualsOpenedAtTickPlusDuration",
+      "Status": "Passed",
+      "Duration": 0.0002031,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.WindowSwitchDoesNotMutatePlanLaneIntentOrReservation",
+      "Status": "Passed",
+      "Duration": 0.0010861,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.WindowValidationSurvivesBudgetRemovalForPreviewAndCommit(True)",
+      "Status": "Passed",
+      "Duration": 0.0004819,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12AWindowDurationTests.WindowValidationSurvivesBudgetRemovalForPreviewAndCommit(False)",
+      "Status": "Passed",
+      "Duration": 0.0002278,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.AiDoesNotProposeReactionPreemptedByKnownEarlierContact",
+      "Status": "Passed",
+      "Duration": 0.0036102,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.AiReactionCommandCarriesExplicitStartTick",
+      "Status": "Passed",
+      "Duration": 0.0007689,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BlockNotTriggeredUntilEndExpiresWithoutRefund",
+      "Status": "Passed",
+      "Duration": 0.0017934,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BlockResistsAllEligiblePayloadsInTriggerTickThenTerminates",
+      "Status": "Passed",
+      "Duration": 0.0013802,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BlockTriggersOnFirstEligibleContactEvenIfNotSource",
+      "Status": "Passed",
+      "Duration": 0.0012121,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BuilderRejectsGuardableComponentWithoutBlockable",
+      "Status": "Passed",
+      "Duration": 0.0003118,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.BuilderRejectsGuardResistanceAtOrAboveFull",
+      "Status": "Passed",
+      "Duration": 0.0004213,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.DefenseDurationReplayRejectsV5InsteadOfReinterpretingItsPayload",
+      "Status": "Passed",
+      "Duration": 0.0002827,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.DodgeDestinationRecheckFailureConsumesAndTerminates",
+      "Status": "Passed",
+      "Duration": 0.0011718,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.DodgeTriggersOnFirstDodgeableOldCellContact",
+      "Status": "Passed",
+      "Duration": 0.000853,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardAndBlockRespectEachComponentsTagEvenWithinSameChannel",
+      "Status": "Passed",
+      "Duration": 0.0003417,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardCumulativeResistanceNeverExceedsLargestSingleTickPayload",
+      "Status": "Passed",
+      "Duration": 1.9311069,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardEndTickExclusiveGivesNoResistance",
+      "Status": "Passed",
+      "Duration": 0.0073301,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardHasNoWindupAndIsEffectiveFromStartTick",
+      "Status": "Passed",
+      "Duration": 0.000849,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardMomentumResistanceRequiresBlockableAttack",
+      "Status": "Passed",
+      "Duration": 0.0002606,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardQuotaDeductsOncePerTickRegardlessOfContactCount",
+      "Status": "Passed",
+      "Duration": 0.0013487,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardQuotaUsesMaxActualRatioAcrossChannelsAndMomentum",
+      "Status": "Passed",
+      "Duration": 0.0012174,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardRoundingCannotOverResistRepeatedTwoUnitPayloads",
+      "Status": "Passed",
+      "Duration": 0.000338,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.GuardTerminatesWithQuotaExhaustedAfterResolvingThatTick",
+      "Status": "Passed",
+      "Duration": 0.0043073,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.MissedSourceImpactAndLaterSourceCompletionDoNotCancelReaction",
+      "Status": "Passed",
+      "Duration": 0.019262,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.MultiAttackMultiDefenseInputPermutationInvariance",
+      "Status": "Passed",
+      "Duration": 0.0032717,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.MultiUnitDefensePermutationsPreserveEventsQuotaTerminationAndHashes(Guard)",
+      "Status": "Passed",
+      "Duration": 0.007699,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.MultiUnitDefensePermutationsPreserveEventsQuotaTerminationAndHashes(Block)",
+      "Status": "Passed",
+      "Duration": 0.0044374,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.NoCounterWindowEventIsEverEmitted",
+      "Status": "Passed",
+      "Duration": 0.0016886,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OptionDeadlineIsImpactMinusIngressLead",
+      "Status": "Passed",
+      "Duration": 0.0006339,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OrdinaryPlanMayStartInsideReactionSoftSegment",
+      "Status": "Passed",
+      "Duration": 0.0012241,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OrdinaryPlanOverlappingReactionHardSegmentIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0005814,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OrdinaryPreviewAndCommitAfterReactionUseSameHardSoftRule(11,False)",
+      "Status": "Passed",
+      "Duration": 0.0022134,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.OrdinaryPreviewAndCommitAfterReactionUseSameHardSoftRule(12,True)",
+      "Status": "Passed",
+      "Duration": 0.0005296,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionDefaultStartIsSourceImpactTick",
+      "Status": "Passed",
+      "Duration": 0.0005693,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionIntervalMustCoverSourceImpact",
+      "Status": "Passed",
+      "Duration": 0.0007746,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionIntervalPreviewIsReadOnlyAndSharesCommitBoundaries",
+      "Status": "Passed",
+      "Duration": 0.0009224,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionStartBeforeNextTickOrAfterImpactIsRejected(2)",
+      "Status": "Passed",
+      "Duration": 0.0008092,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.ReactionStartBeforeNextTickOrAfterImpactIsRejected(12)",
+      "Status": "Passed",
+      "Duration": 0.0004328,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SoftOverlappingBlocksConsumeEachReservationAndAggregateBypassDamageOnce",
+      "Status": "Passed",
+      "Duration": 0.0029032,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SourceCancelledBeforeImpactRefundsSameCycleOnly(False)",
+      "Status": "Passed",
+      "Duration": 0.0010079,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SourceCancelledBeforeImpactRefundsSameCycleOnly(True)",
+      "Status": "Passed",
+      "Duration": 0.0005598,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.SuccessfulDodgeRewardStillAccruesOnce",
+      "Status": "Passed",
+      "Duration": 0.001158,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.TriggeredReactionFreesLaneImmediately",
+      "Status": "Passed",
+      "Duration": 0.0009323,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12BDefenseDurationTests.UntriggeredReactionYieldsLaneWhenOrdinaryPlanStarts",
+      "Status": "Passed",
+      "Duration": 0.0012221,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.AutoPauseFeasibilityIsFalseWhenAdrenalineInsufficient",
+      "Status": "Passed",
+      "Duration": 0.0022783,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.CachedProjectionRemainsFrozenAfterTheLiveBattleAdvances",
+      "Status": "Passed",
+      "Duration": 0.0041466,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.DecisionSnapshotExposesAllUnitsAdrenalineToEveryController",
+      "Status": "Passed",
+      "Duration": 0.0017106,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.DecisionSnapshotStillHidesOtherControllersEditablePlans",
+      "Status": "Passed",
+      "Duration": 0.0009953,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.ExpectedTriggerContactFlagsEarlierPreemptingContact",
+      "Status": "Passed",
+      "Duration": 0.0018484,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.ExpectedTriggerContactMatchesActualWithinHorizon",
+      "Status": "Passed",
+      "Duration": 0.0018435,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.GuardQuotaPreviewMatchesActualDeductions",
+      "Status": "Passed",
+      "Duration": 0.0041871,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.HudReadWorldContainsNoAiStateFutureIngressOrHiddenPlan",
+      "Status": "Passed",
+      "Duration": 0.0011709,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.KnownHorizonEqualsNextForeignWindowOpen",
+      "Status": "Passed",
+      "Duration": 0.0409961,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.M3CombinedDefensePreviewMatchesEarlierConsumptionAndDoesNotReserveLiveResources",
+      "Status": "Passed",
+      "Duration": 0.0032138,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.M3CombinedGuardDraftUsesStableDraftKeyAndQuotaEvents",
+      "Status": "Passed",
+      "Duration": 0.0036733,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.M3OrdinaryDraftInReactionSoftIntervalShowsActualYieldOnly",
+      "Status": "Passed",
+      "Duration": 0.0023114,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.M3RemovingEditableConflictInSameResumeBatchEnablesReaction",
+      "Status": "Passed",
+      "Duration": 0.0019096,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.OpponentReactionCapabilityUsesOnlyPublicFacts",
+      "Status": "Passed",
+      "Duration": 0.002604,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.PlayerAndAiSeeIdenticalAdrenalineFacts",
+      "Status": "Passed",
+      "Duration": 0.0008797,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.PreviewIsCachedPerCommittedSnapshot",
+      "Status": "Passed",
+      "Duration": 0.0023039,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.PreviewsDoNotMutateStateIdsOrRevision",
+      "Status": "Passed",
+      "Duration": 0.0018277,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.ProposedGuardUsesTheSamePlacementAndQuotaEvaluators",
+      "Status": "Passed",
+      "Duration": 0.006467,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.ReactionFeasibilityReportsEachInfeasibleReasonStably",
+      "Status": "Passed",
+      "Duration": 0.0026646,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.VisibleForeignDefenseCanBePreviewedWithoutAccessToForeignEditablePlans",
+      "Status": "Passed",
+      "Duration": 0.0015633,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.WindowSequenceProjectionMatchesActualOpenings",
+      "Status": "Passed",
+      "Duration": 0.0090245,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.Task12CHudPreviewTests.YieldPointPreviewMatchesActualYield",
+      "Status": "Passed",
+      "Duration": 0.0043919,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.AutomaticAndExplicitTransitionsEmitEquivalentEvents",
+      "Status": "Passed",
+      "Duration": 0.0011706,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.ControlStatesRejectDirectHitByInitialRules",
+      "Status": "Passed",
+      "Duration": 0.0001779,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.DeadIsTerminal",
+      "Status": "Passed",
+      "Duration": 0.0004305,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.DefenseStateAloneDoesNotMitigateOrInvalidateContact",
+      "Status": "Passed",
+      "Duration": 0.000899,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.FiniteControlStateExposesAuthoritativeBlockingUntilTick",
+      "Status": "Passed",
+      "Duration": 0.0002897,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.GuardingBlockingAndDodgingRemainDirectHitEligibleStates",
+      "Status": "Passed",
+      "Duration": 0.0001617,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.RecoverySlotIsDeclaredButNotDefaultTarget",
+      "Status": "Passed",
+      "Duration": 0.0004549,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.SelfTransitionAndTerminalSourceAreRejectedWithStableCodes",
+      "Status": "Passed",
+      "Duration": 0.0002297,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.StateMachineDoesNotExposeSubmissionAuthority",
+      "Status": "Passed",
+      "Duration": 0.0005371,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.StateMachineExposesDirectHitEligibilityNotInteractionParticipation",
+      "Status": "Passed",
+      "Duration": 0.0002556,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.StateTransitionMatrixAcceptsOnlyDeclaredTransitions",
+      "Status": "Passed",
+      "Duration": 0.0082981,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.TimedTransitionUsesHalfOpenInterval",
+      "Status": "Passed",
+      "Duration": 0.000889,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.TimedTransitionWithoutExplicitNextOnExpireIsRejected",
+      "Status": "Passed",
+      "Duration": 0.0003409,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Logic.Tests.UnitStateMachineTests.UnlimitedTransitionHasNoFiniteEndTickAndNeverAutoExpires",
+      "Status": "Passed",
+      "Duration": 0.0002788,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

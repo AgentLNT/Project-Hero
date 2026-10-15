@@ -45,7 +45,7 @@ namespace ProjectHero.Tests.PlayMode
         static readonly ActionSpecId Light = new ActionSpecId("action.t12b.scene.light");
         static readonly ActionSpecId Heavy = new ActionSpecId("action.t12b.scene.heavy");
         static object Field(object o,string name) => o.GetType().GetField(name,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(o);
-        static BattleSimulationSeed Configure(BattleSimulationSeed original)
+        internal static BattleSimulationSeed Configure(BattleSimulationSeed original)
         {
             var d=original.Definition; var e=d.FindEncounter(original.EncounterId);
             var heroSlot=e.Slots.Single(s=>s.SlotId==e.TurnSubmission.ConcurrentHeroSlot);

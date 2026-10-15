@@ -234,5 +234,54 @@ namespace ProjectHero.Logic.Tests
             Assert.That(saved.PreviewDefense(o.Id,Block).TriggerTick,Is.EqualTo(11));
             Assert.That(saved.Decision.Tick,Is.EqualTo(2)); Assert.That(s.DecisionSnapshotFor(Ai).Tick,Is.EqualTo(11));
         }
+        [Test] public void M3CombinedDefensePreviewMatchesEarlierConsumptionAndDoesNotReserveLiveResources()
+        {
+            using var s=Prepared(); var opportunity=Opportunity(s); var early=Seed(s,Task09A2Fixture.Neutral,Light,4,Enemy); Advance(s,4);
+            var service=s.HudPreviewFor(Ai); var placement=new ReactionPlacement(opportunity.Id.Value,Block,6);
+            string hash=s.CurrentSnapshot.ComputeHashHex(); long next=s.ScheduleAuthority.IdGenerator.NextActionPlanIdValue;
+            var result=service.PreviewDefensePlacements(Array.Empty<ScheduleEditOperation>(),new[] {placement});
+            Assert.That(result.RejectionCode,Is.Null); var defense=result.Defenses.Single();
+            Assert.That(defense.Contact.HasEarlierPreemptingContact,Is.True); Assert.That(defense.Contact.TriggerTick,Is.EqualTo(6));
+            Assert.That(defense.Contact.SourcePlanIds,Does.Contain(early.ActionPlanId.Value));
+            Assert.That(service.PreviewDefensePlacements(Array.Empty<ScheduleEditOperation>(),new[] {placement}),Is.SameAs(result));
+            Assert.That(s.CurrentSnapshot.ComputeHashHex(),Is.EqualTo(hash)); Assert.That(s.ScheduleAuthority.IdGenerator.NextActionPlanIdValue,Is.EqualTo(next));
+            Assert.That(service.PreviewDefensePlacements(Array.Empty<ScheduleEditOperation>(),new[] {placement with {StartTick=11}}).Defenses.Single().Contact.HasEarlierPreemptingContact,Is.False);
+        }
+        [Test] public void M3RemovingEditableConflictInSameResumeBatchEnablesReaction()
+        {
+            using var s=Prepared(); var opportunity=Opportunity(s); var conflict=Seed(s,Enemy,Heavy,8,Hero); Task09A2Fixture.StepNext(s);
+            var service=s.HudPreviewFor(Ai); var placement=new ReactionPlacement(opportunity.Id.Value,Block,11);
+            Assert.That(service.PreviewReaction(opportunity.Id,Block).IsFeasible,Is.False);
+            var operations=new ScheduleEditOperation[] {new RemoveEditablePlanOperation(conflict.ActionPlanId)};
+            Assert.That(service.PreviewReactionPlacement(placement,operations,Array.Empty<ReactionPlacement>()).IsFeasible,Is.True);
+            Assert.That(service.PreviewDefensePlacements(operations,new[] {placement}).RejectionCode,Is.Null);
+            Assert.That(conflict.State,Is.EqualTo(ActionPlanState.Editable));
+        }
+        [Test] public void M3OrdinaryDraftInReactionSoftIntervalShowsActualYieldOnly()
+        {
+            using var s=Task09A2Fixture.NewSim(Definition());
+            s.WindowManager.ScheduleWindow(0,Enemy,400); Task09A2Fixture.Step(s,0);
+            Seed(s,Hero,Heavy,1,Enemy); Advance(s,1); Task09A2Fixture.SeedAdrenaline(s,Enemy,s.Definition.FindAction(Block).AdrenalineCost);
+            Task09A2Fixture.StepNext(s); var opportunity=Opportunity(s);
+            Assert.That(s.LogicGrid.CommitAnchor(Enemy,new GridPoint(8,0),GridDirection.East),Is.Null); Task09A2Fixture.StepNext(s);
+            var operations=new ScheduleEditOperation[] {new AddOrdinaryPlanOperation(77,Enemy,Heavy,12,PrimaryTargetUnitId:Hero)};
+            var reaction=new ReactionPlacement(opportunity.Id.Value,Block,11);
+            var result=s.HudPreviewFor(Ai).PreviewDefensePlacements(operations,new[] {reaction});
+            Assert.That(result.RejectionCode,Is.Null); Assert.That(result.Defenses.Single().Contact.TriggerTick,Is.Null);
+            Assert.That(result.Defenses.Single().Contact.YieldTick,Is.EqualTo(12));
+            Assert.That(s.ReactionOpportunities.TryAcceptById(opportunity.Id,Block,s.Tick+1,null,out var plan,11),Is.Null);
+            Seed(s,Enemy,Heavy,12,Hero); Advance(s,12); Assert.That(plan.TerminationReason,Is.EqualTo(ActionTerminationReason.ReactionYieldedLane));
+        }
+        [Test] public void M3CombinedGuardDraftUsesStableDraftKeyAndQuotaEvents()
+        {
+            using var s=Task09A2Fixture.NewSim(Definition()); s.WindowManager.ScheduleWindow(0,Hero,400); Task09A2Fixture.Step(s,0);
+            Seed(s,Enemy,Light,1,Hero); Task09A2Fixture.StepNext(s);
+            var operations=new ScheduleEditOperation[] {new AddOrdinaryPlanOperation(88,Hero,Task08DefenseCoverageTests.GuardId,3)};
+            string hash=s.CurrentSnapshot.ComputeHashHex();
+            var result=s.HudPreviewFor(Player).PreviewDefensePlacements(operations,Array.Empty<ReactionPlacement>());
+            Assert.That(result.RejectionCode,Is.Null); var defense=result.Defenses.Single();
+            Assert.That(defense.TemporaryPlanKey,Is.EqualTo(88)); Assert.That(defense.Contact.GuardContacts.Single().Tick,Is.EqualTo(3));
+            Assert.That(defense.Contact.GuardContacts.Single().DebitQ10,Is.EqualTo(512)); Assert.That(s.CurrentSnapshot.ComputeHashHex(),Is.EqualTo(hash));
+        }
     }
 }

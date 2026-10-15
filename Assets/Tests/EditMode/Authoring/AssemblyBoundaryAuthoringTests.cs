@@ -44,7 +44,7 @@ namespace ProjectHero.Authoring.Tests
         /// 任务 02B 冻结为 5 个（Grid / Logic / Authoring 三个生产程序集 + 两个测试程序集）；
         /// 任务 03B 新增 2 个：<c>ProjectHero.Compatibility.Runtime</c>（运行时所有权壳契约程序集，
         /// 是 PlayMode 测试唯一可见的运行时程序集）与其测试程序集。
-        /// <strong>仍然禁止提前创建 <c>ProjectHero.UnityView</c></strong>（任务 10 才创建）。
+        /// 任务 10 已创建 UnityView；2026-10-15 的 Shadow 拆分另建受 UNITY_EDITOR 约束的诊断程序集。
         /// </summary>
         private static readonly string[] ExpectedAssemblyNames =
         {
@@ -54,6 +54,7 @@ namespace ProjectHero.Authoring.Tests
             "ProjectHero.Grid",
             "ProjectHero.Logic",
             "ProjectHero.Logic.Tests",
+            "ProjectHero.Migration.Diagnostics",
             "ProjectHero.UnityAuthoring",
             "ProjectHero.UnityView"
         };
@@ -65,6 +66,7 @@ namespace ProjectHero.Authoring.Tests
             public string[] references;
             public bool noEngineReferences;
             public bool autoReferenced;
+            public string[] defineConstraints;
         }
 
         [Test]
@@ -120,8 +122,8 @@ namespace ProjectHero.Authoring.Tests
                 .OrderBy(r => r, StringComparer.Ordinal)
                 .ToArray();
             Assert.That(authoringTestReferences,
-                Is.EqualTo(new[] { "ProjectHero.Authoring", "ProjectHero.Grid", "ProjectHero.Logic", "ProjectHero.UnityView" }),
-                "Authoring.Tests 只能引用 Authoring / Compatibility.Runtime / Grid / Logic");
+                Is.EqualTo(new[] { "ProjectHero.Authoring", "ProjectHero.Grid", "ProjectHero.Logic", "ProjectHero.Migration.Diagnostics", "ProjectHero.UnityView" }),
+                "Editor Authoring.Tests 引用 Authoring / Grid / Logic / Migration.Diagnostics / UnityView");
 
             // ---- 任务 03B 新增：运行时所有权壳契约程序集与其 PlayMode 测试程序集 ----
 
@@ -134,6 +136,12 @@ namespace ProjectHero.Authoring.Tests
                 "Compatibility.Runtime 只允许引用 Logic：不得依赖 Authoring 或任何 Legacy 具体类型");
             Assert.That(compatibilityRuntime.noEngineReferences, Is.False,
                 "Compatibility.Runtime 需要 UnityEngine（MonoBehaviour 契约与只读检查点）");
+            var diagnostics = infos.Single(i => i.name == "ProjectHero.Migration.Diagnostics");
+            Assert.That(diagnostics.defineConstraints, Does.Contain("UNITY_EDITOR"));
+            Assert.That(diagnostics.references, Is.EquivalentTo(new[] { "ProjectHero.Logic", "ProjectHero.UnityView" }));
+            foreach (var production in infos.Where(i => !i.name.EndsWith(".Tests", StringComparison.Ordinal) && i != diagnostics))
+                Assert.That(production.references ?? Array.Empty<string>(), Does.Not.Contain(diagnostics.name),
+                    production.name + " 不得反向引用诊断程序集");
 
             var playModeTests = infos.Single(i => i.name == "ProjectHero.Compatibility.Runtime.Tests");
             var playModeReferences = (playModeTests.references ?? new string[0])
@@ -142,8 +150,9 @@ namespace ProjectHero.Authoring.Tests
                 .OrderBy(r => r, StringComparer.Ordinal)
                 .ToArray();
             Assert.That(playModeReferences,
-                Is.EqualTo(new[] { "ProjectHero.Logic", "ProjectHero.UnityView" }),
-                "PlayMode 测试只允许引用契约程序集与 Logic（不得引用 Assembly-CSharp 或 Authoring）");
+                Is.EqualTo(new[] { "ProjectHero.Logic", "ProjectHero.Migration.Diagnostics", "ProjectHero.UnityView" }),
+                "Editor PlayMode 测试引用 Logic / UnityView / Migration.Diagnostics，不得引用 Assembly-CSharp 或 Authoring");
+            Assert.That(playModeTests.defineConstraints, Does.Contain("UNITY_EDITOR"));
         }
 
         [Test]

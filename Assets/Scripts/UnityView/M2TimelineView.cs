@@ -96,6 +96,7 @@ namespace ProjectHero.UnityView
         public void ResetView()
         { _renderKey = _rosterKey = _liveGate = null; _lastPrimary = 0; _follow = true; _spanSeconds = 6; _lastDraftPlans.Clear(); ClearSnap(); }
         public void ReturnToNow() { _follow = true; _renderKey = null; Refresh(); }
+        public void FocusTick(long tick) { _follow = false; _startTick = Math.Max(0, tick - (long)(SpanTicks * .65)); _renderKey = null; Refresh(); }
         public void Pan(double fraction) { _follow = false; _startTick = Math.Max(0, _startTick + (long)(SpanTicks * fraction)); _renderKey = null; ClearSnap(); Refresh(); }
         public void Zoom(double factor) { _spanSeconds = Math.Max(1, Math.Min(30, _spanSeconds * factor)); _renderKey = null; ClearSnap(); Refresh(); }
         private float X(long tick) => (float)((tick - _startTick) / SpanTicks) * Mathf.Max(1, _viewport.rect.width - TitleWidth);
@@ -103,7 +104,7 @@ namespace ProjectHero.UnityView
         {
             if (_root == null || _view.Model.Decision == null) return;
             var model = _view.Model; var selection = _view.TrackSelection; var decision = model.Decision;
-            string operationsKey = string.Join(";", model.Drafts.Operations);
+            string operationsKey = string.Join(";", model.Drafts.Operations) + ":" + string.Join(";", model.StagedReactions) + ":" + _view.ReactionView?.Candidate;
             string liveGate = decision.ScheduleRevision + ":" + selection.Revision + ":" + _view.Clock.State + ":" + model.Drafts.State + ":" + operationsKey
                 + ":" + _follow + ":" + (_follow ? 0 : _startTick) + ":" + _spanSeconds + ":" + _viewport.rect.width + ":" + _viewport.rect.height + ":" + model.Window?.WindowId;
             // Driver callbacks can consume many committed Ticks in one Unity frame. Render/forecast at HUD cadence,
@@ -119,6 +120,11 @@ namespace ProjectHero.UnityView
             if (key == _renderKey) return; _renderKey = key;
             var projected = new Dictionary<long, ActionPlanSnapshot>();
             foreach (var plan in model.Timeline) projected[plan.ActionPlanId] = plan;
+            var placements = _view.ReactionView?.DefensePreview;
+            if (placements?.RejectionCode == null && placements != null)
+                foreach (var defense in placements.Defenses.Where(d => d.Plan.Origin == (int)ActionPlanOrigin.Reaction
+                    && !model.Timeline.Any(p => p.ActionPlanId == d.Plan.ActionPlanId && p.ReactionOpportunityId == d.Plan.ReactionOpportunityId)))
+                    projected[-defense.Plan.ReactionOpportunityId] = defense.Plan with { ActionPlanId = -defense.Plan.ReactionOpportunityId };
             if (model.Preview?.Succeeded == true && model.Drafts.State != ScheduleDraftState.Stale)
                 foreach (var preview in model.Preview.PreviewPlans ?? Array.Empty<ProjectHero.Logic.Timeline.SchedulePlanPreview>()) projected[preview.Plan.ActionPlanId] = preview.Plan;
             foreach (var entry in model.Drafts.Entries)
@@ -143,7 +149,7 @@ namespace ProjectHero.UnityView
                 }
             _plans = projected.Values.ToArray();
             _contacts = (model.HudPreviews?.PreviewTimelineContacts(model.Drafts.State == ScheduleDraftState.Stale || model.Preview?.Succeeded == false
-                ? Array.Empty<ScheduleEditOperation>() : model.Drafts.Operations)?.Contacts)?.Select(c => c.TemporaryPlanKey > 0
+                ? Array.Empty<ScheduleEditOperation>() : model.Drafts.Operations, _view.ReactionView?.PreviewPlacements)?.Contacts)?.Select(c => c.TemporaryPlanKey > 0
                     && model.PreviewPlanFor(c.TemporaryPlanKey) is ActionPlanSnapshot draftPlan ? c with {PlanId = draftPlan.ActionPlanId} : c).ToArray()
                 ?? Array.Empty<TimelineContactPreview>();
             BuildHeader();
@@ -200,6 +206,9 @@ namespace ProjectHero.UnityView
                     block.SetTrackLabel(primary, draft != 0, _contacts.Where(c => c.PlanId == plan.ActionPlanId).Select(c => c.Outcome).Distinct());
                     block.SetImpact(type == ActionType.Attack, (float)((plan.ImpactTick - plan.StartTick) / (double)Math.Max(1, plan.EndTick - plan.StartTick)), primary,
                         horizon.HasValue && plan.ImpactTick >= horizon.Value);
+                    var defensePreview = placements?.Defenses.FirstOrDefault(d => draft != 0 ? d.TemporaryPlanKey == draft
+                        : plan.ReactionOpportunityId != 0 ? d.Plan.ReactionOpportunityId == plan.ReactionOpportunityId : d.Plan.ActionPlanId == plan.ActionPlanId);
+                    block.SetDefense(type, defensePreview, primary);
                 }
             }
             foreach (var pair in _tracks) if (!live.Contains(pair.Key)) pair.Value.Root.gameObject.SetActive(false);

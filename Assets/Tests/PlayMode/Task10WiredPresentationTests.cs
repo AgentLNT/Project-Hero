@@ -643,33 +643,39 @@ namespace ProjectHero.Tests.PlayMode
                 }
                 if (!concurrent || (futureChain && chainWindow == 0))
                 { Bootstrap.DriveFrameForTests(0, 1f / 60); continue; }
-                var buttons = ((IList)Field(presentation, "_reactionButtons")).Cast<GameObject>().ToArray();
-                var label = kind.ToString();
-                foreach (var go in buttons)
+                foreach (var opportunity in model.Reactions.Where(o => o.BoundActionPlanId == 0).ToArray())
                 {
-                    var textComponent = go.GetComponentInChildren(textType);
-                    var text = (string)textType.GetProperty("text").GetValue(textComponent);
-                    if (!text.StartsWith(label + " ", StringComparison.Ordinal)) continue;
+                    var option = opportunity.Options?.FirstOrDefault(o => o.IsOpen && o.IsPublished && model.Decision.FindAction(new ActionSpecId(o.ActionSpecId))?.Type == kind);
+                    if (option == null) continue;
+                    var action = new ActionSpecId(option.ActionSpecId);
+                    if (!model.HudPreviews.PreviewReaction(new ReactionOpportunityId(opportunity.ReactionOpportunityId), action).IsFeasible) continue;
                     if (futureChain && model.Adrenaline.Single(l => l.UnitId == hero.Value).AvailableAdrenaline < model.Decision.ActionSetOf(hero)
                         .Select(model.Decision.FindAction).Single(s => s.Type == kind).AdrenalineCost) continue;
                     long before = model.SubmittedCommands;
-                    Click(go.GetComponent(buttonType));
+                    presentation.Clock.PauseTactically("反应卡回归");
+                    presentation.ReactionView.Select(opportunity.ReactionOpportunityId, action);
                     if (kind == ActionType.Dodge)
                     {
                         Assert.That(model.SubmittedCommands, Is.EqualTo(before), "Dodge destination selection only previews.");
-                        var preview = Field(presentation, "_selectedDodgePreview") as ProjectHero.Logic.Movement.DodgeCancellationPreview;
-                        if (preview?.RejectionCode != null) continue;
+                        bool selectedDestination = false; GridPoint destination = default;
+                        foreach (var candidate in model.DodgeDestinations(opportunity.ReactionOpportunityId, action))
+                            if (presentation.ReactionView.SelectDestination(candidate)) { destination = candidate; selectedDestination = true; break; }
+                        if (!selectedDestination) { presentation.CancelConfiguration(); presentation.ResumePlanning(false); continue; }
+                        var preview = model.PreviewDodge(opportunity.ReactionOpportunityId, action, destination);
                         if (futureChain)
                         {
                             Assert.That(chainWindow, Is.GreaterThan(0), "The chain must be created by a preceding real hero window.");
                             Assert.That(preview.AffectedPlanIds.Select(id => id.Value), Is.EqualTo(chainIds));
 
-                            var labelComponent = Field(presentation, "_previewText");
-                            Assert.That((string)textType.GetProperty("text").GetValue(labelComponent), Does.Contain("future moves"));
+                            var labels = presentation.GetComponentsInChildren(textType, true).Cast<Component>();
+                            Assert.That(string.Join(";", labels.Select(l => (string)textType.GetProperty("text").GetValue(l))), Does.Contain("未来移动失效"));
                             Assert.That(chainIds.All(id => model.Decision.OwnPlans.Any(p => p.ActionPlanId == id)), Is.True, "Preview preserves both future Moves.");
                         }
-                        Click(Field(presentation, "_confirm")); Click(Field(presentation, "_confirm"));
                     }
+                    var confirmReaction = presentation.GetComponentsInChildren<UnityEngine.UI.Button>(true)
+                        .Single(b => b.name == "ConfirmReaction" && b.transform.parent.name == "Reaction-" + opportunity.ReactionOpportunityId);
+                    Click(confirmReaction); Click(confirmReaction);
+                    presentation.ResumePlanning(false);
                     if (model.SubmittedCommands != before + 1) continue;
                     Bootstrap.DriveFrameForTests(0, 1f / 60);
                     // The accepted plan is visible through the real controlled-unit projection.
