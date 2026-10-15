@@ -161,6 +161,9 @@ namespace ProjectHero.Logic.Simulation
                 ? new ProductionBattleComposition(_definition, _encounterId, inputs) : null;
             var copy = Create(_definition, _encounterId, inputs, new BattleSimulationAssembly(turnWindowSchedule: composition));
             composition?.Attach(copy);
+            if (_displacementSolver is ProjectHero.Logic.Interactions.ForcedDisplacementSolver geometry
+                && copy._displacementSolver is ProjectHero.Logic.Interactions.ForcedDisplacementSolver targetGeometry)
+                geometry.CopyStaticGeometryTo(targetGeometry);
             foreach (var unit in copy._units) copy._logicGrid.UnregisterUnit(unit.UnitId);
             copy._units.Clear(); copy._unitsById.Clear();
             foreach (var source in _units)

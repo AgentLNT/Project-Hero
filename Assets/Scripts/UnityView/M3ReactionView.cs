@@ -102,6 +102,7 @@ namespace ProjectHero.UnityView
         public void Select(long id, ActionSpecId action)
         {
             if (!_view.Model.CanPlan || _view.ResumeChoiceVisible || !_cards.TryGetValue(id, out var card)) return;
+            if (_view.SpatialView?.Following == false) _view.SpatialView.ReturnToNow();
             _view.CancelConfiguration(); card.Action = action; card.Destination = null; card.Ignored = false; card.Error = null;
             var opportunity = _view.Model.Reactions.First(r => r.ReactionOpportunityId == id);
             _view.AddContactTrack(opportunity.DefenderUnitId);
@@ -194,7 +195,8 @@ namespace ProjectHero.UnityView
             var operations = model.Drafts.HasIntent && model.Drafts.State != ScheduleDraftState.Stale ? model.Drafts.Operations : Array.Empty<ScheduleEditOperation>();
             var placements = model.StagedReactions.Concat(model.PendingReactions).ToList();
             var candidate = Candidate;
-            if (candidate != null && (model.Decision.FindAction(candidate.Action)?.Type != ActionType.Dodge || candidate.Destination.HasValue))
+            if (candidate != null && model.ReactionFeasibility(candidate).IsFeasible
+                && (model.Decision.FindAction(candidate.Action)?.Type != ActionType.Dodge || candidate.Destination.HasValue))
             { placements.RemoveAll(r => r.OpportunityId == candidate.OpportunityId); placements.Add(candidate); }
             DefensePreview = model.HudPreviews.PreviewDefensePlacements(operations, placements);
             PreviewPlacements = placements.AsReadOnly();
@@ -267,7 +269,8 @@ namespace ProjectHero.UnityView
                 _view.PlaceThreatMarker((RectTransform)marker.transform, opportunity.DefenderUnitId, index - 1);
             }
             _refreshing = false;
-            _root.gameObject.SetActive(!blocked && opportunities.Length > 0 && _view.Clock.State == BattleClockState.TacticalPlanning);
+            _root.gameObject.SetActive(!blocked && opportunities.Length > 0 && _view.Clock.State == BattleClockState.TacticalPlanning
+                && _view.SpatialView?.Following != false);
             bool picking = AwaitingDestination;
             _root.anchorMin = new Vector2(.29f, picking ? .80f : .48f);
             _content.parent.parent.gameObject.SetActive(!picking);

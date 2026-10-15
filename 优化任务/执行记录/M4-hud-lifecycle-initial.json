@@ -1,0 +1,34 @@
+{
+  "status": "completed",
+  "duration": 4.38,
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting",
+      "Status": "Passed",
+      "Duration": 1.360296,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands",
+      "Status": "Passed",
+      "Duration": 0.6860204,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection",
+      "Status": "Failed",
+      "Duration": 2.3074088,
+      "Message": "Unhandled log message: '[Exception] MissingReferenceException: The object of type 'UnityEngine.Camera' has been destroyed but you are still trying to access it.\nYour script should either check if it is null or you should not destroy the object.'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "UnityEngine.Object+MarshalledUnityObject.TryThrowEditorNullExceptionObject (UnityEngine.Object unityObj, System.String parameterName) (at <0e80f59860fa45278948cc6ebb8e9196>:0)\r\nUnityEngine.Bindings.ThrowHelper.ThrowNullReferenceException (System.Object obj) (at <0e80f59860fa45278948cc6ebb8e9196>:0)\r\nUnityEngine.Camera.get_pixelRect () (at <0e80f59860fa45278948cc6ebb8e9196>:0)\r\nProjectHero.UnityView.M4SpatialView.Refresh () (at Assets/Scripts/UnityView/M4SpatialView.cs:112)\r\nProjectHero.UnityView.BattlePresentationView.OnClockChanged () (at Assets/Scripts/UnityView/BattlePresentationView.cs:341)\r\nProjectHero.UnityView.BattleClockController.End () (at Assets/Scripts/UnityView/BattleClockController.cs:61)\r\nProjectHero.Core.Compatibility.Runtime.UnityBattleDriver.StopBattle (System.String reason) (at Assets/Scripts/UnityView/UnityBattleDriver.cs:276)\r\nProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.StopBattle (System.String reason) (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:110)\r\nProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.OnDestroy () (at Assets/Scripts/UnityView/BattleRuntimeBootstrap.cs:125)\r\nUnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)\r\n\r\n"
+    }
+  ]
+}

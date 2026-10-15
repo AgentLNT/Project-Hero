@@ -42,6 +42,18 @@ namespace ProjectHero.UnityView
         public float TimelinePixelsPerSecond => TimelineView != null ? TimelineView.PixelsPerSecond : _timelinePixelsPerSecond;
         public M2TimelineView TimelineView { get; private set; }
         public M3ReactionView ReactionView { get; private set; }
+        public M4SpatialView SpatialView { get; private set; }
+        public SpatialAttackPreview ConfiguredAttack => _candidate == null || CandidatePreview?.Succeeded != true
+            || Model.Decision.FindAction(_selectedAction)?.Type != ActionType.Attack ? null
+            : Model.HudPreviews.PreviewSpace(PlanningTick(), SpaceOperations(true), ReactionView?.PreviewPlacements).Attacks
+                .FirstOrDefault(a => a.TemporaryPlanKey == (_editingDraft != 0 ? _editingDraft : long.MaxValue));
+        public IReadOnlyList<ScheduleEditOperation> SpaceOperations(bool includeCandidate = false)
+        {
+            var operations = Model.Drafts.State == ScheduleDraftState.Stale ? new List<ScheduleEditOperation>() : Model.Drafts.Operations.ToList();
+            if (includeCandidate && _candidate != null && _editingDraft == 0)
+                operations.Add(_candidate with { TemporaryPlanKey = long.MaxValue });
+            return operations;
+        }
         public bool ResumeChoiceVisible => _hud?.ResumeChoiceVisible == true;
         public Vector3 GridWorld(GridPoint point) => _grid.GridToWorld(point);
         public void PlaceThreatMarker(RectTransform marker, long unitId, int index)
@@ -253,6 +265,7 @@ namespace ProjectHero.UnityView
             _bound = false; Model.Drafts.Reset(); Model.CancelDraft(); _candidate = null; _editingDraft = 0; _selectedReaction = 0; _selectedAction = default; _selectedDodgePreview = null;
             if (_hud != null) _hud.Release();
             ReactionView?.Release();
+            SpatialView?.Release();
             Clock.Changed -= OnClockChanged;
             _pauseShortcut?.Dispose(); _systemShortcut?.Dispose(); _trackShortcut?.Dispose(); _pauseShortcut = _systemShortcut = _trackShortcut = null;
             TimelineView?.ClearSnap(); TrackSelection.Reset(); _autoFocusSignature = null;
@@ -281,6 +294,8 @@ namespace ProjectHero.UnityView
             TimelineView.Bind(this, _timeline, _font, _status);
             ReactionView = GetComponent<M3ReactionView>() ?? gameObject.AddComponent<M3ReactionView>();
             ReactionView.Bind(this, (RectTransform)_panel.transform, _font, _reactions);
+            SpatialView = GetComponent<M4SpatialView>() ?? gameObject.AddComponent<M4SpatialView>();
+            SpatialView.Bind(this, _grid, _camera, (RectTransform)_panel.transform, _font);
             Clock.Changed -= OnClockChanged; Clock.Changed += OnClockChanged; OnClockChanged();
             _pauseShortcut = new InputAction("Tactical pause", InputActionType.Button, "<Keyboard>/space");
             _pauseShortcut.performed += _ =>
@@ -323,7 +338,7 @@ namespace ProjectHero.UnityView
                 SyncPrimary();
             }
             if (Clock.State == BattleClockState.SystemPaused || Clock.State == BattleClockState.Ended) TimelineView?.ClearSnap();
-            if (_bound) { _hud?.Refresh(); ReactionView?.Refresh(); }
+            if (_bound) { _hud?.Refresh(); ReactionView?.Refresh(); SpatialView?.Refresh(); }
         }
         private void RebuildOwnerActions()
         {
@@ -387,7 +402,7 @@ namespace ProjectHero.UnityView
                 startTick, PrimaryTargetUnitId: spec.Type == ActionType.Attack && _target.IsValid ? _target : (UnitId?)null, Facing: _facing, Destination: destination);
             if (_editingDraft != 0) Model.EditDraft(_editingDraft, _candidate);
             CandidatePreview = _editingDraft != 0 ? Model.Preview : Model.PreviewCandidate(_candidate);
-            RenderPreview();
+            RenderPreview(); SpatialView?.Refresh();
         }
         public void AddConfiguredDraft()
         {
@@ -474,8 +489,11 @@ namespace ProjectHero.UnityView
         {
             if (!(Model.Decision.FindAction(_selectedAction)?.Payload is AttackPayloadSpec attack)) return;
             var owner = ActingUnit();
-            if (owner == null || (owner.X == cell.X && owner.Y == cell.Y)) { _grid.ClearAttackPreview(); return; }
-            var origin = new GridPoint(owner.X, owner.Y);
+            if (owner == null) { _grid.ClearAttackPreview(); return; }
+            var pose = PlanningOrigin();
+            if (pose == null) { _grid.ClearAttackPreview(); return; }
+            var origin = pose.Position;
+            if (origin == cell) { _grid.ClearAttackPreview(); return; }
             var facing = GridView.DirectionTo(origin, cell);
             _grid.ShowAttackPreview(VolumeFootprint.ResolveTriangles(attack.Pattern.Directions, origin, facing));
         }
@@ -485,13 +503,17 @@ namespace ProjectHero.UnityView
         {
             if (!Model.CanPlan || !(Model.Decision.FindAction(_selectedAction)?.Payload is AttackPayloadSpec attack)) return false;
             var owner = ActingUnit();
-            if (owner == null || (owner.X == cell.X && owner.Y == cell.Y)) return false;
-            _facing = GridView.DirectionTo(new GridPoint(owner.X, owner.Y), cell);
+            var pose = PlanningOrigin();
+            if (owner == null || pose == null || pose.Position == cell) return false;
+            _facing = GridView.DirectionTo(pose.Position, cell);
             _target = default;
+            var targetSpace = Model.HudPreviews.PreviewSpace(PlanningTick(), SpaceOperations());
             foreach (var target in Model.Targets(_owner, _selectedAction))
             {
                 var directions = Model.Decision.Definition.VolumeDirectionsOf(new UnitDefinitionId(target.DefinitionId));
-                foreach (var occupied in VolumeFootprint.ResolveCells(directions, new GridPoint(target.X, target.Y), (GridDirection)target.Facing))
+                var projected = targetSpace.Units.FirstOrDefault(u => u.UnitId == target.UnitId);
+                var position = projected?.Position ?? new GridPoint(target.X, target.Y);
+                foreach (var occupied in VolumeFootprint.ResolveCells(directions, position, projected?.Facing ?? (GridDirection)target.Facing))
                     if (occupied == cell && (!_target.IsValid || target.UnitId < _target.Value)) _target = new UnitId(target.UnitId);
             }
             // A fixed-target attack keeps an invalid configuration visible when the clicked cell is empty.
@@ -499,6 +521,14 @@ namespace ProjectHero.UnityView
             PreviewAttackCell(cell);
             return true;
         }
+        private long PlanningTick()
+        {
+            long id = _editingDraft != 0 ? Model.PreviewPlanFor(_editingDraft)?.ActionPlanId ?? 0
+                : CandidatePreview?.AppliedEdits?.LastOrDefault()?.PlanId.Value ?? 0;
+            var candidate = CandidatePreview?.Succeeded == true ? CandidatePreview.PreviewPlans.FirstOrDefault(p => p.Plan.ActionPlanId == id)?.Plan : null;
+            return candidate?.StartTick ?? Model.HudPreviews.PreviewPlanningStart(_owner, _requestedStart, SpaceOperations()) ?? Model.Decision.Tick + 1;
+        }
+        private SpatialUnitPreview PlanningOrigin() => Model.HudPreviews.PreviewSpace(PlanningTick(), SpaceOperations()).Units.FirstOrDefault(u => u.UnitId == _owner.Value);
         private static bool InputFieldFocused()
         {
             var selected = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
@@ -538,6 +568,7 @@ namespace ProjectHero.UnityView
             _hud?.Refresh();
             RenderTimeline();
             ReactionView?.Refresh();
+            SpatialView?.Refresh();
         }
         private void RenderPreview()
         {
@@ -566,6 +597,25 @@ namespace ProjectHero.UnityView
                 text.Append($"{M1HudView.ActionName(plan.ActionSpecId)}  {plan.StartTick / 60d:0.000}s → {plan.EndTick / 60d:0.000}s\n");
             }
             if (Model.LastRejection != null) text.Append("\n").Append(M1HudView.Explain(Model.LastRejection));
+            if (_candidate != null && CandidatePreview?.Succeeded == true && Clock.State == BattleClockState.TacticalPlanning
+                && Model.Decision.FindAction(_selectedAction)?.Type == ActionType.Attack)
+            {
+                long key = _editingDraft != 0 ? _editingDraft : long.MaxValue;
+                var result = Model.HudPreviews.PreviewSpatialResults(SpaceOperations(true), ReactionView?.PreviewPlacements);
+                text.Append("\n条件预测（公开信息，无新增输入）");
+                if (result.RejectionCode != null) text.Append(" · 无法预测");
+                else
+                {
+                    var hits = result.Damage.Where(d => d.TemporaryPlanKey == key).ToArray();
+                    var outcomes = result.Contacts.Where(c => c.TemporaryPlanKey == key).ToArray();
+                    if (outcomes.Length == 0) text.Append(ConfiguredAttack != null && result.KnownHorizonTick.HasValue && ConfiguredAttack.ImpactTick >= result.KnownHorizonTick
+                        ? "\n命中时刻超出已知视界 · 结果未知" : "\n视界内无预计接触");
+                    foreach (var outcome in outcomes) text.Append($"\n◆ {outcome.Outcome} · {UnitLabel(outcome.TargetUnitId)}");
+                    foreach (var hit in hits) text.Append($"\n{UnitLabel(hit.TargetUnitId)} · 伤害 {hit.DamageQ10 / 1024d:0.##}");
+                    foreach (var stop in result.Knockbacks.Where(k => k.TemporaryPlanKeys.Contains(key)))
+                        text.Append($"\n击退 → ({stop.To.X},{stop.To.Y}) · {M4StopReason(stop.StopReason)} {stop.AppliedSteps}/{stop.RequestedSteps}格");
+                }
+            }
             foreach (var capability in Model.HudPreviews?.OpponentCapabilities ?? Array.Empty<OpponentReactionCapability>())
             {
                 if (!capability.IsWithinKnownHorizon) continue;
@@ -576,6 +626,14 @@ namespace ProjectHero.UnityView
             }
             _previewText.text = text.ToString();
         }
+        private static string M4StopReason(ProjectHero.Logic.Combat.ForcedDisplacementStopReason reason) => reason switch
+        {
+            ProjectHero.Logic.Combat.ForcedDisplacementStopReason.Completed => "完整距离",
+            ProjectHero.Logic.Combat.ForcedDisplacementStopReason.Boundary => "边界阻挡",
+            ProjectHero.Logic.Combat.ForcedDisplacementStopReason.StaticObstacle => "障碍阻挡",
+            ProjectHero.Logic.Combat.ForcedDisplacementStopReason.OccupiedUnit => "单位阻挡",
+            _ => "同批位移冲突"
+        };
         private void RenderTimeline()
         {
             TimelineView?.Refresh();

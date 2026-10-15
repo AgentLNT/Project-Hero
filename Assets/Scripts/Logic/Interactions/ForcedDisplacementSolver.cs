@@ -91,6 +91,14 @@ namespace ProjectHero.Logic.Interactions
         /// <summary>性能统计（装配方持有同一实例；<c>null</c> = 不采样）。</summary>
         public ForcedDisplacementStats Stats => _stats;
 
+        // Public battlefield geometry is part of the filtered read world's input too.
+        // This seam copies geometry only, never a solver/grid reference or diagnostic counters.
+        internal void CopyStaticGeometryTo(ForcedDisplacementSolver target)
+        {
+            target._staticObstacles.Clear();
+            foreach (var point in _staticObstacles) target._staticObstacles.Add(point);
+        }
+
         public ForcedDisplacementBatch ResolveAll(
             IReadOnlyList<ForcedDisplacementRequest> requests,
             IReadOnlyList<UnitSnapshot> immutableUnitSnapshot,

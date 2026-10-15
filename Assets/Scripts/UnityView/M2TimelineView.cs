@@ -46,6 +46,8 @@ namespace ProjectHero.UnityView
         public double SpanTicks => _spanSeconds * _view.Model.Decision.Definition.TicksPerSecond;
         public RectTransform Content => _content;
         public IReadOnlyList<TimelineContactPreview> Contacts => _contacts;
+        public long CursorTick => _view.SpatialView?.CursorTick ?? _view.Model.Decision.Tick;
+        public void RefreshCursor() => RefreshLines();
 
         public void Bind(BattlePresentationView view, RectTransform timelineContent, TMP_FontAsset font, TMP_Text status)
         {
@@ -63,6 +65,12 @@ namespace ProjectHero.UnityView
             Button(Pixels(toolbar, "ZoomOut", 112, 0, 30, 24), "−", () => Zoom(1.333333));
             Button(Pixels(toolbar, "Now", 145, 0, 104, 24), "回到当前", ReturnToNow);
             _overflow = Button(Pixels(toolbar, "Overflow", 252, 0, 180, 24), "", OpenOverflow).GetComponentInChildren<TMP_Text>();
+            var rail = Pixels(_header, "TimeCursorRail", TitleWidth, 43, 0, 19);
+            rail.anchorMax = new Vector2(1, 1); rail.offsetMax = new Vector2(0, -43); rail.offsetMin = new Vector2(TitleWidth, -62);
+            Image(rail, new Color(.15f, .25f, .3f, .25f), true);
+            rail.gameObject.AddComponent<TimelineCursorInput>().Bind(this);
+            Button(Pixels(toolbar, "CursorEarlier", 438, 0, 60, 24), "−0.1s", () => _view.SpatialView?.Nudge(-1));
+            Button(Pixels(toolbar, "CursorLater", 502, 0, 60, 24), "+0.1s", () => _view.SpatialView?.Nudge(1));
             var scrollRoot = Rect(_root, "TrackScroll"); Stretch(scrollRoot); scrollRoot.offsetMax = new Vector2(0, -62);
             _scroll = scrollRoot.gameObject.AddComponent<UnityEngine.UI.ScrollRect>();
             _viewport = Rect(scrollRoot, "Viewport"); Stretch(_viewport);
@@ -95,7 +103,17 @@ namespace ProjectHero.UnityView
         }
         public void ResetView()
         { _renderKey = _rosterKey = _liveGate = null; _lastPrimary = 0; _follow = true; _spanSeconds = 6; _lastDraftPlans.Clear(); ClearSnap(); }
-        public void ReturnToNow() { _follow = true; _renderKey = null; Refresh(); }
+        public void ReturnToNow() { _follow = true; _view.SpatialView?.ReturnToNow(); _renderKey = null; Refresh(); }
+        public void Scrub(Vector2 screen, Camera camera)
+        {
+            if (_view.Clock.State != BattleClockState.TacticalPlanning || _view.ResumeChoiceVisible) return;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_header, screen, camera, out var point))
+            {
+                double fraction = (point.x - _header.rect.xMin - TitleWidth) / Math.Max(1, _header.rect.width - TitleWidth);
+                _view.SpatialView?.SetCursor(_startTick + (long)Math.Round(Math.Max(0, Math.Min(1, fraction)) * SpanTicks));
+                RefreshLines();
+            }
+        }
         public void FocusTick(long tick) { _follow = false; _startTick = Math.Max(0, tick - (long)(SpanTicks * .65)); _renderKey = null; Refresh(); }
         public void Pan(double fraction) { _follow = false; _startTick = Math.Max(0, _startTick + (long)(SpanTicks * fraction)); _renderKey = null; ClearSnap(); Refresh(); }
         public void Zoom(double factor) { _spanSeconds = Math.Max(1, Math.Min(30, _spanSeconds * factor)); _renderKey = null; ClearSnap(); Refresh(); }
@@ -320,7 +338,8 @@ namespace ProjectHero.UnityView
                 {
                     float ty = target.Root.anchoredPosition.y + _content.anchoredPosition.y - 16;
                     var line = Pixels(_overlay, "ContactLink", x, -Mathf.Max(sy, ty), 2, Mathf.Abs(sy - ty) + 2); Image(line, new Color(.95f, .63f, .3f, .75f)); _links.Add(line.gameObject);
-                    var label = Pixels(_overlay, "ContactResult", x + 3, -sy, 100, 20); Text(label, "◆ " + contact.Outcome, 12); _links.Add(label.gameObject);
+                    var label = Pixels(_overlay, "ContactResult", x + 3, -sy, 100, 20);
+                    var selectedContact = contact; Button(label, "◆ " + contact.Outcome, () => _view.SpatialView?.SelectContact(selectedContact)); _links.Add(label.gameObject);
                 }
                 else
                 {
@@ -328,7 +347,7 @@ namespace ProjectHero.UnityView
                     long id = contact.TargetUnitId; Button(tag, "◆ " + _view.UnitLabel(id) + " +", () => _view.AddContactTrack(id)); _links.Add(tag.gameObject);
                 }
             }
-            Line(_cursor, _view.Model.Decision.Tick, new Color(.3f, 1, .85f));
+            Line(_cursor, CursorTick, new Color(.3f, 1, .85f));
             long? horizon = _view.Model.HudPreviews?.KnownHorizonTick;
             _horizon.gameObject.SetActive(horizon.HasValue); if (horizon.HasValue) Line(_horizon, horizon.Value, Color.gray);
             if (horizon.HasValue && _horizon.gameObject.activeSelf)
@@ -378,5 +397,13 @@ namespace ProjectHero.UnityView
             var text = Rect(rect, "Label"); Stretch(text); text.offsetMin = new Vector2(4, 0); text.offsetMax = new Vector2(-3, 0);
             Text(text, label, 14); button.onClick.AddListener(action); return button;
         }
+    }
+
+    public sealed class TimelineCursorInput : MonoBehaviour, IPointerDownHandler, IDragHandler
+    {
+        private M2TimelineView _timeline;
+        public void Bind(M2TimelineView timeline) => _timeline = timeline;
+        public void OnPointerDown(PointerEventData data) { if (data.button == PointerEventData.InputButton.Left) _timeline.Scrub(data.position, data.pressEventCamera); }
+        public void OnDrag(PointerEventData data) { if (data.button == PointerEventData.InputButton.Left) _timeline.Scrub(data.position, data.pressEventCamera); }
     }
 }

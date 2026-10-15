@@ -1,0 +1,34 @@
+{
+  "status": "completed",
+  "duration": 4.42,
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting",
+      "Status": "Passed",
+      "Duration": 1.3435401,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands",
+      "Status": "Passed",
+      "Duration": 0.6162673,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection",
+      "Status": "Failed",
+      "Duration": 2.43213,
+      "Message": "  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.M4HudPlayModeTests+<OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection>d__11.MoveNext () [0x003e8] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\M4HudPlayModeTests.cs:131\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    }
+  ]
+}
