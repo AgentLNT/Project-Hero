@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 1.17,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests.MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays",
+      "Status": "Failed",
+      "Duration": 1.1435963,
+      "Message": "  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|FACTION_RELATION_UNKNOWN_ID: 3\r\n  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.Task11DynamicSpawnSceneTests+<MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays>d__2.MoveNext () [0x00494] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\Task11DynamicSpawnSceneTests.cs:55\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    }
+  ]
+}

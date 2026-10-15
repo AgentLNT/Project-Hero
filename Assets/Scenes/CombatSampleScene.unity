@@ -5052,14 +5052,13 @@ MonoBehaviour:
   _font: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   _feedbackPlayer: {fileID: 1306963357}
   _footprints: {fileID: 507393399}
-  _legacyCanvases: []
   _actionToggle: {fileID: 1730222151}
-  _legacyPresentation: []
   _confirm: {fileID: 895453612}
   _cancel: {fileID: 1551481196}
   _concurrent: {fileID: 1019629040}
   _pause: {fileID: 488790579}
   _rotate: {fileID: 775414081}
+  _timelinePixelsPerSecond: 240
   _retiredCloseButton: {fileID: 0}
   _replayPath: {fileID: 1861600110}
   _replayStatus: {fileID: 2074800650}
@@ -5837,16 +5836,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f0dbdb122b4ce44f8097d79093a3b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ProjectHero.Compatibility.Runtime::ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap
-  _requestedMode: 2
-  _productionNewOnly: 1
-  _legacyFrameAdapterSlot: {fileID: 0}
   _simulationSourceSlot: {fileID: 1572899358}
   _viewConsumerSlot: {fileID: 1306963359}
   _autoStart: 1
-  _shadowComparisonConfigVersion: 1
-  _shadowMaxStepsPerComparison: 64
-  _shadowMaxCheckpoints: 4096
-  _shadowComparisonMode: 0
+  _requestedMode: 2
 --- !u!114 &1572899358
 MonoBehaviour:
   m_ObjectHideFlags: 0

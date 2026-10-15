@@ -16,6 +16,18 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
         TurnWindowSnapshot CurrentWindow { get; }
         IReadOnlyList<AdrenalineLedgerSnapshot> AllAdrenaline { get; }
         HudPreviewService HudPreviews { get; }
+        ConcurrentActionSnapshot ConcurrentAction => ConcurrentActionSnapshot.None();
         bool TryGetOwnTerminalPlan(ActionPlanId planId, out ActionPlanSnapshot snapshot);
+    }
+    public sealed class ViewCommandReceipt
+    {
+        public long TargetTick { get; } public long ProducerOrdinal { get; } public bool Accepted { get; } public string Reason { get; }
+        public ViewCommandReceipt(long targetTick, long ordinal, bool accepted, string reason)
+        { TargetTick = targetTick; ProducerOrdinal = ordinal; Accepted = accepted; Reason = reason; }
+    }
+    public interface IViewCommandReceiptPort
+    {
+        long LastSubmittedOrdinal { get; }
+        ViewCommandReceipt ReceiptFor(long targetTick, long ordinal, ProjectHero.Logic.Events.EventBatch events);
     }
 }

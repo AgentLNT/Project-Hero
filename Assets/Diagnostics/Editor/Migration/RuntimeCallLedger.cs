@@ -27,7 +27,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
     /// <list type="bullet">
     /// <item>本账本只<strong>记录事实</strong>，不参与任何调度或门控决策——
     /// 读取它不会改变战斗演化（<c>RuntimeCallLedgerDoesNotAffectBattleEvolution</c>）。</item>
-    /// <item>每场战斗一个实例，由 <see cref="BattleRuntimeBootstrap"/> 拥有并跨战斗重置。</item>
+    /// <item>每场战斗一个实例，由 <see cref="MigrationBattleHost"/> 拥有并跨战斗重置。</item>
     /// <item><c>LegacyAdvanceTimeObservedDelta</c> 是"紧邻上一次 Legacy 适配器推进所观察到的
     /// 权威计数增量"；<see cref="LegacyAdvanceTimeTotalCalls"/> 是旧组件自己累计的总调用数
     /// （唯一权威来源，见 <c>BattleTimeline.TotalAdvanceTimeCalls</c>）。两者独立记录，
@@ -258,7 +258,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
     ///
     /// <strong>覆盖边界（第三收尾轮 R1 如实更正，不得再写成"真实触发路径"）</strong>：
     /// 本守卫**没有**接到任何生产写入点。全仓 <see cref="TryWrite"/> 只有一个生产调用点，
-    /// 就是负控制探针本身（<c>BattleRuntimeBootstrap.AttemptForbiddenShadowWriteForTests</c>）。
+    /// 就是负控制探针本身（<c>MigrationBattleHost.AttemptForbiddenShadowWriteForTests</c>）。
     /// 也就是说 <c>ShadowWrites.* == 0</c> 证明的是
     /// "<strong>没有调用方持有已发放令牌</strong>"，<strong>不是</strong>"某个真实写入点没写"。
     /// 生产侧不存在写入面这件事由**结构证据**承担（第三收尾轮 R1 选择方案 b）：

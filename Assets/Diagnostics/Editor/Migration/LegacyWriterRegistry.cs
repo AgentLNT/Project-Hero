@@ -14,7 +14,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
     ///
     /// 契约：
     /// <list type="bullet">
-    /// <item>登记后立即按 <see cref="BattleRuntimeBootstrap.BattleMode"/> 应用当前门控；
+    /// <item>登记后立即按 <see cref="MigrationBattleHost.BattleMode"/> 应用当前门控；
     /// 战斗尚未创建时按"基线（启用）"处理，等 Bootstrap 创建战斗时统一应用。</item>
     /// <item><strong>New 模式注册未分类类型即失败</strong>：注册表会把它记为未分类逻辑写入者，
     /// 并立即禁用该组件（禁止事项第 2 条）。</item>
@@ -28,10 +28,10 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         private static readonly List<Registration> Registrations = new List<Registration>();
 
-        private static BattleRuntimeBootstrap _active;
+        private static MigrationBattleHost _active;
 
         /// <summary>当前活动的 Bootstrap（场景中恰有一个时非空）。</summary>
-        public static BattleRuntimeBootstrap ActiveBootstrap => _active;
+        public static MigrationBattleHost ActiveBootstrap => _active;
 
         /// <summary>已登记的运行时写入者实例（诊断与测试直接读取）。</summary>
         public static IReadOnlyList<Behaviour> RegisteredWriters
@@ -69,7 +69,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             if (bootstrap.BattleMode == BattleRuntimeMode.New && !classified)
             {
                 // New 模式中出现未分类的运行时逻辑写入者：记为未分类并立即禁用。
-                BattleRuntimeBootstrap.MarkUnclassifiedLogicWriterType(writer.GetType().FullName);
+                MigrationBattleHost.MarkUnclassifiedLogicWriterType(writer.GetType().FullName);
                 writer.enabled = false;
                 return RUNTIME_WRITER_UNCLASSIFIED + "|" + sceneObjectPath;
             }
@@ -89,14 +89,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
         }
 
         /// <summary>Bootstrap 创建战斗时成为活动实例（重复 Bootstrap 不会静默改写）。</summary>
-        internal static void SetActiveBootstrap(BattleRuntimeBootstrap bootstrap)
+        internal static void SetActiveBootstrap(MigrationBattleHost bootstrap)
         {
             if (bootstrap == null) return;
             if (_active != null && !ReferenceEquals(_active, bootstrap)) return;
             _active = bootstrap;
         }
 
-        internal static void ClearActiveBootstrap(BattleRuntimeBootstrap bootstrap)
+        internal static void ClearActiveBootstrap(MigrationBattleHost bootstrap)
         {
             if (ReferenceEquals(_active, bootstrap)) _active = null;
         }

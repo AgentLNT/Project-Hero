@@ -21,7 +21,7 @@ namespace ProjectHero.Authoring.Tests
         [Test] public void RuntimePlayerProjectionIsCachedOnlyUntilTheNextCommittedSnapshot()
         {
             var driver = new UnityBattleDriver(); var source = new Source();
-            driver.Initialize(new BattleRuntimeContext(BattleRuntimeMode.New, new RuntimeCallLedger(), new ShadowWriteCounters(), source));
+            driver.Initialize(new BattleRuntimeContext(source));
             driver.CreateSimulation(source);
             try
             {
@@ -77,7 +77,7 @@ namespace ProjectHero.Authoring.Tests
         [Test] public void RuntimePlayerPortDropsPausedInputBeforeCommandConstruction()
         {
             var source = new Source(); var driver = new UnityBattleDriver();
-            driver.Initialize(new BattleRuntimeContext(BattleRuntimeMode.New, new RuntimeCallLedger(), new ShadowWriteCounters(), source));
+            driver.Initialize(new BattleRuntimeContext(source));
             driver.CreateSimulation(source);
             try
             {

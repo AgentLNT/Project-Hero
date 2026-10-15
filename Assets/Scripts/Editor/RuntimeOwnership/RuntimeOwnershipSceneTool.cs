@@ -29,9 +29,9 @@ namespace ProjectHero.Editor.RuntimeOwnership
     /// 四个入口：
     /// <list type="bullet">
     /// <item><c>接入主战斗场景</c>：在 <c>CombatSampleScene/CombatDemo</c> 上补一个
-    /// <c>BattleRuntimeBootstrap</c>（默认 Legacy），把两个显式槽位指向场景中真实的
+    /// <c>MigrationBattleHost</c>（默认 Legacy），把两个显式槽位指向场景中真实的
     /// Legacy 适配器与 02B 初始化来源；并设置脚本执行顺序。</item>
-    /// <item><c>创建隐藏验证场景</c>：新建 <c>Assets/Scenes/HiddenRuntimeValidation.unity</c>
+    /// <item><c>创建隐藏验证场景</c>：新建 <c>Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity</c>
     /// （不进入 Build Settings），用<b>真实生产组件</b>装配最小初始化链，
     /// <c>_autoStart = false</c> 供 PlayMode 三模式验证显式驱动。</item>
     /// <item><c>审计场景所有权</c>：扫描全部场景，报告顶层时钟推进者数量、
@@ -42,7 +42,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
     public static class RuntimeOwnershipSceneTool
     {
         public const string MainScenePath = "Assets/Scenes/CombatSampleScene.unity";
-        public const string HiddenValidationScenePath = "Assets/Scenes/HiddenRuntimeValidation.unity";
+        public const string HiddenValidationScenePath = "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity";
         public const string CombatDemoObjectName = "CombatDemo";
 
         /// <summary>隐藏场景的规范组件集合（PlayMode 测试据此核对"最小但真实"）。</summary>
@@ -55,7 +55,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             "ProjectHero.Core.Gameplay.BattleManager",
             "ProjectHero.Demos.CombatDemo",
             "ProjectHero.Core.Compatibility.Authoring.BattleSimulationSourceFactory",
-            "ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap"
+            "ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost"
         };
 
         [MenuItem("Tools/Runtime Ownership/1. Wire Main Battle Scene", false, 100)]
@@ -92,15 +92,15 @@ namespace ProjectHero.Editor.RuntimeOwnership
                 return report.ToString();
             }
 
-            var bootstrap = demo.GetComponent<BattleRuntimeBootstrap>();
+            var bootstrap = demo.GetComponent<MigrationBattleHost>();
             if (bootstrap == null)
             {
-                bootstrap = demo.gameObject.AddComponent<BattleRuntimeBootstrap>();
-                report.AppendLine("added BattleRuntimeBootstrap on " + PathOf(demo));
+                bootstrap = demo.gameObject.AddComponent<MigrationBattleHost>();
+                report.AppendLine("added MigrationBattleHost on " + PathOf(demo));
             }
             else
             {
-                report.AppendLine("BattleRuntimeBootstrap already present on " + PathOf(demo));
+                report.AppendLine("MigrationBattleHost already present on " + PathOf(demo));
             }
 
             var factory = demo.GetComponent<BattleSimulationSourceFactory>();
@@ -135,7 +135,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
         /// 一整套交互链，使"三模式所有权验证"耦合到表现资产；因此本工具用
         /// <b>真实生产组件</b>（<see cref="CombatDemo"/>、<see cref="BattleTimeline"/>、
         /// <see cref="CombatUnit"/>、<see cref="BattleSimulationSourceFactory"/>、
-        /// <see cref="BattleRuntimeBootstrap"/>）装配最小闭包，明确排除
+        /// <see cref="MigrationBattleHost"/>）装配最小闭包，明确排除
         /// UI/Canvas/相机/预览/可视化组件。
         ///
         /// <c>_autoStart = false</c>：三种模式都由 PlayMode 测试显式调用 <c>StartBattle</c> 驱动。
@@ -165,7 +165,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             root.AddComponent<BattleManager>();
             var demo = root.AddComponent<CombatDemo>();
             var factory = root.AddComponent<BattleSimulationSourceFactory>();
-            var bootstrap = root.AddComponent<BattleRuntimeBootstrap>();
+            var bootstrap = root.AddComponent<MigrationBattleHost>();
 
             // --- 两个单位（真实 CombatUnit，含真实 ActionLibrary/UnitVolume 引用） ---
             var player = CreateUnitObject("Player", new GridPoint(-5, -5), "ForRadius1", "Radius_1", report);
@@ -228,7 +228,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
         }
 
         private static void ConfigureBootstrap(
-            BattleRuntimeBootstrap bootstrap, CombatDemo demo, BattleSimulationSourceFactory factory,
+            MigrationBattleHost bootstrap, CombatDemo demo, BattleSimulationSourceFactory factory,
             bool autoStart, BattleRuntimeMode mode, StringBuilder report)
         {
             var serialized = new SerializedObject(bootstrap);
@@ -429,7 +429,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
                         }
 
                         var type = component.GetType();
-                        if (type == typeof(BattleRuntimeBootstrap)) bootstrapCount++;
+                        if (type == typeof(MigrationBattleHost) || type == typeof(BattleRuntimeBootstrap)) bootstrapCount++;
                         if (IsProductionBattleType(type)) productionTypeCount++;
 
                         if (IsTopLevelAdvancer(type))
@@ -497,12 +497,12 @@ namespace ProjectHero.Editor.RuntimeOwnership
                 || fullName.StartsWith("ProjectHero.Core.", StringComparison.Ordinal)
                 || fullName.StartsWith("ProjectHero.UI.", StringComparison.Ordinal)
                 || fullName.StartsWith("ProjectHero.Visuals.", StringComparison.Ordinal)
-                || type == typeof(BattleRuntimeBootstrap);
+                || type == typeof(MigrationBattleHost);
         }
 
         private static bool IsTopLevelAdvancer(Type type)
         {
-            if (type == typeof(BattleRuntimeBootstrap)) return false; // 唯一合法者
+            if (type == typeof(MigrationBattleHost)) return false; // 唯一合法者
             var update = type.GetMethod("Update",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public |
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.DeclaredOnly,

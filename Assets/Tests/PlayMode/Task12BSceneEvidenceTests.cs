@@ -38,7 +38,7 @@ namespace ProjectHero.Tests.PlayMode
         public void ReleaseVisuals()=>Target.ReleaseVisuals();
         public void AdvanceDiagnostics(double seconds)=>Target.AdvanceDiagnostics(seconds);
     }
-    public sealed class Task12BSceneEvidenceTests : RuntimeOwnershipTestBase
+    public sealed class Task12BSceneEvidenceTests : ProductionRuntimeTestBase
     {
         protected override bool UseLegacyComparisonScene => false;
         static readonly ActionSpecId Warm = new ActionSpecId("action.t12b.scene.warm");
@@ -172,12 +172,12 @@ namespace ProjectHero.Tests.PlayMode
             }
             typeof(Task10WiredPresentationTests).GetMethod("CaptureView",BindingFlags.NonPublic|BindingFlags.Static)
                 .Invoke(null,new object[] {presentation,"12C-main-defense-case-"+scenario});
-            var replay=Bootstrap.NewDriver.RecordedReplay; string path="优化任务/执行记录/12C-main-defense-case-"+scenario+".heroReplay";
+            var replay=Bootstrap.NewDriver.RecordedReplay; string path="优化任务/执行记录/M1-regression/12C-main-defense-case-"+scenario+".heroReplay";
             using(var file=File.Create(path)) ReplayFile.Save(file,replay);
             using(var player=new ReplayPlayer(source.Seed.Definition,h=>ProductionBattleComposition.Create(source.Seed.Definition,h.EncounterId,h.RuntimeInputs)))
                 for(int run=0;run<100;run++) { if(run==0) player.Load(replay); else player.Restart(); player.Play();
                     while(!player.IsComplete && player.Deviation==null) player.AdvanceOneTick(); Assert.That(player.Deviation,Is.Null); Assert.That(player.IsComplete,Is.True); }
-            File.WriteAllText("优化任务/执行记录/12C-main-defense-case-"+scenario+".txt",source.Seed.InputSummary+"\nscenario="+scenario+"\ntick="+simulation.Tick
+            File.WriteAllText("优化任务/执行记录/M1-regression/12C-main-defense-case-"+scenario+".txt",source.Seed.InputSummary+"\nscenario="+scenario+"\ntick="+simulation.Tick
                 +"\nreactionTriggeredAtTick="+(reaction?.ReactionTriggeredAtTick.ToString()??"Guard quota 512,512,0")+"\nreplayRestarts=100\n"
                 +string.Join("\n",capture.Facts.Where(f=>f is BlockResolvedEvent || f is GuardQuotaConsumedEvent || f is ActionPlanTerminatedEvent || f is DamageChannelResolvedEvent).Select(ReplayEventComparison.Canonical)));
             Bootstrap.StopBattle("12C-scene-complete"); Bootstrap.ReleaseBattle(); yield return null;

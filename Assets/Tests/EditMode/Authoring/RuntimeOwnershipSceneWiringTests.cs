@@ -29,7 +29,7 @@ namespace ProjectHero.Authoring.Tests
             "ProjectHero.Editor.RuntimeOwnership.RuntimeOwnershipSceneTool";
 
         private const string MainScenePath = "Assets/Scenes/CombatSampleScene.unity";
-        private const string HiddenScenePath = "Assets/Scenes/HiddenRuntimeValidation.unity";
+        private const string HiddenScenePath = "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity";
 
         /// <summary>隐藏场景必须包含的真实生产组件（不引用 Legacy 运行时类型，用全名核对）。</summary>
         private static readonly string[] ExpectedHiddenSceneTypes =
@@ -41,7 +41,7 @@ namespace ProjectHero.Authoring.Tests
             "ProjectHero.Core.Gameplay.BattleManager",
             "ProjectHero.Demos.CombatDemo",
             "ProjectHero.Core.Compatibility.Authoring.BattleSimulationSourceFactory",
-            "ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap"
+            "ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost"
         };
 
         /// <summary>隐藏场景明确排除的表现/交互/UI 闭包。</summary>
@@ -92,19 +92,19 @@ namespace ProjectHero.Authoring.Tests
                     if (behaviour == null) continue;
                     var type = behaviour.GetType();
                     allTypes.Add(type.FullName);
-                    if (type == typeof(BattleRuntimeBootstrap)) bootstrapCount++;
+                    if (type == typeof(MigrationBattleHost)) bootstrapCount++;
                     if (type.FullName == "ProjectHero.Core.Entities.CombatUnit") combatUnitCount++;
                 }
             }
 
-            Assert.That(bootstrapCount, Is.EqualTo(1), "主战斗场景必须恰有一个 BattleRuntimeBootstrap");
+            Assert.That(bootstrapCount, Is.EqualTo(1), "主战斗场景必须恰有一个 MigrationBattleHost");
             Assert.That(combatUnitCount, Is.EqualTo(2), "主战斗场景必须仍有恰好两个 CombatUnit");
             Assert.That(allTypes, Does.Contain("ProjectHero.Demos.CombatDemo"));
             Assert.That(allTypes, Does.Contain("ProjectHero.Core.Gameplay.EnemyAIController"),
                 "主场景不得因 03B 丢失既有旧从属写入者");
 
             // Bootstrap 槽位必须指向真实的 Legacy 适配器与 02B 初始化来源。
-            var bootstrap = FindAll<BattleRuntimeBootstrap>(scene).Single();
+            var bootstrap = FindAll<MigrationBattleHost>(scene).Single();
             var serialized = new SerializedObject(bootstrap);
             var legacySlot = serialized.FindProperty("_legacyFrameAdapterSlot").objectReferenceValue;
             var sourceSlot = serialized.FindProperty("_simulationSourceSlot").objectReferenceValue;
@@ -153,7 +153,7 @@ namespace ProjectHero.Authoring.Tests
             }
 
             Assert.That(types.Count(t => t == "ProjectHero.Core.Entities.CombatUnit"), Is.EqualTo(2));
-            Assert.That(types.Count(t => t == "ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap"),
+            Assert.That(types.Count(t => t == "ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost"),
                 Is.EqualTo(1));
 
             // 不得含相机 / Canvas（表现闭包）。
@@ -163,7 +163,7 @@ namespace ProjectHero.Authoring.Tests
                 Assert.That(root.GetComponentInChildren<Canvas>(true), Is.Null, "隐藏场景不得包含 Canvas");
             }
 
-            var bootstrap = FindAll<BattleRuntimeBootstrap>(scene).Single();
+            var bootstrap = FindAll<MigrationBattleHost>(scene).Single();
             var serialized = new SerializedObject(bootstrap);
             Assert.That(serialized.FindProperty("_autoStart").boolValue, Is.False,
                 "隐藏验证场景必须 _autoStart = false（三模式由测试显式驱动）");

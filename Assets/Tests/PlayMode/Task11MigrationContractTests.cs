@@ -15,7 +15,7 @@ namespace ProjectHero.Tests.PlayMode
         {
             const string caseId = "task11-shadow-confirmed-future-attack";
             yield return LoadLegacyComparisonScene(); Bootstrap.StopBattle("migration-prepare"); Bootstrap.ReleaseBattle();
-            var source = (IBattleSimulationSource)typeof(BattleRuntimeBootstrap)
+            var source = (IBattleSimulationSource)typeof(MigrationBattleHost)
                 .GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Bootstrap);
             var seed = source.BuildSeed();
             var evidenceType = ResolveProductionType("ProjectHero.Editor.RuntimeOwnership.Task11MigrationEvidence");
@@ -49,7 +49,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(report.MigrationObservations.Any(o => o.Field == "scheduledEventCount"
                 && o.LegacyValue != o.ShadowValue), Is.True, "Different representations must retain actual values, never pretend to be equal.");
             Assert.That(NewCutoverGate.Rejections(report, seed.BattleDefinitionHash, seed.RulesVersion, seed.EncounterId.Value), Is.Empty);
-            File.WriteAllText("优化任务/执行记录/12C-11-migration-shadow-accepted.txt", report.Describe() + "\nframes=26; confirmedFutureAttack=1; writes=0\n"
+            File.WriteAllText("优化任务/执行记录/M1-regression/12C-11-migration-shadow-accepted.txt", report.Describe() + "\nframes=26; confirmedFutureAttack=1; writes=0\n"
                 + "Case covers actual confirmed scheduling before attack execution; attack/defense/forced movement rules use independent explicit evidence.\n"
                 + string.Join("\n", report.MigrationObservations.Select(o => o.Tick + "|" + o.Field + "|legacy=" + o.LegacyValue + "|new=" + o.ShadowValue + "|" + o.ObligationId)));
             Bootstrap.StopBattle("migration-complete"); Bootstrap.ReleaseBattle();

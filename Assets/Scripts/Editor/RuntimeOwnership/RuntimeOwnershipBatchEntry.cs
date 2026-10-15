@@ -15,7 +15,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
     public static class RuntimeOwnershipBatchEntry
     {
         public const string MainScenePath = "Assets/Scenes/CombatSampleScene.unity";
-        public const string HiddenValidationScenePath = "Assets/Scenes/HiddenRuntimeValidation.unity";
+        public const string HiddenValidationScenePath = "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity";
 
         /// <summary>接入主场景 + 创建隐藏验证场景 + 审计。返回 0 表示成功。</summary>
         public static void RunBatchWiring()

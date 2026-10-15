@@ -21,7 +21,7 @@ using System.IO;
 
 namespace ProjectHero.Tests.PlayMode
 {
-    public sealed class Task10WiredPresentationTests : RuntimeOwnershipTestBase
+    public sealed class Task10WiredPresentationTests : ProductionRuntimeTestBase
     {
         protected override bool UseLegacyComparisonScene => false;
         private static object Field(object value, string name)
@@ -45,12 +45,12 @@ namespace ProjectHero.Tests.PlayMode
             Bootstrap.DriveFrameForTests(0, 1f / 60);
             presentation.GetType().GetMethod("Render", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(presentation, null);
             var textType = Type.GetType("TMPro.TMP_Text, Unity.TextMeshPro", true);
-            Assert.That((string)textType.GetProperty("text").GetValue(Field(presentation, "_status")), Does.Contain("Remaining"));
+            Assert.That((string)textType.GetProperty("text").GetValue(Field(presentation, "_status")), Does.Contain("剩余"));
             CaptureView(presentation, "12C-window-rejection");
             while (model.Decision.Tick < 180) Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(model.Window.OpenedAtTick, Is.EqualTo(180));
             Assert.That(model.Window.OwnerUnitId, Is.Not.EqualTo(hero.Value));
-            File.WriteAllText("优化任务/执行记录/12C-main-window-observations.txt",
+            File.WriteAllText("优化任务/执行记录/M1-regression/12C-main-window-observations.txt",
                 "mode=New\nfirstWindow=[0,180)\nsecondWindowOpenedAtTick=180\nendTurnButtons=0\nstatus=remaining seconds\nrejection=SCHEDULE_START_OUTSIDE_SOURCE_WINDOW\n");
         }
 
@@ -76,7 +76,7 @@ namespace ProjectHero.Tests.PlayMode
                     .Single(m => m.Name == "SubmitRenderRequest" && m.IsGenericMethodDefinition)
                     .MakeGenericMethod(requestType).Invoke(null, new[] { camera, request });
                 RenderTexture.active = texture; pixels.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0); pixels.Apply();
-                var path = Path.GetFullPath("优化任务/执行记录/" + name + ".png");
+                var path = Path.GetFullPath("优化任务/执行记录/M1-regression/" + name + ".png");
                 File.WriteAllBytes(path, pixels.EncodeToPNG());
                 TestContext.WriteLine("Actual URP presentation capture: " + path + " device=" + SystemInfo.graphicsDeviceName);
             }
@@ -136,6 +136,7 @@ namespace ProjectHero.Tests.PlayMode
         private IEnumerator CompleteColdLegacyBattle()
         {
             yield return LoadLegacyComparisonScene();
+            var Bootstrap = UnityEngine.Object.FindFirstObjectByType<MigrationBattleHost>();
             Assert.That(Bootstrap.BattleMode, Is.EqualTo(BattleRuntimeMode.Legacy));
             Assert.That(Bootstrap.NewDriver.SimulationCreated, Is.False);
             var units = FindLegacyUnits();
@@ -329,12 +330,14 @@ namespace ProjectHero.Tests.PlayMode
             {
                 presentation.SelectAction(attack);
                 var targets = (IList)Field(presentation, "_targetButtons");
-                Assert.That(targets.Count, Is.GreaterThan(0));
-                Click(((GameObject)targets[0]).GetComponent(buttonType));
-                attempts.Add(attack.Value + ":" + (model.Preview.RejectionCode ?? "available"));
-                if (model.Preview.Succeeded) break;
-                Assert.That(model.Preview.RejectionCode, Is.EqualTo("SCHEDULE_START_OUTSIDE_SOURCE_WINDOW"));
+                Assert.That(targets.Count, Is.Zero, "Attack selection uses the battlefield, not target text buttons.");
+                var target = model.Targets(hero, attack)[0];
+                Assert.That(presentation.SelectAttackCell(new GridPoint(target.X, target.Y)), Is.True);
+                attempts.Add(attack.Value + ":" + (presentation.CandidatePreview.RejectionCode ?? "available"));
+                if (presentation.CandidatePreview.Succeeded) break;
+                Assert.That(presentation.CandidatePreview.RejectionCode, Is.EqualTo("SCHEDULE_START_OUTSIDE_SOURCE_WINDOW"));
             }
+            Click(Field(presentation.GetComponent<M1HudView>(), "_add"));
             Assert.That(model.Preview?.Succeeded, Is.True, "The real 180 Tick window needs an affordable Attack: " + string.Join(",", attempts));
             Assert.That(model.SubmittedCommands, Is.Zero, "Target selection only creates a local draft.");
             Click(Field(presentation, "_confirm")); Click(Field(presentation, "_confirm"));
@@ -379,12 +382,15 @@ namespace ProjectHero.Tests.PlayMode
             long firstId = plans[0].ActionPlanId, secondId = plans[1].ActionPlanId;
             var row = presentation.GetComponentsInChildren<TimelinePlanView>(true).Single(r => (long)Field(r, "_id") == firstId);
             var pointer = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current)
-                { position = new Vector2(100, 100) };
+                { position = UnityEngine.RectTransformUtility.WorldToScreenPoint(null, row.transform.parent.TransformPoint(new Vector3(100, 100, 0))) };
             long revision = model.Decision.ScheduleRevision, submissions = model.SubmittedCommands;
             var original = Bootstrap.NewDriver.CurrentSnapshot;
             row.OnBeginDrag(pointer);
             for (int offset = 20; offset <= 40; offset += 2)
-            { pointer.position = new Vector2(100 + offset, 100); row.OnDrag(pointer); }
+            {
+                float dx = offset / 4f * presentation.TimelinePixelsPerSecond / model.Decision.Definition.TicksPerSecond;
+                pointer.position = UnityEngine.RectTransformUtility.WorldToScreenPoint(null, row.transform.parent.TransformPoint(new Vector3(100 + dx, 100, 0))); row.OnDrag(pointer);
+            }
             row.OnEndDrag(pointer);
             Assert.That(model.Preview.Succeeded, Is.True);
             Assert.That(model.SubmittedCommands, Is.EqualTo(submissions), "Every drag position remains a local preview.");
@@ -419,7 +425,7 @@ namespace ProjectHero.Tests.PlayMode
             Bootstrap.StopBattle("timeline-complete"); Bootstrap.ReleaseBattle(); yield return null;
         }
 
-        [UnityTest] public IEnumerator MainSceneTimelineDiscardsDraftWhenPlanStartsWithoutRevisionChange()
+        [UnityTest] public IEnumerator MainSceneTimelinePreservesDraftWhenPlanStartsWithoutRevisionChange()
         {
             yield return LoadMainScene(); Bootstrap.StopBattle("lock-prepare"); Bootstrap.ReleaseBattle();
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True);
@@ -436,7 +442,8 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(model.Decision.ScheduleRevision, Is.EqualTo(revision));
             Assert.That(model.Decision.OwnPlans.Single().State, Is.EqualTo((int)ActionPlanState.Running));
             Assert.That(model.CanEdit(plan.ActionPlanId), Is.False);
-            Assert.That(model.HasDraft, Is.False, "Natural locking invalidates the local draft even with the same revision.");
+            Assert.That(model.HasDraft, Is.True, "Natural locking marks the intent stale and keeps it available to the player.");
+            Assert.That(model.Drafts.State, Is.EqualTo(ScheduleDraftState.Stale));
             Assert.That(model.LastRejection, Is.EqualTo("PLAN_NOT_EDITABLE"));
             Assert.That(model.SubmittedCommands, Is.EqualTo(1));
             Bootstrap.StopBattle("lock-complete"); Bootstrap.ReleaseBattle(); yield return null;
@@ -491,7 +498,7 @@ namespace ProjectHero.Tests.PlayMode
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay);
-                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12C-11-scene-ai-reaction.heroReplay"), file.ToArray());
+                File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/M1-regression/12C-11-scene-ai-reaction.heroReplay"), file.ToArray());
                 file.Position = 0; var loaded = ReplayFile.Load(file, source.Seed.Definition);
                 using var player = new ReplayPlayer(source.Seed.Definition,
                     h => ProductionBattleComposition.Create(source.Seed.Definition, h.EncounterId, h.RuntimeInputs)); player.Load(loaded);
@@ -673,7 +680,7 @@ namespace ProjectHero.Tests.PlayMode
                 if (frames % 120 == 0) yield return null;
                 Bootstrap.DriveFrameForTests(0, 1f / 60);
             }
-            if (futureChain) File.WriteAllText("优化任务/执行记录/12C-dodge-chain-trace.txt", chainTrace.ToString());
+            if (futureChain) File.WriteAllText("优化任务/执行记录/M1-regression/12C-dodge-chain-trace.txt", chainTrace.ToString());
             Assert.That(acceptedOpportunity, Is.GreaterThan(0), "Real reaction was not accepted: " + kind + " chain=" + chainWindow + " tick=" + model.Decision.Tick
                 + " resources=" + string.Join(";", model.Adrenaline) + " rejection=" + model.LastRejection
                 + " units=" + string.Join(";", model.Decision.VisibleUnits) + " window=" + model.Window
@@ -712,7 +719,7 @@ namespace ProjectHero.Tests.PlayMode
             using (var file = new MemoryStream())
             {
                 ReplayFile.Save(file, replay); file.Position = 0;
-                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/12C-11-scene-dodge-chain.heroReplay"), file.ToArray());
+                if (futureChain) File.WriteAllBytes(Path.GetFullPath("优化任务/执行记录/M1-regression/12C-11-scene-dodge-chain.heroReplay"), file.ToArray());
                 var loaded = ReplayFile.Load(file, model.Decision.Definition);
                 using (var player = new ReplayPlayer(model.Decision.Definition,
                     h => ProductionBattleComposition.Create(model.Decision.Definition, h.EncounterId, h.RuntimeInputs)))

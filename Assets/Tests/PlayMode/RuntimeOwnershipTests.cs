@@ -34,16 +34,16 @@ namespace ProjectHero.Tests.PlayMode
     public sealed class RuntimeOwnershipTests : RuntimeOwnershipTestBase
     {
         // =====================================================================
-        // 场景检查（SceneHasExactlyOneBattleRuntimeBootstrap / 隐藏场景 / 重复 Bootstrap）
+        // 场景检查（SceneHasExactlyOneMigrationBattleHost / 隐藏场景 / 重复 Bootstrap）
         // =====================================================================
 
         [UnityTest]
-        public IEnumerator SceneHasExactlyOneBattleRuntimeBootstrap()
+        public IEnumerator SceneHasExactlyOneMigrationBattleHost()
         {
             yield return LoadMainScene();
             Assert.That(BootstrapCountInScene(), Is.EqualTo(1),
-                "主战斗场景必须恰有一个 BattleRuntimeBootstrap");
-            Assert.That(BattleRuntimeBootstrap.ClockOwnerCountInScene(), Is.EqualTo(1),
+                "主战斗场景必须恰有一个 MigrationBattleHost");
+            Assert.That(MigrationBattleHost.ClockOwnerCountInScene(), Is.EqualTo(1),
                 "顶层时钟所有者必须恰好一个");
             Assert.That(Bootstrap.OwnsTopLevelClock, Is.True, "唯一 Bootstrap 必须取得顶层时钟所有权");
             Assert.That(Bootstrap.StartupRejection, Is.Null);
@@ -58,8 +58,8 @@ namespace ProjectHero.Tests.PlayMode
 
             yield return LoadHiddenValidationScene();
             Assert.That(BootstrapCountInScene(), Is.EqualTo(1),
-                "隐藏验证场景同样必须恰有一个 BattleRuntimeBootstrap");
-            Assert.That(BattleRuntimeBootstrap.ClockOwnerCountInScene(), Is.EqualTo(1));
+                "隐藏验证场景同样必须恰有一个 MigrationBattleHost");
+            Assert.That(MigrationBattleHost.ClockOwnerCountInScene(), Is.EqualTo(1));
             Assert.That(Bootstrap.StartupRejection, Is.Null,
                 "隐藏验证场景的启动校验不得产生拒绝：" + Bootstrap.StartupRejection);
 
@@ -90,7 +90,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(productionTypes, Does.Contain(
                 "ProjectHero.Core.Compatibility.Authoring.BattleSimulationSourceFactory"));
             Assert.That(productionTypes, Does.Contain(
-                "ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap"));
+                "ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost"));
             Assert.That(productionTypes, Does.Not.Contain("ProjectHero.UI.UIManager"),
                 "隐藏场景不得带进 UI 闭包");
             Assert.That(productionTypes, Does.Not.Contain("ProjectHero.UI.Timeline.TimelineEditorUI"),
@@ -153,12 +153,12 @@ namespace ProjectHero.Tests.PlayMode
             yield return LoadHiddenValidationScene();
             var owner = Bootstrap;
             Assert.That(owner.StartupRejection, Is.Null);
-            Assert.That(BattleRuntimeBootstrap.LiveInstanceCount, Is.EqualTo(1), "基线：场景中恰有一个实例");
+            Assert.That(MigrationBattleHost.LiveInstanceCount, Is.EqualTo(1), "基线：场景中恰有一个实例");
 
             // 结构性事实：同一 GameObject 上不允许第二个 Bootstrap。
             // 因此"重复实例"必须用 Unity API 在**另一个对象**上构造——不依赖 AddComponent
             // 的隐式时序（旧用例在同一个对象上 AddComponent，被 Unity 直接拒绝并返回 null）。
-            Assert.That(typeof(BattleRuntimeBootstrap)
+            Assert.That(typeof(MigrationBattleHost)
                     .GetCustomAttribute<DisallowMultipleComponent>(), Is.Not.Null,
                 "同一对象上的重复必须由 DisallowMultipleComponent 在结构上禁止");
 
@@ -166,14 +166,14 @@ namespace ProjectHero.Tests.PlayMode
 
             // a) 活动对象上的重复实例：Awake 立即判定重复、禁用并打含对象路径的错误日志。
             var duplicateHost = NewGameObject("DuplicateBootstrapHost");
-            var duplicate = Track(duplicateHost.AddComponent<BattleRuntimeBootstrap>());
+            var duplicate = Track(duplicateHost.AddComponent<MigrationBattleHost>());
             Assert.That(duplicate, Is.Not.Null, "重复实例必须被真实创建（而不是被 Unity 拒绝为 null）");
 
             // b) inactive 对象上的重复实例：**先置为非激活再挂组件**，
             //    因此它的 Awake 永远不会执行——只靠 Awake 登记表必然漏计。
             var inactiveHost = NewGameObject("InactiveBootstrapHost");
             inactiveHost.SetActive(false);
-            var inactiveDuplicate = Track(inactiveHost.AddComponent<BattleRuntimeBootstrap>());
+            var inactiveDuplicate = Track(inactiveHost.AddComponent<MigrationBattleHost>());
             Assert.That(inactiveDuplicate.StartupRejection, Is.Null,
                 "从未 Awake 的实例不可能有拒绝码（它根本还没参与所有权判定）");
 
@@ -181,17 +181,17 @@ namespace ProjectHero.Tests.PlayMode
             LogAssert.ignoreFailingMessages = false;
 
             // 1) 计数可靠：含被禁用的重复组件与 inactive 对象上的实例。
-            Assert.That(BattleRuntimeBootstrap.LiveInstanceCount, Is.EqualTo(3),
+            Assert.That(MigrationBattleHost.LiveInstanceCount, Is.EqualTo(3),
                 "存活实例计数必须包含 enabled = false 的重复组件与 inactive 对象上的实例；"
-                + " 实际 " + BattleRuntimeBootstrap.LiveInstanceCount);
-            Assert.That(BattleRuntimeBootstrap.ClockOwnerCountInScene(), Is.EqualTo(1),
+                + " 实际 " + MigrationBattleHost.LiveInstanceCount);
+            Assert.That(MigrationBattleHost.ClockOwnerCountInScene(), Is.EqualTo(1),
                 "顶层时钟所有者必须仍然恰好一个");
             Assert.That(owner.OwnsTopLevelClock, Is.True, "唯一所有者不得被后到者抢走时钟");
 
             // 2) 确定性快速失败：禁用自身 + 稳定拒绝码 + **双方对象路径**。
             Assert.That(duplicate.enabled, Is.False, "重复 Bootstrap 必须被禁用");
             Assert.That(duplicate.OwnsTopLevelClock, Is.False, "重复 Bootstrap 不得拥有顶层时钟");
-            Assert.That(duplicate.StartupRejection, Does.StartWith(BattleRuntimeBootstrap.BOOTSTRAP_DUPLICATE),
+            Assert.That(duplicate.StartupRejection, Does.StartWith(MigrationBattleHost.BOOTSTRAP_DUPLICATE),
                 "重复 Bootstrap 必须有稳定拒绝码：" + (duplicate.StartupRejection ?? "<null>"));
             Assert.That(duplicate.StartupRejection, Does.Contain("DuplicateBootstrapHost"),
                 "拒绝必须列出重复实例的对象路径：" + duplicate.StartupRejection);
@@ -213,10 +213,10 @@ namespace ProjectHero.Tests.PlayMode
 
             // 4) 审计记录必须留下可追溯的对象路径：Awake 的快速失败记录重复实例，
             //    Start 的确定性校验记录"本场景实例数 / 时钟所有者数"。
-            Assert.That(string.Join("|", BattleRuntimeBootstrap.DuplicateInstancesObserved),
+            Assert.That(string.Join("|", MigrationBattleHost.DuplicateInstancesObserved),
                 Does.Contain("DuplicateBootstrapHost"),
                 "重复实例的审计记录必须含对象路径");
-            Assert.That(string.Join("|", BattleRuntimeBootstrap.SceneInstanceObservations),
+            Assert.That(string.Join("|", MigrationBattleHost.SceneInstanceObservations),
                 Does.Contain("HiddenRuntimeValidation/CombatDemo|sceneInstances=1|clockOwners=1"),
                 "Start 的确定性校验必须记录'本场景恰好一个实例、恰好一个时钟所有者'");
 
@@ -408,9 +408,9 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.False,
                 "存在未分类逻辑写入者时 New 必须拒绝启动");
             Assert.That(Bootstrap.StartupRejection,
-                Does.StartWith(BattleRuntimeBootstrap.BOOTSTRAP_UNCLASSIFIED_LEGACY_LOGIC_WRITER),
+                Does.StartWith(MigrationBattleHost.BOOTSTRAP_UNCLASSIFIED_LEGACY_LOGIC_WRITER),
                 "拒绝码不符：" + (Bootstrap.StartupRejection ?? "<null>")
-                + " ; unclassified=[" + string.Join(",", BattleRuntimeBootstrap.UnclassifiedLogicWriterTypeNames)
+                + " ; unclassified=[" + string.Join(",", MigrationBattleHost.UnclassifiedLogicWriterTypeNames)
                 + "] ; probe=" + unclassified.GetType().FullName);
             Assert.That(Bootstrap.StartupRejection, Does.Contain(typeof(UnclassifiedLogicWriter).FullName),
                 "拒绝必须点名未分类类型：" + Bootstrap.StartupRejection);
@@ -423,8 +423,8 @@ namespace ProjectHero.Tests.PlayMode
 
             // 清除未分类集合后 New 可以正常启动（同一探针组件仍在场景中，
             // 因此这里同时清掉按类型与按回调点的标记——否则它会一直挡住 New）。
-            BattleRuntimeBootstrap.ClearUnclassifiedLogicWriterTypes();
-            BattleRuntimeBootstrap.ClearUnclassifiedLogicWriterSite(
+            MigrationBattleHost.ClearUnclassifiedLogicWriterTypes();
+            MigrationBattleHost.ClearUnclassifiedLogicWriterSite(
                 unclassified.GetType().FullName + ".Update");
             Bootstrap.UnregisterLegacyWriterForTests(unclassified);
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True,
@@ -482,7 +482,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.EnabledLegacyWriterInstances, Is.EqualTo(0),
                 "New 模式下不得有任何已解析写入者实例仍处于 enabled 状态");
             Assert.That(Bootstrap.Ledger.LegacyWriterGroupEnabled, Is.False);
-            Assert.That(BattleRuntimeBootstrap.UnclassifiedLogicWriterTypeNames, Is.Empty,
+            Assert.That(MigrationBattleHost.UnclassifiedLogicWriterTypeNames, Is.Empty,
                 "被禁用的是已分类写入者，不应产生未分类记录");
 
             var runtimeStates = LegacyWriterRegistry.EnabledStates();
@@ -903,7 +903,7 @@ namespace ProjectHero.Tests.PlayMode
         /// <strong>第三收尾轮 R1 的覆盖边界（据此更正此前"真实触发路径"的过度表述）</strong>：
         /// 生产侧<strong>不存在</strong>写入面，也不存在写入点埋点。本用例用 IL 扫描把这个事实
         /// 变成可失败断言——全仓生产程序集中 <c>ShadowWriteWall.TryWrite</c> 的调用点
-        /// <strong>恰好一个</strong>（<c>BattleRuntimeBootstrap.AttemptForbiddenShadowWriteForTests</c>，
+        /// <strong>恰好一个</strong>（<c>MigrationBattleHost.AttemptForbiddenShadowWriteForTests</c>，
         /// 即负控制探针自身）；并用反射核对契约程序集<strong>类型层面</strong>无法命名
         /// 旧运行组（<c>CombatUnit</c>/<c>BattleTimeline</c>）与 Unity 视图类型。
         /// 因此能证明的是"没有调用方持有已发放令牌 + 计数器可以失败"，
@@ -968,8 +968,8 @@ namespace ProjectHero.Tests.PlayMode
                 + "都必须让本断言失败，并同步更正交接记录的覆盖边界声明。实测："
                 + string.Join(" | ", productionCallSites));
 
-            // ② 结构：契约程序集类型层面无法命名旧运行组与 Unity 视图类型。
-            AssertContractAssemblyCannotNameLegacyOrViewTypes();
+            // ② 结构：诊断宿主单向引用 Runtime，正式 Runtime 不得反向引用诊断程序集。
+            AssertMigrationDependencyDirection();
 
             // 每场战斗重置计数（记录的是事实，重置只影响计数起点）。
             Bootstrap.ShadowWrites.Reset();
@@ -1065,7 +1065,7 @@ namespace ProjectHero.Tests.PlayMode
 
             Assert.That(Bootstrap.TrySetRequestedMode(BattleRuntimeMode.New, out string rejection), Is.False,
                 "活动战斗期间修改模式必须被拒绝");
-            Assert.That(rejection, Does.StartWith(BattleRuntimeBootstrap.BOOTSTRAP_MODE_CHANGE_REJECTED));
+            Assert.That(rejection, Does.StartWith(MigrationBattleHost.BOOTSTRAP_MODE_CHANGE_REJECTED));
             Assert.That(Bootstrap.BattleMode, Is.EqualTo(BattleRuntimeMode.Legacy),
                 "被拒绝的模式修改不得改变本场战斗的模式");
 
@@ -1075,7 +1075,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(BattleRuntimeLifecycle.TrySwitchMode(
                 activeState, BattleRuntimeMode.Shadow, out string contractRejection), Is.False);
             Assert.That(contractRejection,
-                Does.StartWith(BattleRuntimeBootstrap.BOOTSTRAP_MODE_CHANGE_REJECTED));
+                Does.StartWith(MigrationBattleHost.BOOTSTRAP_MODE_CHANGE_REJECTED));
             Assert.That(BattleRuntimeLifecycle.Validate(activeState), Is.Null,
                 "Legacy 活动战斗的写入组门控必须与模式契约一致");
 
@@ -1162,14 +1162,14 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.Ledger.AdvanceCalls(RuntimeAdvancePath.LegacyAdvanceTime), Is.EqualTo(4));
 
             // 3) 销毁边界：Bootstrap 被销毁时必须先停止再释放，且只停止一次。
-            int reasonsBefore = BattleRuntimeBootstrap.DestroyedStopReasons.Count;
+            int reasonsBefore = MigrationBattleHost.DestroyedStopReasons.Count;
 
             var owner = Bootstrap.gameObject;
             UnityEngine.Object.Destroy(owner);
             yield return null;
             yield return null;
 
-            var reasons = BattleRuntimeBootstrap.DestroyedStopReasons;
+            var reasons = MigrationBattleHost.DestroyedStopReasons;
             Assert.That(reasons.Count, Is.EqualTo(reasonsBefore + 1),
                 "销毁边界必须恰好产生一条停止记录（before=" + reasonsBefore + " after=" + reasons.Count + "）");
             Assert.That(reasons[reasons.Count - 1], Is.EqualTo("BOOTSTRAP_DESTROYED"));
@@ -1179,9 +1179,9 @@ namespace ProjectHero.Tests.PlayMode
             // 同属被销毁的对象层级，其销毁顺序由 Unity 决定，故不断言其计数。
             Assert.That(newDriver.StopCallCount, Is.EqualTo(1),
                 "销毁边界必须恰好停止一次参与本场战斗的适配器");
-            Assert.That(BattleRuntimeBootstrap.LiveInstanceCount, Is.EqualTo(0),
+            Assert.That(MigrationBattleHost.LiveInstanceCount, Is.EqualTo(0),
                 "销毁后不得残留存活实例（含 inactive/被禁用实例）");
-            Assert.That(BattleRuntimeBootstrap.ClockOwnerCountInScene(), Is.EqualTo(0));
+            Assert.That(MigrationBattleHost.ClockOwnerCountInScene(), Is.EqualTo(0));
         }
 
         // =====================================================================
@@ -1214,7 +1214,7 @@ namespace ProjectHero.Tests.PlayMode
 
             // 第二收尾轮 R4.2：协程站点必须已进入分类表，且相位被标为 Coroutine
             // （它们不在 Update 相位，因此不受"检查点晚于全部写入者"的相位保证覆盖）。
-            var phases = BattleRuntimeBootstrap.ClassifiedLegacyWriterPhases();
+            var phases = MigrationBattleHost.ClassifiedLegacyWriterPhases();
             Assert.That(phases, Has.Some.Contains("ProjectHero.Core.Timeline.BattleTimeline.TriggerSlowMotion"),
                 "BattleTimeline 的慢动作协程站点必须已分类");
             Assert.That(phases, Has.Some.Contains("ProjectHero.Visuals.GameFeelManager.HitStop"),
@@ -2453,7 +2453,7 @@ namespace ProjectHero.Tests.PlayMode
             {
                 if (behaviour == null) continue;
                 var behaviourType = behaviour.GetType();
-                if (behaviourType == typeof(BattleRuntimeBootstrap)) continue;
+                if (behaviourType == typeof(MigrationBattleHost)) continue;
                 if (!DeclaresUnityUpdate(behaviourType)) continue;
                 UnityCallbackClassification classification;
                 if (RuntimeCallbackRegistry.TryGet(behaviourType.FullName, "Update", out classification)
@@ -2765,13 +2765,12 @@ namespace ProjectHero.Tests.PlayMode
         }
 
         /// <summary>
-        /// 第三收尾轮 R1 的结构证据：契约程序集 <c>ProjectHero.Compatibility.Runtime</c>
-        /// <strong>类型层面</strong>无法命名旧运行组与 Unity 视图类型——
-        /// 这是选择"方案 b（如实改写为无写入面）"而不是"方案 a（在真实边界访问器上接墙）"的依据。
+        /// 拆分后的依赖方向检查。诊断宿主允许使用正式视图契约，
+        /// Shadow runner 的写入能力由独立的 API 与 IL 检查覆盖。
         /// </summary>
-        private static void AssertContractAssemblyCannotNameLegacyOrViewTypes()
+        private static void AssertMigrationDependencyDirection()
         {
-            var contract = typeof(BattleRuntimeBootstrap).Assembly;
+            var contract = typeof(MigrationBattleHost).Assembly;
 
             var referenced = contract.GetReferencedAssemblies();
             var names = new List<string>();
@@ -2781,12 +2780,13 @@ namespace ProjectHero.Tests.PlayMode
                 + string.Join(",", names));
             Assert.That(names, Does.Contain("ProjectHero.Logic"),
                 "契约程序集必须引用 ProjectHero.Logic（纯数据内核）；实测引用：" + string.Join(",", names));
-            Assert.That(names, Does.Not.Contain("ProjectHero.UnityView"),
-                "契约程序集不得引用 UnityView（该程序集在任务 03B 中明确未创建/未引用）；实测引用："
-                + string.Join(",", names));
+            Assert.That(names, Does.Contain("ProjectHero.UnityView"));
+            Assert.That(names, Does.Not.Contain("Assembly-CSharp"));
+            Assert.That(typeof(BattleRuntimeBootstrap).Assembly.GetReferencedAssemblies()
+                .Any(a => a.Name == contract.GetName().Name), Is.False,
+                "Production Runtime must not reference the migration host.");
 
-            // 旧运行组与 Unity 视图类型由 Assembly-CSharp 定义；契约程序集解析不到它们，
-            // 因此"在契约程序集里往旧状态/Unity 对象写"根本编译不出来。
+            // 具体旧运行组仍由 Assembly-CSharp 定义，不属于诊断契约程序集。
             var legacyNames = new[]
             {
                 "ProjectHero.Core.Entities.CombatUnit, Assembly-CSharp",

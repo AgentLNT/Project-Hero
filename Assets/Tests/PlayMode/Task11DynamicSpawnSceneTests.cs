@@ -19,7 +19,7 @@ using UnityEngine.TestTools;
 
 namespace ProjectHero.Tests.PlayMode
 {
-    public sealed class Task11DynamicSpawnSceneTests : RuntimeOwnershipTestBase
+    public sealed class Task11DynamicSpawnSceneTests : ProductionRuntimeTestBase
     {
         protected override bool UseLegacyComparisonScene => false;
         [UnityTest] public IEnumerator MainSceneDynamicUnitBindsImmutableFactionAndReleasesViewAndReplays()
@@ -67,17 +67,21 @@ namespace ProjectHero.Tests.PlayMode
             long end = presentation.Model.Window.EndTick;
             while (presentation.Model.Decision.Tick < end) Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(presentation.Model.Window.OwnerUnitId, Is.EqualTo(created.UnitId));
+            presentation.FocusTrack(created.UnitId);
             Assert.That(presentation.SelectedActingUnit.Value, Is.EqualTo(created.UnitId));
             var guard = presentation.Model.Decision.ActionSetOf(new UnitId(created.UnitId))
                 .Single(id => presentation.Model.Decision.FindAction(id).Type == ProjectHero.Logic.Actions.ActionType.Guard);
             presentation.SelectAction(guard);
+            presentation.AddConfiguredDraft();
             Assert.That(presentation.Model.Preview.Succeeded, Is.True);
             Assert.That(presentation.Model.ConfirmDraft(), Is.Null); Bootstrap.DriveFrameForTests(0, 1f / 60);
             Assert.That(presentation.Model.Decision.OwnPlans.Any(p => p.OwnerUnitId == created.UnitId), Is.True,
                 "The actual Canvas must be able to act when a newly created controlled unit owns the window.");
             Assert.That(Bootstrap.NewDriver.RecordedReplay.Records.SelectMany(r => r.Events)
                 .Count(f => ReplayEventComparison.Canonical(f).StartsWith(typeof(UnitCreatedEvent).FullName + "{")), Is.EqualTo(1));
-            string path = Path.GetFullPath("优化任务/执行记录/12C-11-dynamic-scene.heroReplay");
+            string output = Path.Combine("Logs", "Regression", "DynamicSpawn-" + System.DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff"));
+            Directory.CreateDirectory(output);
+            string path = Path.GetFullPath(Path.Combine(output, "dynamic-scene.heroReplay"));
             using (var file = File.Create(path)) ReplayFile.Save(file, Bootstrap.NewDriver.RecordedReplay);
             BattleReplay replay; using (var file = File.OpenRead(path)) replay = ReplayFile.Load(file, d);
             using (var player = new ReplayPlayer(d, h => ProductionBattleComposition.Create(d, h.EncounterId, h.RuntimeInputs)))

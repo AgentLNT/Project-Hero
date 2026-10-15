@@ -3,7 +3,8 @@
     "rootNamespace": "ProjectHero.Tests.PlayMode",
     "references": [
         "ProjectHero.Logic",
-        "ProjectHero.UnityView"
+        "ProjectHero.UnityView",
+        "ProjectHero.Migration.Diagnostics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,7 +15,8 @@
     ],
     "autoReferenced": false,
     "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
+        "UNITY_INCLUDE_TESTS",
+        "UNITY_EDITOR"
     ],
     "versionDefines": [],
     "noEngineReferences": false,

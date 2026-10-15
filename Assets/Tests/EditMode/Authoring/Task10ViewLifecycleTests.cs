@@ -56,6 +56,14 @@ namespace ProjectHero.Authoring.Tests
                 Assert.That(sim.Tick, Is.EqualTo(-1));
             }
         }
+        [Test] public void TacticalPauseFreezesVisualInterpolationUntilResume()
+        {
+            _view.ApplyMovementSnapshot(Movement(85, 80, 90)); _view.ApplySnapshot(_snapshot with { X = 0, Y = 0 });
+            _view.AdvanceVisual(0); var position = _view.transform.position; _view.SetPresentationPaused(true);
+            _view.AdvanceVisual(10); Assert.That(_view.transform.position, Is.EqualTo(position));
+            _view.SetPresentationPaused(false); _view.AdvanceVisual(.016f);
+            Assert.That(_view.transform.position, Is.Not.EqualTo(position));
+        }
         [Test] public void InterruptedMovementStopsVisualDestinationAndReconcilesToSnapshot()
         {
             _view.ApplyMovementSnapshot(Movement(85, 80, 90)); _view.AdvanceVisual(.01f);

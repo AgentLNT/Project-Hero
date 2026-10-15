@@ -31,6 +31,15 @@ namespace ProjectHero.UnityView
         private long _movementPlanId, _battleTick, _segmentStart, _segmentEnd;
         private float _visualFraction;
         private bool _forced;
+        private bool _paused;
+        private float _animatorSpeed = 1;
+        public void SetPresentationPaused(bool paused)
+        {
+            if (_paused == paused) return;
+            _paused = paused;
+            if (_animator != null)
+            { if (paused) { _animatorSpeed = _animator.speed; _animator.speed = 0; } else _animator.speed = _animatorSpeed; }
+        }
         public string EncounterSlotId => _encounterSlotId;
         public UnitId UnitId { get; private set; }
         public FactionId FactionId { get; private set; }
@@ -74,6 +83,7 @@ namespace ProjectHero.UnityView
         }
         public void Unbind()
         {
+            SetPresentationPaused(false);
             if (!UnitId.IsValid) return;
             transform.position = _originalPosition; transform.rotation = _originalRotation;
             if (_bodyVisual != null) { _bodyVisual.localScale = _bodyScale; _bodyVisual.gameObject.SetActive(_originalBodyActive); }
@@ -152,6 +162,7 @@ namespace ProjectHero.UnityView
 
         private void LateUpdate()
         {
+            if (_paused) return;
             AdvanceVisual(Time.unscaledDeltaTime);
             if (_bodyVisual != null && _bounceRemaining > 0)
             {
@@ -161,6 +172,7 @@ namespace ProjectHero.UnityView
         }
         public void AdvanceVisual(float seconds)
         {
+            if (_paused) return;
             if (!_interpolating) return;
             if (_movementPlanId != 0)
             {

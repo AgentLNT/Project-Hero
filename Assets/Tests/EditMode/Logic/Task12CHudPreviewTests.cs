@@ -101,7 +101,7 @@ namespace ProjectHero.Logic.Tests
                 Assert.That(s.CurrentTurnWindow.OpenedAtTick,Is.EqualTo(expected.OpenedAtTick)); Assert.That(s.CurrentTurnWindow.EndTick,Is.EqualTo(expected.EndTick));
             }
             var replay=recorder.BuildReplay();
-            using(var file=System.IO.File.Create("优化任务/执行记录/12C-window-preview.heroReplay")) ReplayFile.Save(file,replay);
+            using(var file=System.IO.File.Create("优化任务/执行记录/M1-regression/12C-window-preview.heroReplay")) ReplayFile.Save(file,replay);
             using var player=new ReplayPlayer(d,h=>ProductionBattleComposition.Create(d,h.EncounterId,h.RuntimeInputs));player.Load(replay);player.Play();
             while(!player.IsComplete && player.Deviation==null) {
                 player.AdvanceOneTick();

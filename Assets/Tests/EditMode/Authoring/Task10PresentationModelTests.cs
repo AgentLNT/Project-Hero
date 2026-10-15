@@ -82,19 +82,19 @@ namespace ProjectHero.Authoring.Tests
         }
         [Test] public void OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase()
         { var model = Create(out var port); for (int i = 0; i < 50; i++) model.SetActionPanelVisible(i % 2 == 0); Assert.That(model.HasDraft, Is.False); Assert.That(port.Submitted, Is.Empty); }
-        [Test] public void StaleRevisionOrLockRejectionRebasesFromLatestSnapshot()
+        [Test] public void StaleRevisionKeepsIntentUntilExplicitRevalidation()
         {
             var model = Create(out var port); model.SetDraft(Move(40)); port.ScheduleRevision++;
-            Assert.That(model.ConfirmDraft(), Is.EqualTo("STALE_SCHEDULE_REVISION")); Assert.That(model.HasDraft, Is.False); Assert.That(port.Submitted, Is.Empty);
+            Assert.That(model.ConfirmDraft(), Is.EqualTo("STALE_SCHEDULE_REVISION")); Assert.That(model.HasDraft, Is.True); Assert.That(port.Submitted, Is.Empty);
             model.SetDraft(Move(45)); Assert.That(model.ConfirmDraft(), Is.Null);
             Assert.That(((ScheduleEditScope)port.Submitted.Single().Scope).ExpectedScheduleRevision, Is.EqualTo(1));
         }
-        [Test] public void SystemAutoDeferralCancelsAffectedDraftAndRebasesTimeline()
+        [Test] public void SystemAutoDeferralPreservesStaleIntentAndRebasesTimeline()
         {
             var model = Create(out var port); model.SetDraft(Move(40)); port.ScheduleRevision = 1; port.CurrentTick = 6;
             port.Plans[0] = port.Plans[0] with { StartTick = 50, EndTick = 60, AutomaticDeferralCount = 1 };
             model.Synchronize(new EventBatch(6, new LogicEvent[] { new ActionPlanAutoDeferredEvent(6, 1, 1, 10, "CONTROL", 20, 50, 50, 1, new long[] { 1 }, 1) }));
-            Assert.That(model.HasDraft, Is.False); Assert.That(model.Timeline.Single().StartTick, Is.EqualTo(50)); Assert.That(port.Submitted, Is.Empty);
+            Assert.That(model.HasDraft, Is.True); Assert.That(model.Drafts.State, Is.EqualTo(ScheduleDraftState.Stale)); Assert.That(model.Timeline.Single().StartTick, Is.EqualTo(50)); Assert.That(port.Submitted, Is.Empty);
         }
         [Test] public void TimelineCannotEditReactionLockedRunningOrTerminalPlans()
         {

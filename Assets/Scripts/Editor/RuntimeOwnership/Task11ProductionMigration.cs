@@ -47,16 +47,11 @@ namespace ProjectHero.Editor.RuntimeOwnership
                     throw new InvalidOperationException("MIGRATION_DEFINITION_CHANGED");
             }
             var presentation = Find<BattlePresentationView>(scene);
-            var fields = new SerializedObject(presentation);
-            var oldCanvases = fields.FindProperty("_legacyCanvases");
-            var canvases = Enumerable.Range(0, oldCanvases.arraySize)
-                .Select(i => oldCanvases.GetArrayElementAtIndex(i).objectReferenceValue as GameObject).Where(g => g != null).ToArray();
-            oldCanvases.ClearArray(); fields.FindProperty("_legacyPresentation").ClearArray(); fields.ApplyModifiedPropertiesWithoutUndo();
+            var canvases = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<ProjectHero.UI.UIManager>(true))
+                .SelectMany(ui => ui.GetComponentsInChildren<Canvas>(true)).Select(c => c.gameObject).Distinct().ToArray();
             foreach (var canvas in canvases) UnityEngine.Object.DestroyImmediate(canvas);
             var config = new SerializedObject(bootstrap);
             config.FindProperty("_requestedMode").enumValueIndex = (int)BattleRuntimeMode.New;
-            config.FindProperty("_productionNewOnly").boolValue = true;
-            config.FindProperty("_legacyFrameAdapterSlot").objectReferenceValue = null;
             config.FindProperty("_simulationSourceSlot").objectReferenceValue = source;
             config.ApplyModifiedPropertiesWithoutUndo();
             var retired = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<MonoBehaviour>(true))
@@ -114,8 +109,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
             if (bootstraps.Length != 1) throw new InvalidOperationException("PRODUCTION_BOOTSTRAP_COUNT");
             var config = new SerializedObject(bootstraps[0]);
             if (config.FindProperty("_requestedMode").enumValueIndex != (int)BattleRuntimeMode.New
-                || !config.FindProperty("_productionNewOnly").boolValue
-                || config.FindProperty("_legacyFrameAdapterSlot").objectReferenceValue != null
+                || scene.GetRootGameObjects().Any(g => g.GetComponentInChildren<MigrationBattleHost>(true) != null)
                 || !(config.FindProperty("_simulationSourceSlot").objectReferenceValue is NewBattleSimulationSource))
                 throw new InvalidOperationException("PRODUCTION_MIGRATION_SLOTS_INVALID");
             foreach (var root in scene.GetRootGameObjects()) AssertObject(root);

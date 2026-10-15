@@ -1,0 +1,56 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "editor",
+      "filter": "ShadowAssemblyIsolationTests"
+    },
+    "result": {
+      "Summary": {
+        "Total": 3,
+        "Passed": 3,
+        "Failed": 0,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [
+        {
+          "FullName": "ProjectHero.Authoring.Tests.ShadowAssemblyIsolationTests.MainSceneAssetDependenciesExcludeMigrationHarness",
+          "Status": "Passed",
+          "Duration": 0.0143686,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.ShadowAssemblyIsolationTests.PlayerCompilationGraphExcludesMigrationAndDiagnosticScenes",
+          "Status": "Passed",
+          "Duration": 0.0846313,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.ShadowAssemblyIsolationTests.RuntimeHasNoDiagnosticTypesOrAssemblyReferences",
+          "Status": "Passed",
+          "Duration": 0.0008755,
+          "Message": null,
+          "StackTrace": null
+        }
+      ],
+      "Duration": 4.19,
+      "StatusPath": null,
+      "Mode": "EditMode",
+      "FilterApplied": "testname: ShadowAssemblyIsolationTests",
+      "success": true,
+      "result": null
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "C:\\Users\\1\\repos\\Project Hero\\Project-Hero"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

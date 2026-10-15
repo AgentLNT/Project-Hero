@@ -38,7 +38,7 @@ namespace ProjectHero.Logic.Snapshots
     /// Results are conditional on no new input: unrevealed reactions, private foreign plans and
     /// information beyond the next foreign window can change the outcome.
     /// </summary>
-    public sealed class HudPreviewService
+    public sealed partial class HudPreviewService
     {
         private readonly BattleSimulation _template;
         private readonly Func<BattleSimulation> _fork;

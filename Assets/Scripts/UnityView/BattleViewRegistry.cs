@@ -18,6 +18,8 @@ namespace ProjectHero.UnityView
         public CombatFeedbackMapper Feedback { get; } = new CombatFeedbackMapper();
         public bool TryGetView(long unitId, out CombatUnitView view) => _byUnit.TryGetValue(unitId, out view);
         public void Configure(CombatUnitView[] views) => _views = views ?? Array.Empty<CombatUnitView>();
+        public void SetPresentationPaused(bool paused)
+        { foreach (var view in _byUnit.Values) if (view != null) view.SetPresentationPaused(paused); }
         public void ReleaseVisuals()
         {
             foreach (var view in _views) if (view != null) view.Unbind();

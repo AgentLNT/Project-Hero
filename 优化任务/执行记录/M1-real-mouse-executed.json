@@ -1,0 +1,43 @@
+{
+  "tick": 360,
+  "state": "TacticalPlanning",
+  "draftState": "Accepted",
+  "submitted": 1,
+  "plans": [
+    {
+      "ActionSpecId": "action.move.default",
+      "StartTick": 1,
+      "EndTick": 26,
+      "State": 3,
+      "SubmittedWindowId": 1
+    },
+    {
+      "ActionSpecId": "action.quick_slash.radius_1",
+      "StartTick": 26,
+      "EndTick": 116,
+      "State": 3,
+      "SubmittedWindowId": 1
+    },
+    {
+      "ActionSpecId": "action.heavy_smash.radius_1",
+      "StartTick": 179,
+      "EndTick": 389,
+      "State": 2,
+      "SubmittedWindowId": 1
+    },
+    {
+      "ActionSpecId": "action.spear_thrust.radius_2",
+      "StartTick": 181,
+      "EndTick": 307,
+      "State": 3,
+      "SubmittedWindowId": 2
+    },
+    {
+      "ActionSpecId": "action.wide_cleave.radius_2",
+      "StartTick": 307,
+      "EndTick": 457,
+      "State": 2,
+      "SubmittedWindowId": 2
+    }
+  ]
+}

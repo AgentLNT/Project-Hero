@@ -39,7 +39,7 @@ namespace ProjectHero.Visuals
 
         private void LateUpdate()
         {
-            if (!ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed) return;
+            if (!ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.LegacyWritesAllowed) return;
             if (_unit == null || GridManager.Instance == null) return;
             var currentLogic = _unit.GridPosition;
 

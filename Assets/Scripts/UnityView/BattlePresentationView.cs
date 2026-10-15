@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 using ProjectHero.Core.Compatibility.Runtime;
 using ProjectHero.Core.Compatibility.Runtime.Input;
 using ProjectHero.Logic.Actions;
@@ -11,6 +12,7 @@ using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
 using ProjectHero.Logic.Snapshots;
+using ProjectHero.Logic.Timeline;
 using ProjectHero.UnityView.Replay;
 using TMPro;
 using UnityEngine;
@@ -22,7 +24,8 @@ namespace ProjectHero.UnityView
     /// <summary>Explicitly authored Canvas consumer and input routing. Never owns the battle clock.</summary>
     public sealed class BattlePresentationView : MonoBehaviour, IBattleViewConsumer, IBattleInputConsumer, IBattleViewLifetimeConsumer, IBattleDiagnosticFrameConsumer
     {
-        [SerializeField] private BattleRuntimeBootstrap _bootstrap;
+        [SerializeField] private MonoBehaviour _bootstrap;
+        private IBattleRuntimeHost Runtime => _bootstrap as IBattleRuntimeHost;
         [SerializeField] private BattleViewRegistry _registry;
         [SerializeField] private GridView _grid;
         [SerializeField] private Camera _camera;
@@ -33,17 +36,21 @@ namespace ProjectHero.UnityView
         [SerializeField] private TMP_FontAsset _font;
         [SerializeField] private BattleFeedbackPlayer _feedbackPlayer;
         [SerializeField] private BattleFootprintView _footprints;
-        [SerializeField] private GameObject[] _legacyCanvases = Array.Empty<GameObject>();
         [SerializeField] private UnityEngine.UI.Button _actionToggle;
-        [SerializeField] private Behaviour[] _legacyPresentation = Array.Empty<Behaviour>();
         [SerializeField] private UnityEngine.UI.Button _confirm, _cancel, _concurrent, _pause, _rotate;
+        [SerializeField, Min(1)] private float _timelinePixelsPerSecond = 240f;
+        public float TimelinePixelsPerSecond => TimelineView != null ? TimelineView.PixelsPerSecond : _timelinePixelsPerSecond;
+        public M2TimelineView TimelineView { get; private set; }
+        public TrackSelectionModel TrackSelection { get; } = new TrackSelectionModel();
+        public bool IsAwaitingWorldSelection => !string.IsNullOrEmpty(_selectedAction.Value)
+            && (Model.Decision.FindAction(_selectedAction)?.Type == ActionType.Attack || Model.Decision.FindAction(_selectedAction)?.Type == ActionType.Move);
+        public bool CanConfigurePrimary => Model.Decision != null && Model.Decision.ControlledUnitIds.Contains(_owner);
         // R1：窗口不能被主动结束。旧场景里序列化的"End turn"按钮只在绑定时隐藏，不再接任何命令。
         [SerializeField, UnityEngine.Serialization.FormerlySerializedAs("_close")] private UnityEngine.UI.Button _retiredCloseButton;
         private readonly Dictionary<long, TimelinePlanView> _rows = new Dictionary<long, TimelinePlanView>();
         private readonly List<GameObject> _actionButtons = new List<GameObject>(), _targetButtons = new List<GameObject>(), _reactionButtons = new List<GameObject>();
         private readonly Queue<string> _debugLines = new Queue<string>();
         private bool _bound, _hooked;
-        private bool[] _legacyCanvasStates, _legacyBehaviourStates;
         private UnitId _owner, _target;
         private ActionSpecId _selectedAction;
         private GridDirection _facing = GridDirection.EastNorth;
@@ -51,6 +58,15 @@ namespace ProjectHero.UnityView
         private float _refreshElapsed;
         private TMP_Text _pauseLabel;
         private float _originalCameraSize;
+        private Rect _originalCameraRect;
+        private Camera _backplateCamera;
+        private InputAction _pauseShortcut, _systemShortcut, _trackShortcut;
+        private string _autoFocusSignature;
+        public void SetHudBattleViewport(bool planning)
+        {
+            if (_camera != null && _cameraConfigured)
+                _camera.rect = planning ? new Rect(.28f, .44f, .42f, .45f) : new Rect(.02f, .36f, .68f, .53f);
+        }
         private bool _cameraConfigured;
         private string _lastDamageDebug = string.Empty;
         [SerializeField] private TMP_InputField _replayPath;
@@ -64,13 +80,62 @@ namespace ProjectHero.UnityView
         [SerializeField] private UnityEngine.UI.Button _replayToggle;
         private GridPoint? _draftDestination;
         private ProjectHero.Logic.Movement.DodgeCancellationPreview _selectedDodgePreview;
+        private M1HudView _hud;
+        private AddOrdinaryPlanOperation _candidate;
+        private long _editingDraft;
+        private long? _requestedStart;
+        public ScheduleEditTransactionResult CandidatePreview { get; private set; }
+        public bool HasCandidate => _candidate != null;
+        public void ResumeSystemPause() => Runtime.SetPaused(false);
+        public BattleClockController Clock => Runtime.Clock;
         public BattlePresentationModel Model { get; } = new BattlePresentationModel();
         public string PlayerControllerId => _controllerId;
         public BattleViewRegistry Registry => _registry;
         public UnitId SelectedActingUnit => _owner;
+        public string UnitLabel(long id)
+        {
+            if (Model.Decision == null) return "单位 " + id;
+            if (!Model.Decision.VisibleUnits.Any(u => u.UnitId == id)) return "预计单位 " + id;
+            string group = TrackSelectionModel.Group(Model.Decision, id) switch { 0 => "我方", 1 => "友方", 3 => "敌方", _ => "中立" };
+            return group + " · 单位 " + id;
+        }
+        public void SelectTrack(long id, bool control)
+        {
+            if (IsAwaitingWorldSelection || Clock.State == BattleClockState.SystemPaused || Clock.State == BattleClockState.Ended) return;
+            if (!Model.Decision.VisibleUnits.Any(u => u.UnitId == id && u.IsAlive)) return;
+            TrackSelection.Click(id, control); SyncPrimary();
+        }
+        public void FocusTrack(long id)
+        {
+            if (IsAwaitingWorldSelection || Clock.State == BattleClockState.SystemPaused) return;
+            TrackSelection.Focus(id); SyncPrimary();
+        }
+        public void AddContactTrack(long id)
+        { if (!TrackSelection.Contains(id)) SelectTrack(id, true); else FocusTrack(id); }
+        public void RemoveTrack(long id)
+        { if (IsAwaitingWorldSelection || Clock.State == BattleClockState.SystemPaused) return; TrackSelection.Remove(id); SyncPrimary(); }
+        public void CyclePrimary(bool reverse)
+        {
+            if (IsAwaitingWorldSelection || InputFieldFocused() || Clock.State == BattleClockState.SystemPaused) return;
+            TrackSelection.Cycle(Model.Decision, reverse); SyncPrimary();
+        }
+        public void RefreshPlanningHud() { _hud?.Refresh(); RenderPreview(); }
+        private void SyncPrimary()
+        {
+            var next = new UnitId(TrackSelection.Primary);
+            if (_owner != next)
+            {
+                _owner = next; CancelConfiguration(); RebuildOwnerActions();
+            }
+            TimelineView?.Refresh(); _hud?.Refresh();
+        }
+        public void CancelConfiguration()
+        {
+            _candidate = null; CandidatePreview = null; _editingDraft = 0; _selectedAction = default; _selectedReaction = 0;
+            _selectedDodgePreview = null; _target = default; _grid?.ClearAttackPreview(); RenderPreview();
+        }
         public void ConfigureFeedback(BattleFeedbackPlayer player) => _feedbackPlayer = player;
         public void ConfigureFootprints(BattleFootprintView footprints) => _footprints = footprints;
-        public void ConfigureLegacyCanvases(GameObject[] canvases) => _legacyCanvases = canvases;
         public void ConfigureActionToggle(UnityEngine.UI.Button button) => _actionToggle = button;
         public void ConfigureReplay(GameObject panel, UnityEngine.UI.Button toggle, TMP_InputField path, TMP_Text status, UnityEngine.UI.Button save, UnityEngine.UI.Button load,
             UnityEngine.UI.Button play, UnityEngine.UI.Button pause, UnityEngine.UI.Button restart, UnityEngine.UI.Button speed)
@@ -98,8 +163,8 @@ namespace ProjectHero.UnityView
             if (_replayHooks) return;
             _replayToggle.onClick.AddListener(() => _developerReplayPanel.SetActive(!_developerReplayPanel.activeSelf));
             _replaySave.onClick.AddListener(() => ReplayAction(() => {
-                var replay = _bootstrap.NewDriver.RecordedReplay;
-                if (replay == null) throw new InvalidOperationException(_bootstrap.NewDriver.ReplayRecordingError ?? "REPLAY_RECORDING_UNAVAILABLE");
+                var replay = Runtime.NewDriver.RecordedReplay;
+                if (replay == null) throw new InvalidOperationException(Runtime.NewDriver.ReplayRecordingError ?? "REPLAY_RECORDING_UNAVAILABLE");
                 using (var stream = File.Create(_replayPath.text)) ProjectHero.Logic.Replay.ReplayFile.Save(stream, replay);
             }));
             _replayLoad.onClick.AddListener(() => ReplayAction(() => {
@@ -125,52 +190,56 @@ namespace ProjectHero.UnityView
         }
         public void SetActionPanelVisible(bool visible)
         { Model.SetActionPanelVisible(visible); _actions.parent.gameObject.SetActive(visible); }
-        public void Configure(BattleRuntimeBootstrap bootstrap, BattleViewRegistry registry, GridView grid, Camera camera,
+        public void Configure(MonoBehaviour bootstrap, BattleViewRegistry registry, GridView grid, Camera camera,
             string controller, GameObject panel, RectTransform actions, RectTransform targets, RectTransform timeline,
             RectTransform reactions, TMP_Text status, TMP_Text preview, TMP_Text debug, TMP_FontAsset font,
-            Behaviour[] legacy, UnityEngine.UI.Button confirm, UnityEngine.UI.Button cancel,
+            UnityEngine.UI.Button confirm, UnityEngine.UI.Button cancel,
             UnityEngine.UI.Button concurrent, UnityEngine.UI.Button pause, UnityEngine.UI.Button rotate)
         {
             _bootstrap = bootstrap; _registry = registry; _grid = grid; _camera = camera; _controllerId = controller;
             _panel = panel; _actions = actions; _targets = targets; _timeline = timeline; _reactions = reactions;
-            _status = status; _previewText = preview; _debug = debug; _font = font; _legacyPresentation = legacy;
+            _status = status; _previewText = preview; _debug = debug; _font = font;
             _confirm = confirm; _cancel = cancel; _concurrent = concurrent; _pause = pause; _rotate = rotate;
         }
         public void Bind(BattleInitializationResult mapping, LogicSnapshot snapshot)
         {
-            if (_registry == null || _bootstrap == null || _panel == null) throw new InvalidOperationException("VIEW_PRESENTATION_BINDING_MISSING");
+            if (_registry == null || Runtime == null || _panel == null) throw new InvalidOperationException("VIEW_PRESENTATION_BINDING_MISSING");
             _registry.Bind(mapping, snapshot);
+            TrackSelection.Layout.Bind(mapping);
             _feedbackPlayer?.Bind();
             if (_camera != null && _camera.orthographic && !_cameraConfigured)
-            { _originalCameraSize = _camera.orthographicSize; _camera.orthographicSize = 12; _cameraConfigured = true; }
-            if (_legacyCanvasStates == null)
+            { _originalCameraSize = _camera.orthographicSize; _originalCameraRect = _camera.rect; _camera.orthographicSize = 12; _cameraConfigured = true; }
+            if (_cameraConfigured && _backplateCamera == null)
             {
-                _legacyCanvasStates = new bool[_legacyCanvases.Length];
-                for (int i = 0; i < _legacyCanvases.Length; i++) _legacyCanvasStates[i] = _legacyCanvases[i] != null && _legacyCanvases[i].activeSelf;
-                _legacyBehaviourStates = new bool[_legacyPresentation.Length];
-                for (int i = 0; i < _legacyPresentation.Length; i++) _legacyBehaviourStates[i] = _legacyPresentation[i] != null && _legacyPresentation[i].enabled;
+                var background = new GameObject("HudBackplateCamera", typeof(Camera)); background.transform.SetParent(transform, false);
+                _backplateCamera = background.GetComponent<Camera>(); _backplateCamera.depth = _camera.depth - 1;
+                _backplateCamera.cullingMask = 0; _backplateCamera.clearFlags = CameraClearFlags.SolidColor;
+                _backplateCamera.backgroundColor = new Color(.015f, .025f, .04f, 1);
             }
-            foreach (var behaviour in _legacyPresentation) if (behaviour != null) behaviour.enabled = false;
-            foreach (var canvas in _legacyCanvases) if (canvas != null) canvas.SetActive(false);
-            LegacyVisualRegistry.SetNewViewActive(true);
             _panel.SetActive(true); _debugLines.Clear(); _lastDamageDebug = string.Empty; _reactionKey = null;
             _pauseLabel = _pause.GetComponentInChildren<TMP_Text>();
             if (_retiredCloseButton != null) _retiredCloseButton.gameObject.SetActive(false);
             if (!_hooked)
             {
                 _registry.Feedback.FeedbackRequested += OnFeedback;
-                _confirm.onClick.AddListener(() => { if (_selectedReaction != 0) ConfirmSelectedReaction(); else Model.ConfirmDraft(); _selectedAction = default; RenderPreview(); });
-                _cancel.onClick.AddListener(() => { Model.CancelDraft(); _selectedAction = default; _selectedReaction = 0; _selectedDodgePreview = null; RenderPreview(); });
+                _confirm.onClick.AddListener(() => { if (_selectedReaction != 0) ConfirmSelectedReaction(); else Model.ConfirmDraft(); RenderPreview(); });
+                _cancel.onClick.AddListener(() => { Model.CancelDraft(); _candidate = null; CandidatePreview = null; _editingDraft = 0; _selectedAction = default; _selectedReaction = 0; _selectedDodgePreview = null; RenderPreview(); });
                 _concurrent.onClick.AddListener(() => Model.ActivateConcurrent());
-                _pause.onClick.AddListener(() => _bootstrap.SetPaused(!_bootstrap.IsPaused));
-                _rotate.onClick.AddListener(() => { _facing = (GridDirection)(((int)_facing + 1) % 12); if (Model.HasDraft && !string.IsNullOrEmpty(_selectedAction.Value)) DraftAction(_draftDestination); RenderPreview(); });
+                _pause.onClick.AddListener(ToggleTacticalPause);
+                // Facing is an action parameter selected on the battlefield, not a unit rotation command.
                 if (_actionToggle != null) _actionToggle.onClick.AddListener(() => SetActionPanelVisible(!Model.ActionPanelVisible));
                 _hooked = true;
             }
+            if (_rotate != null) _rotate.gameObject.SetActive(false);
         }
         public void ReleaseVisuals()
         {
-            _bound = false; Model.CancelDraft(); _selectedReaction = 0; _selectedAction = default; _selectedDodgePreview = null;
+            _bound = false; Model.Drafts.Reset(); Model.CancelDraft(); _candidate = null; _editingDraft = 0; _selectedReaction = 0; _selectedAction = default; _selectedDodgePreview = null;
+            if (_hud != null) _hud.Release();
+            Clock.Changed -= OnClockChanged;
+            _pauseShortcut?.Dispose(); _systemShortcut?.Dispose(); _trackShortcut?.Dispose(); _pauseShortcut = _systemShortcut = _trackShortcut = null;
+            TimelineView?.ClearSnap(); TrackSelection.Reset(); _autoFocusSignature = null;
+            if (_backplateCamera != null) { Destroy(_backplateCamera.gameObject); _backplateCamera = null; }
             _replayControls?.Dispose(); _replayControls = null; _replayLoaded = false;
             if (_developerReplayPanel != null) _developerReplayPanel.SetActive(false);
             foreach (var row in _rows.Values) if (row != null) Destroy(row.gameObject);
@@ -180,27 +249,66 @@ namespace ProjectHero.UnityView
             _grid?.ReleaseBackdrop();
             if (_registry != null) _registry.ReleaseVisuals();
             if (_panel != null) _panel.SetActive(false);
-            if (_legacyCanvasStates != null)
-            {
-                for (int i = 0; i < _legacyCanvases.Length; i++) if (_legacyCanvases[i] != null) _legacyCanvases[i].SetActive(_legacyCanvasStates[i]);
-                for (int i = 0; i < _legacyPresentation.Length; i++) if (_legacyPresentation[i] != null) _legacyPresentation[i].enabled = _legacyBehaviourStates[i];
-            }
-            LegacyVisualRegistry.SetNewViewActive(false);
-            if (_cameraConfigured && _camera != null) _camera.orthographicSize = _originalCameraSize;
+            if (_cameraConfigured && _camera != null) { _camera.orthographicSize = _originalCameraSize; _camera.rect = _originalCameraRect; }
             _cameraConfigured = false;
         }
         public void BindInput(ViewInputPorts ports)
         {
-            Model.Bind(ports); _bound = true; _owner = Model.Decision.ControlledUnitIds[0];
+            Model.BindClock(Clock); Model.Bind(ports); _bound = true; _owner = Model.Decision.ControlledUnitIds[0];
+            Runtime.NewDriver.EnableHudClock(new ControllerId(_controllerId));
+            _hud = GetComponent<M1HudView>() ?? gameObject.AddComponent<M1HudView>();
+            _hud.Bind(this, (RectTransform)_panel.transform, _font, _actions, _targets, _timeline, _reactions, _status, _previewText);
+            _font = _hud.HudFont;
+            TrackSelection.Reset(); TrackSelection.Focus(_owner.Value, false); _autoFocusSignature = null;
+            TimelineView = GetComponent<M2TimelineView>() ?? gameObject.AddComponent<M2TimelineView>();
+            TimelineView.Bind(this, _timeline, _font, _status);
+            Clock.Changed -= OnClockChanged; Clock.Changed += OnClockChanged; OnClockChanged();
+            _pauseShortcut = new InputAction("Tactical pause", InputActionType.Button, "<Keyboard>/space");
+            _pauseShortcut.performed += _ =>
+            {
+                if (_bound && !InputFieldFocused() && !Keyboard.current.shiftKey.isPressed
+                    && !Keyboard.current.ctrlKey.isPressed && !Keyboard.current.altKey.isPressed) ToggleTacticalPause();
+            };
+            _systemShortcut = new InputAction("System pause", InputActionType.Button, "<Keyboard>/escape");
+            _systemShortcut.performed += _ =>
+            {
+                if (!_bound || InputFieldFocused()) return;
+                var drag = GetComponentsInChildren<TimelinePlanView>(true).FirstOrDefault(row => row.IsDragging);
+                if (drag != null) { drag.CancelDrag(); return; }
+                if (IsAwaitingWorldSelection) { CancelConfiguration(); _hud.Refresh(); return; }
+                Runtime.SetPaused(Clock.State != BattleClockState.SystemPaused); Render();
+            };
+            _trackShortcut = new InputAction("Cycle primary track", InputActionType.Button, "<Keyboard>/tab");
+            _trackShortcut.performed += _ => CyclePrimary(Keyboard.current?.shiftKey.isPressed == true);
+            _pauseShortcut.Enable(); _systemShortcut.Enable(); _trackShortcut.Enable();
             BindReplay();
-            _grid.BindBoundary(Model.Decision.Definition.FindEncounter(_bootstrap.NewDriver.ReplayHeader.EncounterId).GridBoundary);
+            _grid.BindBoundary(Model.Decision.Definition.FindEncounter(Runtime.NewDriver.ReplayHeader.EncounterId).GridBoundary);
             _footprints?.Bind(Model.Decision.Definition); _footprints?.Consume(Model.Decision.VisibleUnits);
             RebuildOwnerActions();
             Render();
         }
+        private void OnClockChanged()
+        {
+            _registry.SetPresentationPaused(Clock.IsPaused); _feedbackPlayer?.SetPresentationPaused(Clock.IsPaused);
+            string focus = Model.Decision?.Tick + ":" + Clock.FocusUnitId + ":" + Clock.PauseReason;
+            if (Clock.FocusUnitId > 0 && Clock.State == BattleClockState.TacticalPlanning && Model.Decision != null && focus != _autoFocusSignature)
+            {
+                _autoFocusSignature = focus; TrackSelection.Focus(Clock.FocusUnitId, false);
+                if (Clock.PauseReason == "发现可响应的公开威胁")
+                    foreach (var opportunity in Model.Reactions.Where(r => r.DefenderUnitId == Clock.FocusUnitId && r.SourceImpactTick > Model.Decision.Tick))
+                    {
+                        var attack = Model.Timeline.FirstOrDefault(p => p.ActionPlanId == opportunity.SourceAttackPlanId);
+                        if (attack != null) TrackSelection.AddTemporary(attack.OwnerUnitId);
+                    }
+                SyncPrimary();
+            }
+            if (Clock.State == BattleClockState.SystemPaused || Clock.State == BattleClockState.Ended) TimelineView?.ClearSnap();
+            if (_bound) _hud?.Refresh();
+        }
         private void RebuildOwnerActions()
         {
             Clear(_actionButtons); Clear(_targetButtons);
+            if (!CanConfigurePrimary) return;
             foreach (var action in Model.Decision.ActionSetOf(_owner))
             {
                 var spec = Model.Decision.FindAction(action);
@@ -208,8 +316,10 @@ namespace ProjectHero.UnityView
                 var captured = action;
                 var words = action.Value.Split('.');
                 var label = words.Length > 1 ? words[1].Replace('_', ' ') : spec.Type.ToString();
-                label = System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(label);
-                _actionButtons.Add(CreateButton(_actions, label, () => SelectAction(captured)));
+                label = M1HudView.ActionName(action.Value);
+                var button = CreateButton(_actions, label, () => SelectAction(captured));
+                var size = button.GetComponent<UnityEngine.UI.LayoutElement>(); size.minHeight = size.preferredHeight = 28;
+                _actionButtons.Add(button);
             }
         }
         public void Consume(EventBatch events, LogicSnapshot snapshot)
@@ -220,15 +330,11 @@ namespace ProjectHero.UnityView
             if (_bound)
             {
                 Model.Synchronize(events);
-                UnitId acting = Model.Decision.ControlledUnitIds[0];
-                if (Model.Window != null)
-                    foreach (var controlled in Model.Decision.ControlledUnitIds)
-                        if (controlled.Value == Model.Window.OwnerUnitId) { acting = controlled; break; }
-                if (acting != _owner)
-                {
-                    _owner = acting; Model.CancelDraft(); _selectedAction = default; _target = default;
-                    RebuildOwnerActions();
-                }
+                TrackSelection.Layout.Consume(events);
+                TrackSelection.Prune(Model.Decision);
+                TrackSelection.SyncTemporary(Model.Reactions.Where(r => r.SourceImpactTick > Model.Decision.Tick)
+                    .Select(r => Model.Timeline.FirstOrDefault(p => p.ActionPlanId == r.SourceAttackPlanId)?.OwnerUnitId ?? 0));
+                SyncPrimary();
                 if (_selectedReaction != 0)
                 {
                     _selectedDodgePreview = Model.PreviewDodge(_selectedReaction, _reactionAction, _reactionDestination);
@@ -239,17 +345,13 @@ namespace ProjectHero.UnityView
         }
         public void SelectAction(ActionSpecId action)
         {
-            Model.CancelDraft(); _selectedAction = action; _selectedReaction = 0; _selectedDodgePreview = null; _target = default; Clear(_targetButtons);
+            if (!CanConfigurePrimary) return;
+            _grid?.ClearAttackPreview();
+            _candidate = null; CandidatePreview = null; _editingDraft = 0; _requestedStart = null; _draftDestination = null;
+            _selectedAction = action; _selectedReaction = 0; _selectedDodgePreview = null; _target = default; Clear(_targetButtons);
+            _hud?.ResetStart();
             var spec = Model.Decision.FindAction(action);
-            if (spec.Type == ActionType.Attack)
-            {
-                foreach (var candidate in Model.Targets(_owner, action))
-                {
-                    var captured = new UnitId(candidate.UnitId);
-                    _targetButtons.Add(CreateButton(_targets, "Target " + candidate.UnitId, () => { _target = captured; DraftAction(null); }));
-                }
-            }
-            else if (spec.Type == ActionType.Guard) DraftAction(null);
+            if (spec.Type == ActionType.Guard) DraftAction(null);
             RenderPreview();
         }
         public void DraftAction(GridPoint? destination, long? startTick = null)
@@ -257,70 +359,181 @@ namespace ProjectHero.UnityView
             if (string.IsNullOrEmpty(_selectedAction.Value)) return;
             _draftDestination = destination;
             var spec = Model.Decision.FindAction(_selectedAction);
-            Model.SetDraft(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, _owner, _selectedAction,
-                startTick, PrimaryTargetUnitId: spec.Type == ActionType.Attack && _target.IsValid ? _target : (UnitId?)null, Facing: _facing, Destination: destination) });
+            _requestedStart = startTick;
+            _candidate = new AddOrdinaryPlanOperation(1, _owner, _selectedAction,
+                startTick, PrimaryTargetUnitId: spec.Type == ActionType.Attack && _target.IsValid ? _target : (UnitId?)null, Facing: _facing, Destination: destination);
+            if (_editingDraft != 0) Model.EditDraft(_editingDraft, _candidate);
+            CandidatePreview = _editingDraft != 0 ? Model.Preview : Model.PreviewCandidate(_candidate);
             RenderPreview();
+        }
+        public void AddConfiguredDraft()
+        {
+            if (_candidate == null || !Model.CanPlan) return;
+            if (_editingDraft == 0) Model.AppendDraft(_candidate);
+            _editingDraft = 0; _candidate = null; CandidatePreview = null; _selectedAction = default;
+            _grid?.ClearAttackPreview();
+            _hud?.Refresh(); RenderPreview();
+        }
+        public void EditConfiguredDraft(long id)
+        {
+            foreach (var entry in Model.Drafts.Entries)
+                if (entry.Id == id && entry.Operation is AddOrdinaryPlanOperation add)
+                {
+                    SelectAction(add.ActionSpecId); _editingDraft = id; _owner = add.OwnerUnitId;
+                    _target = add.PrimaryTargetUnitId ?? default; _facing = add.Facing;
+                    _draftDestination = add.Destination; _requestedStart = add.RequestedStartTick;
+                    DraftAction(add.Destination, add.RequestedStartTick); _hud?.SetStart(add.RequestedStartTick); return;
+                }
+        }
+        public void SetCandidateStart(long? tick) { _requestedStart = tick; if (_candidate != null) DraftAction(_draftDestination, tick); }
+        public void ToggleTacticalPause()
+        {
+            if (Clock.State == BattleClockState.Running) Clock.PauseTactically();
+            else if (Clock.State == BattleClockState.TacticalPlanning)
+            {
+                if (Model.HasDraft && Model.Drafts.State != ScheduleDraftState.AwaitingResume) _hud.ShowResumeChoice();
+                else ResumePlanning(false);
+            }
+            Render();
+        }
+        public void ResumePlanning(bool apply)
+        {
+            if (Clock.State != BattleClockState.TacticalPlanning) return;
+            if (apply && Model.HasDraft && Model.ConfirmDraft() != null) return;
+            Runtime.NewDriver.ResumeTactically();
+            string code = Model.SubmitOnResume();
+            if (code != null) Clock.PauseTactically("排程未提交，请调整");
+            _hud?.HideResumeChoice(); Render();
         }
         private void LateUpdate()
         {
             if (!_bound) return;
             _refreshElapsed += Time.unscaledDeltaTime;
             if (_refreshElapsed >= 0.1f) { _refreshElapsed = 0; Render(); }
-            if (_bootstrap.IsPaused || Model.Decision.BattleEnd.IsEnded || string.IsNullOrEmpty(_selectedAction.Value)) return;
+            if (!IsAwaitingWorldSelection && Mouse.current != null && _camera != null && Clock.State != BattleClockState.SystemPaused
+                && Clock.State != BattleClockState.Ended && !_hud.ResumeChoiceVisible && Mouse.current.leftButton.wasPressedThisFrame
+                && _camera.pixelRect.Contains(Mouse.current.position.ReadValue()) && !(EventSystem.current?.IsPointerOverGameObject() ?? false)
+                && _grid.TryPick(_camera.ScreenPointToRay(Mouse.current.position.ReadValue()), out var selectedCell))
+            {
+                foreach (var unit in Model.Decision.VisibleUnits.Where(u => u.IsAlive).OrderBy(u => u.UnitId))
+                    if (VolumeFootprint.ResolveCells(Model.Decision.Definition.VolumeDirectionsOf(new UnitDefinitionId(unit.DefinitionId)),
+                        new GridPoint(unit.X, unit.Y), (GridDirection)unit.Facing).Contains(selectedCell))
+                    { SelectTrack(unit.UnitId, M2TimelineView.ControlPressed()); break; }
+            }
+            if (!Model.CanPlan || !Model.ActionPanelVisible || string.IsNullOrEmpty(_selectedAction.Value)
+                || _hud.ResumeChoiceVisible || Mouse.current == null || _camera == null)
+            { _grid?.ClearAttackPreview(); return; }
             var spec = Model.Decision.FindAction(_selectedAction);
-            if (spec.Type != ActionType.Move || Mouse.current == null || _camera == null) return;
-            if (Mouse.current.leftButton.wasPressedThisFrame && !(EventSystem.current?.IsPointerOverGameObject() ?? false)
-                && _grid.TryPick(_camera.ScreenPointToRay(Mouse.current.position.ReadValue()), out var cell)) DraftAction(cell);
+            var pointer = Mouse.current.position.ReadValue();
+            if (!_camera.pixelRect.Contains(pointer) || (EventSystem.current?.IsPointerOverGameObject() ?? false)
+                || !_grid.TryPick(_camera.ScreenPointToRay(pointer), out var cell))
+            { _grid.ClearAttackPreview(); return; }
+            if (spec.Type == ActionType.Attack)
+            {
+                PreviewAttackCell(cell);
+                if (Mouse.current.leftButton.wasPressedThisFrame) SelectAttackCell(cell);
+            }
+            else if (spec.Type == ActionType.Move && Mouse.current.leftButton.wasPressedThisFrame) DraftAction(cell, _requestedStart);
+        }
+        private UnitSnapshot ActingUnit()
+        {
+            foreach (var unit in Model.Decision.VisibleUnits) if (unit.UnitId == _owner.Value) return unit;
+            return null;
+        }
+        private void PreviewAttackCell(GridPoint cell)
+        {
+            if (!(Model.Decision.FindAction(_selectedAction)?.Payload is AttackPayloadSpec attack)) return;
+            var owner = ActingUnit();
+            if (owner == null || (owner.X == cell.X && owner.Y == cell.Y)) { _grid.ClearAttackPreview(); return; }
+            var origin = new GridPoint(owner.X, owner.Y);
+            var facing = GridView.DirectionTo(origin, cell);
+            _grid.ShowAttackPreview(VolumeFootprint.ResolveTriangles(attack.Pattern.Directions, origin, facing));
+        }
+        /// <summary>One battlefield click selects both the primary target (if present) and attack direction.
+        /// Only local configuration changes here; the existing draft transaction performs authoritative validation.</summary>
+        public bool SelectAttackCell(GridPoint cell)
+        {
+            if (!Model.CanPlan || !(Model.Decision.FindAction(_selectedAction)?.Payload is AttackPayloadSpec attack)) return false;
+            var owner = ActingUnit();
+            if (owner == null || (owner.X == cell.X && owner.Y == cell.Y)) return false;
+            _facing = GridView.DirectionTo(new GridPoint(owner.X, owner.Y), cell);
+            _target = default;
+            foreach (var target in Model.Targets(_owner, _selectedAction))
+            {
+                var directions = Model.Decision.Definition.VolumeDirectionsOf(new UnitDefinitionId(target.DefinitionId));
+                foreach (var occupied in VolumeFootprint.ResolveCells(directions, new GridPoint(target.X, target.Y), (GridDirection)target.Facing))
+                    if (occupied == cell && (!_target.IsValid || target.UnitId < _target.Value)) _target = new UnitId(target.UnitId);
+            }
+            // A fixed-target attack keeps an invalid configuration visible when the clicked cell is empty.
+            DraftAction(null, _requestedStart);
+            PreviewAttackCell(cell);
+            return true;
+        }
+        private static bool InputFieldFocused()
+        {
+            var selected = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+            return selected != null && selected.TryGetComponent<TMP_InputField>(out var input) && input != null && input.isFocused;
         }
         private void Render()
         {
             if (!_bound) return;
             var text = new StringBuilder();
-            text.Append("Tick ").Append(Model.Decision.Tick).Append("  |  Locked before ").Append(Model.LockLine).Append("\n");
             foreach (var unit in Model.Decision.VisibleUnits)
             {
-                text.Append("Unit ").Append(unit.UnitId).Append("  HP ").Append(unit.HealthQ10 / 1024f).Append("  ").Append(unit.StateValue);
+                text.Append("单位 ").Append(unit.UnitId).Append("  生命 ").Append(unit.HealthQ10 / 1024f).Append("  ").Append(unit.StateValue);
                 foreach (var ledger in Model.Adrenaline)
                     if (ledger.UnitId == unit.UnitId)
-                        text.Append("  Adrenaline ").Append(ledger.AvailableAdrenaline).Append("  Reserved ").Append(ledger.ReservedTotal);
+                        text.Append("  肾上腺素 ").Append(ledger.AvailableAdrenaline).Append("  预留 ").Append(ledger.ReservedTotal);
                 text.Append('\n');
             }
             var window = Model.Window;
-            if (window != null) text.Append("Window owner ").Append(window.OwnerUnitId).Append(" · Remaining ")
+            if (window != null) text.Append("窗口拥有者 ").Append(window.OwnerUnitId).Append(" · 剩余 ")
                 .Append((Math.Max(0L, window.EndTick - Model.Decision.Tick - 1L)
                     / (double)Model.Decision.Definition.TicksPerSecond).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))
                 .Append(" s\n");
             if (Model.Decision.BattleEnd.IsEnded) text.Append(Model.Decision.BattleEnd.ResultCode);
             _status.text = text.ToString();
-            _confirm.interactable = ((Model.HasDraft && Model.Preview?.Succeeded == true)
-                || (_selectedReaction != 0 && _selectedDodgePreview?.RejectionCode == null)) && !_bootstrap.IsPaused && !Model.Decision.BattleEnd.IsEnded;
-            _concurrent.interactable = window != null && window.OwnerUnitId != _owner.Value && !_bootstrap.IsPaused && !Model.Decision.BattleEnd.IsEnded;
-            if (_pauseLabel != null) _pauseLabel.text = _bootstrap.IsPaused ? "Resume" : "Pause";
-            _debug.transform.parent.gameObject.SetActive((Debug.isDebugBuild || Application.isEditor) && _debugLines.Count > 0);
+            _confirm.interactable = ((Model.HasDraft && Model.Preview?.Succeeded == true && Model.Drafts.State != ScheduleDraftState.Stale)
+                || (_selectedReaction != 0 && _selectedDodgePreview?.RejectionCode == null)) && Model.CanPlan;
+            _cancel.interactable = Model.CanPlan && Model.Drafts.State != ScheduleDraftState.AwaitingAcceptance;
+            _concurrent.interactable = CanConfigurePrimary && window != null && window.OwnerUnitId != _owner.Value && !Runtime.IsPaused && !Model.Decision.BattleEnd.IsEnded;
+            if (_pauseLabel != null) _pauseLabel.text = Clock.State == BattleClockState.TacticalPlanning ? "继续时间" : "暂停并规划";
+            _debug.transform.parent.gameObject.SetActive((Debug.isDebugBuild || Application.isEditor)
+                && _developerReplayPanel != null && _developerReplayPanel.activeSelf && _debugLines.Count > 0);
             _debug.overflowMode = TextOverflowModes.Truncate;
             _debug.text = string.Join("\n", _debugLines) + _lastDamageDebug;
             RenderReplayStatus();
             RenderPreview();
+            _hud?.Refresh();
+            RenderTimeline();
         }
         private void RenderPreview()
         {
             _previewText.overflowMode = TextOverflowModes.Truncate;
             if (Model.Decision.BattleEnd.IsEnded)
             { _previewText.text = "Battle finished: " + Model.Decision.BattleEnd.ResultCode; return; }
-            var text = new StringBuilder("Facing ").Append(_facing).Append("\n");
+            var text = new StringBuilder();
+            if (!string.IsNullOrEmpty(_selectedAction.Value) && Model.Decision.FindAction(_selectedAction)?.Type == ActionType.Attack)
+                text.Append("战场指向显示红色攻击范围，点击确定方向与目标。\n");
             if (_selectedReaction != 0 && _selectedDodgePreview != null)
             {
                 text.Append("If Dodge relocates: cancel ").Append(_selectedDodgePreview.AffectedPlanIds.Count).Append(" future moves.");
             }
-            else if (!Model.HasDraft) text.Append("Select an action. Move: choose a ground cell.\nDrag a future plan to preview; confirm once.");
-            else if (Model.Preview?.Succeeded != true) text.Append("Cannot confirm: ").Append(Model.Preview?.RejectionCode);
+            else if (_candidate != null)
+            {
+                text.Append(CandidatePreview?.Succeeded == true ? "配置就绪，可添加至草稿" : "配置不可用：" + M1HudView.Explain(CandidatePreview?.RejectionCode));
+                if (CandidatePreview?.Succeeded == true)
+                    foreach (var projection in CandidatePreview.PreviewPlans ?? Array.Empty<SchedulePlanPreview>())
+                        text.Append($"\n{M1HudView.ActionName(projection.Plan.ActionSpecId)}  {projection.Plan.StartTick / 60d:0.000}s → {projection.Plan.EndTick / 60d:0.000}s");
+            }
+            else if (!Model.HasDraft) text.Append("选择动作，再选择目标或战场落点。\n添加多条草稿后应用排程。");
+            else if (Model.Preview?.Succeeded != true) text.Append("无法应用：").Append(M1HudView.Explain(Model.Preview?.RejectionCode));
             else foreach (var projection in Model.Preview.PreviewPlans ?? Array.Empty<ProjectHero.Logic.Timeline.SchedulePlanPreview>())
             {
                 var plan = projection.Plan;
-                text.Append("Start ").Append(plan.StartTick).Append("  End ").Append(plan.EndTick)
-                    .Append("  Weight ").Append(plan.ResolvedPathWeightUnits).Append("\nPath: ").Append(string.Join(" -> ", projection.Path)).Append('\n');
+                text.Append($"{M1HudView.ActionName(plan.ActionSpecId)}  {plan.StartTick / 60d:0.000}s → {plan.EndTick / 60d:0.000}s\n");
             }
-            if (Model.LastRejection != null) text.Append("\nRejected: ").Append(Model.LastRejection);
+            if (Model.LastRejection != null) text.Append("\n").Append(M1HudView.Explain(Model.LastRejection));
             foreach (var capability in Model.HudPreviews?.OpponentCapabilities ?? Array.Empty<OpponentReactionCapability>())
             {
                 if (!capability.IsWithinKnownHorizon) continue;
@@ -333,21 +546,7 @@ namespace ProjectHero.UnityView
         }
         private void RenderTimeline()
         {
-            var live = new HashSet<long>();
-            foreach (var plan in Model.Timeline)
-            {
-                live.Add(plan.ActionPlanId);
-                if (!_rows.TryGetValue(plan.ActionPlanId, out var row))
-                {
-                    var go = CreateButton(_timeline, "", () => { });
-                    row = go.AddComponent<TimelinePlanView>(); row.Initialize(this, plan.ActionPlanId);
-                    _rows.Add(plan.ActionPlanId, row);
-                }
-                row.Refresh(plan, Model.CanEdit(plan.ActionPlanId), Model.IsConditionallyInvalidated(plan.ActionPlanId));
-            }
-            var remove = new List<long>();
-            foreach (var pair in _rows) if (!live.Contains(pair.Key)) { Destroy(pair.Value.gameObject); remove.Add(pair.Key); }
-            foreach (var id in remove) _rows.Remove(id);
+            TimelineView?.Refresh();
         }
         private void RenderReactions()
         {
@@ -380,7 +579,7 @@ namespace ProjectHero.UnityView
                         {
                             var preview = Model.PreviewDodge(id, action, captured);
                             // Selecting a destination is a local preview. A separate confirm click sends the reaction.
-                            Model.CancelDraft(); _selectedDodgePreview = preview;
+                            _selectedDodgePreview = preview;
                             _selectedReaction = id; _reactionAction = action; _reactionDestination = captured;
                             RenderPreview(); _confirm.interactable = preview.RejectionCode == null;
                         }));

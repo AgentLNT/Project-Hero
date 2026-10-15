@@ -13,7 +13,7 @@ namespace ProjectHero.Core.Timeline
     /// 旧离散时间线。
     ///
     /// 任务 03B 的所有权调整（不变量 21）：本类<strong>没有</strong> <c>Update()</c>，
-    /// <c>AdvanceTime(float)</c> 唯一的调用者是 <c>BattleRuntimeBootstrap</c> 经 Legacy 帧适配器
+    /// <c>AdvanceTime(float)</c> 唯一的调用者是 <c>MigrationBattleHost</c> 经 Legacy 帧适配器
     /// （<c>CombatDemo.AdvanceFrame</c>）发起的那一条路径。时间语义完全不变：
     /// 受 <c>Time.timeScale</c> 缩放的帧时间 + 固定步长累加器 + 暂停即 return。
     /// </summary>

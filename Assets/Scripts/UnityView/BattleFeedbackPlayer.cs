@@ -13,6 +13,12 @@ namespace ProjectHero.UnityView
         private bool _bound;
         private float _shake;
         private Vector3 _previousOffset;
+        private bool _paused;
+        public void SetPresentationPaused(bool paused)
+        {
+            if (_paused == paused) return; _paused = paused;
+            if (_audio != null) { if (paused) _audio.Pause(); else _audio.UnPause(); }
+        }
         public int EndFeedbackCount { get; private set; }
         public void Configure(BattleViewRegistry registry, Camera camera, AudioSource audio)
         { _registry = registry; _camera = camera; _audio = audio; }
@@ -27,6 +33,7 @@ namespace ProjectHero.UnityView
         }
         public void Unbind()
         {
+            SetPresentationPaused(false);
             if (!_bound) return;
             if (_registry != null) _registry.Feedback.FeedbackRequested -= Play;
             _bound = false;
@@ -53,7 +60,7 @@ namespace ProjectHero.UnityView
         }
         private void LateUpdate()
         {
-            if (!_bound || _camera == null) return;
+            if (!_bound || _camera == null || _paused) return;
             _camera.transform.position -= _previousOffset;
             _shake = Mathf.Max(0, _shake - Time.unscaledDeltaTime);
             _previousOffset = _shake > 0 ? new Vector3(Mathf.Sin(Time.unscaledTime * 93), 0, Mathf.Cos(Time.unscaledTime * 79)) * _shake : Vector3.zero;

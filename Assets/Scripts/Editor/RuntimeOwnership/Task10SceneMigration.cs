@@ -39,7 +39,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
         public static void WireMainScene()
         {
             var scene = EditorSceneManager.OpenScene(RuntimeOwnershipSceneTool.MainScenePath, OpenSceneMode.Single);
-            var bootstrap = Find<BattleRuntimeBootstrap>(scene);
+            MonoBehaviour bootstrap = (MonoBehaviour)Find<BattleRuntimeBootstrap>(scene) ?? Find<MigrationBattleHost>(scene);
             var factory = Find<BattleSimulationSourceFactory>(scene);
             if (bootstrap == null || (factory == null && Find<NewBattleSimulationSource>(scene) == null))
                 throw new InvalidOperationException("MAIN_SCENE_INITIALIZATION_CHAIN_MISSING");
@@ -78,7 +78,7 @@ namespace ProjectHero.Editor.RuntimeOwnership
                 if (label != null) label.alignment = TextAlignmentOptions.Midline;
             }
         }
-        private static BattlePresentationView CreatePresentation(Scene scene, BattleRuntimeBootstrap bootstrap, BattleSimulationSourceFactory factory)
+        private static BattlePresentationView CreatePresentation(Scene scene, MonoBehaviour bootstrap, BattleSimulationSourceFactory factory)
         {
             var root = new GameObject("NewBattlePresentation"); SceneManager.MoveGameObjectToScene(root, scene);
             var grid = root.AddComponent<GridView>(); var registry = root.AddComponent<BattleViewRegistry>();
@@ -144,8 +144,10 @@ namespace ProjectHero.Editor.RuntimeOwnership
                         && (component.GetType().Namespace.StartsWith("ProjectHero.UI", StringComparison.Ordinal)
                         || component.GetType().Namespace.StartsWith("ProjectHero.Visuals", StringComparison.Ordinal))) legacyPresentation.Add(component);
             presentation.Configure(bootstrap, registry, grid, camera, "controller.player", canvasGo, actions, targets, timeline, reactions,
-                status, preview, debug, font, legacyPresentation.ToArray(), confirm, cancel, concurrent, pause, rotate);
-            presentation.ConfigureLegacyCanvases(legacyCanvases.ToArray()); presentation.ConfigureActionToggle(actionToggle);
+                status, preview, debug, font, confirm, cancel, concurrent, pause, rotate);
+            if (bootstrap is MigrationBattleHost diagnostic)
+                diagnostic.ConfigureLegacyPresentation(legacyCanvases.ToArray(), legacyPresentation.ToArray());
+            presentation.ConfigureActionToggle(actionToggle);
             presentation.ConfigureReplay(replayPanel.gameObject, replayToggle, path, replayStatus, saveReplay, loadReplay,
                 playReplay, pauseReplay, restartReplay, speedReplay);
             replayPanel.gameObject.SetActive(false);

@@ -33,14 +33,14 @@ namespace ProjectHero.Tests.PlayMode
     {
         public const string MainSceneName = "CombatSampleScene";
         public const string HiddenValidationSceneName = "HiddenRuntimeValidation";
-        public const string HiddenValidationScenePath = "Assets/Scenes/HiddenRuntimeValidation.unity";
-        public const string HiddenSceneAssetPath = "Assets/Scenes/HiddenRuntimeValidation.unity";
+        public const string HiddenValidationScenePath = "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity";
+        public const string HiddenSceneAssetPath = "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity";
         public const string MainScenePath = "Assets/Scenes/CombatSampleScene.unity";
 
         protected readonly List<GameObject> TemporaryObjects = new List<GameObject>();
         protected readonly List<UnityEngine.Object> TemporaryAssets = new List<UnityEngine.Object>();
 
-        protected BattleRuntimeBootstrap Bootstrap { get; private set; }
+        protected MigrationBattleHost Bootstrap { get; private set; }
 
         /// <summary>当前测试使用的是真实场景（而不是自建夹具场景）。</summary>
         protected bool UsingProductionScene { get; private set; }
@@ -56,7 +56,7 @@ namespace ProjectHero.Tests.PlayMode
         public IEnumerator TearDown()
         {
             Time.timeScale = 1f;
-            BattleRuntimeBootstrap.ClearUnclassifiedLogicWriterTypes();
+            MigrationBattleHost.ClearUnclassifiedLogicWriterTypes();
             LegacyWriterRegistry.ResetForTests();
 
             for (int i = 0; i < TemporaryObjects.Count; i++)
@@ -138,6 +138,8 @@ namespace ProjectHero.Tests.PlayMode
             UsingProductionScene = true;
         }
         protected virtual bool UseLegacyComparisonScene => true;
+        // Historical scene regressions use active time; M1 scenarios explicitly opt into auto-pause.
+        protected virtual bool UseHudAutoPause => false;
         protected IEnumerator LoadLegacyComparisonScene()
         {
 #if UNITY_EDITOR
@@ -182,7 +184,7 @@ namespace ProjectHero.Tests.PlayMode
         /// </summary>
         protected void ResolveBootstrap(bool requireExactlyOne = true)
         {
-            var snapshot = BattleRuntimeBootstrap.EnumerateLiveInstances();
+            var snapshot = MigrationBattleHost.EnumerateLiveInstances();
             Bootstrap = null;
             int count = 0;
             var paths = new List<string>();
@@ -192,12 +194,17 @@ namespace ProjectHero.Tests.PlayMode
                 var candidate = snapshot[i];
                 if (candidate == null || !candidate.gameObject.scene.IsValid()) continue;
                 count++;
-                paths.Add(BattleRuntimeBootstrap.DescribePath(candidate));
+                paths.Add(MigrationBattleHost.DescribePath(candidate));
                 if (Bootstrap == null) Bootstrap = candidate;
+            }
+            if (Bootstrap != null && !UseHudAutoPause)
+            {
+                Bootstrap.Clock.AutoPauseOwnWindow = false; Bootstrap.Clock.AutoPauseThreat = false;
+                Bootstrap.NewDriver.ResumeTactically();
             }
 
             Assert.That(count, requireExactlyOne ? Is.EqualTo(1) : Is.GreaterThan(0),
-                "场景中必须存在" + (requireExactlyOne ? "恰好一个" : "至少一个") + " BattleRuntimeBootstrap，实际 " + count
+                "场景中必须存在" + (requireExactlyOne ? "恰好一个" : "至少一个") + " MigrationBattleHost，实际 " + count
                 + " [" + string.Join(",", paths) + "]");
         }
 
@@ -255,7 +262,7 @@ namespace ProjectHero.Tests.PlayMode
         /// 直接读静态计数：Unity 的 FindObjectsByType 默认看不到被禁用的组件，而重复
         /// Bootstrap 会被 Awake 立刻禁用，正是最需要被数到的情形。
         /// </summary>
-        protected static int BootstrapCountInScene() => BattleRuntimeBootstrap.LiveInstanceCount;
+        protected static int BootstrapCountInScene() => MigrationBattleHost.LiveInstanceCount;
 
         /// <summary>诊断输出（只在断言失败时需要，正常路径不改变任何状态）。</summary>
         protected void LogLedger(string context)
@@ -307,7 +314,7 @@ namespace ProjectHero.Tests.PlayMode
         private static IEnumerable<System.Reflection.Assembly> CandidateAssemblies()
         {
             yield return typeof(RuntimeOwnershipTestBase).Assembly;
-            yield return typeof(BattleRuntimeBootstrap).Assembly;
+            yield return typeof(MigrationBattleHost).Assembly;
             yield return typeof(ProjectHero.Logic.Simulation.BattleSimulation).Assembly;
             yield return typeof(GameObject).Assembly;
         }
@@ -383,7 +390,7 @@ namespace ProjectHero.Tests.PlayMode
             var timeline = FindProductionComponent("ProjectHero.Core.Timeline.BattleTimeline");
             if (timeline == null && UnityEngine.SceneManagement.SceneManager.GetActiveScene().path == MainScenePath)
             {
-                var owners = UnityEngine.Object.FindObjectsByType<BattleRuntimeBootstrap>(FindObjectsInactive.Include);
+                var owners = UnityEngine.Object.FindObjectsByType<MigrationBattleHost>(FindObjectsInactive.Include);
                 Assert.That(owners.Length, Is.EqualTo(1));
                 Assert.That(owners[0].Adapters.Legacy, Is.Null, "Production Legacy adapter must be physically absent.");
                 Assert.That(FindProductionComponent("ProjectHero.Core.Entities.CombatUnit"), Is.Null,

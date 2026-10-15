@@ -13,7 +13,7 @@ using ProjectHero.Logic.Timeline;
 namespace ProjectHero.Core.Compatibility.Runtime.Input
 {
     /// <summary>Player port with a fixed registered identity, read projections, and the single ingress.</summary>
-    public sealed class RuntimeViewLogicPort : IViewLogicPort, IViewPreviewPort
+    public sealed class RuntimeViewLogicPort : IViewLogicPort, IViewPreviewPort, IViewCommandReceiptPort
     {
         private readonly BattleSimulation _simulation;
         private readonly CommandIngressEntry _entry;
@@ -49,6 +49,24 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
         public ControllerId ControllerId { get; }
         public DecisionSnapshot DecisionSnapshot { get { RefreshProjection(); return _decision; } }
         public HudPreviewService HudPreviews => _simulation.HudPreviewFor(ControllerId);
+        public ConcurrentActionSnapshot ConcurrentAction => _simulation.CurrentSnapshot.ConcurrentAction;
+        public long LastSubmittedOrdinal { get; private set; }
+        public ViewCommandReceipt ReceiptFor(long targetTick, long ordinal, ProjectHero.Logic.Events.EventBatch events)
+        {
+            if (events.Tick != targetTick) return null;
+            foreach (var rejected in _simulation.LastCommandSet.IngressRejections)
+                if (rejected.ControllerId == ControllerId && rejected.ProducerOrdinal == ordinal)
+                    return new ViewCommandReceipt(targetTick, ordinal, false, rejected.ReasonCode);
+            foreach (var envelope in _simulation.LastCommandSet.Envelopes)
+            {
+                if (envelope.ControllerId != ControllerId || envelope.ProducerOrdinal != ordinal) continue;
+                foreach (var fact in events.Events)
+                    if (fact is ProjectHero.Logic.Events.CommandRejectedEvent rejected && rejected.CommandSequence == envelope.CommandSequence)
+                        return new ViewCommandReceipt(targetTick, ordinal, false, rejected.ReasonCode);
+                return new ViewCommandReceipt(targetTick, ordinal, true, null);
+            }
+            return null;
+        }
         public WindowId? OpenWindowId => _simulation.CurrentSnapshot.WindowManager.Windows.FindOpenWindow();
         public TurnWindowSnapshot CurrentWindow
         {
@@ -114,7 +132,10 @@ namespace ProjectHero.Core.Compatibility.Runtime.Input
             if (IsPaused) throw new LogicDefinitionException("VIEW_INPUT_PAUSED", "");
             if (request.TargetTick != _simulation.CommandIngress.NextDefaultTargetTick)
                 throw new LogicDefinitionException("VIEW_REQUEST_TARGET_NOT_NEXT_BOUNDARY", "");
-            return _entry.Submit(request);
+            long ordinal = _entry.NextProducerOrdinal;
+            var error = _entry.Submit(request);
+            if (error == null) LastSubmittedOrdinal = ordinal;
+            return error;
         }
         public bool TryGetPlanSnapshot(ActionPlanId id, out ActionPlanSnapshot plan)
         {

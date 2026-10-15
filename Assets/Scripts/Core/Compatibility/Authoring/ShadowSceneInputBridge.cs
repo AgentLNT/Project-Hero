@@ -17,7 +17,7 @@ namespace ProjectHero.Core.Compatibility.Authoring
     // Called only by confirmed Legacy scheduling, without a clock or any scene/feedback writes.
     public sealed class ShadowSceneInputBridge : MonoBehaviour
     {
-        [SerializeField] private BattleRuntimeBootstrap _bootstrap;
+        [SerializeField] private MigrationBattleHost _bootstrap;
         [SerializeField] private BattleSimulationSourceFactory _source;
         public int SubmittedCount { get; private set; }
         public int RejectedCount { get; private set; }

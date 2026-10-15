@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="37" result="Passed" total="37" passed="37" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:30Z" duration="0.4551472">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="957" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:30Z" duration="0.455147" total="37" passed="37" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1010" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.291990" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="44052" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1011" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.291215" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1012" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.290754" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1013" name="UnityView" fullname="ProjectHero.Tests.UnityView" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.289897" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1014" name="Editor" fullname="ProjectHero.Tests.UnityView.Editor" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.289495" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1001" name="Task09ViewInputTests" fullname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests" classname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.288222" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1004" name="OpeningActionPanelDoesNotCreateLogicalDraftOrPauseExecution" fullname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests.OpeningActionPanelDoesNotCreateLogicalDraftOrPauseExecution" methodname="OpeningActionPanelDoesNotCreateLogicalDraftOrPauseExecution" classname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests" runstate="Runnable" seed="1727880644" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.196207" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1002" name="SelectionAndDragModesDoNotMutateLogic" fullname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests.SelectionAndDragModesDoNotMutateLogic" methodname="SelectionAndDragModesDoNotMutateLogic" classname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests" runstate="Runnable" seed="663492806" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.075107" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[TimelineEditorUI] �ܾ�ɾ����Ŀ�겻����Ϊ Editable ����ͨ�ƻ���Locked/Running/��Ӧ�ƻ�����ɾ����planId=901
+]]></output>
+                </test-case>
+                <test-case id="1003" name="UiGestureCancelDoesNotMutateLogicOrReplay" fullname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests.UiGestureCancelDoesNotMutateLogicOrReplay" methodname="UiGestureCancelDoesNotMutateLogicOrReplay" classname="ProjectHero.Tests.UnityView.Editor.Task09ViewInputTests" runstate="Runnable" seed="1699007880" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:29Z" duration="0.001484" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1409" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="361" result="Passed" start-time="2026-10-14 14:44:29Z" end-time="2026-10-14 14:44:30Z" duration="0.132133" total="34" passed="34" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="44052" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1410" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="361" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.129405" total="34" passed="34" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1411" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="361" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.128779" total="34" passed="34" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1412" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="361" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.128215" total="34" passed="34" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1097" name="M1ClockTests" fullname="ProjectHero.Authoring.Tests.M1ClockTests" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.055091" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1106" name="FirstWindowPausesAtCommitAndDiscardsSameFrameDebt" fullname="ProjectHero.Authoring.Tests.M1ClockTests.FirstWindowPausesAtCommitAndDiscardsSameFrameDebt" methodname="FirstWindowPausesAtCommitAndDiscardsSameFrameDebt" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="1156863372" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.033756" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1105" name="LayoutUsesIndependentFacts" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.002152" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1099" name="LayoutUsesIndependentFacts(Running,OwnWindow,False,False)" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts(Running,OwnWindow,False,False)" methodname="LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="2023515916" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000840" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1100" name="LayoutUsesIndependentFacts(TacticalPlanning,OwnWindow,True,False)" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts(TacticalPlanning,OwnWindow,True,False)" methodname="LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="97840661" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000106" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1101" name="LayoutUsesIndependentFacts(TacticalPlanning,CanIntervene,False,False)" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts(TacticalPlanning,CanIntervene,False,False)" methodname="LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="1077186160" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000068" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1102" name="LayoutUsesIndependentFacts(TacticalPlanning,Intervened,True,False)" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts(TacticalPlanning,Intervened,True,False)" methodname="LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="1485447812" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000057" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1103" name="LayoutUsesIndependentFacts(SystemPaused,OwnWindow,False,True)" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts(SystemPaused,OwnWindow,False,True)" methodname="LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="493161054" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000059" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1104" name="LayoutUsesIndependentFacts(Ended,OwnWindow,False,True)" fullname="ProjectHero.Authoring.Tests.M1ClockTests.LayoutUsesIndependentFacts(Ended,OwnWindow,False,True)" methodname="LayoutUsesIndependentFacts" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="130893971" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000057" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1108" name="StableDraftRemovalAndReplacementKeepOtherIntent" fullname="ProjectHero.Authoring.Tests.M1ClockTests.StableDraftRemovalAndReplacementKeepOtherIntent" methodname="StableDraftRemovalAndReplacementKeepOtherIntent" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="1482312286" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.001668" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1098" name="SystemPauseRestoresTacticalStateAndCannotBeResumedBySpace" fullname="ProjectHero.Authoring.Tests.M1ClockTests.SystemPauseRestoresTacticalStateAndCannotBeResumedBySpace" methodname="SystemPauseRestoresTacticalStateAndCannotBeResumedBySpace" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="1493438423" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000283" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1107" name="TacticalDraftsRemainLocalThenSubmitOneAtomicTransactionAndReceiveReceipt" fullname="ProjectHero.Authoring.Tests.M1ClockTests.TacticalDraftsRemainLocalThenSubmitOneAtomicTransactionAndReceiveReceipt" methodname="TacticalDraftsRemainLocalThenSubmitOneAtomicTransactionAndReceiveReceipt" classname="ProjectHero.Authoring.Tests.M1ClockTests" runstate="Runnable" seed="105887051" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.016136" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1117" name="Task10DriverTests" fullname="ProjectHero.Authoring.Tests.Task10DriverTests" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.050432" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1119" name="ComparableShadowEqualityCannotMasqueradeAsCompleteMigrationCoverage" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.ComparableShadowEqualityCannotMasqueradeAsCompleteMigrationCoverage" methodname="ComparableShadowEqualityCannotMasqueradeAsCompleteMigrationCoverage" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="201410667" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.022050" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1118" name="DriverAdvancesExpectedTicksFromUnscaledTime" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.DriverAdvancesExpectedTicksFromUnscaledTime" methodname="DriverAdvancesExpectedTicksFromUnscaledTime" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="484337864" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.005592" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1121" name="DriverRetainsCatchUpDebtInsteadOfDroppingTicks" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.DriverRetainsCatchUpDebtInsteadOfDroppingTicks" methodname="DriverRetainsCatchUpDebtInsteadOfDroppingTicks" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="1726648693" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.002653" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1122" name="DriverStopsAccumulatedTickLoopImmediatelyAfterBattleEndedResult" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.DriverStopsAccumulatedTickLoopImmediatelyAfterBattleEndedResult" methodname="DriverStopsAccumulatedTickLoopImmediatelyAfterBattleEndedResult" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="1562830309" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.002585" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1124" name="ExternalLifecycleStopConsumesEndFeedbackButCannotExportUnreproducibleReplay" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.ExternalLifecycleStopConsumesEndFeedbackButCannotExportUnreproducibleReplay" methodname="ExternalLifecycleStopConsumesEndFeedbackButCannotExportUnreproducibleReplay" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="1739266704" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.001545" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1127" name="InvalidFrameDeltaFailsWithoutAdvancingLogic" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.InvalidFrameDeltaFailsWithoutAdvancingLogic" methodname="InvalidFrameDeltaFailsWithoutAdvancingLogic" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="528700157" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.001105" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1120" name="MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs" methodname="MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="188947853" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.003649" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1125" name="NaturallyEndedReplayKeepsFinalTickAfterStopAndRelease" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.NaturallyEndedReplayKeepsFinalTickAfterStopAndRelease" methodname="NaturallyEndedReplayKeepsFinalTickAfterStopAndRelease" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="136200157" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.003691" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1123" name="PauseStopsStepsAndDoesNotAccumulatePausedTime" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.PauseStopsStepsAndDoesNotAccumulatePausedTime" methodname="PauseStopsStepsAndDoesNotAccumulatePausedTime" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="328928949" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000357" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1126" name="ReplayHeaderUsesFormatVersionAndPreStepInitialStateHash" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.ReplayHeaderUsesFormatVersionAndPreStepInitialStateHash" methodname="ReplayHeaderUsesFormatVersionAndPreStepInitialStateHash" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="1959984321" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000609" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1129" name="SemanticEventsMapToFeedbackWithoutLogicWriteback" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.SemanticEventsMapToFeedbackWithoutLogicWriteback" methodname="SemanticEventsMapToFeedbackWithoutLogicWriteback" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="2142244562" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000928" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1128" name="UnitViewFactionBindingComesFromInitializationMapping" fullname="ProjectHero.Authoring.Tests.Task10DriverTests.UnitViewFactionBindingComesFromInitializationMapping" methodname="UnitViewFactionBindingComesFromInitializationMapping" classname="ProjectHero.Authoring.Tests.Task10DriverTests" runstate="Runnable" seed="297276452" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.002707" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1130" name="Task10PresentationModelTests" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.010256" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1140" name="AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation" methodname="AdrenalineHudSeparatesAvailableAndReservedWithoutLocalMutation" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="2136548141" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.001028" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1141" name="DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation" methodname="DodgeConfirmationShowsLogicProvidedConditionalMoveCancellation" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1184722626" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000641" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1135" name="OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase" methodname="OpeningOrClosingActionPanelDoesNotCreateOrCommitDraftPhase" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1013086533" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000169" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1142" name="PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems" methodname="PendingDodgeMarksDependentMovesWithoutRemovingTimelineItems" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="267510002" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.002367" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1136" name="StaleRevisionKeepsIntentUntilExplicitRevalidation" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.StaleRevisionKeepsIntentUntilExplicitRevalidation" methodname="StaleRevisionKeepsIntentUntilExplicitRevalidation" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="713303834" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000649" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1137" name="SystemAutoDeferralPreservesStaleIntentAndRebasesTimeline" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.SystemAutoDeferralPreservesStaleIntentAndRebasesTimeline" methodname="SystemAutoDeferralPreservesStaleIntentAndRebasesTimeline" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1481746306" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000509" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1138" name="TimelineCannotEditReactionLockedRunningOrTerminalPlans" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineCannotEditReactionLockedRunningOrTerminalPlans" methodname="TimelineCannotEditReactionLockedRunningOrTerminalPlans" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="1703851550" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000529" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1132" name="TimelineDoesNotRevealOtherControllerUnpublishedEditablePlans" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineDoesNotRevealOtherControllerUnpublishedEditablePlans" methodname="TimelineDoesNotRevealOtherControllerUnpublishedEditablePlans" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="247505864" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000747" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1134" name="TimelineDragProducesOneAtomicScheduleEditOnConfirm" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineDragProducesOneAtomicScheduleEditOnConfirm" methodname="TimelineDragProducesOneAtomicScheduleEditOnConfirm" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="836207884" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000553" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1133" name="TimelineDragTrajectoryDoesNotProduceCombatCommands" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineDragTrajectoryDoesNotProduceCombatCommands" methodname="TimelineDragTrajectoryDoesNotProduceCombatCommands" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="532105860" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000410" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1131" name="TimelineShowsLockLineAtSnapshotTickPlusOne" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.TimelineShowsLockLineAtSnapshotTickPlusOne" methodname="TimelineShowsLockLineAtSnapshotTickPlusOne" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="365261912" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000186" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1139" name="WindowHudShowsFixedDurationAndEndTick" fullname="ProjectHero.Authoring.Tests.Task10PresentationModelTests.WindowHudShowsFixedDurationAndEndTick" methodname="WindowHudShowsFixedDurationAndEndTick" classname="ProjectHero.Authoring.Tests.Task10PresentationModelTests" runstate="Runnable" seed="363812106" result="Passed" start-time="2026-10-14 14:44:30Z" end-time="2026-10-14 14:44:30Z" duration="0.000172" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

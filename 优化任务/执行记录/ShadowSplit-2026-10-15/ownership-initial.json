@@ -1,0 +1,279 @@
+{
+  "status": "completed",
+  "duration": 82.86,
+  "summary": {
+    "total": 38,
+    "passed": 36,
+    "failed": 2,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ActionPlanAndLaneShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 0.4257663,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.BroadDifferenceAllowlistIsRejected",
+      "Status": "Passed",
+      "Duration": 0.1201284,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.CombatDemoNoLongerOwnsAutonomousUpdate",
+      "Status": "Passed",
+      "Duration": 0.1400526,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DestroyingBattleStopsActiveAdaptersExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.1214055,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.DuplicateRuntimeBootstrapFailsFast",
+      "Status": "Failed",
+      "Duration": 0.1216683,
+      "Message": "  重复组件不得阻止唯一 Bootstrap 创建战斗：BATTLE_RUNTIME_BOOTSTRAP_DUPLICATE|runtime-host=HiddenRuntimeValidation/InactiveBootstrapHost\r\n  Expected: True\r\n  But was:  False\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.RuntimeOwnershipTests+<DuplicateRuntimeBootstrapFailsFast>d__2.MoveNext () [0x003fb] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\RuntimeOwnershipTests.cs:224\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.EquivalentShadowScenarioUsesLogicalCheckpointAlignment",
+      "Status": "Passed",
+      "Duration": 0.1160915,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneAdvancesOnlyFromExplicitBootstrap",
+      "Status": "Passed",
+      "Duration": 0.1292649,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.HiddenValidationSceneProvidesResolvableLegacyGateTargets",
+      "Status": "Passed",
+      "Duration": 0.1001361,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyAndShadowModesEnableTheRecordedLegacyWriterSet",
+      "Status": "Passed",
+      "Duration": 0.107394,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyLogicCallbacksAreClassifiedBeforeNewCanStart",
+      "Status": "Passed",
+      "Duration": 0.1476474,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyModeNeverCallsBattleSimulationStep",
+      "Status": "Passed",
+      "Duration": 0.1116042,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LegacyUsesScaledDeltaTimeAndNewUsesUnscaledDeltaTime",
+      "Status": "Passed",
+      "Duration": 0.1172789,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.LogicGridMovementAndReservationShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 7.9073196,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash",
+      "Status": "Passed",
+      "Duration": 0.3563828,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneRunsLegacyThroughBootstrapWithoutVisibleChange",
+      "Status": "Passed",
+      "Duration": 1.1347053,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeDisablesEveryRegisteredLegacyLogicWriter",
+      "Status": "Passed",
+      "Duration": 0.131532,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime",
+      "Status": "Passed",
+      "Duration": 0.1072138,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.PausedBootstrapDoesNotAdvanceEitherSide",
+      "Status": "Passed",
+      "Duration": 0.1101541,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleAdvancesLegacyClockInBothModes",
+      "Status": "Passed",
+      "Duration": 0.1070669,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ReopeningBattleKeepsUserPauseButClearsSystemPause",
+      "Status": "Passed",
+      "Duration": 0.1107044,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.RuntimeModeCannotChangeDuringActiveBattle",
+      "Status": "Passed",
+      "Duration": 0.1107035,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.SceneHasExactlyOneMigrationBattleHost",
+      "Status": "Passed",
+      "Duration": 0.2241528,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowBudgetOverrunInvalidatesComparisonWithoutChangingLegacy",
+      "Status": "Passed",
+      "Duration": 0.1100509,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonRunsAfterEveryRegisteredLegacyWriter",
+      "Status": "Passed",
+      "Duration": 0.130242,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowComparisonStaysBoundedAndComparableOverLongBattle",
+      "Status": "Passed",
+      "Duration": 0.3531834,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowLateUpdateCheckpointIsReadOnlyAndDoesNotAdvanceEitherClock",
+      "Status": "Passed",
+      "Duration": 0.112799,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority",
+      "Status": "Passed",
+      "Duration": 0.1062228,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowProductionComparisonHasRealContentAndCanFail",
+      "Status": "Passed",
+      "Duration": 0.1123383,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportClassifiesExpectedAndUnexpectedDifferences",
+      "Status": "Passed",
+      "Duration": 0.1122901,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowReportFindsFirstUnexpectedDifference",
+      "Status": "Passed",
+      "Duration": 0.1094272,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotBindViewsOrPlayFeedback",
+      "Status": "Passed",
+      "Duration": 0.1122362,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowSimulationCannotMutateLegacyOrUnityState",
+      "Status": "Passed",
+      "Duration": 0.1194541,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowStateFieldsAreReadLiveFromLegacySceneAndCanFail",
+      "Status": "Passed",
+      "Duration": 0.1216055,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowWriteWallRejectsForbiddenWritesAndCountsThem",
+      "Status": "Failed",
+      "Duration": 68.0439045,
+      "Message": "Unhandled log message: '[Error] Failed to handle /api/exec request: Main thread operation timed out after 5000ms'. Use UnityEngine.TestTools.LogAssert.Expect",
+      "StackTrace": "Unity.Pipeline.BasePipelineServer/<HandleExecRequest>d__115:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2071)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteGated>d__105:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:1403)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<>c__DisplayClass115_0/<<HandleExecRequest>b__0>d:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2032)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<object>:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteCommandByName>d__133:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2478)\r\nSystem.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<object>:SetException (System.Exception)\r\nUnity.Pipeline.BasePipelineServer/<ExecuteCommand>d__134:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@ab05e9cd7f74/Runtime/Common/BasePipelineServer.cs:2517)\r\nSystem.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()\r\n\r\n"
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.StateDeathAndVictoryShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 0.2947494,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TemporarilyUncomparableFieldRequiresOwnerTaskAndRemovalGate",
+      "Status": "Passed",
+      "Duration": 0.2802214,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.TurnWindowDurationShadowProfileHasNoUnclassifiedDifference",
+      "Status": "Passed",
+      "Duration": 0.3237797,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.VisualTimeScaleIsolationDoesNotLeakIntoNewSimulation",
+      "Status": "Passed",
+      "Duration": 0.2816543,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

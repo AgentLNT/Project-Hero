@@ -139,7 +139,7 @@ namespace ProjectHero.Logic.Tests
             }
             Assert.That(facts.OfType<DamageChannelResolvedEvent>().Any() || facts.OfType<ClashParticipantResolvedEvent>().Any(), Is.True, "Non-empty real combat required.");
             if (kind == "Clash3") {
-                File.WriteAllLines("优化任务/执行记录/12C-clash3-events.txt", facts.Select(ReplayEventComparison.Canonical));
+                File.WriteAllLines("优化任务/执行记录/M1-regression/12C-clash3-events.txt", facts.Select(ReplayEventComparison.Canonical));
                 Assert.That(facts.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.InterruptedByClash), Is.EqualTo(3));
             }
             if (kind == "Block" || kind == "PartialBlock") Assert.That(facts.OfType<BlockResolvedEvent>().Any(), Is.True);
@@ -178,7 +178,7 @@ namespace ProjectHero.Logic.Tests
         public void FinalCombatClassFileReplaysOneHundredTimesFromTickZero(string kind)
         {
             var d = Definition(kind); var recorded = Record(kind, d);
-            var path = Path.GetFullPath("优化任务/执行记录/12C-11-final-replay-" + kind + ".heroReplay");
+            var path = Path.GetFullPath("优化任务/执行记录/M1-regression/12C-11-final-replay-" + kind + ".heroReplay");
             using (var file = File.Create(path)) ReplayFile.Save(file, recorded);
             BattleReplay loaded; using (var file = File.OpenRead(path)) loaded = ReplayFile.Load(file, d);
             using var player = new ReplayPlayer(d, h => Create(d, h)); player.Load(loaded);

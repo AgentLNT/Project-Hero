@@ -17,7 +17,7 @@ using UnityEngine.TestTools;
 
 namespace ProjectHero.Tests.PlayMode
 {
-    public sealed class Task12CSceneEvidenceTests : RuntimeOwnershipTestBase
+    public sealed class Task12CSceneEvidenceTests : ProductionRuntimeTestBase
     {
         protected override bool UseLegacyComparisonScene => false;
         static object Field(object value,string name) => value.GetType().GetField(name,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(value);
@@ -58,8 +58,8 @@ namespace ProjectHero.Tests.PlayMode
             typeof(Task10WiredPresentationTests).GetMethod("CaptureView",BindingFlags.NonPublic|BindingFlags.Static)
                 .Invoke(null,new object[] {presentation,resolve ? "12C-main-opponent-cannot-react" : "12C-main-all-adrenaline"});
             string status=Text(Field(presentation,"_status"));
-            Assert.That(status,Does.Contain("Unit "+hero.Value)); Assert.That(status,Does.Contain("Unit "+enemy.Value));
-            Assert.That(status.Split(new[] {"Adrenaline"},StringSplitOptions.None).Length-1,Is.EqualTo(3));
+            Assert.That(status,Does.Contain("单位 "+hero.Value)); Assert.That(status,Does.Contain("单位 "+enemy.Value));
+            Assert.That(status.Split(new[] {"肾上腺素"},StringSplitOptions.None).Length-1,Is.EqualTo(3));
             Assert.That(Text(Field(presentation,"_previewText")),Does.Contain("Opponent cannot react"));
             long impact=simulation.CurrentSnapshot.Plans.Single(p=>p.ActionSpecId==heavy.Value).ImpactTick;
             if(resolve)
@@ -69,12 +69,12 @@ namespace ProjectHero.Tests.PlayMode
                 var hit=capture.Facts.OfType<DamageChannelResolvedEvent>().Single(e=>e.Tick==impact && e.TargetUnitId==enemy);
                 Assert.That(hit.Channels.Sum(c=>c.AfterActionResistanceQ10),Is.EqualTo(20*1024));
                 var replay=Bootstrap.NewDriver.RecordedReplay;
-                using(var file=File.Create("优化任务/执行记录/12C-main-opponent-cannot-react.heroReplay")) ReplayFile.Save(file,replay);
+                using(var file=File.Create("优化任务/执行记录/M1-regression/12C-main-opponent-cannot-react.heroReplay")) ReplayFile.Save(file,replay);
                 using(var player=new ReplayPlayer(seed.Definition,h=>ProductionBattleComposition.Create(seed.Definition,h.EncounterId,h.RuntimeInputs)))
                     for(int run=0;run<100;run++) {if(run==0) player.Load(replay); else player.Restart(); player.Play();
                         while(!player.IsComplete && player.Deviation==null) player.AdvanceOneTick(); Assert.That(player.Deviation,Is.Null); Assert.That(player.IsComplete,Is.True);}
             }
-            File.WriteAllText("优化任务/执行记录/12C-main-"+(resolve ? "opponent-cannot-react" : "all-adrenaline")+".txt",
+            File.WriteAllText("优化任务/执行记录/M1-regression/12C-main-"+(resolve ? "opponent-cannot-react" : "all-adrenaline")+".txt",
                 seed.InputSummary+"\n"+status+"\npreview=Opponent cannot react; enemy Available=0; input deadline is in future; no hard conflict\n"
                 +"impact="+impact+"; resolved="+resolve+"; replayRestarts="+(resolve?100:0)+"\n"
                 +string.Join("\n",capture.Facts.Where(e=>e is DamageChannelResolvedEvent || e is ReactionTriggeredEvent).Select(ReplayEventComparison.Canonical)));

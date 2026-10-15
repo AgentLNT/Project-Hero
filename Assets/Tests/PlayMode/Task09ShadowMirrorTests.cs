@@ -52,7 +52,7 @@ namespace ProjectHero.Tests.PlayMode
             // （空镜像会让"镜像面恒为空"这一缺陷静默通过，所以此处必须可失败）。
             //
             // 注意：Shadow runner 只在 Shadow 模式启动时才由 Bootstrap 建立
-            // （`BattleRuntimeBootstrap.StartBattle` 的 Shadow 分支 → `EnsureShadowRunner`）。
+            // （`MigrationBattleHost.StartBattle` 的 Shadow 分支 → `EnsureShadowRunner`）。
             // 本用例不需要一场真的 Shadow 战斗（后面自己 `runner.Configure/Initialize` 驱动），
             // 因此这里经**生产方法**（反射，同文件底部的接缝说明）取得 runner，而不是伪造一个。
             if (!Bootstrap.BattleCreated)
@@ -67,7 +67,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(runner.IsInitialized, Is.False,
                 "本用例取得的是**未初始化**的 runner（Legacy 模式下还没开局），随后由本用例显式驱动");
             Assert.That(runner.MirrorIsAuthorityMirror, Is.True,
-                "生产装配点必须把真实请求镜像接上（BattleRuntimeBootstrap.RebindShadowAuthority → "
+                "生产装配点必须把真实请求镜像接上（MigrationBattleHost.RebindShadowAuthority → "
                 + "ShadowBattleRunner.AttachMirror）；恒为空镜像会让产出 16 的镜像面永远不注入任何 Player 事实");
 
             ProjectHero.Core.Compatibility.Runtime.BattleSimulationSeed seed = BuildSeedFromFactory();
@@ -216,7 +216,7 @@ namespace ProjectHero.Tests.PlayMode
 
             // ---------- 第四步：runner 侧真实推进（独立 Logic 世界） ----------
             runner.Configure(seed, mirrorForRunner);
-            runner.Initialize(new BattleRuntimeContext(
+            runner.Initialize(new MigrationRuntimeContext(
                 BattleRuntimeMode.Shadow, Bootstrap.Ledger, Bootstrap.ShadowWrites, null));
 
             long lastRequestTick = live.LastSubmittedTick;
@@ -626,11 +626,11 @@ namespace ProjectHero.Tests.PlayMode
         // 反射接缝（生产入口是 internal / private；本程序集没有 InternalsVisibleTo）
         // =====================================================================
 
-        private static readonly MethodInfo EnsureShadowRunnerMethod = typeof(BattleRuntimeBootstrap)
+        private static readonly MethodInfo EnsureShadowRunnerMethod = typeof(MigrationBattleHost)
             .GetMethod("EnsureShadowRunner", BindingFlags.NonPublic | BindingFlags.Instance);
 
         /// <summary>
-        /// 经<strong>生产方法</strong> <c>BattleRuntimeBootstrap.EnsureShadowRunner()</c> 取得 Shadow runner。
+        /// 经<strong>生产方法</strong> <c>MigrationBattleHost.EnsureShadowRunner()</c> 取得 Shadow runner。
         ///
         /// 为什么用反射而不是 <c>Bootstrap.Shadow</c>：runner 只在 Shadow 模式启动时才被建立，
         /// 而本用例不需要一场真的 Shadow 战斗（它自己 `Configure/Initialize/AdvanceFrame` 驱动，
@@ -640,7 +640,7 @@ namespace ProjectHero.Tests.PlayMode
         private ShadowBattleRunner EnsureProductionShadowRunner()
         {
             Assert.That(EnsureShadowRunnerMethod, Is.Not.Null,
-                "对照证据：BattleRuntimeBootstrap 必须仍然有私有的 EnsureShadowRunner()"
+                "对照证据：MigrationBattleHost 必须仍然有私有的 EnsureShadowRunner()"
                 + "（改名必须让本断言失败，而不是让本用例静默拿不到 runner）");
             return (ShadowBattleRunner)EnsureShadowRunnerMethod.Invoke(Bootstrap, null);
         }

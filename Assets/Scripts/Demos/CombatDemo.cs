@@ -18,7 +18,7 @@ namespace ProjectHero.Demos
     /// ��ս����ʾ��� ���� ���� 03B ֮���ǡ����������������������Ƕ���ʱ�ӡ�
     ///
     /// ����Ҫ�㣨����������������4�������� 21����
-    /// 1) �������� Update()����ʱ����Ψһ�ĵ������� BattleRuntimeBootstrap �� Legacy/Shadow ��֧��
+    /// 1) �������� Update()����ʱ����Ψһ�ĵ������� MigrationBattleHost �� Legacy/Shadow ��֧��
     /// 2) �ƽ�ְ����ȡΪ��ʽ AdvanceFrame(BattleFrameDelta)��֡ʱ���� Bootstrap ���룬
     ///    �������Լ����� Time.deltaTime�������γɵڶ���ʱ����Դ��
     /// 3) �淨����ԭ��������P ����ͣ�л���Timeline.AdvanceTime ����ʱ������ʱ�䡢
@@ -36,7 +36,7 @@ namespace ProjectHero.Demos
         // Debug Only
         public float DebugTimeDisplay = 0f;
 
-        private BattleRuntimeContext _context;
+        private MigrationRuntimeContext _context;
         private bool _initialized;
         private bool _stopped;
         private int _advanceCallCount;
@@ -73,7 +73,7 @@ namespace ProjectHero.Demos
         public void Initialize(BattleRuntimeContext context)
         {
             if (_initialized) return;
-            _context = context;
+            _context = context as MigrationRuntimeContext;
             _initialized = true;
             _stopped = false;
 
@@ -82,7 +82,7 @@ namespace ProjectHero.Demos
             if (Timeline == null) Timeline = GetComponent<BattleTimeline>();
         }
 
-        /// <summary>�ƽ�һ֡��ֻ���� BattleRuntimeBootstrap ���á�</summary>
+        /// <summary>�ƽ�һ֡��ֻ���� MigrationBattleHost ���á�</summary>
         public void AdvanceFrame(BattleFrameDelta delta)
         {
             if (!_initialized || _stopped) return;
@@ -146,7 +146,7 @@ namespace ProjectHero.Demos
             // �ָ����壺
             //   1) ϵͳ��ͣ = ��ս����������ʩ�ӣ�StopBattle ��λ��-> �ؿ�ʱ���������
             //   2) �û���ͣ��P �� / UI��������Լ�����ͼ�����������д��
-            //   3) ս��֮��Ķ�����ͣ�� BattleRuntimeBootstrap.SetPaused ����
+            //   3) ս��֮��Ķ�����ͣ�� MigrationBattleHost.SetPaused ����
             //      ���������ʱ���ߣ����Ҳ�����������һ����
             if (Timeline == null) Timeline = GetComponent<BattleTimeline>();
             if (Timeline != null && Timeline.SystemPaused) Timeline.SetSystemPaused(false);

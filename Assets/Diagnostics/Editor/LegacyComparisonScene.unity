@@ -5212,25 +5212,13 @@ MonoBehaviour:
   _font: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   _feedbackPlayer: {fileID: 1306963357}
   _footprints: {fileID: 507393399}
-  _legacyCanvases:
-  - {fileID: 1371144489}
   _actionToggle: {fileID: 1730222151}
-  _legacyPresentation:
-  - {fileID: 2011197741}
-  - {fileID: 2011197740}
-  - {fileID: 2011197737}
-  - {fileID: 2011197746}
-  - {fileID: 2011197749}
-  - {fileID: 776904708}
-  - {fileID: 776904712}
-  - {fileID: 1072590960}
-  - {fileID: 1072590964}
-  - {fileID: 1663901092}
   _confirm: {fileID: 895453612}
   _cancel: {fileID: 1551481196}
   _concurrent: {fileID: 1019629040}
   _pause: {fileID: 488790579}
   _rotate: {fileID: 775414081}
+  _timelinePixelsPerSecond: 240
   _retiredCloseButton: {fileID: 0}
   _replayPath: {fileID: 1861600110}
   _replayStatus: {fileID: 2074800650}
@@ -6143,9 +6131,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1572899353}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f0dbdb122b4ce44f8097d79093a3b8f, type: 3}
+  m_Script: {fileID: 11500000, guid: 05981a8d097e4b2889b9b8b3f6e11b89, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ProjectHero.Compatibility.Runtime::ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap
+  m_EditorClassIdentifier: ProjectHero.Migration.Diagnostics::ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost
   _requestedMode: 0
   _productionNewOnly: 0
   _legacyFrameAdapterSlot: {fileID: 1572899354}
@@ -6156,6 +6144,20 @@ MonoBehaviour:
   _shadowMaxStepsPerComparison: 64
   _shadowMaxCheckpoints: 4096
   _shadowComparisonMode: 0
+  _presentationGate:
+    _canvases:
+    - {fileID: 1371144489}
+    _behaviours:
+    - {fileID: 2011197741}
+    - {fileID: 2011197740}
+    - {fileID: 2011197737}
+    - {fileID: 2011197746}
+    - {fileID: 2011197749}
+    - {fileID: 776904708}
+    - {fileID: 776904712}
+    - {fileID: 1072590960}
+    - {fileID: 1072590964}
+    - {fileID: 1663901092}
 --- !u!114 &1572899358
 MonoBehaviour:
   m_ObjectHideFlags: 0

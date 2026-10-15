@@ -17,8 +17,33 @@ namespace ProjectHero.UnityView
     {
         private ViewInputPorts _ports;
         private IViewPreviewPort _preview;
-        private IReadOnlyList<ScheduleEditOperation> _draft;
-        private long _draftRevision;
+        public ScheduleDraftModel Drafts { get; } = new ScheduleDraftModel();
+        private BattleClockController _clock;
+        private long _pendingTick, _pendingOrdinal;
+        private readonly List<(long Tick, long Ordinal)> _pendingCommands = new List<(long, long)>();
+        public string LastCommandStatus { get; private set; }
+        private readonly List<(long Opportunity, ActionSpecId Action, GridPoint? Destination, long? Start)> _stagedReactions = new List<(long, ActionSpecId, GridPoint?, long?)>();
+        public int StagedReactionCount => _stagedReactions.Count;
+        public bool CanPlan => _ports != null && !_ports.Logic.IsBattleEnded
+            && (!_ports.Logic.IsPaused || _clock?.State == BattleClockState.TacticalPlanning);
+        public void BindClock(BattleClockController clock) => _clock = clock;
+        public HudFacts Facts
+        {
+            get
+            {
+                var permission = Window == null ? HudSubmissionPermission.None
+                    : OwnsWindow ? HudSubmissionPermission.OwnWindow
+                    : _preview.ConcurrentAction.HasActiveAuthorization ? HudSubmissionPermission.Intervened : HudSubmissionPermission.CanIntervene;
+                bool threat = false;
+                foreach (var r in Reactions) if (r.Options != null) foreach (var o in r.Options)
+                    if (o.IsOpen && o.IsPublished && LockLine <= o.ResponseDeadlineTick) threat = true;
+                return new HudFacts(_clock?.State ?? (_ports?.Logic.IsPaused == true ? BattleClockState.SystemPaused : BattleClockState.Running), permission, threat);
+            }
+        }
+        public bool OwnsWindow
+        {
+            get { if (Window != null && Decision != null) foreach (var unit in Decision.ControlledUnitIds) if (unit.Value == Window.OwnerUnitId) return true; return false; }
+        }
         private readonly Dictionary<long, ActionPlanSnapshot> _terminal = new Dictionary<long, ActionPlanSnapshot>();
         private readonly Dictionary<long, ActionPlanSnapshot> _previous = new Dictionary<long, ActionPlanSnapshot>();
         private readonly Dictionary<long, IReadOnlyList<ActionPlanId>> _pendingDodge = new Dictionary<long, IReadOnlyList<ActionPlanId>>();
@@ -26,7 +51,7 @@ namespace ProjectHero.UnityView
         public DecisionSnapshot Decision => _ports?.Logic.DecisionSnapshot;
         public IReadOnlyList<ActionPlanSnapshot> Timeline => _timeline;
         public ScheduleEditTransactionResult Preview { get; private set; }
-        public bool HasDraft => _draft != null;
+        public bool HasDraft => Drafts.HasIntent && Drafts.State != ScheduleDraftState.AwaitingAcceptance;
         public long LockLine => (Decision?.Tick ?? -1) + 1;
         public long SubmittedCommands { get; private set; }
         public string LastRejection { get; private set; }
@@ -40,37 +65,102 @@ namespace ProjectHero.UnityView
         {
             if (ports?.CanSubmit != true || !(ports.Logic is IViewPreviewPort preview))
                 throw new InvalidOperationException("VIEW_PREVIEW_PORT_MISSING");
-            _ports = ports; _preview = preview; CancelDraft();
+            _ports = ports; _preview = preview; Drafts.Reset(); Preview = null; _pendingTick = _pendingOrdinal = 0; _stagedReactions.Clear(); LastRejection = null;
             _terminal.Clear(); _previous.Clear(); _pendingDodge.Clear(); SubmittedCommands = 0;
+            _pendingCommands.Clear(); LastCommandStatus = null;
             Synchronize(new EventBatch(-1, Array.Empty<LogicEvent>()));
         }
         public bool CanEdit(long planId) => _ports != null && _ports.Logic.TryFindEditablePlan(new ActionPlanId(planId), out _);
         public ScheduleEditTransactionResult SetDraft(IReadOnlyList<ScheduleEditOperation> operations)
         {
-            if (_ports == null || _ports.Logic.IsPaused || _ports.Logic.IsBattleEnded)
-            { CancelDraft(); return null; }
-            _draft = Array.AsReadOnly(new List<ScheduleEditOperation>(operations).ToArray());
-            _draftRevision = _ports.Logic.ScheduleRevision;
-            Preview = _preview.Preview(_draft);
-            LastRejection = Preview.RejectionCode;
-            return Preview;
+            if (!CanPlan || Drafts.State == ScheduleDraftState.AwaitingAcceptance) return null;
+            Drafts.Clear(); foreach (var operation in operations) Drafts.Append(operation);
+            return RevalidateDraft();
         }
-        public void CancelDraft() { _draft = null; Preview = null; }
+        public long AppendDraft(ScheduleEditOperation operation)
+        {
+            if (!CanPlan || Drafts.State == ScheduleDraftState.AwaitingAcceptance) return 0;
+            long id = Drafts.Append(operation); RevalidateDraft(); return id;
+        }
+        public bool EditDraft(long id, ScheduleEditOperation operation)
+        { if (!CanPlan || !Drafts.Replace(id, operation)) return false; RevalidateDraft(); return true; }
+        public bool RemoveDraft(long id)
+        { if (!CanPlan || !Drafts.Remove(id)) return false; RevalidateDraft(); return true; }
+        public void UpsertPlanEdit(ScheduleEditOperation operation)
+        {
+            foreach (var entry in Drafts.Entries)
+                if (entry.Operation.PlanId == operation.PlanId && operation.PlanId.IsValid)
+                { EditDraft(entry.Id, operation); return; }
+            AppendDraft(operation);
+        }
+        public ScheduleEditTransactionResult RevalidateDraft()
+        {
+            if (!CanPlan || Drafts.State == ScheduleDraftState.AwaitingAcceptance) return Preview;
+            Drafts.BaseTick = Decision.Tick; Drafts.BaseRevision = _ports.Logic.ScheduleRevision; Drafts.BaseWindowId = Window?.WindowId ?? 0;
+            Drafts.State = ScheduleDraftState.Editing; Drafts.Reason = null;
+            Preview = Drafts.HasIntent ? _preview.Preview(Drafts.Operations) : null;
+            LastRejection = Preview?.RejectionCode; return Preview;
+        }
+        public ScheduleEditTransactionResult PreviewCandidate(ScheduleEditOperation candidate)
+        {
+            if (!CanPlan || Drafts.State == ScheduleDraftState.AwaitingAcceptance) return null;
+            var operations = new List<ScheduleEditOperation>(Drafts.Operations);
+            if (candidate is AddOrdinaryPlanOperation add) candidate = add with { TemporaryPlanKey = long.MaxValue };
+            operations.Add(candidate); return _preview.Preview(operations);
+        }
+        public ActionPlanSnapshot PreviewPlanFor(long draftId)
+        {
+            if (Preview?.AppliedEdits == null || Preview.PreviewPlans == null) return null;
+            for (int i = 0; i < Drafts.Entries.Count && i < Preview.AppliedEdits.Count; i++)
+                if (Drafts.Entries[i].Id == draftId)
+                    foreach (var plan in Preview.PreviewPlans) if (plan.Plan.ActionPlanId == Preview.AppliedEdits[i].PlanId.Value) return plan.Plan;
+            return null;
+        }
+        public void CancelDraft()
+        { if (Drafts.State == ScheduleDraftState.AwaitingAcceptance) return; Drafts.Clear(); Preview = null; LastRejection = null; }
         public string ConfirmDraft()
         {
-            if (_draft == null) return "VIEW_DRAFT_MISSING";
-            if (_ports.Logic.ScheduleRevision != _draftRevision)
-            { CancelDraft(); return LastRejection = "STALE_SCHEDULE_REVISION"; }
+            if (!CanPlan) return LastRejection = "VIEW_INPUT_UNAVAILABLE";
+            if (!HasDraft) return "VIEW_DRAFT_MISSING";
+            if (Drafts.State == ScheduleDraftState.Stale || _ports.Logic.ScheduleRevision != Drafts.BaseRevision
+                || (Window?.WindowId ?? 0) != Drafts.BaseWindowId)
+            { Drafts.State = ScheduleDraftState.Stale; return LastRejection = Drafts.Reason = "STALE_SCHEDULE_REVISION"; }
+            Preview = _preview.Preview(Drafts.Operations);
             if (Preview?.Succeeded != true) return LastRejection = Preview?.RejectionCode ?? "VIEW_PREVIEW_MISSING";
-            var request = _ports.Commands.CreateScheduleEdit(new ScheduleEditPayload(_draft));
-            CancelDraft(); return Submit(request);
+            if (_clock?.State == BattleClockState.TacticalPlanning)
+            { Drafts.State = ScheduleDraftState.AwaitingResume; return null; }
+            var request = _ports.Commands.CreateScheduleEdit(new ScheduleEditPayload(Drafts.Operations));
+            var code = Submit(request);
+            if (code == null)
+            {
+                Drafts.State = ScheduleDraftState.AwaitingAcceptance; _pendingTick = request.TargetTick;
+                _pendingOrdinal = (_ports.Logic as IViewCommandReceiptPort)?.LastSubmittedOrdinal ?? 0;
+            }
+            return code;
+        }
+        public string SubmitOnResume()
+        {
+            string error = null;
+            if (Drafts.State == ScheduleDraftState.AwaitingResume) error = ConfirmDraft();
+            if (error != null) return error;
+            foreach (var r in _stagedReactions.ToArray())
+            {
+                error = ConfirmReaction(r.Opportunity, r.Action, r.Destination, r.Start);
+                if (error != null) return error;
+                _stagedReactions.Remove(r);
+            }
+            return null;
         }
         private string Submit(CommandRequest request)
         {
             if (request == null) return LastRejection = "VIEW_INPUT_UNAVAILABLE";
             var error = _ports.Logic.SubmitCommand(request);
             LastRejection = error?.ReasonCode;
-            if (error == null) SubmittedCommands++;
+            if (error == null)
+            {
+                SubmittedCommands++; LastCommandStatus = "待采纳";
+                if (_ports.Logic is IViewCommandReceiptPort receipts) _pendingCommands.Add((request.TargetTick, receipts.LastSubmittedOrdinal));
+            }
             return LastRejection;
         }
         public string ActivateConcurrent() => Window == null ? "VIEW_WINDOW_MISSING" : Submit(_ports.Commands.CreateActivateConcurrent(new WindowId(Window.WindowId)));
@@ -88,6 +178,13 @@ namespace ProjectHero.UnityView
                 if (!destination.HasValue) return "DODGE_DESTINATION_MISSING";
                 conditional = PreviewDodge(opportunity, action, destination.Value, startTick);
                 if (conditional.RejectionCode != null) return conditional.RejectionCode;
+            }
+            if (_clock?.State == BattleClockState.TacticalPlanning)
+            {
+                var feasible = HudPreviews?.PreviewReaction(new ReactionOpportunityId(opportunity), action, startTick);
+                if (feasible != null && !feasible.IsFeasible) return LastRejection = feasible.RejectionCode;
+                _stagedReactions.RemoveAll(r => r.Opportunity == opportunity);
+                _stagedReactions.Add((opportunity, action, destination, startTick)); return null;
             }
             string code = Submit(_ports.Commands.CreateReaction(new ReactionOpportunityId(opportunity),
                 new ReactionCommandPayload(spec.Type == ActionType.Dodge ? ReactionCommandKind.Dodge : ReactionCommandKind.Block, action, destination, startTick)));
@@ -114,6 +211,15 @@ namespace ProjectHero.UnityView
         public void Synchronize(EventBatch batch)
         {
             if (_ports == null) return;
+            if (_ports.Logic is IViewCommandReceiptPort commandReceipts)
+                foreach (var pending in _pendingCommands.ToArray())
+                {
+                    var receipt = commandReceipts.ReceiptFor(pending.Tick, pending.Ordinal, batch);
+                    if (receipt == null) continue;
+                    LastCommandStatus = receipt.Accepted ? "权威已接受" : "权威已拒绝";
+                    if (!receipt.Accepted) LastRejection = receipt.Reason;
+                    _pendingCommands.Remove(pending);
+                }
             foreach (var fact in batch.Events)
             {
                 long id = fact is ActionPlanTerminatedEvent terminal ? terminal.ActionPlanId
@@ -122,17 +228,25 @@ namespace ProjectHero.UnityView
                 else if (id != 0 && _previous.TryGetValue(id, out var old))
                     _terminal[id] = old with { State = fact is ActionPlanCompletedEvent ? (int)ActionPlanState.Completed : (int)ActionPlanState.Terminated,
                         TerminalTick = fact.Tick, TerminationReason = fact is ActionPlanTerminatedEvent reason ? reason.Reason : 0 };
-                if (fact is CommandRejectedEvent rejected) LastRejection = rejected.ReasonCode;
             }
-            if (_draft != null && (_ports.Logic.ScheduleRevision != _draftRevision || _ports.Logic.IsBattleEnded)) CancelDraft();
-            // Locking and natural Tick advancement do not change ScheduleRevision. Revalidate
-            // the local candidate against the new boundary before leaving confirmation enabled.
-            if (_draft != null)
+            if (Drafts.State == ScheduleDraftState.AwaitingAcceptance && _ports.Logic is IViewCommandReceiptPort receipts)
             {
-                var refreshed = _preview.Preview(_draft);
-                if (!refreshed.Succeeded)
-                { LastRejection = refreshed.RejectionCode; CancelDraft(); }
-                else Preview = refreshed;
+                var receipt = receipts.ReceiptFor(_pendingTick, _pendingOrdinal, batch);
+                if (receipt != null)
+                {
+                    if (receipt.Accepted) { Drafts.Clear(); Drafts.State = ScheduleDraftState.Accepted; Preview = null; LastRejection = null; }
+                    else { Drafts.State = ScheduleDraftState.Rejected; LastRejection = Drafts.Reason = receipt.Reason; }
+                }
+            }
+            if (HasDraft && Drafts.State != ScheduleDraftState.Rejected)
+            {
+                if (_ports.Logic.ScheduleRevision != Drafts.BaseRevision || (Window?.WindowId ?? 0) != Drafts.BaseWindowId || _ports.Logic.IsBattleEnded)
+                { Drafts.State = ScheduleDraftState.Stale; LastRejection = Drafts.Reason = "STALE_SCHEDULE_REVISION"; }
+                else if (Drafts.State != ScheduleDraftState.Stale && Drafts.State != ScheduleDraftState.Rejected)
+                {
+                    Preview = _preview.Preview(Drafts.Operations);
+                    if (!Preview.Succeeded) { Drafts.State = ScheduleDraftState.Stale; LastRejection = Drafts.Reason = Preview.RejectionCode; }
+                }
             }
             var active = new SortedDictionary<long, ActionPlanSnapshot>();
             foreach (var plan in Decision.VisiblePlans) active[plan.ActionPlanId] = plan;

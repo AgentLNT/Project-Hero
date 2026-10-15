@@ -65,7 +65,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.ShadowReports.All(r => r.ComparedCheckpoints > 0 && r.InfrastructureDifferences == 0
                 && r.UnalignedCheckpoints == 0 && r.Rejections.Count == 0), Is.True);
             var report = Bootstrap.LastShadowReport;
-            File.WriteAllText("优化任务/执行记录/12C-shadow-scene-observations.txt",
+            File.WriteAllText("优化任务/执行记录/M1-regression/12C-shadow-scene-observations.txt",
                 "scene=LegacyComparisonScene (Editor-only diagnostic copy)\nmode=Shadow\nframes=120\nlegacyAdvanceDelta=120\nnewDriverAdvance=0\nshadowWrites="
                 + Bootstrap.ShadowWrites.Total + "\nobservations=" + Bootstrap.LegacyObservations.Count
                 + "\n" + report.Describe() + "\n" + string.Join("\n", report.Differences.Select(d => d.ToString())));

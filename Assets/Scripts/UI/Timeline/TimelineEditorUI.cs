@@ -464,7 +464,7 @@ namespace ProjectHero.UI.Timeline
         /// ����Ϊ���ֱ�����PlayMode 38 ����ɳ�����ع飩��</item>
         /// </list>
         /// </summary>
-        public bool LegacyTimelineWritesEnabled => ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed && !IsInputPortsBound;
+        public bool LegacyTimelineWritesEnabled => ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.LegacyWritesAllowed && !IsInputPortsBound;
 
         public bool SuppressBlockClicks => Time.unscaledTime < _suppressBlockClicksUntilUnscaled;
 

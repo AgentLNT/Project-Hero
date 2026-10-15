@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.3879783">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="966" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.387978" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1416" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="367" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.065660" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="46100" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1417" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="367" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.064595" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1418" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="367" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.063861" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1419" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="367" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.063152" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1111" name="M2TrackModelTests" fullname="ProjectHero.Authoring.Tests.M2TrackModelTests" classname="ProjectHero.Authoring.Tests.M2TrackModelTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.044349" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1112" name="SelectionUsesTrackOrderHistoryAndNeverMovesPrimaryToTop" fullname="ProjectHero.Authoring.Tests.M2TrackModelTests.SelectionUsesTrackOrderHistoryAndNeverMovesPrimaryToTop" methodname="SelectionUsesTrackOrderHistoryAndNeverMovesPrimaryToTop" classname="ProjectHero.Authoring.Tests.M2TrackModelTests" runstate="Runnable" seed="804802397" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.023854" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1114" name="SnapAlignsActualImpactTicksWithinLegalWindowAndLeavesInvalidPositionsVisible" fullname="ProjectHero.Authoring.Tests.M2TrackModelTests.SnapAlignsActualImpactTicksWithinLegalWindowAndLeavesInvalidPositionsVisible" methodname="SnapAlignsActualImpactTicksWithinLegalWindowAndLeavesInvalidPositionsVisible" classname="ProjectHero.Authoring.Tests.M2TrackModelTests" runstate="Runnable" seed="2117726756" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.002671" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1113" name="TemporaryThreatTracksDisappearUnlessExplicitlyFocusedAndSelectionHasNoLimit" fullname="ProjectHero.Authoring.Tests.M2TrackModelTests.TemporaryThreatTracksDisappearUnlessExplicitlyFocusedAndSelectionHasNoLimit" methodname="TemporaryThreatTracksDisappearUnlessExplicitlyFocusedAndSelectionHasNoLimit" classname="ProjectHero.Authoring.Tests.M2TrackModelTests" runstate="Runnable" seed="19810617" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.001895" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="2087" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="593" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.309952" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="46100" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2088" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="593" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.304478" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2089" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="593" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.299859" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2090" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="593" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.292063" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1464" name="M2TimelineContactTests" fullname="ProjectHero.Logic.Tests.M2TimelineContactTests" classname="ProjectHero.Logic.Tests.M2TimelineContactTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.271156" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1465" name="AlignedOpposingAttacksShowClashOnlyWhenExactLogicResolvesIt" fullname="ProjectHero.Logic.Tests.M2TimelineContactTests.AlignedOpposingAttacksShowClashOnlyWhenExactLogicResolvesIt" methodname="AlignedOpposingAttacksShowClashOnlyWhenExactLogicResolvesIt" classname="ProjectHero.Logic.Tests.M2TimelineContactTests" runstate="Runnable" seed="362016012" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.219452" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1467" name="RejectedTimelineEditDoesNotProduceInventedContacts" fullname="ProjectHero.Logic.Tests.M2TimelineContactTests.RejectedTimelineEditDoesNotProduceInventedContacts" methodname="RejectedTimelineEditDoesNotProduceInventedContacts" classname="ProjectHero.Logic.Tests.M2TimelineContactTests" runstate="Runnable" seed="438431495" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.027132" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1466" name="TimelineContactComesFromExactResolutionAndDoesNotWriteAuthoritativeWorld" fullname="ProjectHero.Logic.Tests.M2TimelineContactTests.TimelineContactComesFromExactResolutionAndDoesNotWriteAuthoritativeWorld" methodname="TimelineContactComesFromExactResolutionAndDoesNotWriteAuthoritativeWorld" classname="ProjectHero.Logic.Tests.M2TimelineContactTests" runstate="Runnable" seed="983414648" result="Passed" start-time="2026-10-15 07:09:34Z" end-time="2026-10-15 07:09:34Z" duration="0.023539" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

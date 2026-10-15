@@ -43,7 +43,7 @@ namespace ProjectHero.Authoring.Tests
         {
             var driver = new UnityBattleDriver();
             driver.BindView(view);
-            driver.Initialize(new BattleRuntimeContext(BattleRuntimeMode.New, new RuntimeCallLedger(), new ShadowWriteCounters(), source));
+            driver.Initialize(new BattleRuntimeContext(source));
             driver.CreateSimulation(source); return driver;
         }
 

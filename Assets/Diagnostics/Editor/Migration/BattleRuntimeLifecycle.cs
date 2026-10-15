@@ -9,8 +9,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
     /// </summary>
     public static class BattleRuntimeLifecycle
     {
-        public const string MODE_CHANGE_WHILE_ACTIVE = BattleRuntimeBootstrap.BOOTSTRAP_MODE_CHANGE_REJECTED;
-        public const string START_WHILE_ACTIVE = BattleRuntimeBootstrap.BOOTSTRAP_DOUBLE_START;
+        public const string MODE_CHANGE_WHILE_ACTIVE = MigrationBattleHost.BOOTSTRAP_MODE_CHANGE_REJECTED;
+        public const string START_WHILE_ACTIVE = MigrationBattleHost.BOOTSTRAP_DOUBLE_START;
         public const string STOP_WITHOUT_ACTIVE_BATTLE = "BATTLE_RUNTIME_STOP_WITHOUT_ACTIVE_BATTLE";
         public const string RELEASE_WITHOUT_ACTIVE_BATTLE = "BATTLE_RUNTIME_RELEASE_WITHOUT_ACTIVE_BATTLE";
 

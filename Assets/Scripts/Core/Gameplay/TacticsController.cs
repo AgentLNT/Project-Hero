@@ -50,7 +50,7 @@ namespace ProjectHero.Core.Gameplay
         public ViewInputController InputController;
 
         /// <summary>旧"直接写逻辑"的捷径是否仍然启用（仅当没有注入命令端口时为 true）。</summary>
-        public bool LegacyImmediateWritesEnabled => ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed && (InputController == null || !InputController.HasPorts);
+        public bool LegacyImmediateWritesEnabled => ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.LegacyWritesAllowed && (InputController == null || !InputController.HasPorts);
 
         private void EnsureInputController()
         {
@@ -149,7 +149,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to execute Block
         public void ExecuteBlock()
         {
-            if (!ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed)
+            if (!ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.LegacyWritesAllowed)
             {
                 EnsureInputController();
                 if (InputController.HasReactionSelection) InputController.ConfirmReaction();
@@ -202,7 +202,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to execute Dodge
         public void ExecuteDodge()
         {
-            if (!ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed)
+            if (!ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.LegacyWritesAllowed)
             {
                 EnsureInputController();
                 if (InputController.HasReactionSelection) InputController.ConfirmReaction();
@@ -255,7 +255,7 @@ namespace ProjectHero.Core.Gameplay
         // Public API for UI to execute Recover (stand up / regain balance)
         public void ExecuteRecover()
         {
-            if (!ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.LegacyWritesAllowed)
+            if (!ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.LegacyWritesAllowed)
             {
                 return;
             }

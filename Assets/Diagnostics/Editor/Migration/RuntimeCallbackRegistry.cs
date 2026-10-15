@@ -10,7 +10,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
     ///
     /// <list type="bullet">
     /// <item><see cref="TopLevelClockAdvancer"/>：推进顶层战斗时钟/Timeline 的入口。
-    /// 每个场景<strong>只能有一个</strong>，且必须是 <c>BattleRuntimeBootstrap.Update()</c>。</item>
+    /// 每个场景<strong>只能有一个</strong>，且必须是 <c>MigrationBattleHost.Update()</c>。</item>
     /// <item><see cref="LegacyDependentWriter"/>：写旧战斗状态、但依赖顶层时钟推进的从属写入者。
     /// 由 Bootstrap 按模式整体门控：Legacy/Shadow 启用，New 全部禁用（不变量 21）。</item>
     /// <item><see cref="ReadOnlyInputOrPresentation"/>：只读输入或表现回调。可以跨模式保留，
@@ -189,7 +189,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// 只读 Shadow 检查点的<strong>声明</strong>执行顺序位（晚于全部 Legacy 写入者的 -500）。
         ///
         /// 第二收尾轮 R4.1 的更正：本常量<strong>没有</strong>施加到任何组件上
-        /// （<c>BattleRuntimeBootstrap</c> 整体是 <c>[DefaultExecutionOrder(-1000)]</c>，
+        /// （<c>MigrationBattleHost</c> 整体是 <c>[DefaultExecutionOrder(-1000)]</c>，
         /// 其 <c>.meta</c> 也没有独立的 <c>MonoImporter.executionOrder</c>）。
         /// 因此它<strong>不是</strong>顺序保证，而只是"检查点被声明在哪个顺序位"的元数据；
         /// 真实的顺序保证有两条，都可被证伪：
@@ -198,7 +198,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         /// Unity 保证同一帧内全部 <c>Update</c> 先于全部 <c>LateUpdate</c>。
         /// 违反时 <see cref="UnityCallbackPhase"/> 会把它标成 <c>LateUpdate</c>/<c>Coroutine</c> 相位，
         /// 于是 <c>WritersExecutingInLateUpdatePhase()</c> 报警（旧实现不可能报警）。</item>
-        /// <item><b>真实执行顺序读取</b>：<c>BattleRuntimeBootstrap.WriterOrderMismatches()</c>
+        /// <item><b>真实执行顺序读取</b>：<c>MigrationBattleHost.WriterOrderMismatches()</c>
         /// 读 <c>MonoImporter.GetExecutionOrder</c> 并与分类表逐条比对。</item>
         /// </list>
         /// </summary>
@@ -217,13 +217,13 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 "改造前：BattleTimeline.AdvanceTime；改造后：无自主推进，只由 Bootstrap 调用 AdvanceFrame",
                 "旧 BattleTimeline 计划表与全部旧运行组", BootstrapExecutionOrder);
 
-            Add("ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap", "Update",
+            Add("ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost", "Update",
                 UnityCallbackClass.TopLevelClockAdvancer, MainScenePrefix + "CombatDemo",
                 "Time.deltaTime（Legacy 段）/ Time.unscaledDeltaTime（New 段）",
                 "按固定模式调用唯一帧适配器",
                 "无（Bootstrap 自身不直接写场景）", BootstrapExecutionOrder);
 
-            Add("ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap", "LateUpdate",
+            Add("ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost", "LateUpdate",
                 UnityCallbackClass.ReadOnlyInputOrPresentation, MainScenePrefix + "CombatDemo",
                 "无（只读检查点，不采样帧时间）",
                 "Shadow 比较（只读快照）",
@@ -420,6 +420,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         {
             if (type == null) return false;
             if (!typeof(MonoBehaviour).IsAssignableFrom(type)) return false;
+            if (typeof(MigrationBattleHost).IsAssignableFrom(type)) return false;
             if (typeof(BattleRuntimeBootstrap).IsAssignableFrom(type)) return false;
             if (IsFrameworkWriter(type)) return false;
 

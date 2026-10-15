@@ -50,6 +50,13 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private bool _paused;
         private BattleReplay _releasedReplay;
         private string _replayRecordingError;
+        private Input.RuntimeViewLogicPort _hudPort;
+        public ProjectHero.UnityView.BattleClockController Clock { get; } = new ProjectHero.UnityView.BattleClockController();
+        public void EnableHudClock(ProjectHero.Logic.Ids.ControllerId controller)
+        {
+            _hudPort = new Input.RuntimeViewLogicPort(_simulation, controller, () => _paused || Clock.IsPaused || _stopped);
+            Clock.Observe(_hudPort.DecisionSnapshot, _hudPort.CurrentWindow, _hudPort.HudPreviews, null);
+        }
 
         public LogicSnapshot CurrentSnapshot => _simulation?.CurrentSnapshot;
         public ReplayHeader ReplayHeader => _recorder?.Header ?? _releasedReplay?.Header;
@@ -69,7 +76,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         public Input.ViewInputPorts CreatePlayerInputPorts(ProjectHero.Logic.Ids.ControllerId controller)
         {
             if (_simulation == null) throw new LogicDefinitionException("VIEW_SIMULATION_NOT_CREATED", AdapterName);
-            var port = new Input.RuntimeViewLogicPort(_simulation, controller, () => _paused || _stopped);
+            var port = new Input.RuntimeViewLogicPort(_simulation, controller, () => _paused || Clock.IsPaused || _stopped);
             return new Input.ViewInputPorts(port, new Input.ViewCommandFactory(port));
         }
 
@@ -80,7 +87,12 @@ namespace ProjectHero.Core.Compatibility.Runtime
             _view = view;
         }
 
-        public void SetPaused(bool paused) => _paused = paused;
+        public void SetPaused(bool paused)
+        {
+            if (_paused != paused) _accumulator = 0;
+            _paused = paused; Clock.SetSystemPaused(paused);
+        }
+        public void ResumeTactically() { _accumulator = 0; Clock.ResumeTactically(); }
 
         public string AdapterName => "UnityBattleDriver";
 
@@ -169,16 +181,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
             if (!_initialized || _stopped || _simulation == null) return;
 
             _advanceCallCount++;
-            if (_context != null && _context.Ledger != null)
-                _context.Ledger.RecordNewDriverInvocation(delta.DeltaTime);
+            _context?.Observer?.OnDriverFrame(delta.DeltaTime);
 
             // New 段的时间来源固定为 Bootstrap 采样的 unscaledDeltaTime；
             // 这里再显式校验一次，防止适配器被喂入受 timeScale 缩放的时间。
             if (!delta.TimeScaleIsolated)
                 throw new LogicDefinitionException("NEW_DRIVER_REQUIRES_UNSCALED_DELTA_TIME", delta.ToString());
 
-            _paused = delta.IsPaused;
-            if (_paused) return;
+            if (_paused || delta.IsPaused || Clock.IsPaused) { _accumulator = 0; return; }
             if (float.IsNaN(delta.DeltaTime) || float.IsInfinity(delta.DeltaTime) || delta.DeltaTime < 0)
                 throw new LogicDefinitionException("NEW_DRIVER_FRAME_TIME_INVALID", delta.ToString());
 
@@ -194,8 +204,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 long tick = _simulation.Tick + 1;
                 _recorder.CaptureBeforeStep();
                 var batch = _simulation.CommandIngress.FreezeTick(tick);
-                if (_context.AuthorityInput != null)
-                    ShadowAuthorityProtocol.RecordFrozenBatch(_context.AuthorityInput, batch);
+                _context?.Observer?.OnFrozenBatch(batch);
                 StepResult result = _simulation.Step(tick, batch);
                 _lastStatus = result.Status;
                 if (result.Status == StepStatus.AlreadyEnded)
@@ -206,20 +215,21 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 }
                 _ticksAdvanced++;
                 _recorder.RecordCommittedStep(result);
-                if (_context.AuthorityInput != null)
-                    ShadowAuthorityProtocol.RecordOutcomes(_context.AuthorityInput, _simulation, tick, result);
+                _context?.Observer?.OnCommittedStep(_simulation, tick, result);
                 CaptureEventNames(result);
                 _view?.Consume(result.Events, result.Snapshot);
+                if (_hudPort != null) Clock.Observe(_hudPort.DecisionSnapshot, _hudPort.CurrentWindow, _hudPort.HudPreviews, result.Events);
 
                 // 调用计数只记录"真的推进过一次"的 Step；暂停时不进入本循环。
-                if (!delta.IsPaused && _context != null && _context.Ledger != null)
-                    _context.Ledger.RecordNewSimulationStep(result.Status);
+                _context?.Observer?.OnSimulationStep(result.Status);
                 if (result.Status == StepStatus.BattleEnded)
                 {
+                    Clock.End();
                     _stopped = true;
                     _accumulator = 0;
                     break;
                 }
+                if (Clock.IsPaused || _paused) { _accumulator = 0; break; }
             }
 
             // Retain all accumulated time. Limiting work per frame must not discard elapsed ticks.
@@ -255,16 +265,15 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 long tick = _simulation.Tick + 1;
                 _recorder.CaptureBeforeStep();
                 var batch = _simulation.CommandIngress.FreezeTick(tick);
-                if (_context.AuthorityInput != null)
-                    ShadowAuthorityProtocol.RecordFrozenBatch(_context.AuthorityInput, batch);
+                _context?.Observer?.OnFrozenBatch(batch);
                 var result = _simulation.Step(tick, batch);
                 _lastStatus = result.Status;
                 _recorder.RecordCommittedStep(result);
-                if (_context.AuthorityInput != null)
-                    ShadowAuthorityProtocol.RecordOutcomes(_context.AuthorityInput, _simulation, tick, result);
+                _context?.Observer?.OnCommittedStep(_simulation, tick, result);
                 CaptureEventNames(result);
                 _view?.Consume(result.Events, result.Snapshot);
             }
+            Clock.End();
         }
 
         /// <summary>战斗之间重置。</summary>
@@ -283,6 +292,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
             _releasedReplay = null;
             _replayRecordingError = null;
             _paused = false;
+            _hudPort = null; Clock.Reset();
             if (_simulation != null)
             {
                 _simulation.Dispose();

@@ -14,7 +14,7 @@ namespace ProjectHero.Tests.PlayMode
         [UnityTest] public IEnumerator NewAuthoringSourceKeepsDefinitionAndStartsAfterLegacyFactoryIsDestroyed()
         {
             yield return LoadLegacyComparisonScene(); Bootstrap.StopBattle("source-prepare"); Bootstrap.ReleaseBattle();
-            var sourceSlot = typeof(BattleRuntimeBootstrap).GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic);
+            var sourceSlot = typeof(MigrationBattleHost).GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic);
             var oldSource = (MonoBehaviour)sourceSlot.GetValue(Bootstrap);
             var original = ((IBattleSimulationSource)oldSource).BuildSeed();
             var reader = ResolveProductionType("ProjectHero.Core.Compatibility.Authoring.LegacyCombatUnitStatsReader");

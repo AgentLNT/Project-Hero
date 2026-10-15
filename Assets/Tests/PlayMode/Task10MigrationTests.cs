@@ -16,7 +16,7 @@ namespace ProjectHero.Tests.PlayMode
             ResolveBootstrap();
             Bootstrap.StopBattle("task10-gate-prepare"); Bootstrap.ReleaseBattle();
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
-            Assert.That(BattleRuntimeBootstrap.LegacyWritesAllowed, Is.False);
+            Assert.That(MigrationBattleHost.LegacyWritesAllowed, Is.False);
             var tacticsType = ResolveProductionType("ProjectHero.Core.Gameplay.TacticsController");
             Assert.That(tacticsType, Is.Not.Null);
             var go = NewGameObject("UnboundNewTactics");

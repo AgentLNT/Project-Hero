@@ -10,7 +10,7 @@ namespace ProjectHero.Core.Gameplay
     /// <summary>
     /// 旧胜负轮询器。任务 03B：<c>Update()</c> 保留旧行为（每帧 FindObjectsByType 轮询 +
     /// <c>Time.timeScale = 0.2</c> 慢放），但被登记为 <strong>Legacy 从属写入者</strong>，
-    /// 由 <c>BattleRuntimeBootstrap</c> 按模式整体门控（New 全部禁用）。
+    /// 由 <c>MigrationBattleHost</c> 按模式整体门控（New 全部禁用）。
     /// 胜负迁移到唯一 Finalizer 属任务 04/10。
     /// </summary>
     [DefaultExecutionOrder(ProjectHero.Core.Compatibility.Runtime.RuntimeCallbackRegistry.LegacyWriterExecutionOrder)]

@@ -153,7 +153,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
         private readonly List<ShadowCheckpointEventBinding> _eventBindings =
             new List<ShadowCheckpointEventBinding>();
 
-        private BattleRuntimeContext _context;
+        private MigrationRuntimeContext _context;
         private BattleSimulationSeed _seed;
         private IShadowMirroredInputSource _mirror;
         private ReplayAuthorityInput _authorityInput;
@@ -320,14 +320,14 @@ namespace ProjectHero.Core.Compatibility.Runtime
 
         public void Initialize(BattleRuntimeContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context as MigrationRuntimeContext ?? throw new ArgumentException("Migration context required", nameof(context));
             if (_mirror == null) _mirror = EmptyShadowMirroredInputSource.Instance;
 
             // 权威输入记录器随上下文注入：本场每一次 Step 都由本 runner 在唯一模拟入口里收口。
-            _authorityInput = context.AuthorityInput;
+            _authorityInput = _context.AuthorityInput;
 
             // 与 Bootstrap 共享同一份写入计数器：越界写入的拦截事实只有一个来源。
-            _sharedWrites = context.ShadowWrites;
+            _sharedWrites = _context.ShadowWrites;
             var source = _seed != null ? null : context.SimulationSource;
             if (_seed == null && source != null)
             {

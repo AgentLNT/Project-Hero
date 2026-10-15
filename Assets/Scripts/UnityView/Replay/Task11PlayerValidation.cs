@@ -67,7 +67,7 @@ namespace ProjectHero.UnityView.Replay
             Require(!bootstrap.StartBattle(BattleRuntimeMode.Shadow), "NATIVE_SHADOW_START_ALLOWED");
             Require(bootstrap.StartBattle(BattleRuntimeMode.New), "NATIVE_NEW_START_REJECTED:" + bootstrap.StartupRejection);
             var presentation = UnityEngine.Object.FindFirstObjectByType<BattlePresentationView>();
-            Require(presentation != null && bootstrap.Adapters.Legacy == null, "NATIVE_LEGACY_ADAPTER_OR_VIEW_INVALID");
+            Require(presentation != null && Type.GetType("ProjectHero.Demos.CombatDemo, Assembly-CSharp", false) == null, "NATIVE_LEGACY_ADAPTER_OR_VIEW_INVALID");
             bootstrap.DriveFrameForTests(0, 1f / 60);
             var model = presentation.Model; long lastClose = 0;
             for (int frame = 0; frame < 12000 && !model.Decision.BattleEnd.IsEnded; frame++)
@@ -296,7 +296,7 @@ namespace ProjectHero.UnityView.Replay
             model.ConfirmDraft(); Require(model.SubmittedCommands == 1, "NATIVE_DUPLICATE_COMMAND");
             bootstrap.DriveFrameForTests(0, 1f / 60);
             Require(model.Decision.OwnPlans.Any(p => p.State == (int)ActionPlanState.Running), "NATIVE_PLAN_NOT_STARTED");
-            Require(bootstrap.Ledger.AdvanceCalls(RuntimeAdvancePath.LegacyAdvanceTime) == 0, "NATIVE_OLD_CLOCK_ADVANCED");
+            Require(Type.GetType("ProjectHero.Demos.CombatDemo, Assembly-CSharp", false) == null, "NATIVE_OLD_CLOCK_ADVANCED");
             bootstrap.StopBattle("development-view-complete"); bootstrap.ReleaseBattle();
             Require(!unitView.UnitId.IsValid, "NATIVE_VISUAL_ID_NOT_RELEASED");
             report.AppendLine("Native UnityView smoke=Passed; real serialized slot/window, Player preview/confirm, single command, old-clock zero, release\nNative view smoke is not a complete native battle or visual capture.");

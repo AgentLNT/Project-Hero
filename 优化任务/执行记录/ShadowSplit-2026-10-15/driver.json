@@ -1,0 +1,119 @@
+{
+  "success": true,
+  "command": "command run_tests",
+  "data": {
+    "command": "run_tests",
+    "parameters": {
+      "mode": "editor",
+      "filter": "Task10DriverTests"
+    },
+    "result": {
+      "Summary": {
+        "Total": 12,
+        "Passed": 12,
+        "Failed": 0,
+        "Skipped": 0,
+        "Inconclusive": 0
+      },
+      "Results": [
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.ComparableShadowEqualityCannotMasqueradeAsCompleteMigrationCoverage",
+          "Status": "Passed",
+          "Duration": 0.2568767,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.DriverAdvancesExpectedTicksFromUnscaledTime",
+          "Status": "Passed",
+          "Duration": 0.0656921,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.DriverRetainsCatchUpDebtInsteadOfDroppingTicks",
+          "Status": "Passed",
+          "Duration": 0.0033114,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.DriverStopsAccumulatedTickLoopImmediatelyAfterBattleEndedResult",
+          "Status": "Passed",
+          "Duration": 0.014157,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.ExternalLifecycleStopConsumesEndFeedbackButCannotExportUnreproducibleReplay",
+          "Status": "Passed",
+          "Duration": 0.0051216,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.InvalidFrameDeltaFailsWithoutAdvancingLogic",
+          "Status": "Passed",
+          "Duration": 0.0020735,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs",
+          "Status": "Passed",
+          "Duration": 0.0082578,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.NaturallyEndedReplayKeepsFinalTickAfterStopAndRelease",
+          "Status": "Passed",
+          "Duration": 0.0065891,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.PauseStopsStepsAndDoesNotAccumulatePausedTime",
+          "Status": "Passed",
+          "Duration": 0.0010152,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.ReplayHeaderUsesFormatVersionAndPreStepInitialStateHash",
+          "Status": "Passed",
+          "Duration": 0.0032479,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.SemanticEventsMapToFeedbackWithoutLogicWriteback",
+          "Status": "Passed",
+          "Duration": 0.0027031,
+          "Message": null,
+          "StackTrace": null
+        },
+        {
+          "FullName": "ProjectHero.Authoring.Tests.Task10DriverTests.UnitViewFactionBindingComesFromInitializationMapping",
+          "Status": "Passed",
+          "Duration": 0.0047171,
+          "Message": null,
+          "StackTrace": null
+        }
+      ],
+      "Duration": 5.27,
+      "StatusPath": null,
+      "Mode": "EditMode",
+      "FilterApplied": "testname: Task10DriverTests",
+      "success": true,
+      "result": null
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "C:\\Users\\1\\repos\\Project Hero\\Project-Hero"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

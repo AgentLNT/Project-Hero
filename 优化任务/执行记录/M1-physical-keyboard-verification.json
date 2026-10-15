@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-15",
+  "verifiedBy": "user",
+  "result": "passed",
+  "question": "M1 已在 Unity Game 视图打开。请点击战场空白处，按 Esc 打开/关闭系统暂停，再按 Space 继续/暂停；点起点输入框后，Space 应不改变暂停状态。是否正常？电脑操作工具无法注入 Unity RawInput，因此需要这一步真实键盘复核。",
+  "response": "全部正常",
+  "checks": [
+    { "id": "esc_system_pause", "result": "passed" },
+    { "id": "space_tactical_pause", "result": "passed" },
+    { "id": "input_focus_blocks_space", "result": "passed" }
+  ]
+}

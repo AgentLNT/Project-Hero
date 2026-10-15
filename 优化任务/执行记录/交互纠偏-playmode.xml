@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.6008118">
+  <test-suite type="TestSuite" id="1093" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="71" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.600812" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1086" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Project-Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="71" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.583324" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="47932" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1087" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="71" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.582433" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1088" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="71" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.582164" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1089" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="71" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.581933" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="M1HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:27Z" duration="2.578791" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1004" name="BattlefieldAttackSelectionUsesPointerFacingWithoutWritingSnapshot" fullname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests.BattlefieldAttackSelectionUsesPointerFacingWithoutWritingSnapshot" methodname="BattlefieldAttackSelectionUsesPointerFacingWithoutWritingSnapshot" classname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests" runstate="Runnable" seed="1697233717" result="Passed" start-time="2026-10-14 19:45:25Z" end-time="2026-10-14 19:45:26Z" duration="0.882868" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="MainScenePausesPlansMultipleActionsAndExecutesHeavyAcrossWindow" fullname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests.MainScenePausesPlansMultipleActionsAndExecutesHeavyAcrossWindow" methodname="MainScenePausesPlansMultipleActionsAndExecutesHeavyAcrossWindow" classname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests" runstate="Runnable" seed="761328775" result="Passed" start-time="2026-10-14 19:45:26Z" end-time="2026-10-14 19:45:26Z" duration="0.787131" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1005" name="MainSceneResumeChoiceKeepsIntentAndSystemPauseBlocksPlanning" fullname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests.MainSceneResumeChoiceKeepsIntentAndSystemPauseBlocksPlanning" methodname="MainSceneResumeChoiceKeepsIntentAndSystemPauseBlocksPlanning" classname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests" runstate="Runnable" seed="352603762" result="Passed" start-time="2026-10-14 19:45:26Z" end-time="2026-10-14 19:45:27Z" duration="0.427850" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1002" name="NativeKeyboardEventsRespectInputFocusAndSystemPauseRestoresPreviousClock" fullname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests.NativeKeyboardEventsRespectInputFocusAndSystemPauseRestoresPreviousClock" methodname="NativeKeyboardEventsRespectInputFocusAndSystemPauseRestoresPreviousClock" classname="ProjectHero.Tests.PlayMode.M1HudPlayModeTests" runstate="Runnable" seed="231599618" result="Passed" start-time="2026-10-14 19:45:27Z" end-time="2026-10-14 19:45:27Z" duration="0.464370" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

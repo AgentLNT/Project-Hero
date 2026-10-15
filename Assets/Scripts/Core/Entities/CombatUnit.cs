@@ -17,7 +17,7 @@ namespace ProjectHero.Core.Entities
     ///
     /// 任务 03B：本组件的 <c>Update()</c> 保留旧资源衰减/恢复语义，但被登记为
     /// <strong>Legacy 从属写入者</strong>——它依赖顶层时钟推进，由
-    /// <c>BattleRuntimeBootstrap</c> 按模式整体门控（Legacy/Shadow 启用、New 全部禁用）。
+    /// <c>MigrationBattleHost</c> 按模式整体门控（Legacy/Shadow 启用、New 全部禁用）。
     /// 职责迁移（移除旧资源模型）属于任务 04–10。
     /// </summary>
     [DefaultExecutionOrder(ProjectHero.Core.Compatibility.Runtime.RuntimeCallbackRegistry.LegacyWriterExecutionOrder)]

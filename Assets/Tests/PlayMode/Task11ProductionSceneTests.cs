@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 
 namespace ProjectHero.Tests.PlayMode
 {
-    public sealed class Task11ProductionSceneTests : RuntimeOwnershipTestBase
+    public sealed class Task11ProductionSceneTests : ProductionRuntimeTestBase
     {
         protected override bool UseLegacyComparisonScene => false;
         [UnityTest] public IEnumerator ProductionSceneUsesOnlyNewAndRejectsLegacyStartup()
@@ -15,8 +15,8 @@ namespace ProjectHero.Tests.PlayMode
             yield return LoadMainScene();
             Assert.That(Bootstrap.BattleMode, Is.EqualTo(BattleRuntimeMode.New));
             Assert.That(Bootstrap.NewDriver.SimulationCreated, Is.True);
-            Assert.That(Bootstrap.Adapters.Legacy, Is.Null);
-            Assert.That(Bootstrap.LegacyWriters.Count, Is.Zero);
+            Assert.That(UnityEngine.Object.FindObjectsByType<MigrationBattleHost>(FindObjectsInactive.Include), Is.Empty);
+
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             var scripts = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<MonoBehaviour>(true)).ToArray();
             Assert.That(scripts.All(s => s != null), Is.True, "No Missing Script in production hierarchy.");

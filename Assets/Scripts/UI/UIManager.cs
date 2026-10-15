@@ -250,7 +250,7 @@ namespace ProjectHero.UI
             // Legacy ����д���ߣ�Bootstrap ���ܰ�ģʽ�ſ�����New ģʽ���ã�δ������ܾ���������
             ProjectHero.Core.Compatibility.Runtime.LegacyWriterRegistry.Register(
                 TimelineUI,
-                ProjectHero.Core.Compatibility.Runtime.BattleRuntimeBootstrap.DescribePath(TimelineUI),
+                ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost.DescribePath(TimelineUI),
                 "ÿ֡�������������ѯ��");
 
             if (MainFont != null)

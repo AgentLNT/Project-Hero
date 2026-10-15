@@ -1,0 +1,9 @@
+12B actual main-scene fixture: three explicit actors, Player command entries, 180 tick windows, defense 60/60/30, damage-funded adrenaline, deterministic attack timings; hash=b76447e945365758
+单位 1  生命 2000  Idle  肾上腺素 0  预留 0
+单位 2  生命 2000  Windup  肾上腺素 0  预留 0
+单位 3  生命 2000  Idle  肾上腺素 0  预留 0
+窗口拥有者 2 · 剩余 2.97 s
+
+preview=Opponent cannot react; enemy Available=0; input deadline is in future; no hard conflict
+impact=441; resolved=True; replayRestarts=100
+ProjectHero.Logic.Events.DamageChannelResolvedEvent{AfterBlockDamageQ10=20480;AfterMomentumResistanceUnits=1;AttackPlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=1;}AttackerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=2;}Channels=[ProjectHero.Logic.Events.DamageChannelEntry{ActionResistanceQ10=0;AfterActionResistanceQ10=20480;AfterPassiveResistanceQ10=20480;ChannelId=ProjectHero.Logic.Ids.DamageChannelId{Value=14:physical.blunt;}PassiveResistanceQ10=0;RawQ10=20480;Tags=ProjectHero.Logic.Damage.DamageTagMask:3;}]ConflictGroupKey=1;GuardPlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=False;Value=0;}IncomingDirection=ProjectHero.Logic.Grid.GridDirection:0;IncomingMomentumUnits=1;ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=1;}]Sequence=18;StopReasonCode=30:INTERACTION_CONTACT_UNRESISTED;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}Tick=441;TotalDamageQ10=20480;}
