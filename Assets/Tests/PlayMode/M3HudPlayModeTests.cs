@@ -85,6 +85,37 @@ namespace ProjectHero.Tests.PlayMode
         }
         private static string Texts(BattlePresentationView view) => string.Join(";", view.GetComponentsInChildren<Component>(true)
             .Where(t => t.GetType().FullName == "TMPro.TextMeshProUGUI").Select(t => (string)t.GetType().GetProperty("text").GetValue(t)));
+        [UnityTest] public IEnumerator ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands()
+        {
+            yield return LoadMainScene(); var view = View; view.ReactionView.Refresh(true);
+            Assert.That(view.ReactionView.ShortcutHintText, Does.Contain("尚无可响应的公开威胁"));
+            QueueKey("D"); yield return null; QueueKey(); yield return null;
+            QueueKey("Enter"); yield return null; QueueKey(); yield return null;
+            Assert.That(view.ReactionView.Candidate, Is.Null);
+            Assert.That(view.Model.StagedReactionCount, Is.Zero); Assert.That(view.Model.SubmittedCommands, Is.Zero);
+        }
+        [UnityTest] public IEnumerator ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction()
+        {
+            yield return ReactionFixture(true, true); var view = View;
+            var opportunities = view.Model.Reactions.OrderBy(r => r.SourceImpactTick).ToArray();
+            var later = opportunities.Last(); var block = new ActionSpecId(later.Options.First(o => view.Model.Decision.FindAction(new ActionSpecId(o.ActionSpecId)).Type == ActionType.Block).ActionSpecId);
+            view.ReactionView.Select(later.ReactionOpportunityId, block); view.ResumePlanning(false);
+            Assert.That(view.Clock.State, Is.EqualTo(BattleClockState.Running));
+            QueueKey("D"); yield return null; yield return null; QueueKey(); yield return null;
+            Assert.That(view.Clock.State, Is.EqualTo(BattleClockState.TacticalPlanning));
+            Assert.That(view.ReactionView.Candidate.OpportunityId, Is.EqualTo(later.ReactionOpportunityId));
+            Assert.That(view.ReactionView.AwaitingDestination, Is.True);
+            QueueKey("Escape"); yield return null; QueueKey(); yield return null;
+            QueueKey("B"); yield return null; QueueKey(); yield return null;
+            Assert.That(view.ReactionView.Candidate.OpportunityId, Is.EqualTo(opportunities.First().ReactionOpportunityId));
+            QueueKey("Enter"); yield return null; QueueKey(); yield return null;
+            Assert.That(view.ReactionView.ShortcutHintText, Does.Contain("反应已暂存"));
+            view.ResumePlanning(false); Bootstrap.DriveFrameForTests(0, 1f / 60); view.Clock.PauseTactically(); view.ReactionView.Refresh(true);
+            Assert.That(view.Model.Reactions.First(r => r.ReactionOpportunityId == opportunities.First().ReactionOpportunityId).BoundActionPlanId, Is.Not.Zero);
+            QueueKey("B"); yield return null; QueueKey(); yield return null;
+            Assert.That(view.ReactionView.Candidate.OpportunityId, Is.EqualTo(later.ReactionOpportunityId));
+            Assert.That(view.Model.SubmittedCommands, Is.EqualTo(1));
+        }
         [UnityTest] public IEnumerator QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning()
         {
             yield return ReactionFixture(true, true); var view = View;

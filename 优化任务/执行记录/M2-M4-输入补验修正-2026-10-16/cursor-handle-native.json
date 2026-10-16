@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 1.18,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectHero.Tests.PlayMode.M4HudPlayModeTests.VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands",
+      "Status": "Failed",
+      "Duration": 1.1521078,
+      "Message": "  The visible cursor must receive the pointer instead of the track viewport.\r\n  Expected: same as <CursorHandle (ProjectHero.UnityView.TimelineCursorInput)>\r\n  But was:  <TimeCursorRail (ProjectHero.UnityView.TimelineCursorInput)>\r\n",
+      "StackTrace": "at ProjectHero.Tests.PlayMode.M4HudPlayModeTests+<VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands>d__10.MoveNext () [0x0016e] in C:\\Users\\1\\repos\\Project Hero\\Project-Hero\\Assets\\Tests\\PlayMode\\M4HudPlayModeTests.cs:99\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@7a3849e09bd0\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:52\r\n"
+    }
+  ]
+}

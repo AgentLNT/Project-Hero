@@ -32,7 +32,7 @@ namespace ProjectHero.UnityView
         private BattlePresentationView _view;
         private TMP_FontAsset _font;
         private RectTransform _root, _content, _markers;
-        private TMP_Text _summary;
+        private TMP_Text _summary, _shortcutHint;
         private readonly Dictionary<long, Card> _cards = new Dictionary<long, Card>();
         private readonly Dictionary<long, UnityEngine.UI.Button> _threatMarkers = new Dictionary<long, UnityEngine.UI.Button>();
         private string _key;
@@ -44,6 +44,7 @@ namespace ProjectHero.UnityView
         public bool AwaitingDestination => _active != 0 && _cards.TryGetValue(_active, out var card)
             && _view.Model.Decision.FindAction(card.Action)?.Type == ActionType.Dodge && !card.Destination.HasValue && !card.Ignored;
         public long ActiveOpportunity => _active;
+        public string ShortcutHintText => _shortcutHint?.text;
         public DefensePlacementPreview DefensePreview { get; private set; }
         public IReadOnlyList<ReactionPlacement> PreviewPlacements { get; private set; } = Array.Empty<ReactionPlacement>();
         public ReactionPlacement Candidate => _active != 0 && _cards.TryGetValue(_active, out var card) && !card.Ignored
@@ -57,6 +58,10 @@ namespace ProjectHero.UnityView
             _root = Rect(canvas, "M3ReactionCards", .29f, .48f, .70f, .89f);
             Background(_root, new Color(.035f, .065f, .095f, .98f));
             _summary = Text(Rect(_root, "Summary", 0, .91f, 1, 1), "", 18);
+            var help = Rect(canvas, "M3ReactionHelp", .72f, .08f, .98f, .30f);
+            Background(help, new Color(.035f, .065f, .095f, .98f), false);
+            _shortcutHint = Text(Rect(help, "ShortcutHint", .03f, .04f, .97f, .96f), "", 16);
+            _shortcutHint.alignment = TextAlignmentOptions.TopLeft;
             var scrollRoot = Rect(_root, "Scroll", 0, 0, 1, .91f);
             var scroll = scrollRoot.gameObject.AddComponent<UnityEngine.UI.ScrollRect>();
             var viewport = Rect(scrollRoot, "Viewport", 0, 0, 1, 1);
@@ -276,6 +281,7 @@ namespace ProjectHero.UnityView
             _content.parent.parent.gameObject.SetActive(!picking);
             _summary.rectTransform.anchorMin = new Vector2(0, picking ? 0 : .91f);
             _summary.text = picking ? "在战场点击闪避落点 · Esc 取消\n落点选定后返回反应卡确认" : "公开威胁 " + opportunities.Length + " · 按输入截止排序 · 滚动查看 · B 格挡 / D 闪避";
+            RefreshShortcutHint(opportunities, blocked);
             if (_root.gameObject.activeSelf && !_view.ResumeChoiceVisible) _root.SetAsLastSibling();
             _view.TimelineView?.Refresh();
         }
@@ -296,6 +302,39 @@ namespace ProjectHero.UnityView
                 Background(mark, new Color(1, .55f, .2f), false);
             }
         }
+        private void RefreshShortcutHint(ReactionOpportunitySnapshot[] opportunities, bool blocked)
+        {
+            _shortcutHint.transform.parent.gameObject.SetActive(!blocked);
+            bool open = opportunities.Any(r => r.BoundActionPlanId == 0 && r.Options.Any(o => o.IsPublished && o.IsOpen));
+            string state = !open ? "尚无可响应的公开威胁"
+                : _view.Model.StagedReactionCount > 0 ? "反应已暂存 · 恢复时间后提交"
+                : AwaitingDestination ? "闪避选点中 · 在战场点击合法落点"
+                : "公开威胁已出现 · 查看卡片中的可用选项";
+            _shortcutHint.text = "反应快捷键\n" + state + "\n"
+                + "B 格挡 / D 闪避：有公开威胁时选择\n"
+                + "Enter：确认反应（闪避须先选落点）\n"
+                + "Esc：取消当前选择\n"
+                + "资源、截止或排程冲突会使选项不可用；输入框中不触发。";
+        }
+        private bool SelectShortcut(ActionType type)
+        {
+            // Use the same availability as the visible option buttons, and keep
+            // the currently selected threat ahead of unrelated earlier cards.
+            foreach (var opportunity in _view.Model.Reactions.Where(r => r.BoundActionPlanId == 0 && r.Options?.Any(o => o.IsPublished && o.IsOpen) == true)
+                .OrderBy(r => r.ReactionOpportunityId == _active ? 0 : 1)
+                .ThenBy(r => r.Options.Min(o => o.ResponseDeadlineTick)).ThenBy(r => r.ReactionOpportunityId))
+            {
+                long id = opportunity.ReactionOpportunityId;
+                if (!_cards.TryGetValue(id, out var card) || card.Ignored || _view.Model.PendingReactions.Any(r => r.OpportunityId == id)) continue;
+                var option = opportunity.Options.FirstOrDefault(o => o.IsPublished && o.IsOpen
+                    && _view.Model.Decision.FindAction(new ActionSpecId(o.ActionSpecId))?.Type == type
+                    && card.Options.TryGetValue(o.ActionSpecId, out var button) && button.interactable);
+                if (option == null) continue;
+                _view.Clock.PauseTactically("选择反应", opportunity.DefenderUnitId);
+                Select(id, new ActionSpecId(option.ActionSpecId)); return true;
+            }
+            return false;
+        }
         private void Update()
         {
             if (_view == null || !_view.Model.CanPlan || _view.ResumeChoiceVisible || Keyboard.current == null) return;
@@ -305,12 +344,9 @@ namespace ProjectHero.UnityView
             if (keyboard.bKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame)
             {
                 var type = keyboard.bKey.wasPressedThisFrame ? ActionType.Block : ActionType.Dodge;
-                var opportunity = _view.Model.Reactions.Where(r => r.Options?.Any(o => o.IsPublished && o.IsOpen) == true)
-                    .OrderBy(r => r.Options.Min(o => o.ResponseDeadlineTick)).FirstOrDefault();
-                var option = opportunity?.Options.FirstOrDefault(o => o.IsPublished && _view.Model.Decision.FindAction(new ActionSpecId(o.ActionSpecId))?.Type == type);
-                if (option != null) Select(opportunity.ReactionOpportunityId, new ActionSpecId(option.ActionSpecId));
+                SelectShortcut(type);
             }
-            if (_active != 0 && keyboard.enterKey.wasPressedThisFrame && _cards[_active].Confirm.interactable) Confirm(_active);
+            if (_active != 0 && keyboard.enterKey.wasPressedThisFrame && _cards.TryGetValue(_active, out var card) && card.Confirm.interactable) Confirm(_active);
         }
         private void ShowLanding(GridPoint point)
         {
@@ -319,7 +355,7 @@ namespace ProjectHero.UnityView
         }
         private void HideLanding() { if (_landing != null) _landing.SetActive(false); }
         public void Release()
-        { _active = 0; _key = _liveGate = null; DefensePreview = null; PreviewPlacements = Array.Empty<ReactionPlacement>(); HideLanding(); foreach (var c in _cards.Values) if (c.Root != null) Destroy(c.Root.gameObject); _cards.Clear(); foreach (var m in _threatMarkers.Values) if (m != null) Destroy(m.gameObject); _threatMarkers.Clear(); }
+        { _active = 0; _key = _liveGate = null; DefensePreview = null; PreviewPlacements = Array.Empty<ReactionPlacement>(); HideLanding(); if (_shortcutHint != null) _shortcutHint.transform.parent.gameObject.SetActive(false); foreach (var c in _cards.Values) if (c.Root != null) Destroy(c.Root.gameObject); _cards.Clear(); foreach (var m in _threatMarkers.Values) if (m != null) Destroy(m.gameObject); _threatMarkers.Clear(); }
         private static int Duration(ActionSpec spec) => spec.Timing is BlockReactionTimingSpec block ? block.DurationTicks : spec.Timing is DodgeReactionTimingSpec dodge ? dodge.DurationTicks : 0;
         public static string Explain(ReactionFeasibility result) => result.RejectionCode == "ADRENALINE_INSUFFICIENT"
             ? $"肾上腺素不足（需 {result.RequiredAdrenaline}，有 {result.AvailableAdrenaline}）" : result.ConflictingPlans.Count > 0

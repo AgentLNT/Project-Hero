@@ -22,7 +22,7 @@ namespace ProjectHero.UnityView
         }
         private BattlePresentationView _view;
         private TMP_FontAsset _font;
-        private RectTransform _root, _header, _content, _viewport, _overlay, _roster, _snapLine, _cursor, _horizon;
+        private RectTransform _root, _header, _content, _viewport, _overlay, _roster, _snapLine, _cursor, _cursorHandle, _horizon;
         private UnityEngine.UI.ScrollRect _scroll;
         private TMP_Text _summary, _overflow, _snapText;
         private readonly Dictionary<long, Track> _tracks = new Dictionary<long, Track>();
@@ -69,6 +69,11 @@ namespace ProjectHero.UnityView
             rail.anchorMax = new Vector2(1, 1); rail.offsetMax = new Vector2(0, -43); rail.offsetMin = new Vector2(TitleWidth, -62);
             Image(rail, new Color(.15f, .25f, .3f, .25f), true);
             rail.gameObject.AddComponent<TimelineCursorInput>().Bind(this);
+            Text(Pixels(_header, "CursorHint", 0, 43, TitleWidth, 19), "点击刻度或拖动▼", 13);
+            _cursorHandle = Pixels(_header, "CursorHandle", TitleWidth - 12, 43, 24, 19);
+            Image(_cursorHandle, new Color(.10f, .42f, .37f), true);
+            Text(Rect(_cursorHandle, "Label"), "▼", 12).alignment = TextAlignmentOptions.Center;
+            _cursorHandle.gameObject.AddComponent<TimelineCursorInput>().Bind(this);
             Button(Pixels(toolbar, "CursorEarlier", 438, 0, 60, 24), "−0.1s", () => _view.SpatialView?.Nudge(-1));
             Button(Pixels(toolbar, "CursorLater", 502, 0, 60, 24), "+0.1s", () => _view.SpatialView?.Nudge(1));
             var scrollRoot = Rect(_root, "TrackScroll"); Stretch(scrollRoot); scrollRoot.offsetMax = new Vector2(0, -62);
@@ -85,6 +90,10 @@ namespace ProjectHero.UnityView
             _scroll.onValueChanged.AddListener(_ => RefreshLines());
             _summary = Text(Rect(_viewport, "EmptySelection"), "", 16); Stretch((RectTransform)_summary.transform);
             _cursor = Image(Rect(_overlay, "CurrentTime"), new Color(.3f, 1, .85f)).rectTransform;
+            var cursorGrab = Rect(_cursor, "CursorDragArea");
+            cursorGrab.offsetMin = new Vector2(-9, 0); cursorGrab.offsetMax = new Vector2(9, 0);
+            Image(cursorGrab, Color.clear, true);
+            cursorGrab.gameObject.AddComponent<TimelineCursorInput>().Bind(this);
             _horizon = Image(Rect(_overlay, "KnownHorizon"), new Color(.65f, .72f, .85f)).rectTransform;
             _snapLine = Image(Rect(_overlay, "SnapIndicator"), new Color(1, .8f, .2f)).rectTransform;
             _snapText = Text(Rect(_snapLine, "SnapLabel"), "吸附", 14); Pixels((RectTransform)_snapText.transform, 4, 0, 210, 22);
@@ -348,6 +357,9 @@ namespace ProjectHero.UnityView
                 }
             }
             Line(_cursor, CursorTick, new Color(.3f, 1, .85f));
+            _cursorHandle.gameObject.SetActive(_cursor.gameObject.activeSelf);
+            Pixels(_cursorHandle, TitleWidth + X(CursorTick) - 12, 43, 24, 19);
+            _cursorHandle.SetAsLastSibling();
             long? horizon = _view.Model.HudPreviews?.KnownHorizonTick;
             _horizon.gameObject.SetActive(horizon.HasValue); if (horizon.HasValue) Line(_horizon, horizon.Value, Color.gray);
             if (horizon.HasValue && _horizon.gameObject.activeSelf)
@@ -399,11 +411,12 @@ namespace ProjectHero.UnityView
         }
     }
 
-    public sealed class TimelineCursorInput : MonoBehaviour, IPointerDownHandler, IDragHandler
+    public sealed class TimelineCursorInput : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler
     {
         private M2TimelineView _timeline;
         public void Bind(M2TimelineView timeline) => _timeline = timeline;
         public void OnPointerDown(PointerEventData data) { if (data.button == PointerEventData.InputButton.Left) _timeline.Scrub(data.position, data.pressEventCamera); }
+        public void OnBeginDrag(PointerEventData data) => OnDrag(data);
         public void OnDrag(PointerEventData data) { if (data.button == PointerEventData.InputButton.Left) _timeline.Scrub(data.position, data.pressEventCamera); }
     }
 }

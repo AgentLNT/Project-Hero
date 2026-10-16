@@ -66,7 +66,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(view.CandidatePreview.Succeeded, Is.True, view.CandidatePreview.RejectionCode);
             Assert.That(view.ConfiguredAttack.Origin, Is.EqualTo(destination));
             view.AddConfiguredDraft(); view.TimelineView.Refresh(); Canvas.ForceUpdateCanvases();
-            var rail = view.GetComponentsInChildren<TimelineCursorInput>().Single(); var rect = (RectTransform)rail.transform;
+            var rail = view.GetComponentsInChildren<TimelineCursorInput>().Single(c => c.name == "TimeCursorRail"); var rect = (RectTransform)rail.transform;
             var corners = new Vector3[4]; rect.GetWorldCorners(corners);
             var pointer = new PointerEventData(EventSystem.current) { position = Vector2.Lerp(corners[0], corners[2], .25f), button = PointerEventData.InputButton.Left };
             ExecuteEvents.Execute(rail.gameObject, pointer, ExecuteEvents.pointerDownHandler);
@@ -80,6 +80,45 @@ namespace ProjectHero.Tests.PlayMode
             System.IO.File.WriteAllBytes($"优化任务/执行记录/M4-space-{Screen.width}x{Screen.height}.png", screenshot.EncodeToPNG()); UnityEngine.Object.Destroy(screenshot);
             view.TimelineView.ReturnToNow(); Assert.That(view.SpatialView.Following, Is.True);
             Assert.That(model.Drafts.Entries.Count, Is.EqualTo(2));
+        }
+        [UnityTest] public IEnumerator VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands()
+        {
+            yield return LoadMainScene(); var view = UnityEngine.Object.FindFirstObjectByType<BattlePresentationView>();
+            var inputs = view.GetComponentsInChildren<TimelineCursorInput>();
+            var rail = (RectTransform)inputs.Single(c => c.name == "TimeCursorRail").transform;
+            var handle = inputs.Single(c => c.name == "CursorHandle");
+            var line = inputs.Single(c => c.name == "CursorDragArea");
+            var hash = Bootstrap.NewDriver.CurrentSnapshot.ComputeHash();
+            var pointer = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+            var corners = new Vector3[4];
+            foreach (var input in new[] {handle, line})
+            {
+                Canvas.ForceUpdateCanvases(); yield return new WaitForEndOfFrame();
+                if (input == handle)
+                {
+                    var label = handle.GetComponentsInChildren<Component>().Single(c => c.GetType().FullName == "TMPro.TextMeshProUGUI");
+                    Assert.That((bool)label.GetType().GetProperty("isTextTruncated").GetValue(label), Is.False, "The drag handle must display its arrow with the actual HUD font.");
+                    var textInfo = label.GetType().GetProperty("textInfo").GetValue(label);
+                    Assert.That((int)textInfo.GetType().GetField("characterCount").GetValue(textInfo), Is.GreaterThan(0));
+                }
+                ((RectTransform)input.transform).GetWorldCorners(corners);
+                pointer.position = (corners[0] + corners[2]) * .5f;
+                var hits = new System.Collections.Generic.List<RaycastResult>(); EventSystem.current.RaycastAll(pointer, hits);
+                Assert.That(hits.First().gameObject.GetComponentInParent<TimelineCursorInput>(), Is.SameAs(input), "The visible cursor must receive the pointer instead of the track viewport.");
+                ExecuteEvents.Execute(input.gameObject, pointer, ExecuteEvents.pointerDownHandler);
+                rail.GetWorldCorners(corners);
+                pointer.position = Vector2.Lerp(corners[0], corners[2], input == handle ? .5f : .75f);
+                ExecuteEvents.Execute(input.gameObject, pointer, ExecuteEvents.beginDragHandler);
+                ExecuteEvents.Execute(input.gameObject, pointer, ExecuteEvents.dragHandler);
+                Assert.That(view.SpatialView.CursorTick, Is.InRange(input == handle ? 179 : 269, input == handle ? 181 : 271));
+            }
+            Bootstrap.SetPaused(true); long cursor = view.SpatialView.CursorTick;
+            pointer.position = Vector2.Lerp(corners[0], corners[2], .9f);
+            ExecuteEvents.Execute(handle.gameObject, pointer, ExecuteEvents.pointerDownHandler);
+            ExecuteEvents.Execute(line.gameObject, pointer, ExecuteEvents.dragHandler);
+            Assert.That(view.SpatialView.CursorTick, Is.EqualTo(cursor));
+            Assert.That(Bootstrap.NewDriver.CurrentSnapshot.ComputeHash(), Is.EqualTo(hash));
+            Assert.That(view.Model.SubmittedCommands, Is.Zero);
         }
         [UnityTest] public IEnumerator KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands()
         {

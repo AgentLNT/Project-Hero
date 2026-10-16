@@ -110,7 +110,7 @@ namespace ProjectHero.UnityView
             if (_tick < _view.Model.Decision.Tick) _tick = _view.Model.Decision.Tick;
             _tools.gameObject.SetActive(!blocked); _world.SetActive(!blocked && planning); _labels.gameObject.SetActive(!blocked && planning);
             _diagnostics.gameObject.SetActive(_diagnosticsVisible && !blocked);
-            _caption.text = $"{(Following ? "当前" : "游标")} {CursorTick / (double)_view.Model.Decision.Definition.TicksPerSecond:0.00}s · ←/→ 微调 · Home 归位";
+            _caption.text = $"{(Following ? "当前" : "游标")} {CursorTick / (double)_view.Model.Decision.Definition.TicksPerSecond:0.00}s · 拖动▼/竖线 · ←/→ · Home 归位";
             string key = _view.Model.Decision.Tick + ":" + CursorTick + ":" + string.Join(";", _view.SpaceOperations())
                 + ":" + string.Join(";", _view.ReactionView?.PreviewPlacements ?? Array.Empty<ReactionPlacement>())
                 + ":" + _camera.pixelRect + ":" + planning + ":" + _view.TrackSelection.Primary + ":" + string.Join(";", _view.SpaceOperations(true));

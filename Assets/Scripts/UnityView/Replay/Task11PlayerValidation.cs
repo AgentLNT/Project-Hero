@@ -79,9 +79,15 @@ namespace ProjectHero.UnityView.Replay
                         Require(model.ConfirmDraft() == null, "NATIVE_PLAYER_CONFIRM_FAILED");
                     else lastClose = model.Window.WindowId;   // R1：窗口不能主动结束，等待到期。
                 }
+                // M1 applies paused drafts only when time resumes. Exercise that same
+                // production path instead of leaving this native diagnostic at Tick 0.
+                if (presentation.Clock.State == BattleClockState.TacticalPlanning)
+                    presentation.ResumePlanning(false);
                 bootstrap.DriveFrameForTests(0, 1f / 60);
             }
-            Require(model.Decision.BattleEnd.IsEnded && model.SubmittedCommands > 0, "NATIVE_COMPLETE_BATTLE_MISSING");
+            Require(model.Decision.BattleEnd.IsEnded && model.SubmittedCommands > 0,
+                "NATIVE_COMPLETE_BATTLE_MISSING:tick=" + model.Decision.Tick + ";clock=" + presentation.Clock.State
+                + ";draft=" + model.Drafts.State + ";rejection=" + model.LastRejection);
             Require(UnityEngine.Object.FindFirstObjectByType<BattleFeedbackPlayer>().EndFeedbackCount == 1, "NATIVE_END_FEEDBACK_DUPLICATED");
             var replay = bootstrap.NewDriver.RecordedReplay;
             using var file = new MemoryStream(); ReplayFile.Save(file, replay); file.Position = 0;

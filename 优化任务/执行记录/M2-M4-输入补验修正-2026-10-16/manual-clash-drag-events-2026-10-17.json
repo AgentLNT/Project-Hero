@@ -1,0 +1,5342 @@
+[
+  {
+    "observedAt": "2026-10-17T00:59:00.5450957+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.6393564+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.6603314+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 240, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 240,
+            "EndTick": 301,
+            "LastRequestedStartTick": 240,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 300,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 300, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.6941846+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 230, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 230,
+            "EndTick": 291,
+            "LastRequestedStartTick": 230,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 290,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 290, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.7084188+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 228, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 228,
+            "EndTick": 289,
+            "LastRequestedStartTick": 228,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 288,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 288, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.7225499+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 224, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 224,
+            "EndTick": 285,
+            "LastRequestedStartTick": 224,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 284,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 284, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.7381154+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 221, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 221,
+            "EndTick": 282,
+            "LastRequestedStartTick": 221,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 281,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 281, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:36.7556738+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 219, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 219,
+            "EndTick": 280,
+            "LastRequestedStartTick": 219,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 279,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 279, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.2459402+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 218, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 218,
+            "EndTick": 279,
+            "LastRequestedStartTick": 218,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 278,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 278, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.2925288+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 219, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 219,
+            "EndTick": 280,
+            "LastRequestedStartTick": 219,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 279,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 279, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.3176137+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 220, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 220,
+            "EndTick": 281,
+            "LastRequestedStartTick": 220,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 280,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 280, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.3326829+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 221, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 221,
+            "EndTick": 282,
+            "LastRequestedStartTick": 221,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 281,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 281, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.3689322+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 222, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 222,
+            "EndTick": 283,
+            "LastRequestedStartTick": 222,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 282,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 282, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.3840439+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 224, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 224,
+            "EndTick": 285,
+            "LastRequestedStartTick": 224,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 284,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 284, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.4016921+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 225, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 225,
+            "EndTick": 286,
+            "LastRequestedStartTick": 225,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 285,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 285, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.4152587+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 226, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 226,
+            "EndTick": 287,
+            "LastRequestedStartTick": 226,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 286,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 286, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.4313157+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 227, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 227,
+            "EndTick": 288,
+            "LastRequestedStartTick": 227,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 287,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 287, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.4448785+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 229, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 229,
+            "EndTick": 290,
+            "LastRequestedStartTick": 229,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 289,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 289, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.4599427+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 230, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 230,
+            "EndTick": 291,
+            "LastRequestedStartTick": 230,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 290,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 290, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.4770400+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 240, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 240,
+            "EndTick": 301,
+            "LastRequestedStartTick": 240,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 300,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 300, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.6225980+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.6582693+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 253, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 253,
+            "EndTick": 314,
+            "LastRequestedStartTick": 253,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 313,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.6738032+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 254, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 254,
+            "EndTick": 315,
+            "LastRequestedStartTick": 254,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 314,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.6894307+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 255, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 255,
+            "EndTick": 316,
+            "LastRequestedStartTick": 255,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 315,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.9381687+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 254, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 254,
+            "EndTick": 315,
+            "LastRequestedStartTick": 254,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 314,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.9645216+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 253, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 253,
+            "EndTick": 314,
+            "LastRequestedStartTick": 253,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 313,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:37.9990579+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:38.6181539+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:38.6384963+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 240, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 240,
+            "EndTick": 301,
+            "LastRequestedStartTick": 240,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 300,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 300, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:38.7393999+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 230, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 230,
+            "EndTick": 291,
+            "LastRequestedStartTick": 230,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 290,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 290, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:38.7781777+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 229, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 229,
+            "EndTick": 290,
+            "LastRequestedStartTick": 229,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 289,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 289, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:38.9811381+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 228, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 228,
+            "EndTick": 289,
+            "LastRequestedStartTick": 228,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 288,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 288, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.0136316+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 227, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 227,
+            "EndTick": 288,
+            "LastRequestedStartTick": 227,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 287,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 287, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.0398410+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 226, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 226,
+            "EndTick": 287,
+            "LastRequestedStartTick": 226,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 286,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 286, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.0602216+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 224, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 224,
+            "EndTick": 285,
+            "LastRequestedStartTick": 224,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 284,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 284, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.0906359+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 222, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 222,
+            "EndTick": 283,
+            "LastRequestedStartTick": 222,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 282,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 282, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.1076687+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 219, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 219,
+            "EndTick": 280,
+            "LastRequestedStartTick": 219,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 279,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 279, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.1272502+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 218, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 218,
+            "EndTick": 279,
+            "LastRequestedStartTick": 218,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 278,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 278, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.1458959+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 217, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 217,
+            "EndTick": 278,
+            "LastRequestedStartTick": 217,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 277,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 277, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.1615065+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 216, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 216,
+            "EndTick": 277,
+            "LastRequestedStartTick": 216,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 276,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 276, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.1771442+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 215, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 215,
+            "EndTick": 276,
+            "LastRequestedStartTick": 215,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 275,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 275, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.1931866+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 213, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 213,
+            "EndTick": 274,
+            "LastRequestedStartTick": 213,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 273,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 273, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.2077521+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 212, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 212,
+            "EndTick": 273,
+            "LastRequestedStartTick": 212,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 272,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 272, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.2499990+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 211, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 211,
+            "EndTick": 272,
+            "LastRequestedStartTick": 211,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 271,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 271, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.2683070+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 209, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 209,
+            "EndTick": 270,
+            "LastRequestedStartTick": 209,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 269,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 269, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.2845859+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 208, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 208,
+            "EndTick": 269,
+            "LastRequestedStartTick": 208,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 268,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 268, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.2996603+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 206, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 206,
+            "EndTick": 267,
+            "LastRequestedStartTick": 206,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 266,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 266, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.3152661+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 204, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 204,
+            "EndTick": 265,
+            "LastRequestedStartTick": 204,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 264,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 264, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.3318431+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 202, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 202,
+            "EndTick": 263,
+            "LastRequestedStartTick": 202,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 262,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 262, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.3480085+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 200, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 200,
+            "EndTick": 261,
+            "LastRequestedStartTick": 200,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 260,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 260, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.3643014+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 198, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 198,
+            "EndTick": 259,
+            "LastRequestedStartTick": 198,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 258,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 258, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.4055503+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 196, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 196,
+            "EndTick": 257,
+            "LastRequestedStartTick": 196,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 256,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 256, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.4213500+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 193, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 193,
+            "EndTick": 254,
+            "LastRequestedStartTick": 193,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 253,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 253, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.4429448+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 192, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 192,
+            "EndTick": 253,
+            "LastRequestedStartTick": 192,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 252,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 252, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.4741878+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 191, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 191,
+            "EndTick": 252,
+            "LastRequestedStartTick": 191,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 251,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 251, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.5029895+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 190, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 190,
+            "EndTick": 251,
+            "LastRequestedStartTick": 190,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 250,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 250, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.5250841+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 189, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 189,
+            "EndTick": 250,
+            "LastRequestedStartTick": 189,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 249,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 249, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.5425807+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 188, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 188,
+            "EndTick": 249,
+            "LastRequestedStartTick": 188,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 248,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 248, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.5571406+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 187, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 187,
+            "EndTick": 248,
+            "LastRequestedStartTick": 187,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 247,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 247, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.5849971+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 185, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 185,
+            "EndTick": 246,
+            "LastRequestedStartTick": 185,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 245,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 245, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:39.6129780+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 183, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 183,
+            "EndTick": 244,
+            "LastRequestedStartTick": 183,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 243,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 243, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.0791596+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 185, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 185,
+            "EndTick": 246,
+            "LastRequestedStartTick": 185,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 245,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 245, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.0952515+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 188, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 188,
+            "EndTick": 249,
+            "LastRequestedStartTick": 188,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 248,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 248, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.1158133+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 195, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 195,
+            "EndTick": 256,
+            "LastRequestedStartTick": 195,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 255,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 255, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.1509538+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 204, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 204,
+            "EndTick": 265,
+            "LastRequestedStartTick": 204,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 264,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 264, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.1684170+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 225, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 225,
+            "EndTick": 286,
+            "LastRequestedStartTick": 225,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 285,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 285, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.1859671+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 240, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 240,
+            "EndTick": 301,
+            "LastRequestedStartTick": 240,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 300,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 300, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.2035637+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.2275268+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 254, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 254,
+            "EndTick": 315,
+            "LastRequestedStartTick": 254,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 314,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.2451207+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 255, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 255,
+            "EndTick": 316,
+            "LastRequestedStartTick": 255,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 315,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.2612376+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 257, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 257,
+            "EndTick": 318,
+            "LastRequestedStartTick": 257,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 317,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.4277464+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 258, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 258,
+            "EndTick": 319,
+            "LastRequestedStartTick": 258,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 318,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.5325848+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 257, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 257,
+            "EndTick": 318,
+            "LastRequestedStartTick": 257,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 317,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.5563835+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 256, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 256,
+            "EndTick": 317,
+            "LastRequestedStartTick": 256,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 316,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.5744868+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 255, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 255,
+            "EndTick": 316,
+            "LastRequestedStartTick": 255,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 315,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.5910642+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 253, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 253,
+            "EndTick": 314,
+            "LastRequestedStartTick": 253,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 313,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:40.6141131+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:41.0411195+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [],
+      "snapVisible": false,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:42.3507360+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:42.4797335+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:42.5465991+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 240, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 240,
+            "EndTick": 301,
+            "LastRequestedStartTick": 240,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 300,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 300, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:42.8048455+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:42.8249367+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 242, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 242,
+            "EndTick": 303,
+            "LastRequestedStartTick": 242,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 302,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 302,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 命中, TemporaryPlanKey = 0 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:43.2028964+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:43.2569701+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 240, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 240,
+            "EndTick": 301,
+            "LastRequestedStartTick": 240,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 300,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 300, Outcome = 命中, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:43.9026621+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [
+        1
+      ],
+      "snapVisible": true,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:03:44.5607258+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:09:20.4898570+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "SystemPaused",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  },
+  {
+    "observedAt": "2026-10-17T01:09:20.9392797+08:00",
+    "state": {
+      "tick": 182,
+      "hash": "a48f7920e6e75fb4",
+      "clock": "TacticalPlanning",
+      "drafts": [
+        {
+          "Id": 1,
+          "operation": "AddOrdinaryPlanOperation { Kind = Add, PlanId = 0, TemporaryPlanKey = 1, OwnerUnitId = 2, ActionSpecId = action.t12b.scene.light, RequestedStartTick = 241, AnchorAfterPlanId = 0, PrimaryTargetUnitId = 1, Facing = East, Destination = , HasAnchor = False, HasRequestedStartTick = True }",
+          "plan": {
+            "ActionPlanId": 3,
+            "OwnerUnitId": 2,
+            "ActionSpecId": "action.t12b.scene.light",
+            "Origin": 0,
+            "State": 0,
+            "SubmittedWindowId": 2,
+            "ReactionOpportunityId": 0,
+            "SourceThreatPlanId": 0,
+            "SourceImpactTick": 0,
+            "ResponseDeadlineTick": 0,
+            "StartTick": 241,
+            "EndTick": 302,
+            "LastRequestedStartTick": 241,
+            "CreatedAtTick": 183,
+            "LastEditedScheduleRevision": 2,
+            "AutomaticDeferralCount": 0,
+            "LockedAtTick": -1,
+            "ImpactTick": 301,
+            "ResolvedWindupTicks": 60,
+            "RecoveryTicks": 1,
+            "ResolvedPathEdgeCount": 0,
+            "ResolvedPathWeightUnits": 0,
+            "ResolvedBaseStepTicks": 0,
+            "MoveDurationTicks": 0,
+            "PrimaryTargetUnitId": 1,
+            "PrimaryTargetRelation": 0,
+            "Facing": 0,
+            "DestinationX": 0,
+            "DestinationY": 0,
+            "HasDestination": false,
+            "TerminalTick": -1,
+            "TerminationReason": 0,
+            "DurationTicks": 0,
+            "DefenseQuotaRemainingQ10": 0,
+            "ReactionTriggeredAtTick": -1
+          }
+        }
+      ],
+      "dragging": [],
+      "snapVisible": false,
+      "snapTick": 301,
+      "contacts": [
+        "TimelineContactPreview { PlanId = 2, OwnerUnitId = 1, TargetUnitId = 2, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 0 }",
+        "TimelineContactPreview { PlanId = 3, OwnerUnitId = 2, TargetUnitId = 1, Tick = 301, Outcome = 拼刀, TemporaryPlanKey = 1 }"
+      ],
+      "submitted": 1
+    }
+  }
+]
