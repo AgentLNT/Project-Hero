@@ -8,6 +8,12 @@ namespace ProjectHero.Core.Combat
     [CreateAssetMenu(fileName = "NewAttackPattern", menuName = "ProjectHero/Combat/AttackPattern")]
     public class AttackPattern : ScriptableObject
     {
+        [Tooltip("范围编辑器的配置交换 ID；战斗定义的绑定仍由装配配置决定。")]
+        public string ConfigurationId;
+
+        [Tooltip("制作此技能范围时对照的单位体积；用于编辑器预览。")]
+        public UnitVolume AuthoringVolume;
+
         [Header("Pattern Definition")]
         [Tooltip("Define the attack shape assuming the unit is at (0,0) facing East (0 deg).")]
         public List<TrianglePoint> RelativeTriangles = new List<TrianglePoint>();

@@ -235,6 +235,8 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
+  m_MaxWidth: -1
+  m_MaxHeight: -1
 --- !u!1 &3928728424562664629
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,6 +574,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -599,7 +602,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5305952449790642801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,7 +632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 786f9179d53ab6243a615c8b6ff1caf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Offset: {x: 0, y: 2.2, z: 0}
+  VerticalPadding: 0.5
   ActionRingImage: {fileID: 2316002761318240178}
   StatusIconImage: {fileID: 6295661124568769276}
   StaggerSprite: {fileID: 21300000, guid: 2d28178bd07f5b04084a5b2c65663652, type: 3}
@@ -773,3 +776,5 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
+  m_MaxWidth: -1
+  m_MaxHeight: -1

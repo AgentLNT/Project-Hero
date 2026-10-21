@@ -6,6 +6,9 @@ namespace ProjectHero.Core.Grid
     [CreateAssetMenu(fileName = "NewUnitVolume", menuName = "ProjectHero/Grid/UnitVolume")]
     public class UnitVolume : ScriptableObject
     {
+        [Tooltip("范围编辑器的配置交换 ID；战斗定义的绑定仍由装配配置决定。")]
+        public string ConfigurationId;
+
         [System.Serializable]
         public class DirectionalVolume
         {
