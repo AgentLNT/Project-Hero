@@ -12,7 +12,7 @@
 #  Exit 0 = the remaining source set compiles; 2 = it does not; 4 = prereq missing.
 # =============================================================================
 param(
-    [string]$ProjectRoot = "C:\Users\1\repos\Project Hero\Project-Hero",
+    [string]$ProjectRoot = $(if ($PSScriptRoot) { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')) } else { (Get-Location).Path }),
     [string[]]$Exclude = @(
         "Simulation\BattleSimulation.cs",
         "Snapshots\LogicSnapshot.cs"

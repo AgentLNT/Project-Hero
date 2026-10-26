@@ -10,7 +10,7 @@
 //   - 人工: 菜单 Tools/Baseline/01 Run Read-Only Asset Diagnostic
 //   - CI/批处理: -executeMethod ProjectHeroBaseline.BaselineDiagnosticRunner.RunAll
 //
-// 输出: C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\01-诊断输出.txt
+// 输出: <项目根目录>/优化任务/执行记录/01-诊断输出.txt
 // ============================================================================
 #if UNITY_EDITOR
 using System;
@@ -26,7 +26,9 @@ namespace ProjectHeroBaseline
 {
     public static class BaselineDiagnosticRunner
     {
-        private const string OutputPath = @"C:\Users\1\repos\Project Hero\Project-Hero\优化任务\执行记录\01-诊断输出.txt";
+        private static string OutputPath => Path.Combine(
+            Directory.GetParent(Application.dataPath).FullName,
+            "优化任务", "执行记录", "01-诊断输出.txt");
         private const string ScenePath = "Assets/Scenes/CombatSampleScene.unity";
         private const string PrefabDir = "Assets/Prefab";
 

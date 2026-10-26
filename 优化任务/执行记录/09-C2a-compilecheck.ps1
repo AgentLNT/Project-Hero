@@ -49,7 +49,7 @@
 # $ExtraSources 额外要加编进 PlayModeTests 的 .cs 全路径数组（默认空）
 # $SkipPlayMode 置 $true 可只校验 Runtime 链
 
-if (-not $ProjectRoot) { $ProjectRoot = 'C:\Users\1\repos\Project Hero\Project-Hero' }
+if (-not $ProjectRoot) { $ProjectRoot = if ($PSScriptRoot) { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')) } else { (Get-Location).Path } }
 if (-not $OutDir)      { $OutDir      = Join-Path $env:TEMP 't09-c2a-compilecheck' }
 if (-not $ExtraSources) { $ExtraSources = @() }
 

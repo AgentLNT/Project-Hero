@@ -27,7 +27,7 @@
 # =============================================================================
 
 param(
-    [string]$ProjectRoot = "C:\Users\1\repos\Project Hero\Project-Hero",
+    [string]$ProjectRoot = $(if ($PSScriptRoot) { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')) } else { (Get-Location).Path }),
     [string]$EditorRoot = "C:\Program Files\Unity\Hub\Editor\6000.6.2f1",
     [string]$OutDir = ""
 )

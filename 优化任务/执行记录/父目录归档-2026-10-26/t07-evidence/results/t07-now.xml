@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="1" testcasecount="6" result="Failed" total="6" passed="4" failed="2" skipped="0" inconclusive="0" engine="T06Runner-reflect">
+  <test-case id="2" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.BlockAcceptanceStillRejectsSubsequentMoveOverlap" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.BlockAcceptanceStillRejectsSubsequentMoveOverlap" result="Passed" duration="0.107650" />
+  <test-case id="3" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeAcceptanceStillRejectsLockedPlanOverlap" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeAcceptanceStillRejectsLockedPlanOverlap" result="Passed" duration="0.000000" />
+  <test-case id="4" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeAcceptanceToleratesSubsequentEditableMoveOverlap" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeAcceptanceToleratesSubsequentEditableMoveOverlap" result="Passed" duration="0.003999" />
+  <test-case id="5" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeInvalidationClosureCoversToleratedPlan" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeInvalidationClosureCoversToleratedPlan" result="Failed" duration="0.009001">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   Expected: 2
+  But was:  3
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0 
+  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression) [0x00000] in <8b63e8ac0a4746599ed207982825ae6c>:0 
+  at ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.DodgeInvalidationClosureCoversToleratedPlan () [0x00225] in <8ab9bebaf2d3436b8234153e74505b79>:0 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="6" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainCommitsBothPlansThroughRealSpacePort" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainCommitsBothPlansThroughRealSpacePort" result="Failed" duration="0.006000">
+    <failure>
+      <message><![CDATA[NUnit.Framework.AssertionException:   裁定 B（真实链 + 真实空间端口）：链内第二条 Move 必须与前一条共存于同一个空间批次。 head=[0,25) dest=(0, 4) tail=start100 dest=(0,-4) lane=lane#1[#1:Move[0,25) editable=True moveFam=True] reservations=2 rejection=LOGIC_GRID_RESERVED_BY_OTHER
+  Expected: null
+  But was:  "LOGIC_GRID_RESERVED_BY_OTHER"
+]]></message>
+      <stack-trace><![CDATA[  at NUnit.Framework.Assert.That[TActual] (TActual actual, NUnit.Framework.Constraints.IResolveConstraint expression, System.String message, System.Object[] args) [0x00044] in <8b63e8ac0a4746599ed207982825ae6c>:0 
+  at ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainCommitsBothPlansThroughRealSpacePort () [0x005be] in <8ab9bebaf2d3436b8234153e74505b79>:0 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <7586209312f84adc8bf3872dd2447dc5>:0 ]]></stack-trace>
+    </failure>
+  </test-case>
+  <test-case id="7" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainOriginMismatchIsStillRejectedForNonChainedStart" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests.QueuedMoveChainOriginMismatchIsStillRejectedForNonChainedStart" result="Passed" duration="0.001001" />
+  <test-suite type="TestFixture" id="8" name="ProjectHero.Logic.Tests.ActionDefinitionTests" fullname="ProjectHero.Logic.Tests.ActionDefinitionTests" result="Passed" />
+  <test-suite type="TestFixture" id="9" name="ProjectHero.Logic.Tests.AssemblyBoundaryTests" fullname="ProjectHero.Logic.Tests.AssemblyBoundaryTests" result="Passed" />
+  <test-suite type="TestFixture" id="10" name="ProjectHero.Logic.Tests.DefinitionIdTests" fullname="ProjectHero.Logic.Tests.DefinitionIdTests" result="Passed" />
+  <test-suite type="TestFixture" id="11" name="ProjectHero.Logic.Tests.EncounterAndFactionTests" fullname="ProjectHero.Logic.Tests.EncounterAndFactionTests" result="Passed" />
+  <test-suite type="TestFixture" id="12" name="ProjectHero.Logic.Tests.ForcedDisplacementTests" fullname="ProjectHero.Logic.Tests.ForcedDisplacementTests" result="Passed" />
+  <test-suite type="TestFixture" id="13" name="ProjectHero.Logic.Tests.GridGeometryTests" fullname="ProjectHero.Logic.Tests.GridGeometryTests" result="Passed" />
+  <test-suite type="TestFixture" id="14" name="ProjectHero.Logic.Tests.HashParticipationTests" fullname="ProjectHero.Logic.Tests.HashParticipationTests" result="Passed" />
+  <test-suite type="TestFixture" id="15" name="ProjectHero.Logic.Tests.PathRulesTests" fullname="ProjectHero.Logic.Tests.PathRulesTests" result="Passed" />
+  <test-suite type="TestFixture" id="16" name="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" fullname="ProjectHero.Logic.Tests.ReactionAndAdrenalineTests" result="Passed" />
+  <test-suite type="TestFixture" id="17" name="ProjectHero.Logic.Tests.StatusEffectKernelTests" fullname="ProjectHero.Logic.Tests.StatusEffectKernelTests" result="Passed" />
+  <test-suite type="TestFixture" id="18" name="ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests" fullname="ProjectHero.Logic.Tests.Task06AssemblyIntegrationTests" result="Passed" />
+  <test-suite type="TestFixture" id="19" name="ProjectHero.Logic.Tests.Task06DodgeRelocationTests" fullname="ProjectHero.Logic.Tests.Task06DodgeRelocationTests" result="Passed" />
+  <test-suite type="TestFixture" id="20" name="ProjectHero.Logic.Tests.Task06LogicGridTests" fullname="ProjectHero.Logic.Tests.Task06LogicGridTests" result="Passed" />
+  <test-suite type="TestFixture" id="21" name="ProjectHero.Logic.Tests.Task06PathfinderTests" fullname="ProjectHero.Logic.Tests.Task06PathfinderTests" result="Passed" />
+  <test-suite type="TestFixture" id="22" name="ProjectHero.Logic.Tests.Task07BudgetTransactionTests" fullname="ProjectHero.Logic.Tests.Task07BudgetTransactionTests" result="Passed" />
+  <test-suite type="TestFixture" id="23" name="ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests" fullname="ProjectHero.Logic.Tests.Task07ForcedDisplacementBudgetTests" result="Passed" />
+  <test-suite type="TestFixture" id="24" name="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests" fullname="ProjectHero.Logic.Tests.Task07QueueAndReactionLaneTests" result="Failed" />
+  <test-suite type="TestFixture" id="25" name="ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests" fullname="ProjectHero.Logic.Tests.Task07RemovalAndDiscardTests" result="Passed" />
+  <test-suite type="TestFixture" id="26" name="ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests" fullname="ProjectHero.Logic.Tests.Task07TurnWindowAndBudgetTests" result="Passed" />
+  <test-suite type="TestFixture" id="27" name="ProjectHero.Logic.Tests.UnitStateMachineTests" fullname="ProjectHero.Logic.Tests.UnitStateMachineTests" result="Passed" />
+</test-run>

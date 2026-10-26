@@ -46,7 +46,7 @@
 #>
 
 param(
-    [string]$ProjectRoot = "C:\Users\1\repos\Project Hero\Project-Hero",
+    [string]$ProjectRoot = $(if ($PSScriptRoot) { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')) } else { (Get-Location).Path }),
     [string]$OutDir = "",
     [string]$Filter = "",
     [switch]$CompileOnly,

@@ -14,6 +14,8 @@
 
 在 Unity Hub 中添加当前仓库根目录，使用 [ProjectVersion.txt](ProjectSettings/ProjectVersion.txt) 指定的 **6000.6.2f1**。生产战斗入口为 [CombatSampleScene](Assets/Scenes/CombatSampleScene.unity)。依赖配置位于 Packages；不要按旧 README 的 Unity 2022.3 建议打开。
 
+本机项目目录已合并为 `C:\Users\1\repos\Project Hero`，`Assets/`、`Packages/`、`ProjectSettings/` 与 `.git/` 直接位于此目录。Unity Hub、Codex 或 IDE 中的本地项目入口应选择该位置；原 `Project Hero\Project-Hero` 路径按[目录合并记录](设计文档/维护/项目根目录合并记录-2026-10-26.md)追溯。
+
 ## 目录
 
 | 路径 | 内容 |

@@ -1,0 +1,28 @@
+任务 09：命令入口、AI 与输入模式
+
+- 命令入口：CommandRequest/scope/载荷冻结补全；Ingress 分桶冻结与每入口严格递增
+  ProducerOrdinal；默认投递 CurrentTick+1（SubmitAtDefaultTick）；Gateway 规范排序与
+  整场唯一 CommandSequence；结束后/命令阶段前结束的稳定拒绝与 Finalizer 清桶。
+- 处理器：BattleCommandProcessor 统一入口 + CommandAuthority 控制权唯一判定
+  （BattleSimulation.RegisterControllerBinding 为控制权唯一追加装配点）；
+  ScheduleEdit 修订/窗口语义、反应经 ReactionCommandPlanner（不查窗口/并发授权）；
+  PrimaryTarget 关系拒绝码与禁止自动换目标；TargetCandidateQuery 为 UI/AI 唯一资格入口。
+- AI：Logic/AI/**（AIControllerLogic、候选构建、稳定排序后才用确定性 RNG）；
+  IL 级洁净性审计（禁用 ScheduleEditor/ReactionOpportunitySystem/UnityEngine.Random 等 14 类）。
+- 快照：DecisionSnapshot.ForController 按 Controller 过滤（不泄露他人未公开 Editable 计划）；
+  AiControllerSnapshot 5 字段全部进规范化哈希与 ReplayFormat。
+- Unity 侧：Core/Compatibility/Runtime/Input/**（输入模式状态机、本地草稿→原子 Operations、
+  秒→Tick 唯一换算）；TimelineEditorUI 旧写入路径结构性封堵（LegacyTimelineWritesEnabled）、
+  块标识改为 Logic ActionPlanId；旧壳只转发。
+- 回放与 Shadow：ReplayAuthorityInput（权威输入只含 Player）；Shadow 请求镜像
+  （只镜像 Player，AI/System 由新模拟重建）+ 扩展 03B Shadow 检查点（闭合任务 08 遗留产出 17）。
+- 修复既有缺陷：ScheduleEditor 回滚时把 Move 时长公式套到 Attack/Guard，导致
+  EndTick/BudgetCostTicks 与窗口预留额不等、到期门禁必失败。
+- 修复比较器缺陷：ShadowComparisonDetector 观测通道 units[i].* 族缺 default 分支，
+  未登记字段路径被静默跳过（改为显式抛 SHADOW_COMPARABLE_FIELD_NOT_IMPLEMENTED）。
+
+验证（主理人独立复跑，权威 = Unity Test Runner）：
+- Unity EditMode 718/718 passed, failed=0（Logic 405 + Authoring 307 + Editor 6）
+- Unity PlayMode 40/40 passed, failed=0
+- 离线全量 405/405 passed, failed=0
+- 63/63 必需测试逐字同名存在且全绿；未新增 Step 阶段（PhaseCount == 20）
