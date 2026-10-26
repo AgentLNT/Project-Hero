@@ -1,0 +1,2994 @@
+{
+  "status": "design-calculation-only-not-engine-validation",
+  "growth": [
+    {
+      "power": 0,
+      "quick": {
+        "damage": 4.0,
+        "hits": 6
+      },
+      "heavy": {
+        "damage": 8.0,
+        "hits": 3
+      },
+      "sweep": {
+        "damage": 3.0,
+        "hits": 8
+      }
+    },
+    {
+      "power": 1,
+      "quick": {
+        "damage": 4.5,
+        "hits": 6
+      },
+      "heavy": {
+        "damage": 9.0,
+        "hits": 3
+      },
+      "sweep": {
+        "damage": 3.375,
+        "hits": 8
+      }
+    },
+    {
+      "power": 2,
+      "quick": {
+        "damage": 5.0,
+        "hits": 5
+      },
+      "heavy": {
+        "damage": 10.0,
+        "hits": 3
+      },
+      "sweep": {
+        "damage": 3.75,
+        "hits": 7
+      }
+    },
+    {
+      "power": 3,
+      "quick": {
+        "damage": 5.5,
+        "hits": 5
+      },
+      "heavy": {
+        "damage": 11.0,
+        "hits": 3
+      },
+      "sweep": {
+        "damage": 4.125,
+        "hits": 6
+      }
+    },
+    {
+      "power": 4,
+      "quick": {
+        "damage": 6.0,
+        "hits": 4
+      },
+      "heavy": {
+        "damage": 12.0,
+        "hits": 2
+      },
+      "sweep": {
+        "damage": 4.5,
+        "hits": 6
+      }
+    },
+    {
+      "power": 5,
+      "quick": {
+        "damage": 6.5,
+        "hits": 4
+      },
+      "heavy": {
+        "damage": 13.0,
+        "hits": 2
+      },
+      "sweep": {
+        "damage": 4.875,
+        "hits": 5
+      }
+    },
+    {
+      "power": 6,
+      "quick": {
+        "damage": 7.0,
+        "hits": 4
+      },
+      "heavy": {
+        "damage": 14.0,
+        "hits": 2
+      },
+      "sweep": {
+        "damage": 5.25,
+        "hits": 5
+      }
+    },
+    {
+      "power": 7,
+      "quick": {
+        "damage": 7.5,
+        "hits": 4
+      },
+      "heavy": {
+        "damage": 15.0,
+        "hits": 2
+      },
+      "sweep": {
+        "damage": 5.625,
+        "hits": 5
+      }
+    },
+    {
+      "power": 8,
+      "quick": {
+        "damage": 8.0,
+        "hits": 3
+      },
+      "heavy": {
+        "damage": 16.0,
+        "hits": 2
+      },
+      "sweep": {
+        "damage": 6.0,
+        "hits": 4
+      }
+    }
+  ],
+  "thresholds": [
+    {
+      "attack": "quick",
+      "target_hits": 5,
+      "minimum_power": 2
+    },
+    {
+      "attack": "quick",
+      "target_hits": 4,
+      "minimum_power": 4
+    },
+    {
+      "attack": "quick",
+      "target_hits": 3,
+      "minimum_power": 8
+    },
+    {
+      "attack": "quick",
+      "target_hits": 2,
+      "minimum_power": 16
+    },
+    {
+      "attack": "heavy",
+      "target_hits": 2,
+      "minimum_power": 4
+    },
+    {
+      "attack": "sweep",
+      "target_hits": 7,
+      "minimum_power": 2
+    },
+    {
+      "attack": "sweep",
+      "target_hits": 6,
+      "minimum_power": 3
+    },
+    {
+      "attack": "sweep",
+      "target_hits": 5,
+      "minimum_power": 5
+    },
+    {
+      "attack": "sweep",
+      "target_hits": 4,
+      "minimum_power": 8
+    },
+    {
+      "attack": "sweep",
+      "target_hits": 3,
+      "minimum_power": 14
+    },
+    {
+      "attack": "sweep",
+      "target_hits": 2,
+      "minimum_power": 24
+    }
+  ],
+  "steady_fixed_rate": [
+    {
+      "damage": 4.0,
+      "attacks_per_second": 1.0,
+      "blocked_fraction": 0.3333333333333333,
+      "actual_damage_per_second": 2.6666666666666665,
+      "resource_income_per_second": 0.3333333333333333
+    },
+    {
+      "damage": 8.0,
+      "attacks_per_second": 1.0,
+      "blocked_fraction": 0.5,
+      "actual_damage_per_second": 4.0,
+      "resource_income_per_second": 0.5
+    },
+    {
+      "damage": 12.0,
+      "attacks_per_second": 1.0,
+      "blocked_fraction": 0.6,
+      "actual_damage_per_second": 4.8,
+      "resource_income_per_second": 0.6
+    }
+  ],
+  "steady_equal_raw_dps": [
+    {
+      "damage": 4.0,
+      "attacks_per_second": 1.0,
+      "blocked_fraction": 0.3333333333333333,
+      "actual_damage_per_second": 2.6666666666666665,
+      "resource_income_per_second": 0.3333333333333333
+    },
+    {
+      "damage": 8.0,
+      "attacks_per_second": 0.5,
+      "blocked_fraction": 0.5,
+      "actual_damage_per_second": 2.0,
+      "resource_income_per_second": 0.25
+    }
+  ],
+  "window_probes": [
+    {
+      "attack": "quick",
+      "power": 0,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 4.0,
+      "kill_tick": 511,
+      "seconds": 8.516666666666667,
+      "attempts": 6,
+      "hits": 6,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 20.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 16.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 4.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 1,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 4.5,
+      "kill_tick": 511,
+      "seconds": 8.516666666666667,
+      "attempts": 6,
+      "hits": 6,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 19.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 10.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 2,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 5.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 19.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 14.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 4.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 3,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 5.5,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 18.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 13.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 7.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 2.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 4,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 6.0,
+      "kill_tick": 391,
+      "seconds": 6.516666666666667,
+      "attempts": 4,
+      "hits": 4,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 18.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 5,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 6.5,
+      "kill_tick": 391,
+      "seconds": 6.516666666666667,
+      "attempts": 4,
+      "hits": 4,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 17.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 11.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 4.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 6,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 7.0,
+      "kill_tick": 391,
+      "seconds": 6.516666666666667,
+      "attempts": 4,
+      "hits": 4,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 17.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 10.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 3.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 7,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 7.5,
+      "kill_tick": 391,
+      "seconds": 6.516666666666667,
+      "attempts": 4,
+      "hits": 4,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 16.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 8,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 8.0,
+      "kill_tick": 151,
+      "seconds": 2.5166666666666666,
+      "attempts": 3,
+      "hits": 3,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 16.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 0,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 4.0,
+      "kill_tick": 811,
+      "seconds": 13.516666666666667,
+      "attempts": 8,
+      "hits": 6,
+      "blocks": 2,
+      "usable_received_gain": 2.5,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 20.0,
+          "available": 0.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 16.0,
+          "available": 1.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 16.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 1.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "block",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 751,
+          "outcome": "hit",
+          "hp": 4.0,
+          "available": 0.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 811,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.5,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 1,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 4.5,
+      "kill_tick": 811,
+      "seconds": 13.516666666666667,
+      "attempts": 8,
+      "hits": 6,
+      "blocks": 2,
+      "usable_received_gain": 2.8125,
+      "reset_loss": 0.25,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 19.5,
+          "available": 0.5625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 1.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 15.0,
+          "available": 0.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 10.5,
+          "available": 0.5625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 1.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "block",
+          "hp": 6.0,
+          "available": 0.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 751,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.5625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 811,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.5625,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 2,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 5.0,
+      "kill_tick": 751,
+      "seconds": 12.516666666666667,
+      "attempts": 7,
+      "hits": 5,
+      "blocks": 2,
+      "usable_received_gain": 2.5,
+      "reset_loss": 0.5,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 19.0,
+          "available": 0.625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 14.0,
+          "available": 1.25,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 14.0,
+          "available": 0.25,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 4.0,
+          "available": 1.25,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "block",
+          "hp": 4.0,
+          "available": 0.25,
+          "reserved": 0.0
+        },
+        {
+          "tick": 751,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 3,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 5.5,
+      "kill_tick": 751,
+      "seconds": 12.516666666666667,
+      "attempts": 7,
+      "hits": 5,
+      "blocks": 2,
+      "usable_received_gain": 2.75,
+      "reset_loss": 0.75,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 18.5,
+          "available": 0.6875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 13.0,
+          "available": 1.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 13.0,
+          "available": 0.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 7.5,
+          "available": 0.6875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 2.0,
+          "available": 1.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "block",
+          "hp": 2.0,
+          "available": 0.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 751,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 4,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 6.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 5,
+      "hits": 4,
+      "blocks": 1,
+      "usable_received_gain": 2.25,
+      "reset_loss": 0.5,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 18.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 1.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 12.0,
+          "available": 0.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.75,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 5,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 6.5,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 5,
+      "hits": 4,
+      "blocks": 1,
+      "usable_received_gain": 2.4375,
+      "reset_loss": 0.625,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 17.5,
+          "available": 0.8125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 11.0,
+          "available": 1.625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 11.0,
+          "available": 0.625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 4.5,
+          "available": 0.8125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.8125,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 6,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 7.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 5,
+      "hits": 4,
+      "blocks": 1,
+      "usable_received_gain": 2.625,
+      "reset_loss": 0.75,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 17.0,
+          "available": 0.875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 10.0,
+          "available": 1.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 10.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 3.0,
+          "available": 0.875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.875,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 7,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 7.5,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 5,
+      "hits": 4,
+      "blocks": 1,
+      "usable_received_gain": 2.8125,
+      "reset_loss": 0.875,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 16.5,
+          "available": 0.9375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 1.875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "block",
+          "hp": 9.0,
+          "available": 0.875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.9375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.9375,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "quick",
+      "power": 8,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 8.0,
+      "kill_tick": 391,
+      "seconds": 6.516666666666667,
+      "attempts": 4,
+      "hits": 3,
+      "blocks": 1,
+      "usable_received_gain": 2.0,
+      "reset_loss": 1.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 31,
+          "outcome": "hit",
+          "hp": 16.0,
+          "available": 1.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 91,
+          "outcome": "block",
+          "hp": 16.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 1.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 391,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 0,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 8.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 3,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 16.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 1,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 9.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 3,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 2,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 10.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 3,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 14.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 4.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 3,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 11.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 3,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 13.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 2.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 4,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 12.0,
+      "kill_tick": 211,
+      "seconds": 3.5166666666666666,
+      "attempts": 2,
+      "hits": 2,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 5,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 13.0,
+      "kill_tick": 211,
+      "seconds": 3.5166666666666666,
+      "attempts": 2,
+      "hits": 2,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 11.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 6,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 14.0,
+      "kill_tick": 211,
+      "seconds": 3.5166666666666666,
+      "attempts": 2,
+      "hits": 2,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 10.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 7,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 15.0,
+      "kill_tick": 211,
+      "seconds": 3.5166666666666666,
+      "attempts": 2,
+      "hits": 2,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 8,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 16.0,
+      "kill_tick": 211,
+      "seconds": 3.5166666666666666,
+      "attempts": 2,
+      "hits": 2,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 0,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 8.0,
+      "kill_tick": 811,
+      "seconds": 13.516666666666667,
+      "attempts": 5,
+      "hits": 3,
+      "blocks": 2,
+      "usable_received_gain": 2.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 16.0,
+          "available": 1.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 16.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 1.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 571,
+          "outcome": "block",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 811,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 1,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 9.0,
+      "kill_tick": 811,
+      "seconds": 13.516666666666667,
+      "attempts": 5,
+      "hits": 3,
+      "blocks": 2,
+      "usable_received_gain": 2.25,
+      "reset_loss": 0.25,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 1.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 15.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 1.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 571,
+          "outcome": "block",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 811,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 2,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 10.0,
+      "kill_tick": 811,
+      "seconds": 13.516666666666667,
+      "attempts": 5,
+      "hits": 3,
+      "blocks": 2,
+      "usable_received_gain": 2.5,
+      "reset_loss": 0.5,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 14.0,
+          "available": 1.25,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 14.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 4.0,
+          "available": 1.25,
+          "reserved": 0.0
+        },
+        {
+          "tick": 571,
+          "outcome": "block",
+          "hp": 4.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 811,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 3,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 11.0,
+      "kill_tick": 811,
+      "seconds": 13.516666666666667,
+      "attempts": 5,
+      "hits": 3,
+      "blocks": 2,
+      "usable_received_gain": 2.75,
+      "reset_loss": 0.75,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 13.0,
+          "available": 1.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 13.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 2.0,
+          "available": 1.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 571,
+          "outcome": "block",
+          "hp": 2.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 811,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 4,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 12.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 2,
+      "blocks": 1,
+      "usable_received_gain": 1.5,
+      "reset_loss": 0.5,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 1.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 12.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 5,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 13.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 2,
+      "blocks": 1,
+      "usable_received_gain": 1.625,
+      "reset_loss": 0.625,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 11.0,
+          "available": 1.625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 11.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 6,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 14.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 2,
+      "blocks": 1,
+      "usable_received_gain": 1.75,
+      "reset_loss": 0.75,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 10.0,
+          "available": 1.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 10.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 7,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 15.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 2,
+      "blocks": 1,
+      "usable_received_gain": 1.875,
+      "reset_loss": 0.875,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 1.875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 9.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "heavy",
+      "power": 8,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 16.0,
+      "kill_tick": 451,
+      "seconds": 7.516666666666667,
+      "attempts": 3,
+      "hits": 2,
+      "blocks": 1,
+      "usable_received_gain": 2.0,
+      "reset_loss": 1.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 91,
+          "outcome": "hit",
+          "hp": 8.0,
+          "available": 2.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 211,
+          "outcome": "block",
+          "hp": 8.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 451,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 0,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 3.0,
+      "kill_tick": 1231,
+      "seconds": 20.516666666666666,
+      "attempts": 8,
+      "hits": 8,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 21.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 18.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1141,
+          "outcome": "hit",
+          "hp": 3.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1231,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 1,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 3.375,
+      "kill_tick": 1231,
+      "seconds": 20.516666666666666,
+      "attempts": 8,
+      "hits": 8,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 20.625,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 17.25,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 13.875,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 10.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 7.125,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 3.75,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1141,
+          "outcome": "hit",
+          "hp": 0.375,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1231,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 2,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 3.75,
+      "kill_tick": 1141,
+      "seconds": 19.016666666666666,
+      "attempts": 7,
+      "hits": 7,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 20.25,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 16.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 12.75,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 5.25,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1141,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 3,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 4.125,
+      "kill_tick": 871,
+      "seconds": 14.516666666666667,
+      "attempts": 6,
+      "hits": 6,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 19.875,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 15.75,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 11.625,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 7.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 3.375,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 4,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 4.5,
+      "kill_tick": 871,
+      "seconds": 14.516666666666667,
+      "attempts": 6,
+      "hits": 6,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 19.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 10.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 5,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 4.875,
+      "kill_tick": 781,
+      "seconds": 13.016666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 19.125,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 14.25,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 9.375,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 4.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 6,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 5.25,
+      "kill_tick": 781,
+      "seconds": 13.016666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 18.75,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 13.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 8.25,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 3.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 7,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 5.625,
+      "kill_tick": 781,
+      "seconds": 13.016666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 18.375,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 12.75,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 7.125,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 8,
+      "vitality": 0,
+      "reactions": false,
+      "damage": 6.0,
+      "kill_tick": 511,
+      "seconds": 8.516666666666667,
+      "attempts": 4,
+      "hits": 4,
+      "blocks": 0,
+      "usable_received_gain": 0.0,
+      "reset_loss": 0.0,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 18.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.0,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 0,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 3.0,
+      "kill_tick": 1231,
+      "seconds": 20.516666666666666,
+      "attempts": 8,
+      "hits": 8,
+      "blocks": 0,
+      "usable_received_gain": 2.625,
+      "reset_loss": 2.25,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 21.0,
+          "available": 0.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 18.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 0.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1141,
+          "outcome": "hit",
+          "hp": 3.0,
+          "available": 0.375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1231,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.375,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 1,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 3.375,
+      "kill_tick": 1231,
+      "seconds": 20.516666666666666,
+      "attempts": 8,
+      "hits": 8,
+      "blocks": 0,
+      "usable_received_gain": 2.953125,
+      "reset_loss": 2.53125,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 20.625,
+          "available": 0.421875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 17.25,
+          "available": 0.84375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 13.875,
+          "available": 0.421875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 10.5,
+          "available": 0.84375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 7.125,
+          "available": 0.421875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 3.75,
+          "available": 0.84375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1141,
+          "outcome": "hit",
+          "hp": 0.375,
+          "available": 0.421875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1231,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.421875,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 2,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 3.75,
+      "kill_tick": 1141,
+      "seconds": 19.016666666666666,
+      "attempts": 7,
+      "hits": 7,
+      "blocks": 0,
+      "usable_received_gain": 2.8125,
+      "reset_loss": 2.8125,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 20.25,
+          "available": 0.46875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 16.5,
+          "available": 0.9375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 12.75,
+          "available": 0.46875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 9.0,
+          "available": 0.9375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 5.25,
+          "available": 0.46875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.9375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 1141,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 3,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 4.125,
+      "kill_tick": 871,
+      "seconds": 14.516666666666667,
+      "attempts": 6,
+      "hits": 6,
+      "blocks": 0,
+      "usable_received_gain": 2.578125,
+      "reset_loss": 2.0625,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 19.875,
+          "available": 0.515625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 15.75,
+          "available": 1.03125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 11.625,
+          "available": 0.515625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 7.5,
+          "available": 1.03125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 3.375,
+          "available": 0.515625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.515625,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 4,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 4.5,
+      "kill_tick": 871,
+      "seconds": 14.516666666666667,
+      "attempts": 6,
+      "hits": 6,
+      "blocks": 0,
+      "usable_received_gain": 2.8125,
+      "reset_loss": 2.25,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 19.5,
+          "available": 0.5625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 15.0,
+          "available": 1.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 10.5,
+          "available": 0.5625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 1.125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 0.5625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 871,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.5625,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 5,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 4.875,
+      "kill_tick": 781,
+      "seconds": 13.016666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 2.4375,
+      "reset_loss": 2.4375,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 19.125,
+          "available": 0.609375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 14.25,
+          "available": 1.21875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 9.375,
+          "available": 0.609375,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 4.5,
+          "available": 1.21875,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 6,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 5.25,
+      "kill_tick": 781,
+      "seconds": 13.016666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 2.625,
+      "reset_loss": 2.625,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 18.75,
+          "available": 0.65625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 13.5,
+          "available": 1.3125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 8.25,
+          "available": 0.65625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 3.0,
+          "available": 1.3125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 7,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 5.625,
+      "kill_tick": 781,
+      "seconds": 13.016666666666667,
+      "attempts": 5,
+      "hits": 5,
+      "blocks": 0,
+      "usable_received_gain": 2.8125,
+      "reset_loss": 2.8125,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 18.375,
+          "available": 0.703125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 12.75,
+          "available": 1.40625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 7.125,
+          "available": 0.703125,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 1.5,
+          "available": 1.40625,
+          "reserved": 0.0
+        },
+        {
+          "tick": 781,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.0,
+          "reserved": 0.0
+        }
+      ]
+    },
+    {
+      "attack": "sweep",
+      "power": 8,
+      "vitality": 0,
+      "reactions": true,
+      "damage": 6.0,
+      "kill_tick": 511,
+      "seconds": 8.516666666666667,
+      "attempts": 4,
+      "hits": 4,
+      "blocks": 0,
+      "usable_received_gain": 2.25,
+      "reset_loss": 1.5,
+      "cap_loss": 0.0,
+      "history": [
+        {
+          "tick": 61,
+          "outcome": "hit",
+          "hp": 18.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 151,
+          "outcome": "hit",
+          "hp": 12.0,
+          "available": 1.5,
+          "reserved": 0.0
+        },
+        {
+          "tick": 421,
+          "outcome": "hit",
+          "hp": 6.0,
+          "available": 0.75,
+          "reserved": 0.0
+        },
+        {
+          "tick": 511,
+          "outcome": "hit",
+          "hp": 0.0,
+          "available": 0.75,
+          "reserved": 0.0
+        }
+      ]
+    }
+  ],
+  "window_probe_growth_regressions": [],
+  "high_gain_counterexample": [
+    {
+      "damage": 6.0,
+      "beta": "1/4",
+      "attacks_per_cycle": 8,
+      "attempts": 8,
+      "blocks": 4
+    },
+    {
+      "damage": 7.0,
+      "beta": "1/4",
+      "attacks_per_cycle": 8,
+      "attempts": 9,
+      "blocks": 5
+    }
+  ],
+  "arithmetic_grid_cases": 405
+}

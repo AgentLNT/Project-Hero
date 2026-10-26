@@ -1,0 +1,672 @@
+{
+  "status": "proposal-arithmetic-only-not-engine-validation",
+  "budget": 4,
+  "builds": [
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 0,
+        "constitution": 4
+      },
+      "health": 36,
+      "stability": 12,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "damage": 4,
+          "impact": 3
+        },
+        "heavy": {
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "damage": 3,
+          "impact": 2
+        }
+      },
+      "stability_when_balanced": 12,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 1,
+        "constitution": 3
+      },
+      "health": 33,
+      "stability": 11.5,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "damage": 4.5,
+          "impact": 3
+        },
+        "heavy": {
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "damage": 3.375,
+          "impact": 2
+        }
+      },
+      "stability_when_balanced": 11.75,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 2,
+        "constitution": 2
+      },
+      "health": 30,
+      "stability": 11,
+      "move_speed_factor": 1.0625,
+      "attacks": {
+        "quick": {
+          "damage": 5,
+          "impact": 3
+        },
+        "heavy": {
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "damage": 3.75,
+          "impact": 2
+        }
+      },
+      "stability_when_balanced": 11.5,
+      "hits_against_24_hp": {
+        "quick": 5,
+        "heavy": 4,
+        "sweep": 7
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 3,
+        "constitution": 1
+      },
+      "health": 27,
+      "stability": 10.5,
+      "move_speed_factor": 1.09375,
+      "attacks": {
+        "quick": {
+          "damage": 5.5,
+          "impact": 3
+        },
+        "heavy": {
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "damage": 4.125,
+          "impact": 2
+        }
+      },
+      "stability_when_balanced": 11.25,
+      "hits_against_24_hp": {
+        "quick": 5,
+        "heavy": 4,
+        "sweep": 6
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 4,
+        "constitution": 0
+      },
+      "health": 24,
+      "stability": 10,
+      "move_speed_factor": 1.125,
+      "attacks": {
+        "quick": {
+          "damage": 6,
+          "impact": 3
+        },
+        "heavy": {
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "damage": 4.5,
+          "impact": 2
+        }
+      },
+      "stability_when_balanced": 11,
+      "hits_against_24_hp": {
+        "quick": 4,
+        "heavy": 4,
+        "sweep": 6
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 0,
+        "constitution": 3
+      },
+      "health": 33,
+      "stability": 11.5,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "damage": 4,
+          "impact": 3.1875
+        },
+        "heavy": {
+          "damage": 6.75,
+          "impact": 10.625
+        },
+        "sweep": {
+          "damage": 3,
+          "impact": 2.125
+        }
+      },
+      "stability_when_balanced": 11.5,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 1,
+        "constitution": 2
+      },
+      "health": 30,
+      "stability": 11,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "damage": 4.5,
+          "impact": 3.1875
+        },
+        "heavy": {
+          "damage": 6.75,
+          "impact": 10.625
+        },
+        "sweep": {
+          "damage": 3.375,
+          "impact": 2.125
+        }
+      },
+      "stability_when_balanced": 11.25,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 2,
+        "constitution": 1
+      },
+      "health": 27,
+      "stability": 10.5,
+      "move_speed_factor": 1.0625,
+      "attacks": {
+        "quick": {
+          "damage": 5,
+          "impact": 3.1875
+        },
+        "heavy": {
+          "damage": 6.75,
+          "impact": 10.625
+        },
+        "sweep": {
+          "damage": 3.75,
+          "impact": 2.125
+        }
+      },
+      "stability_when_balanced": 11,
+      "hits_against_24_hp": {
+        "quick": 5,
+        "heavy": 4,
+        "sweep": 7
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 3,
+        "constitution": 0
+      },
+      "health": 24,
+      "stability": 10,
+      "move_speed_factor": 1.09375,
+      "attacks": {
+        "quick": {
+          "damage": 5.5,
+          "impact": 3.1875
+        },
+        "heavy": {
+          "damage": 6.75,
+          "impact": 10.625
+        },
+        "sweep": {
+          "damage": 4.125,
+          "impact": 2.125
+        }
+      },
+      "stability_when_balanced": 10.75,
+      "hits_against_24_hp": {
+        "quick": 5,
+        "heavy": 4,
+        "sweep": 6
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 2,
+        "agility": 0,
+        "constitution": 2
+      },
+      "health": 30,
+      "stability": 11,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "damage": 4,
+          "impact": 3.375
+        },
+        "heavy": {
+          "damage": 7.5,
+          "impact": 11.25
+        },
+        "sweep": {
+          "damage": 3,
+          "impact": 2.25
+        }
+      },
+      "stability_when_balanced": 11,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 2,
+        "agility": 1,
+        "constitution": 1
+      },
+      "health": 27,
+      "stability": 10.5,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "damage": 4.5,
+          "impact": 3.375
+        },
+        "heavy": {
+          "damage": 7.5,
+          "impact": 11.25
+        },
+        "sweep": {
+          "damage": 3.375,
+          "impact": 2.25
+        }
+      },
+      "stability_when_balanced": 10.75,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 2,
+        "agility": 2,
+        "constitution": 0
+      },
+      "health": 24,
+      "stability": 10,
+      "move_speed_factor": 1.0625,
+      "attacks": {
+        "quick": {
+          "damage": 5,
+          "impact": 3.375
+        },
+        "heavy": {
+          "damage": 7.5,
+          "impact": 11.25
+        },
+        "sweep": {
+          "damage": 3.75,
+          "impact": 2.25
+        }
+      },
+      "stability_when_balanced": 10.5,
+      "hits_against_24_hp": {
+        "quick": 5,
+        "heavy": 4,
+        "sweep": 7
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 3,
+        "agility": 0,
+        "constitution": 1
+      },
+      "health": 27,
+      "stability": 10.5,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "damage": 4,
+          "impact": 3.5625
+        },
+        "heavy": {
+          "damage": 8.25,
+          "impact": 11.875
+        },
+        "sweep": {
+          "damage": 3,
+          "impact": 2.375
+        }
+      },
+      "stability_when_balanced": 10.5,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 3,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 3,
+        "agility": 1,
+        "constitution": 0
+      },
+      "health": 24,
+      "stability": 10,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "damage": 4.5,
+          "impact": 3.5625
+        },
+        "heavy": {
+          "damage": 8.25,
+          "impact": 11.875
+        },
+        "sweep": {
+          "damage": 3.375,
+          "impact": 2.375
+        }
+      },
+      "stability_when_balanced": 10.25,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 3,
+        "sweep": 8
+      }
+    },
+    {
+      "extra_ranks": {
+        "strength": 4,
+        "agility": 0,
+        "constitution": 0
+      },
+      "health": 24,
+      "stability": 10,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "damage": 4,
+          "impact": 3.75
+        },
+        "heavy": {
+          "damage": 9,
+          "impact": 12.5
+        },
+        "sweep": {
+          "damage": 3,
+          "impact": 2.5
+        }
+      },
+      "stability_when_balanced": 10,
+      "hits_against_24_hp": {
+        "quick": 6,
+        "heavy": 3,
+        "sweep": 8
+      }
+    }
+  ],
+  "control_edges": [
+    {
+      "incoming_impact": 10,
+      "defender_agility": 0,
+      "defender_constitution": 0,
+      "can_balance": false,
+      "stability": 10,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 10,
+      "defender_agility": 0,
+      "defender_constitution": 1,
+      "can_balance": false,
+      "stability": 10.5,
+      "stagger": false,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 10,
+      "defender_agility": 1,
+      "defender_constitution": 0,
+      "can_balance": true,
+      "stability": 10.25,
+      "stagger": false,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 10,
+      "defender_agility": 4,
+      "defender_constitution": 0,
+      "can_balance": true,
+      "stability": 11,
+      "stagger": false,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 10,
+      "defender_agility": 0,
+      "defender_constitution": 4,
+      "can_balance": false,
+      "stability": 12,
+      "stagger": false,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 11,
+      "defender_agility": 0,
+      "defender_constitution": 0,
+      "can_balance": false,
+      "stability": 10,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 11,
+      "defender_agility": 0,
+      "defender_constitution": 1,
+      "can_balance": false,
+      "stability": 10.5,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 11,
+      "defender_agility": 1,
+      "defender_constitution": 0,
+      "can_balance": true,
+      "stability": 10.25,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 11,
+      "defender_agility": 4,
+      "defender_constitution": 0,
+      "can_balance": true,
+      "stability": 11,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 11,
+      "defender_agility": 0,
+      "defender_constitution": 4,
+      "can_balance": false,
+      "stability": 12,
+      "stagger": false,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 12,
+      "defender_agility": 0,
+      "defender_constitution": 0,
+      "can_balance": false,
+      "stability": 10,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 12,
+      "defender_agility": 0,
+      "defender_constitution": 1,
+      "can_balance": false,
+      "stability": 10.5,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 12,
+      "defender_agility": 1,
+      "defender_constitution": 0,
+      "can_balance": true,
+      "stability": 10.25,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 12,
+      "defender_agility": 4,
+      "defender_constitution": 0,
+      "can_balance": true,
+      "stability": 11,
+      "stagger": true,
+      "knockdown": false
+    },
+    {
+      "incoming_impact": 12,
+      "defender_agility": 0,
+      "defender_constitution": 4,
+      "can_balance": false,
+      "stability": 12,
+      "stagger": true,
+      "knockdown": false
+    }
+  ],
+  "speed_window_boundary": [
+    {
+      "action_speed": 20,
+      "windup_ticks": 30,
+      "start_ticks": [
+        1,
+        61,
+        121
+      ],
+      "impact_ticks": [
+        31,
+        91,
+        151
+      ]
+    },
+    {
+      "action_speed": 21,
+      "windup_ticks": 29,
+      "start_ticks": [
+        1,
+        60,
+        119,
+        178
+      ],
+      "impact_ticks": [
+        30,
+        89,
+        148,
+        207
+      ]
+    }
+  ],
+  "equal_growth": [
+    {
+      "all_extra_ranks": 0,
+      "health": 24,
+      "quick_damage": 4,
+      "quick_hits_same_growth_target": 6,
+      "received_resource_per_quick_hit": 0.5,
+      "heavy_impact_ratio": 1,
+      "heavy_impact_ratio_when_balanced": 1
+    },
+    {
+      "all_extra_ranks": 1,
+      "health": 27,
+      "quick_damage": 4.5,
+      "quick_hits_same_growth_target": 6,
+      "received_resource_per_quick_hit": 0.5625,
+      "heavy_impact_ratio": 1.0119047619047619,
+      "heavy_impact_ratio_when_balanced": 0.9883720930232558
+    },
+    {
+      "all_extra_ranks": 2,
+      "health": 30,
+      "quick_damage": 5,
+      "quick_hits_same_growth_target": 6,
+      "received_resource_per_quick_hit": 0.625,
+      "heavy_impact_ratio": 1.0227272727272727,
+      "heavy_impact_ratio_when_balanced": 0.9782608695652174
+    },
+    {
+      "all_extra_ranks": 3,
+      "health": 33,
+      "quick_damage": 5.5,
+      "quick_hits_same_growth_target": 6,
+      "received_resource_per_quick_hit": 0.6875,
+      "heavy_impact_ratio": 1.0326086956521738,
+      "heavy_impact_ratio_when_balanced": 0.9693877551020408
+    },
+    {
+      "all_extra_ranks": 4,
+      "health": 36,
+      "quick_damage": 6,
+      "quick_hits_same_growth_target": 6,
+      "received_resource_per_quick_hit": 0.75,
+      "heavy_impact_ratio": 1.0416666666666667,
+      "heavy_impact_ratio_when_balanced": 0.9615384615384616
+    }
+  ]
+}

@@ -1,0 +1,1189 @@
+{
+  "status": "design-candidate-exact-arithmetic-not-unity-or-balance-validation",
+  "scope": "Ordinary size; no active defense, clash, control scheduling, healing or AI.",
+  "profiles": {
+    "pierce": {
+      "damage": 5,
+      "impact": 1
+    },
+    "slash": {
+      "damage": 4,
+      "impact": 3
+    },
+    "blunt": {
+      "damage": 3,
+      "impact": 5
+    }
+  },
+  "attack_definitions": {
+    "quick": {
+      "profile": "slash",
+      "power": 1,
+      "primary": "agility"
+    },
+    "heavy": {
+      "profile": "blunt",
+      "power": 2,
+      "primary": "strength"
+    },
+    "sweep": {
+      "profile": "slash",
+      "power": 0.75,
+      "primary": "agility"
+    },
+    "thrust_example": {
+      "profile": "pierce",
+      "power": 1,
+      "primary": "agility"
+    }
+  },
+  "growth": [
+    {
+      "primary_extra": 0,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1,
+          "damage": 4,
+          "impact": 3,
+          "hits_against_24_hp": 6,
+          "damage_income": 0.3333333333333333,
+          "received_income": 0.5
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2,
+          "damage": 6,
+          "impact": 10,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.5,
+          "received_income": 0.75
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.75,
+          "damage": 3,
+          "impact": 2.25,
+          "hits_against_24_hp": 8,
+          "damage_income": 0.25,
+          "received_income": 0.375
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1,
+          "damage": 5,
+          "impact": 1,
+          "hits_against_24_hp": 5,
+          "damage_income": 0.4166666666666667,
+          "received_income": 0.625
+        }
+      }
+    },
+    {
+      "primary_extra": 1,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375,
+          "hits_against_24_hp": 6,
+          "damage_income": 0.375,
+          "received_income": 0.5625
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.25,
+          "damage": 6.75,
+          "impact": 11.25,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.5625,
+          "received_income": 0.84375
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.84375,
+          "damage": 3.375,
+          "impact": 2.53125,
+          "hits_against_24_hp": 8,
+          "damage_income": 0.28125,
+          "received_income": 0.421875
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.125,
+          "damage": 5.625,
+          "impact": 1.125,
+          "hits_against_24_hp": 5,
+          "damage_income": 0.46875,
+          "received_income": 0.703125
+        }
+      }
+    },
+    {
+      "primary_extra": 2,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.25,
+          "damage": 5,
+          "impact": 3.75,
+          "hits_against_24_hp": 5,
+          "damage_income": 0.4166666666666667,
+          "received_income": 0.625
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.5,
+          "damage": 7.5,
+          "impact": 12.5,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.625,
+          "received_income": 0.9375
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.9375,
+          "damage": 3.75,
+          "impact": 2.8125,
+          "hits_against_24_hp": 7,
+          "damage_income": 0.3125,
+          "received_income": 0.46875
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.25,
+          "damage": 6.25,
+          "impact": 1.25,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.5208333333333334,
+          "received_income": 0.78125
+        }
+      }
+    },
+    {
+      "primary_extra": 3,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.375,
+          "damage": 5.5,
+          "impact": 4.125,
+          "hits_against_24_hp": 5,
+          "damage_income": 0.4583333333333333,
+          "received_income": 0.6875
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.75,
+          "damage": 8.25,
+          "impact": 13.75,
+          "hits_against_24_hp": 3,
+          "damage_income": 0.6875,
+          "received_income": 1.03125
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 1.03125,
+          "damage": 4.125,
+          "impact": 3.09375,
+          "hits_against_24_hp": 6,
+          "damage_income": 0.34375,
+          "received_income": 0.515625
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.375,
+          "damage": 6.875,
+          "impact": 1.375,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.5729166666666666,
+          "received_income": 0.859375
+        }
+      }
+    },
+    {
+      "primary_extra": 4,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.5,
+          "damage": 6,
+          "impact": 4.5,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.5,
+          "received_income": 0.75
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 3,
+          "damage": 9,
+          "impact": 15,
+          "hits_against_24_hp": 3,
+          "damage_income": 0.75,
+          "received_income": 1.125
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375,
+          "hits_against_24_hp": 6,
+          "damage_income": 0.375,
+          "received_income": 0.5625
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.5,
+          "damage": 7.5,
+          "impact": 1.5,
+          "hits_against_24_hp": 4,
+          "damage_income": 0.625,
+          "received_income": 0.9375
+        }
+      }
+    }
+  ],
+  "first_hit_count_improvement": {
+    "quick": 2,
+    "heavy": 3,
+    "sweep": 2,
+    "thrust_example": 2
+  },
+  "equal_budget_builds": [
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 0,
+        "constitution": 4
+      },
+      "gear_health": 0,
+      "health": 36,
+      "base_stability": 12,
+      "effective_stability": 12,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1,
+          "damage": 4,
+          "impact": 3
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2,
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.75,
+          "damage": 3,
+          "impact": 2.25
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1,
+          "damage": 5,
+          "impact": 1
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 12
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 1,
+        "constitution": 3
+      },
+      "gear_health": 0,
+      "health": 33,
+      "base_stability": 11.5,
+      "effective_stability": 11.5,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2,
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.84375,
+          "damage": 3.375,
+          "impact": 2.53125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.125,
+          "damage": 5.625,
+          "impact": 1.125
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11.75
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 2,
+        "constitution": 2
+      },
+      "gear_health": 0,
+      "health": 30,
+      "base_stability": 11,
+      "effective_stability": 11,
+      "move_speed_factor": 1.0625,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.25,
+          "damage": 5,
+          "impact": 3.75
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2,
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.9375,
+          "damage": 3.75,
+          "impact": 2.8125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.25,
+          "damage": 6.25,
+          "impact": 1.25
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11.5
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 3,
+        "constitution": 1
+      },
+      "gear_health": 0,
+      "health": 27,
+      "base_stability": 10.5,
+      "effective_stability": 10.5,
+      "move_speed_factor": 1.09375,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.375,
+          "damage": 5.5,
+          "impact": 4.125
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2,
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 1.03125,
+          "damage": 4.125,
+          "impact": 3.09375
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.375,
+          "damage": 6.875,
+          "impact": 1.375
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11.25
+    },
+    {
+      "extra_ranks": {
+        "strength": 0,
+        "agility": 4,
+        "constitution": 0
+      },
+      "gear_health": 0,
+      "health": 24,
+      "base_stability": 10,
+      "effective_stability": 10,
+      "move_speed_factor": 1.125,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.5,
+          "damage": 6,
+          "impact": 4.5
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2,
+          "damage": 6,
+          "impact": 10
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.5,
+          "damage": 7.5,
+          "impact": 1.5
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 0,
+        "constitution": 3
+      },
+      "gear_health": 0,
+      "health": 33,
+      "base_stability": 11.5,
+      "effective_stability": 11.5,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1,
+          "damage": 4,
+          "impact": 3
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.25,
+          "damage": 6.75,
+          "impact": 11.25
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.75,
+          "damage": 3,
+          "impact": 2.25
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1,
+          "damage": 5,
+          "impact": 1
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11.5
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 1,
+        "constitution": 2
+      },
+      "gear_health": 0,
+      "health": 30,
+      "base_stability": 11,
+      "effective_stability": 11,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.25,
+          "damage": 6.75,
+          "impact": 11.25
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.84375,
+          "damage": 3.375,
+          "impact": 2.53125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.125,
+          "damage": 5.625,
+          "impact": 1.125
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11.25
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 2,
+        "constitution": 1
+      },
+      "gear_health": 0,
+      "health": 27,
+      "base_stability": 10.5,
+      "effective_stability": 10.5,
+      "move_speed_factor": 1.0625,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.25,
+          "damage": 5,
+          "impact": 3.75
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.25,
+          "damage": 6.75,
+          "impact": 11.25
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.9375,
+          "damage": 3.75,
+          "impact": 2.8125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.25,
+          "damage": 6.25,
+          "impact": 1.25
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11
+    },
+    {
+      "extra_ranks": {
+        "strength": 1,
+        "agility": 3,
+        "constitution": 0
+      },
+      "gear_health": 0,
+      "health": 24,
+      "base_stability": 10,
+      "effective_stability": 10,
+      "move_speed_factor": 1.09375,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.375,
+          "damage": 5.5,
+          "impact": 4.125
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.25,
+          "damage": 6.75,
+          "impact": 11.25
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 1.03125,
+          "damage": 4.125,
+          "impact": 3.09375
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.375,
+          "damage": 6.875,
+          "impact": 1.375
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 10.75
+    },
+    {
+      "extra_ranks": {
+        "strength": 2,
+        "agility": 0,
+        "constitution": 2
+      },
+      "gear_health": 0,
+      "health": 30,
+      "base_stability": 11,
+      "effective_stability": 11,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1,
+          "damage": 4,
+          "impact": 3
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.5,
+          "damage": 7.5,
+          "impact": 12.5
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.75,
+          "damage": 3,
+          "impact": 2.25
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1,
+          "damage": 5,
+          "impact": 1
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 11
+    },
+    {
+      "extra_ranks": {
+        "strength": 2,
+        "agility": 1,
+        "constitution": 1
+      },
+      "gear_health": 0,
+      "health": 27,
+      "base_stability": 10.5,
+      "effective_stability": 10.5,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.5,
+          "damage": 7.5,
+          "impact": 12.5
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.84375,
+          "damage": 3.375,
+          "impact": 2.53125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.125,
+          "damage": 5.625,
+          "impact": 1.125
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 10.75
+    },
+    {
+      "extra_ranks": {
+        "strength": 2,
+        "agility": 2,
+        "constitution": 0
+      },
+      "gear_health": 0,
+      "health": 24,
+      "base_stability": 10,
+      "effective_stability": 10,
+      "move_speed_factor": 1.0625,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.25,
+          "damage": 5,
+          "impact": 3.75
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.5,
+          "damage": 7.5,
+          "impact": 12.5
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.9375,
+          "damage": 3.75,
+          "impact": 2.8125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.25,
+          "damage": 6.25,
+          "impact": 1.25
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 10.5
+    },
+    {
+      "extra_ranks": {
+        "strength": 3,
+        "agility": 0,
+        "constitution": 1
+      },
+      "gear_health": 0,
+      "health": 27,
+      "base_stability": 10.5,
+      "effective_stability": 10.5,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1,
+          "damage": 4,
+          "impact": 3
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.75,
+          "damage": 8.25,
+          "impact": 13.75
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.75,
+          "damage": 3,
+          "impact": 2.25
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1,
+          "damage": 5,
+          "impact": 1
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 10.5
+    },
+    {
+      "extra_ranks": {
+        "strength": 3,
+        "agility": 1,
+        "constitution": 0
+      },
+      "gear_health": 0,
+      "health": 24,
+      "base_stability": 10,
+      "effective_stability": 10,
+      "move_speed_factor": 1.03125,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1.125,
+          "damage": 4.5,
+          "impact": 3.375
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 2.75,
+          "damage": 8.25,
+          "impact": 13.75
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.84375,
+          "damage": 3.375,
+          "impact": 2.53125
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1.125,
+          "damage": 5.625,
+          "impact": 1.125
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 10.25
+    },
+    {
+      "extra_ranks": {
+        "strength": 4,
+        "agility": 0,
+        "constitution": 0
+      },
+      "gear_health": 0,
+      "health": 24,
+      "base_stability": 10,
+      "effective_stability": 10,
+      "move_speed_factor": 1,
+      "attacks": {
+        "quick": {
+          "profile": "slash",
+          "power": 1,
+          "damage": 4,
+          "impact": 3
+        },
+        "heavy": {
+          "profile": "blunt",
+          "power": 3,
+          "damage": 9,
+          "impact": 15
+        },
+        "sweep": {
+          "profile": "slash",
+          "power": 0.75,
+          "damage": 3,
+          "impact": 2.25
+        },
+        "thrust_example": {
+          "profile": "pierce",
+          "power": 1,
+          "damage": 5,
+          "impact": 1
+        }
+      },
+      "conditional_stability_if_enabled_and_eligible": 10
+    }
+  ],
+  "equipment_hit_counts": [
+    {
+      "gear_health": 0,
+      "health": 24,
+      "hits": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8,
+        "thrust_example": 5
+      }
+    },
+    {
+      "gear_health": 3,
+      "health": 27,
+      "hits": {
+        "quick": 7,
+        "heavy": 5,
+        "sweep": 9,
+        "thrust_example": 6
+      }
+    },
+    {
+      "gear_health": 6,
+      "health": 30,
+      "hits": {
+        "quick": 8,
+        "heavy": 5,
+        "sweep": 10,
+        "thrust_example": 6
+      }
+    }
+  ],
+  "control_edges": [
+    {
+      "strength_extra": 0,
+      "heavy_impact": 10,
+      "stability": 10,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 0,
+      "heavy_impact": 10,
+      "stability": 10.5,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 0,
+      "heavy_impact": 10,
+      "stability": 11,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 0,
+      "heavy_impact": 10,
+      "stability": 12,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 0,
+      "heavy_impact": 10,
+      "stability": 13,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 0,
+      "heavy_impact": 10,
+      "stability": 15,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 1,
+      "heavy_impact": 11.25,
+      "stability": 10,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 1,
+      "heavy_impact": 11.25,
+      "stability": 10.5,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 1,
+      "heavy_impact": 11.25,
+      "stability": 11,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 1,
+      "heavy_impact": 11.25,
+      "stability": 12,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 1,
+      "heavy_impact": 11.25,
+      "stability": 13,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 1,
+      "heavy_impact": 11.25,
+      "stability": 15,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 2,
+      "heavy_impact": 12.5,
+      "stability": 10,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 2,
+      "heavy_impact": 12.5,
+      "stability": 10.5,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 2,
+      "heavy_impact": 12.5,
+      "stability": 11,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 2,
+      "heavy_impact": 12.5,
+      "stability": 12,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 2,
+      "heavy_impact": 12.5,
+      "stability": 13,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 2,
+      "heavy_impact": 12.5,
+      "stability": 15,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 3,
+      "heavy_impact": 13.75,
+      "stability": 10,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 3,
+      "heavy_impact": 13.75,
+      "stability": 10.5,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 3,
+      "heavy_impact": 13.75,
+      "stability": 11,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 3,
+      "heavy_impact": 13.75,
+      "stability": 12,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 3,
+      "heavy_impact": 13.75,
+      "stability": 13,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 3,
+      "heavy_impact": 13.75,
+      "stability": 15,
+      "stagger_threshold_met": false,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 4,
+      "heavy_impact": 15,
+      "stability": 10,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": true
+    },
+    {
+      "strength_extra": 4,
+      "heavy_impact": 15,
+      "stability": 10.5,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 4,
+      "heavy_impact": 15,
+      "stability": 11,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 4,
+      "heavy_impact": 15,
+      "stability": 12,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 4,
+      "heavy_impact": 15,
+      "stability": 13,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    },
+    {
+      "strength_extra": 4,
+      "heavy_impact": 15,
+      "stability": 15,
+      "stagger_threshold_met": true,
+      "knockdown_threshold_met": false
+    }
+  ],
+  "equal_growth": [
+    {
+      "all_extra_ranks": 0,
+      "health": 24,
+      "stability": 10,
+      "hits_same_growth_target": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8,
+        "thrust_example": 5
+      },
+      "heavy_impact_ratio": 1,
+      "received_resource_per_quick_hit": 0.5
+    },
+    {
+      "all_extra_ranks": 1,
+      "health": 27,
+      "stability": 10.5,
+      "hits_same_growth_target": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8,
+        "thrust_example": 5
+      },
+      "heavy_impact_ratio": 1.0714285714285714,
+      "received_resource_per_quick_hit": 0.5625
+    },
+    {
+      "all_extra_ranks": 2,
+      "health": 30,
+      "stability": 11,
+      "hits_same_growth_target": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8,
+        "thrust_example": 5
+      },
+      "heavy_impact_ratio": 1.1363636363636365,
+      "received_resource_per_quick_hit": 0.625
+    },
+    {
+      "all_extra_ranks": 3,
+      "health": 33,
+      "stability": 11.5,
+      "hits_same_growth_target": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8,
+        "thrust_example": 5
+      },
+      "heavy_impact_ratio": 1.1956521739130435,
+      "received_resource_per_quick_hit": 0.6875
+    },
+    {
+      "all_extra_ranks": 4,
+      "health": 36,
+      "stability": 12,
+      "hits_same_growth_target": {
+        "quick": 6,
+        "heavy": 4,
+        "sweep": 8,
+        "thrust_example": 5
+      },
+      "heavy_impact_ratio": 1.25,
+      "received_resource_per_quick_hit": 0.75
+    }
+  ],
+  "speed_window_boundary": [
+    {
+      "action_speed": 20,
+      "windup_ticks": 30,
+      "start_ticks": [
+        1,
+        61,
+        121
+      ],
+      "impact_ticks": [
+        31,
+        91,
+        151
+      ]
+    },
+    {
+      "action_speed": 21,
+      "windup_ticks": 29,
+      "start_ticks": [
+        1,
+        60,
+        119,
+        178
+      ],
+      "impact_ticks": [
+        30,
+        89,
+        148,
+        207
+      ]
+    }
+  ],
+  "validation_counts": {
+    "fixed_ratio_cases": 20,
+    "hit_threshold_cases": 100,
+    "exact_health_q10_cases": 20,
+    "gear_isolation_cases": 30
+  }
+}

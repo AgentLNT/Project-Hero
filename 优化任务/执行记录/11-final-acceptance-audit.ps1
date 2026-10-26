@@ -157,7 +157,7 @@ Shadow 隔离|42
 性能|22
 性能基准|22
 '@ -split '\r?\n' | ForEach-Object {$p=$_ -split '\|',2;$mainMap[$p[0]]=$p[1]}
-$mainSection=((Get-Content (Join-Path $recordRoot '../../优化方案-逻辑表现解耦与逻辑帧判定.md') -Raw) -split '### 每阶段验收标准',2)[1] -split '## 五、',2
+$mainSection=((Get-Content (Join-Path $recordRoot '../方案/优化方案-逻辑表现解耦与逻辑帧判定.md') -Raw) -split '### 每阶段验收标准',2)[1] -split '## 五、',2
 $mainRows=@(foreach($line in ($mainSection[0] -split '\r?\n')) {
     if($line -notmatch '^\| ([^|]+) \| (.+) \|$'){continue}
     $label=$Matches[1].Trim();$requirement=$Matches[2];if($label -eq '验收项'){continue}
