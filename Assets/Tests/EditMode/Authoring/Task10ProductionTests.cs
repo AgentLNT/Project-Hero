@@ -131,15 +131,15 @@ namespace ProjectHero.Authoring.Tests
         [Test] public void NewDefinitionAnchorChangesOnlyWithExplicitTurnRulesAndRetainsOldCharacterization()
         {
             var definition = Task03.Task03.Definition;
-            string Compute(string version, IReadOnlyList<EncounterDefinition> encounters)
+            string Compute(string version, IReadOnlyList<EncounterDefinition> encounters, AdrenalineRules adrenaline = null)
                 => BattleDefinitionHash.Compute(version, definition.TicksPerSecond, BattleDefinitionFixture.LibraryVolumeBindingCount,
-                    definition.Rules, definition.ConcurrentAction, definition.ReactionRules, definition.AdrenalineRules,
+                    definition.Rules, definition.ConcurrentAction, definition.ReactionRules, adrenaline ?? definition.AdrenalineRules,
                     definition.FactionModel, definition.DamageChannels, definition.ImpactProfiles, definition.Units,
                     definition.Actions, definition.AttackPatterns, definition.Volumes, definition.MovementPatterns,
                     definition.ActionSets, definition.StatusEffects, encounters, definition.DefaultDynamicSpawnPolicy);
-            Assert.That(Compute("battle-def-v1", definition.Encounters.Select(e => e with { TurnSubmission = null }).ToArray()),
+            Assert.That(Compute("battle-def-v1", definition.Encounters.Select(e => e with { TurnSubmission = null }).ToArray(), AdrenalineRules.FrozenV1),
                 Is.EqualTo("cc32becd9f0f8ceb"), "R2 duration schema encoded with the characterization rules label; historical native anchor remains in task08 evidence.");
-            Assert.That(Compute(definition.RulesVersion, definition.Encounters), Is.EqualTo("e04b3c0946ad3035"));
+            Assert.That(Compute(definition.RulesVersion, definition.Encounters), Is.EqualTo("84116d595d222a72"));
         }
         [Test] public void EmptyShadowReportCannotAuthorizeNewCutover()
         {

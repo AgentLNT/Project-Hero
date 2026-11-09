@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.433007">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1099" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.433007" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2247" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="712" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.421559" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="38688" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2248" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="712" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.420899" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2249" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="712" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.420544" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2250" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="712" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.420309" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1450" name="AiForecastIngressTests" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.400395" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1452" name="FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" methodname="FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="2011904533" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.332985" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1451" name="KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" methodname="KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="762585340" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.031908" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1453" name="NextTickWindowResetMustHappenBeforeReactionResourceAdmission" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.NextTickWindowResetMustHappenBeforeReactionResourceAdmission" methodname="NextTickWindowResetMustHappenBeforeReactionResourceAdmission" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="1110262944" result="Passed" start-time="2026-11-04 10:07:09Z" end-time="2026-11-04 10:07:09Z" duration="0.023277" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

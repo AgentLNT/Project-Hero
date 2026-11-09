@@ -1,0 +1,27 @@
+{
+  "sourceFingerprint": "d6c83d6dc924f30f062c89b582c6fd61e25eae527ef332637daa94c06d5d388b",
+  "case": "SustainedOffense-near-mirror0",
+  "firstDifference": [
+    126,
+    "controller.enemy_ai"
+  ],
+  "original": {
+    "tick": "126",
+    "controller": "controller.enemy_ai",
+    "key": "N/1/action.spear_thrust.radius_2/2/6//",
+    "type": "Attack",
+    "chosen": "True",
+    "score": "203695",
+    "rejection": "",
+    "damageQ10": "25600",
+    "incomingQ10": "0",
+    "progress": "0",
+    "interrupts": "0",
+    "clashes": "0",
+    "start": "127",
+    "impact": "223",
+    "end": "253"
+  },
+  "tree": null,
+  "reason": "Completed task consumes the decision tick, delaying next ordinary decision from 126 to 132; fix required before acceptance"
+}

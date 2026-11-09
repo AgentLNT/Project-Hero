@@ -389,7 +389,8 @@ namespace ProjectHero.Core.Compatibility.Runtime
             if (compareScheduleFacts)
             {
                 RegisterTask05ScheduleRegistrations(temporarilyUncomparable, rejections);
-                if (rulesVersion == "battle-def-v4-defense-duration")
+                if (rulesVersion == "battle-def-v4-defense-duration" || rulesVersion == "battle-def-v5-clash-recovery"
+                    || rulesVersion == "battle-def-v6-adrenaline-q10")
                 {
                     const string source = "CombatSampleScene/Core/Gameplay#TacticsController";
                     foreach (string field in new[] { "plans[i].activeStartTick", "plans[i].activeEndTick",
@@ -401,6 +402,11 @@ namespace ProjectHero.Core.Compatibility.Runtime
                         RegisterTemporarilyUncomparable(temporarilyUncomparable,rejections,source,field,
                             "R2 duration, quota, actual first contact, source boundary and ingress deadline require executable rule evidence.","12B","12B native evidence");
                 }
+                if (rulesVersion == "battle-def-v5-clash-recovery" || rulesVersion == "battle-def-v6-adrenaline-q10")
+                    RegisterTemporarilyUncomparable(temporarilyUncomparable, rejections,
+                        "CombatSampleScene/Core/Gameplay#TacticsController", "plans[i].clashResolvedAtTick",
+                        "Clash ends the effect but retains each attack's Lane through EndTick, including overlapping control.",
+                        "13", "ClashRecoveryTests native recovery, boundary, control and replay evidence");
             }
 
             // —— 任务 06：LogicGrid 占位 / 移动段 / Reservation 的生产通道（旧侧观测）登记项 ——

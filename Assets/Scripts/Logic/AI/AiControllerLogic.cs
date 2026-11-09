@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ProjectHero.Logic.Commands;
+using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Determinism;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Simulation;
@@ -42,10 +43,15 @@ namespace ProjectHero.Logic.AI
         private readonly List<AiDecision> _decisions = new List<AiDecision>();
         private readonly List<CommandIngressRejection> _rejections = new List<CommandIngressRejection>();
 
+        private IAiExecutionFeedback _feedback;
+        private readonly Dictionary<string, AiForecastSettings> _forecastSettings = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, AiExecutionKind> _executions = new(StringComparer.Ordinal);
         private IAiReactionOpportunitySource _opportunities;
         private IAiActionPlanLookup _planLookup;
         private IMovementPathCalculator _pathCalculator;
         private Func<ControllerId, CommandRequest, string> _normalPreview;
+        private Func<DecisionSnapshot, IAiForecast> _forecastFactory;
+        private readonly Dictionary<string, AiPolicyKind> _policies = new Dictionary<string, AiPolicyKind>(StringComparer.Ordinal);
 
         public AiControllerLogic(
             ulong battleSeed,
@@ -83,12 +89,16 @@ namespace ProjectHero.Logic.AI
             IAiReactionOpportunitySource opportunities,
             IAiActionPlanLookup planLookup,
             IMovementPathCalculator pathCalculator,
-            Func<ControllerId, CommandRequest, string> normalPreview = null)
+            Func<ControllerId, CommandRequest, string> normalPreview = null,
+            Func<DecisionSnapshot, IAiForecast> forecastFactory = null,
+            IAiExecutionFeedback executionFeedback = null)
         {
             _opportunities = opportunities;
             _planLookup = planLookup;
             _pathCalculator = pathCalculator;
             _normalPreview = normalPreview;
+            _forecastFactory = forecastFactory;
+            _feedback = executionFeedback;
         }
 
         /// <summary>已注册的 AI 控制者（注册顺序；只增不改）。</summary>
@@ -108,11 +118,23 @@ namespace ProjectHero.Logic.AI
                 throw new ProjectHero.Logic.LogicDefinitionException(
                     CommandCodes.COMMAND_INGRESS_CONTROLLER_INVALID,
                     "AI controller must be registered from an Ai binding; got " + binding.SourceKind);
+            if (!Enum.IsDefined(typeof(AiPolicyKind), binding.AiPolicy))
+                throw new LogicDefinitionException("AI_POLICY_INVALID");
 
+            if (!Enum.IsDefined(typeof(AiExecutionKind), binding.AiExecution)
+                || (binding.AiExecution == AiExecutionKind.UtilityBehaviorTree && binding.AiPolicy == AiPolicyKind.Legacy))
+                throw new LogicDefinitionException("AI_EXECUTION_INVALID");
+
+            if (binding.AiForecast != null && (binding.AiForecast.Validate() != null || binding.AiPolicy == AiPolicyKind.Legacy))
+                throw new LogicDefinitionException("AI_FORECAST_SETTINGS_INVALID");
             string key = binding.ControllerId.Value;
             if (key == null || _states.ContainsKey(key)) return;
             _registrationOrder.Add(key);
             _states[key] = new AiRuntimeState(key);
+            _policies[key] = binding.AiPolicy;
+            _executions[key] = binding.AiExecution;
+            _forecastSettings[key] = binding.AiForecast;
+            if (binding.AiExecution == AiExecutionKind.UtilityBehaviorTree) _states[key].Behavior = AiBehaviorMemory.Empty;
         }
 
         /// <summary>是否已注册该 Controller（只读）。</summary>
@@ -177,13 +199,26 @@ namespace ProjectHero.Logic.AI
                 if (entry == null) continue;
 
                 AiDecisionContext context = BuildContext(snapshot, new ControllerId(key));
-                AiDecision decision = AiDecisionFunction.Decide(context, _battleSeed);
+                AiDecision decision = _executions[key] == AiExecutionKind.UtilityBehaviorTree
+                    ? AiBehaviorTree.Tick(context, _battleSeed, _policies[key], state.Behavior, _feedback, entry.NextProducerOrdinal)
+                    : _policies[key] == AiPolicyKind.Legacy
+                    ? AiDecisionFunction.Decide(context, _battleSeed)
+                    : AiTacticalPolicy.Decide(context, _battleSeed, _policies[key]);
 
                 if (decision.HasSelection)
                 {
                     CommandIngressRejection rejection = entry.SubmitAtDefaultTick(
                         decision.Selected.Scope, decision.Selected.Payload);
-                    if (rejection != null) _rejections.Add(rejection);
+                    if (rejection != null)
+                    {
+                        _rejections.Add(rejection);
+                        if (decision.Behavior != null)
+                        {
+                            var failed = new AiBehaviorTask(Status: AiBehaviorStatus.Failure, Reason: "INGRESS_REJECTED");
+                            decision = decision with { Behavior = decision.Selected.Scope is ReactionCommandScope
+                                ? decision.Behavior with { Reaction = failed } : decision.Behavior with { Ordinary = failed } };
+                        }
+                    }
                 }
 
                 state.DecisionCount++;
@@ -193,6 +228,7 @@ namespace ProjectHero.Logic.AI
                 // （或快照 Tick 回退）都会因 NextThinkTick > tick 而沉默——不会抢跑，也不会漏拍。
                 state.NextThinkTick = nextTick;
                 state.LastDecision = decision;
+                state.Behavior = decision.Behavior;
                 _decisions.Add(decision);
                 if (_decisions.Count > MaximumDiagnosticDecisions) _decisions.RemoveAt(0);
             }
@@ -252,7 +288,9 @@ namespace ProjectHero.Logic.AI
         /// </summary>
         public AiDecisionContext BuildContext(DecisionSnapshot snapshot, ControllerId controllerId)
             => AiDecisionContextFactory.Build(
-                snapshot, controllerId, _opportunities, _planLookup, _pathCalculator) with { NormalPreview = _normalPreview };
+                snapshot, controllerId, _opportunities, _planLookup, _pathCalculator) with
+                { NormalPreview = _normalPreview, ForecastFactory = _forecastFactory,
+                    ForecastSettings = _forecastSettings.TryGetValue(controllerId.Value ?? "", out var settings) ? settings : null };
 
         /// <summary>诊断文本（不参与逻辑与哈希）。</summary>
         public string Describe()

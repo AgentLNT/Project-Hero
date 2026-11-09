@@ -1,0 +1,791 @@
+--- Assets/Scripts/Authoring/BattleDefinitionValidator.cs (before task)
++++ Assets/Scripts/Authoring/BattleDefinitionValidator.cs
+@@ -269,6 +269,9 @@
+                     || (binding.AiExecution != ProjectHero.Logic.AI.AiExecutionKind.SingleCommand
+                         && (binding.SourceKind != CommandSourceKind.Ai || binding.AiPolicy == ProjectHero.Logic.AI.AiPolicyKind.Legacy)))
+                     errors.Add("AI_EXECUTION_INVALID", controllerOrigin, origin);
++                if (binding.AiForecast != null && (binding.AiForecast.Validate() != null || binding.SourceKind != CommandSourceKind.Ai
++                    || binding.AiPolicy == ProjectHero.Logic.AI.AiPolicyKind.Legacy))
++                    errors.Add("AI_FORECAST_SETTINGS_INVALID", controllerOrigin, origin);
+ 
+                 if (binding.ControlledSlots == null || binding.ControlledSlots.Count == 0)
+                 {
+--- Assets/Scripts/Authoring/FormalAiBaseline.cs (before task)
++++ Assets/Scripts/Authoring/FormalAiBaseline.cs
+@@ -14,7 +14,7 @@
+     {
+         public const string Version = "formal-content-ai-baseline-v1";
+         public static BattleDefinition Build(BattleDefinition source, AiPolicyKind policy, AiExecutionKind execution,
+-            bool near, bool mirror)
++            bool near, bool mirror, AiForecastSettings forecast = null)
+         {
+             if (source == null || source.AdrenalineRules.UseCombatValuesV05 || source.Encounters.Count != 1)
+                 throw new LogicDefinitionException("FORMAL_BASELINE_SOURCE_INVALID");
+@@ -29,7 +29,7 @@
+             }).ToArray();
+             encounter = encounter with { Slots = Array.AsReadOnly(slots),
+                 Controllers = Array.AsReadOnly(encounter.Controllers.Select(c => c with {
+-                    SourceKind = CommandSourceKind.Ai, AiPolicy = policy, AiExecution = execution }).ToArray()) };
++                    SourceKind = CommandSourceKind.Ai, AiPolicy = policy, AiExecution = execution, AiForecast = forecast }).ToArray()) };
+             var errors = new DefinitionErrorCollector();
+             BattleDefinitionValidator.ValidateEncounter(encounter, source.FactionModel, errors);
+             if (errors.HasErrors) throw new LogicDefinitionException("FORMAL_BASELINE_ENCOUNTER_INVALID");
+--- Assets/Scripts/Logic/AI/AiBehaviorTree.cs (before task)
++++ Assets/Scripts/Logic/AI/AiBehaviorTree.cs
+@@ -98,7 +98,7 @@
+                 if (reaction.Cursor > 0 || reactionChosen)
+                     return Run(ref reaction);
+                 if (!reactionWait) return AiBehaviorStatus.Failure;
+-                reason = "WAIT_REACTION_NOT_BENEFICIAL";
++                reason = proposed.NoSelectionReason ?? "WAIT_REACTION_NOT_BENEFICIAL";
+                 return AiBehaviorStatus.Running;
+             }
+             AiBehaviorStatus Ordinary()
+--- Assets/Scripts/Logic/AI/AiControllerLogic.cs (before task)
++++ Assets/Scripts/Logic/AI/AiControllerLogic.cs
+@@ -44,6 +44,7 @@
+         private readonly List<CommandIngressRejection> _rejections = new List<CommandIngressRejection>();
+ 
+         private IAiExecutionFeedback _feedback;
++        private readonly Dictionary<string, AiForecastSettings> _forecastSettings = new(StringComparer.Ordinal);
+         private readonly Dictionary<string, AiExecutionKind> _executions = new(StringComparer.Ordinal);
+         private IAiReactionOpportunitySource _opportunities;
+         private IAiActionPlanLookup _planLookup;
+@@ -124,12 +125,15 @@
+                 || (binding.AiExecution == AiExecutionKind.UtilityBehaviorTree && binding.AiPolicy == AiPolicyKind.Legacy))
+                 throw new LogicDefinitionException("AI_EXECUTION_INVALID");
+ 
++            if (binding.AiForecast != null && (binding.AiForecast.Validate() != null || binding.AiPolicy == AiPolicyKind.Legacy))
++                throw new LogicDefinitionException("AI_FORECAST_SETTINGS_INVALID");
+             string key = binding.ControllerId.Value;
+             if (key == null || _states.ContainsKey(key)) return;
+             _registrationOrder.Add(key);
+             _states[key] = new AiRuntimeState(key);
+             _policies[key] = binding.AiPolicy;
+             _executions[key] = binding.AiExecution;
++            _forecastSettings[key] = binding.AiForecast;
+             if (binding.AiExecution == AiExecutionKind.UtilityBehaviorTree) _states[key].Behavior = AiBehaviorMemory.Empty;
+         }
+ 
+@@ -285,7 +289,8 @@
+         public AiDecisionContext BuildContext(DecisionSnapshot snapshot, ControllerId controllerId)
+             => AiDecisionContextFactory.Build(
+                 snapshot, controllerId, _opportunities, _planLookup, _pathCalculator) with
+-                { NormalPreview = _normalPreview, ForecastFactory = _forecastFactory };
++                { NormalPreview = _normalPreview, ForecastFactory = _forecastFactory,
++                    ForecastSettings = _forecastSettings.TryGetValue(controllerId.Value ?? "", out var settings) ? settings : null };
+ 
+         /// <summary>诊断文本（不参与逻辑与哈希）。</summary>
+         public string Describe()
+--- Assets/Scripts/Logic/AI/AiDecisionContext.cs (before task)
++++ Assets/Scripts/Logic/AI/AiDecisionContext.cs
+@@ -38,6 +38,7 @@
+         Func<ControllerId, CommandRequest, string> NormalPreview = null)
+     {
+         public Func<DecisionSnapshot, IAiForecast> ForecastFactory { get; init; }
++        public AiForecastSettings ForecastSettings { get; init; }
+         /// <summary>本决策允许使用的目标 Tick（= 快照 Tick 的下一 Tick）。</summary>
+         public long NextTick => Snapshot == null ? 0L : Snapshot.Tick + 1L;
+         /// <summary>The same R4 public resource projection delivered to player controllers.</summary>
+--- Assets/Scripts/Logic/AI/AiForecast.cs (before task)
++++ Assets/Scripts/Logic/AI/AiForecast.cs
+@@ -7,11 +7,13 @@
+ {
+     public interface IAiForecast : IDisposable
+     {
+-        AiActionForecast Evaluate(CommandRequest request);
++        AiActionForecast Evaluate(CommandRequest request, AiForecastSettings settings = null);
+     }
+ 
+     /// <summary>Conditional public-world outcomes from the production kernel, never a second combat model.</summary>
+     public sealed record AiActionForecast(string RejectionCode, long HorizonTick,
+         IReadOnlyList<UnitSnapshot> Units, long FirstHostileDamageTick, int InterruptedThreats, int Clashes,
+-        long PlanStartTick = 0, long PlanImpactTick = 0, long PlanEndTick = 0);
++        long PlanStartTick = 0, long PlanImpactTick = 0, long PlanEndTick = 0,
++        AiForecastCoverage Coverage = AiForecastCoverage.Unspecified, long ObservedThroughTick = -1,
++        long RequiredThroughTick = 0, int CandidateTerminalReason = 0);
+ }
+--- Assets/Scripts/Logic/AI/AiTacticalPolicy.cs (before task)
++++ Assets/Scripts/Logic/AI/AiTacticalPolicy.cs
+@@ -12,9 +12,10 @@
+ namespace ProjectHero.Logic.AI
+ {
+     public enum AiPolicyKind { Legacy = 0, SustainedOffense = 1, SeekInterrupt = 2, CautiousDefense = 3 }
+-    public sealed record AiCandidateEvaluation(string Key, ActionType Type, bool IsReaction, long Score,
+-        string RejectionCode, string Reason, long DamageDeltaQ10, long IncomingDeltaQ10, long PositionProgress,
+-        int InterruptedThreats, int Clashes, int Cost, long StartTick, long ImpactTick, long EndTick, long HorizonTick, bool Chosen = false);
++    public sealed record AiCandidateEvaluation(string Key, ActionType Type, bool IsReaction, long? Score,
++        string RejectionCode, string Reason, long? DamageDeltaQ10, long? IncomingDeltaQ10, long? PositionProgress,
++        int? InterruptedThreats, int? Clashes, int Cost, long StartTick, long ImpactTick, long EndTick, long HorizonTick, bool Chosen = false,
++        AiForecastCoverage Coverage = AiForecastCoverage.Unspecified, long ObservedThroughTick = -1, long RequiredThroughTick = 0);
+ 
+     /// <summary>Stateless versioned rules. All forecasting is conditional on public facts and no further commands.</summary>
+     public static class AiTacticalPolicy
+@@ -40,31 +41,35 @@
+             // Reactions and ordinary actions never compete. A legal but unhelpful reaction can choose Wait.
+             var choice = Choose(reactions);
+             if (choice != null) { selected = choice.Request; return Finish(null); }
+-            if (evaluations.Any(e => e.IsReaction && e.RejectionCode == null)) return Finish("WAIT_REACTION_NOT_BENEFICIAL");
++            if (evaluations.Any(e => e.IsReaction && e.RejectionCode == null))
++                return Finish(context.ForecastSettings != null && evaluations.Any(e => e.IsReaction && e.Coverage == AiForecastCoverage.Uncovered)
++                    ? "WAIT_REACTION_OUTCOME_UNCOVERED" : "WAIT_REACTION_NOT_BENEFICIAL");
+             if (!context.HasSubmissionWindow) return Finish("WAIT_NO_OWN_WINDOW");
+             if (context.Snapshot.Tick % OrdinaryThinkInterval != 0) return Finish("WAIT_ORDINARY_CADENCE");
+             var candidates = new List<AiTacticalCandidate>(ordinary);
+             var previews = new Dictionary<string, AiActionForecast>(StringComparer.Ordinal);
+             foreach (var candidate in ordinary)
+             {
+-                var preview = forecast.Evaluate(candidate.Request); previews.Add(candidate.Key, preview);
++                var preview = forecast.Evaluate(candidate.Request, context.ForecastSettings); previews.Add(candidate.Key, preview);
+                 candidates.AddRange(AiTacticalCandidateBuilder.Aligned(context, candidate, preview));
+             }
+             choice = Choose(candidates, previews);
+             if (choice != null) selected = choice.Request;
+-            return Finish(selected == null ? (ordinary.Count == 0 ? "WAIT_LANE_COMMITTED" : "WAIT_NO_POSITIVE_CANDIDATE") : null);
++            return Finish(selected == null ? (ordinary.Count == 0 ? "WAIT_LANE_COMMITTED"
++                : context.ForecastSettings != null && evaluations.Any(e => e.Coverage == AiForecastCoverage.Uncovered)
++                    ? "WAIT_NO_POSITIVE_COVERED_CANDIDATE" : "WAIT_NO_POSITIVE_CANDIDATE") : null);
+ 
+             AiTacticalCandidate Choose(IReadOnlyList<AiTacticalCandidate> candidates, Dictionary<string, AiActionForecast> cached = null)
+             {
+                 AiTacticalCandidate best = null; long bestScore = 0;
+                 foreach (var candidate in candidates.OrderBy(c => c.Key, StringComparer.Ordinal))
+                 {
+-                    var preview = cached != null && cached.TryGetValue(candidate.Key, out var value) ? value : forecast.Evaluate(candidate.Request);
+-                    if (preview.RejectionCode == null && baseline == null) baseline = forecast.Evaluate(null);
++                    var preview = cached != null && cached.TryGetValue(candidate.Key, out var value) ? value : forecast.Evaluate(candidate.Request, context.ForecastSettings);
++                    if (preview.RejectionCode == null && baseline == null) baseline = forecast.Evaluate(null, context.ForecastSettings);
+                     var evaluation = Evaluate(context, policy, candidate, baseline ?? preview, preview);
+                     evaluations.Add(evaluation);
+-                    if (evaluation.RejectionCode == null && evaluation.Score > bestScore)
+-                    { best = candidate; bestScore = evaluation.Score; }
++                    if (evaluation.RejectionCode == null && evaluation.Score is long score && score > bestScore)
++                    { best = candidate; bestScore = score; }
+                 }
+                 if (best != null)
+                     for (int i = 0; i < evaluations.Count; i++)
+@@ -80,6 +85,17 @@
+         public static AiCandidateEvaluation Evaluate(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate,
+             AiActionForecast baseline, AiActionForecast outcome)
+         {
++            if (context.ForecastSettings != null)
++            {
++                if (outcome.RejectionCode == null && baseline.HorizonTick != outcome.HorizonTick)
++                    throw new LogicDefinitionException("AI_FORECAST_BASELINE_HORIZON_MISMATCH");
++                if (outcome.RejectionCode != null || outcome.Coverage != AiForecastCoverage.Complete)
++                    return new AiCandidateEvaluation(candidate.Key, candidate.Type, candidate.IsReaction, null,
++                        outcome.RejectionCode, outcome.RejectionCode == null ? "OUTCOME_NOT_COVERED" : "REJECTED_BY_LOGIC_PREVIEW",
++                        null, null, null, null, null, candidate.Cost, outcome.PlanStartTick, outcome.PlanImpactTick, outcome.PlanEndTick,
++                        outcome.HorizonTick, Coverage: outcome.Coverage, ObservedThroughTick: outcome.ObservedThroughTick,
++                        RequiredThroughTick: outcome.RequiredThroughTick);
++            }
+             long damage = 0, incoming = 0, progress = 0;
+             int interrupts = outcome.InterruptedThreats - baseline.InterruptedThreats, clashes = outcome.Clashes - baseline.Clashes;
+             if (outcome.RejectionCode == null)
+@@ -103,7 +119,8 @@
+             score -= duration * weights.Duration + (long)candidate.Cost * weights.Resource / resourceScale + (damage > 0 ? latency : 0);
+             return new AiCandidateEvaluation(candidate.Key, candidate.Type, candidate.IsReaction, score, outcome.RejectionCode,
+                 outcome.RejectionCode != null ? "REJECTED_BY_LOGIC_PREVIEW" : score <= 0 ? "WAIT_HAS_HIGHER_OR_EQUAL_SCORE" : "LOWER_SCORE_OR_STABLE_TIE",
+-                damage, incoming, progress, interrupts, clashes, candidate.Cost, outcome.PlanStartTick, outcome.PlanImpactTick, outcome.PlanEndTick, outcome.HorizonTick);
++                damage, incoming, progress, interrupts, clashes, candidate.Cost, outcome.PlanStartTick, outcome.PlanImpactTick, outcome.PlanEndTick, outcome.HorizonTick,
++                Coverage: outcome.Coverage, ObservedThroughTick: outcome.ObservedThroughTick, RequiredThroughTick: outcome.RequiredThroughTick);
+ 
+             long Distance(IReadOnlyList<UnitSnapshot> units)
+             {
+--- Assets/Scripts/Logic/Commands/CommandIngressRegistry.cs (before task)
++++ Assets/Scripts/Logic/Commands/CommandIngressRegistry.cs
+@@ -216,6 +216,9 @@
+                     && (binding.SourceKind != CommandSourceKind.Ai || binding.AiPolicy == AI.AiPolicyKind.Legacy)))
+                 throw new ProjectHero.Logic.LogicDefinitionException("AI_EXECUTION_INVALID", binding.ControllerId.Value);
+ 
++            if (binding.AiForecast != null && (binding.AiForecast.Validate() != null || binding.SourceKind != CommandSourceKind.Ai
++                || binding.AiPolicy == AI.AiPolicyKind.Legacy))
++                throw new ProjectHero.Logic.LogicDefinitionException("AI_FORECAST_SETTINGS_INVALID", binding.ControllerId.Value);
+             return Register(binding.ControllerId, binding.SourceKind, "External");
+         }
+ 
+--- Assets/Scripts/Logic/Definitions/ControllerBinding.cs (before task)
++++ Assets/Scripts/Logic/Definitions/ControllerBinding.cs
+@@ -27,7 +27,8 @@
+         CommandSourceKind SourceKind,
+         System.Collections.Generic.IReadOnlyList<Ids.EncounterSlotId> ControlledSlots,
+         AI.AiPolicyKind AiPolicy = AI.AiPolicyKind.Legacy,
+-        AI.AiExecutionKind AiExecution = AI.AiExecutionKind.SingleCommand)
++        AI.AiExecutionKind AiExecution = AI.AiExecutionKind.SingleCommand,
++        AI.AiForecastSettings AiForecast = null)
+     {
+         public void WriteHashComponents(CanonicalHashWriter writer)
+         {
+@@ -44,6 +45,7 @@
+                 writer.Write("controller_binding.ai_execution_version", AI.AiBehaviorTree.Version);
+                 writer.Write("controller_binding.ai_execution", (int)AiExecution);
+             }
++            AiForecast?.WriteHashComponents(writer);
+             if (ControlledSlots == null) return;
+             foreach (var slot in ControlledSlots)
+             {
+--- Assets/Scripts/Logic/Grid/LogicGrid.cs (before task)
++++ Assets/Scripts/Logic/Grid/LogicGrid.cs
+@@ -650,6 +650,25 @@
+             return null;
+         }
+ 
++        /// <summary>Reservations protect the future body as well as its anchor, using the same
++        /// footprint as CommitAnchor. Like anchor reservations, future bodies conservatively block
++        /// the whole path query; this does not introduce time-dependent pathfinding.</summary>
++        internal bool DestinationOverlapsReservedBody(UnitId unitId, GridPoint to, GridDirection facing)
++        {
++            if (!_rows.TryGetValue(unitId.Value, out UnitRow mover)) return false;
++            var cells = new HashSet<GridPoint>(ResolveCells(mover, to, facing));
++            var triangles = new HashSet<TrianglePoint>(ResolveTriangles(mover, to, facing));
++            foreach (var reservation in _reservations.Values)
++            {
++                if (reservation.UnitId == unitId || !_rows.TryGetValue(reservation.UnitId.Value, out UnitRow other)) continue;
++                foreach (var cell in ResolveCells(other, reservation.Cell, other.Facing))
++                    if (cells.Contains(cell)) return true;
++                foreach (var triangle in ResolveTriangles(other, reservation.Cell, other.Facing))
++                    if (triangles.Contains(triangle)) return true;
++            }
++            return false;
++        }
++
+         /// <summary>登记/清除该单位下一次移动的目的格（启动门禁空间查询的只读输入）。</summary>
+         public void SetPendingDestination(UnitId unitId, GridPoint? destination)
+         {
+--- Assets/Scripts/Logic/Movement/LogicPathfinder.cs (before task)
++++ Assets/Scripts/Logic/Movement/LogicPathfinder.cs
+@@ -199,7 +199,8 @@
+             // canonical footprint as CommitAnchor so accepted paths cannot cross a
+             // stationary unit or the boundary through their outer volume.
+             if (_grid.TryGetFacing(mover, out GridDirection facing)
+-                && _grid.ValidateDestinationFor(mover, cell, facing) != null) return true;
++                && (_grid.ValidateDestinationFor(mover, cell, facing) != null
++                    || _grid.DestinationOverlapsReservedBody(mover, cell, facing))) return true;
+             if (_grid.IsCellBlockedFor(cell, mover)) return true;
+             Reservation reservation = _grid.ReservationAt(cell);
+             if (reservation == null) return false;
+--- Assets/Scripts/Logic/Snapshots/AiForecastWorld.cs (before task)
++++ Assets/Scripts/Logic/Snapshots/AiForecastWorld.cs
+@@ -38,13 +38,15 @@
+         { _decision = decision; _template = template; _fork = fork; }
+         public void Dispose() => _template.Dispose();
+ 
+-        public AiActionForecast Evaluate(CommandRequest request)
++        public AiActionForecast Evaluate(CommandRequest request, AiForecastSettings settings = null)
+         {
++            if (settings?.Validate() is string invalid) throw new LogicDefinitionException(invalid);
+             using var world = _fork();
+-            long horizon = _decision.Tick + LookaheadTicks;
++            long horizon = checked(_decision.Tick + (settings?.LookaheadTicks ?? LookaheadTicks));
+             string error = null;
+             long start = 0, impact = 0, end = 0;
+             long candidatePlanId = 0;
++            long coveragePlanId = 0;
+             var own = new HashSet<long>(_decision.ControlledUnitIds.Select(u => u.Value));
+             var hostile = new HashSet<long>(_decision.VisibleUnits.Where(u => own.Any(id =>
+                 _decision.Classify(new UnitId(id), new UnitId(u.UnitId)) == Factions.UnitRelation.Hostile)).Select(u => u.UnitId));
+@@ -63,7 +65,8 @@
+                     else if (entry.Submit(request) != null) error = "AI_FORECAST_INGRESS_REJECTED";
+                 }
+             }
+-            if (error != null) return new AiActionForecast(error, horizon, Array.Empty<UnitSnapshot>(), -1, 0, 0);
++            if (error != null) return new AiActionForecast(error, horizon, Array.Empty<UnitSnapshot>(), -1, 0, 0,
++                Coverage: AiForecastCoverage.Rejected, ObservedThroughTick: world.Tick);
+             var threats = _decision.VisiblePlans.Where(p => hostile.Contains(p.OwnerUnitId)
+                 && _decision.FindAction(new ActionSpecId(p.ActionSpecId))?.Type == ActionType.Attack)
+                 .ToDictionary(p => p.ActionPlanId, p => p.ImpactTick);
+@@ -78,7 +81,10 @@
+                 {
+                     var rejected = result.Events.Events.OfType<CommandRejectedEvent>().FirstOrDefault();
+                     if (rejected != null)
+-                        return new AiActionForecast(rejected.ReasonCode, horizon, Array.Empty<UnitSnapshot>(), -1, 0, 0);
++                        return new AiActionForecast(rejected.ReasonCode, horizon, Array.Empty<UnitSnapshot>(), -1, 0, 0,
++                            Coverage: AiForecastCoverage.Rejected, ObservedThroughTick: world.Tick);
++                    var accepted = result.Events.Events.OfType<ActionPlanCreatedEvent>().LastOrDefault();
++                    if (accepted != null) coveragePlanId = accepted.ActionPlanId;
+                     if (request.Payload is ScheduleEditPayload)
+                     {
+                         var created = result.Events.Events.OfType<ActionPlanCreatedEvent>().LastOrDefault(e => e.Origin == (int)ActionPlanOrigin.Ordinary);
+@@ -105,7 +111,11 @@
+                         clashes.Add(clash.ActionPlanId.Value);
+                 }
+             }
+-            return new AiActionForecast(null, horizon, world.CurrentSnapshot.Units, firstHit, interrupted.Count, clashes.Count, start, impact, end);
++            var candidatePlan = coveragePlanId == 0 ? null : world.AiActionPlanLookup.FindPlan(new ActionPlanId(coveragePlanId));
++            bool complete = request == null || world.IsEnded || candidatePlan?.IsTerminal == true;
++            return new AiActionForecast(null, horizon, world.CurrentSnapshot.Units, firstHit, interrupted.Count, clashes.Count, start, impact, end,
++                complete ? AiForecastCoverage.Complete : AiForecastCoverage.Uncovered, world.Tick,
++                candidatePlan?.EndTick ?? 0, candidatePlan == null ? 0 : (int)candidatePlan.TerminationReason);
+         }
+     }
+ }
+--- Assets/Tests/EditMode/Logic/AiForecastIngressTests.cs (before task)
++++ Assets/Tests/EditMode/Logic/AiForecastIngressTests.cs
+@@ -70,6 +70,8 @@
+             Assert.That(r.Sim.FindUnitStateMachine(new UnitId(2)).StateEndTick, Is.EqualTo(247));
+             int before = r.Sim.CurrentSnapshot.Units.Single(u => u.UnitId == 1).HealthQ10;
+             var request = r.Quick(); var prediction = r.Forecast(request);
++            Assert.That(prediction.Coverage, Is.EqualTo(AiForecastCoverage.Complete),
++                "An observed early termination closes the result even when the originally scheduled end is later.");
+             r.Submit(request); r.Advance(342);
+             int actual = r.Sim.CurrentSnapshot.Units.Single(u => u.UnitId == 1).HealthQ10;
+             Assert.That(actual, Is.EqualTo(before));
+--- Assets/Tests/PlayMode/FormalAiSceneTests.cs (before task)
++++ Assets/Tests/PlayMode/FormalAiSceneTests.cs
+@@ -24,7 +24,7 @@
+             var d = original.Definition;
+             var encounters = d.Encounters.Select(e => e with { Controllers = e.Controllers.Select(c =>
+                 c.SourceKind == CommandSourceKind.Ai ? c with { AiPolicy = AiPolicyKind.SustainedOffense,
+-                    AiExecution = AiExecutionKind.UtilityBehaviorTree } : c).ToArray() }).ToArray();
++                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360) } : c).ToArray() }).ToArray();
+             // Explicit scene-test envelope; every action, unit, shape and rule comes from the real scene source.
+             var hash = BattleDefinitionHash.Compute(d.RulesVersion, d.TicksPerSecond, 0, d.Rules, d.ConcurrentAction,
+                 d.ReactionRules, d.AdrenalineRules, d.FactionModel, d.DamageChannels, d.ImpactProfiles, d.Units, d.Actions,
+--- /dev/null
++++ Assets/Scripts/Editor/LongActionForecastTools.cs
+@@ -0,0 +1,240 @@
++using System;
++using System.Collections.Generic;
++using System.Diagnostics;
++using System.Globalization;
++using System.IO;
++using System.IO.Compression;
++using System.Linq;
++using System.Text;
++using System.Threading;
++using System.Threading.Tasks;
++using ProjectHero.Authoring;
++using ProjectHero.Core.Compatibility.Authoring;
++using ProjectHero.Core.Compatibility.Runtime;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Events;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Initialization;
++using ProjectHero.Logic.Replay;
++using ProjectHero.Logic.Resources;
++using ProjectHero.Logic.Simulation;
++using ProjectHero.Logic.Units;
++using UnityEditor.SceneManagement;
++using UnityEngine;
++using Debug = UnityEngine.Debug;
++
++namespace ProjectHero.Editor
++{
++    public static class LongActionForecastTools
++    {
++        public const string Root = "优化任务/执行记录/长动作预演覆盖-2026-11-05";
++        [Serializable] public sealed class Input
++        {
++            public string version = AiForecastSettings.Version, sourceHash, definitionHash, sourceFingerprint, contentFingerprint;
++            public int horizon, policy, maxTicks = 900, metaResource;
++            public long seed;
++            public bool near, mirror;
++            public string Id => ((AiPolicyKind)policy) + "-" + (near ? "near" : "main") + "-mirror" + (mirror ? 1 : 0) + "-h" + horizon;
++        }
++        static BattleSimulationSeed Source()
++        {
++            var scene = EditorSceneManager.OpenScene("Assets/Scenes/CombatSampleScene.unity", OpenSceneMode.Single);
++            var host = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<NewBattleSimulationSource>(true)).Single();
++            return host.BuildSeed() ?? throw new InvalidOperationException(host.LastConfigurationError);
++        }
++        static BattleDefinition Build(BattleSimulationSeed source, Input input) => FormalAiBaseline.Build(source.Definition,
++            (AiPolicyKind)input.policy, AiExecutionKind.UtilityBehaviorTree, input.near, input.mirror, new AiForecastSettings(input.horizon));
++        static IEnumerable<Input> Matrix(BattleSimulationSeed source, string code, string content)
++        {
++            foreach (int horizon in new[] { 120, 180, 240, 360 })
++            foreach (var policy in new[] { AiPolicyKind.SustainedOffense, AiPolicyKind.SeekInterrupt, AiPolicyKind.CautiousDefense })
++            foreach (bool near in new[] { false, true }) foreach (bool mirror in new[] { false, true })
++                yield return new Input { horizon = horizon, policy = (int)policy, near = near, mirror = mirror,
++                    seed = unchecked((long)source.RuntimeInputs.InitialRngSeed), metaResource = source.RuntimeInputs.InitialMetaResource,
++                    sourceHash = source.BattleDefinitionHash, sourceFingerprint = code, contentFingerprint = content };
++        }
++        public static void Run()
++        {
++            Directory.CreateDirectory(Root + "/cases"); var source = Source();
++            string code = AiPolicyExperimentTools.SourceFingerprint(), content = FormalAiBaselineTools.ContentFingerprint();
++            File.WriteAllText(Root + "/conditional-probe.csv", Probe(source), Encoding.UTF8);
++            using var summary = new StreamWriter(Root + "/summary.csv", false, Encoding.UTF8);
++            summary.WriteLine("case,horizon,policy,near,mirror,ticks,ended,outcome,health,commands,rejections,attackStarts,moves,reactions,guardStarts,controlTicks,healthLossQ10,resourceSpent,candidateRows,uncovered,covered,rejectedCandidates,maxCandidates,elapsedMs,definitionHash");
++            Parallel.ForEach(Matrix(source, code, content), new ParallelOptions { MaxDegreeOfParallelism = 4 }, input =>
++            {
++                var clock = Stopwatch.StartNew(); var d = Build(source, input); input.definitionHash = d.BattleDefinitionHashValue;
++                var runtime = new BattleRuntimeInputs(unchecked((ulong)input.seed), input.metaResource);
++                var composition = new ProductionBattleComposition(d, source.EncounterId, runtime);
++                using var sim = BattleSimulation.Create(d, source.EncounterId, runtime, composition.Assembly); composition.Attach(sim);
++                var recorder = new ReplayRecorder(sim); string prefix = Root + "/cases/" + input.Id;
++                using var candidates = Gzip(prefix + ".candidates.csv.gz");
++                using var decisions = Gzip(prefix + ".decisions.csv.gz");
++                using var events = Gzip(prefix + ".events.txt.gz");
++                candidates.WriteLine("tick,controller,key,type,reaction,chosen,score,rejection,reason,coverage,damageQ10,incomingQ10,progress,interrupts,clashes,cost,start,impact,end,horizon,observed,required");
++                decisions.WriteLine("tick,controller,selected,wait,ordinaryNode,ordinaryPlan,ordinaryStatus,ordinaryReason,reactionNode,reactionPlan,reactionStatus,reactionReason");
++                var plans = new SortedDictionary<long, PlanTrace>();
++                int commands = 0, rejects = 0, attacks = 0, moves = 0, reactions = 0, guards = 0, maxCandidates = 0;
++                long control = 0, healthLoss = 0, spent = 0, candidateRows = 0, uncovered = 0, covered = 0, candidateRejected = 0;
++                for (long tick = 0; tick < input.maxTicks && !sim.IsEnded; tick++)
++                {
++                    var before = sim.CurrentSnapshot;
++                    recorder.CaptureBeforeStep(); var step = sim.Step(tick, sim.CommandIngress.FreezeTick(tick)); recorder.RecordCommittedStep(step);
++                    commands += sim.LastCommandSet.Envelopes.Count;
++                    healthLoss += step.Snapshot.Units.Sum(u => Math.Max(0L, before.Units.Single(b => b.UnitId == u.UnitId).HealthQ10 - u.HealthQ10));
++                    control += step.Snapshot.Units.Count(u => u.State == (int)UnitState.Staggered || u.State == (int)UnitState.KnockedDown || u.State == (int)UnitState.Recovering);
++                    foreach (var fact in step.Events.Events)
++                    {
++                        events.WriteLine(ReplayEventComparison.Canonical(fact));
++                        if (fact is CommandRejectedEvent || fact is CommandIngressRejectedEvent) rejects++;
++                        if (fact is AdrenalineLedgerChangedEvent ledger && ledger.ChangeKind == AdrenalineChangeKind.Consumed)
++                            spent += ledger.ReservationAmount;
++                        if (fact is ActionPlanCreatedEvent created)
++                        {
++                            plans.Add(created.ActionPlanId, new PlanTrace(created));
++                            if (created.Origin == (int)ActionPlanOrigin.Reaction) reactions++;
++                        }
++                        if (fact is ActionPlanLockedEvent started)
++                        {
++                            var plan = sim.AiActionPlanLookup.FindPlan(new ActionPlanId(started.ActionPlanId));
++                            if (plan.ActionType == ActionType.Attack) attacks++;
++                            if (plan.ActionType == ActionType.Move) moves++;
++                            if (plan.ActionType == ActionType.Guard) guards++;
++                        }
++                        if (fact is DamageChannelResolvedEvent damage && plans.TryGetValue(damage.AttackPlanId.Value, out var trace))
++                            trace.ResolvedDamage += damage.AfterBlockDamageQ10;
++                    }
++                    foreach (var ai in composition.AiControllers)
++                    {
++                        string controller = ai.RegisteredControllerIds[0]; var decision = ai.LastDecisionOf(controller);
++                        if (decision?.DecisionTick != tick) continue;
++                        var o = decision.Behavior.Ordinary; var r = decision.Behavior.Reaction;
++                        decisions.WriteLine(Csv(tick, controller, decision.HasSelection, decision.NoSelectionReason,
++                            o.Cursor, o.PlanId, o.Status, o.Reason, r.Cursor, r.PlanId, r.Status, r.Reason));
++                        maxCandidates = Math.Max(maxCandidates, decision.Evaluations.Count);
++                        foreach (var e in decision.Evaluations)
++                        {
++                            candidateRows++; if (e.Coverage == AiForecastCoverage.Uncovered) uncovered++;
++                            if (e.Coverage == AiForecastCoverage.Complete) covered++;
++                            if (e.RejectionCode != null) candidateRejected++;
++                            if (e.Chosen && (e.Coverage != AiForecastCoverage.Complete || !e.Score.HasValue)) throw new InvalidOperationException("UNCOVERED_CANDIDATE_SELECTED");
++                            candidates.WriteLine(Csv(tick, controller, e.Key, e.Type, e.IsReaction, e.Chosen, e.Score, e.RejectionCode, e.Reason,
++                                e.Coverage, e.DamageDeltaQ10, e.IncomingDeltaQ10, e.PositionProgress, e.InterruptedThreats, e.Clashes, e.Cost,
++                                e.StartTick, e.ImpactTick, e.EndTick, e.HorizonTick, e.ObservedThroughTick, e.RequiredThroughTick));
++                        }
++                    }
++                }
++                using (var output = new StreamWriter(prefix + ".plans.csv", false, Encoding.UTF8))
++                {
++                    output.WriteLine("plan,owner,action,type,start,impact,end,state,terminalReason,terminalTick,resolvedDamageAfterBlockQ10");
++                    foreach (var trace in plans.Values)
++                    {
++                        var p = sim.AiActionPlanLookup.FindPlan(new ActionPlanId(trace.Id));
++                        output.WriteLine(Csv(trace.Id, p.OwnerUnitId.Value, p.ActionSpecId.Value, p.ActionType, p.StartTick, p.ImpactTick,
++                            p.EndTick, p.State, p.TerminationReason, p.TerminalTick, trace.ResolvedDamage));
++                    }
++                }
++                var replay = recorder.BuildReplay(); if (replay.Submissions.Count != 0) throw new InvalidOperationException("EXTERNAL_INPUT_IN_AI_EXPERIMENT");
++                File.WriteAllText(prefix + ".input.json", JsonUtility.ToJson(input, true), Encoding.UTF8);
++                using (var file = File.Create(prefix + ".heroReplay")) ReplayFile.Save(file, replay);
++                lock (summary)
++                {
++                    summary.WriteLine(Csv(input.Id, input.horizon, (AiPolicyKind)input.policy, input.near, input.mirror, replay.Records.Count,
++                        sim.IsEnded, sim.CurrentSnapshot.BattleEnd.ResultCode, string.Join(";", sim.CurrentSnapshot.Units.Select(u => u.UnitId + ":" + u.HealthQ10)),
++                        commands, rejects, attacks, moves, reactions, guards, control, healthLoss, spent, candidateRows, uncovered, covered, candidateRejected,
++                        maxCandidates, clock.ElapsedMilliseconds, d.BattleDefinitionHashValue)); summary.Flush();
++                }
++                Debug.Log("FORECAST_CASE " + input.Id + " ticks=" + replay.Records.Count);
++            });
++        }
++        sealed class PlanTrace
++        {
++            public readonly long Id; public readonly string Action; public readonly bool IsReaction; public long ResolvedDamage;
++            public PlanTrace(ActionPlanCreatedEvent created) { Id = created.ActionPlanId; Action = created.ActionSpecId; IsReaction = created.Origin == (int)ActionPlanOrigin.Reaction; }
++        }
++        static string Probe(BattleSimulationSeed source)
++        {
++            var lines = new List<string> { "near,mirror,horizon,key,coverage,start,impact,end,observed,required,damageQ10,score,conditionalActualMatches" };
++            foreach (bool near in new[] { false, true }) foreach (bool mirror in new[] { false, true })
++            foreach (int horizon in new[] { 120, 180, 240, 360 })
++            {
++                var input = new Input { policy = (int)AiPolicyKind.SustainedOffense, horizon = horizon, near = near, mirror = mirror };
++                var d = Build(source, input); var composition = new ProductionBattleComposition(d, source.EncounterId, source.RuntimeInputs);
++                using var sim = BattleSimulation.Create(d, source.EncounterId, source.RuntimeInputs, new BattleSimulationAssembly(turnWindowSchedule: composition));
++                composition.Attach(sim); sim.Step(0, sim.CommandIngress.FreezeTick(0));
++                var ai = composition.AiControllers.Single(a => a.BuildContext(sim.DecisionSnapshotFor(new ControllerId(a.RegisteredControllerIds[0])),
++                    new ControllerId(a.RegisteredControllerIds[0])).HasSubmissionWindow);
++                var controller = new ControllerId(ai.RegisteredControllerIds[0]); var context = ai.BuildContext(sim.DecisionSnapshotFor(controller), controller);
++                foreach (var candidate in AiTacticalCandidateBuilder.Ordinary(context).Where(c => c.Type == ActionType.Attack))
++                {
++                    using var forecast = context.ForecastFactory(context.Snapshot);
++                    var baseline = forecast.Evaluate(null, context.ForecastSettings); var outcome = forecast.Evaluate(candidate.Request, context.ForecastSettings);
++                    var evaluation = AiTacticalPolicy.Evaluate(context, AiPolicyKind.SustainedOffense, candidate, baseline, outcome);
++                    bool? matches = null;
++                    if (horizon == 360)
++                    {
++                        var actualComposition = new ProductionBattleComposition(d, source.EncounterId, source.RuntimeInputs);
++                        using var observed = BattleSimulation.Create(d, source.EncounterId, source.RuntimeInputs,
++                            new BattleSimulationAssembly(turnWindowSchedule: actualComposition)); actualComposition.Attach(observed);
++                        observed.Step(0, observed.CommandIngress.FreezeTick(0));
++                        if (observed.CommandIngress.FindEntry(controller).Submit(candidate.Request) != null) throw new InvalidOperationException("PROBE_INGRESS_FAILED");
++                        for (long tick = 1; tick <= horizon && !observed.IsEnded; tick++) observed.Step(tick, observed.CommandIngress.FreezeTick(tick));
++                        matches = outcome.Units.Select(u => (u.UnitId, u.HealthQ10, u.X, u.Y, u.State)).SequenceEqual(
++                            observed.CurrentSnapshot.Units.Select(u => (u.UnitId, u.HealthQ10, u.X, u.Y, u.State)));
++                        if (matches != true) throw new InvalidOperationException("CONDITIONAL_FORECAST_MISMATCH");
++                    }
++                    lines.Add(Csv(near, mirror, horizon, candidate.Key, outcome.Coverage, outcome.PlanStartTick, outcome.PlanImpactTick,
++                        outcome.PlanEndTick, outcome.ObservedThroughTick, outcome.RequiredThroughTick, evaluation.DamageDeltaQ10, evaluation.Score, matches));
++                }
++            }
++            return string.Join("\n", lines) + "\n";
++        }
++        public static void RunProbe()
++        {
++            Directory.CreateDirectory(Root);
++            File.WriteAllText(Root + "/conditional-probe.csv", Probe(Source()), Encoding.UTF8);
++        }
++        public static void Audit()
++        {
++            var source = Source(); string code = AiPolicyExperimentTools.SourceFingerprint(), content = FormalAiBaselineTools.ContentFingerprint();
++            int count = 0; long ticks = 0;
++            Parallel.ForEach(Directory.GetFiles(Root + "/cases", "*.input.json"), new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
++            {
++                var input = JsonUtility.FromJson<Input>(File.ReadAllText(file));
++                if (input.version != AiForecastSettings.Version || input.sourceHash != source.BattleDefinitionHash || input.sourceFingerprint != code || input.contentFingerprint != content)
++                    throw new InvalidOperationException("FORECAST_INPUT_CHANGED");
++                var d = Build(source, input); if (d.BattleDefinitionHashValue != input.definitionHash) throw new InvalidOperationException("FORECAST_DEFINITION_CHANGED");
++                using var stream = File.OpenRead(file.Replace(".input.json", ".heroReplay")); var replay = ReplayFile.Load(stream, d); Verify(d, replay);
++                Interlocked.Increment(ref count); Interlocked.Add(ref ticks, replay.Records.Count); Debug.Log("FORECAST_AUDIT " + input.Id);
++            });
++            if (count != 48) throw new InvalidOperationException("FORECAST_CASE_COUNT");
++            if (File.ReadAllText(Root + "/conditional-probe.csv", Encoding.UTF8) != Probe(source)) throw new InvalidOperationException("PROBE_REBUILD_MISMATCH");
++            File.WriteAllText(Root + "/native-disk-audit.txt", "Passed; cases=" + count + "; ticks=" + ticks + "; conditionalProbes=80; source=" + code);
++        }
++        public static void AuditCompatibility()
++        {
++            var source = Source(); int count = 0; long ticks = 0;
++            Parallel.ForEach(Directory.GetFiles(FormalAiBaselineTools.Root + "/cases", "*.input.json"), new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
++            {
++                var input = JsonUtility.FromJson<FormalAiBaselineTools.Input>(File.ReadAllText(file));
++                if (input.execution != (int)AiExecutionKind.UtilityBehaviorTree) return;
++                var d = FormalAiBaseline.Build(source.Definition, (AiPolicyKind)input.policy, (AiExecutionKind)input.execution, input.near, input.mirror);
++                if (d.BattleDefinitionHashValue != input.definitionHash) throw new InvalidOperationException("FROZEN_DEFINITION_CHANGED");
++                using var stream = File.OpenRead(file.Replace(".input.json", ".heroReplay")); var replay = ReplayFile.Load(stream, d); Verify(d, replay);
++                Interlocked.Increment(ref count); Interlocked.Add(ref ticks, replay.Records.Count);
++            });
++            if (count != 12) throw new InvalidOperationException("FROZEN_COMPATIBILITY_CASE_COUNT");
++            File.WriteAllText(Root + "/native-compatibility.txt", "Passed; cases=" + count + "; ticks=" + ticks + "; source=" + AiPolicyExperimentTools.SourceFingerprint());
++        }
++        static void Verify(BattleDefinition definition, BattleReplay replay)
++        {
++            using var player = new ReplayPlayer(definition); player.Load(replay); player.Play();
++            while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
++            if (player.Deviation != null) throw new InvalidOperationException(player.Deviation.ToString());
++        }
++        static StreamWriter Gzip(string path) => new StreamWriter(new GZipStream(File.Create(path), System.IO.Compression.CompressionLevel.Optimal), Encoding.UTF8);
++        static string Csv(params object[] values) => string.Join(",", values.Select(v => "\"" + Convert.ToString(v, CultureInfo.InvariantCulture)?.Replace("\"", "\"\"") + "\""));
++    }
++}
+--- /dev/null
++++ Assets/Scripts/Logic/AI/AiForecastSettings.cs
+@@ -0,0 +1,18 @@
++using ProjectHero.Logic.Combat;
++
++namespace ProjectHero.Logic.AI
++{
++    /// <summary>Opt-in complete-outcome scoring. Null settings retain the exact V2 policy and 120-Tick encoding.</summary>
++    public sealed record AiForecastSettings(int LookaheadTicks)
++    {
++        public const string Version = "public-kernel-complete-outcome-v3";
++        public const int MaximumLookaheadTicks = 360;
++        public string Validate() => LookaheadTicks < 1 || LookaheadTicks > MaximumLookaheadTicks ? "AI_FORECAST_SETTINGS_INVALID" : null;
++        public void WriteHashComponents(CanonicalHashWriter writer)
++        {
++            writer.Write("controller_binding.ai_forecast_version", Version);
++            writer.Write("controller_binding.ai_forecast_ticks", LookaheadTicks);
++        }
++    }
++    public enum AiForecastCoverage { Unspecified = 0, Complete = 1, Uncovered = 2, Rejected = 3 }
++}
+--- /dev/null
++++ Assets/Tests/EditMode/Authoring/AiForecastCoverageTests.cs
+@@ -0,0 +1,181 @@
++using System;
++using System.Linq;
++using NUnit.Framework;
++using ProjectHero.Logic;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Initialization;
++using ProjectHero.Logic.Events;
++using ProjectHero.Logic.Movement;
++using ProjectHero.Logic.Simulation;
++
++namespace ProjectHero.Authoring.Tests
++{
++    public sealed class AiForecastCoverageTests
++    {
++        sealed class Rig : IDisposable
++        {
++            public readonly BattleSimulation Sim;
++            public readonly AiDecisionContext Context;
++            public Rig(int ticks)
++            {
++                var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense,
++                    AiExecutionKind.UtilityBehaviorTree, true, false, new AiForecastSettings(ticks));
++                var runtime = new BattleRuntimeInputs(20260922, 10);
++                var composition = new ProductionBattleComposition(d, d.Encounters[0].EncounterId, runtime);
++                // Genuine windows/ingress, with no additional commands: exactly the forecast's conditional assumption.
++                Sim = BattleSimulation.Create(d, d.Encounters[0].EncounterId, runtime,
++                    new BattleSimulationAssembly(turnWindowSchedule: composition));
++                composition.Attach(Sim); Sim.Step(0, Sim.CommandIngress.FreezeTick(0));
++                var owner = Sim.CurrentTurnWindow.OwnerUnitId;
++                var ai = composition.AiControllers.Single(c => c.BuildContext(Sim.DecisionSnapshotFor(
++                    new ControllerId(c.RegisteredControllerIds[0])), new ControllerId(c.RegisteredControllerIds[0])).ControlledUnits.Contains(owner));
++                var id = new ControllerId(ai.RegisteredControllerIds[0]);
++                Context = ai.BuildContext(Sim.DecisionSnapshotFor(id), id);
++            }
++            public AiTacticalCandidate Candidate(string name) => AiTacticalCandidateBuilder.Ordinary(Context)
++                .Single(c => c.Type == ActionType.Attack && c.Key.Contains("/action." + name + ".radius_2/"));
++            public AiActionForecast Predict(AiTacticalCandidate candidate, int? ticks = null)
++            {
++                using var forecast = Context.ForecastFactory(Context.Snapshot);
++                return forecast.Evaluate(candidate?.Request, new AiForecastSettings(ticks ?? Context.ForecastSettings.LookaheadTicks));
++            }
++            public void Dispose() => Sim.Dispose();
++        }
++
++        [TestCase("spear_thrust", 120, false, 127)]
++        [TestCase("spear_thrust", 126, false, 127)]
++        [TestCase("spear_thrust", 127, true, 127)]
++        [TestCase("wide_cleave", 120, false, 151)]
++        [TestCase("wide_cleave", 180, true, 151)]
++        [TestCase("heavy_smash", 180, false, 211)]
++        [TestCase("heavy_smash", 240, true, 211)]
++        [TestCase("whirlwind", 240, false, 271)]
++        [TestCase("whirlwind", 241, false, 271)]
++        [TestCase("whirlwind", 271, true, 271)]
++        [TestCase("whirlwind", 360, true, 271)]
++        public void CoverageRequiresObservedOutcomeNotJustImpact(string action, int horizon, bool complete, long end)
++        {
++            using var rig = new Rig(horizon); var candidate = rig.Candidate(action);
++            var outcome = rig.Predict(candidate); var baseline = rig.Predict(null);
++            Assert.That(outcome.RejectionCode, Is.Null); Assert.That(outcome.RequiredThroughTick, Is.EqualTo(end));
++            Assert.That(outcome.Coverage, Is.EqualTo(complete ? AiForecastCoverage.Complete : AiForecastCoverage.Uncovered));
++            Assert.That(outcome.ObservedThroughTick, Is.EqualTo(horizon));
++            var evaluation = AiTacticalPolicy.Evaluate(rig.Context, AiPolicyKind.SustainedOffense, candidate, baseline, outcome);
++            Assert.That(evaluation.Score.HasValue, Is.EqualTo(complete));
++            Assert.That(evaluation.DamageDeltaQ10.HasValue, Is.EqualTo(complete));
++            if (!complete) Assert.That(evaluation.Reason, Is.EqualTo("OUTCOME_NOT_COVERED"));
++        }
++
++        [Test]
++        public void PartialObservedHitStillDoesNotBecomeComparableFullOutcome()
++        {
++            using var rig = new Rig(120); var candidate = rig.Candidate("spear_thrust");
++            var outcome = rig.Predict(candidate); var baseline = rig.Predict(null);
++            Assert.That(baseline.Units.Single(u => u.UnitId == 2).HealthQ10 - outcome.Units.Single(u => u.UnitId == 2).HealthQ10, Is.EqualTo(25600));
++            var score = AiTacticalPolicy.Evaluate(rig.Context, AiPolicyKind.SustainedOffense, candidate, baseline, outcome);
++            Assert.That(score.Score, Is.Null); Assert.That(score.DamageDeltaQ10, Is.Null);
++            Assert.That(AiTacticalPolicy.Decide(rig.Context, 20260922, AiPolicyKind.SustainedOffense).Evaluations
++                .Where(e => e.Coverage == AiForecastCoverage.Uncovered).All(e => !e.Chosen && e.Score == null), Is.True);
++        }
++
++        [TestCase("heavy_smash")]
++        [TestCase("whirlwind")]
++        public void CoveredForecastMatchesRealConditionalKernel(string action)
++        {
++            using var rig = new Rig(360); var candidate = rig.Candidate(action);
++            string before = rig.Sim.CurrentSnapshot.ComputeHash().ToString();
++            var outcome = rig.Predict(candidate);
++            Assert.That(rig.Sim.CurrentSnapshot.ComputeHash().ToString(), Is.EqualTo(before));
++            Assert.That(rig.Sim.CommandIngress.FindEntry(rig.Context.ControllerId).Submit(candidate.Request), Is.Null);
++            for (long tick = 1; tick <= 360 && !rig.Sim.IsEnded; tick++) rig.Sim.Step(tick, rig.Sim.CommandIngress.FreezeTick(tick));
++            Assert.That(outcome.Coverage, Is.EqualTo(AiForecastCoverage.Complete));
++            Assert.That(outcome.Units.Select(u => (u.UnitId, u.HealthQ10, u.X, u.Y, u.State)),
++                Is.EqualTo(rig.Sim.CurrentSnapshot.Units.Select(u => (u.UnitId, u.HealthQ10, u.X, u.Y, u.State))));
++        }
++
++        [Test]
++        public void BaselineAndCandidateMustUseSameHorizon()
++        {
++            using var rig = new Rig(360); var candidate = rig.Candidate("heavy_smash");
++            Assert.Throws<LogicDefinitionException>(() => AiTacticalPolicy.Evaluate(rig.Context, AiPolicyKind.SustainedOffense,
++                candidate, rig.Predict(null, 120), rig.Predict(candidate, 360)));
++        }
++
++        [Test]
++        public void InvalidCommandIsRejectedRatherThanMerelyUncovered()
++        {
++            using var rig = new Rig(360); var candidate = rig.Candidate("heavy_smash");
++            var payload = (ScheduleEditPayload)candidate.Request.Payload;
++            candidate = candidate with { Request = candidate.Request with { Payload = new ScheduleEditPayload(new ScheduleEditOperation[] {
++                ((AddOrdinaryPlanOperation)payload.Operations[0]) with { RequestedStartTick = 180 } }) } };
++            var forecast = rig.Predict(candidate);
++            Assert.That(forecast.RejectionCode, Is.Not.Null); Assert.That(forecast.Coverage, Is.EqualTo(AiForecastCoverage.Rejected));
++        }
++
++        [Test]
++        public void SettingsAreVersionedAndValidatedWithoutChangingFrozenDefault()
++        {
++            var source = BattleDefinitionFixture.Definition;
++            var old = FormalAiBaseline.Build(source, AiPolicyKind.SustainedOffense, AiExecutionKind.UtilityBehaviorTree, true, false);
++            var hashes = new[] { 120, 180, 240, 360 }.Select(t => FormalAiBaseline.Build(source, AiPolicyKind.SustainedOffense,
++                AiExecutionKind.UtilityBehaviorTree, true, false, new AiForecastSettings(t)).BattleDefinitionHashValue).ToArray();
++            Assert.That(hashes.Distinct().Count(), Is.EqualTo(4)); Assert.That(hashes, Does.Not.Contain(old.BattleDefinitionHashValue));
++            var binding = old.Encounters[0].Controllers[0];
++            foreach (int invalid in new[] { 0, 361 }) Assert.Throws<LogicDefinitionException>(() => new AiControllerLogic(1)
++                .RegisterController(binding with { AiForecast = new AiForecastSettings(invalid) }));
++            Assert.Throws<LogicDefinitionException>(() => new CommandIngressRegistry().RegisterExternalEntry(binding with {
++                SourceKind = CommandSourceKind.Player, AiPolicy = AiPolicyKind.Legacy, AiForecast = new AiForecastSettings(120) }));
++        }
++
++        [TestCase(true)]
++        [TestCase(false)]
++        public void MovingOpponentCannotInvalidateAcceptedMove(bool forecast)
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense,
++                AiExecutionKind.UtilityBehaviorTree, false, false, new AiForecastSettings(120));
++            var runtime = new BattleRuntimeInputs(20260922, 10);
++            var composition = new ProductionBattleComposition(d, d.Encounters[0].EncounterId, runtime);
++            using var sim = BattleSimulation.Create(d, d.Encounters[0].EncounterId, runtime,
++                new BattleSimulationAssembly(turnWindowSchedule: composition));
++            composition.Attach(sim);
++            AiDecisionContext Context(string controller)
++            {
++                var id = new ControllerId(controller);
++                return composition.AiControllers.Single(a => a.RegisteredControllerIds[0] == controller)
++                    .BuildContext(sim.DecisionSnapshotFor(id), id);
++            }
++            for (long tick = 0; tick <= 180; tick++)
++            {
++                sim.Step(tick, sim.CommandIngress.FreezeTick(tick));
++                string destination = tick == 0 ? "/-1/3" : tick == 102 ? "/-3/1" : tick == 156 ? "/-5/-1" : null;
++                if (destination == null) continue;
++                var context = Context("controller.enemy_ai");
++                var request = AiTacticalCandidateBuilder.Ordinary(context).Single(c => c.Type == ActionType.Move
++                    && c.Key.EndsWith(destination, StringComparison.Ordinal)).Request;
++                Assert.That(sim.CommandIngress.FindEntry(context.ControllerId).Submit(request), Is.Null);
++            }
++            var actor = Context("controller.player");
++            var move = AiTacticalCandidateBuilder.Ordinary(actor).Single(c => c.Type == ActionType.Move
++                && c.Key.EndsWith("/-8/-4", StringComparison.Ordinal));
++            if (forecast)
++            {
++                using var preview = actor.ForecastFactory(actor.Snapshot);
++                Assert.That(preview.Evaluate(move.Request, actor.ForecastSettings).RejectionCode, Is.EqualTo(PathSearchCodes.PATH_INVALID_DESTINATION));
++            }
++            else
++            {
++                Assert.That(sim.CommandIngress.FindEntry(actor.ControllerId).Submit(move.Request), Is.Null);
++                var result = sim.Step(181, sim.CommandIngress.FreezeTick(181));
++                Assert.That(result.Events.Events.OfType<CommandRejectedEvent>().Single().ReasonCode, Is.EqualTo(PathSearchCodes.PATH_INVALID_DESTINATION));
++                for (long tick = 182; tick <= 300; tick++) sim.Step(tick, sim.CommandIngress.FreezeTick(tick));
++                Assert.That(sim.CurrentSnapshot.Units.Single(u => u.UnitId == 2).X, Is.EqualTo(-5));
++                Assert.That(sim.CurrentSnapshot.Units.Single(u => u.UnitId == 2).Y, Is.EqualTo(-5));
++            }
++        }
++    }
++}

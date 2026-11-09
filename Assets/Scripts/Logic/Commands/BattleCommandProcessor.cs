@@ -83,6 +83,8 @@ namespace ProjectHero.Logic.Commands
     public sealed class BattleCommandProcessor : IAuthorityRoutedCommandProcessor
     {
         private readonly CommandAuthority _authority;
+        internal Action<CommandEnvelope> Processing { get; set; }
+        internal Action<CommandEnvelope, string> Processed { get; set; }
 
         public BattleCommandProcessor(CommandAuthority authority)
         {
@@ -175,7 +177,9 @@ namespace ProjectHero.Logic.Commands
             {
                 CommandEnvelope envelope = envelopes[i];
                 if (envelope == null) continue;
+                Processing?.Invoke(envelope);
                 string error = ProcessAuthorized(envelope, tick, batchBaseScheduleRevision);
+                Processed?.Invoke(envelope, error);
                 if (error != null) rejections.Add(new CommandRejectionRecord(envelope, error));
             }
             return rejections;

@@ -199,7 +199,8 @@ namespace ProjectHero.Logic.Movement
             // canonical footprint as CommitAnchor so accepted paths cannot cross a
             // stationary unit or the boundary through their outer volume.
             if (_grid.TryGetFacing(mover, out GridDirection facing)
-                && _grid.ValidateDestinationFor(mover, cell, facing) != null) return true;
+                && (_grid.ValidateDestinationFor(mover, cell, facing) != null
+                    || _grid.DestinationOverlapsReservedBody(mover, cell, facing))) return true;
             if (_grid.IsCellBlockedFor(cell, mover)) return true;
             Reservation reservation = _grid.ReservationAt(cell);
             if (reservation == null) return false;

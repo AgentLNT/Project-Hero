@@ -25,6 +25,11 @@ namespace ProjectHero.Logic.AI
         string NoSelectionReason,
         long DecisionTick = -1L)
     {
+        public AiPolicyKind Policy { get; init; }
+        public AiExecutionKind Execution { get; init; }
+        public AiBehaviorMemory Behavior { get; init; }
+        public IReadOnlyList<string> UnsupportedActionIds { get; init; } = Array.Empty<string>();
+        public IReadOnlyList<AiCandidateEvaluation> Evaluations { get; init; } = Array.Empty<AiCandidateEvaluation>();
         public static AiDecision None(RngSnapshot rng, string reason)
             => new AiDecision(null, Array.Empty<AiCandidate>(), Array.Empty<AiReactionOptionView>(),
                 rng, 0, 0, reason ?? "<none>");

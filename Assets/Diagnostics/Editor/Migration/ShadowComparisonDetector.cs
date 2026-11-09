@@ -206,6 +206,7 @@ namespace ProjectHero.Core.Compatibility.Runtime
                 AddNewRuleFact(report,policy,tick,checkpoint,prefix+".durationTicks",legacyPlan.DurationTicks,shadowPlan.DurationTicks,"R2 defense duration",eventSequence);
                 AddNewRuleFact(report,policy,tick,checkpoint,prefix+".defenseQuotaRemainingQ10",legacyPlan.DefenseQuotaRemainingQ10,shadowPlan.DefenseQuotaRemainingQ10,"R2 Guard quota",eventSequence);
                 AddNewRuleFact(report,policy,tick,checkpoint,prefix+".reactionTriggeredAtTick",legacyPlan.ReactionTriggeredAtTick,shadowPlan.ReactionTriggeredAtTick,"R2 actual first eligible contact tick",eventSequence);
+                AddNewRuleFact(report,policy,tick,checkpoint,prefix+".clashResolvedAtTick",legacyPlan.ClashResolvedAtTick,shadowPlan.ClashResolvedAtTick,"Clash effect end and retained recovery",eventSequence);
                 AddNewRuleFact(report,policy,tick,checkpoint,prefix+".sourceImpactTick",legacyPlan.SourceImpactTick,shadowPlan.SourceImpactTick,"R2 source boundary",eventSequence);
                 AddNewRuleFact(report, policy, tick, checkpoint, prefix + ".lastRequestedStartTick",
                     legacyPlan.LastRequestedStartTick, shadowPlan.LastRequestedStartTick,

@@ -131,6 +131,8 @@ namespace ProjectHero.Logic.Resources
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT,
                     "initial available=" + initialAvailable.ToString(CultureInfo.InvariantCulture) +
                     " cycle=" + initialCycleId.ToString(CultureInfo.InvariantCulture));
+            if (_rules.UseCombatValuesV05 && initialAvailable > _rules.MaxAvailablePerCycle)
+                throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT, "initial stock exceeds cap");
             if (AvailableAdrenaline != 0 || CycleId != 0L || _reservations.Count != 0)
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT,
                     "ledger already initialized for unit " + UnitId.Value.ToString(CultureInfo.InvariantCulture));
@@ -270,6 +272,22 @@ namespace ProjectHero.Logic.Resources
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT,
                     "unit mismatch: " + facts.UnitId.Value.ToString(CultureInfo.InvariantCulture));
 
+            if (_rules.UseCombatValuesV05)
+            {
+                if (facts.TotalFinalDamageDealtQ10 < 0 || facts.TotalFinalDamageReceivedQ10 < 0)
+                    throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT, "negative damage facts");
+                long requested = checked((long)facts.TotalFinalDamageDealtQ10 * 2L + (long)facts.TotalFinalDamageReceivedQ10 * 3L);
+                int capacity = checked(_rules.MaxAvailablePerCycle - ReservedAdrenaline - AvailableAdrenaline);
+                if (capacity < 0) throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT, "stock exceeds cap");
+                int credited = (int)Math.Min(requested, capacity);
+                if (credited == 0) return;
+                int previous = AvailableAdrenaline;
+                AvailableAdrenaline = checked(previous + credited);
+                Changed?.Invoke(new AdrenalineLedgerChange(UnitId, CycleId, AdrenalineChangeKind.Accrued,
+                    previous, AvailableAdrenaline, null, credited));
+                return;
+            }
+
             int gain = 0;
             if (facts.TotalFinalDamageDealtQ10 > 0)
                 gain += QuantizeGain(facts.TotalFinalDamageDealtQ10, _rules.DamageDealtGainQ10);
@@ -305,13 +323,18 @@ namespace ProjectHero.Logic.Resources
         }
 
         /// <summary>
-        /// 逐 Tick 伤害类别的一次性量化：<c>floor(rawQ10 × gainQ10 / 10 / 10)</c>。
+        /// 逐 Tick 伤害类别的一次性量化：V3 为 <c>RoundHalfUp(rawQ10 × gainQ10 / 1024²)</c>。
+        /// V1 的除以 100 与中间 V2 的向下量化仅用于历史定义重演。
         /// 它<strong>不</strong>按接触舍入——入参已经是本 Tick 的规范聚合值。
         /// </summary>
-        private static int QuantizeGain(int rawQ10, int gainQ10)
+        private int QuantizeGain(int rawQ10, int gainQ10)
         {
             long scaled = (long)rawQ10 * gainQ10;
-            return (int)(scaled / 100L);
+            if (_rules.DamageGainQuantization == AdrenalineDamageGainQuantization.LegacyDecimalV1)
+                return (int)(scaled / 100L);
+            const long scale = 1024L * 1024L;
+            long rounding = _rules.DamageGainQuantization == AdrenalineDamageGainQuantization.BinaryRoundHalfUpV3 ? scale / 2 : 0;
+            return (int)((scaled + rounding) / scale);
         }
 
         private void RemoveReservation(ActionPlanId planId)

@@ -160,7 +160,8 @@ namespace ProjectHero.Logic.Snapshots
         bool HasDestination = false,
         long TerminalTick = -1L,
         int TerminationReason = 0,
-        int DurationTicks = 0, int DefenseQuotaRemainingQ10 = 0, long ReactionTriggeredAtTick = -1L)
+        int DurationTicks = 0, int DefenseQuotaRemainingQ10 = 0, long ReactionTriggeredAtTick = -1L,
+        long ClashResolvedAtTick = -1L)
     {
         internal bool MatchesAuthoritative(ProjectHero.Logic.Actions.ActionPlan plan,
             ProjectHero.Logic.Definitions.IFactionRelationResolver factions)
@@ -183,7 +184,8 @@ namespace ProjectHero.Logic.Snapshots
                 && DestinationY == (plan.Destination?.Y ?? 0) && HasDestination == plan.Destination.HasValue
                 && TerminalTick == plan.TerminalTick && TerminationReason == (int)plan.TerminationReason
                 && DurationTicks == plan.DurationTicks && DefenseQuotaRemainingQ10 == plan.DefenseQuotaRemainingQ10
-                && ReactionTriggeredAtTick == plan.ReactionTriggeredAtTick;
+                && ReactionTriggeredAtTick == plan.ReactionTriggeredAtTick
+                && ClashResolvedAtTick == plan.ClashResolvedAtTick;
         }
         /// <summary>
         /// 从权威计划投影快照。它是<strong>唯一</strong>的字段映射处：
@@ -231,7 +233,8 @@ namespace ProjectHero.Logic.Snapshots
                 plan.Destination.HasValue ? plan.Destination.Value.Y : 0,
                 plan.Destination.HasValue,
                 plan.TerminalTick,
-                (int)plan.TerminationReason, plan.DurationTicks, plan.DefenseQuotaRemainingQ10, plan.ReactionTriggeredAtTick);
+                (int)plan.TerminationReason, plan.DurationTicks, plan.DefenseQuotaRemainingQ10, plan.ReactionTriggeredAtTick,
+                plan.ClashResolvedAtTick);
         }
     }
 
@@ -429,7 +432,7 @@ namespace ProjectHero.Logic.Snapshots
         long NextThinkTick,
         long DecisionCount = 0L,
         long LastDecisionTick = -1L,
-        RngSnapshot Rng = null);
+        RngSnapshot Rng = null, ProjectHero.Logic.AI.AiBehaviorMemory Behavior = null);
 
     /// <summary>
     /// 规范化 <see cref="LogicSnapshot"/>（主方案 3.11.1 + 3.11.2）：覆盖<strong>全部会影响未来结果</strong>
@@ -812,6 +815,7 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt32(plan.DurationTicks);
                 encoder.WriteInt32(plan.DefenseQuotaRemainingQ10);
                 encoder.WriteInt64(plan.ReactionTriggeredAtTick);
+                encoder.WriteInt64(plan.ClashResolvedAtTick);
             }
 
             // 终态计划历史：只写记录数与摘要，绝不展开旧终态记录。
@@ -1003,6 +1007,8 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt64(controller.LastDecisionTick);
                 encoder.WriteInt32(controller.Rng?.AlgorithmVersion ?? 0);
                 encoder.WriteUInt64(controller.Rng?.State ?? 0UL);
+                // Opt-in versioned extension; legacy and V2 bytes remain unchanged.
+                controller.Behavior?.Encode(encoder);
             }
 
             // —— 命令入口（注册、每入口下一个/已冻结 ProducerOrdinal、未来 Tick 桶）——

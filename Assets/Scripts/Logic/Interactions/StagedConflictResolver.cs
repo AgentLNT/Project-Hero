@@ -694,7 +694,8 @@ namespace ProjectHero.Logic.Interactions
                         residual.RecipientUnitId, residual.RecipientActionPlanId, residual.RecipientUnitId);
                     var resolution = new RemainingHitResolution(key, residual.SourceActionPlanId, residual.SourceUnitId,
                         RequireSpecId(context, residual.SourceActionPlanId), residual.SourceDirection, residual.ResidualMomentumUnits,
-                        new[] { MomentumQuantizer.ClashResidualComponent(residual.ResidualMomentumUnits) }, AttackTagMask.None,
+                        new[] { ResidualDamage(intentsByPlan[residual.SourceActionPlanId.Value], residual.ResidualMomentumUnits,
+                            definitionById, unitSnapshotByUnit) }, AttackTagMask.None,
                         default, null, target.CanReceiveDirectHit, false, null, ContactKind: TargetContactType.ClashResidualImpact,
                         RecipientPlanId: residual.RecipientActionPlanId);
                     int index = byTarget.IndexOf(residual.RecipientUnitId.Value);
@@ -841,7 +842,20 @@ namespace ProjectHero.Logic.Interactions
                     "unit definition missing for unit=" + snapshot.UnitId.ToString(CultureInfo.InvariantCulture)
                     + " definition=" + (snapshot.DefinitionId ?? string.Empty));
             }
-            return MomentumQuantizer.QuantizeControlResistanceUnits(definition.Mass, definition.MomentumSpeed);
+            return definition.CombatAttributes?.StabilityQ10
+                ?? MomentumQuantizer.QuantizeControlResistanceUnits(definition.Mass, definition.MomentumSpeed);
+        }
+
+        private static DamageComponentSpec ResidualDamage(CombatIntent source, int allocation,
+            Dictionary<string, UnitDefinition> definitions, Dictionary<long, UnitSnapshot> units)
+        {
+            if (definitions[units[source.OwnerUnitId.Value].DefinitionId].CombatAttributes == null)
+                return MomentumQuantizer.ClashResidualComponent(allocation);
+            long damage = 0;
+            foreach (var component in source.DamageComponents) damage = checked(damage + MomentumQuantizer.QuantizeDamageQ10(component.RawAmount));
+            long residualQ10 = checked(damage * allocation) / source.Momentum.MomentumUnits;
+            return new DamageComponentSpec(DamageChannels.PhysicalBlunt, residualQ10 / 1024f,
+                DamageChannelCatalog.GetDefaultTags(DamageChannels.PhysicalBlunt));
         }
 
         // ==================================================================

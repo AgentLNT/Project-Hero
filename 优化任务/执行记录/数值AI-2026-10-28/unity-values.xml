@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.4578713">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1002" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.457871" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2129" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="615" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.435065" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="5708" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2130" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="615" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.434562" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2131" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="615" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.434304" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2132" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="615" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.434079" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1453" name="CombatValuesV05Tests" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:10Z" duration="1.425852" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1458" name="CycleResetRetainsReservationAndOldRefundCannotCreateIncome" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.CycleResetRetainsReservationAndOldRefundCannotCreateIncome" methodname="CycleResetRetainsReservationAndOldRefundCannotCreateIncome" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="574947597" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:08Z" duration="0.017605" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1460" name="EarlierControlCancelsWindupButLaterControlKeepsCommittedDamage" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.EarlierControlCancelsWindupButLaterControlKeepsCommittedDamage" methodname="EarlierControlCancelsWindupButLaterControlKeepsCommittedDamage" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="2032607035" result="Passed" start-time="2026-10-28 07:36:08Z" end-time="2026-10-28 07:36:09Z" duration="0.391072" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1461" name="FundedReactionUsesPublishedOpportunityAndNoSuccessfulDefenseReward" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.FundedReactionUsesPublishedOpportunityAndNoSuccessfulDefenseReward" methodname="FundedReactionUsesPublishedOpportunityAndNoSuccessfulDefenseReward" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="919212571" result="Passed" start-time="2026-10-28 07:36:09Z" end-time="2026-10-28 07:36:09Z" duration="0.359093" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1455" name="GrowthSharesStrengthAcrossBothLoadsAndEquipmentOnlyChangesHealth" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.GrowthSharesStrengthAcrossBothLoadsAndEquipmentOnlyChangesHealth" methodname="GrowthSharesStrengthAcrossBothLoadsAndEquipmentOnlyChangesHealth" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="1828459583" result="Passed" start-time="2026-10-28 07:36:09Z" end-time="2026-10-28 07:36:09Z" duration="0.000906" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1456" name="IndependentStabilityStraddlesHeavyThresholdAndKnockdownRoundsUp" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.IndependentStabilityStraddlesHeavyThresholdAndKnockdownRoundsUp" methodname="IndependentStabilityStraddlesHeavyThresholdAndKnockdownRoundsUp" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="6889273" result="Passed" start-time="2026-10-28 07:36:09Z" end-time="2026-10-28 07:36:09Z" duration="0.076855" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1463" name="NewDefinitionFieldsChangeHashAndMixedLegacyInputFailsBeforeStepZero" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.NewDefinitionFieldsChangeHashAndMixedLegacyInputFailsBeforeStepZero" methodname="NewDefinitionFieldsChangeHashAndMixedLegacyInputFailsBeforeStepZero" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="1020548921" result="Passed" start-time="2026-10-28 07:36:09Z" end-time="2026-10-28 07:36:09Z" duration="0.039720" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1459" name="RealClashReplacesDirectDamageWithBoundedSourceDamage" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.RealClashReplacesDirectDamageWithBoundedSourceDamage" methodname="RealClashReplacesDirectDamageWithBoundedSourceDamage" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="2094414866" result="Passed" start-time="2026-10-28 07:36:09Z" end-time="2026-10-28 07:36:09Z" duration="0.070390" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1454" name="RealUnopposedHitsKillInSixFourAndEightContacts" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.RealUnopposedHitsKillInSixFourAndEightContacts" methodname="RealUnopposedHitsKillInSixFourAndEightContacts" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="1344892147" result="Passed" start-time="2026-10-28 07:36:09Z" end-time="2026-10-28 07:36:10Z" duration="0.427131" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1457" name="ResourceFractionsAccumulateExactlyAndCapsIncludeReservations" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.ResourceFractionsAccumulateExactlyAndCapsIncludeReservations" methodname="ResourceFractionsAccumulateExactlyAndCapsIncludeReservations" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="1426708397" result="Passed" start-time="2026-10-28 07:36:10Z" end-time="2026-10-28 07:36:10Z" duration="0.000637" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1462" name="SweepDealsPerTargetDamageAndIncomeSumsActualLoss" fullname="ProjectHero.Logic.Tests.CombatValuesV05Tests.SweepDealsPerTargetDamageAndIncomeSumsActualLoss" methodname="SweepDealsPerTargetDamageAndIncomeSumsActualLoss" classname="ProjectHero.Logic.Tests.CombatValuesV05Tests" runstate="Runnable" seed="1245260579" result="Passed" start-time="2026-10-28 07:36:10Z" end-time="2026-10-28 07:36:10Z" duration="0.023648" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

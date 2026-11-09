@@ -1,0 +1,46 @@
+{
+  "cases": 24,
+  "recordedTicks": 21600,
+  "commandRejections": 0,
+  "pairedComparisons": 12,
+  "chosenCommandsChangedPairs": 0,
+  "truncatedAt900": 24,
+  "healthChangedPairs": 0,
+  "outcomeChangedPairs": 0,
+  "maxCandidates": 44,
+  "formalAttackIdsOffered": [
+    "action.heavy_smash.radius_1",
+    "action.heavy_smash.radius_2",
+    "action.quick_slash.radius_1",
+    "action.quick_slash.radius_2",
+    "action.spear_thrust.radius_1",
+    "action.spear_thrust.radius_2",
+    "action.whirlwind.radius_1",
+    "action.whirlwind.radius_2",
+    "action.wide_cleave.radius_1",
+    "action.wide_cleave.radius_2"
+  ],
+  "unsupported": [],
+  "treeFailureObservationTicks": {
+    "PLAN_TERMINATED_15": 7340,
+    "PLAN_TERMINATED_6": 202
+  },
+  "chosenActions": {
+    "SingleCommand": {
+      "action.spear_thrust.radius_2": 44,
+      "action.block.default": 30,
+      "action.spear_thrust.radius_1": 34,
+      "action.dodge.default": 32,
+      "action.move.default": 8,
+      "action.quick_slash.radius_1": 2
+    },
+    "UtilityBehaviorTree": {
+      "action.spear_thrust.radius_2": 44,
+      "action.block.default": 30,
+      "action.spear_thrust.radius_1": 34,
+      "action.dodge.default": 32,
+      "action.move.default": 8,
+      "action.quick_slash.radius_1": 2
+    }
+  }
+}

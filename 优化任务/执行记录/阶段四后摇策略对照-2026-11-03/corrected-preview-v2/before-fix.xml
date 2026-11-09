@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.5244852">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1099" result="Failed" site="Child" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.524485" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2247" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="712" result="Failed" site="Child" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.514641" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="103140" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2248" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="712" result="Failed" site="Child" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.514176" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2249" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="712" result="Failed" site="Child" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.513989" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2250" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="712" result="Failed" site="Child" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.510448" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1450" name="AiForecastIngressTests" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.493845" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1452" name="FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" methodname="FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="2128780574" result="Failed" start-time="2026-11-03 11:16:09Z" end-time="2026-11-03 11:16:10Z" duration="0.386444" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: 247
+  But was:  230
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Logic.Tests.AiForecastIngressTests.FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary () [0x00120] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiForecastIngressTests.cs:90
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1451" name="KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" methodname="KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="1969949464" result="Failed" start-time="2026-11-03 11:16:10Z" end-time="2026-11-03 11:16:10Z" duration="0.026448" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  The forecast must retain real command-batch claims, not invent an auto-deferred hit
+  Expected: 24576
+  But was:  20480
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Logic.Tests.AiForecastIngressTests.KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage () [0x00105] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiForecastIngressTests.cs:76
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1453" name="NextTickWindowResetMustHappenBeforeReactionResourceAdmission" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.NextTickWindowResetMustHappenBeforeReactionResourceAdmission" methodname="NextTickWindowResetMustHappenBeforeReactionResourceAdmission" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="270191669" result="Failed" start-time="2026-11-03 11:16:10Z" end-time="2026-11-03 11:16:10Z" duration="0.067115" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: "ADRENALINE_INSUFFICIENT"
+  But was:  null
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Logic.Tests.AiForecastIngressTests.NextTickWindowResetMustHappenBeforeReactionResourceAdmission () [0x00109] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiForecastIngressTests.cs:105
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

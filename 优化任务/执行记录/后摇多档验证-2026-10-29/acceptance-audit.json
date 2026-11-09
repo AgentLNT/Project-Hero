@@ -1,0 +1,121 @@
+{
+  "status": "passed",
+  "coarse_folder": "coarse-20261029-102059Z",
+  "fine_folder": "fine-20261029-102637Z",
+  "source_fingerprint": "f3cb102c457c0edf29e70bcf0f848a520b3a2ce8d076822cb77e601b8e354791",
+  "source_identity_verified": true,
+  "cases": 6572,
+  "ticks": [
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+  ],
+  "per_tick": 212,
+  "coarse_cases": 1484,
+  "fine_cases": 5088,
+  "native_files": 46004,
+  "native_bytes": 1082236272,
+  "replay_verified": 6572,
+  "command_rejections": 0,
+  "outcomes": {
+    "observation-limit": 4294,
+    "victory": 2188,
+    "defeat": 90
+  },
+  "rules_versions": [
+    "combat_values.v05.candidate.1.clash-recovery.1"
+  ],
+  "scenario_versions": [
+    "combat_recovery.scenes.1"
+  ],
+  "script_versions": [
+    "combat_recovery.fixed_scripts.1"
+  ],
+  "definition_hashes": 713,
+  "editmode": {
+    "result": "Passed",
+    "total": "1068",
+    "passed": "1068",
+    "failed": "0",
+    "skipped": "0",
+    "duration": "35.4410609"
+  },
+  "new_recovery_tests": 41,
+  "invariants": [
+    "identical paired scenario coverage",
+    "actual health loss and dealt/received conservation",
+    "first clash residual independent of recovery",
+    "unaffected unopposed quick/sweep results",
+    "complete accepted attack timing and source-window metadata",
+    "on-disk input and every-Tick native replay",
+    "frozen C# source fingerprint across coarse and fine"
+  ],
+  "generated_asset_snapshot": [
+    {
+      "path": "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity",
+      "sha256": "b645abf37d646ab5b59795752888b38778b98f385a6e412a310cbc9570e58ba4",
+      "last_write_timestamp": 1793268875.3325417
+    },
+    {
+      "path": "Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity.meta",
+      "sha256": "ef4faf1cbbcf5335caf42eff1cd0404dd61b5443707341a1cfa4c97486866192",
+      "last_write_timestamp": 1793268875.3409755
+    },
+    {
+      "path": "Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF.asset",
+      "sha256": "a5d87bb088db5358ed4f190b7f4afc28cd7e2faf70c7a23f5883c3669144090a",
+      "last_write_timestamp": 1793262749.9399877
+    },
+    {
+      "path": "Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF.asset",
+      "sha256": "cc1f3105934ce83e1b9f4ad876e69e28c167bf9583e53633a1bfa0135bf7550f",
+      "last_write_timestamp": 1793262749.9554548
+    },
+    {
+      "path": "Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Electronic Highway Sign SDF.asset",
+      "sha256": "bbe10f8523568536f3c0583e7c09dcaf18c9665046201bc6a0d6aac613197f6a",
+      "last_write_timestamp": 1793262749.914801
+    },
+    {
+      "path": "Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF.asset",
+      "sha256": "0f84c7a6dab250589189ba08e7be32bcaf95a4d1c2f33be010ecb226b06cf2d0",
+      "last_write_timestamp": 1793262749.9272175
+    }
+  ],
+  "limitations": [
+    "fixed scripts, not tactical AI",
+    "deterministic input cells, not random replications",
+    "symmetric marginal growth/health inputs, not all character budgets",
+    "unit 1 concurrent authority and unit 2 own-window authority must be analyzed separately",
+    "no new PlayMode/human playtest in this experiment-only round",
+    "generated scene was already dirty before this task; no exact asset baseline is claimed"
+  ]
+}

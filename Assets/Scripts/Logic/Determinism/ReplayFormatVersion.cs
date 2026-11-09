@@ -68,7 +68,9 @@ namespace ProjectHero.Logic.Determinism
         // v5 (R1): windows carry DurationTicks/EndTick and ordinary actions have no time cost.
         // The frozen window domain is FrozenWindowLedger.v5. Window command kind 0 is retired
         // and rejected. v4 recordings are rejected without migration.
-        public const int Version = 6;
+        // v7: ActionPlanSnapshot encodes ClashResolvedAtTick; clash effects end at impact,
+        // but the plan retains its Lane through recovery, including overlapping control.
+        public const int Version = 7;
 
         public const string HashAlgorithmId = "fnv1a64";
         public const int DigestHexWidth = 16;

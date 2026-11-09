@@ -37,6 +37,8 @@ namespace ProjectHero.Logic.AI
         IAiActionPlanLookup PlanLookup,
         Func<ControllerId, CommandRequest, string> NormalPreview = null)
     {
+        public Func<DecisionSnapshot, IAiForecast> ForecastFactory { get; init; }
+        public AiForecastSettings ForecastSettings { get; init; }
         /// <summary>本决策允许使用的目标 Tick（= 快照 Tick 的下一 Tick）。</summary>
         public long NextTick => Snapshot == null ? 0L : Snapshot.Tick + 1L;
         /// <summary>The same R4 public resource projection delivered to player controllers.</summary>

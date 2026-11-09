@@ -1,0 +1,468 @@
+{
+  "cases": 48,
+  "recordedTicks": 43200,
+  "groups": {
+    "120": {
+      "cases": 12,
+      "recordedTicks": 10800,
+      "ended": 0,
+      "commandRejections": 0,
+      "commands": 68,
+      "attackStarts": 32,
+      "moves": 12,
+      "reactions": 24,
+      "guards": 0,
+      "healthLossQ10": 122880,
+      "controlTicks": 0,
+      "resourceConsumed": 48,
+      "candidateRows": 40700,
+      "uncovered": 4976,
+      "covered": 26876,
+      "candidateRejections": 8848,
+      "chosen": {
+        "action.move.default": 12,
+        "action.quick_slash.radius_1": 16,
+        "action.block.default": 24,
+        "action.quick_slash.radius_2": 16
+      },
+      "actualAttacks": {
+        "action.quick_slash.radius_1": {
+          "acceptedPlans": 16,
+          "resolvedDamageAfterBlockQ10": 122880,
+          "completed": 16,
+          "terminated": 0,
+          "running": 0
+        },
+        "action.quick_slash.radius_2": {
+          "acceptedPlans": 16,
+          "resolvedDamageAfterBlockQ10": 0,
+          "completed": 12,
+          "terminated": 0,
+          "running": 4
+        }
+      },
+      "maxCandidates": 30
+    },
+    "180": {
+      "cases": 12,
+      "recordedTicks": 10800,
+      "ended": 0,
+      "commandRejections": 0,
+      "commands": 150,
+      "attackStarts": 80,
+      "moves": 8,
+      "reactions": 62,
+      "guards": 0,
+      "healthLossQ10": 548864,
+      "controlTicks": 0,
+      "resourceConsumed": 84,
+      "candidateRows": 26074,
+      "uncovered": 776,
+      "covered": 13542,
+      "candidateRejections": 11756,
+      "chosen": {
+        "action.move.default": 8,
+        "action.spear_thrust.radius_2": 44,
+        "action.spear_thrust.radius_1": 34,
+        "action.block.default": 30,
+        "action.dodge.default": 32,
+        "action.quick_slash.radius_1": 2
+      },
+      "actualAttacks": {
+        "action.spear_thrust.radius_2": {
+          "acceptedPlans": 44,
+          "resolvedDamageAfterBlockQ10": 204800,
+          "completed": 32,
+          "terminated": 2,
+          "running": 10
+        },
+        "action.spear_thrust.radius_1": {
+          "acceptedPlans": 34,
+          "resolvedDamageAfterBlockQ10": 307200,
+          "completed": 34,
+          "terminated": 0,
+          "running": 0
+        },
+        "action.quick_slash.radius_1": {
+          "acceptedPlans": 2,
+          "resolvedDamageAfterBlockQ10": 36864,
+          "completed": 0,
+          "terminated": 2,
+          "running": 0
+        }
+      },
+      "maxCandidates": 44
+    },
+    "240": {
+      "cases": 12,
+      "recordedTicks": 10800,
+      "ended": 0,
+      "commandRejections": 0,
+      "commands": 108,
+      "attackStarts": 56,
+      "moves": 8,
+      "reactions": 38,
+      "guards": 6,
+      "healthLossQ10": 262144,
+      "controlTicks": 0,
+      "resourceConsumed": 54,
+      "candidateRows": 31280,
+      "uncovered": 364,
+      "covered": 10888,
+      "candidateRejections": 20028,
+      "chosen": {
+        "action.move.default": 8,
+        "action.spear_thrust.radius_2": 16,
+        "action.spear_thrust.radius_1": 6,
+        "action.block.default": 16,
+        "action.dodge.default": 22,
+        "action.heavy_smash.radius_2": 18,
+        "action.guard.default": 6,
+        "action.heavy_smash.radius_1": 14,
+        "action.quick_slash.radius_1": 2
+      },
+      "actualAttacks": {
+        "action.spear_thrust.radius_2": {
+          "acceptedPlans": 16,
+          "resolvedDamageAfterBlockQ10": 51200,
+          "completed": 6,
+          "terminated": 2,
+          "running": 8
+        },
+        "action.spear_thrust.radius_1": {
+          "acceptedPlans": 6,
+          "resolvedDamageAfterBlockQ10": 51200,
+          "completed": 6,
+          "terminated": 0,
+          "running": 0
+        },
+        "action.heavy_smash.radius_2": {
+          "acceptedPlans": 18,
+          "resolvedDamageAfterBlockQ10": 122880,
+          "completed": 16,
+          "terminated": 0,
+          "running": 2
+        },
+        "action.heavy_smash.radius_1": {
+          "acceptedPlans": 14,
+          "resolvedDamageAfterBlockQ10": 0,
+          "completed": 12,
+          "terminated": 0,
+          "running": 2
+        },
+        "action.quick_slash.radius_1": {
+          "acceptedPlans": 2,
+          "resolvedDamageAfterBlockQ10": 36864,
+          "completed": 0,
+          "terminated": 2,
+          "running": 0
+        }
+      },
+      "maxCandidates": 44
+    },
+    "360": {
+      "cases": 12,
+      "recordedTicks": 10800,
+      "ended": 0,
+      "commandRejections": 0,
+      "commands": 108,
+      "attackStarts": 56,
+      "moves": 8,
+      "reactions": 38,
+      "guards": 6,
+      "healthLossQ10": 262144,
+      "controlTicks": 0,
+      "resourceConsumed": 54,
+      "candidateRows": 31280,
+      "uncovered": 0,
+      "covered": 11252,
+      "candidateRejections": 20028,
+      "chosen": {
+        "action.move.default": 8,
+        "action.spear_thrust.radius_2": 16,
+        "action.spear_thrust.radius_1": 6,
+        "action.block.default": 16,
+        "action.dodge.default": 22,
+        "action.heavy_smash.radius_2": 18,
+        "action.guard.default": 6,
+        "action.heavy_smash.radius_1": 14,
+        "action.quick_slash.radius_1": 2
+      },
+      "actualAttacks": {
+        "action.spear_thrust.radius_2": {
+          "acceptedPlans": 16,
+          "resolvedDamageAfterBlockQ10": 51200,
+          "completed": 6,
+          "terminated": 2,
+          "running": 8
+        },
+        "action.spear_thrust.radius_1": {
+          "acceptedPlans": 6,
+          "resolvedDamageAfterBlockQ10": 51200,
+          "completed": 6,
+          "terminated": 0,
+          "running": 0
+        },
+        "action.heavy_smash.radius_2": {
+          "acceptedPlans": 18,
+          "resolvedDamageAfterBlockQ10": 122880,
+          "completed": 16,
+          "terminated": 0,
+          "running": 2
+        },
+        "action.heavy_smash.radius_1": {
+          "acceptedPlans": 14,
+          "resolvedDamageAfterBlockQ10": 0,
+          "completed": 12,
+          "terminated": 0,
+          "running": 2
+        },
+        "action.quick_slash.radius_1": {
+          "acceptedPlans": 2,
+          "resolvedDamageAfterBlockQ10": 36864,
+          "completed": 0,
+          "terminated": 2,
+          "running": 0
+        }
+      },
+      "maxCandidates": 44
+    }
+  },
+  "probes": 80,
+  "conditionalActualMatches": 20,
+  "uncoveredScoresBlank": true,
+  "complete120VsLegacy120": [
+    {
+      "case": "SustainedOffense-main-mirror0-h120",
+      "legacyHealth": "1:153600;2:179200",
+      "complete120Health": "1:174080;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 17
+    },
+    {
+      "case": "SustainedOffense-main-mirror1-h120",
+      "legacyHealth": "1:153600;2:179200",
+      "complete120Health": "1:174080;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 17
+    },
+    {
+      "case": "SeekInterrupt-main-mirror0-h120",
+      "legacyHealth": "1:160768;2:204800",
+      "complete120Health": "1:174080;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 17
+    },
+    {
+      "case": "SeekInterrupt-main-mirror1-h120",
+      "legacyHealth": "1:160768;2:204800",
+      "complete120Health": "1:174080;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 17
+    },
+    {
+      "case": "SustainedOffense-near-mirror1-h120",
+      "legacyHealth": "1:179200;2:179200",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 0
+    },
+    {
+      "case": "SustainedOffense-near-mirror0-h120",
+      "legacyHealth": "1:179200;2:179200",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 0
+    },
+    {
+      "case": "SeekInterrupt-near-mirror0-h120",
+      "legacyHealth": "1:179200;2:179200",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 0
+    },
+    {
+      "case": "SeekInterrupt-near-mirror1-h120",
+      "legacyHealth": "1:179200;2:179200",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 0
+    },
+    {
+      "case": "CautiousDefense-near-mirror0-h120",
+      "legacyHealth": "1:179200;2:179200",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 0
+    },
+    {
+      "case": "CautiousDefense-main-mirror0-h120",
+      "legacyHealth": "1:204800;2:204800",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 0,
+      "complete120Commands": 0
+    },
+    {
+      "case": "CautiousDefense-main-mirror1-h120",
+      "legacyHealth": "1:204800;2:204800",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 0,
+      "complete120Commands": 0
+    },
+    {
+      "case": "CautiousDefense-near-mirror1-h120",
+      "legacyHealth": "1:179200;2:179200",
+      "complete120Health": "1:204800;2:204800",
+      "legacyCommands": 15,
+      "complete120Commands": 0
+    }
+  ],
+  "complete180VsLegacy120": [
+    {
+      "case": "SustainedOffense-main-mirror0-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SustainedOffense-main-mirror1-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SustainedOffense-near-mirror0-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SustainedOffense-near-mirror1-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SeekInterrupt-near-mirror0-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SeekInterrupt-near-mirror1-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "CautiousDefense-near-mirror0-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SeekInterrupt-main-mirror0-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "CautiousDefense-near-mirror1-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "SeekInterrupt-main-mirror1-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "CautiousDefense-main-mirror0-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    },
+    {
+      "case": "CautiousDefense-main-mirror1-h180",
+      "metricsEqual": true,
+      "chosenTraceEqual": true
+    }
+  ],
+  "stability240To360": [
+    {
+      "policy": "SustainedOffense",
+      "near": "False",
+      "mirror": "False",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SustainedOffense",
+      "near": "False",
+      "mirror": "True",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SeekInterrupt",
+      "near": "False",
+      "mirror": "False",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SeekInterrupt",
+      "near": "False",
+      "mirror": "True",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SustainedOffense",
+      "near": "True",
+      "mirror": "True",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SustainedOffense",
+      "near": "True",
+      "mirror": "False",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SeekInterrupt",
+      "near": "True",
+      "mirror": "False",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "SeekInterrupt",
+      "near": "True",
+      "mirror": "True",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "CautiousDefense",
+      "near": "True",
+      "mirror": "False",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "CautiousDefense",
+      "near": "False",
+      "mirror": "False",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "CautiousDefense",
+      "near": "False",
+      "mirror": "True",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    },
+    {
+      "policy": "CautiousDefense",
+      "near": "True",
+      "mirror": "True",
+      "chosenTraceEqual": true,
+      "metricsEqual": true
+    }
+  ]
+}

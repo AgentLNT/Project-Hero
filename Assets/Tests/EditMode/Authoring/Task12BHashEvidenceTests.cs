@@ -11,25 +11,25 @@ namespace ProjectHero.Authoring.Tests
         {
             using var first = Task03.Task03.NewSim(); using var second = Task03.Task03.NewSim();
             using var production = ProductionBattleComposition.Create(first.Definition, Task03.Task03.EncounterId, Task03.Task03.Inputs);
-            File.WriteAllText("优化任务/执行记录/M1-regression/12C-hash-anchors.json",
-                "{\n  \"oldRulesVersion\": \"battle-def-v3-window180\",\n  \"oldDefinitionHash\": \"c5d1058b7b19720a\",\n"
-                + "  \"oldInitialStateHash\": \"e6f9af498bff9600\",\n  \"oldProductionInitialStateHash\": \"29c03922dab5c689\",\n"
-                + "  \"oldEvidence\": \"12A-hash-anchors.json (archived native R1 execution)\",\n"
+            File.WriteAllText("优化任务/执行记录/防御应对核对-2026-11-09/hash-anchors.json",
+                "{\n  \"oldRulesVersion\": \"battle-def-v5-clash-recovery\",\n  \"oldDefinitionHash\": \"de4be447760a2266\",\n"
+                + "  \"oldInitialStateHash\": \"5f18e7c81833be75\",\n  \"oldProductionInitialStateHash\": \"f9ae2c5d11ebf2d0\",\n"
+                + "  \"oldEvidence\": \"../拼刀后摇纠偏-2026-10-29/hash-anchors.json\",\n"
                 + "  \"rulesVersion\": \"" + first.RulesVersion + "\",\n  \"definitionHash\": \"" + first.Definition.BattleDefinitionHashValue
                 + "\",\n  \"initialStateHash\": \"" + first.InitialStateHashHex
                 + "\",\n  \"productionInitialStateHash\": \"" + production.InitialStateHashHex
                 + "\",\n  \"ticksPerSecond\": 60,\n  \"initialRngSeed\": 20260922,\n  \"initialMetaResource\": 10,\n  \"replayFormatVersion\": " + ReplayFormat.Version + "\n}\n");
-            Assert.That(first.Definition.BattleDefinitionHashValue, Is.EqualTo("e04b3c0946ad3035"));
+            Assert.That(first.Definition.BattleDefinitionHashValue, Is.EqualTo("84116d595d222a72"));
             Assert.That(first.InitialStateHash, Is.EqualTo(second.InitialStateHash));
-            Assert.That(first.InitialStateHashHex, Is.EqualTo("2046e404a6fb708f"));
+            Assert.That(first.InitialStateHashHex, Is.EqualTo("670e239ef2185451"));
             var bytes = first.CurrentSnapshot.CanonicalBytesForDiagnostics(ReplayFormat.Version);
             Assert.That(CanonicalHash.OfBytes(bytes), Is.EqualTo(first.InitialStateHash));
             bytes[0] ^= 1;
             Assert.That(first.CurrentSnapshot.ComputeHash(), Is.EqualTo(first.InitialStateHash), "Diagnostic bytes cannot alias authoritative state.");
-            File.WriteAllBytes("优化任务/执行记录/M1-regression/12C-initial-encoding-v6.bin",
+            File.WriteAllBytes("优化任务/执行记录/防御应对核对-2026-11-09/initial-encoding-v7.bin",
                 first.CurrentSnapshot.CanonicalBytesForDiagnostics(ReplayFormat.Version));
-            Assert.That(production.InitialStateHashHex, Is.EqualTo("63e751856fe458e8"));
-            File.WriteAllBytes("优化任务/执行记录/M1-regression/12C-production-initial-encoding-v6.bin",
+            Assert.That(production.InitialStateHashHex, Is.EqualTo("d049880d1f59f08c"));
+            File.WriteAllBytes("优化任务/执行记录/防御应对核对-2026-11-09/production-initial-encoding-v7.bin",
                 production.CurrentSnapshot.CanonicalBytesForDiagnostics(ReplayFormat.Version));
         }
     }

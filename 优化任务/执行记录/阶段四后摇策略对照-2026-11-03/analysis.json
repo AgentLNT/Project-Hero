@@ -1,0 +1,91 @@
+{
+  "cases": 304,
+  "recordedTicks": 336956,
+  "matched31vs40Blocks": 64,
+  "outcomeChanges": 3,
+  "equalHealthMarginBlocks": 51,
+  "healthMarginImprovesAt40": 8,
+  "healthMarginWorsensAt40": 5,
+  "sameOutcomeAndHealthButDifferentEndTick": 3,
+  "frozenExistingLogicFiles": 169,
+  "frozenLogicFingerprint": "0ec39c04178cd5ea518b5981d1f6e273c808cff1f4a68b65a1caa66216d170fc",
+  "sourceFingerprint": "0685e4cb26ca75d7106dc35b2aa50998b1509e743257669706c7d8882b1a8616",
+  "verifiedSourceOrigin": "sealed source-archive.zip (tactical-public-kernel-v1); current workspace has later changes",
+  "policyVersion": "tactical-public-kernel-v1",
+  "commandRejectionsByOpponentPolicy": {
+    "CautiousDefense": {
+      "n": 136,
+      "rejections": 0
+    },
+    "Legacy": {
+      "n": 32,
+      "rejections": 10690
+    },
+    "SeekInterrupt": {
+      "n": 72,
+      "rejections": 0
+    },
+    "SustainedOffense": {
+      "n": 64,
+      "rejections": 0
+    }
+  },
+  "endResultsByLayout": {
+    "HeavyQuickOpen": {
+      "timeout": 48
+    },
+    "HeavyQuickWall": {
+      "timeout": 19,
+      "victory": 5
+    },
+    "HoldoutDiagonal": {
+      "defeat": 32
+    },
+    "HoldoutStaggered": {
+      "timeout": 32
+    },
+    "ProbeOpen": {
+      "defeat": 91,
+      "victory": 5
+    },
+    "ProbeWall": {
+      "defeat": 24
+    },
+    "TeamSweepOpen": {
+      "timeout": 24
+    },
+    "TeamSweepWall": {
+      "timeout": 24
+    }
+  },
+  "pairedStrata": {
+    "core": {
+      "n": 32,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 3,
+      "healthMarginWorsensAt40": 0,
+      "equalHealthMargin": 29
+    },
+    "legacyOpponent": {
+      "n": 16,
+      "outcomeChanges": 3,
+      "healthMarginImprovesAt40": 3,
+      "healthMarginWorsensAt40": 4,
+      "equalHealthMargin": 9
+    },
+    "holdout": {
+      "n": 8,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 2,
+      "healthMarginWorsensAt40": 1,
+      "equalHealthMargin": 5
+    },
+    "windowSensitivity": {
+      "n": 8,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 0,
+      "healthMarginWorsensAt40": 0,
+      "equalHealthMargin": 8
+    }
+  }
+}

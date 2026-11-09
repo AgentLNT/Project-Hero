@@ -1,0 +1,243 @@
+{
+  "values": [
+    31,
+    32,
+    34,
+    35,
+    37,
+    38,
+    40,
+    41,
+    43,
+    44,
+    45,
+    46,
+    47,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59
+  ],
+  "reason": "Fill integer gaps in adjacent coarse intervals with observed discrete behavior changes; 31/32 are mandatory.",
+  "intervals": [
+    {
+      "lo": 30,
+      "hi": 33,
+      "changed_fields": {
+        "clashes": 59,
+        "post_first_clashes": 59,
+        "outcome": 15,
+        "blunt_attack_starts": 23,
+        "blunt_window2_attacks": 4,
+        "opponent_cancelled_windups": 62,
+        "opponent_attack_starts": 57,
+        "blunt_block_uses": 1,
+        "blunt_dodge_uses": 1,
+        "blunt_cancelled_windups": 23
+      },
+      "examples": [
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "clashes",
+            "post_first_clashes",
+            "outcome"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t273_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "clashes",
+            "post_first_clashes"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t329_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "clashes",
+            "post_first_clashes",
+            "blunt_attack_starts",
+            "blunt_window2_attacks"
+          ]
+        }
+      ]
+    },
+    {
+      "lo": 33,
+      "hi": 36,
+      "changed_fields": {
+        "outcome": 2,
+        "blunt_attack_starts": 6,
+        "blunt_block_uses": 2,
+        "blunt_dodge_uses": 3,
+        "blunt_cancelled_windups": 1
+      },
+      "examples": [
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "outcome"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t360_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s1_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "outcome"
+          ]
+        }
+      ]
+    },
+    {
+      "lo": 36,
+      "hi": 39,
+      "changed_fields": {
+        "blunt_attack_starts": 30,
+        "blunt_block_uses": 1,
+        "blunt_dodge_uses": 2,
+        "clashes": 2,
+        "post_first_clashes": 2,
+        "blunt_cancelled_windups": 1,
+        "opponent_attack_starts": 18,
+        "blunt_window2_attacks": 2,
+        "outcome": 1
+      },
+      "examples": [
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t273_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s1_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        }
+      ]
+    },
+    {
+      "lo": 39,
+      "hi": 42,
+      "changed_fields": {
+        "blunt_attack_starts": 5,
+        "blunt_block_uses": 1,
+        "opponent_attack_starts": 2,
+        "blunt_dodge_uses": 1,
+        "clashes": 2,
+        "post_first_clashes": 2,
+        "opponent_cancelled_windups": 7
+      },
+      "examples": [
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t329_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t330_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s1_t329_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        }
+      ]
+    },
+    {
+      "lo": 42,
+      "hi": 48,
+      "changed_fields": {
+        "blunt_attack_starts": 42,
+        "opponent_attack_starts": 45,
+        "opponent_cancelled_windups": 52,
+        "blunt_block_uses": 2,
+        "blunt_dodge_uses": 4,
+        "blunt_cancelled_windups": 5,
+        "outcome": 1
+      },
+      "examples": [
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t360_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s1_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        }
+      ]
+    },
+    {
+      "lo": 48,
+      "hi": 60,
+      "changed_fields": {
+        "blunt_attack_starts": 58,
+        "blunt_window2_attacks": 54,
+        "clashes": 12,
+        "post_first_clashes": 12,
+        "opponent_attack_starts": 70,
+        "opponent_window2_attacks": 4,
+        "opponent_cancelled_windups": 76,
+        "blunt_block_uses": 1,
+        "blunt_dodge_uses": 1,
+        "outcome": 5,
+        "blunt_cancelled_windups": 3
+      },
+      "examples": [
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t213_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts",
+            "blunt_window2_attacks"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t273_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        },
+        {
+          "case": "ProbeSlash_Repeat_b1_s0_t329_p0_h24_r10240_short0_wall0",
+          "fields": [
+            "blunt_attack_starts"
+          ]
+        }
+      ]
+    }
+  ]
+}

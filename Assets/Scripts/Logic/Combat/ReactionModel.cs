@@ -26,6 +26,13 @@ namespace ProjectHero.Logic.Combat
         }
     }
 
+    public enum AdrenalineDamageGainQuantization
+    {
+        LegacyDecimalV1 = 1,
+        BinaryFloorV2 = 2,
+        BinaryRoundHalfUpV3 = 3
+    }
+
     /// <summary>
     /// 肾上腺素规则（主方案 2.3 / 00 号规则 27）。冻结值（01B 拍板 B3）：
     /// MaxAvailablePerCycle = 100、DamageDealtGainQ10 = 102、DamageReceivedGainQ10 = 205、
@@ -39,7 +46,9 @@ namespace ProjectHero.Logic.Combat
         int DamageReceivedGainQ10,
         int SuccessfulBlockReward,
         int SuccessfulDodgeReward,
-        int ClashReward)
+        int ClashReward,
+        bool UseCombatValuesV05 = false,
+        AdrenalineDamageGainQuantization DamageGainQuantization = AdrenalineDamageGainQuantization.LegacyDecimalV1)
     {
         public const string ADRENALINE_MAX_AVAILABLE_INVALID = "ADRENALINE_MAX_AVAILABLE_INVALID";
         public const string ADRENALINE_GAIN_NEGATIVE = "ADRENALINE_GAIN_NEGATIVE";
@@ -47,13 +56,27 @@ namespace ProjectHero.Logic.Combat
         public const string ADRENALINE_COST_EXCEEDS_CYCLE_MAXIMUM = "ADRENALINE_COST_EXCEEDS_CYCLE_MAXIMUM";
         public const string ADRENALINE_BLOCK_REWARD_NOT_BELOW_COST = "ADRENALINE_BLOCK_REWARD_NOT_BELOW_COST";
         public const string ADRENALINE_DODGE_REWARD_NOT_BELOW_COST = "ADRENALINE_DODGE_REWARD_NOT_BELOW_COST";
+        public const string ADRENALINE_DAMAGE_GAIN_QUANTIZATION_INVALID = "ADRENALINE_DAMAGE_GAIN_QUANTIZATION_INVALID";
 
-        /// <summary>01B 拍板 B3 冻结值。</summary>
+        /// <summary>历史 V1：保留原数值及旧伤害入账换算，供已封存定义重演。</summary>
         public static readonly AdrenalineRules FrozenV1 = new(100, 102, 205, 1, 0, 50);
+        /// <summary>仅保留本轮向下量化中间实验的重演能力；不用于正式构建。</summary>
+        public static readonly AdrenalineRules BinaryQ10V2 = FrozenV1 with { DamageGainQuantization = AdrenalineDamageGainQuantization.BinaryFloorV2 };
+        /// <summary>主方案 §0.1：二进制 Q10 单位换算后，各伤害类别分别 RoundHalfUp 一次。</summary>
+        public static readonly AdrenalineRules BinaryQ10V3 = FrozenV1 with { DamageGainQuantization = AdrenalineDamageGainQuantization.BinaryRoundHalfUpV3 };
+        public static readonly AdrenalineRules CombatValuesV05Candidate = new(
+            2 * CombatValuesV05.ResourceUnitsPerPoint, 0, 0, 0, 0, 0, true);
 
         /// <summary>基础校验：上限为正、获得率与奖励非负。</summary>
         public string Validate()
         {
+            if (DamageGainQuantization != AdrenalineDamageGainQuantization.LegacyDecimalV1
+                && DamageGainQuantization != AdrenalineDamageGainQuantization.BinaryFloorV2
+                && DamageGainQuantization != AdrenalineDamageGainQuantization.BinaryRoundHalfUpV3)
+                return ADRENALINE_DAMAGE_GAIN_QUANTIZATION_INVALID;
+            if (UseCombatValuesV05 && (DamageGainQuantization != AdrenalineDamageGainQuantization.LegacyDecimalV1 || MaxAvailablePerCycle != 2 * CombatValuesV05.ResourceUnitsPerPoint
+                || DamageDealtGainQ10 != 0 || DamageReceivedGainQ10 != 0
+                || SuccessfulBlockReward != 0 || SuccessfulDodgeReward != 0 || ClashReward != 0)) return CombatValuesV05.Invalid;
             if (MaxAvailablePerCycle <= 0) return ADRENALINE_MAX_AVAILABLE_INVALID;
             if (DamageDealtGainQ10 < 0 || DamageReceivedGainQ10 < 0) return ADRENALINE_GAIN_NEGATIVE;
             if (SuccessfulBlockReward < 0 || SuccessfulDodgeReward < 0 || ClashReward < 0)
@@ -95,6 +118,10 @@ namespace ProjectHero.Logic.Combat
 
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
+            if (UseCombatValuesV05) CombatValuesV05.WriteProtocol(writer);
+            // Absence retains the exact V1 hash encoding, including its historical quantization.
+            if (DamageGainQuantization != AdrenalineDamageGainQuantization.LegacyDecimalV1)
+                writer.Write("adrenaline_rules.damage_gain_quantization_version", (int)DamageGainQuantization);
             writer.Write("adrenaline_rules.max_available_per_cycle", MaxAvailablePerCycle);
             writer.Write("adrenaline_rules.damage_dealt_gain_q10", DamageDealtGainQ10);
             writer.Write("adrenaline_rules.damage_received_gain_q10", DamageReceivedGainQ10);

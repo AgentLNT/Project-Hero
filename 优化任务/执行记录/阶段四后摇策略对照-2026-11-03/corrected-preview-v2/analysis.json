@@ -1,0 +1,70 @@
+{
+  "cases": 96,
+  "recordedTicks": 108796,
+  "matched31vs40Blocks": 16,
+  "outcomeChanges": 0,
+  "equalHealthMarginBlocks": 13,
+  "healthMarginImprovesAt40": 3,
+  "healthMarginWorsensAt40": 0,
+  "sameOutcomeAndHealthButDifferentEndTick": 1,
+  "frozenExistingLogicFiles": 170,
+  "frozenLogicFingerprint": "13ff3049343c495b66a3b3b5e16dc7fe1fc30e362bdf3fda6a1322d123cbaaa3",
+  "sourceFingerprint": "19c2ed3b036f615450dede2f60d155fe752843177e42f9634e10ceb0eedab502",
+  "verifiedSourceOrigin": "live workspace",
+  "policyVersion": "tactical-public-kernel-v2",
+  "commandRejectionsByOpponentPolicy": {
+    "SeekInterrupt": {
+      "n": 48,
+      "rejections": 0
+    },
+    "SustainedOffense": {
+      "n": 48,
+      "rejections": 0
+    }
+  },
+  "endResultsByLayout": {
+    "HeavyQuickOpen": {
+      "timeout": 24
+    },
+    "HeavyQuickWall": {
+      "timeout": 19,
+      "victory": 5
+    },
+    "ProbeOpen": {
+      "defeat": 24
+    },
+    "TeamSweepWall": {
+      "timeout": 24
+    }
+  },
+  "pairedStrata": {
+    "core": {
+      "n": 16,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 3,
+      "healthMarginWorsensAt40": 0,
+      "equalHealthMargin": 13
+    },
+    "legacyOpponent": {
+      "n": 0,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 0,
+      "healthMarginWorsensAt40": 0,
+      "equalHealthMargin": 0
+    },
+    "holdout": {
+      "n": 0,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 0,
+      "healthMarginWorsensAt40": 0,
+      "equalHealthMargin": 0
+    },
+    "windowSensitivity": {
+      "n": 0,
+      "outcomeChanges": 0,
+      "healthMarginImprovesAt40": 0,
+      "healthMarginWorsensAt40": 0,
+      "equalHealthMargin": 0
+    }
+  }
+}

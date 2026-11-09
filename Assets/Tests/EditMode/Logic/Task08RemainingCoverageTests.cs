@@ -214,9 +214,16 @@ namespace ProjectHero.Logic.Tests
         {
             using var r = Duel();
             Assert.That(r.Sim.StagedResolution.ClashTerminatedPlanIds.Count, Is.EqualTo(2));
+            Assert.That(r.Attack.IsRunning && r.Reaction.IsRunning, Is.True);
+            Assert.That(r.Attack.ClashResolvedAtTick, Is.EqualTo(r.Sim.Tick));
+            Assert.That(r.Reaction.ClashResolvedAtTick, Is.EqualTo(r.Sim.Tick));
+            Assert.That(r.Result.Events.Events.OfType<ActionPlanTerminatedEvent>(), Is.Empty);
+            long end = Math.Max(r.Attack.EndTick, r.Reaction.EndTick);
+            Task09A2Fixture.AdvanceTo(r.Sim, end);
             Assert.That(r.Attack.TerminationReason, Is.EqualTo(ActionTerminationReason.InterruptedByClash));
             Assert.That(r.Reaction.TerminationReason, Is.EqualTo(ActionTerminationReason.InterruptedByClash));
-            Assert.That(r.Result.Events.Events.OfType<ActionPlanTerminatedEvent>().Count(), Is.EqualTo(2));
+            Assert.That(r.Attack.TerminalTick, Is.EqualTo(r.Attack.EndTick));
+            Assert.That(r.Reaction.TerminalTick, Is.EqualTo(r.Reaction.EndTick));
             Assert.That(r.Sim.ScheduleAuthority.Registry.ActivePlans, Is.Empty);
         }
 
@@ -232,15 +239,16 @@ namespace ProjectHero.Logic.Tests
             Assert.That(r.Result.Events.Events.OfType<DamageChannelResolvedEvent>().Single().ParticipatingPlanIds,
                 Is.EqualTo(new[] { r.Attack.ActionPlanId, r.Reaction.ActionPlanId }));
             Assert.That(Task08DefenseCoverageTests.Health(r.Sim, Task09A2Fixture.Monster), Is.EqualTo(1990 * 1024));
-            Assert.That(r.Attack.TerminationReason, Is.EqualTo(ActionTerminationReason.InterruptedByClash));
-            Assert.That(r.Reaction.TerminationReason, Is.EqualTo(ActionTerminationReason.InterruptedByClash));
+            Assert.That(r.Attack.IsRunning && r.Reaction.IsRunning, Is.True);
+            Assert.That(r.Attack.ClashResolvedAtTick, Is.EqualTo(r.Sim.Tick));
+            Assert.That(r.Reaction.ClashResolvedAtTick, Is.EqualTo(r.Sim.Tick));
         }
         [Test]
         public void ClashTerminationRemovesUnfrozenAndFutureIntents()
         {
             using var r = Duel();
             Assert.That(r.Sim.IntentQueue.Intents.Count, Is.EqualTo(2), "Already frozen current impacts remain auditable");
-            Assert.That(r.Sim.ScheduleAuthority.Registry.ActivePlans, Is.Empty);
+            Assert.That(r.Sim.ScheduleAuthority.Registry.ActivePlans.Count, Is.EqualTo(2));
             Task09A2Fixture.StepNext(r.Sim); Assert.That(r.Sim.IntentQueue.Intents, Is.Empty);
         }
         [Test]
@@ -256,6 +264,8 @@ namespace ProjectHero.Logic.Tests
         public void InterruptedPlanLeavesLaneGap()
         {
             using var r = Duel();
+            Assert.That(r.Attack.IsRunning && r.Reaction.IsRunning, Is.True);
+            Task09A2Fixture.AdvanceTo(r.Sim, Math.Max(r.Attack.EndTick, r.Reaction.EndTick));
             Assert.That(r.Attack.IsTerminal && r.Reaction.IsTerminal, Is.True);
             Assert.That(r.Sim.ScheduleAuthority.FindLane(Task09A2Fixture.Monster).Plans, Is.Empty);
         }
@@ -263,6 +273,8 @@ namespace ProjectHero.Logic.Tests
         public void ResolutionCommitLeavesNoActiveArtifactReferencingTerminalPlan()
         {
             using var r = Duel();
+            Assert.That(r.Sim.ScheduleAuthority.Registry.ActivePlans.All(p => !p.IsTerminal), Is.True);
+            Task09A2Fixture.AdvanceTo(r.Sim, Math.Max(r.Attack.EndTick, r.Reaction.EndTick));
             Assert.That(r.Sim.ScheduleAuthority.Registry.ActivePlans, Is.Empty);
             Assert.That(r.Sim.DodgeRelocation.CaptureSpaceSnapshot(r.Sim.Tick).MovementReservations, Is.Empty);
             Assert.That(r.Sim.DodgeRelocation.CaptureSpaceSnapshot(r.Sim.Tick).Segments, Is.Empty);

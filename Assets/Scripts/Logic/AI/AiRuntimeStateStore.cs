@@ -34,11 +34,12 @@ namespace ProjectHero.Logic.AI
 
         /// <summary>最后一次决策（诊断面；其 <c>Rng</c> 状态进入快照）。</summary>
         public AiDecision LastDecision { get; set; }
+        public AiBehaviorMemory Behavior { get; set; }
 
         /// <summary>投影成不可变的规范化运行态。</summary>
         public AiControllerRuntimeState ToSnapshot()
             => new AiControllerRuntimeState(
                 ControllerId, DecisionCount, LastDecisionTick, NextThinkTick,
-                LastDecision == null ? null : LastDecision.Rng);
+                LastDecision == null ? null : LastDecision.Rng, Behavior);
     }
 }

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="29" result="Failed(Child)" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.0906575">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1056" result="Failed" site="Child" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.090658" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2195" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="669" result="Failed" site="Child" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.073983" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="78104" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2196" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="669" result="Failed" site="Child" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.072048" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2197" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="669" result="Failed" site="Child" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.070822" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2198" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="669" result="Failed" site="Child" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.069782" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1552" name="RecoveryExperimentTests" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" testcasecount="29" result="Failed" site="Child" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:21Z" duration="4.056293" total="29" passed="22" failed="7" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1584" name="AlternativeScriptsUseLegalCommandsAndSerializableInputs" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.AlternativeScriptsUseLegalCommandsAndSerializableInputs" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:19Z" duration="1.598176" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1579" name="AlternativeScriptsUseLegalCommandsAndSerializableInputs(Guard)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.AlternativeScriptsUseLegalCommandsAndSerializableInputs(Guard)" methodname="AlternativeScriptsUseLegalCommandsAndSerializableInputs" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1148369571" result="Passed" start-time="2026-10-29 09:52:17Z" end-time="2026-10-29 09:52:18Z" duration="0.683265" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1580" name="AlternativeScriptsUseLegalCommandsAndSerializableInputs(Move)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.AlternativeScriptsUseLegalCommandsAndSerializableInputs(Move)" methodname="AlternativeScriptsUseLegalCommandsAndSerializableInputs" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1419940114" result="Passed" start-time="2026-10-29 09:52:18Z" end-time="2026-10-29 09:52:18Z" duration="0.237084" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1581" name="AlternativeScriptsUseLegalCommandsAndSerializableInputs(Switch)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.AlternativeScriptsUseLegalCommandsAndSerializableInputs(Switch)" methodname="AlternativeScriptsUseLegalCommandsAndSerializableInputs" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="373399534" result="Passed" start-time="2026-10-29 09:52:18Z" end-time="2026-10-29 09:52:19Z" duration="0.234206" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1582" name="AlternativeScriptsUseLegalCommandsAndSerializableInputs(Block)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.AlternativeScriptsUseLegalCommandsAndSerializableInputs(Block)" methodname="AlternativeScriptsUseLegalCommandsAndSerializableInputs" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="53305471" result="Passed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.225463" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1583" name="AlternativeScriptsUseLegalCommandsAndSerializableInputs(Dodge)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.AlternativeScriptsUseLegalCommandsAndSerializableInputs(Dodge)" methodname="AlternativeScriptsUseLegalCommandsAndSerializableInputs" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="811011556" result="Passed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.208753" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1585" name="MatrixHasAllCoarseValuesAndExplicitControlWindowAndGrowthCoverage" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.MatrixHasAllCoarseValuesAndExplicitControlWindowAndGrowthCoverage" methodname="MatrixHasAllCoarseValuesAndExplicitControlWindowAndGrowthCoverage" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1278298276" result="Passed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.014830" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1560" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" testcasecount="7" result="Failed" site="Child" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.248000" total="7" passed="0" failed="7" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1553" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(30)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(30)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1197467634" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.038427" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1554" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(33)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(33)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="2133453117" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.032623" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1555" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(36)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(36)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1100897830" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.024024" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1556" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(39)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(39)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1279152638" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.031870" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1557" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(42)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(42)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1634910702" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.032148" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1558" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(48)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(48)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1043393284" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.032861" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1559" name="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(60)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash(60)" methodname="PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1273249600" result="Failed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.048443" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+  But was:  <ActionSpec { ActionSpecId = action.experiment.dodge, Type = Dodge, Timing = DodgeReactionTimingSpec { DurationTicks = 30 }, Payload = DodgePayloadSpec { MaxDistanceSteps = 4, Pattern = MovementPatternSpec { MovementPatternId = movement.experiment, Directions = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Grid.DirectionalTriangleSet] } }, AdrenalineCost = 24576 }>
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Logic.Tests.RecoveryExperimentTests.PublicIncrementChangesOnlyBluntTimingAndTheDefinitionHash (System.Int32 recovery) [0x00103] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\RecoveryExperimentTests.cs:28
+]]></stack-trace>
+                  </failure>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1575" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:21Z" duration="1.678222" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1561" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(30,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(30,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="80687048" result="Passed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:19Z" duration="0.132711" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1562" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(33,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(33,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1851434461" result="Passed" start-time="2026-10-29 09:52:19Z" end-time="2026-10-29 09:52:20Z" duration="0.121197" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1563" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(36,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(36,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="304011997" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.128531" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1564" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(39,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(39,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1608840980" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.117152" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1565" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(42,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(42,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1124706630" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.108315" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1566" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(48,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(48,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="848774898" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.108475" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1567" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(60,1,False)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(60,1,False)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1266019831" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.129803" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1568" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(30,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(30,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1049816950" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.123872" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1569" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(33,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(33,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="978418407" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.107134" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1570" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(36,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(36,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="678828580" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:20Z" duration="0.113098" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1571" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(39,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(39,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="878292176" result="Passed" start-time="2026-10-29 09:52:20Z" end-time="2026-10-29 09:52:21Z" duration="0.125204" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1572" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(42,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(42,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="228627263" result="Passed" start-time="2026-10-29 09:52:21Z" end-time="2026-10-29 09:52:21Z" duration="0.136867" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1573" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(48,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(48,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="782555500" result="Passed" start-time="2026-10-29 09:52:21Z" end-time="2026-10-29 09:52:21Z" duration="0.111727" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1574" name="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(60,2,True)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup(60,2,True)" methodname="RealCommandsReproduceEarliestRepeatImpactsForEveryCoarseGroup" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="2132395690" result="Passed" start-time="2026-10-29 09:52:21Z" end-time="2026-10-29 09:52:21Z" duration="0.111359" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1578" name="WaitingCanRealignAndEqualBluntTimingsStillClash" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.WaitingCanRealignAndEqualBluntTimingsStillClash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-29 09:52:21Z" end-time="2026-10-29 09:52:21Z" duration="0.457418" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1576" name="WaitingCanRealignAndEqualBluntTimingsStillClash(36)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.WaitingCanRealignAndEqualBluntTimingsStillClash(36)" methodname="WaitingCanRealignAndEqualBluntTimingsStillClash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="152386038" result="Passed" start-time="2026-10-29 09:52:21Z" end-time="2026-10-29 09:52:21Z" duration="0.235358" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1577" name="WaitingCanRealignAndEqualBluntTimingsStillClash(60)" fullname="ProjectHero.Logic.Tests.RecoveryExperimentTests.WaitingCanRealignAndEqualBluntTimingsStillClash(60)" methodname="WaitingCanRealignAndEqualBluntTimingsStillClash" classname="ProjectHero.Logic.Tests.RecoveryExperimentTests" runstate="Runnable" seed="1296374277" result="Passed" start-time="2026-10-29 09:52:21Z" end-time="2026-10-29 09:52:21Z" duration="0.221209" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

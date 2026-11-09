@@ -51,7 +51,8 @@ namespace ProjectHero.Logic.Actions
         TargetRelationMask AllowedTargetRelations,
         int MomentumDirectionOffsetSteps,
         AttackPatternSpec Pattern,
-        AttackTagMask Tags) : ActionPayloadSpec;
+        AttackTagMask Tags,
+        Combat.AttackStrengthV05 Strength = null) : ActionPayloadSpec;
 
     /// <summary>
     /// Guard 载荷：分通道部分伤害抵抗 + 部分动量抵抗（各严格位于 [1,1023]），

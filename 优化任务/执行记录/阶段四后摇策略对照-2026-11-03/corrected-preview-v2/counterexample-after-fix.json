@@ -1,0 +1,54 @@
+{
+  "case": "HeavyQuickWall-CautiousDefense-SustainedOffense-firstA-swap0-seed31-w180-r31",
+  "tick": 222,
+  "v1": {
+    "policyVersion": "tactical-public-kernel-v1",
+    "sourceFingerprint": "0685e4cb26ca75d7106dc35b2aa50998b1509e743257669706c7d8882b1a8616",
+    "candidate": {
+      "tick": "222",
+      "controller": "controller.stage4.b",
+      "key": "N/2/action.experiment.quick/1/6//",
+      "type": "Attack",
+      "reaction": "False",
+      "chosen": "True",
+      "score": "32233",
+      "rejection": "",
+      "reason": "SELECTED_MAX_SCORE_STABLE_KEY",
+      "damageDeltaQ10": "4096",
+      "incomingDeltaQ10": "0",
+      "positionProgress": "0",
+      "interrupts": "0",
+      "clashes": "0",
+      "cost": "0",
+      "start": "223",
+      "impact": "253",
+      "end": "283",
+      "horizon": "342"
+    }
+  },
+  "v2": {
+    "policyVersion": "tactical-public-kernel-v2",
+    "sourceFingerprint": "19c2ed3b036f615450dede2f60d155fe752843177e42f9634e10ceb0eedab502",
+    "candidate": {
+      "tick": "222",
+      "controller": "controller.stage4.b",
+      "key": "N/2/action.experiment.quick/1/6//",
+      "type": "Attack",
+      "reaction": "False",
+      "chosen": "False",
+      "score": "-480",
+      "rejection": "",
+      "reason": "WAIT_HAS_HIGHER_OR_EQUAL_SCORE",
+      "damageDeltaQ10": "0",
+      "incomingDeltaQ10": "0",
+      "positionProgress": "0",
+      "interrupts": "0",
+      "clashes": "0",
+      "cost": "0",
+      "start": "223",
+      "impact": "253",
+      "end": "283",
+      "horizon": "342"
+    }
+  }
+}

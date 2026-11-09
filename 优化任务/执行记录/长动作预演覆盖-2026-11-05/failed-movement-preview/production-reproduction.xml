@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.464636">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1134" result="Failed" site="Child" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.464636" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1473" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="414" result="Failed" site="Child" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.441278" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="21356" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1474" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="414" result="Failed" site="Child" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.440706" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1475" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="414" result="Failed" site="Child" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.440426" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1476" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="414" result="Failed" site="Child" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.440105" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1017" name="AiForecastCoverageTests" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" testcasecount="18" result="Failed" site="Child" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.434894" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1037" name="MovingOpponentCannotInvalidateAcceptedMove" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.MovingOpponentCannotInvalidateAcceptedMove" methodname="MovingOpponentCannotInvalidateAcceptedMove" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="1712919436" result="Failed" label="Error" start-time="2026-11-05 07:05:52Z" end-time="2026-11-05 07:05:54Z" duration="1.418492" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#4/0 (-5, -5)->(-8, -4)[181,229)w2; decision=180; controller=controller.player; request=CommandRequest { TargetTick = 181, Scope = ScheduleEditScope { ExpectedScheduleRevision = 3, ExpectedWindowId = 2 }, Payload = ScheduleEditPayload { Operations = ProjectHero.Logic.Commands.ScheduleEditOperation[], Kind = ScheduleEdit } }; original=1:(-3,1);2:(-5,-5); before=1:(-5,-1);2:(-5,-5)]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Snapshots.AiForecastWorld.Evaluate (ProjectHero.Logic.Commands.CommandRequest request, ProjectHero.Logic.AI.AiForecastSettings settings) [0x002a3] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Snapshots\AiForecastWorld.cs:83 
+  at ProjectHero.Logic.AI.AiTacticalPolicy.Decide (ProjectHero.Logic.AI.AiDecisionContext context, System.UInt64 seed, ProjectHero.Logic.AI.AiPolicyKind policy) [0x00285] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiTacticalPolicy.cs:53 
+  at ProjectHero.Logic.AI.AiBehaviorTree.Tick (ProjectHero.Logic.AI.AiDecisionContext context, System.UInt64 seed, ProjectHero.Logic.AI.AiPolicyKind policy, ProjectHero.Logic.AI.AiBehaviorMemory memory, ProjectHero.Logic.AI.IAiExecutionFeedback feedback, System.Int64 nextProducerOrdinal) [0x00030] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiBehaviorTree.cs:73 
+  at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered (ProjectHero.Logic.Snapshots.DecisionSnapshot snapshot, ProjectHero.Logic.Commands.CommandIngressRegistry ingress, System.Int64 nextTick) [0x0007b] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiControllerLogic.cs:202 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot (System.Int64 tick) [0x00051] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:3577 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x002b7] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1498 
+  at ProjectHero.Authoring.Tests.AiForecastCoverageTests.MovingOpponentCannotInvalidateAcceptedMove () [0x00067] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Authoring\AiForecastCoverageTests.cs:142 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

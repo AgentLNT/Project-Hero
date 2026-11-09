@@ -35,7 +35,7 @@ namespace ProjectHero.Authoring
     public static class BattleDefinitionBuilder
     {
         public const string RulesVersionV1 = "battle-def-v1";
-        public const string MainRulesVersion = "battle-def-v4-defense-duration";
+        public const string MainRulesVersion = "battle-def-v6-adrenaline-q10";
 
         /// <summary>
         /// 主战斗场景的设计网格边界（顶点包围盒，偶数坐标，包含两个初始站位）。
@@ -104,7 +104,7 @@ namespace ProjectHero.Authoring
                 DefaultReactionCommandIngressLeadTicks, DefaultReactionMinimumLeadTicks);
             AddIfError(errors, reactionRules.Validate(), nameof(ReactionRules));
 
-            var adrenalineRules = AdrenalineRules.FrozenV1;
+            var adrenalineRules = AdrenalineRules.BinaryQ10V3;
             AddIfError(errors, adrenalineRules.Validate(), nameof(AdrenalineRules));
 
             // —— ② 目录 ——

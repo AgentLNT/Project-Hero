@@ -30,7 +30,7 @@ namespace ProjectHero.Authoring.Tests.Task03
             Assert.That(sim.RulesVersion, Is.EqualTo(Task03.Definition.RulesVersion));
             Assert.That(sim.BattleDefinitionHash, Is.EqualTo(Task03.Definition.BattleDefinitionHashValue));
             Assert.That(sim.EncounterId, Is.EqualTo(Task03.EncounterId));
-            Assert.That(Task03.Definition.BattleDefinitionHashValue, Is.EqualTo("e04b3c0946ad3035"),
+            Assert.That(Task03.Definition.BattleDefinitionHashValue, Is.EqualTo("84116d595d222a72"),
                 "任务 02B 的主战斗定义哈希未漂移");
 
             // 任务 08 重基线（断言刻意留在原行号 33，便于既有文档交叉引用）：

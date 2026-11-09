@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="34" result="Passed" total="34" passed="34" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:29Z" duration="29.4626906">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1133" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:29Z" duration="29.462691" total="34" passed="34" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1472" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="413" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:01Z" duration="1.158932" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="105252" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1473" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="413" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:01Z" duration="1.158407" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1474" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="413" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:01Z" duration="1.158268" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1475" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="413" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:01Z" duration="1.158110" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1017" name="AiForecastCoverageTests" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" testcasecount="17" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:01Z" duration="1.127281" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1034" name="BaselineAndCandidateMustUseSameHorizon" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.BaselineAndCandidateMustUseSameHorizon" methodname="BaselineAndCandidateMustUseSameHorizon" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="120410185" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.523512" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1029" name="CoverageRequiresObservedOutcomeNotJustImpact" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.262449" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1018" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;spear_thrust&quot;,120,False,127)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;spear_thrust&quot;,120,False,127)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="53608731" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.015118" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1019" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;spear_thrust&quot;,126,False,127)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;spear_thrust&quot;,126,False,127)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="774581560" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.016335" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1020" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;spear_thrust&quot;,127,True,127)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;spear_thrust&quot;,127,True,127)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="1970029373" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.015563" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1021" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;wide_cleave&quot;,120,False,151)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;wide_cleave&quot;,120,False,151)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="711395638" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.010095" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1022" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;wide_cleave&quot;,180,True,151)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;wide_cleave&quot;,180,True,151)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="335705436" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.048735" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1023" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;heavy_smash&quot;,180,False,211)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;heavy_smash&quot;,180,False,211)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="124219844" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.013010" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1024" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;heavy_smash&quot;,240,True,211)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;heavy_smash&quot;,240,True,211)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="1019250184" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.030445" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1025" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,240,False,271)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,240,False,271)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="1009969271" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.029987" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1026" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,241,False,271)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,241,False,271)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="1402656709" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.017636" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1027" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,271,True,271)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,271,True,271)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="2137048922" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.025681" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1028" name="CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,360,True,271)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoverageRequiresObservedOutcomeNotJustImpact(&quot;whirlwind&quot;,360,True,271)" methodname="CoverageRequiresObservedOutcomeNotJustImpact" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="629255163" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.034190" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1033" name="CoveredForecastMatchesRealConditionalKernel" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoveredForecastMatchesRealConditionalKernel" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.091696" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1031" name="CoveredForecastMatchesRealConditionalKernel(&quot;heavy_smash&quot;)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoveredForecastMatchesRealConditionalKernel(&quot;heavy_smash&quot;)" methodname="CoveredForecastMatchesRealConditionalKernel" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="73111637" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.054850" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1032" name="CoveredForecastMatchesRealConditionalKernel(&quot;whirlwind&quot;)" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.CoveredForecastMatchesRealConditionalKernel(&quot;whirlwind&quot;)" methodname="CoveredForecastMatchesRealConditionalKernel" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="1344346943" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.035348" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1035" name="InvalidCommandIsRejectedRatherThanMerelyUncovered" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.InvalidCommandIsRejectedRatherThanMerelyUncovered" methodname="InvalidCommandIsRejectedRatherThanMerelyUncovered" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="225261194" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:00Z" duration="0.005879" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="PartialObservedHitStillDoesNotBecomeComparableFullOutcome" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.PartialObservedHitStillDoesNotBecomeComparableFullOutcome" methodname="PartialObservedHitStillDoesNotBecomeComparableFullOutcome" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="593421321" result="Passed" start-time="2026-11-05 06:24:00Z" end-time="2026-11-05 06:24:01Z" duration="0.210092" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="SettingsAreVersionedAndValidatedWithoutChangingFrozenDefault" fullname="ProjectHero.Authoring.Tests.AiForecastCoverageTests.SettingsAreVersionedAndValidatedWithoutChangingFrozenDefault" methodname="SettingsAreVersionedAndValidatedWithoutChangingFrozenDefault" classname="ProjectHero.Authoring.Tests.AiForecastCoverageTests" runstate="Runnable" seed="657932343" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.019882" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="2289" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:29Z" duration="28.290764" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="105252" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2290" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:29Z" duration="28.285392" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2291" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:29Z" duration="28.280680" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2292" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:29Z" duration="28.276210" total="17" passed="17" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1489" name="AiBehaviorTreeTests" fullname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" classname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.002962" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1491" name="EveryPersistentTaskFieldAndBothChannelsAreEncoded" fullname="ProjectHero.Logic.Tests.AiBehaviorTreeTests.EveryPersistentTaskFieldAndBothChannelsAreEncoded" methodname="EveryPersistentTaskFieldAndBothChannelsAreEncoded" classname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" runstate="Runnable" seed="227773941" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.001127" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1490" name="RunningSequenceResumesLeafAndFailureAllowsSelectorFallback" fullname="ProjectHero.Logic.Tests.AiBehaviorTreeTests.RunningSequenceResumesLeafAndFailureAllowsSelectorFallback" methodname="RunningSequenceResumesLeafAndFailureAllowsSelectorFallback" classname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" runstate="Runnable" seed="765830389" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.000800" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1492" name="AiForecastIngressTests" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.102308" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1494" name="FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" methodname="FutureUnclaimedStartCanStillDeferToTheKnownControlBoundary" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="1409757286" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.052565" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1493" name="KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" methodname="KnownControlAndSameTickClaimMustNotProducePhantomAttackDamage" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="81295321" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.020333" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1495" name="NextTickWindowResetMustHappenBeforeReactionResourceAdmission" fullname="ProjectHero.Logic.Tests.AiForecastIngressTests.NextTickWindowResetMustHappenBeforeReactionResourceAdmission" methodname="NextTickWindowResetMustHappenBeforeReactionResourceAdmission" classname="ProjectHero.Logic.Tests.AiForecastIngressTests" runstate="Runnable" seed="788402531" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.028566" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1496" name="AiTacticalPolicyTests" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:29Z" duration="28.128585" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1506" name="ForecastOnlyReadsFilteredFactsAndDoesNotMutateAuthority" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.ForecastOnlyReadsFilteredFactsAndDoesNotMutateAuthority" methodname="ForecastOnlyReadsFilteredFactsAndDoesNotMutateAuthority" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="826645582" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.053830" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1505" name="FundedReactionPrecedesOrdinaryTierAndReplays" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.FundedReactionPrecedesOrdinaryTierAndReplays" methodname="FundedReactionPrecedesOrdinaryTierAndReplays" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="1191183405" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.419562" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[{ Type = Block, RejectionCode = , Score = 73824 } count=1
+{ Type = Dodge, RejectionCode = , Score = -160 } count=5
+{ Type = Dodge, RejectionCode = , Score = -288 } count=2
+{ Type = Dodge, RejectionCode = , Score = -32 } count=2
+{ Type = Dodge, RejectionCode = , Score = 96 } count=3
+AdrenalineLedgerChangedEvent { Tick = 0, Sequence = 1, UnitId = 2, CycleId = 1, ChangeKind = CycleReset, AvailableBefore = 0, AvailableAfter = 0, ReservationPlanId = 0, ReservationAmount = 0 }
+DamageChannelResolvedEvent { Tick = 2, Sequence = 9, ConflictGroupKey = 1, TargetUnitId = 1, AttackPlanId = 1, AttackerUnitId = 2, GuardPlanId = 0, IncomingDirection = West, IncomingMomentumUnits = 6144, AfterMomentumResistanceUnits = 6144, Channels = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Events.DamageChannelEntry], TotalDamageQ10 = 8192, AfterBlockDamageQ10 = 8192, StopReasonCode = INTERACTION_CONTACT_UNRESISTED, ParticipatingPlanIds = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Ids.ActionPlanId] }
+AdrenalineLedgerChangedEvent { Tick = 2, Sequence = 11, UnitId = 1, CycleId = 0, ChangeKind = Accrued, AvailableBefore = 0, AvailableAfter = 24576, ReservationPlanId = 0, ReservationAmount = 24576 }
+AdrenalineLedgerChangedEvent { Tick = 2, Sequence = 12, UnitId = 2, CycleId = 1, ChangeKind = Accrued, AvailableBefore = 0, AvailableAfter = 16384, ReservationPlanId = 0, ReservationAmount = 16384 }
+AdrenalineLedgerChangedEvent { Tick = 34, Sequence = 18, UnitId = 1, CycleId = 0, ChangeKind = Reserved, AvailableBefore = 24576, AvailableAfter = 0, ReservationPlanId = 3, ReservationAmount = 24576 }
+AdrenalineLedgerChangedEvent { Tick = 60, Sequence = 21, UnitId = 1, CycleId = 1, ChangeKind = CycleReset, AvailableBefore = 0, AvailableAfter = 0, ReservationPlanId = 0, ReservationAmount = 0 }
+AdrenalineLedgerChangedEvent { Tick = 100, Sequence = 26, UnitId = 1, CycleId = 1, ChangeKind = Consumed, AvailableBefore = 0, AvailableAfter = 0, ReservationPlanId = 3, ReservationAmount = 24576 }
+AdrenalineLedgerChangedEvent { Tick = 120, Sequence = 33, UnitId = 2, CycleId = 2, ChangeKind = CycleReset, AvailableBefore = 16384, AvailableAfter = 0, ReservationPlanId = 0, ReservationAmount = 0 }
+]]></output>
+              </test-case>
+              <test-case id="1503" name="GuardIsAnOrdinaryLegalSubmissionAgainstPublicThreat" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.GuardIsAnOrdinaryLegalSubmissionAgainstPublicThreat" methodname="GuardIsAnOrdinaryLegalSubmissionAgainstPublicThreat" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="200756986" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:01Z" duration="0.115852" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1500" name="NativeIngressAndReplayRegeneratePolicyDecisions" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.NativeIngressAndReplayRegeneratePolicyDecisions" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:19Z" duration="17.672438" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1497" name="NativeIngressAndReplayRegeneratePolicyDecisions(SustainedOffense,Attack,False)" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.NativeIngressAndReplayRegeneratePolicyDecisions(SustainedOffense,Attack,False)" methodname="NativeIngressAndReplayRegeneratePolicyDecisions" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="392062178" result="Passed" start-time="2026-11-05 06:24:01Z" end-time="2026-11-05 06:24:08Z" duration="6.862200" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[60: AiCandidateEvaluation { Key = N/1/action.experiment.quick/2/0//, Type = Attack, IsReaction = False, Score = 32257, RejectionCode = , Reason = SELECTED_MAX_SCORE_STABLE_KEY, DamageDeltaQ10 = 4096, IncomingDeltaQ10 = 0, PositionProgress = 0, InterruptedThreats = 0, Clashes = 0, Cost = 0, StartTick = 61, ImpactTick = 91, EndTick = 121, HorizonTick = 180, Chosen = True, Coverage = Complete, ObservedThroughTick = 180, RequiredThroughTick = 121 }
+]]></output>
+                </test-case>
+                <test-case id="1498" name="NativeIngressAndReplayRegeneratePolicyDecisions(SeekInterrupt,Attack,True)" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.NativeIngressAndReplayRegeneratePolicyDecisions(SeekInterrupt,Attack,True)" methodname="NativeIngressAndReplayRegeneratePolicyDecisions" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="573699491" result="Passed" start-time="2026-11-05 06:24:08Z" end-time="2026-11-05 06:24:14Z" duration="5.564009" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[60: AiCandidateEvaluation { Key = N/1/action.experiment.probe_blunt/2/0///align/100, Type = Attack, IsReaction = False, Score = 33496, RejectionCode = , Reason = SELECTED_MAX_SCORE_STABLE_KEY, DamageDeltaQ10 = 0, IncomingDeltaQ10 = -3072, PositionProgress = 2, InterruptedThreats = 0, Clashes = 1, Cost = 0, StartTick = 70, ImpactTick = 100, EndTick = 130, HorizonTick = 180, Chosen = True, Coverage = Complete, ObservedThroughTick = 180, RequiredThroughTick = 130 }
+]]></output>
+                </test-case>
+                <test-case id="1499" name="NativeIngressAndReplayRegeneratePolicyDecisions(CautiousDefense,Guard,False)" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.NativeIngressAndReplayRegeneratePolicyDecisions(CautiousDefense,Guard,False)" methodname="NativeIngressAndReplayRegeneratePolicyDecisions" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="228114700" result="Passed" start-time="2026-11-05 06:24:14Z" end-time="2026-11-05 06:24:19Z" duration="5.245087" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[60: AiCandidateEvaluation { Key = N/1/action.experiment.guard//0//, Type = Guard, IsReaction = False, Score = 36512, RejectionCode = , Reason = SELECTED_MAX_SCORE_STABLE_KEY, DamageDeltaQ10 = 0, IncomingDeltaQ10 = -3072, PositionProgress = 2, InterruptedThreats = 0, Clashes = 0, Cost = 0, StartTick = 61, ImpactTick = 0, EndTick = 121, HorizonTick = 180, Chosen = True, Coverage = Complete, ObservedThroughTick = 180, RequiredThroughTick = 121 }
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-case id="1507" name="PolicyIdentityIsImmutableDefinitionInputAndRejectsUnknownKinds" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.PolicyIdentityIsImmutableDefinitionInputAndRejectsUnknownKinds" methodname="PolicyIdentityIsImmutableDefinitionInputAndRejectsUnknownKinds" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="1249221888" result="Passed" start-time="2026-11-05 06:24:19Z" end-time="2026-11-05 06:24:19Z" duration="0.045341" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1502" name="ProactiveMoveUsesRealDestinationAndSharedPathSolver" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.ProactiveMoveUsesRealDestinationAndSharedPathSolver" methodname="ProactiveMoveUsesRealDestinationAndSharedPathSolver" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="1259857970" result="Passed" start-time="2026-11-05 06:24:19Z" end-time="2026-11-05 06:24:20Z" duration="0.590795" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1508" name="ReplayRejectsChangedPolicyAndPlayerCannotCarryAiPolicy" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.ReplayRejectsChangedPolicyAndPlayerCannotCarryAiPolicy" methodname="ReplayRejectsChangedPolicyAndPlayerCannotCarryAiPolicy" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="999376443" result="Passed" start-time="2026-11-05 06:24:20Z" end-time="2026-11-05 06:24:20Z" duration="0.053106" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1501" name="SeekingInterruptUsesActualCancellationBeforeThreatImpact" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.SeekingInterruptUsesActualCancellationBeforeThreatImpact" methodname="SeekingInterruptUsesActualCancellationBeforeThreatImpact" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="973706861" result="Passed" start-time="2026-11-05 06:24:20Z" end-time="2026-11-05 06:24:25Z" duration="5.151911" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1504" name="UnfundedReactionIsExplainedAndNeverSubmitted" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.UnfundedReactionIsExplainedAndNeverSubmitted" methodname="UnfundedReactionIsExplainedAndNeverSubmitted" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="828645771" result="Passed" start-time="2026-11-05 06:24:25Z" end-time="2026-11-05 06:24:29Z" duration="3.793194" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1509" name="WaitPreservesWindowAndCommittedLane" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.WaitPreservesWindowAndCommittedLane" methodname="WaitPreservesWindowAndCommittedLane" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="813338741" result="Passed" start-time="2026-11-05 06:24:29Z" end-time="2026-11-05 06:24:29Z" duration="0.229459" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

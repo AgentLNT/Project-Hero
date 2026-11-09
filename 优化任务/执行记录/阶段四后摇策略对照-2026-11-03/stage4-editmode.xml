@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="15" result="Passed" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="39.0042191">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1095" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="39.004219" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2242" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="708" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="38.992258" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="93780" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2243" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="708" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="38.990761" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2244" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="708" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="38.989465" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2245" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="708" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="38.988258" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1614" name="Stage4RecoveryExperimentTests" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="38.980714" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="ParameterizedMethod" id="1629" name="FirstAndSpawnDoNotChangeFactionOrLoadout" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.FirstAndSpawnDoNotChangeFactionOrLoadout" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:15Z" duration="0.111079" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1625" name="FirstAndSpawnDoNotChangeFactionOrLoadout(False,False)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.FirstAndSpawnDoNotChangeFactionOrLoadout(False,False)" methodname="FirstAndSpawnDoNotChangeFactionOrLoadout" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1599032496" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:15Z" duration="0.062963" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1626" name="FirstAndSpawnDoNotChangeFactionOrLoadout(False,True)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.FirstAndSpawnDoNotChangeFactionOrLoadout(False,True)" methodname="FirstAndSpawnDoNotChangeFactionOrLoadout" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1533143169" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:15Z" duration="0.004166" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1627" name="FirstAndSpawnDoNotChangeFactionOrLoadout(True,False)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.FirstAndSpawnDoNotChangeFactionOrLoadout(True,False)" methodname="FirstAndSpawnDoNotChangeFactionOrLoadout" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1236962309" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:15Z" duration="0.008076" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1628" name="FirstAndSpawnDoNotChangeFactionOrLoadout(True,True)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.FirstAndSpawnDoNotChangeFactionOrLoadout(True,True)" methodname="FirstAndSpawnDoNotChangeFactionOrLoadout" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="469915663" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:15Z" duration="0.025519" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1632" name="LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:54Z" duration="38.748318" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1630" name="LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources(ProbeOpen,31)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources(ProbeOpen,31)" methodname="LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="834784914" result="Passed" start-time="2026-11-03 09:24:15Z" end-time="2026-11-03 09:24:29Z" duration="13.581059" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1631" name="LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources(TeamSweepOpen,40)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources(TeamSweepOpen,40)" methodname="LongMatchesCaptureAllDecisionsAndConserveActualHealthAndResources" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1199747545" result="Passed" start-time="2026-11-03 09:24:29Z" end-time="2026-11-03 09:24:54Z" duration="25.166237" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1615" name="MatrixFreezesPairedInputsAndIndependentFirstAndSpawnExchange" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.MatrixFreezesPairedInputsAndIndependentFirstAndSpawnExchange" methodname="MatrixFreezesPairedInputsAndIndependentFirstAndSpawnExchange" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="296300111" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.010894" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1624" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.097764" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1616" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(ProbeOpen)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(ProbeOpen)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="946506716" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.010903" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1617" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(ProbeWall)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(ProbeWall)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1840078491" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.016344" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1618" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HeavyQuickOpen)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HeavyQuickOpen)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="2028694509" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.008447" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1619" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HeavyQuickWall)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HeavyQuickWall)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1494569452" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.008407" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1620" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(TeamSweepOpen)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(TeamSweepOpen)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="1500816664" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.015422" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1621" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(TeamSweepWall)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(TeamSweepWall)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="845930123" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.008166" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1622" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HoldoutDiagonal)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HoldoutDiagonal)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="850604219" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.015722" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1623" name="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HoldoutStaggered)" fullname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests.RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock(HoldoutStaggered)" methodname="RecoveryIsTheOnlyDefinitionChangeWithinAMatchedBlock" classname="ProjectHero.Logic.Tests.Stage4RecoveryExperimentTests" runstate="Runnable" seed="983122277" result="Passed" start-time="2026-11-03 09:24:54Z" end-time="2026-11-03 09:24:54Z" duration="0.008880" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

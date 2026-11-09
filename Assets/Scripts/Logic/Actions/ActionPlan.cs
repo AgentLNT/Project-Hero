@@ -303,6 +303,12 @@ namespace ProjectHero.Logic.Actions
         public int DurationTicks { get; internal set; }
         public int DefenseQuotaRemainingQ10 { get; internal set; }
         public long ReactionTriggeredAtTick { get; internal set; } = -1L;
+        /// <summary>
+        /// Clash ends this attack's effect, while the Running plan retains its original Lane
+        /// occupancy until EndTick. Control can overlap that recovery without removing it.
+        /// -1 means this attack has not participated in a resolved clash.
+        /// </summary>
+        public long ClashResolvedAtTick { get; internal set; } = -1L;
         public long HardEndTick => IsReaction ? checked(SourceImpactTick + 1L) : EndTick;
 
 

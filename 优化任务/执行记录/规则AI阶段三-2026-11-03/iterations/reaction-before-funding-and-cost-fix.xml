@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.1031726">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1078" result="Failed" site="Child" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.103173" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2221" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="691" result="Failed" site="Child" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.083346" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="76424" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2222" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="691" result="Failed" site="Child" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.082751" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2223" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="691" result="Failed" site="Child" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.082524" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2224" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="691" result="Failed" site="Child" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.082312" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1450" name="AiTacticalPolicyTests" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" testcasecount="10" result="Failed" site="Child" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.073785" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1458" name="FundedReactionPrecedesOrdinaryTierAndReplays" fullname="ProjectHero.Logic.Tests.AiTacticalPolicyTests.FundedReactionPrecedesOrdinaryTierAndReplays" methodname="FundedReactionPrecedesOrdinaryTierAndReplays" classname="ProjectHero.Logic.Tests.AiTacticalPolicyTests" runstate="Runnable" seed="1961281890" result="Failed" start-time="2026-11-03 07:19:38Z" end-time="2026-11-03 07:19:41Z" duration="3.062011" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Logic.Tests.AiTacticalPolicyTests.FundedReactionPrecedesOrdinaryTierAndReplays () [0x000fb] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiTacticalPolicyTests.cs:69
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[{ Type = Block, RejectionCode = ADRENALINE_INSUFFICIENT, Score = -786432 } count=66
+{ Type = Dodge, RejectionCode = ADRENALINE_INSUFFICIENT, Score = -786432 } count=792
+AdrenalineLedgerChangedEvent { Tick = 0, Sequence = 1, UnitId = 2, CycleId = 1, ChangeKind = CycleReset, AvailableBefore = 0, AvailableAfter = 0, ReservationPlanId = 0, ReservationAmount = 0 }
+DamageChannelResolvedEvent { Tick = 2, Sequence = 9, ConflictGroupKey = 1, TargetUnitId = 1, AttackPlanId = 1, AttackerUnitId = 2, GuardPlanId = 0, IncomingDirection = West, IncomingMomentumUnits = 3072, AfterMomentumResistanceUnits = 3072, Channels = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Events.DamageChannelEntry], TotalDamageQ10 = 4096, AfterBlockDamageQ10 = 4096, StopReasonCode = INTERACTION_CONTACT_UNRESISTED, ParticipatingPlanIds = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Ids.ActionPlanId] }
+AdrenalineLedgerChangedEvent { Tick = 2, Sequence = 11, UnitId = 1, CycleId = 0, ChangeKind = Accrued, AvailableBefore = 0, AvailableAfter = 12288, ReservationPlanId = 0, ReservationAmount = 12288 }
+AdrenalineLedgerChangedEvent { Tick = 2, Sequence = 12, UnitId = 2, CycleId = 1, ChangeKind = Accrued, AvailableBefore = 0, AvailableAfter = 8192, ReservationPlanId = 0, ReservationAmount = 8192 }
+AdrenalineLedgerChangedEvent { Tick = 60, Sequence = 19, UnitId = 1, CycleId = 1, ChangeKind = CycleReset, AvailableBefore = 12288, AvailableAfter = 0, ReservationPlanId = 0, ReservationAmount = 0 }
+DamageChannelResolvedEvent { Tick = 100, Sequence = 26, ConflictGroupKey = 2, TargetUnitId = 1, AttackPlanId = 2, AttackerUnitId = 2, GuardPlanId = 0, IncomingDirection = West, IncomingMomentumUnits = 10240, AfterMomentumResistanceUnits = 10240, Channels = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Events.DamageChannelEntry], TotalDamageQ10 = 6144, AfterBlockDamageQ10 = 6144, StopReasonCode = INTERACTION_CONTACT_UNRESISTED, ParticipatingPlanIds = System.Collections.ObjectModel.ReadOnlyCollection`1[ProjectHero.Logic.Ids.ActionPlanId] }
+AdrenalineLedgerChangedEvent { Tick = 100, Sequence = 30, UnitId = 1, CycleId = 1, ChangeKind = Accrued, AvailableBefore = 0, AvailableAfter = 18432, ReservationPlanId = 0, ReservationAmount = 18432 }
+AdrenalineLedgerChangedEvent { Tick = 100, Sequence = 31, UnitId = 2, CycleId = 1, ChangeKind = Accrued, AvailableBefore = 8192, AvailableAfter = 20480, ReservationPlanId = 0, ReservationAmount = 12288 }
+AdrenalineLedgerChangedEvent { Tick = 120, Sequence = 33, UnitId = 2, CycleId = 2, ChangeKind = CycleReset, AvailableBefore = 20480, AvailableAfter = 0, ReservationPlanId = 0, ReservationAmount = 0 }
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

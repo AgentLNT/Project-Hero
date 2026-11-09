@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.3121635">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1142" result="Failed" site="Child" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.312164" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1477" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="416" result="Failed" site="Child" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.258853" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="15820" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1478" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="416" result="Failed" site="Child" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.247524" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1479" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="416" result="Failed" site="Child" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.236428" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1480" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="416" result="Failed" site="Child" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.233133" total="2" passed="1" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1017" name="AdrenalineRuleVersionTests" fullname="ProjectHero.Authoring.Tests.AdrenalineRuleVersionTests" classname="ProjectHero.Authoring.Tests.AdrenalineRuleVersionTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.128597" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1018" name="CorrectedMainDefinitionHasDistinctHashAndCanRebuildHistoricalDefinition" fullname="ProjectHero.Authoring.Tests.AdrenalineRuleVersionTests.CorrectedMainDefinitionHasDistinctHashAndCanRebuildHistoricalDefinition" methodname="CorrectedMainDefinitionHasDistinctHashAndCanRebuildHistoricalDefinition" classname="ProjectHero.Authoring.Tests.AdrenalineRuleVersionTests" runstate="Runnable" seed="1447939676" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.115579" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1231" name="Task12BHashEvidenceTests" fullname="ProjectHero.Authoring.Tests.Task12BHashEvidenceTests" classname="ProjectHero.Authoring.Tests.Task12BHashEvidenceTests" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.092560" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1232" name="FrozenR2DefinitionAndInitialStateHashesAreReproducible" fullname="ProjectHero.Authoring.Tests.Task12BHashEvidenceTests.FrozenR2DefinitionAndInitialStateHashesAreReproducible" methodname="FrozenR2DefinitionAndInitialStateHashesAreReproducible" classname="ProjectHero.Authoring.Tests.Task12BHashEvidenceTests" runstate="Runnable" seed="858876448" result="Failed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.091360" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  String lengths are both 16. Strings differ at index 0.
+  Expected: "5f18e7c81833be75"
+  But was:  "e9073528d6dfc5a6"
+  -----------^
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.Task12BHashEvidenceTests.FrozenR2DefinitionAndInitialStateHashesAreReproducible () [0x000d7] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Authoring\Task12BHashEvidenceTests.cs:24
+]]></stack-trace>
+                </failure>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="2302" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="720" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.040800" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="15820" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2303" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="720" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.040052" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2304" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="720" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.039702" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2305" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="720" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.039173" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1494" name="AdrenalineQ10RegressionTests" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.007770" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1499" name="AggregatedDamageRoundsOnceAndRetainsFixedRewardsAndCap" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.AggregatedDamageRoundsOnceAndRetainsFixedRewardsAndCap" methodname="AggregatedDamageRoundsOnceAndRetainsFixedRewardsAndCap" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" seed="1020162253" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.001664" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1501" name="CandidateScaledResourceProtocolIsNotCombinedWithWholePointQuantization" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.CandidateScaledResourceProtocolIsNotCombinedWithWholePointQuantization" methodname="CandidateScaledResourceProtocolIsNotCombinedWithWholePointQuantization" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" seed="1327981545" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.000347" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1500" name="LegacyDefinitionRetainsObservedOverCreditForHistoricalReplay" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.LegacyDefinitionRetainsObservedOverCreditForHistoricalReplay" methodname="LegacyDefinitionRetainsObservedOverCreditForHistoricalReplay" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" seed="1504978767" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.000339" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1498" name="RealDamageCreditsWholeResourcePoints" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.RealDamageCreditsWholeResourcePoints" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.004300" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1495" name="RealDamageCreditsWholeResourcePoints(20,1,4)" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.RealDamageCreditsWholeResourcePoints(20,1,4)" methodname="RealDamageCreditsWholeResourcePoints" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" seed="1790581195" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.000310" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1496" name="RealDamageCreditsWholeResourcePoints(25,2,5)" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.RealDamageCreditsWholeResourcePoints(25,2,5)" methodname="RealDamageCreditsWholeResourcePoints" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" seed="1258228406" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.003164" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1497" name="RealDamageCreditsWholeResourcePoints(40,3,8)" fullname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests.RealDamageCreditsWholeResourcePoints(40,3,8)" methodname="RealDamageCreditsWholeResourcePoints" classname="ProjectHero.Logic.Tests.AdrenalineQ10RegressionTests" runstate="Runnable" seed="1514726904" result="Passed" start-time="2026-11-09 06:46:14Z" end-time="2026-11-09 06:46:14Z" duration="0.000099" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

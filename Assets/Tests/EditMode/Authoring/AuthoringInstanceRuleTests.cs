@@ -52,11 +52,11 @@ namespace ProjectHero.Authoring.Tests
         /// <c>Expected: "a10fcfb98357418c" / But was: "d997b13b18573e15"</c>。
         /// 本次重基线与 <c>02B-配置迁移记录.md</c> §16 是同一次修订。
         /// </summary>
-        private const string FrozenRulesVersion = "battle-def-v4-defense-duration";
+        private const string FrozenRulesVersion = "battle-def-v6-adrenaline-q10";
 
         /// <inheritdoc cref="FrozenRulesVersion"/>
         // Task10: user-confirmed 180-Tick windows and hero slot are now definition inputs.
-        private const string FrozenMainEncounterHash = "e04b3c0946ad3035";
+        private const string FrozenMainEncounterHash = "84116d595d222a72";
 
         // ============================================================
         // 1. ControllerBinding

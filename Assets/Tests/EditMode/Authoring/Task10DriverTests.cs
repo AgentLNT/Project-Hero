@@ -66,12 +66,12 @@ namespace ProjectHero.Authoring.Tests
             var policy = ShadowCasePolicy.CreateDefault("full-migration-guard", seed.RulesVersion, true, true, true, true);
             var report = ShadowDifferenceDetector.Compare(input, policy);
             Assert.That(report.CanClaimEquivalence, Is.True);
-            Assert.That(report.TemporarilyUncomparable.Count, Is.EqualTo(73));
+            Assert.That(report.TemporarilyUncomparable.Count, Is.EqualTo(74));
             Assert.That(report.HasCompleteMigrationCoverage, Is.False);
-            Assert.That(report.MigrationCoverageClaim, Is.EqualTo("INCOMPLETE_TEMPORARY_FIELDS:73"));
-            Assert.That(report.Describe(), Does.Contain("migrationCoverage=INCOMPLETE_TEMPORARY_FIELDS:73"));
+            Assert.That(report.MigrationCoverageClaim, Is.EqualTo("INCOMPLETE_TEMPORARY_FIELDS:74"));
+            Assert.That(report.Describe(), Does.Contain("migrationCoverage=INCOMPLETE_TEMPORARY_FIELDS:74"));
             Assert.That(NewCutoverGate.Rejections(report, seed.BattleDefinitionHash, seed.RulesVersion,
-                seed.EncounterId.Value).Count, Is.GreaterThanOrEqualTo(73));
+                seed.EncounterId.Value).Count, Is.GreaterThanOrEqualTo(74));
         }
 
         [Test] public void MigrationRuleEvidenceRejectsMissingDuplicateStaleAndBroadProofs()

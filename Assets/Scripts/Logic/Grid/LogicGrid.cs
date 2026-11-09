@@ -650,6 +650,25 @@ namespace ProjectHero.Logic.Grid
             return null;
         }
 
+        /// <summary>Reservations protect the future body as well as its anchor, using the same
+        /// footprint as CommitAnchor. Like anchor reservations, future bodies conservatively block
+        /// the whole path query; this does not introduce time-dependent pathfinding.</summary>
+        internal bool DestinationOverlapsReservedBody(UnitId unitId, GridPoint to, GridDirection facing)
+        {
+            if (!_rows.TryGetValue(unitId.Value, out UnitRow mover)) return false;
+            var cells = new HashSet<GridPoint>(ResolveCells(mover, to, facing));
+            var triangles = new HashSet<TrianglePoint>(ResolveTriangles(mover, to, facing));
+            foreach (var reservation in _reservations.Values)
+            {
+                if (reservation.UnitId == unitId || !_rows.TryGetValue(reservation.UnitId.Value, out UnitRow other)) continue;
+                foreach (var cell in ResolveCells(other, reservation.Cell, other.Facing))
+                    if (cells.Contains(cell)) return true;
+                foreach (var triangle in ResolveTriangles(other, reservation.Cell, other.Facing))
+                    if (triangles.Contains(triangle)) return true;
+            }
+            return false;
+        }
+
         /// <summary>登记/清除该单位下一次移动的目的格（启动门禁空间查询的只读输入）。</summary>
         public void SetPendingDestination(UnitId unitId, GridPoint? destination)
         {

@@ -207,6 +207,18 @@ namespace ProjectHero.Logic.Commands
                 throw new ProjectHero.Logic.LogicDefinitionException(
                     CommandCodes.EXTERNAL_INGRESS_SYSTEM_SOURCE_REJECTED, binding.ControllerId.Value);
 
+            if (!Enum.IsDefined(typeof(AI.AiPolicyKind), binding.AiPolicy)
+                || (binding.AiPolicy != AI.AiPolicyKind.Legacy && binding.SourceKind != CommandSourceKind.Ai))
+                throw new ProjectHero.Logic.LogicDefinitionException("AI_POLICY_INVALID", binding.ControllerId.Value);
+
+            if (!Enum.IsDefined(typeof(AI.AiExecutionKind), binding.AiExecution)
+                || (binding.AiExecution != AI.AiExecutionKind.SingleCommand
+                    && (binding.SourceKind != CommandSourceKind.Ai || binding.AiPolicy == AI.AiPolicyKind.Legacy)))
+                throw new ProjectHero.Logic.LogicDefinitionException("AI_EXECUTION_INVALID", binding.ControllerId.Value);
+
+            if (binding.AiForecast != null && (binding.AiForecast.Validate() != null || binding.SourceKind != CommandSourceKind.Ai
+                || binding.AiPolicy == AI.AiPolicyKind.Legacy))
+                throw new ProjectHero.Logic.LogicDefinitionException("AI_FORECAST_SETTINGS_INVALID", binding.ControllerId.Value);
             return Register(binding.ControllerId, binding.SourceKind, "External");
         }
 

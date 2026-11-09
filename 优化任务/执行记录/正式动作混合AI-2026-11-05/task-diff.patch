@@ -1,0 +1,1092 @@
+--- Assets/Scripts/Authoring/BattleDefinitionValidator.cs (before task)
++++ Assets/Scripts/Authoring/BattleDefinitionValidator.cs
+@@ -265,6 +265,10 @@
+                 if (!System.Enum.IsDefined(typeof(ProjectHero.Logic.AI.AiPolicyKind), binding.AiPolicy)
+                     || (binding.AiPolicy != ProjectHero.Logic.AI.AiPolicyKind.Legacy && binding.SourceKind != CommandSourceKind.Ai))
+                     errors.Add("AI_POLICY_INVALID", controllerOrigin, origin);
++                if (!System.Enum.IsDefined(typeof(ProjectHero.Logic.AI.AiExecutionKind), binding.AiExecution)
++                    || (binding.AiExecution != ProjectHero.Logic.AI.AiExecutionKind.SingleCommand
++                        && (binding.SourceKind != CommandSourceKind.Ai || binding.AiPolicy == ProjectHero.Logic.AI.AiPolicyKind.Legacy)))
++                    errors.Add("AI_EXECUTION_INVALID", controllerOrigin, origin);
+ 
+                 if (binding.ControlledSlots == null || binding.ControlledSlots.Count == 0)
+                 {
+--- Assets/Scripts/Logic/AI/AiControllerLogic.cs (before task)
++++ Assets/Scripts/Logic/AI/AiControllerLogic.cs
+@@ -2,6 +2,7 @@
+ using System.Collections.Generic;
+ using System.Globalization;
+ using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Combat;
+ using ProjectHero.Logic.Determinism;
+ using ProjectHero.Logic.Ids;
+ using ProjectHero.Logic.Simulation;
+@@ -42,6 +43,8 @@
+         private readonly List<AiDecision> _decisions = new List<AiDecision>();
+         private readonly List<CommandIngressRejection> _rejections = new List<CommandIngressRejection>();
+ 
++        private IAiExecutionFeedback _feedback;
++        private readonly Dictionary<string, AiExecutionKind> _executions = new(StringComparer.Ordinal);
+         private IAiReactionOpportunitySource _opportunities;
+         private IAiActionPlanLookup _planLookup;
+         private IMovementPathCalculator _pathCalculator;
+@@ -86,13 +89,15 @@
+             IAiActionPlanLookup planLookup,
+             IMovementPathCalculator pathCalculator,
+             Func<ControllerId, CommandRequest, string> normalPreview = null,
+-            Func<DecisionSnapshot, IAiForecast> forecastFactory = null)
++            Func<DecisionSnapshot, IAiForecast> forecastFactory = null,
++            IAiExecutionFeedback executionFeedback = null)
+         {
+             _opportunities = opportunities;
+             _planLookup = planLookup;
+             _pathCalculator = pathCalculator;
+             _normalPreview = normalPreview;
+             _forecastFactory = forecastFactory;
++            _feedback = executionFeedback;
+         }
+ 
+         /// <summary>已注册的 AI 控制者（注册顺序；只增不改）。</summary>
+@@ -115,11 +120,17 @@
+             if (!Enum.IsDefined(typeof(AiPolicyKind), binding.AiPolicy))
+                 throw new LogicDefinitionException("AI_POLICY_INVALID");
+ 
++            if (!Enum.IsDefined(typeof(AiExecutionKind), binding.AiExecution)
++                || (binding.AiExecution == AiExecutionKind.UtilityBehaviorTree && binding.AiPolicy == AiPolicyKind.Legacy))
++                throw new LogicDefinitionException("AI_EXECUTION_INVALID");
++
+             string key = binding.ControllerId.Value;
+             if (key == null || _states.ContainsKey(key)) return;
+             _registrationOrder.Add(key);
+             _states[key] = new AiRuntimeState(key);
+             _policies[key] = binding.AiPolicy;
++            _executions[key] = binding.AiExecution;
++            if (binding.AiExecution == AiExecutionKind.UtilityBehaviorTree) _states[key].Behavior = AiBehaviorMemory.Empty;
+         }
+ 
+         /// <summary>是否已注册该 Controller（只读）。</summary>
+@@ -184,7 +195,9 @@
+                 if (entry == null) continue;
+ 
+                 AiDecisionContext context = BuildContext(snapshot, new ControllerId(key));
+-                AiDecision decision = _policies[key] == AiPolicyKind.Legacy
++                AiDecision decision = _executions[key] == AiExecutionKind.UtilityBehaviorTree
++                    ? AiBehaviorTree.Tick(context, _battleSeed, _policies[key], state.Behavior, _feedback, entry.NextProducerOrdinal)
++                    : _policies[key] == AiPolicyKind.Legacy
+                     ? AiDecisionFunction.Decide(context, _battleSeed)
+                     : AiTacticalPolicy.Decide(context, _battleSeed, _policies[key]);
+ 
+@@ -192,7 +205,16 @@
+                 {
+                     CommandIngressRejection rejection = entry.SubmitAtDefaultTick(
+                         decision.Selected.Scope, decision.Selected.Payload);
+-                    if (rejection != null) _rejections.Add(rejection);
++                    if (rejection != null)
++                    {
++                        _rejections.Add(rejection);
++                        if (decision.Behavior != null)
++                        {
++                            var failed = new AiBehaviorTask(Status: AiBehaviorStatus.Failure, Reason: "INGRESS_REJECTED");
++                            decision = decision with { Behavior = decision.Selected.Scope is ReactionCommandScope
++                                ? decision.Behavior with { Reaction = failed } : decision.Behavior with { Ordinary = failed } };
++                        }
++                    }
+                 }
+ 
+                 state.DecisionCount++;
+@@ -202,6 +224,7 @@
+                 // （或快照 Tick 回退）都会因 NextThinkTick > tick 而沉默——不会抢跑，也不会漏拍。
+                 state.NextThinkTick = nextTick;
+                 state.LastDecision = decision;
++                state.Behavior = decision.Behavior;
+                 _decisions.Add(decision);
+                 if (_decisions.Count > MaximumDiagnosticDecisions) _decisions.RemoveAt(0);
+             }
+--- Assets/Scripts/Logic/AI/AiDecision.cs (before task)
++++ Assets/Scripts/Logic/AI/AiDecision.cs
+@@ -26,6 +26,9 @@
+         long DecisionTick = -1L)
+     {
+         public AiPolicyKind Policy { get; init; }
++        public AiExecutionKind Execution { get; init; }
++        public AiBehaviorMemory Behavior { get; init; }
++        public IReadOnlyList<string> UnsupportedActionIds { get; init; } = Array.Empty<string>();
+         public IReadOnlyList<AiCandidateEvaluation> Evaluations { get; init; } = Array.Empty<AiCandidateEvaluation>();
+         public static AiDecision None(RngSnapshot rng, string reason)
+             => new AiDecision(null, Array.Empty<AiCandidate>(), Array.Empty<AiReactionOptionView>(),
+--- Assets/Scripts/Logic/AI/AiRuntimeState.cs (before task)
++++ Assets/Scripts/Logic/AI/AiRuntimeState.cs
+@@ -141,7 +141,7 @@
+         long DecisionCount,
+         long LastDecisionTick,
+         long NextThinkTick,
+-        RngSnapshot Rng)
++        RngSnapshot Rng, AiBehaviorMemory Behavior = null)
+     {
+         public override string ToString()
+             => (ControllerId ?? "<null>") +
+--- Assets/Scripts/Logic/AI/AiRuntimeStateStore.cs (before task)
++++ Assets/Scripts/Logic/AI/AiRuntimeStateStore.cs
+@@ -34,11 +34,12 @@
+ 
+         /// <summary>最后一次决策（诊断面；其 <c>Rng</c> 状态进入快照）。</summary>
+         public AiDecision LastDecision { get; set; }
++        public AiBehaviorMemory Behavior { get; set; }
+ 
+         /// <summary>投影成不可变的规范化运行态。</summary>
+         public AiControllerRuntimeState ToSnapshot()
+             => new AiControllerRuntimeState(
+                 ControllerId, DecisionCount, LastDecisionTick, NextThinkTick,
+-                LastDecision == null ? null : LastDecision.Rng);
++                LastDecision == null ? null : LastDecision.Rng, Behavior);
+     }
+ }
+--- Assets/Scripts/Logic/AI/AiTacticalPolicy.cs (before task)
++++ Assets/Scripts/Logic/AI/AiTacticalPolicy.cs
+@@ -96,13 +96,11 @@
+             }
+             long duration = Math.Max(0, outcome.PlanEndTick - context.NextTick);
+             long latency = outcome.FirstHostileDamageTick < 0 ? 0 : outcome.FirstHostileDamageTick - context.Snapshot.Tick;
+-            long score = policy == AiPolicyKind.SustainedOffense
+-                ? damage * 8 - incoming * 2 + progress * 256 + interrupts * 1024 + clashes * 256
+-                : policy == AiPolicyKind.SeekInterrupt
+-                    ? damage * 2 - incoming * 3 + progress * 128 + interrupts * 65536 + clashes * 24576
+-                    : damage - incoming * 12 + progress * 64 + interrupts * 2048;
++            var weights = AiUtilityProfile.For(policy);
++            long score = damage * weights.Damage - incoming * weights.Incoming + progress * weights.Position
++                + interrupts * weights.Interrupt + clashes * weights.Clash;
+             int resourceScale = context.Snapshot.Definition.AdrenalineRules.UseCombatValuesV05 ? CombatValuesV05.ResourceUnitsPerPoint : 1;
+-            score -= duration * 8 + (long)candidate.Cost * 32 / resourceScale + (damage > 0 ? latency : 0);
++            score -= duration * weights.Duration + (long)candidate.Cost * weights.Resource / resourceScale + (damage > 0 ? latency : 0);
+             return new AiCandidateEvaluation(candidate.Key, candidate.Type, candidate.IsReaction, score, outcome.RejectionCode,
+                 outcome.RejectionCode != null ? "REJECTED_BY_LOGIC_PREVIEW" : score <= 0 ? "WAIT_HAS_HIGHER_OR_EQUAL_SCORE" : "LOWER_SCORE_OR_STABLE_TIE",
+                 damage, incoming, progress, interrupts, clashes, candidate.Cost, outcome.PlanStartTick, outcome.PlanImpactTick, outcome.PlanEndTick, outcome.HorizonTick);
+--- Assets/Scripts/Logic/Commands/BattleCommandProcessor.cs (before task)
++++ Assets/Scripts/Logic/Commands/BattleCommandProcessor.cs
+@@ -83,6 +83,8 @@
+     public sealed class BattleCommandProcessor : IAuthorityRoutedCommandProcessor
+     {
+         private readonly CommandAuthority _authority;
++        internal Action<CommandEnvelope> Processing { get; set; }
++        internal Action<CommandEnvelope, string> Processed { get; set; }
+ 
+         public BattleCommandProcessor(CommandAuthority authority)
+         {
+@@ -175,7 +177,9 @@
+             {
+                 CommandEnvelope envelope = envelopes[i];
+                 if (envelope == null) continue;
++                Processing?.Invoke(envelope);
+                 string error = ProcessAuthorized(envelope, tick, batchBaseScheduleRevision);
++                Processed?.Invoke(envelope, error);
+                 if (error != null) rejections.Add(new CommandRejectionRecord(envelope, error));
+             }
+             return rejections;
+--- Assets/Scripts/Logic/Commands/CommandIngressRegistry.cs (before task)
++++ Assets/Scripts/Logic/Commands/CommandIngressRegistry.cs
+@@ -211,6 +211,11 @@
+                 || (binding.AiPolicy != AI.AiPolicyKind.Legacy && binding.SourceKind != CommandSourceKind.Ai))
+                 throw new ProjectHero.Logic.LogicDefinitionException("AI_POLICY_INVALID", binding.ControllerId.Value);
+ 
++            if (!Enum.IsDefined(typeof(AI.AiExecutionKind), binding.AiExecution)
++                || (binding.AiExecution != AI.AiExecutionKind.SingleCommand
++                    && (binding.SourceKind != CommandSourceKind.Ai || binding.AiPolicy == AI.AiPolicyKind.Legacy)))
++                throw new ProjectHero.Logic.LogicDefinitionException("AI_EXECUTION_INVALID", binding.ControllerId.Value);
++
+             return Register(binding.ControllerId, binding.SourceKind, "External");
+         }
+ 
+--- Assets/Scripts/Logic/Definitions/ControllerBinding.cs (before task)
++++ Assets/Scripts/Logic/Definitions/ControllerBinding.cs
+@@ -26,7 +26,8 @@
+         Ids.ControllerId ControllerId,
+         CommandSourceKind SourceKind,
+         System.Collections.Generic.IReadOnlyList<Ids.EncounterSlotId> ControlledSlots,
+-        AI.AiPolicyKind AiPolicy = AI.AiPolicyKind.Legacy)
++        AI.AiPolicyKind AiPolicy = AI.AiPolicyKind.Legacy,
++        AI.AiExecutionKind AiExecution = AI.AiExecutionKind.SingleCommand)
+     {
+         public void WriteHashComponents(CanonicalHashWriter writer)
+         {
+@@ -38,6 +39,11 @@
+                 writer.Write("controller_binding.ai_policy_version", AI.AiTacticalPolicy.Version);
+                 writer.Write("controller_binding.ai_policy", (int)AiPolicy);
+             }
++            if (AiExecution != AI.AiExecutionKind.SingleCommand)
++            {
++                writer.Write("controller_binding.ai_execution_version", AI.AiBehaviorTree.Version);
++                writer.Write("controller_binding.ai_execution", (int)AiExecution);
++            }
+             if (ControlledSlots == null) return;
+             foreach (var slot in ControlledSlots)
+             {
+--- Assets/Scripts/Logic/Simulation/BattleSimulation.cs (before task)
++++ Assets/Scripts/Logic/Simulation/BattleSimulation.cs
+@@ -741,7 +741,7 @@
+             // 因此"控制权校验"与"计划创建"读的是**同一个**机会对象，不存在两份机会视图。
+             _reactionCommandPlanner = new ReactionCommandPlanner(_reactionSystem, definition)
+             {
+-                PlanCreatedSink = (plan, tick) => _reactionSystem.EmitPlanCreated(plan, tick)
++                PlanCreatedSink = (plan, tick) => { _aiExecutionFeedback?.Created(plan.ActionPlanId.Value); _reactionSystem.EmitPlanCreated(plan, tick); }
+             };
+             // 兼容面：直接调用 ActionPlanCommandProcessor 的既有装配（任务 05/06 夹具）仍能路由反应，
+             // 且路由到**同一个** planner —— 不存在第二份反应载荷解析实现。
+@@ -753,6 +753,12 @@
+             // 装配方把它们注入 AiControllerLogic 即可让 AI 观察已公开机会与权威计划。
+             AiReactionOpportunities = new ReactionOpportunityPort(_reactionSystem, _logicGrid);
+             AiActionPlanLookup = new ActionPlanLookupPort(_scheduleAuthority);
++            _aiExecutionFeedback = new AI.AiExecutionFeedback((controller, id) =>
++            {
++                var plan = _scheduleAuthority.Registry.Find(new ActionPlanId(id));
++                return plan != null && _controllerUnitAuthority.CanControl(controller, plan.OwnerUnitId)
++                    ? ActionPlanSnapshot.From(plan, _factionResolver) : null;
++            });
+ 
+             // 窗口命令（关窗 / 并发行动激活）走同一条冻结命令批处理路径：
+             // 身份来自命令网关绑定的 ControllerId，窗口来自 scope 的 ExpectedWindowId，
+@@ -763,6 +769,7 @@
+             // 同一次成功提交还要把 **Remove 掉的计划**经统一终态协调器收口（见下）。
+             _planCommandProcessor.CommittedTransactionSink = (result, tick) =>
+             {
++                foreach (var id in result.AddedPlanIds) _aiExecutionFeedback.Created(id.Value);
+                 EmitPlanCreatedEvents(result, tick);
+                 TerminateRemovedPlans(result, tick);
+             };
+@@ -790,6 +797,8 @@
+ 
+             _commandProcessor = new BattleCommandProcessor(_commandAuthority)
+             {
++                Processing = _aiExecutionFeedback.Begin,
++                Processed = _aiExecutionFeedback.End,
+                 // 三个端口都是按载荷判别分派的适配器：反应载荷不可能被窗口端口二次解释，
+                 // 窗口载荷也不可能落进排程端口。前两者绑定**同一个**
+                 // ActionPlanCommandProcessor 实例（方法组绑定，因此端口的 Target 就是那个实例），
+@@ -1099,6 +1108,8 @@
+         /// <c>Move</c> 候选靠它取得 <c>IMovementPathCalculator.Recompute</c> 的输入。
+         /// </summary>
+         public AI.IAiActionPlanLookup AiActionPlanLookup { get; }
++        private AI.AiExecutionFeedback _aiExecutionFeedback;
++        public AI.IAiExecutionFeedback AiExecutionFeedback => _aiExecutionFeedback;
+ 
+         /// <summary>
+         /// 任务 07：当前窗口（未打开时为 null）；只读观察用。
+@@ -3950,7 +3961,7 @@
+                     state.NextThinkTick,
+                     state.DecisionCount,
+                     state.LastDecisionTick,
+-                    state.Rng));
++                    state.Rng, state.Behavior));
+             }
+             projected.Sort((a, b) => string.CompareOrdinal(a.ControllerId, b.ControllerId));
+             return projected;
+--- Assets/Scripts/Logic/Simulation/ProductionBattleComposition.cs (before task)
++++ Assets/Scripts/Logic/Simulation/ProductionBattleComposition.cs
+@@ -62,7 +62,7 @@
+             if (_simulation != null) throw new InvalidOperationException("Composition is already attached");
+             _simulation = simulation;
+             foreach (var ai in _ai) ai.AttachPorts(simulation.AiReactionOpportunities, simulation.AiActionPlanLookup,
+-                simulation.MovementPathCalculator, PreviewNormalCommand, simulation.CreateAiForecast);
++                simulation.MovementPathCalculator, PreviewNormalCommand, simulation.CreateAiForecast, simulation.AiExecutionFeedback);
+         }
+ 
+         internal void RegisterCreatedUnit(UnitId id, UnitDefinition definition, ControllerId controller)
+--- Assets/Scripts/Logic/Snapshots/LogicSnapshot.cs (before task)
++++ Assets/Scripts/Logic/Snapshots/LogicSnapshot.cs
+@@ -432,7 +432,7 @@
+         long NextThinkTick,
+         long DecisionCount = 0L,
+         long LastDecisionTick = -1L,
+-        RngSnapshot Rng = null);
++        RngSnapshot Rng = null, ProjectHero.Logic.AI.AiBehaviorMemory Behavior = null);
+ 
+     /// <summary>
+     /// 规范化 <see cref="LogicSnapshot"/>（主方案 3.11.1 + 3.11.2）：覆盖<strong>全部会影响未来结果</strong>
+@@ -1007,6 +1007,8 @@
+                 encoder.WriteInt64(controller.LastDecisionTick);
+                 encoder.WriteInt32(controller.Rng?.AlgorithmVersion ?? 0);
+                 encoder.WriteUInt64(controller.Rng?.State ?? 0UL);
++                // Opt-in versioned extension; legacy and V2 bytes remain unchanged.
++                controller.Behavior?.Encode(encoder);
+             }
+ 
+             // —— 命令入口（注册、每入口下一个/已冻结 ProducerOrdinal、未来 Tick 桶）——
+--- /dev/null
++++ Assets/Scripts/Authoring/FormalAiBaseline.cs
+@@ -0,0 +1,43 @@
++using System;
++using System.Linq;
++using ProjectHero.Authoring.Legacy;
++using ProjectHero.Logic;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Grid;
++
++namespace ProjectHero.Authoring
++{
++    /// <summary>Explicit test variation of a formal definition. Never constructs replacement actions or unit stats.</summary>
++    public static class FormalAiBaseline
++    {
++        public const string Version = "formal-content-ai-baseline-v1";
++        public static BattleDefinition Build(BattleDefinition source, AiPolicyKind policy, AiExecutionKind execution,
++            bool near, bool mirror)
++        {
++            if (source == null || source.AdrenalineRules.UseCombatValuesV05 || source.Encounters.Count != 1)
++                throw new LogicDefinitionException("FORMAL_BASELINE_SOURCE_INVALID");
++            var encounter = source.Encounters[0];
++            var slots = encounter.Slots.Select(s =>
++            {
++                bool hero = s.SlotId.Value == "hero";
++                var point = near ? new GridPoint(hero ? -4 : 4, 0) : s.InitialPosition;
++                return s with { InitialPosition = mirror ? new GridPoint(-point.X, -point.Y) : point,
++                    InitialFacing = near ? (hero != mirror ? GridDirection.East : GridDirection.West)
++                        : mirror ? (GridDirection)(((int)s.InitialFacing + 6) % 12) : s.InitialFacing };
++            }).ToArray();
++            encounter = encounter with { Slots = Array.AsReadOnly(slots),
++                Controllers = Array.AsReadOnly(encounter.Controllers.Select(c => c with {
++                    SourceKind = CommandSourceKind.Ai, AiPolicy = policy, AiExecution = execution }).ToArray()) };
++            var errors = new DefinitionErrorCollector();
++            BattleDefinitionValidator.ValidateEncounter(encounter, source.FactionModel, errors);
++            if (errors.HasErrors) throw new LogicDefinitionException("FORMAL_BASELINE_ENCOUNTER_INVALID");
++            var d = source with { Encounters = Array.AsReadOnly(new[] { encounter }), BattleDefinitionHashValue = "" };
++            return d with { BattleDefinitionHashValue = BattleDefinitionHash.Compute(d.RulesVersion, d.TicksPerSecond,
++                LegacyIdMigrationManifest.LibraryVolumes.Count, d.Rules, d.ConcurrentAction, d.ReactionRules,
++                d.AdrenalineRules, d.FactionModel, d.DamageChannels, d.ImpactProfiles, d.Units, d.Actions,
++                d.AttackPatterns, d.Volumes, d.MovementPatterns, d.ActionSets, d.StatusEffects, d.Encounters, d.DefaultDynamicSpawnPolicy) };
++        }
++    }
++}
+--- /dev/null
++++ Assets/Scripts/Editor/FormalAiBaselineTools.cs
+@@ -0,0 +1,169 @@
++using System;
++using System.Collections.Generic;
++using System.Globalization;
++using System.IO;
++using System.Linq;
++using System.Security.Cryptography;
++using System.Text;
++using System.Threading;
++using System.Threading.Tasks;
++using ProjectHero.Authoring;
++using ProjectHero.Core.Compatibility.Authoring;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Events;
++using ProjectHero.Logic.Initialization;
++using ProjectHero.Logic.Replay;
++using ProjectHero.Logic.Simulation;
++using UnityEditor.SceneManagement;
++using UnityEngine;
++
++namespace ProjectHero.Editor
++{
++    public static class FormalAiBaselineTools
++    {
++        public const string Root = "优化任务/执行记录/正式动作混合AI-2026-11-05";
++        const string Scene = "Assets/Scenes/CombatSampleScene.unity";
++        [Serializable] public sealed class Input
++        {
++            public string sourceHash, definitionHash, contentFingerprint, sourceFingerprint, version;
++            public int policy, execution, maxTicks = 900;
++            public bool near, mirror;
++            public long seed;
++            public int metaResource;
++        }
++        static ProjectHero.Core.Compatibility.Runtime.BattleSimulationSeed LoadSource()
++        {
++            var scene = EditorSceneManager.OpenScene(Scene, OpenSceneMode.Single);
++            var source = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<NewBattleSimulationSource>(true)).Single();
++            return source.BuildSeed() ?? throw new InvalidOperationException(source.LastConfigurationError);
++        }
++        public static string ContentFingerprint()
++        {
++            var files = Directory.GetFiles("Assets/Resources", "*", SearchOption.AllDirectories).Append(Scene).OrderBy(p => p, StringComparer.Ordinal);
++            var text = new StringBuilder();
++            using var sha = SHA256.Create();
++            foreach (var path in files) text.Append(path.Replace('\\', '/')).Append(':').Append(BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path))).Replace("-", "")).Append('\n');
++            return BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(text.ToString()))).Replace("-", "").ToLowerInvariant();
++        }
++        public static void Run()
++        {
++            Directory.CreateDirectory(Root + "/cases");
++            var source = LoadSource(); string content = ContentFingerprint(), code = AiPolicyExperimentTools.SourceFingerprint();
++            File.WriteAllText(Root + "/formal-actions.txt", "source=" + source.BattleDefinitionHash + "\nrules=" + source.RulesVersion + "\n" +
++                string.Join("\n", source.Definition.Actions.Select(a => a.ActionSpecId + " | " + a.Type + " | " + a.Timing + " | " + a.Payload)) +
++                "\nSETS\n" + string.Join("\n", source.Definition.ActionSets.Select(s => s.ActionSetId + " | " + string.Join(",", s.ActionSpecIds))), Encoding.UTF8);
++            using var summary = new StreamWriter(Root + "/summary.csv", false, Encoding.UTF8);
++            summary.WriteLine("case,policy,execution,near,mirror,ticks,outcome,health,commands,rejections,attackStarts,distinctAttacks,moves,reactions,treeCompletions,treeFailures,maxCandidates,definitionHash");
++            var scenarios = (from policy in new[] { AiPolicyKind.SustainedOffense, AiPolicyKind.SeekInterrupt, AiPolicyKind.CautiousDefense }
++                from execution in new[] { AiExecutionKind.SingleCommand, AiExecutionKind.UtilityBehaviorTree }
++                from near in new[] { false, true } from mirror in new[] { false, true }
++                select (policy, execution, near, mirror)).ToArray();
++            Parallel.ForEach(scenarios, new ParallelOptions { MaxDegreeOfParallelism = 4 }, scenario =>
++            {
++                var (policy, execution, near, mirror) = scenario;
++                string id = policy + "-" + execution + "-" + (near ? "near" : "main") + "-mirror" + (mirror ? 1 : 0);
++                var d = FormalAiBaseline.Build(source.Definition, policy, execution, near, mirror);
++                var input = new Input { sourceHash = source.BattleDefinitionHash, definitionHash = d.BattleDefinitionHashValue,
++                    contentFingerprint = content, sourceFingerprint = code, version = FormalAiBaseline.Version,
++                    policy = (int)policy, execution = (int)execution, near = near, mirror = mirror,
++                    seed = unchecked((long)source.RuntimeInputs.InitialRngSeed), metaResource = source.RuntimeInputs.InitialMetaResource };
++                var runtime = new BattleRuntimeInputs(unchecked((ulong)input.seed), input.metaResource);
++                var composition = new ProductionBattleComposition(d, source.EncounterId, runtime);
++                using var sim = BattleSimulation.Create(d, source.EncounterId, runtime, composition.Assembly);
++                composition.Attach(sim); var recorder = new ReplayRecorder(sim);
++                int commands = 0, rejected = 0, attacks = 0, moves = 0, reactions = 0, successes = 0, failures = 0, maxCandidates = 0;
++                var attackIds = new HashSet<string>(); var terminalTasks = new HashSet<string>();
++                using var decisions = new StreamWriter(Root + "/cases/" + id + ".decisions.csv", false, Encoding.UTF8);
++                decisions.WriteLine("tick,controller,selected,wait,ordinaryNode,ordinaryPlan,ordinaryStatus,ordinaryReason,reactionNode,reactionPlan,reactionStatus,reactionReason,candidates,unsupported");
++                using var candidates = new StreamWriter(Root + "/cases/" + id + ".candidates.csv", false, Encoding.UTF8);
++                candidates.WriteLine("tick,controller,key,type,chosen,score,rejection,damageQ10,incomingQ10,progress,interrupts,clashes,start,impact,end");
++                for (long tick = 0; tick < input.maxTicks && !sim.IsEnded; tick++)
++                {
++                    recorder.CaptureBeforeStep(); var step = sim.Step(tick, sim.CommandIngress.FreezeTick(tick)); recorder.RecordCommittedStep(step);
++                    commands += sim.LastCommandSet.Envelopes.Count;
++                    reactions += step.Events.Events.OfType<ActionPlanCreatedEvent>().Count(e => e.Origin == (int)ActionPlanOrigin.Reaction);
++                    rejected += step.Events.Events.Count(e => e is CommandRejectedEvent || e is CommandIngressRejectedEvent);
++                    foreach (var e in step.Events.Events.OfType<ActionPlanLockedEvent>())
++                    {
++                        var plan = sim.AiActionPlanLookup.FindPlan(new ProjectHero.Logic.Ids.ActionPlanId(e.ActionPlanId));
++                        if (plan.ActionType == ActionType.Attack) { attacks++; attackIds.Add(plan.ActionSpecId.Value); }
++                        if (plan.ActionType == ActionType.Move) moves++;
++                        
++                    }
++                    foreach (var ai in composition.AiControllers)
++                    {
++                        string controller = ai.RegisteredControllerIds[0]; var decision = ai.LastDecisionOf(controller);
++                        if (decision == null || decision.DecisionTick != tick) continue;
++                        var o = decision.Behavior?.Ordinary; var r = decision.Behavior?.Reaction;
++                        foreach (var task in new[] { o, r })
++                            if (task?.Cursor == 0 && task.Reason != "IDLE" && terminalTasks.Add(controller + ":" + task.RequestTick + ":" + task.ProducerOrdinal + ":" + task.Status))
++                            { if (task.Status == AiBehaviorStatus.Success) successes++; else if (task.Status == AiBehaviorStatus.Failure) failures++; }
++                        maxCandidates = Math.Max(maxCandidates, decision.Evaluations.Count);
++                        decisions.WriteLine(Csv(tick, controller, decision.Selected?.Payload, decision.NoSelectionReason,
++                            o?.Cursor, o?.PlanId, o?.Status, o?.Reason, r?.Cursor, r?.PlanId, r?.Status, r?.Reason,
++                            decision.Evaluations.Count, string.Join(";", decision.UnsupportedActionIds)));
++                        foreach (var e in decision.Evaluations) candidates.WriteLine(Csv(tick, controller, e.Key, e.Type,
++                            e.Chosen, e.Score, e.RejectionCode, e.DamageDeltaQ10, e.IncomingDeltaQ10, e.PositionProgress,
++                            e.InterruptedThreats, e.Clashes, e.StartTick, e.ImpactTick, e.EndTick));
++                    }
++                }
++                var replay = recorder.BuildReplay();
++                if (replay.Submissions.Count != 0) throw new InvalidOperationException("AI_INPUT_MUST_BE_REGENERATED");
++                File.WriteAllText(Root + "/cases/" + id + ".input.json", JsonUtility.ToJson(input, true), Encoding.UTF8);
++                using (var file = File.Create(Root + "/cases/" + id + ".heroReplay")) ReplayFile.Save(file, replay);
++                Verify(d, replay);
++                lock (summary) { summary.WriteLine(Csv(id, policy, execution, near, mirror, replay.Records.Count,
++                    sim.CurrentSnapshot.BattleEnd.ResultCode, string.Join(";", sim.CurrentSnapshot.Units.Select(u => u.UnitId + ":" + u.HealthQ10)),
++                    commands, rejected, attacks, attackIds.Count, moves, reactions, successes, failures, maxCandidates, d.BattleDefinitionHashValue));
++                summary.Flush(); } Debug.Log("FORMAL_AI_CASE " + id + " ticks=" + replay.Records.Count);
++            });
++        }
++        public static void Audit()
++        {
++            var source = LoadSource(); string content = ContentFingerprint(), code = AiPolicyExperimentTools.SourceFingerprint();
++            int count = 0, ticks = 0;
++            Parallel.ForEach(Directory.GetFiles(Root + "/cases", "*.input.json"), new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
++            {
++                var input = JsonUtility.FromJson<Input>(File.ReadAllText(file));
++                if (input.sourceHash != source.BattleDefinitionHash || input.contentFingerprint != content || input.sourceFingerprint != code)
++                    throw new InvalidOperationException("FORMAL_BASELINE_INPUT_CHANGED");
++                var d = FormalAiBaseline.Build(source.Definition, (AiPolicyKind)input.policy, (AiExecutionKind)input.execution, input.near, input.mirror);
++                if (input.definitionHash != d.BattleDefinitionHashValue) throw new InvalidOperationException("FORMAL_BASELINE_HASH_MISMATCH");
++                using var stream = File.OpenRead(file.Replace(".input.json", ".heroReplay")); var replay = ReplayFile.Load(stream, d);
++                Verify(d, replay); Interlocked.Increment(ref count); Interlocked.Add(ref ticks, replay.Records.Count);
++            });
++            if (count != 24) throw new InvalidOperationException("FORMAL_BASELINE_CASE_COUNT");
++            File.WriteAllText(Root + "/native-disk-audit.txt", "Passed; cases=" + count + "; ticks=" + ticks + "; content=" + content + "; source=" + code);
++        }
++        public static void AuditV2Compatibility()
++        {
++            int count = 0, ticks = 0;
++            var files = Directory.GetFiles(Stage4RecoveryTools.CorrectedRoot + "/cases", "*.input.json").Where(file =>
++            {
++                var input = JsonUtility.FromJson<Stage4RecoveryTools.SavedInput>(File.ReadAllText(file));
++                return (input.recovery == 31 || input.recovery == 40) && input.opponentFirst == input.swapSpawns;
++            }).ToArray();
++            // Four fixture families, two values and both mirrored initiative/spawn combinations.
++            Parallel.ForEach(files, new ParallelOptions { MaxDegreeOfParallelism = 4 }, file =>
++            {
++                var input = JsonUtility.FromJson<Stage4RecoveryTools.SavedInput>(File.ReadAllText(file));
++                var d = ProjectHero.Logic.Experiments.Stage4RecoveryExperiment.Build(input.ToInput());
++                if (d.BattleDefinitionHashValue != input.definitionHash) throw new InvalidOperationException("V2_COMPATIBILITY_DEFINITION_CHANGED");
++                using var stream = File.OpenRead(file.Replace(".input.json", ".heroReplay"));
++                var replay = ReplayFile.Load(stream, d); Verify(d, replay); Interlocked.Increment(ref count); Interlocked.Add(ref ticks, replay.Records.Count);
++            });
++            if (count != 16) throw new InvalidOperationException("V2_COMPATIBILITY_CASE_COUNT");
++            File.WriteAllText(Root + "/native-v2-compatibility.txt", "Passed; cases=" + count + "; ticks=" + ticks + "; currentSource=" + AiPolicyExperimentTools.SourceFingerprint());
++        }
++        static void Verify(BattleDefinition definition, BattleReplay replay)
++        {
++            using var player = new ReplayPlayer(definition); player.Load(replay); player.Play();
++            while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
++            if (player.Deviation != null) throw new InvalidOperationException(player.Deviation.ToString());
++        }
++        static string Csv(params object[] values) => string.Join(",", values.Select(v => "\"" +
++            Convert.ToString(v, CultureInfo.InvariantCulture)?.Replace("\"", "\"\"") + "\""));
++    }
++}
+--- /dev/null
++++ Assets/Scripts/Logic/AI/AiBehaviorTree.cs
+@@ -0,0 +1,187 @@
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Determinism;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Snapshots;
++
++namespace ProjectHero.Logic.AI
++{
++    public enum AiExecutionKind { SingleCommand = 0, UtilityBehaviorTree = 1 }
++    public enum AiBehaviorStatus { Failure = 0, Running = 1, Success = 2 }
++
++    // Stable node cursors: 0 = select/submit, 1 = acknowledge ingress, 2 = await terminal.
++    // Each channel owns its cursor; responding never cancels an ordinary combat plan.
++    public sealed record AiBehaviorTask(int Cursor = 0, long RequestTick = -1, long ProducerOrdinal = 0,
++        long PlanId = 0, AiBehaviorStatus Status = AiBehaviorStatus.Failure, string Reason = "IDLE", long PredecessorPlanId = 0);
++    public sealed record AiBehaviorMemory(AiBehaviorTask Ordinary, AiBehaviorTask Reaction)
++    {
++        public static AiBehaviorMemory Empty => new AiBehaviorMemory(new AiBehaviorTask(), new AiBehaviorTask());
++        public void Encode(CanonicalEncoder encoder)
++        {
++            encoder.WriteString(AiBehaviorTree.Version);
++            Write(Ordinary); Write(Reaction);
++            void Write(AiBehaviorTask task)
++            {
++                encoder.WriteInt32(task.Cursor); encoder.WriteInt64(task.RequestTick);
++                encoder.WriteInt64(task.ProducerOrdinal); encoder.WriteInt64(task.PlanId);
++                encoder.WriteInt32((int)task.Status); encoder.WriteString(task.Reason);
++                encoder.WriteInt64(task.PredecessorPlanId);
++            }
++        }
++    }
++
++    /// <summary>Memoryful Sequence and reactive Selector. All persistent memory belongs to the canonical task record.</summary>
++    public static class AiBehaviorNodes
++    {
++        public delegate AiBehaviorStatus Leaf(ref AiBehaviorTask memory);
++        public static AiBehaviorStatus Sequence(ref AiBehaviorTask memory, params Leaf[] children)
++        {
++            while (memory.Cursor < children.Length)
++            {
++                var status = children[memory.Cursor](ref memory);
++                memory = memory with { Status = status };
++                if (status == AiBehaviorStatus.Running) return status;
++                if (status == AiBehaviorStatus.Failure) { memory = memory with { Cursor = 0 }; return status; }
++                memory = memory with { Cursor = memory.Cursor + 1 };
++            }
++            memory = memory with { Cursor = 0, Status = AiBehaviorStatus.Success };
++            return AiBehaviorStatus.Success;
++        }
++        public static AiBehaviorStatus Selector(params Func<AiBehaviorStatus>[] children)
++        {
++            foreach (var child in children)
++            {
++                var status = child();
++                if (status != AiBehaviorStatus.Failure) return status;
++            }
++            return AiBehaviorStatus.Failure;
++        }
++    }
++
++    /// <summary>First hybrid: utility selects data-driven action tasks; the tree owns their asynchronous lifecycle.</summary>
++    public static class AiBehaviorTree
++    {
++        public const string Version = "utility-behavior-tree-v1";
++        public static AiDecision Tick(AiDecisionContext context, ulong seed, AiPolicyKind policy,
++            AiBehaviorMemory memory, IAiExecutionFeedback feedback, long nextProducerOrdinal)
++        {
++            if (feedback == null) throw new LogicDefinitionException("AI_EXECUTION_FEEDBACK_MISSING");
++            // Freeze V2 scoring/arbitration for this structural comparison. No extra gameplay rewards.
++            var proposed = AiTacticalPolicy.Decide(context, seed, policy);
++            var ordinary = memory.Ordinary; var reaction = memory.Reaction;
++            var selectedEvaluation = proposed.Evaluations.FirstOrDefault(e => e.Chosen);
++            CommandRequest selected = null;
++            string reason = proposed.NoSelectionReason;
++            bool reactionChosen = selectedEvaluation?.IsReaction == true;
++            bool reactionWait = proposed.Evaluations.Any(e => e.IsReaction && e.RejectionCode == null) && !reactionChosen;
++            // Consume both channels' receipts before priority arbitration: an urgent response must
++            // not leave an ordinary acknowledgement unread until its per-Tick receipt has expired.
++            BindReceipt(ref ordinary); BindReceipt(ref reaction);
++            CompleteReadyTask(ref ordinary); CompleteReadyTask(ref reaction);
++            AiBehaviorNodes.Selector(Response, Ordinary, Wait);
++            var evaluations = proposed.Evaluations.Select(e => e.Chosen && selected == null
++                ? e with { Chosen = false, Reason = "TREE_WAITING_FOR_ACTUAL_RESULT" } : e).ToArray();
++            return proposed with { Selected = selected, Evaluations = evaluations,
++                NoSelectionReason = selected == null ? reason : null,
++                Behavior = new AiBehaviorMemory(ordinary, reaction), Execution = AiExecutionKind.UtilityBehaviorTree,
++                UnsupportedActionIds = Unsupported(context) };
++
++            AiBehaviorStatus Response()
++            {
++                // A legal ordinary continuation may start at the reaction's soft/end boundary.
++                // Its existing reaction task stays tracked; the shared scheduler still arbitrates.
++                if (reaction.Cursor > 0 && !reactionChosen && proposed.Selected != null)
++                    return AiBehaviorStatus.Failure;
++                if (reaction.Cursor > 0 || reactionChosen)
++                    return Run(ref reaction);
++                if (!reactionWait) return AiBehaviorStatus.Failure;
++                reason = "WAIT_REACTION_NOT_BENEFICIAL";
++                return AiBehaviorStatus.Running;
++            }
++            AiBehaviorStatus Ordinary()
++            {
++                if (ordinary.Cursor == 0 && (proposed.Selected == null || reactionChosen)) return AiBehaviorStatus.Failure;
++                if (ordinary.Cursor == 2 && proposed.Selected != null && !reactionChosen)
++                {
++                    // V2 can queue the next-Tick continuation at an existing plan's half-open
++                    // end boundary. Keep the predecessor association until its real terminal.
++                    var current = feedback.ReadPlan(context.ControllerId, ordinary.PlanId);
++                    if (current != null && current.EndTick <= context.NextTick)
++                        ordinary = new AiBehaviorTask(PredecessorPlanId: ordinary.PlanId);
++                }
++                return Run(ref ordinary);
++            }
++            AiBehaviorStatus Wait() => AiBehaviorStatus.Running;
++            AiBehaviorStatus Run(ref AiBehaviorTask task)
++                => AiBehaviorNodes.Sequence(ref task, Submit, Acknowledge, AwaitTerminal);
++            void CompleteReadyTask(ref AiBehaviorTask task)
++            {
++                if (task.Cursor != 2) return;
++                var status = AwaitTerminal(ref task);
++                task = task with { Cursor = status == AiBehaviorStatus.Running ? 2 : 0, Status = status };
++            }
++            void BindReceipt(ref AiBehaviorTask task)
++            {
++                if (task.Cursor != 1 || task.RequestTick > context.Snapshot.Tick) return;
++                var status = Acknowledge(ref task);
++                task = task with { Cursor = status == AiBehaviorStatus.Success ? 2 : 0,
++                    Status = status == AiBehaviorStatus.Success ? AiBehaviorStatus.Running : status };
++            }
++            AiBehaviorStatus Submit(ref AiBehaviorTask task)
++            {
++                if (proposed.Selected == null) return AiBehaviorStatus.Failure;
++                selected = proposed.Selected;
++                task = new AiBehaviorTask(RequestTick: context.NextTick, ProducerOrdinal: nextProducerOrdinal,
++                    Status: AiBehaviorStatus.Running, Reason: "REQUEST_QUEUED", PredecessorPlanId: task.PredecessorPlanId);
++                return AiBehaviorStatus.Success;
++            }
++            AiBehaviorStatus Acknowledge(ref AiBehaviorTask task)
++            {
++                reason = "WAIT_COMMAND_RESULT";
++                if (context.Snapshot.Tick < task.RequestTick) return AiBehaviorStatus.Running;
++                var result = feedback.ReadSubmission(context.ControllerId, task.RequestTick, task.ProducerOrdinal);
++                if (result == null || result.RejectionCode != null || result.PlanIds.Count != 1)
++                {
++                    reason = result?.RejectionCode ?? "AI_REQUEST_RESULT_MISSING";
++                    task = task with { Reason = reason };
++                    return AiBehaviorStatus.Failure;
++                }
++                task = task with { PlanId = result.PlanIds[0], Reason = "COMMAND_ACCEPTED" };
++                return AiBehaviorStatus.Success;
++            }
++            AiBehaviorStatus AwaitTerminal(ref AiBehaviorTask task)
++            {
++                if (task.PredecessorPlanId != 0)
++                {
++                    var previous = feedback.ReadPlan(context.ControllerId, task.PredecessorPlanId);
++                    if (previous == null)
++                    { task = task with { Reason = reason = "AI_PREDECESSOR_RESULT_MISSING" }; return AiBehaviorStatus.Failure; }
++                    if (previous.State < (int)ActionPlanState.Completed)
++                    { task = task with { Reason = reason = "WAIT_PREDECESSOR_TERMINAL" }; return AiBehaviorStatus.Running; }
++                    task = task with { PredecessorPlanId = 0 };
++                }
++                var plan = feedback.ReadPlan(context.ControllerId, task.PlanId);
++                bool fulfilled = plan != null && (plan.State == (int)ActionPlanState.Completed
++                    || plan.State == (int)ActionPlanState.Terminated &&
++                        (plan.TerminationReason == (int)ActionTerminationReason.ReactionTriggered
++                            || plan.TerminationReason == (int)ActionTerminationReason.GuardQuotaExhausted));
++                reason = plan == null ? "AI_PLAN_RESULT_MISSING" :
++                    plan.State == (int)ActionPlanState.Completed ? "PLAN_COMPLETED" :
++                    fulfilled ? "PLAN_FULFILLED_" + plan.TerminationReason :
++                    plan.State == (int)ActionPlanState.Terminated ? "PLAN_TERMINATED_" + plan.TerminationReason : "WAIT_PLAN_TERMINAL";
++                task = task with { Reason = reason };
++                return fulfilled ? AiBehaviorStatus.Success
++                    : plan == null || plan.State == (int)ActionPlanState.Terminated ? AiBehaviorStatus.Failure : AiBehaviorStatus.Running;
++            }
++        }
++
++        public static IReadOnlyList<string> Unsupported(AiDecisionContext context)
++            => context.ControlledUnits.SelectMany(context.Snapshot.ActionSetOf).Distinct()
++                .Where(id => context.Snapshot.FindAction(id)?.Type is not
++                    (ActionType.Attack or ActionType.Move or ActionType.Guard or ActionType.Block or ActionType.Dodge))
++                .Select(id => id.Value).OrderBy(id => id, StringComparer.Ordinal).ToArray();
++    }
++}
+--- /dev/null
++++ Assets/Scripts/Logic/AI/AiExecutionFeedback.cs
+@@ -0,0 +1,36 @@
++using System;
++using System.Collections.Generic;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Snapshots;
++
++namespace ProjectHero.Logic.AI
++{
++    public sealed record AiSubmissionResult(string RejectionCode, IReadOnlyList<long> PlanIds);
++    public interface IAiExecutionFeedback
++    {
++        AiSubmissionResult ReadSubmission(ControllerId controller, long tick, long producerOrdinal);
++        ActionPlanSnapshot ReadPlan(ControllerId controller, long planId);
++    }
++
++    /// <summary>Read-only per-command receipts. Written by the real command processor, consumed in the same Tick's AI phase.</summary>
++    internal sealed class AiExecutionFeedback : IAiExecutionFeedback
++    {
++        private long _tick = -1;
++        private readonly Dictionary<(string, long), AiSubmissionResult> _results = new();
++        private readonly List<long> _created = new();
++        private readonly Func<ControllerId, long, ActionPlanSnapshot> _readPlan;
++        public AiExecutionFeedback(Func<ControllerId, long, ActionPlanSnapshot> readPlan) => _readPlan = readPlan;
++        public void Begin(CommandEnvelope command)
++        {
++            if (_tick != command.TargetTick) { _results.Clear(); _tick = command.TargetTick; }
++            _created.Clear();
++        }
++        public void Created(long planId) => _created.Add(planId);
++        public void End(CommandEnvelope command, string error)
++            => _results[(command.ControllerId.Value, command.ProducerOrdinal)] = new AiSubmissionResult(error, _created.ToArray());
++        public AiSubmissionResult ReadSubmission(ControllerId controller, long tick, long producerOrdinal)
++            => tick == _tick && _results.TryGetValue((controller.Value, producerOrdinal), out var result) ? result : null;
++        public ActionPlanSnapshot ReadPlan(ControllerId controller, long planId) => _readPlan(controller, planId);
++    }
++}
+--- /dev/null
++++ Assets/Scripts/Logic/AI/AiUtilityProfile.cs
+@@ -0,0 +1,15 @@
++namespace ProjectHero.Logic.AI
++{
++    /// <summary>V2 preferences in Q10 health / grid-distance / Tick units; scoring preferences, not combat rewards.</summary>
++    public sealed record AiUtilityProfile(int Damage, int Incoming, int Position, int Interrupt, int Clash,
++        int Duration = 8, int Resource = 32)
++    {
++        public static AiUtilityProfile For(AiPolicyKind policy) => policy switch
++        {
++            AiPolicyKind.SustainedOffense => new(8, 2, 256, 1024, 256),
++            AiPolicyKind.SeekInterrupt => new(2, 3, 128, 65536, 24576),
++            AiPolicyKind.CautiousDefense => new(1, 12, 64, 2048, 0),
++            _ => throw new System.ArgumentOutOfRangeException(nameof(policy))
++        };
++    }
++}
+--- /dev/null
++++ Assets/Tests/EditMode/Authoring/FormalAiBaselineTests.cs
+@@ -0,0 +1,214 @@
++using System;
++using System.Linq;
++using NUnit.Framework;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Events;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Initialization;
++using ProjectHero.Logic.Replay;
++using ProjectHero.Logic.Simulation;
++using ProjectHero.Logic.Snapshots;
++
++namespace ProjectHero.Authoring.Tests
++{
++    public sealed class FormalAiBaselineTests
++    {
++        [Test]
++        public void CompletingTaskDoesNotSkipTheNextDueUtilityDecision()
++        {
++            var source = BattleDefinitionFixture.Definition;
++            string[] Trace(AiExecutionKind kind)
++            {
++                var d = FormalAiBaseline.Build(source, AiPolicyKind.SustainedOffense, kind, true, false);
++                var composition = new ProductionBattleComposition(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(20260922, 10));
++                using var sim = BattleSimulation.Create(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(20260922, 10), composition.Assembly);
++                composition.Attach(sim); var trace = new System.Collections.Generic.List<string>();
++                for (int tick = 0; tick < 180; tick++)
++                {
++                    sim.Step(tick, sim.CommandIngress.FreezeTick(tick));
++                    foreach (var ai in composition.AiControllers)
++                    {
++                        string id = ai.RegisteredControllerIds[0]; var decision = ai.LastDecisionOf(id);
++                        if (decision?.DecisionTick == tick && decision.HasSelection)
++                            trace.Add(tick + ":" + id + ":" + decision.Evaluations.Single(e => e.Chosen).Key);
++                    }
++                }
++                return trace.ToArray();
++            }
++            var baseline = Trace(AiExecutionKind.SingleCommand);
++            Assert.That(baseline.Any(s => s.StartsWith("126:controller.enemy_ai:")), Is.True, "Fixture must exercise the completion/cadence boundary");
++            Assert.That(Trace(AiExecutionKind.UtilityBehaviorTree), Is.EqualTo(baseline),
++                "Acknowledging task completion must permit a new choice on the same due Tick, without an extra six-Tick wait");
++        }
++        sealed class Feedback : IAiExecutionFeedback
++        {
++            public string Error;
++            public bool Missing;
++            public ActionPlanState State = ActionPlanState.Running;
++            public ActionTerminationReason Reason = ActionTerminationReason.CancelledByCommand;
++            public int ReadCount;
++            public AiSubmissionResult ReadSubmission(ControllerId controller, long tick, long ordinal)
++            { ReadCount++; return Missing ? null : new AiSubmissionResult(Error, new[] { ordinal }); }
++            public ActionPlanSnapshot ReadPlan(ControllerId controller, long id)
++                => new ActionPlanSnapshot(id, 1, State: (int)State, TerminationReason: State == ActionPlanState.Terminated ? (int)Reason : 0);
++        }
++        static AiDecisionContext QuietContext(BattleSimulation sim)
++        {
++            var controller = sim.Definition.Encounters[0].Controllers[0].ControllerId;
++            return new AiControllerLogic(31).BuildContext(sim.DecisionSnapshotFor(controller), controller)
++                with { OwnWindow = null, Opportunities = Array.Empty<AiOpportunityView>() };
++        }
++        [TestCase(false)] [TestCase(true)]
++        public void MissingOrRejectedCommandNeverBecomesSuccessfulTask(bool missing)
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense, AiExecutionKind.SingleCommand, true, false);
++            using var sim = ProductionBattleComposition.Create(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(31, 10));
++            sim.Step(0, sim.CommandIngress.FreezeTick(0));
++            var feedback = new Feedback { Missing = missing, Error = "SCHEDULE_REVISION_MISMATCH" };
++            var memory = AiBehaviorMemory.Empty with { Ordinary = new AiBehaviorTask(1, 0, 7) };
++            var decision = AiBehaviorTree.Tick(QuietContext(sim), 31, AiPolicyKind.SustainedOffense, memory, feedback, 8);
++            Assert.That(decision.HasSelection, Is.False); Assert.That(decision.Behavior.Ordinary.Status, Is.EqualTo(AiBehaviorStatus.Failure));
++            Assert.That(decision.Behavior.Ordinary.PlanId, Is.Zero); Assert.That(decision.Behavior.Ordinary.Cursor, Is.Zero);
++        }
++        [Test]
++        public void ResponsePriorityStillAcknowledgesOrdinarySubmission()
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense, AiExecutionKind.SingleCommand, true, false);
++            using var sim = ProductionBattleComposition.Create(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(31, 10));
++            sim.Step(0, sim.CommandIngress.FreezeTick(0));
++            var feedback = new Feedback();
++            var memory = new AiBehaviorMemory(new AiBehaviorTask(1, 0, 7), new AiBehaviorTask(1, 0, 8));
++            var decision = AiBehaviorTree.Tick(QuietContext(sim), 31, AiPolicyKind.SustainedOffense, memory, feedback, 9);
++            Assert.That(feedback.ReadCount, Is.EqualTo(2)); Assert.That(decision.HasSelection, Is.False);
++            Assert.That(decision.Behavior.Ordinary.PlanId, Is.EqualTo(7)); Assert.That(decision.Behavior.Ordinary.Cursor, Is.EqualTo(2));
++            Assert.That(decision.Behavior.Reaction.PlanId, Is.EqualTo(8)); Assert.That(decision.Behavior.Reaction.Cursor, Is.EqualTo(2));
++            Assert.That(decision.Behavior.Ordinary.Status, Is.EqualTo(AiBehaviorStatus.Running));
++        }
++        [TestCase(ActionPlanState.Completed, AiBehaviorStatus.Success, ActionTerminationReason.None)]
++        [TestCase(ActionPlanState.Terminated, AiBehaviorStatus.Failure, ActionTerminationReason.CancelledByCommand)]
++        [TestCase(ActionPlanState.Terminated, AiBehaviorStatus.Success, ActionTerminationReason.ReactionTriggered)]
++        [TestCase(ActionPlanState.Terminated, AiBehaviorStatus.Success, ActionTerminationReason.GuardQuotaExhausted)]
++        public void RealTerminalStateDeterminesTreeResult(ActionPlanState state, AiBehaviorStatus expected, ActionTerminationReason reason)
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense, AiExecutionKind.SingleCommand, true, false);
++            using var sim = ProductionBattleComposition.Create(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(31, 10));
++            sim.Step(0, sim.CommandIngress.FreezeTick(0));
++            var memory = AiBehaviorMemory.Empty with { Ordinary = new AiBehaviorTask(2, 0, 7, 7) };
++            var decision = AiBehaviorTree.Tick(QuietContext(sim), 31, AiPolicyKind.SustainedOffense, memory, new Feedback { State = state, Reason = reason }, 8);
++            Assert.That(decision.Behavior.Ordinary.Status, Is.EqualTo(expected)); Assert.That(decision.Behavior.Ordinary.Cursor, Is.Zero);
++        }
++        [Test]
++        public void EveryAttackInTheActorsFormalSetGetsCandidates()
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense, AiExecutionKind.SingleCommand, true, false);
++            var composition = new ProductionBattleComposition(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(31, 10));
++            using var sim = BattleSimulation.Create(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(31, 10), composition.Assembly); composition.Attach(sim);
++            sim.Step(0, sim.CommandIngress.FreezeTick(0));
++            var contexts = composition.AiControllers.Select(ai => ai.BuildContext(sim.DecisionSnapshotFor(new ControllerId(ai.RegisteredControllerIds[0])), new ControllerId(ai.RegisteredControllerIds[0])));
++            var context = contexts.Single(c => c.HasSubmissionWindow); var owner = new UnitId(context.OwnWindow.OwnerUnitId);
++            var expected = context.Snapshot.ActionSetOf(owner).Where(id => context.Snapshot.FindAction(id).Type == ActionType.Attack).ToArray();
++            var actual = AiTacticalCandidateBuilder.Ordinary(context).Where(c => c.Type == ActionType.Attack)
++                .Select(c => ((AddOrdinaryPlanOperation)((ScheduleEditPayload)c.Request.Payload).Operations[0]).ActionSpecId).Distinct().ToArray();
++            Assert.That(expected.Length, Is.EqualTo(5)); Assert.That(actual, Is.EquivalentTo(expected));
++            Assert.That(AiBehaviorTree.Unsupported(context), Is.Empty);
++        }
++        [Test]
++        public void BaselineKeepsEveryFormalActionAndUnitUnchanged()
++        {
++            var source = BattleDefinitionFixture.Definition;
++            var d = FormalAiBaseline.Build(source, AiPolicyKind.SustainedOffense, AiExecutionKind.UtilityBehaviorTree, true, false);
++            Assert.That(d.Actions, Is.SameAs(source.Actions));
++            Assert.That(d.ActionSets, Is.SameAs(source.ActionSets));
++            Assert.That(d.Units, Is.SameAs(source.Units));
++            Assert.That(d.AttackPatterns, Is.SameAs(source.AttackPatterns));
++            Assert.That(d.AdrenalineRules, Is.SameAs(source.AdrenalineRules));
++            Assert.That(d.Actions.All(a => !a.ActionSpecId.Value.StartsWith("action.experiment.")), Is.True);
++            Assert.That(d.ActionSets.All(s => s.ActionSpecIds.Count(id => d.FindAction(id).Type == ActionType.Attack) > 1), Is.True);
++            Assert.That(d.BattleDefinitionHashValue, Is.Not.EqualTo(source.BattleDefinitionHashValue));
++        }
++
++        [TestCase(AiPolicyKind.SustainedOffense)]
++        [TestCase(AiPolicyKind.SeekInterrupt)]
++        [TestCase(AiPolicyKind.CautiousDefense)]
++        public void FormalHybridWaitsForRealPlansAndReplaysAllAi(AiPolicyKind policy)
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, policy, AiExecutionKind.UtilityBehaviorTree, true, false);
++            var encounter = d.Encounters[0]; var inputs = new BattleRuntimeInputs(20260922, 10);
++            var composition = new ProductionBattleComposition(d, encounter.EncounterId, inputs);
++            using var sim = BattleSimulation.Create(d, encounter.EncounterId, inputs, composition.Assembly); composition.Attach(sim);
++            var recorder = new ReplayRecorder(sim); int queued = 0, running = 0, completed = 0;
++            for (int tick = 0; tick < 480 && !sim.IsEnded; tick++)
++            {
++                recorder.CaptureBeforeStep(); var step = sim.Step(tick, sim.CommandIngress.FreezeTick(tick)); recorder.RecordCommittedStep(step);
++                Assert.That(step.Events.Events.OfType<CommandRejectedEvent>(), Is.Empty);
++                if (sim.IsEnded) continue; // Finalization deliberately skips the decision phase.
++                foreach (var state in step.Snapshot.AiControllers)
++                {
++                    Assert.That(state.Behavior, Is.Not.Null);
++                    foreach (var task in new[] { state.Behavior.Ordinary, state.Behavior.Reaction })
++                    {
++                        if (task.Cursor == 1) { queued++; Assert.That(task.PlanId, Is.Zero); Assert.That(task.RequestTick, Is.EqualTo(tick + 1)); }
++                        if (task.Cursor == 2)
++                        {
++                            running++; var plan = sim.AiExecutionFeedback.ReadPlan(new ControllerId(state.ControllerId), task.PlanId);
++                            Assert.That(plan, Is.Not.Null); Assert.That(task.Status, Is.EqualTo(AiBehaviorStatus.Running));
++                        }
++                        if (task.Status == AiBehaviorStatus.Success && task.Cursor == 0)
++                        {
++                            completed++;
++                            var plan = sim.AiExecutionFeedback.ReadPlan(new ControllerId(state.ControllerId), task.PlanId);
++                            if (plan.State != (int)ActionPlanState.Completed)
++                            {
++                                Assert.That(plan.State, Is.EqualTo((int)ActionPlanState.Terminated));
++                                Assert.That(plan.TerminationReason, Is.EqualTo((int)ActionTerminationReason.ReactionTriggered)
++                                    .Or.EqualTo((int)ActionTerminationReason.GuardQuotaExhausted));
++                                if (plan.TerminationReason == (int)ActionTerminationReason.ReactionTriggered)
++                                    Assert.That(plan.ReactionTriggeredAtTick, Is.GreaterThanOrEqualTo(0));
++                                else Assert.That(plan.DefenseQuotaRemainingQ10, Is.Zero);
++                            }
++                        }
++                    }
++                }
++            }
++            Assert.That(queued, Is.GreaterThan(0)); Assert.That(running, Is.GreaterThan(0)); Assert.That(completed, Is.GreaterThan(0));
++            var replay = recorder.BuildReplay(); Assert.That(replay.Submissions, Is.Empty);
++            using var player = new ReplayPlayer(d); player.Load(replay); player.Play();
++            while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
++            Assert.That(player.Deviation, Is.Null);
++        }
++
++        [Test]
++        public void FeedbackIsBoundToOwnerAndProducerOrdinal()
++        {
++            var d = FormalAiBaseline.Build(BattleDefinitionFixture.Definition, AiPolicyKind.SustainedOffense, AiExecutionKind.UtilityBehaviorTree, true, false);
++            using var sim = ProductionBattleComposition.Create(d, d.Encounters[0].EncounterId, new BattleRuntimeInputs(31, 10));
++            sim.Step(0, sim.CommandIngress.FreezeTick(0));
++            var queued = sim.CurrentSnapshot.AiControllers.Single(c => c.Behavior.Ordinary.Cursor == 1);
++            var controller = new ControllerId(queued.ControllerId); var task = queued.Behavior.Ordinary;
++            sim.Step(1, sim.CommandIngress.FreezeTick(1));
++            var result = sim.AiExecutionFeedback.ReadSubmission(controller, task.RequestTick, task.ProducerOrdinal);
++            Assert.That(result.RejectionCode, Is.Null); Assert.That(result.PlanIds.Count, Is.EqualTo(1));
++            var other = d.Encounters[0].Controllers.Single(c => c.ControllerId != controller).ControllerId;
++            Assert.That(sim.AiExecutionFeedback.ReadSubmission(other, task.RequestTick, task.ProducerOrdinal), Is.Null);
++            Assert.That(sim.AiExecutionFeedback.ReadPlan(other, result.PlanIds[0]), Is.Null);
++            Assert.That(sim.AiExecutionFeedback.ReadSubmission(controller, task.RequestTick, task.ProducerOrdinal + 1), Is.Null);
++        }
++
++        [Test]
++        public void HybridModeIsVersionedAndCannotBeAssignedToAPlayerOrLegacyPolicy()
++        {
++            var source = BattleDefinitionFixture.Definition;
++            var a = FormalAiBaseline.Build(source, AiPolicyKind.SustainedOffense, AiExecutionKind.SingleCommand, false, false);
++            var b = FormalAiBaseline.Build(source, AiPolicyKind.SustainedOffense, AiExecutionKind.UtilityBehaviorTree, false, false);
++            Assert.That(a.BattleDefinitionHashValue, Is.Not.EqualTo(b.BattleDefinitionHashValue));
++            var binding = b.Encounters[0].Controllers[0];
++            var ingress = new CommandIngressRegistry();
++            Assert.Throws<ProjectHero.Logic.LogicDefinitionException>(() => ingress.RegisterExternalEntry(binding with { SourceKind = CommandSourceKind.Player }));
++            Assert.Throws<ProjectHero.Logic.LogicDefinitionException>(() => new AiControllerLogic(1).RegisterController(binding with { AiPolicy = AiPolicyKind.Legacy }));
++        }
++    }
++}
+--- /dev/null
++++ Assets/Tests/EditMode/Logic/AiBehaviorTreeTests.cs
+@@ -0,0 +1,40 @@
++using NUnit.Framework;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Determinism;
++
++namespace ProjectHero.Logic.Tests
++{
++    public sealed class AiBehaviorTreeTests
++    {
++        [Test]
++        public void RunningSequenceResumesLeafAndFailureAllowsSelectorFallback()
++        {
++            var memory = new AiBehaviorTask(); int submits = 0, waits = 0, fallback = 0;
++            AiBehaviorStatus Submit(ref AiBehaviorTask task) { submits++; return AiBehaviorStatus.Success; }
++            AiBehaviorStatus Await(ref AiBehaviorTask task) { waits++; return waits == 1 ? AiBehaviorStatus.Running : AiBehaviorStatus.Failure; }
++            Assert.That(AiBehaviorNodes.Sequence(ref memory, Submit, Await), Is.EqualTo(AiBehaviorStatus.Running));
++            Assert.That(memory.Cursor, Is.EqualTo(1));
++            var status = AiBehaviorNodes.Selector(() => AiBehaviorNodes.Sequence(ref memory, Submit, Await),
++                () => { fallback++; return AiBehaviorStatus.Success; });
++            Assert.That(status, Is.EqualTo(AiBehaviorStatus.Success)); Assert.That(submits, Is.EqualTo(1));
++            Assert.That(waits, Is.EqualTo(2)); Assert.That(fallback, Is.EqualTo(1)); Assert.That(memory.Cursor, Is.Zero);
++        }
++
++        [Test]
++        public void EveryPersistentTaskFieldAndBothChannelsAreEncoded()
++        {
++            var empty = AiBehaviorMemory.Empty;
++            string Hash(AiBehaviorMemory m) { var encoder = new CanonicalEncoder(); m.Encode(encoder); return encoder.ToDigestHex(); }
++            string baseline = Hash(empty);
++            foreach (var task in new[] { empty.Ordinary with { Cursor = 1 }, empty.Ordinary with { RequestTick = 2 },
++                empty.Ordinary with { ProducerOrdinal = 3 }, empty.Ordinary with { PlanId = 4 },
++                empty.Ordinary with { Status = AiBehaviorStatus.Running }, empty.Ordinary with { Reason = "other" },
++                empty.Ordinary with { PredecessorPlanId = 9 } })
++            {
++                Assert.That(Hash(empty with { Ordinary = task }), Is.Not.EqualTo(baseline));
++                Assert.That(Hash(empty with { Reaction = task }), Is.Not.EqualTo(baseline));
++                Assert.That(Hash(empty with { Ordinary = task }), Is.Not.EqualTo(Hash(empty with { Reaction = task })));
++            }
++        }
++    }
++}
+--- /dev/null
++++ Assets/Tests/PlayMode/FormalAiSceneTests.cs
+@@ -0,0 +1,52 @@
++using System.Collections;
++using System.Linq;
++using System.Reflection;
++using NUnit.Framework;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Core.Compatibility.Runtime;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Replay;
++using UnityEngine.TestTools;
++
++namespace ProjectHero.Tests.PlayMode
++{
++    public sealed class FormalAiSceneTests : ProductionRuntimeTestBase
++    {
++        protected override bool UseLegacyComparisonScene => false;
++        [UnityTest]
++        public IEnumerator FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent()
++        {
++            yield return LoadMainScene();
++            Bootstrap.StopBattle("hybrid-test-prepare"); Bootstrap.ReleaseBattle();
++            var field = Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic);
++            var original = ((IBattleSimulationSource)field.GetValue(Bootstrap)).BuildSeed();
++            var d = original.Definition;
++            var encounters = d.Encounters.Select(e => e with { Controllers = e.Controllers.Select(c =>
++                c.SourceKind == CommandSourceKind.Ai ? c with { AiPolicy = AiPolicyKind.SustainedOffense,
++                    AiExecution = AiExecutionKind.UtilityBehaviorTree } : c).ToArray() }).ToArray();
++            // Explicit scene-test envelope; every action, unit, shape and rule comes from the real scene source.
++            var hash = BattleDefinitionHash.Compute(d.RulesVersion, d.TicksPerSecond, 0, d.Rules, d.ConcurrentAction,
++                d.ReactionRules, d.AdrenalineRules, d.FactionModel, d.DamageChannels, d.ImpactProfiles, d.Units, d.Actions,
++                d.AttackPatterns, d.Volumes, d.MovementPatterns, d.ActionSets, d.StatusEffects, encounters, d.DefaultDynamicSpawnPolicy);
++            var definition = d with { Encounters = encounters, BattleDefinitionHashValue = hash };
++            var source = NewGameObject("FormalHybridTestSource").AddComponent<Task11SceneScenarioSource>();
++            source.Seed = new BattleSimulationSeed(definition, original.EncounterId, original.RuntimeInputs, "formal hybrid scene test");
++            field.SetValue(Bootstrap, source);
++            Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
++            bool executed = false;
++            for (int tick = 0; tick < 360; tick++)
++            {
++                Bootstrap.Clock.ResumeTactically(); Bootstrap.DriveFrameForTests(0, 1f / 60);
++                executed |= Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Any(c => c.Behavior?.Ordinary.PlanId > 0);
++            }
++            Assert.That(executed, Is.True);
++            Assert.That(BattleRuntimeBootstrap.EnumerateLiveInstances().Count(b => b.OwnsTopLevelClock), Is.EqualTo(1));
++            var replay = Bootstrap.NewDriver.RecordedReplay; Assert.That(replay.Submissions, Is.Empty);
++            using var player = new ReplayPlayer(definition); player.Load(replay); player.Play();
++            while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
++            Assert.That(player.Deviation, Is.Null);
++            Bootstrap.StopBattle("hybrid-test-complete"); Bootstrap.ReleaseBattle();
++        }
++    }
++}

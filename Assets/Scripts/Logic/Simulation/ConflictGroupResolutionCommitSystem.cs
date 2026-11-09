@@ -35,10 +35,12 @@ namespace ProjectHero.Logic.Simulation
         long ConflictGroupKey = 0L);
 
     /// <summary>
-    /// 一个攻击计划因参与 Clash 而必须终止的请求（<strong>只</strong>是请求）。
+    /// An attack effect ended by Clash. The phase-14 consumer retains the original
+    /// recovery occupancy; the unified terminal coordinator closes the plan at EndTick.
     ///
     /// 提交期<strong>不</strong>改写 <c>ActionPlan</c>/Lane/Intent/MovementSegment/Reservation：
-    /// 它只把原因交给统一终态协调器（阶段 14），由协调器决定"第一次成功请求胜出"。
+    /// The historical request name is retained for report consumers; it does not mean
+    /// that the plan or Lane is immediately terminal at impact.
     /// </summary>
     public sealed record ClashTerminalRequest(ActionPlanId ActionPlanId, ActionTerminationReason Reason);
 
@@ -60,7 +62,7 @@ namespace ProjectHero.Logic.Simulation
     ///
     /// <list type="bullet">
     /// <item><strong>只做两件事</strong>：把已聚合的伤害经 <see cref="IResolutionDamageApplier"/> 写入单位生命；
-    /// 把"哪些攻击因参与 Clash 必须终止"登记为<strong>请求</strong>（阶段 14 才经统一终态协调器提交）。</item>
+    /// 把"哪些攻击效果因参与 Clash 结束"登记为<strong>请求</strong>（阶段 14 保留后摇，到期后经统一终态协调器提交）。</item>
     /// <item><strong>不</strong>改 <c>ActionPlan</c>/Lane/Intent/MovementSegment/Reservation
     /// （任务包 08 禁止事项 <c>:417</c>）：违反的可观察后果是 Step 末
     /// <c>STEP_INVARIANT_VIOLATION: active-plan-missing-from-lane</c>。</item>
@@ -72,19 +74,21 @@ namespace ProjectHero.Logic.Simulation
     {
         private readonly Func<StagedConflictResolution> _resolutionSource;
         private readonly IResolutionDamageApplier _damageApplier;
+        private readonly bool _clampToRemainingHealth;
 
         public ConflictGroupResolutionCommitSystem(
             Func<StagedConflictResolution> resolutionSource,
-            IResolutionDamageApplier damageApplier)
+            IResolutionDamageApplier damageApplier, bool clampToRemainingHealth = false)
         {
             _resolutionSource = resolutionSource ?? throw new ArgumentNullException(nameof(resolutionSource));
             _damageApplier = damageApplier ?? throw new ArgumentNullException(nameof(damageApplier));
+            _clampToRemainingHealth = clampToRemainingHealth;
         }
 
         /// <summary>最近一次阶段 11 提交的只读结果。</summary>
         public DamageCommitReport LastDamageCommitReport { get; private set; } = DamageCommitReport.Empty(0L);
 
-        /// <summary>阶段 14 需要交给统一终态协调器的 Clash 终止请求（按 <c>ActionPlanId</c> 升序）。</summary>
+        /// <summary>阶段 14 的 Clash 效果结束请求；原后摇占用仍保留（按 ActionPlanId 升序）。</summary>
         public IReadOnlyList<ClashTerminalRequest> PendingClashTerminals
             => LastDamageCommitReport.Terminals;
 
@@ -109,11 +113,19 @@ namespace ProjectHero.Logic.Simulation
                 if (aggregate == null) continue;
 
                 // 稳定顺序：按 UnitId 升序逐单位一次写入（不存在"逐接触扣血"的路径）。
-                _damageApplier.ApplyDamageQ10(aggregate.TargetUnitId, aggregate.TotalDamageQ10);
+                long loss = aggregate.TotalDamageQ10;
+                if (_clampToRemainingHealth)
+                {
+                    UnitSnapshot target = null;
+                    foreach (var unit in units) if (unit.UnitId == aggregate.TargetUnitId.Value) { target = unit; break; }
+                    if (target == null) throw new LogicDefinitionException(CombatValuesV05.Invalid, "damage target missing");
+                    loss = Math.Min(loss, Math.Max(0, target.HealthQ10));
+                }
+                _damageApplier.ApplyDamageQ10(aggregate.TargetUnitId, loss);
 
                 commits.Add(new UnitDamageCommit(
                     aggregate.TargetUnitId,
-                    aggregate.TotalDamageQ10,
+                    loss,
                     aggregate.TotalImpactUnits,
                     aggregate.KnockbackSteps,
                     aggregate.ResultantDirection,

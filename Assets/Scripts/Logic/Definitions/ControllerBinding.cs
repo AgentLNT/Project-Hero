@@ -25,12 +25,27 @@ namespace ProjectHero.Logic.Definitions
     public sealed record ControllerBinding(
         Ids.ControllerId ControllerId,
         CommandSourceKind SourceKind,
-        System.Collections.Generic.IReadOnlyList<Ids.EncounterSlotId> ControlledSlots)
+        System.Collections.Generic.IReadOnlyList<Ids.EncounterSlotId> ControlledSlots,
+        AI.AiPolicyKind AiPolicy = AI.AiPolicyKind.Legacy,
+        AI.AiExecutionKind AiExecution = AI.AiExecutionKind.SingleCommand,
+        AI.AiForecastSettings AiForecast = null)
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
             writer.Write("controller_binding.controller_id", ControllerId.Value ?? string.Empty);
             writer.Write("controller_binding.source_kind", SourceKind.ToString() + ":" + (int)SourceKind);
+            // Legacy definitions retain their exact encoding. Opt-in policies are immutable replay inputs.
+            if (AiPolicy != AI.AiPolicyKind.Legacy)
+            {
+                writer.Write("controller_binding.ai_policy_version", AI.AiTacticalPolicy.Version);
+                writer.Write("controller_binding.ai_policy", (int)AiPolicy);
+            }
+            if (AiExecution != AI.AiExecutionKind.SingleCommand)
+            {
+                writer.Write("controller_binding.ai_execution_version", AI.AiBehaviorTree.Version);
+                writer.Write("controller_binding.ai_execution", (int)AiExecution);
+            }
+            AiForecast?.WriteHashComponents(writer);
             if (ControlledSlots == null) return;
             foreach (var slot in ControlledSlots)
             {

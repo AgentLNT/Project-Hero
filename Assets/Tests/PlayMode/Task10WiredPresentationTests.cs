@@ -224,7 +224,9 @@ namespace ProjectHero.Tests.PlayMode
             Time.timeScale = 1;
         }
 
-        [UnityTest] public IEnumerator MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback()
+        // Four cold New scenes, a real Legacy rehearsal and 100 complete file replays.
+        // This is a bounded integration check, not the separately deferred performance gate.
+        [UnityTest, Timeout(360000)] public IEnumerator MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback()
         {
             BattleRuntimeBootstrap previous = null;
             ulong? initialHash = null;

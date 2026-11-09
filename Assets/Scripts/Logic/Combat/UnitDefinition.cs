@@ -37,10 +37,12 @@ namespace ProjectHero.Logic.Combat
         IReadOnlyDictionary<DamageChannelId, int> BaseDamageResistanceQ10,
         float InitialHealth = 200f,
         Ids.ActionSetId ActionSetId = default,
-        Ids.VolumeSpecId VolumeSpecId = default)
+        Ids.VolumeSpecId VolumeSpecId = default,
+        CombatAttributesV05 CombatAttributes = null)
     {
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
+            CombatAttributes?.WriteHashComponents(writer);
             writer.Write("unit.definition_id", UnitDefinitionId.Value ?? string.Empty);
             writer.Write("unit.mass", (double)Mass);
             writer.Write("unit.momentum_speed", (double)MomentumSpeed);
@@ -104,6 +106,15 @@ namespace ProjectHero.Logic.Combat
         /// </summary>
         public static string Validate(UnitDefinition definition)
         {
+            if (definition.CombatAttributes != null)
+            {
+                var attributes = definition.CombatAttributes;
+                if (attributes.Validate() != null || definition.InitialHealth != attributes.MaximumHealth
+                    || definition.ActionSpeed != 20f || definition.MoveSpeed != attributes.MoveSpeed
+                    || definition.Mass != 1f || definition.MomentumSpeed != 1f
+                    || definition.BaseDamageResistanceQ10 == null || definition.BaseDamageResistanceQ10.Count != 0)
+                    return CombatValuesV05.Invalid;
+            }
             if (DefinitionIdValidation.ValidateFormat(definition.UnitDefinitionId.Value) != null)
                 return UnitDefinitionCodes.UNIT_ID_INVALID;
 

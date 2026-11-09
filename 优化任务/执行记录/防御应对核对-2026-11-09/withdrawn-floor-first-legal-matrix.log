@@ -1,0 +1,777 @@
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 26872)
+VBCSCompiler prewarm took 10.46 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Channel LicenseClient-1 doesn't exist
+Built from '6000.6/staging' branch; Version is '6000.6.2f1 (770e33f6875c) revision 7802419'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 11  (10.0.26200) CoreCountrySpecific' Language: 'zh' Physical Memory: 32272 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-09T08:04:14Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 27712)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+C:\Users\1\repos\Project Hero
+-logFile
+C:\Users\1\repos\Project Hero\ä¼˜åŒ–ä»»åŠ¡\æ‰§è¡Œè®°å½•\é˜²å¾¡åº”å¯¹æ ¸å¯¹-2026-11-09\matrix.log
+-nographics
+-executeMethod
+ProjectHero.Editor.DefenseAuditTools.Run
+-hubSessionId
+804229ff-ffaf-4eac-a4af-a3dae426ca0f
+-accessToken
+zN_wS8rZdz58YWE9v0akZPWxIW9OG3IMzP3-tTFAH1M01ef
+Successfully changed project path to: C:\Users\1\repos\Project Hero
+C:/Users/1/repos/Project Hero
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [22332]  Target information:
+
+Player connection [22332]  * "[IP] 198.18.0.1 [Port] 55504 [Flags] 2 [Guid] 1223465859 [EditorId] 1223465859 [Version] 1048832 [Id] WindowsEditor(7,ÁÖï»ÌìµÄThinkbook-14p) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [22332]  * "[IP] 192.168.3.195 [Port] 55504 [Flags] 2 [Guid] 1223465859 [EditorId] 1223465859 [Version] 1048832 [Id] WindowsEditor(7,ÁÖï»ÌìµÄThinkbook-14p) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [22332] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [22332] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Starting IPC server.
+Waiting for clients to connect on \\.\pipe\Unity-LicenseClient-1, press Ctrl-C to exit.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-1" at "2026-11-09T08:04:15.1991671Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 27712, path: "C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-29488" after 0.2 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              d1d2006c779446aca53414acddd7ca0f
+  Correlation Id:          7a1f78ae117373cffa589f52a8c7c768
+  External correlation Id: 4037084055303013759
+  Machine Id:              9MUmso02yMTsmDzM8/fKhCdGkEo=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-1" (connect: 0.37s, validation: 0.04s, handshake: 0.07s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-1-notifications" at "2026-11-09T08:04:15.3094784Z"
+[Licensing::Module] Connected to LicensingClient (PId: 27712, launch time: 0.01, total connection time: 0.48s)
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated the access token zN_wS8rZdz...
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: ewogICJzdWJzR3JvdXAiIDogInVuaXR5IGVkaXRvciIsCiAgIm5hbWVzcGFjZSIgOiAidW5pdHlfZWRpdG9yIiwKICAidHlwZSIgOiAiRURJVE9SIiwKICAidGFnIiA6ICJVbml0eVBlcnNvbmFsXXXX
+  Product: Unity Personal Version
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.54s
+[Licensing::Module] Licensing is initialized (took 0.07s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Initialising UDS system complete:
+  - System type: Client
+  - Resource namespace: d57bf0b45604087b133d0bbdd1d78ada
+  - Shared memory size: 1073741824
+  - Command buffer id: 1052576
+  - Command buffer size: 8192
+  - Hashmap size: 4194304
+  - Service connected: false
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/Users/1/repos/Project Hero[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Unity Data Store running and initialised
+Refreshing native plugins compatible for Editor in 2.85 ms, found 0 plugins.
+Initialize engine version: 6000.6.2f1 (770e33f6875c)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/1/repos/Project Hero/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56488
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004473 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  0.807 seconds
+Domain Reload Profiling: 1378ms
+	BeginReloadAssembly (159ms)
+		CreateAndSetChildDomain (18ms)
+	RebuildCommonClasses (4ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (79ms)
+	LoadAllAssembliesAndSetupDomain (316ms)
+		LoadAssemblies (134ms)
+		TypeCache.Refresh (204ms)
+			TypeCache.ScanAssembly (191ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (808ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (110ms)
+			ProcessInitializeOnLoadAttributes (127ms)
+			ProcessInitializeOnLoadMethodAttributes (302ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 67 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ai.assistant@2.20.0-pre.2 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a)
+    com.unity.ai.inference@2.6.1 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ai.inference@9a123aee5df7)
+    com.unity.ai.navigation@2.0.14 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ai.navigation@134dd6a3b97b)
+    com.unity.collab-proxy@2.13.6 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.collab-proxy@4628d2ba6ea4)
+    com.unity.ide.rider@3.0.38 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ide.rider@1f60b3138684)
+    com.unity.ide.visualstudio@2.0.26 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f)
+    com.unity.inputsystem@1.20.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.inputsystem@7a4e1a2a8194)
+    com.unity.pipeline@0.7.0-exp.1 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.pipeline@ab05e9cd7f74)
+    com.unity.visualscripting@1.9.12 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.visualscripting@4edfcc09512f)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.dt.app-ui@2.1.11 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.dt.app-ui@cd5609b130ce)
+    com.unity.searcher@4.9.5 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.2d.sprite@947350d67f82)
+    com.unity.multiplayer.center@2.0.1 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.multiplayer.center@549886182930)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.render-pipelines.universal@1e1cf3dcbd40)
+    com.unity.test-framework@1.8.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.test-framework@7a3849e09bd0)
+    com.unity.timeline@6.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.timeline@c56d56b0070b)
+    com.unity.ugui@2.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ugui@0f30cee369f3)
+    com.unity.modules.accessibility@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.modules.screencapture@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tetgen@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.tetgen)
+    com.unity.modules.tilemap@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.timelinefoundation@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.timelinefoundation)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.ext.nunit@2.1.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.render-pipelines.core@a14850be21a6)
+    com.unity.shadergraph@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.shadergraph@96a7923f6bed)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.burst@2.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.collections@10fff0607388)
+    com.unity.mathematics@1.4.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.mathematics@8306a64d0cd6)
+    com.unity.graph-authoring@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.test-framework.performance@6.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.test-framework.performance@0a60b857a52e)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.05 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Refreshing native plugins compatible for Editor in 4.87 ms, found 5 plugins.
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/1/repos/Project Hero
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.runtime.interopservices.windowsruntime has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\System.Runtime.InteropServices.WindowsRuntime.dll"
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.componentmodel.composition has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\System.ComponentModel.Composition.dll"
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 3s34ms
+[1342/1776  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[1772/1776  1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\Scripts\Editor\RuntimeOwnership\Task11Audit.cs(87,78): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Scripts\Editor\RuntimeOwnership\Task11Audit.cs(87,26): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+[1773/1776  0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 149 defines and 420 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Pipeline.CodeGen.CodeReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running Unity.Pipeline.CodeGen.CodeReloadInPlaceILPostProcessor
+[1774/1776  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[1775/1776  0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (2.99 seconds), 5 items updated, 1776 evaluated
+Assets\Scripts\Editor\RuntimeOwnership\Task11Audit.cs(87,78): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Scripts\Editor\RuntimeOwnership\Task11Audit.cs(87,26): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Total cache size 265533044
+Total cache size after purge 265533044, took 00:00:00.3608459
+AssetDatabase: script compilation time: 3.965640s
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+Symbol file LoadedFromMemory is not a mono symbol file
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Refreshing native plugins compatible for Editor in 8.57 ms, found 5 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 8.06 ms, found 5 plugins.
+Start HTTP server: port:7800
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.015 seconds
+Domain Reload Profiling: 3620ms
+	BeginReloadAssembly (227ms)
+		DisableScriptedObjects (24ms)
+		CreateAndSetChildDomain (37ms)
+	RebuildCommonClasses (6ms)
+	RebuildNativeTypeToScriptingClass (11ms)
+	initialDomainReloadingComplete (114ms)
+	LoadAllAssembliesAndSetupDomain (1246ms)
+		LoadAssemblies (699ms)
+		TypeCache.Refresh (374ms)
+			TypeCache.ScanAssembly (354ms)
+		AnalyzeDomain (76ms)
+			BuildScriptInfoCaches (67ms)
+			ResolveRequiredComponents (7ms)
+	FinalizeReload (2015ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (114ms)
+			ProcessInitializeOnLoadAttributes (1248ms)
+			ProcessInitializeOnLoadMethodAttributes (279ms)
+			AfterProcessingInitializeOnLoad (20ms)
+		AwakeInstancesAfterBackupRestoration (25ms)
+Starting new worker id: 0 with log in C:/Users/1/repos/Project Hero/Logs/AssetImportWorkerHW0.log
+Refreshing native plugins compatible for Editor in 7.27 ms, found 5 plugins.
+
+Asset Pipeline Refresh (id=aaa16930f08080c47a0e752927f0be49): Total: 9.001 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2793 ms
+		Asset DB Callback time: managed=302 ms, native=63 ms
+		Scripting: domain reloads=1, domain reload time=1747 ms, compile time=3969 ms, other=124 ms
+		Project Asset Count: scripts=2353, non-scripts=5594
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 52.920ms
+	ApplyChangesToAssetFolders: 1.164ms
+	Scan: 211.912ms
+	Collect global state as custom dependencies: 21.356ms
+	OnSourceAssetsModified: 0.520ms
+	CategorizeScriptCompilationAssets: 56.748ms
+	ProcessAssetsWithTransientArtifactChanges: 109.663ms
+	CategorizeAssets: 75.991ms
+	CompileScripts: 3968.862ms
+	ImportOutOfDateAssets: 2065.301ms (2043.186ms without children)
+		UnloadImportedAssets: 0.784ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.970ms
+		ImportSchedulerStart: 20.309ms
+	PostProcessAllAssets: 308.281ms
+		XRBuildSystem.XRAssetImported 4.504ms
+		VCAutoAddAssetPostprocess 0.860ms
+		MonoPostProcessAllAssets: 302.286ms
+			AssetPostprocessor.OnPostprocessAllAssets 69.316ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 30.071ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 18.848ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 18.534ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 4.422ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 1.892ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.712ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.266ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 1.208ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 1.155ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.152ms
+			AssetChangedListener.OnPostprocessAllAssets 1.096ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.043ms
+			AssetChangeDetector.OnPostprocessAllAssets 0.763ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.748ms
+			MaterialPostprocessor.OnPostprocessAllAssets 0.654ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.499ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.454ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.389ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.383ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.329ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.303ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.275ms
+			ModelAssetProcessor.OnPostprocessAllAssets 0.272ms
+			PostProcessor.OnPostprocessAllAssets 0.265ms
+			AssetEvents.OnPostprocessAllAssets 0.233ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.230ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.228ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.210ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.201ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.189ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.153ms
+			SyncVS.PostprocessSyncProject 0.128ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.117ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.115ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.113ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.113ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.106ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.084ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.079ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.062ms
+			TrackSelectedAssetsProcessor.OnPostprocessAllAssets 0.051ms
+	PostAssetChangesProfiler: 9.411ms
+	UnloadStreamsBegin: 1.712ms
+	PersistCurrentRevisions: 0.266ms
+	GenerateScriptTypeHashes: 2.066ms
+	GenerateScriptTypeSerializationHashes: 3.974ms
+	Untracked: 2088.932ms
+
+Application.AssetDatabase Initial Refresh End
+Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
+Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
+Scanning for USB devices : 1.383ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Project Hero
+Unloading 71 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 11137 unused Assets / (6.3 MB). Loaded Objects now: 12174.
+Memory consumption went from 0.59 GB to 0.58 GB.
+Total: 15.622000 ms (FindLiveObjects: 1.896300 ms CreateObjectMapping: 0.619700 ms MarkObjects: 11.075800 ms  DeleteObjects: 1.661600 ms)
+
+Opening scene 'Assets/Scenes/CombatSampleScene.unity'
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            29.571 ms
+	Integration:            13.347 ms
+	Integration of assets:  0.529 ms
+	Thread Wait Time:       0.064 ms
+	Total Operation Time:   43.511 ms
+Unloading 2 unused Assets / (111.1 KB). Loaded Objects now: 12478.
+Memory consumption went from 0.57 GB to 0.57 GB.
+Total: 12.134400 ms (FindLiveObjects: 0.620300 ms CreateObjectMapping: 0.221900 ms MarkObjects: 10.801700 ms  DeleteObjects: 0.034300 ms)
+
+Worker ready: AssetImportWorkerHW0 0
+DEFENSE_AI_CASE SustainedOffense-main-mirror0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<.ctor>b__4_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SustainedOffense-main-mirror1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<.ctor>b__4_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SustainedOffense-near-mirror0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<.ctor>b__4_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.ThreadPoolTaskScheduler:TryExecuteTaskInline (System.Threading.Tasks.Task,bool)
+System.Threading.Tasks.TaskScheduler:TryRunInline (System.Threading.Tasks.Task,bool)
+System.Threading.Tasks.Task:InternalRunSynchronously (System.Threading.Tasks.TaskScheduler,bool)
+System.Threading.Tasks.Task:RunSynchronously (System.Threading.Tasks.TaskScheduler)
+System.Threading.Tasks.TaskReplicator/Replica:Start ()
+System.Threading.Tasks.TaskReplicator:Run<System.Collections.IEnumerator> (System.Threading.Tasks.TaskReplicator/ReplicatableUserAction`1<System.Collections.IEnumerator>,System.Threading.Tasks.ParallelOptions,bool)
+System.Threading.Tasks.Parallel:PartitionerForEachWorker<ProjectHero.Editor.DefenseAuditTools/Input, object> (System.Collections.Concurrent.Partitioner`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Action`2<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState>,System.Action`3<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long>,System.Func`4<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, object, object>,System.Func`5<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long, object, object>,System.Func`1<object>,System.Action`1<object>)
+System.Threading.Tasks.Parallel:ForEachWorker<ProjectHero.Editor.DefenseAuditTools/Input, object> (System.Collections.Generic.IEnumerable`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Action`2<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState>,System.Action`3<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long>,System.Func`4<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, object, object>,System.Func`5<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long, object, object>,System.Func`1<object>,System.Action`1<object>)
+System.Threading.Tasks.Parallel:ForEach<ProjectHero.Editor.DefenseAuditTools/Input> (System.Collections.Generic.IEnumerable`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>)
+ProjectHero.Editor.DefenseAuditTools:Run () (at Assets/Scripts/Editor/DefenseAuditTools.cs:91)
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SustainedOffense-near-mirror1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<.ctor>b__4_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SeekInterrupt-main-mirror0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<Execute>b__7_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SeekInterrupt-main-mirror1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<Execute>b__7_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SeekInterrupt-near-mirror0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<.ctor>b__4_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.ThreadPoolTaskScheduler:TryExecuteTaskInline (System.Threading.Tasks.Task,bool)
+System.Threading.Tasks.TaskScheduler:TryRunInline (System.Threading.Tasks.Task,bool)
+System.Threading.Tasks.Task:InternalRunSynchronously (System.Threading.Tasks.TaskScheduler,bool)
+System.Threading.Tasks.Task:RunSynchronously (System.Threading.Tasks.TaskScheduler)
+System.Threading.Tasks.TaskReplicator/Replica:Start ()
+System.Threading.Tasks.TaskReplicator:Run<System.Collections.IEnumerator> (System.Threading.Tasks.TaskReplicator/ReplicatableUserAction`1<System.Collections.IEnumerator>,System.Threading.Tasks.ParallelOptions,bool)
+System.Threading.Tasks.Parallel:PartitionerForEachWorker<ProjectHero.Editor.DefenseAuditTools/Input, object> (System.Collections.Concurrent.Partitioner`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Action`2<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState>,System.Action`3<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long>,System.Func`4<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, object, object>,System.Func`5<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long, object, object>,System.Func`1<object>,System.Action`1<object>)
+System.Threading.Tasks.Parallel:ForEachWorker<ProjectHero.Editor.DefenseAuditTools/Input, object> (System.Collections.Generic.IEnumerable`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Action`2<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState>,System.Action`3<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long>,System.Func`4<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, object, object>,System.Func`5<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long, object, object>,System.Func`1<object>,System.Action`1<object>)
+System.Threading.Tasks.Parallel:ForEach<ProjectHero.Editor.DefenseAuditTools/Input> (System.Collections.Generic.IEnumerable`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>)
+ProjectHero.Editor.DefenseAuditTools:Run () (at Assets/Scripts/Editor/DefenseAuditTools.cs:91)
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE SeekInterrupt-near-mirror1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<Execute>b__7_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE CautiousDefense-near-mirror0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<.ctor>b__4_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.ThreadPoolTaskScheduler:TryExecuteTaskInline (System.Threading.Tasks.Task,bool)
+System.Threading.Tasks.TaskScheduler:TryRunInline (System.Threading.Tasks.Task,bool)
+System.Threading.Tasks.Task:InternalRunSynchronously (System.Threading.Tasks.TaskScheduler,bool)
+System.Threading.Tasks.Task:RunSynchronously (System.Threading.Tasks.TaskScheduler)
+System.Threading.Tasks.TaskReplicator/Replica:Start ()
+System.Threading.Tasks.TaskReplicator:Run<System.Collections.IEnumerator> (System.Threading.Tasks.TaskReplicator/ReplicatableUserAction`1<System.Collections.IEnumerator>,System.Threading.Tasks.ParallelOptions,bool)
+System.Threading.Tasks.Parallel:PartitionerForEachWorker<ProjectHero.Editor.DefenseAuditTools/Input, object> (System.Collections.Concurrent.Partitioner`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Action`2<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState>,System.Action`3<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long>,System.Func`4<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, object, object>,System.Func`5<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long, object, object>,System.Func`1<object>,System.Action`1<object>)
+System.Threading.Tasks.Parallel:ForEachWorker<ProjectHero.Editor.DefenseAuditTools/Input, object> (System.Collections.Generic.IEnumerable`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Action`2<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState>,System.Action`3<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long>,System.Func`4<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, object, object>,System.Func`5<ProjectHero.Editor.DefenseAuditTools/Input, System.Threading.Tasks.ParallelLoopState, long, object, object>,System.Func`1<object>,System.Action`1<object>)
+System.Threading.Tasks.Parallel:ForEach<ProjectHero.Editor.DefenseAuditTools/Input> (System.Collections.Generic.IEnumerable`1<ProjectHero.Editor.DefenseAuditTools/Input>,System.Threading.Tasks.ParallelOptions,System.Action`1<ProjectHero.Editor.DefenseAuditTools/Input>)
+ProjectHero.Editor.DefenseAuditTools:Run () (at Assets/Scripts/Editor/DefenseAuditTools.cs:91)
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE CautiousDefense-near-mirror1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<Execute>b__7_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE CautiousDefense-main-mirror0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<Execute>b__7_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+DEFENSE_AI_CASE CautiousDefense-main-mirror1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Editor.DefenseAuditTools/<>c__DisplayClass9_0:<Run>b__0 (ProjectHero.Editor.DefenseAuditTools/Input) (at Assets/Scripts/Editor/DefenseAuditTools.cs:136)
+System.Threading.Tasks.Parallel/<>c__DisplayClass44_0`2<ProjectHero.Editor.DefenseAuditTools/Input, object>:<PartitionerForEachWorker>b__1 (System.Collections.IEnumerator&,int,bool&)
+System.Threading.Tasks.TaskReplicator/Replica`1<System.Collections.IEnumerator>:ExecuteAction (bool&)
+System.Threading.Tasks.TaskReplicator/Replica:Execute ()
+System.Threading.Tasks.TaskReplicator/Replica/<>c:<Execute>b__7_0 (object)
+System.Threading.Tasks.Task:InnerInvoke ()
+System.Threading.Tasks.Task:Execute ()
+System.Threading.Tasks.Task:ExecutionContextCallback (object)
+System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+System.Threading.Tasks.Task:ExecuteWithThreadLocal (System.Threading.Tasks.Task&)
+System.Threading.Tasks.Task:ExecuteEntry (bool)
+System.Threading.Tasks.Task:System.Threading.IThreadPoolWorkItem.ExecuteWorkItem ()
+System.Threading.ThreadPoolWorkQueue:Dispatch ()
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+(Filename: Assets/Scripts/Editor/DefenseAuditTools.cs Line: 136)
+
+[Licensing::Client] Successfully resolved entitlement details
+Batchmode quit successfully invoked - shutting down!
+Pipeline Server stopped
+Curl error 42: Callback aborted
+Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: 'd93212e0d22e9173926618c330658fad') in 0.004 seconds [static dependencies only]. Details - ImportResultOutputID=0a89a5c5f492143e0fa186859e17ba6f DependenciesID=3f3899b4236c088ddd20c758af8ad9a6 StaticDependenciesID=c7b73f6aad4dccd21e8efaeccacbe99d 
+Refreshing native plugins compatible for Editor in 5.70 ms, found 5 plugins.
+Asset Pipeline Refresh (id=c7760b7380feda14a82a232c8e4fc9b6): Total: 0.110 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-1-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-1 channel disconnected successfully.
+Shut down.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+Shut down UDS service system complete
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+abort_threads: Failed aborting id: 00000000000059FC, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000033CC, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000059FC, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000033CC, mono_thread_manage will ignore it
+
+debugger-agent: Unable to listen on 3436
+Exiting batchmode successfully now!
+[ExitDontLaunchBugReporter] Exiting without the bug reporter. Application will exit with return code 0

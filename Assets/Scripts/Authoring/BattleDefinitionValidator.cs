@@ -262,6 +262,16 @@ namespace ProjectHero.Authoring
 
                 if (binding.SourceKind == CommandSourceKind.System)
                     errors.Add(DefinitionCodes.CONTROLLER_SYSTEM_SOURCE_REJECTED, controllerOrigin, origin);
+                if (!System.Enum.IsDefined(typeof(ProjectHero.Logic.AI.AiPolicyKind), binding.AiPolicy)
+                    || (binding.AiPolicy != ProjectHero.Logic.AI.AiPolicyKind.Legacy && binding.SourceKind != CommandSourceKind.Ai))
+                    errors.Add("AI_POLICY_INVALID", controllerOrigin, origin);
+                if (!System.Enum.IsDefined(typeof(ProjectHero.Logic.AI.AiExecutionKind), binding.AiExecution)
+                    || (binding.AiExecution != ProjectHero.Logic.AI.AiExecutionKind.SingleCommand
+                        && (binding.SourceKind != CommandSourceKind.Ai || binding.AiPolicy == ProjectHero.Logic.AI.AiPolicyKind.Legacy)))
+                    errors.Add("AI_EXECUTION_INVALID", controllerOrigin, origin);
+                if (binding.AiForecast != null && (binding.AiForecast.Validate() != null || binding.SourceKind != CommandSourceKind.Ai
+                    || binding.AiPolicy == ProjectHero.Logic.AI.AiPolicyKind.Legacy))
+                    errors.Add("AI_FORECAST_SETTINGS_INVALID", controllerOrigin, origin);
 
                 if (binding.ControlledSlots == null || binding.ControlledSlots.Count == 0)
                 {

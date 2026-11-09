@@ -21,6 +21,7 @@ namespace ProjectHero.Logic.Simulation
         private readonly Dictionary<long, float> _speed = new Dictionary<long, float>();
         private BattleSimulation _simulation;
         public BattleSimulationAssembly Assembly { get; }
+        public IReadOnlyList<AiControllerLogic> AiControllers => _ai.AsReadOnly();
 
         public ProductionBattleComposition(BattleDefinition definition, EncounterDefinitionId encounterId, BattleRuntimeInputs inputs,
             StepPhaseTimingRecorder phaseTiming = null)
@@ -61,7 +62,7 @@ namespace ProjectHero.Logic.Simulation
             if (_simulation != null) throw new InvalidOperationException("Composition is already attached");
             _simulation = simulation;
             foreach (var ai in _ai) ai.AttachPorts(simulation.AiReactionOpportunities, simulation.AiActionPlanLookup,
-                simulation.MovementPathCalculator, PreviewNormalCommand);
+                simulation.MovementPathCalculator, PreviewNormalCommand, simulation.CreateAiForecast, simulation.AiExecutionFeedback);
         }
 
         internal void RegisterCreatedUnit(UnitId id, UnitDefinition definition, ControllerId controller)

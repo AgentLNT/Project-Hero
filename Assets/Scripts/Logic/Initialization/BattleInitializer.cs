@@ -45,6 +45,14 @@ namespace ProjectHero.Logic.Initialization
             if (runtimeInputs == null)
                 throw new LogicDefinitionException(INITIALIZE_RUNTIME_INPUT_INVALID, "runtimeInputs is null");
 
+            if (definition.AdrenalineRules?.UseCombatValuesV05 == true
+                || System.Linq.Enumerable.Any(definition.Units, unit => unit.CombatAttributes != null)
+                || System.Linq.Enumerable.Any(definition.Actions, action => action.Payload is Actions.AttackPayloadSpec attack && attack.Strength != null))
+            {
+                string valuesError = CombatValuesV05.ValidateDefinition(definition);
+                if (valuesError != null) throw new LogicDefinitionException(valuesError);
+            }
+
             string inputError = runtimeInputs.Validate();
             if (inputError != null)
                 throw new LogicDefinitionException(inputError, runtimeInputs.ToString());

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.3767416">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1068" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.376742" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2209" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="681" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.352367" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="90520" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2210" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="681" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.348508" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2211" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="681" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.344744" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2212" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="681" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.340749" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1954" name="Task09AiDecisionTests" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.320880" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1960" name="AiAndPlayerAvailabilityUsesSameActionSetRules" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiAndPlayerAvailabilityUsesSameActionSetRules" methodname="AiAndPlayerAvailabilityUsesSameActionSetRules" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="1118366386" result="Passed" start-time="2026-11-03 07:11:57Z" end-time="2026-11-03 07:11:58Z" duration="0.231483" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1962" name="AiCandidatePermutationDoesNotChangeDecisionWithSameSeed" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCandidatePermutationDoesNotChangeDecisionWithSameSeed" methodname="AiCandidatePermutationDoesNotChangeDecisionWithSameSeed" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="1936848613" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.005201" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1956" name="AiCannotCreateOpportunityOrReactionPlanDirectly" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCannotCreateOpportunityOrReactionPlanDirectly" methodname="AiCannotCreateOpportunityOrReactionPlanDirectly" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="645701202" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.041401" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1959" name="AiCannotReactToOpportunityInItsOpeningTick" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCannotReactToOpportunityInItsOpeningTick" methodname="AiCannotReactToOpportunityInItsOpeningTick" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="1687550632" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.001365" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1957" name="AiCanReactDuringAnotherUnitsWindow" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiCanReactDuringAnotherUnitsWindow" methodname="AiCanReactDuringAnotherUnitsWindow" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="1888956272" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.002064" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1955" name="AiDoesNotSchedulePlanOrCloseWindowDirectly" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiDoesNotSchedulePlanOrCloseWindowDirectly" methodname="AiDoesNotSchedulePlanOrCloseWindowDirectly" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="1491432021" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.019076" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1961" name="AiReactionCandidatePermutationDoesNotChangeDecisionWithSameSeed" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.AiReactionCandidatePermutationDoesNotChangeDecisionWithSameSeed" methodname="AiReactionCandidatePermutationDoesNotChangeDecisionWithSameSeed" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="686312950" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.003775" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1958" name="PlayerAndAiShareOneTickReactionIngressLead" fullname="ProjectHero.Logic.Tests.Task09AiDecisionTests.PlayerAndAiShareOneTickReactionIngressLead" methodname="PlayerAndAiShareOneTickReactionIngressLead" classname="ProjectHero.Logic.Tests.Task09AiDecisionTests" runstate="Runnable" seed="1611214405" result="Passed" start-time="2026-11-03 07:11:58Z" end-time="2026-11-03 07:11:58Z" duration="0.003708" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

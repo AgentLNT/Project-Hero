@@ -289,6 +289,7 @@ namespace ProjectHero.Logic.Combat
             switch (action.Payload)
             {
                 case Actions.AttackPayloadSpec attack:
+                    attack.Strength?.WriteHashComponents(writer);
                     if (attack.DamageComponents != null)
                     {
                         foreach (var component in attack.DamageComponents)

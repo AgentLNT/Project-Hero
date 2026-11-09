@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="15" result="Passed" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.649298">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1114" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.649298" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1450" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="394" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.595339" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="101456" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1451" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="394" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.590359" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1452" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="394" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.589421" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1453" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="394" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.588712" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1088" name="FormalAiBaselineTests" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:43Z" duration="12.573531" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1098" name="BaselineKeepsEveryFormalActionAndUnitUnchanged" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.BaselineKeepsEveryFormalActionAndUnitUnchanged" methodname="BaselineKeepsEveryFormalActionAndUnitUnchanged" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="991789526" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:30Z" duration="0.112866" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1089" name="CompletingTaskDoesNotSkipTheNextDueUtilityDecision" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.CompletingTaskDoesNotSkipTheNextDueUtilityDecision" methodname="CompletingTaskDoesNotSkipTheNextDueUtilityDecision" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="2005655007" result="Passed" start-time="2026-11-05 04:59:30Z" end-time="2026-11-05 04:59:33Z" duration="2.319210" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1097" name="EveryAttackInTheActorsFormalSetGetsCandidates" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.EveryAttackInTheActorsFormalSetGetsCandidates" methodname="EveryAttackInTheActorsFormalSetGetsCandidates" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="1590074084" result="Passed" start-time="2026-11-05 04:59:33Z" end-time="2026-11-05 04:59:33Z" duration="0.186921" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1103" name="FeedbackIsBoundToOwnerAndProducerOrdinal" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.FeedbackIsBoundToOwnerAndProducerOrdinal" methodname="FeedbackIsBoundToOwnerAndProducerOrdinal" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="1989613219" result="Passed" start-time="2026-11-05 04:59:33Z" end-time="2026-11-05 04:59:33Z" duration="0.181048" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1102" name="FormalHybridWaitsForRealPlansAndReplaysAllAi" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.FormalHybridWaitsForRealPlansAndReplaysAllAi" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-05 04:59:33Z" end-time="2026-11-05 04:59:42Z" duration="8.996813" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1099" name="FormalHybridWaitsForRealPlansAndReplaysAllAi(SustainedOffense)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.FormalHybridWaitsForRealPlansAndReplaysAllAi(SustainedOffense)" methodname="FormalHybridWaitsForRealPlansAndReplaysAllAi" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="1158863961" result="Passed" start-time="2026-11-05 04:59:33Z" end-time="2026-11-05 04:59:36Z" duration="3.130742" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1100" name="FormalHybridWaitsForRealPlansAndReplaysAllAi(SeekInterrupt)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.FormalHybridWaitsForRealPlansAndReplaysAllAi(SeekInterrupt)" methodname="FormalHybridWaitsForRealPlansAndReplaysAllAi" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="1029665368" result="Passed" start-time="2026-11-05 04:59:36Z" end-time="2026-11-05 04:59:39Z" duration="2.897070" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1101" name="FormalHybridWaitsForRealPlansAndReplaysAllAi(CautiousDefense)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.FormalHybridWaitsForRealPlansAndReplaysAllAi(CautiousDefense)" methodname="FormalHybridWaitsForRealPlansAndReplaysAllAi" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="748214346" result="Passed" start-time="2026-11-05 04:59:39Z" end-time="2026-11-05 04:59:42Z" duration="2.960208" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1104" name="HybridModeIsVersionedAndCannotBeAssignedToAPlayerOrLegacyPolicy" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.HybridModeIsVersionedAndCannotBeAssignedToAPlayerOrLegacyPolicy" methodname="HybridModeIsVersionedAndCannotBeAssignedToAPlayerOrLegacyPolicy" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="532422862" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:42Z" duration="0.005108" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1092" name="MissingOrRejectedCommandNeverBecomesSuccessfulTask" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.MissingOrRejectedCommandNeverBecomesSuccessfulTask" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:42Z" duration="0.324848" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1090" name="MissingOrRejectedCommandNeverBecomesSuccessfulTask(False)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.MissingOrRejectedCommandNeverBecomesSuccessfulTask(False)" methodname="MissingOrRejectedCommandNeverBecomesSuccessfulTask" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="413860260" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:42Z" duration="0.150264" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1091" name="MissingOrRejectedCommandNeverBecomesSuccessfulTask(True)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.MissingOrRejectedCommandNeverBecomesSuccessfulTask(True)" methodname="MissingOrRejectedCommandNeverBecomesSuccessfulTask" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="470740842" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:42Z" duration="0.141694" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1096" name="RealTerminalStateDeterminesTreeResult" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.RealTerminalStateDeterminesTreeResult" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:43Z" duration="0.280632" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1094" name="RealTerminalStateDeterminesTreeResult(Completed,Success)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.RealTerminalStateDeterminesTreeResult(Completed,Success)" methodname="RealTerminalStateDeterminesTreeResult" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="1339160975" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:42Z" duration="0.138870" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1095" name="RealTerminalStateDeterminesTreeResult(Terminated,Failure)" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.RealTerminalStateDeterminesTreeResult(Terminated,Failure)" methodname="RealTerminalStateDeterminesTreeResult" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="27630014" result="Passed" start-time="2026-11-05 04:59:42Z" end-time="2026-11-05 04:59:43Z" duration="0.140845" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1093" name="ResponsePriorityStillAcknowledgesOrdinarySubmission" fullname="ProjectHero.Authoring.Tests.FormalAiBaselineTests.ResponsePriorityStillAcknowledgesOrdinarySubmission" methodname="ResponsePriorityStillAcknowledgesOrdinarySubmission" classname="ProjectHero.Authoring.Tests.FormalAiBaselineTests" runstate="Runnable" seed="407584352" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.151412" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="2267" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.036573" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="101456" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2268" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.032051" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2269" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.024729" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2270" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="714" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.015698" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1467" name="AiBehaviorTreeTests" fullname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" classname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.002007" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1469" name="EveryPersistentTaskFieldAndBothChannelsAreEncoded" fullname="ProjectHero.Logic.Tests.AiBehaviorTreeTests.EveryPersistentTaskFieldAndBothChannelsAreEncoded" methodname="EveryPersistentTaskFieldAndBothChannelsAreEncoded" classname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" runstate="Runnable" seed="2036981385" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.000826" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1468" name="RunningSequenceResumesLeafAndFailureAllowsSelectorFallback" fullname="ProjectHero.Logic.Tests.AiBehaviorTreeTests.RunningSequenceResumesLeafAndFailureAllowsSelectorFallback" methodname="RunningSequenceResumesLeafAndFailureAllowsSelectorFallback" classname="ProjectHero.Logic.Tests.AiBehaviorTreeTests" runstate="Runnable" seed="2116054324" result="Passed" start-time="2026-11-05 04:59:43Z" end-time="2026-11-05 04:59:43Z" duration="0.000436" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

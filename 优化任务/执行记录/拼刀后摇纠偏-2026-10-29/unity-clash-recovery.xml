@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Failed(Child)" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.288699">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1026" result="Failed" site="Child" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.288699" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2160" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="639" result="Failed" site="Child" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.278789" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="80908" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2161" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="639" result="Failed" site="Child" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.278245" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2162" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="639" result="Failed" site="Child" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.277995" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2163" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="639" result="Failed" site="Child" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.277779" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1453" name="ClashRecoveryTests" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="20" result="Failed" site="Child" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:39Z" duration="2.255543" total="20" passed="19" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1475" name="DeathAndBattleEndClearRecoveryWithoutWaitingForItsDeadline" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.DeathAndBattleEndClearRecoveryWithoutWaitingForItsDeadline" methodname="DeathAndBattleEndClearRecoveryWithoutWaitingForItsDeadline" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1835472839" result="Passed" start-time="2026-10-29 08:29:36Z" end-time="2026-10-29 08:29:37Z" duration="0.398973" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1457" name="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.344472" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1454" name="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome(-1)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome(-1)" methodname="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1507930778" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.143349" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1455" name="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome(0)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome(0)" methodname="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1361937687" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.108274" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1456" name="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome(1)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome(1)" methodname="EveryParticipantKeepsItsOwnRecoveryRegardlessOfClashOutcome" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1363448016" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.087423" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1474" name="LaterControlCannotEraseTheUnfinishedRecovery" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.LaterControlCannotEraseTheUnfinishedRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.159489" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1472" name="LaterControlCannotEraseTheUnfinishedRecovery(12)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.LaterControlCannotEraseTheUnfinishedRecovery(12)" methodname="LaterControlCannotEraseTheUnfinishedRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1851586771" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.062005" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1473" name="LaterControlCannotEraseTheUnfinishedRecovery(60)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.LaterControlCannotEraseTheUnfinishedRecovery(60)" methodname="LaterControlCannotEraseTheUnfinishedRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1288184257" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.092422" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1466" name="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:38Z" duration="0.291023" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1463" name="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd(&quot;probe_slash&quot;)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd(&quot;probe_slash&quot;)" methodname="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1827294390" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:37Z" duration="0.099494" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1464" name="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd(&quot;guard&quot;)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd(&quot;guard&quot;)" methodname="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="382999868" result="Passed" start-time="2026-10-29 08:29:37Z" end-time="2026-10-29 08:29:38Z" duration="0.087695" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1465" name="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd(&quot;move&quot;)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd(&quot;move&quot;)" methodname="OrdinaryActionsCannotStartInsideRecoveryAndCanStartAtTheExactEnd" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="472089845" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.102975" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1478" name="ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.232321" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1476" name="ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack(Block)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack(Block)" methodname="ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1770577473" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.118067" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1477" name="ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack(Dodge)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack(Dodge)" methodname="ReactionsUseTheSameRecoveryBoundaryAndCannotOverlapTheAttack" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="637682511" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.113483" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1479" name="RecoveryMarkerParticipatesInSnapshotHashAndOldReplayFormatsAreRejected" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.RecoveryMarkerParticipatesInSnapshotHashAndOldReplayFormatsAreRejected" methodname="RecoveryMarkerParticipatesInSnapshotHashAndOldReplayFormatsAreRejected" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1282636864" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.056205" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1471" name="SameTickControlAndRecoveryBothHaveToExpire" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.SameTickControlAndRecoveryBothHaveToExpire" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.393964" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1467" name="SameTickControlAndRecoveryBothHaveToExpire(6,12,Staggered)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.SameTickControlAndRecoveryBothHaveToExpire(6,12,Staggered)" methodname="SameTickControlAndRecoveryBothHaveToExpire" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1226515168" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.108968" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1468" name="SameTickControlAndRecoveryBothHaveToExpire(6,60,Staggered)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.SameTickControlAndRecoveryBothHaveToExpire(6,60,Staggered)" methodname="SameTickControlAndRecoveryBothHaveToExpire" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1599019573" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.091367" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1469" name="SameTickControlAndRecoveryBothHaveToExpire(4,12,KnockedDown)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.SameTickControlAndRecoveryBothHaveToExpire(4,12,KnockedDown)" methodname="SameTickControlAndRecoveryBothHaveToExpire" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="548789927" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.091849" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1470" name="SameTickControlAndRecoveryBothHaveToExpire(4,60,KnockedDown)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.SameTickControlAndRecoveryBothHaveToExpire(4,60,KnockedDown)" methodname="SameTickControlAndRecoveryBothHaveToExpire" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1056345462" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.100656" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1462" name="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:39Z" duration="0.340723" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1459" name="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery(540L)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery(540L)" methodname="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1904339120" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:38Z" duration="0.104875" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1460" name="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery(541L)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery(541L)" methodname="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="493080715" result="Passed" start-time="2026-10-29 08:29:38Z" end-time="2026-10-29 08:29:39Z" duration="0.108111" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1461" name="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery(542L)" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery(542L)" methodname="WindowClosureAndTheNextOwnersWindowDoNotReleaseRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="762503251" result="Passed" start-time="2026-10-29 08:29:39Z" end-time="2026-10-29 08:29:39Z" duration="0.126682" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1458" name="ZeroRecoveryEndsAtImpactWithoutAddingAnotherRecovery" fullname="ProjectHero.Logic.Tests.ClashRecoveryTests.ZeroRecoveryEndsAtImpactWithoutAddingAnotherRecovery" methodname="ZeroRecoveryEndsAtImpactWithoutAddingAnotherRecovery" classname="ProjectHero.Logic.Tests.ClashRecoveryTests" runstate="Runnable" seed="1921334548" result="Failed" label="Error" start-time="2026-10-29 08:29:39Z" end-time="2026-10-29 08:29:39Z" duration="0.022248" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : COMBAT_VALUES_V05_INVALID]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Initialization.BattleInitializer.BuildInitialState (ProjectHero.Logic.Definitions.BattleDefinition definition, ProjectHero.Logic.Ids.EncounterDefinitionId encounterId, ProjectHero.Logic.Initialization.BattleRuntimeInputs runtimeInputs) [0x00457] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Initialization\BattleInitializer.cs:148 
+  at ProjectHero.Logic.Simulation.ProductionBattleComposition..ctor (ProjectHero.Logic.Definitions.BattleDefinition definition, ProjectHero.Logic.Ids.EncounterDefinitionId encounterId, ProjectHero.Logic.Initialization.BattleRuntimeInputs inputs, ProjectHero.Logic.Simulation.StepPhaseTimingRecorder phaseTiming) [0x00070] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\ProductionBattleComposition.cs:30 
+  at ProjectHero.Logic.Tests.ClashRecoveryTests+Rig..ctor (System.Int32 balance, System.Int32 firstRecovery, System.Int32 secondRecovery, System.Int32 stability, System.Int32 controlDuration, System.Boolean three, System.Boolean prepareResource, ProjectHero.Logic.Simulation.IUnitStateAdvanceSystem stateSource, System.Int64 impact) [0x000dc] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\ClashRecoveryTests.cs:65 
+  at ProjectHero.Logic.Tests.ClashRecoveryTests.ZeroRecoveryEndsAtImpactWithoutAddingAnotherRecovery () [0x00000] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\ClashRecoveryTests.cs:156 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

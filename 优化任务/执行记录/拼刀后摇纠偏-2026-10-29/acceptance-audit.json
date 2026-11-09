@@ -1,0 +1,62 @@
+{
+  "editMode": {
+    "failed": 0,
+    "passed": 1027,
+    "report": "unity-editmode-complete.xml",
+    "total": 1027
+  },
+  "clashRecovery": {
+    "passed": 21,
+    "total": 21
+  },
+  "productionPlayMode": {
+    "firstReport": "unity-production-playmode.xml",
+    "retryPassed": 1,
+    "firstFailed": 1,
+    "failureReason": "Cold integration exceeded the default 180-second test timeout",
+    "firstPassed": 13,
+    "latestPassed": 14,
+    "retryReport": "unity-production-cold-retry.xml",
+    "retryFailed": 0,
+    "latestUniqueCases": 14
+  },
+  "experiments": {
+    "rulesVersions": [
+      "combat_values.v05.candidate.1.clash-recovery.1"
+    ],
+    "total": 79,
+    "outcomes": [
+      {
+        "count": 15,
+        "outcome": "timeout"
+      },
+      {
+        "count": 64,
+        "outcome": "victory"
+      }
+    ],
+    "sourceFingerprint": "a094076f92a26c1c0551cefa823dd76b79179e7b48f287d9200bf10294411071",
+    "replayVerified": 79,
+    "rejectedCommands": 0.0,
+    "missingArtifacts": [],
+    "sourceFingerprintMatches": true,
+    "run": "experiments/run-20261029-085542Z"
+  },
+  "fixedClash": {
+    "correctedRequestTicks": [
+      212,
+      212
+    ],
+    "correctedTerminalTicks": [
+      242,
+      242
+    ],
+    "oldTerminalTicks": [
+      212,
+      212
+    ]
+  },
+  "replayFormat": 7,
+  "productionRules": "battle-def-v5-clash-recovery",
+  "productionDefinitionHash": "de4be447760a2266"
+}

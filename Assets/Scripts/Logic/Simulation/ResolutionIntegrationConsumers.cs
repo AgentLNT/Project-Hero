@@ -62,13 +62,15 @@ namespace ProjectHero.Logic.Simulation
     {
         private readonly Func<StagedConflictResolution> _resolutionSource;
         private readonly Func<DamageCommitReport> _commitReportSource;
+        private readonly bool _attributeActualLoss;
 
         public AdrenalineAccrualFactSource(
             Func<StagedConflictResolution> resolutionSource,
-            Func<DamageCommitReport> commitReportSource)
+            Func<DamageCommitReport> commitReportSource, bool attributeActualLoss = false)
         {
             _resolutionSource = resolutionSource ?? throw new ArgumentNullException(nameof(resolutionSource));
             _commitReportSource = commitReportSource ?? throw new ArgumentNullException(nameof(commitReportSource));
+            _attributeActualLoss = attributeActualLoss;
         }
 
         /// <summary>最近一次构建出的规范事实（只读观察面；未构建时为空）。</summary>
@@ -102,7 +104,8 @@ namespace ProjectHero.Logic.Simulation
             // 不存在"逐接触给攻击者各记一次"的路径）。
             if (resolution != null && !resolution.Failed)
             {
-                AccumulateDealtDamage(accumulators, resolution);
+                if (_attributeActualLoss) AccumulateActualDealtDamage(accumulators, resolution, report);
+                else AccumulateDealtDamage(accumulators, resolution);
                 AccumulateClashSuccessKeys(accumulators, resolution);
                 AccumulateReactionSuccessKeys(accumulators, resolution);
             }
@@ -151,6 +154,41 @@ namespace ProjectHero.Logic.Simulation
                 RemainingHitResolution hit = resolution.RemainingHits[i];
                 if (hit == null || hit.Aggregate == null) continue;
                 Require(accumulators, hit.AttackerUnitId).DealtDamageQ10 += hit.Aggregate.TotalDamageQ10;
+            }
+        }
+
+        private static void AccumulateActualDealtDamage(List<Accumulator> accumulators,
+            StagedConflictResolution resolution, DamageCommitReport report)
+        {
+            if (report == null) return;
+            foreach (var commit in report.Units)
+            {
+                TargetAggregateResolution aggregate = null;
+                foreach (var candidate in resolution.Aggregations)
+                    if (candidate.TargetUnitId == commit.UnitId) { aggregate = candidate; break; }
+                if (aggregate == null || aggregate.TotalDamageQ10 == 0) continue;
+                var contacts = new List<TargetContactResolution>(aggregate.Contacts);
+                contacts.Sort((a, b) => a.Key.CompareTo(b.Key));
+                var shares = new long[contacts.Count];
+                long allocated = 0;
+                for (int i = 0; i < contacts.Count; i++)
+                {
+                    long damage = 0;
+                    foreach (var component in contacts[i].Components) damage = checked(damage + component.AfterActionResistanceQ10);
+                    shares[i] = checked(commit.DamageQ10 * damage) / aggregate.TotalDamageQ10;
+                    allocated = checked(allocated + shares[i]);
+                }
+                // Sum of floor shares leaves fewer than contact count quanta. Zero contributors never receive one.
+                long remainder = commit.DamageQ10 - allocated;
+                for (int i = 0; i < contacts.Count && remainder > 0; i++)
+                {
+                    bool positive = false;
+                    foreach (var component in contacts[i].Components) positive |= component.AfterActionResistanceQ10 > 0;
+                    if (positive) { shares[i]++; remainder--; }
+                }
+                if (remainder != 0) throw new LogicDefinitionException(CombatValuesV05.Invalid, "damage attribution mismatch");
+                for (int i = 0; i < contacts.Count; i++)
+                    Require(accumulators, new UnitId(contacts[i].Key.SourceUnitId)).DealtDamageQ10 += shares[i];
             }
         }
 

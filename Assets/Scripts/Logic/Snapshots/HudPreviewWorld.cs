@@ -154,7 +154,7 @@ namespace ProjectHero.Logic.Simulation
             return service;
         }
 
-        private BattleSimulation CopyHudWorld(HashSet<long> visible)
+        private BattleSimulation CopyHudWorld(HashSet<long> visible, long? decisionBoundary = null)
         {
             var inputs = new BattleRuntimeInputs(0, 0);
             ProductionBattleComposition composition = _assembly.TurnWindowSchedule is ProductionBattleComposition
@@ -203,10 +203,11 @@ namespace ProjectHero.Logic.Simulation
             while (copy._idGenerator.NextReactionOpportunityIdValue <= opportunityMax) copy._idGenerator.NextReactionOpportunityId();
             long windowMax = Math.Max(_windowManager.LastClosedWindowId, _windowManager.CurrentWindow?.WindowId.Value ?? 0);
             while (copy._idGenerator.NextWindowIdValue <= windowMax) copy._idGenerator.NextWindowId();
-            copy._tick = _tick; copy._eventTick = _tick; copy._battleEnd = _battleEnd;
+            long boundary = decisionBoundary ?? _tick;
+            copy._tick = boundary; copy._eventTick = boundary; copy._battleEnd = _battleEnd;
             copy._scheduleRevision = _scheduleRevision; copy._scheduleAuthority.SetRevision(_scheduleRevision);
-            if (_tick >= 0) copy._ingress.FreezeTick(_tick);
-            copy._currentSnapshot = copy.BuildSnapshot(Math.Max(0, _tick));
+            if (boundary >= 0) copy._ingress.FreezeTick(boundary);
+            copy._currentSnapshot = copy.BuildSnapshot(Math.Max(0, boundary));
             return copy;
         }
         internal bool HudHasRecurringWindows => _assembly.TurnWindowSchedule is ProductionBattleComposition;

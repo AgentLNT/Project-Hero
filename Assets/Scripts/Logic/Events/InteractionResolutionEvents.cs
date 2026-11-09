@@ -254,8 +254,9 @@ namespace ProjectHero.Logic.Events
     /// <summary>
     /// <strong>动作终止请求事件</strong>（拼刀 → 统一终态协调器）。
     ///
-    /// 它描述的是<strong>请求</strong>，不是"已终止"：真正提交由阶段 14 的统一终态协调器
-    /// 按"第一次成功请求胜出"完成。因此本事件的载荷里<strong>没有</strong>任何计划对象、
+    /// 它描述的是<strong>请求</strong>，不是"已终止"：阶段 14 结束原攻击效果并保留后摇，
+    /// 计划在原 EndTick 经统一终态协调器终止；死亡/战斗结束可以提前清理。
+    /// 因此本事件的载荷里<strong>没有</strong>任何计划对象、
     /// Lane、Intent、MovementSegment 或 Reservation。
     /// </summary>
     public sealed record ActionPlanTerminationRequestedEvent(

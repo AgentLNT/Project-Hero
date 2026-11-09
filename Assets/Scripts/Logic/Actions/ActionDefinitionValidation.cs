@@ -113,7 +113,10 @@ namespace ProjectHero.Logic.Actions
             if (!IsFinitePositive(payload.ForceMultiplier))
                 return ActionDefinitionCodes.ATTACK_FORCE_MULTIPLIER_INVALID;
 
-            if (payload.DamageComponents == null || payload.DamageComponents.Count == 0)
+            if (payload.Strength != null && (payload.Strength.Validate() != null
+                || payload.ForceMultiplier != 1f || payload.DamageComponents == null || payload.DamageComponents.Count != 0))
+                return Combat.CombatValuesV05.Invalid;
+            if (payload.Strength == null && (payload.DamageComponents == null || payload.DamageComponents.Count == 0))
                 return ActionDefinitionCodes.ATTACK_DAMAGE_COMPONENT_INVALID;
             foreach (var component in payload.DamageComponents)
             {

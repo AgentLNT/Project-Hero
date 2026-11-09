@@ -39,7 +39,7 @@ namespace ProjectHero.Logic.Timeline
 
                 var snapshot = _authority.Registry.FreezeTerminal(plan, _factions);
                 var encoder = new CanonicalEncoder();
-                encoder.BeginDomain("ActionPlanTerminal.v4");
+                encoder.BeginDomain("ActionPlanTerminal.v7");
                 encoder.WriteBytes(Encoding.UTF8.GetBytes(ReplayEventComparison.CanonicalValue(snapshot)));
                 records.Add(new HistoryArchiveCandidate(
                     plan.TerminalTick,

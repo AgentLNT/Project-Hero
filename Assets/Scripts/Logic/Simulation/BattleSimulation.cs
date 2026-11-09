@@ -671,7 +671,7 @@ namespace ProjectHero.Logic.Simulation
             if (_resolutionCommit == null)
             {
                 _resolutionCommitSystem =
-                    new ConflictGroupResolutionCommitSystem(() => _stagedResolution, this);
+                    new ConflictGroupResolutionCommitSystem(() => _stagedResolution, this, _definition.AdrenalineRules.UseCombatValuesV05);
                 _resolutionCommit = _resolutionCommitSystem;
             }
 
@@ -684,7 +684,7 @@ namespace ProjectHero.Logic.Simulation
             _displacementRequestBuilder = assembly.DisplacementRequestBuilder
                 ?? new DisplacementRequestBuilder(() => LastDamageCommitReport);
             _adrenalineAccrualSource = assembly.AdrenalineAccrualFactSource
-                ?? new AdrenalineAccrualFactSource(() => _stagedResolution, () => LastDamageCommitReport);
+                ?? new AdrenalineAccrualFactSource(() => _stagedResolution, () => LastDamageCommitReport, _definition.AdrenalineRules.UseCombatValuesV05);
 
             // 任务 05：唯一的反应机会系统 + 唯一的终态/生命周期事件发射路径（经 Outbox）。
             //
@@ -741,7 +741,7 @@ namespace ProjectHero.Logic.Simulation
             // 因此"控制权校验"与"计划创建"读的是**同一个**机会对象，不存在两份机会视图。
             _reactionCommandPlanner = new ReactionCommandPlanner(_reactionSystem, definition)
             {
-                PlanCreatedSink = (plan, tick) => _reactionSystem.EmitPlanCreated(plan, tick)
+                PlanCreatedSink = (plan, tick) => { _aiExecutionFeedback?.Created(plan.ActionPlanId.Value); _reactionSystem.EmitPlanCreated(plan, tick); }
             };
             // 兼容面：直接调用 ActionPlanCommandProcessor 的既有装配（任务 05/06 夹具）仍能路由反应，
             // 且路由到**同一个** planner —— 不存在第二份反应载荷解析实现。
@@ -753,6 +753,12 @@ namespace ProjectHero.Logic.Simulation
             // 装配方把它们注入 AiControllerLogic 即可让 AI 观察已公开机会与权威计划。
             AiReactionOpportunities = new ReactionOpportunityPort(_reactionSystem, _logicGrid);
             AiActionPlanLookup = new ActionPlanLookupPort(_scheduleAuthority);
+            _aiExecutionFeedback = new AI.AiExecutionFeedback((controller, id) =>
+            {
+                var plan = _scheduleAuthority.Registry.Find(new ActionPlanId(id));
+                return plan != null && _controllerUnitAuthority.CanControl(controller, plan.OwnerUnitId)
+                    ? ActionPlanSnapshot.From(plan, _factionResolver) : null;
+            });
 
             // 窗口命令（关窗 / 并发行动激活）走同一条冻结命令批处理路径：
             // 身份来自命令网关绑定的 ControllerId，窗口来自 scope 的 ExpectedWindowId，
@@ -763,6 +769,7 @@ namespace ProjectHero.Logic.Simulation
             // 同一次成功提交还要把 **Remove 掉的计划**经统一终态协调器收口（见下）。
             _planCommandProcessor.CommittedTransactionSink = (result, tick) =>
             {
+                foreach (var id in result.AddedPlanIds) _aiExecutionFeedback.Created(id.Value);
                 EmitPlanCreatedEvents(result, tick);
                 TerminateRemovedPlans(result, tick);
             };
@@ -790,6 +797,8 @@ namespace ProjectHero.Logic.Simulation
 
             _commandProcessor = new BattleCommandProcessor(_commandAuthority)
             {
+                Processing = _aiExecutionFeedback.Begin,
+                Processed = _aiExecutionFeedback.End,
                 // 三个端口都是按载荷判别分派的适配器：反应载荷不可能被窗口端口二次解释，
                 // 窗口载荷也不可能落进排程端口。前两者绑定**同一个**
                 // ActionPlanCommandProcessor 实例（方法组绑定，因此端口的 Target 就是那个实例），
@@ -1099,6 +1108,8 @@ namespace ProjectHero.Logic.Simulation
         /// <c>Move</c> 候选靠它取得 <c>IMovementPathCalculator.Recompute</c> 的输入。
         /// </summary>
         public AI.IAiActionPlanLookup AiActionPlanLookup { get; }
+        private AI.AiExecutionFeedback _aiExecutionFeedback;
+        public AI.IAiExecutionFeedback AiExecutionFeedback => _aiExecutionFeedback;
 
         /// <summary>
         /// 任务 07：当前窗口（未打开时为 null）；只读观察用。
@@ -1560,6 +1571,8 @@ namespace ProjectHero.Logic.Simulation
                 if (beforeResolution && ((plan.ActionType == ActionType.Attack && plan.ImpactTick == tick)
                     )) continue;
                 if (plan.IsReaction) _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.ReactionExpired, tick);
+                else if (plan.ClashResolvedAtTick >= 0)
+                    _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByClash, tick);
                 else _terminalCoordinator.EnterCompletion(plan, tick);
             }
         }
@@ -2068,7 +2081,7 @@ namespace ProjectHero.Logic.Simulation
         {
             foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
             {
-                if (!plan.IsRunning) continue;
+                if (!plan.IsRunning || plan.ClashResolvedAtTick >= 0) continue;
                 if (IsControlState(FindUnitStateMachine(plan.OwnerUnitId).CurrentState))
                     _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByControl, tick);
             }
@@ -2127,6 +2140,9 @@ namespace ProjectHero.Logic.Simulation
                     break;
             }
             UnitStateMachine machine = FindUnitStateMachine(plan.OwnerUnitId);
+            // Clash recovery and control run concurrently. The stronger control state remains
+            // visible until it expires; the retained Lane still blocks actions in the meantime.
+            if (plan.ClashResolvedAtTick >= 0 && IsControlState(machine.CurrentState)) return;
             if (machine.CurrentState == state) return;
             var outcome = machine.TryTransition(StateTransitionSpec.Timed(state,
                 checked((int)(phaseEnd - tick)), UnitState.Idle), tick, UnitStateTransitionReasons.Explicit);
@@ -2386,7 +2402,7 @@ namespace ProjectHero.Logic.Simulation
                 ActionPlan plan = plans[i];
                 if (plan == null) continue;
                 if (plan.ActionType != ActionType.Attack) continue;
-                if (plan.IsTerminal) continue;
+                if (plan.IsTerminal || plan.ClashResolvedAtTick >= 0) continue;
                 if (plan.ImpactTick != tick) continue;
 
                 produced.Add(MaterializeAttackIntent(plan, tick));
@@ -2441,10 +2457,16 @@ namespace ProjectHero.Logic.Simulation
             }
 
             // 唯一一次量化（Mass / MomentumSpeed / ForceMultiplier 在此之后不再被读取）。
-            MomentumPacket momentum = MomentumQuantizer.QuantizePacket(
+            MomentumPacket momentum = payload.Strength != null
+                ? MomentumPacket.Require(MomentumRuleTable.ResolveMomentumDirection(plan.Facing, payload.MomentumDirectionOffsetSteps),
+                    CombatValuesV05.MomentumUnits(unitDefinition.CombatAttributes, payload.Strength), payload.ImpactProfileId)
+                : MomentumQuantizer.QuantizePacket(
                 plan.Facing, payload.MomentumDirectionOffsetSteps,
                 unitDefinition.Mass, unitDefinition.MomentumSpeed, payload.ForceMultiplier,
                 payload.ImpactProfileId);
+
+            if (payload.Strength != null)
+                payload = payload with { DamageComponents = new[] { CombatValuesV05.Damage(unitDefinition.CombatAttributes, payload.Strength) } };
 
             // 锚点/朝向的<strong>唯一</strong>来源是空间权威 LogicGrid 的只读投影。
             // 这里刻意<strong>不</strong>回落成运行时镜像（unit.Position/Facing）：那个镜像只在权威提交边界
@@ -3213,7 +3235,8 @@ namespace ProjectHero.Logic.Simulation
             }
 
             _resolutionCommit.CommitDamageAndAggregationOrdered(tick,
-                _assembly.UseEmptyInteractionFastPath && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
+                _assembly.UseEmptyInteractionFastPath && !_definition.AdrenalineRules.UseCombatValuesV05
+                    && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
 
             IReadOnlyList<ForcedDisplacementRequest> requests =
                 _displacementRequestBuilder.BuildOrdered(tick,
@@ -3387,14 +3410,14 @@ namespace ProjectHero.Logic.Simulation
             _resolutionCommit.CommitStateControlAndRemainingTerminalsOrdered(tick,
                 _assembly.UseEmptyInteractionFastPath && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
 
-            // —— 参与 Clash 的攻击必须在**本阶段**（状态/控制与其后终态）终止 ——
+            // Clash ends the attack effect in this phase, but not its original recovery.
             //
             // 提交顺序（任务包 08「必须产出」13）：先伤害/合力并完成强制位移，再提交状态/控制及其余终态，
-            // 最后处理死亡。因此 Clash 终态在这里才提交，而**不是**在阶段 11。
+            // 最后处理死亡。Clash 效果在这里结束；后摇占用到原 EndTick 才进入统一终态。
             //
-            // 唯一通道是**统一终态协调器**：本方法不碰 ActionPlan 对象、不删未来 Intent/Segment/Reservation
-            // （那些由协调器的清理参与者完成）；违反的可观察后果是 Step 末
-            // STEP_INVARIANT_VIOLATION: active-plan-missing-from-lane。
+            // Keep the Running plan and Lane until its own EndTick. At that boundary the
+            // unified terminal coordinator closes it exactly once. The frozen current-Tick
+            // intents remain auditable; no later intent can be produced by the ended effect.
             // 聚合结果里的 TotalImpactUnits / KnockbackSteps 是"控制结果"的判定面
             // （硬直/击倒阈值的比较已在聚合器内完成）。
             IReadOnlyList<ClashTerminalRequest> clashTerminals = _resolutionCommitSystem == null
@@ -3404,8 +3427,12 @@ namespace ProjectHero.Logic.Simulation
             {
                 ClashTerminalRequest request = clashTerminals[i];
                 ActionPlan plan = _scheduleAuthority.Registry.Find(request.ActionPlanId);
-                if (plan == null || plan.IsTerminal) continue;   // 幂等：第一次成功请求胜出
-                _terminalCoordinator.EnterTerminal(plan, request.Reason, tick);
+                if (plan == null || plan.IsTerminal || plan.ClashResolvedAtTick >= 0) continue;
+                if (plan.ActionType != ActionType.Attack || !plan.IsRunning || plan.ImpactTick != tick)
+                    throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION,
+                        "clash-recovery-invalid-plan|" + request.ActionPlanId);
+                plan.ClashResolvedAtTick = tick;
+                _reactionSystem.CancelForSourceThreat(plan.ActionPlanId, tick);
             }
 
             // 任务包 08「必须产出」15：动作终止（拼刀）的语义事件。
@@ -3473,7 +3500,7 @@ namespace ProjectHero.Logic.Simulation
                         "resolved-control|" + aggregate.TargetUnitId + "|" + outcome.RejectionCode);
                 }
                 foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
-                    if (plan.OwnerUnitId == aggregate.TargetUnitId && plan.IsRunning)
+                    if (plan.OwnerUnitId == aggregate.TargetUnitId && plan.IsRunning && plan.ClashResolvedAtTick < 0)
                         _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByControl, tick);
             }
         }
@@ -3934,7 +3961,7 @@ namespace ProjectHero.Logic.Simulation
                     state.NextThinkTick,
                     state.DecisionCount,
                     state.LastDecisionTick,
-                    state.Rng));
+                    state.Rng, state.Behavior));
             }
             projected.Sort((a, b) => string.CompareOrdinal(a.ControllerId, b.ControllerId));
             return projected;

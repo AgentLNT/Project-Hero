@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &21937824
+--- !u!1 &275144258
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,251 +127,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 21937833}
-  - component: {fileID: 21937832}
-  - component: {fileID: 21937831}
-  - component: {fileID: 21937830}
-  - component: {fileID: 21937829}
-  - component: {fileID: 21937828}
-  - component: {fileID: 21937827}
-  - component: {fileID: 21937826}
-  - component: {fileID: 21937825}
-  m_Layer: 0
-  m_Name: CombatDemo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &21937825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbf0e2a427a75744d8c40b584c8cda3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.ShadowSceneInputBridge
-  _bootstrap: {fileID: 21937826}
-  _source: {fileID: 21937827}
---- !u!114 &21937826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05981a8d097e4b2889b9b8b3f6e11b89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ProjectHero.Migration.Diagnostics::ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost
-  _requestedMode: 0
-  _productionNewOnly: 0
-  _legacyFrameAdapterSlot: {fileID: 21937828}
-  _simulationSourceSlot: {fileID: 21937827}
-  _viewConsumerSlot: {fileID: 0}
-  _autoStart: 0
-  _shadowComparisonConfigVersion: 1
-  _shadowMaxStepsPerComparison: 64
-  _shadowMaxCheckpoints: 4096
-  _shadowComparisonMode: 0
-  _presentationGate:
-    _canvases: []
-    _behaviours: []
---- !u!114 &21937827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3983bc2cd0fe6647a128343b489eba7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.BattleSimulationSourceFactory
-  _heroUnit: {fileID: 184071925}
-  _enemyUnit: {fileID: 43010781}
-  _initialRngSeed: 20260922
-  _initialMetaResource: 10
-  _shadowInitialWindowDurationTicks: 600
---- !u!114 &21937828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b5844c231027947bbff204d06de000, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Demos.CombatDemo
-  Player: {fileID: 184071925}
-  Enemy: {fileID: 43010781}
-  Timeline: {fileID: 21937832}
-  DebugTimeDisplay: 0
---- !u!114 &21937829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3880bb61fb0a4cd4f89e33382d1bf570, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Gameplay.BattleManager
---- !u!114 &21937830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7c7012490d74d64cbf9e35ac5b85b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Input.InputManager
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
-  unitLayer:
-    serializedVersion: 2
-    m_Bits: 1
-  inputActions: {fileID: 0}
-  _mainCamera: {fileID: 0}
---- !u!114 &21937831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2887d546179b04c87a3f4bdebee38c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Grid.GridManager
-  HexSize: 1
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
---- !u!114 &21937832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a882c992b3d461940a83cbedf7c7073c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Timeline.BattleTimeline
---- !u!4 &21937833
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21937824}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &43010780
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 43010782}
-  - component: {fileID: 43010781}
-  m_Layer: 0
-  m_Name: Enemy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &43010781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 43010780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Entities.CombatUnit
-  IsPlayerControlled: 0
-  InitialGridPosition:
-    X: 5
-    Y: 5
-  UnitVolumeDefinition: {fileID: 11400000, guid: e7b3456b17272bf4d882a50c38d433e2, type: 2}
-  FacingDirection: 0
-  ActionLibrary: {fileID: 11400000, guid: 9ea53fc4064c1594796601d06dff0ac9, type: 2}
-  CurrentStateStartTick: 0
-  CurrentStateDurationTicks: 0
-  Strength: 10
-  Dexterity: 10
-  Constitution: 10
-  Wisdom: 10
-  Intelligence: 10
-  ArmorWeight: 10
-  ArmorDefense: 0
-  MagicResistance: 0
-  CurrentHealth: 100
-  CurrentStamina: 100
-  CurrentFocus: 0
-  CurrentAdrenaline: 0
-  IsStaggered: 0
-  IsKnockedDown: 0
-  IsActing: 0
-  InWindup: 0
-  InRecovery: 0
-  IsMoving: 0
-  IsRecoveringAction: 0
---- !u!4 &43010782
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 43010780}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &184071924
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 184071926}
-  - component: {fileID: 184071925}
+  - component: {fileID: 275144260}
+  - component: {fileID: 275144259}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -379,13 +136,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &184071925
+--- !u!114 &275144259
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 184071924}
+  m_GameObject: {fileID: 275144258}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
@@ -419,13 +176,256 @@ MonoBehaviour:
   InRecovery: 0
   IsMoving: 0
   IsRecoveringAction: 0
---- !u!4 &184071926
+--- !u!4 &275144260
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 184071924}
+  m_GameObject: {fileID: 275144258}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &683972793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 683972802}
+  - component: {fileID: 683972801}
+  - component: {fileID: 683972800}
+  - component: {fileID: 683972799}
+  - component: {fileID: 683972798}
+  - component: {fileID: 683972797}
+  - component: {fileID: 683972796}
+  - component: {fileID: 683972795}
+  - component: {fileID: 683972794}
+  m_Layer: 0
+  m_Name: CombatDemo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &683972794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbf0e2a427a75744d8c40b584c8cda3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.ShadowSceneInputBridge
+  _bootstrap: {fileID: 683972795}
+  _source: {fileID: 683972796}
+--- !u!114 &683972795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05981a8d097e4b2889b9b8b3f6e11b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ProjectHero.Migration.Diagnostics::ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost
+  _requestedMode: 0
+  _productionNewOnly: 0
+  _legacyFrameAdapterSlot: {fileID: 683972797}
+  _simulationSourceSlot: {fileID: 683972796}
+  _viewConsumerSlot: {fileID: 0}
+  _autoStart: 0
+  _shadowComparisonConfigVersion: 1
+  _shadowMaxStepsPerComparison: 64
+  _shadowMaxCheckpoints: 4096
+  _shadowComparisonMode: 0
+  _presentationGate:
+    _canvases: []
+    _behaviours: []
+--- !u!114 &683972796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3983bc2cd0fe6647a128343b489eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Compatibility.Authoring.BattleSimulationSourceFactory
+  _heroUnit: {fileID: 275144259}
+  _enemyUnit: {fileID: 1554621291}
+  _initialRngSeed: 20260922
+  _initialMetaResource: 10
+  _shadowInitialWindowDurationTicks: 600
+--- !u!114 &683972797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b5844c231027947bbff204d06de000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Demos.CombatDemo
+  Player: {fileID: 275144259}
+  Enemy: {fileID: 1554621291}
+  Timeline: {fileID: 683972801}
+  DebugTimeDisplay: 0
+--- !u!114 &683972798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3880bb61fb0a4cd4f89e33382d1bf570, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Gameplay.BattleManager
+--- !u!114 &683972799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c7012490d74d64cbf9e35ac5b85b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Input.InputManager
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  inputActions: {fileID: 0}
+  _mainCamera: {fileID: 0}
+--- !u!114 &683972800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2887d546179b04c87a3f4bdebee38c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Grid.GridManager
+  HexSize: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+--- !u!114 &683972801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a882c992b3d461940a83cbedf7c7073c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Timeline.BattleTimeline
+--- !u!4 &683972802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683972793}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1554621290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1554621292}
+  - component: {fileID: 1554621291}
+  m_Layer: 0
+  m_Name: Enemy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1554621291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554621290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbdfb68cb1c7920419923f7ddf05d69b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectHero.Core.Entities.CombatUnit
+  IsPlayerControlled: 0
+  InitialGridPosition:
+    X: 5
+    Y: 5
+  UnitVolumeDefinition: {fileID: 11400000, guid: e7b3456b17272bf4d882a50c38d433e2, type: 2}
+  FacingDirection: 0
+  ActionLibrary: {fileID: 11400000, guid: 9ea53fc4064c1594796601d06dff0ac9, type: 2}
+  CurrentStateStartTick: 0
+  CurrentStateDurationTicks: 0
+  Strength: 10
+  Dexterity: 10
+  Constitution: 10
+  Wisdom: 10
+  Intelligence: 10
+  ArmorWeight: 10
+  ArmorDefense: 0
+  MagicResistance: 0
+  CurrentHealth: 100
+  CurrentStamina: 100
+  CurrentFocus: 0
+  CurrentAdrenaline: 0
+  IsStaggered: 0
+  IsKnockedDown: 0
+  IsActing: 0
+  InWindup: 0
+  InRecovery: 0
+  IsMoving: 0
+  IsRecoveringAction: 0
+--- !u!4 &1554621292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554621290}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -438,6 +438,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 21937833}
-  - {fileID: 184071926}
-  - {fileID: 43010782}
+  - {fileID: 683972802}
+  - {fileID: 275144260}
+  - {fileID: 1554621292}

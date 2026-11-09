@@ -99,7 +99,13 @@ namespace ProjectHero.Logic.Tests
             using var r = Multi(true);
             Assert.That(r.Sim.StagedResolution.ClashTerminatedPlanIds.Count, Is.EqualTo(3));
             Assert.That(r.Sim.StagedResolution.Clashes.Single().Clash.Participants.Count, Is.EqualTo(3));
-            Assert.That(r.Result.Events.Events.OfType<ActionPlanTerminatedEvent>().Count(e => e.Reason == (int)ActionTerminationReason.InterruptedByClash), Is.EqualTo(3));
+            var plans = r.Sim.ScheduleAuthority.Registry.ActivePlans.ToArray();
+            Assert.That(plans.Length, Is.EqualTo(3));
+            Assert.That(plans.All(p => p.IsRunning && p.ClashResolvedAtTick == r.Sim.Tick), Is.True);
+            Assert.That(r.Result.Events.Events.OfType<ActionPlanTerminatedEvent>(), Is.Empty);
+            Task09A2Fixture.AdvanceTo(r.Sim, plans.Max(p => p.EndTick));
+            Assert.That(plans.All(p => p.TerminalTick == p.EndTick
+                && p.TerminationReason == ActionTerminationReason.InterruptedByClash), Is.True);
         }
         [Test]
         public void OppositeFlankingContactsKeepPerAttackEventsAndZeroResultant()

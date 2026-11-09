@@ -92,7 +92,7 @@ namespace ProjectHero.Logic.Tests
                 var plan = sim.ScheduleAuthority.Registry.Find(added.AddedPlanIds.Single());
                 var match = typeof(ActionPlanSnapshot).GetMethod("MatchesAuthoritative", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var properties = typeof(ActionPlanSnapshot).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-                Assert.That(properties.Length, Is.EqualTo(35), "A new canonical field requires a cache invalidation check.");
+                Assert.That(properties.Length, Is.EqualTo(36), "A new canonical field requires a cache invalidation check.");
                 foreach (var property in properties)
                 {
                     var independentCopy = ActionPlanSnapshot.From(plan, sim.FactionResolver);
