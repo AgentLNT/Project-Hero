@@ -1,0 +1,444 @@
+{
+  "cases": 54,
+  "ticks": 157572,
+  "ended": 54,
+  "rejected": 0,
+  "uncoveredEvaluations": 0,
+  "byLayout": {
+    "Far": {
+      "cases": 18,
+      "ended": 18,
+      "lossQ10": 3901440,
+      "hits": 150,
+      "attacksStarted": 162,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 6,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        2977,
+        2977,
+        2977,
+        2977,
+        2977,
+        2977
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "Main": {
+      "cases": 18,
+      "ended": 18,
+      "lossQ10": 4061184,
+      "hits": 162,
+      "attacksStarted": 174,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        3157,
+        2797,
+        2797,
+        2797,
+        2797,
+        2797,
+        2797
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "victory"
+      ]
+    },
+    "Near": {
+      "cases": 18,
+      "ended": 18,
+      "lossQ10": 3686400,
+      "hits": 144,
+      "attacksStarted": 144,
+      "minimumFinalDistance": 8,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617,
+        2617
+      ],
+      "results": [
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat",
+        "defeat"
+      ]
+    }
+  },
+  "byPair": {
+    "CautiousDefense-vs-CautiousDefense": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1265664,
+      "hits": 50,
+      "attacksStarted": 54,
+      "minimumFinalDistance": 6,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        2617,
+        2617
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "CautiousDefense-vs-SeekInterrupt": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1265664,
+      "hits": 50,
+      "attacksStarted": 54,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        2617,
+        2617
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "CautiousDefense-vs-SustainedOffense": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1265664,
+      "hits": 50,
+      "attacksStarted": 54,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        2617,
+        2617
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "SeekInterrupt-vs-CautiousDefense": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1265664,
+      "hits": 50,
+      "attacksStarted": 54,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        2617,
+        2617
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "SeekInterrupt-vs-SeekInterrupt": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1265664,
+      "hits": 50,
+      "attacksStarted": 54,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        2617,
+        2617
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "SeekInterrupt-vs-SustainedOffense": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1265664,
+      "hits": 50,
+      "attacksStarted": 54,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        3157,
+        3157,
+        3157,
+        3157,
+        2617,
+        2617
+      ],
+      "results": [
+        "victory",
+        "victory",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "SustainedOffense-vs-CautiousDefense": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1351680,
+      "hits": 52,
+      "attacksStarted": 52,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        2977,
+        2977,
+        2797,
+        2797,
+        2617,
+        2617
+      ],
+      "results": [
+        "defeat",
+        "defeat",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "SustainedOffense-vs-SeekInterrupt": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1351680,
+      "hits": 52,
+      "attacksStarted": 52,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        2977,
+        2977,
+        2797,
+        2797,
+        2617,
+        2617
+      ],
+      "results": [
+        "defeat",
+        "defeat",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    },
+    "SustainedOffense-vs-SustainedOffense": {
+      "cases": 6,
+      "ended": 6,
+      "lossQ10": 1351680,
+      "hits": 52,
+      "attacksStarted": 52,
+      "minimumFinalDistance": 4,
+      "maximumFinalDistance": 8,
+      "lastDamageTicks": [
+        2977,
+        2977,
+        2797,
+        2797,
+        2617,
+        2617
+      ],
+      "results": [
+        "defeat",
+        "defeat",
+        "victory",
+        "victory",
+        "defeat",
+        "defeat"
+      ]
+    }
+  },
+  "waits": {
+    "PLAN_COMPLETED": 554,
+    "WAIT_APPROACH_ATTACK_AVAILABLE": 14352,
+    "WAIT_NO_OWN_WINDOW": 153012,
+    "WAIT_ORDINARY_CADENCE": 73104,
+    "WAIT_PLAN_TERMINAL": 73292,
+    "PLAN_TERMINATED_6": 18,
+    "PLAN_TERMINATED_8": 6,
+    "WAIT_APPROACH_NO_SAFE_PROGRESS": 54
+  },
+  "stagnation": [],
+  "mirrorDifferences": [],
+  "actionUsage": {
+    "action.heavy_smash.radius_2": {
+      "starts": 18,
+      "positiveDamageContacts": 6,
+      "resolvedDamageQ10": 245760
+    },
+    "action.move.default": {
+      "starts": 164,
+      "positiveDamageContacts": 0,
+      "resolvedDamageQ10": 0
+    },
+    "action.spear_thrust.radius_1": {
+      "starts": 246,
+      "positiveDamageContacts": 246,
+      "resolvedDamageQ10": 6297600
+    },
+    "action.spear_thrust.radius_2": {
+      "starts": 198,
+      "positiveDamageContacts": 186,
+      "resolvedDamageQ10": 4761600
+    },
+    "action.quick_slash.radius_1": {
+      "starts": 12,
+      "positiveDamageContacts": 12,
+      "resolvedDamageQ10": 221184
+    },
+    "action.wide_cleave.radius_2": {
+      "starts": 6,
+      "positiveDamageContacts": 6,
+      "resolvedDamageQ10": 122880
+    }
+  },
+  "resources": {
+    "actualAccrued": 4404,
+    "consumed": 0,
+    "expiredAtCycleReset": 4026,
+    "refunded": 0
+  },
+  "outcomes": {
+    "heroWins": 30,
+    "enemyWins": 24,
+    "draws": 0,
+    "timeouts": 0
+  },
+  "firstHit": {
+    "singleFirstHits": 54,
+    "firstHitterWon": 42,
+    "simultaneousFirstHits": 0
+  }
+}

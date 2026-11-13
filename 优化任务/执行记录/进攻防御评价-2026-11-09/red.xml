@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Failed(Child)" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.4265816">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1150" result="Failed" site="Child" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.426582" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1482" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="419" result="Failed" site="Child" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.395717" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="26792" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1483" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="419" result="Failed" site="Child" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.394792" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1484" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="419" result="Failed" site="Child" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.394608" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1485" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="419" result="Failed" site="Child" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.394395" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1019" name="AiDefenseEvaluationTests" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-09 12:26:04Z" end-time="2026-11-09 12:26:07Z" duration="2.387049" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1023" name="DefenseSettingHasIndependentHashAndKeepsFormalContent" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseSettingHasIndependentHashAndKeepsFormalContent" methodname="DefenseSettingHasIndependentHashAndKeepsFormalContent" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="954030492" result="Passed" start-time="2026-11-09 12:26:05Z" end-time="2026-11-09 12:26:05Z" duration="0.387681" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1022" name="LegalGuardChangesHeavyVersusThrustChoice" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-09 12:26:05Z" end-time="2026-11-09 12:26:07Z" duration="1.980954" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1020" name="LegalGuardChangesHeavyVersusThrustChoice(False)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice(False)" methodname="LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="2073727593" result="Failed" start-time="2026-11-09 12:26:05Z" end-time="2026-11-09 12:26:06Z" duration="1.154680" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: String containing "spear_thrust"
+  But was:  "N/1/action.heavy_smash.radius_2/2/6//"
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice (System.Boolean mirror) [0x0008d] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Authoring\AiDefenseEvaluationTests.cs:47
+]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1021" name="LegalGuardChangesHeavyVersusThrustChoice(True)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice(True)" methodname="LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="325304657" result="Failed" start-time="2026-11-09 12:26:06Z" end-time="2026-11-09 12:26:07Z" duration="0.823742" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: String containing "spear_thrust"
+  But was:  "N/1/action.heavy_smash.radius_2/2/0//"
+]]></message>
+                    <stack-trace><![CDATA[at ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice (System.Boolean mirror) [0x0008d] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Authoring\AiDefenseEvaluationTests.cs:47
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

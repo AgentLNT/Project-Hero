@@ -69,7 +69,7 @@ namespace ProjectHero.Logic.AI
             AiBehaviorMemory memory, IAiExecutionFeedback feedback, long nextProducerOrdinal)
         {
             if (feedback == null) throw new LogicDefinitionException("AI_EXECUTION_FEEDBACK_MISSING");
-            // Freeze V2 scoring/arbitration for this structural comparison. No extra gameplay rewards.
+            // Utility and opt-in engagement goals propose commands; the tree owns their real lifecycle.
             var proposed = AiTacticalPolicy.Decide(context, seed, policy);
             var ordinary = memory.Ordinary; var reaction = memory.Reaction;
             var selectedEvaluation = proposed.Evaluations.FirstOrDefault(e => e.Chosen);

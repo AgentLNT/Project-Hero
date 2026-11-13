@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Passed" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.758096">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1161" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.758096" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1496" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="430" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.716102" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10040" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1497" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="430" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.715520" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1498" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="430" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.715345" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1499" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="430" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.715123" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1019" name="AiDefenseEvaluationTests" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:43:58Z" duration="325.708562" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="ParameterizedMethod" id="1027" name="DefenseRepliesMatchRealCommandsAndResourceAdmission" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseRepliesMatchRealCommandsAndResourceAdmission" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:39:43Z" duration="70.676098" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1024" name="DefenseRepliesMatchRealCommandsAndResourceAdmission(0)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseRepliesMatchRealCommandsAndResourceAdmission(0)" methodname="DefenseRepliesMatchRealCommandsAndResourceAdmission" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1698158944" result="Passed" start-time="2026-11-09 12:38:32Z" end-time="2026-11-09 12:38:33Z" duration="0.548318" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1025" name="DefenseRepliesMatchRealCommandsAndResourceAdmission(240)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseRepliesMatchRealCommandsAndResourceAdmission(240)" methodname="DefenseRepliesMatchRealCommandsAndResourceAdmission" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1054178266" result="Passed" start-time="2026-11-09 12:38:33Z" end-time="2026-11-09 12:38:54Z" duration="20.712982" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1026" name="DefenseRepliesMatchRealCommandsAndResourceAdmission(426)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseRepliesMatchRealCommandsAndResourceAdmission(426)" methodname="DefenseRepliesMatchRealCommandsAndResourceAdmission" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1763608360" result="Passed" start-time="2026-11-09 12:38:54Z" end-time="2026-11-09 12:39:43Z" duration="49.405952" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1023" name="DefenseSettingHasIndependentHashAndKeepsFormalContent" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseSettingHasIndependentHashAndKeepsFormalContent" methodname="DefenseSettingHasIndependentHashAndKeepsFormalContent" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1820251018" result="Passed" start-time="2026-11-09 12:39:43Z" end-time="2026-11-09 12:39:43Z" duration="0.008232" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1033" name="ForecastIgnoresPendingInputWithoutConsumingIt" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.ForecastIgnoresPendingInputWithoutConsumingIt" methodname="ForecastIgnoresPendingInputWithoutConsumingIt" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1815982900" result="Passed" start-time="2026-11-09 12:39:43Z" end-time="2026-11-09 12:39:44Z" duration="1.011135" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1022" name="LegalGuardChangesHeavyVersusThrustChoice" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-09 12:39:44Z" end-time="2026-11-09 12:39:46Z" duration="1.727609" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1020" name="LegalGuardChangesHeavyVersusThrustChoice(False)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice(False)" methodname="LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1313357495" result="Passed" start-time="2026-11-09 12:39:44Z" end-time="2026-11-09 12:39:45Z" duration="0.850292" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1021" name="LegalGuardChangesHeavyVersusThrustChoice(True)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice(True)" methodname="LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="178572766" result="Passed" start-time="2026-11-09 12:39:45Z" end-time="2026-11-09 12:39:46Z" duration="0.857156" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1029" name="MissingDefenseCapabilityCannotSilentlyUseUnopposedAttackScore" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.MissingDefenseCapabilityCannotSilentlyUseUnopposedAttackScore" methodname="MissingDefenseCapabilityCannotSilentlyUseUnopposedAttackScore" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="741195666" result="Passed" start-time="2026-11-09 12:39:46Z" end-time="2026-11-09 12:39:46Z" duration="0.333262" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1032" name="ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-09 12:39:46Z" end-time="2026-11-09 12:39:47Z" duration="0.765470" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1030" name="ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint(False)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint(False)" methodname="ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="172219897" result="Passed" start-time="2026-11-09 12:39:46Z" end-time="2026-11-09 12:39:47Z" duration="0.401587" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1031" name="ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint(True)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint(True)" methodname="ReplyNeedsCompleteCoverageAndTheSameComparisonEndpoint" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1403064011" result="Passed" start-time="2026-11-09 12:39:47Z" end-time="2026-11-09 12:39:47Z" duration="0.351303" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1037" name="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.RevisedHybridSerializesAndReplaysAndRejectsOldDefinition" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-09 12:39:47Z" end-time="2026-11-09 12:43:58Z" duration="250.906008" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1034" name="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition(SustainedOffense)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.RevisedHybridSerializesAndReplaysAndRejectsOldDefinition(SustainedOffense)" methodname="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="228777862" result="Passed" start-time="2026-11-09 12:39:47Z" end-time="2026-11-09 12:41:11Z" duration="83.937635" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1035" name="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition(SeekInterrupt)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.RevisedHybridSerializesAndReplaysAndRejectsOldDefinition(SeekInterrupt)" methodname="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1153418049" result="Passed" start-time="2026-11-09 12:41:11Z" end-time="2026-11-09 12:42:34Z" duration="83.220099" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1036" name="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition(CautiousDefense)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.RevisedHybridSerializesAndReplaysAndRejectsOldDefinition(CautiousDefense)" methodname="RevisedHybridSerializesAndReplaysAndRejectsOldDefinition" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="500784950" result="Passed" start-time="2026-11-09 12:42:34Z" end-time="2026-11-09 12:43:58Z" duration="83.742687" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1028" name="UncoveredAttackCannotAcquireAComparableDefenseScore" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.UncoveredAttackCannotAcquireAComparableDefenseScore" methodname="UncoveredAttackCannotAcquireAComparableDefenseScore" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="2102608768" result="Passed" start-time="2026-11-09 12:43:58Z" end-time="2026-11-09 12:43:58Z" duration="0.270206" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

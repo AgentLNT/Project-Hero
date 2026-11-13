@@ -1,0 +1,89 @@
+{
+  "tests": {
+    "targeted-final.xml": {
+      "total": "15",
+      "passed": "15",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed"
+    },
+    "full-editmode.xml": {
+      "total": "1178",
+      "passed": "1178",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed"
+    },
+    "production-shadow-playmode.xml": {
+      "total": "20",
+      "passed": "20",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed"
+    }
+  },
+  "cases": [
+    {
+      "case": "main-mirror0",
+      "ticks": 240,
+      "oldCommands": 0,
+      "newCommands": 4,
+      "oldMoves": 0,
+      "newMoves": 2,
+      "goalMoves": 2,
+      "attacks": 2,
+      "initialDistance": 20,
+      "minimumDistance": 8,
+      "finalDistance": 8,
+      "oldHealthLossQ10": 0,
+      "newHealthLossQ10": 0
+    },
+    {
+      "case": "main-mirror1",
+      "ticks": 240,
+      "oldCommands": 0,
+      "newCommands": 4,
+      "oldMoves": 0,
+      "newMoves": 2,
+      "goalMoves": 2,
+      "attacks": 2,
+      "initialDistance": 20,
+      "minimumDistance": 8,
+      "finalDistance": 8,
+      "oldHealthLossQ10": 0,
+      "newHealthLossQ10": 0
+    },
+    {
+      "case": "near-mirror0",
+      "ticks": 240,
+      "oldCommands": 1,
+      "newCommands": 1,
+      "oldMoves": 0,
+      "newMoves": 0,
+      "goalMoves": 0,
+      "attacks": 1,
+      "initialDistance": 8,
+      "minimumDistance": 8,
+      "finalDistance": 8,
+      "oldHealthLossQ10": 25600,
+      "newHealthLossQ10": 25600
+    },
+    {
+      "case": "near-mirror1",
+      "ticks": 240,
+      "oldCommands": 1,
+      "newCommands": 1,
+      "oldMoves": 0,
+      "newMoves": 0,
+      "goalMoves": 0,
+      "attacks": 1,
+      "initialDistance": 8,
+      "minimumDistance": 8,
+      "finalDistance": 8,
+      "oldHealthLossQ10": 25600,
+      "newHealthLossQ10": 25600
+    }
+  ],
+  "totalTicks": 960,
+  "naturallyEnded": 0
+}

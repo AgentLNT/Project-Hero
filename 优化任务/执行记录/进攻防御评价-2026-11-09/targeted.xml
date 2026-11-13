@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.2001964">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1150" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.200196" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1482" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="419" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.173119" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="29160" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1483" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="419" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.172055" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1484" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="419" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.171754" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1485" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="419" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.171193" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1019" name="AiDefenseEvaluationTests" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="3.163822" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1023" name="DefenseSettingHasIndependentHashAndKeepsFormalContent" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.DefenseSettingHasIndependentHashAndKeepsFormalContent" methodname="DefenseSettingHasIndependentHashAndKeepsFormalContent" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1106125630" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:36Z" duration="0.306053" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1022" name="LegalGuardChangesHeavyVersusThrustChoice" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:39Z" duration="2.840325" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1020" name="LegalGuardChangesHeavyVersusThrustChoice(False)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice(False)" methodname="LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="895191669" result="Passed" start-time="2026-11-09 12:28:36Z" end-time="2026-11-09 12:28:38Z" duration="1.862479" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1021" name="LegalGuardChangesHeavyVersusThrustChoice(True)" fullname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests.LegalGuardChangesHeavyVersusThrustChoice(True)" methodname="LegalGuardChangesHeavyVersusThrustChoice" classname="ProjectHero.Authoring.Tests.AiDefenseEvaluationTests" runstate="Runnable" seed="1491662205" result="Passed" start-time="2026-11-09 12:28:38Z" end-time="2026-11-09 12:28:39Z" duration="0.970056" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

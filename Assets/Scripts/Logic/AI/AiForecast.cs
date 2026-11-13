@@ -10,6 +10,15 @@ namespace ProjectHero.Logic.AI
         AiActionForecast Evaluate(CommandRequest request, AiForecastSettings settings = null);
     }
 
+    public interface IAiDefenseForecast : IAiForecast
+    {
+        IReadOnlyList<AiDefenseForecast> EvaluateDefenses(CommandRequest attack, AiForecastSettings settings);
+    }
+
+    /// <summary>One conditional reply, submitted after a committed public boundary in the isolated world.</summary>
+    public sealed record AiDefenseForecast(string Key, Ids.ControllerId Defender, long SubmittedAfterTick,
+        CommandRequest Request, AiActionForecast Outcome);
+
     /// <summary>Conditional public-world outcomes from the production kernel, never a second combat model.</summary>
     public sealed record AiActionForecast(string RejectionCode, long HorizonTick,
         IReadOnlyList<UnitSnapshot> Units, long FirstHostileDamageTick, int InterruptedThreats, int Clashes,

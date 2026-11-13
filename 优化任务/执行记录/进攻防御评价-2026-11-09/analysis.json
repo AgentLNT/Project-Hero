@@ -1,0 +1,140 @@
+{
+  "tests": {
+    "full-editmode.xml": {
+      "total": "1163",
+      "passed": "1163",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed"
+    },
+    "production-shadow-playmode.xml": {
+      "total": "19",
+      "passed": "19",
+      "failed": "0",
+      "skipped": "0",
+      "result": "Passed"
+    }
+  },
+  "targetedCasesInFullRun": 16,
+  "cases": 12,
+  "ticks": 4320,
+  "naturallyEnded": 0,
+  "oldHealthLossQ10": 262144,
+  "newHealthLossQ10": 292864,
+  "pairedCases": [
+    {
+      "case": "CautiousDefense-main-mirror0",
+      "trajectoryChanged": false,
+      "oldHealthLossQ10": 0,
+      "newHealthLossQ10": 0
+    },
+    {
+      "case": "CautiousDefense-main-mirror1",
+      "trajectoryChanged": false,
+      "oldHealthLossQ10": 0,
+      "newHealthLossQ10": 0
+    },
+    {
+      "case": "CautiousDefense-near-mirror0",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 20480,
+      "newHealthLossQ10": 25600
+    },
+    {
+      "case": "CautiousDefense-near-mirror1",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 20480,
+      "newHealthLossQ10": 25600
+    },
+    {
+      "case": "SeekInterrupt-main-mirror0",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 18432,
+      "newHealthLossQ10": 18432
+    },
+    {
+      "case": "SeekInterrupt-main-mirror1",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 18432,
+      "newHealthLossQ10": 18432
+    },
+    {
+      "case": "SeekInterrupt-near-mirror0",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 20480,
+      "newHealthLossQ10": 25600
+    },
+    {
+      "case": "SeekInterrupt-near-mirror1",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 20480,
+      "newHealthLossQ10": 25600
+    },
+    {
+      "case": "SustainedOffense-main-mirror0",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 51200,
+      "newHealthLossQ10": 51200
+    },
+    {
+      "case": "SustainedOffense-main-mirror1",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 51200,
+      "newHealthLossQ10": 51200
+    },
+    {
+      "case": "SustainedOffense-near-mirror0",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 20480,
+      "newHealthLossQ10": 25600
+    },
+    {
+      "case": "SustainedOffense-near-mirror1",
+      "trajectoryChanged": true,
+      "oldHealthLossQ10": 20480,
+      "newHealthLossQ10": 25600
+    }
+  ],
+  "attackContexts": 40,
+  "branches": 450,
+  "acceptedDefenseBranches": 200,
+  "rejectedDefenseBranches": 210,
+  "rejectionCodes": {
+    "ADRENALINE_INSUFFICIENT": 120,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(0, 0)": 44,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(-3, -1)": 4,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(-3, 1)": 4,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(-2, 0)": 4,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(-1, -1)": 11,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(-1, 1)": 11,
+    "LOGIC_GRID_OCCUPIED_BY_OTHER:cell=(2, 0)": 12
+  },
+  "initialNearChoices": [
+    {
+      "case": "SustainedOffense-near-mirror0",
+      "checkpoint": "0",
+      "attack": "N/1/action.spear_thrust.radius_2/2/6//",
+      "chosen": "True",
+      "score": "203695",
+      "noDefenseScore": "203695",
+      "damageQ10": "25600",
+      "noDefenseDamageQ10": "25600",
+      "worstDefense": "",
+      "replies": "13",
+      "coverage": "Complete"
+    },
+    {
+      "case": "SustainedOffense-near-mirror1",
+      "checkpoint": "0",
+      "attack": "N/1/action.spear_thrust.radius_2/2/0//",
+      "chosen": "True",
+      "score": "203695",
+      "noDefenseScore": "203695",
+      "damageQ10": "25600",
+      "noDefenseDamageQ10": "25600",
+      "worstDefense": "",
+      "replies": "13",
+      "coverage": "Complete"
+    }
+  ]
+}

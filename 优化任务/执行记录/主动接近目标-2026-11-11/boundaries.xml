@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="15" result="Failed(Child)" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.8003786">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1178" result="Failed" site="Child" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.800379" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1517" name="ProjectHero.Authoring.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Authoring.Tests.dll" runstate="Runnable" testcasecount="447" result="Failed" site="Child" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.772703" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="16640" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1518" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="447" result="Failed" site="Child" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.771864" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1519" name="Authoring" fullname="ProjectHero.Authoring" runstate="Runnable" testcasecount="447" result="Failed" site="Child" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.771664" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1520" name="Tests" fullname="ProjectHero.Authoring.Tests" runstate="Runnable" testcasecount="447" result="Failed" site="Child" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.771446" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1019" name="AiApproachGoalTests" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" testcasecount="15" result="Failed" site="Child" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:33:03Z" duration="9.765155" total="15" passed="14" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="ParameterizedMethod" id="1035" name="ApproachRequiresAnAvailableUnthreatenedEngagementGoal" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.ApproachRequiresAnAvailableUnthreatenedEngagementGoal" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:32:56Z" duration="2.586326" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1031" name="ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;no-attack&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;no-attack&quot;)" methodname="ApproachRequiresAnAvailableUnthreatenedEngagementGoal" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="2246802" result="Passed" start-time="2026-11-10 17:32:53Z" end-time="2026-11-10 17:32:54Z" duration="1.023315" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1032" name="ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;uncovered-attack&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;uncovered-attack&quot;)" methodname="ApproachRequiresAnAvailableUnthreatenedEngagementGoal" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="578097558" result="Passed" start-time="2026-11-10 17:32:54Z" end-time="2026-11-10 17:32:55Z" duration="0.530567" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1033" name="ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;in-reach&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;in-reach&quot;)" methodname="ApproachRequiresAnAvailableUnthreatenedEngagementGoal" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="303655125" result="Passed" start-time="2026-11-10 17:32:55Z" end-time="2026-11-10 17:32:55Z" duration="0.521449" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1034" name="ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;no-window&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.ApproachRequiresAnAvailableUnthreatenedEngagementGoal(&quot;no-window&quot;)" methodname="ApproachRequiresAnAvailableUnthreatenedEngagementGoal" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1481864015" result="Passed" start-time="2026-11-10 17:32:55Z" end-time="2026-11-10 17:32:56Z" duration="0.505005" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1037" name="EqualProgressRatePrefersShorterCommitmentAndOrdinalTiesAreStable" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.EqualProgressRatePrefersShorterCommitmentAndOrdinalTiesAreStable" methodname="EqualProgressRatePrefersShorterCommitmentAndOrdinalTiesAreStable" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1599511078" result="Failed" label="Error" start-time="2026-11-10 17:32:56Z" end-time="2026-11-10 17:32:56Z" duration="0.510332" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.InvalidOperationException : Sequence contains no matching element]]></message>
+                  <stack-trace><![CDATA[  at System.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] predicate) [0x00011] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at ProjectHero.Authoring.Tests.AiApproachGoalTests.EqualProgressRatePrefersShorterCommitmentAndOrdinalTiesAreStable () [0x0003d] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Authoring\AiApproachGoalTests.cs:156 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1023" name="InReachAttackAndFormalContentKeepTheirExistingEvaluation" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.InReachAttackAndFormalContentKeepTheirExistingEvaluation" methodname="InReachAttackAndFormalContentKeepTheirExistingEvaluation" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1440994034" result="Passed" start-time="2026-11-10 17:32:56Z" end-time="2026-11-10 17:32:57Z" duration="1.090527" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="PublishedReactionOpportunityPreventsGoalOverrideEvenWhenItsSourcePortIsPartial" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.PublishedReactionOpportunityPreventsGoalOverrideEvenWhenItsSourcePortIsPartial" methodname="PublishedReactionOpportunityPreventsGoalOverrideEvenWhenItsSourcePortIsPartial" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1926565704" result="Passed" start-time="2026-11-10 17:32:57Z" end-time="2026-11-10 17:32:58Z" duration="0.503054" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1030" name="UnsafeOrIncompleteMovementCannotReplaceWait" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-10 17:32:58Z" end-time="2026-11-10 17:33:01Z" duration="3.000309" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1024" name="UnsafeOrIncompleteMovementCannotReplaceWait(&quot;incoming&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait(&quot;incoming&quot;)" methodname="UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="2023040597" result="Passed" start-time="2026-11-10 17:32:58Z" end-time="2026-11-10 17:32:58Z" duration="0.483833" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1025" name="UnsafeOrIncompleteMovementCannotReplaceWait(&quot;damage&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait(&quot;damage&quot;)" methodname="UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1079854914" result="Passed" start-time="2026-11-10 17:32:58Z" end-time="2026-11-10 17:32:59Z" duration="0.509157" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1026" name="UnsafeOrIncompleteMovementCannotReplaceWait(&quot;progress&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait(&quot;progress&quot;)" methodname="UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="540904729" result="Passed" start-time="2026-11-10 17:32:59Z" end-time="2026-11-10 17:32:59Z" duration="0.518403" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1027" name="UnsafeOrIncompleteMovementCannotReplaceWait(&quot;uncovered&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait(&quot;uncovered&quot;)" methodname="UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1186977496" result="Passed" start-time="2026-11-10 17:32:59Z" end-time="2026-11-10 17:33:00Z" duration="0.505022" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1028" name="UnsafeOrIncompleteMovementCannotReplaceWait(&quot;rejected&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait(&quot;rejected&quot;)" methodname="UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="164921970" result="Passed" start-time="2026-11-10 17:33:00Z" end-time="2026-11-10 17:33:00Z" duration="0.481351" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1029" name="UnsafeOrIncompleteMovementCannotReplaceWait(&quot;terminated&quot;)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnsafeOrIncompleteMovementCannotReplaceWait(&quot;terminated&quot;)" methodname="UnsafeOrIncompleteMovementCannotReplaceWait" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1308073750" result="Passed" start-time="2026-11-10 17:33:00Z" end-time="2026-11-10 17:33:01Z" duration="0.497405" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="1022" name="UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-10 17:33:01Z" end-time="2026-11-10 17:33:03Z" duration="2.059687" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1020" name="UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility(False)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility(False)" methodname="UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="1941431340" result="Passed" start-time="2026-11-10 17:33:01Z" end-time="2026-11-10 17:33:02Z" duration="1.068377" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1021" name="UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility(True)" fullname="ProjectHero.Authoring.Tests.AiApproachGoalTests.UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility(True)" methodname="UnthreatenedCautiousUnitApproachesDespiteNegativeLegacyUtility" classname="ProjectHero.Authoring.Tests.AiApproachGoalTests" runstate="Runnable" seed="368836340" result="Passed" start-time="2026-11-10 17:33:02Z" end-time="2026-11-10 17:33:03Z" duration="0.990569" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

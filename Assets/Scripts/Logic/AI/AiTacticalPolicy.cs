@@ -15,9 +15,18 @@ namespace ProjectHero.Logic.AI
     public sealed record AiCandidateEvaluation(string Key, ActionType Type, bool IsReaction, long? Score,
         string RejectionCode, string Reason, long? DamageDeltaQ10, long? IncomingDeltaQ10, long? PositionProgress,
         int? InterruptedThreats, int? Clashes, int Cost, long StartTick, long ImpactTick, long EndTick, long HorizonTick, bool Chosen = false,
-        AiForecastCoverage Coverage = AiForecastCoverage.Unspecified, long ObservedThroughTick = -1, long RequiredThroughTick = 0);
+        AiForecastCoverage Coverage = AiForecastCoverage.Unspecified, long ObservedThroughTick = -1, long RequiredThroughTick = 0)
+    {
+        public long? NoDefenseScore { get; init; }
+        public long? NoDefenseDamageDeltaQ10 { get; init; }
+        public string WorstDefenseKey { get; init; }
+        public IReadOnlyList<AiDefenseEvaluation> DefenseResponses { get; init; } = Array.Empty<AiDefenseEvaluation>();
+    }
 
-    /// <summary>Stateless versioned rules. All forecasting is conditional on public facts and no further commands.</summary>
+    public sealed record AiDefenseEvaluation(string Key, string Defender, long SubmittedAfterTick, ActionType Type,
+        long? Score, long? DamageDeltaQ10, string RejectionCode, AiForecastCoverage Coverage, long RequiredThroughTick);
+
+    /// <summary>Versioned public-world utility; opt-in attacks also compare bounded single-defense replies.</summary>
     public static class AiTacticalPolicy
     {
         public const string Version = "tactical-public-kernel-v2";
@@ -54,8 +63,18 @@ namespace ProjectHero.Logic.AI
                 candidates.AddRange(AiTacticalCandidateBuilder.Aligned(context, candidate, preview));
             }
             choice = Choose(candidates, previews);
+            string approachWait = null;
+            if (choice == null && context.ForecastSettings?.ApproachWhenUnthreatened == true)
+            {
+                var approach = AiApproachPolicy.Choose(context, candidates, evaluations, previews);
+                choice = approach.Candidate; approachWait = approach.Reason;
+                if (choice != null)
+                    for (int i = 0; i < evaluations.Count; i++)
+                        if (evaluations[i].Key == choice.Key)
+                            evaluations[i] = evaluations[i] with { Chosen = true, Reason = AiApproachPolicy.SelectedReason };
+            }
             if (choice != null) selected = choice.Request;
-            return Finish(selected == null ? (ordinary.Count == 0 ? "WAIT_LANE_COMMITTED"
+            return Finish(selected == null ? approachWait ?? (ordinary.Count == 0 ? "WAIT_LANE_COMMITTED"
                 : context.ForecastSettings != null && evaluations.Any(e => e.Coverage == AiForecastCoverage.Uncovered)
                     ? "WAIT_NO_POSITIVE_COVERED_CANDIDATE" : "WAIT_NO_POSITIVE_CANDIDATE") : null);
 
@@ -67,6 +86,12 @@ namespace ProjectHero.Logic.AI
                     var preview = cached != null && cached.TryGetValue(candidate.Key, out var value) ? value : forecast.Evaluate(candidate.Request, context.ForecastSettings);
                     if (preview.RejectionCode == null && baseline == null) baseline = forecast.Evaluate(null, context.ForecastSettings);
                     var evaluation = Evaluate(context, policy, candidate, baseline ?? preview, preview);
+                    if (context.ForecastSettings?.ConsiderDefenses == true && candidate.Type == ActionType.Attack && evaluation.Score.HasValue)
+                    {
+                        evaluation = evaluation with { NoDefenseScore = evaluation.Score, NoDefenseDamageDeltaQ10 = evaluation.DamageDeltaQ10 };
+                        // The conservative minimum cannot exceed its no-reply upper bound or beat Wait at <= 0.
+                        if (evaluation.Score > 0) evaluation = WithDefenses(context, policy, candidate, baseline, evaluation, forecast);
+                    }
                     evaluations.Add(evaluation);
                     if (evaluation.RejectionCode == null && evaluation.Score is long score && score > bestScore)
                     { best = candidate; bestScore = score; }
@@ -80,6 +105,33 @@ namespace ProjectHero.Logic.AI
             AiDecision Finish(string waitReason) => new AiDecision(selected, Array.Empty<AiCandidate>(), Array.Empty<AiReactionOptionView>(),
                 rng.CaptureSnapshot(), evaluations.Count(e => !e.IsReaction), evaluations.Count(e => e.IsReaction), waitReason, context.Snapshot.Tick)
                 { Policy = policy, Evaluations = evaluations.AsReadOnly() };
+        }
+
+        private static AiCandidateEvaluation WithDefenses(AiDecisionContext context, AiPolicyKind policy,
+            AiTacticalCandidate candidate, AiActionForecast baseline, AiCandidateEvaluation original, IAiForecast forecast)
+        {
+            if (!(forecast is IAiDefenseForecast defenses))
+                return original with { Score = null, Reason = "DEFENSE_FORECAST_UNAVAILABLE" };
+            var diagnostics = new List<AiDefenseEvaluation>();
+            var worst = original; string worstKey = null;
+            bool uncovered = false; long required = original.RequiredThroughTick;
+            foreach (var reply in defenses.EvaluateDefenses(candidate.Request, context.ForecastSettings))
+            {
+                var evaluation = Evaluate(context, policy, candidate, baseline, reply.Outcome);
+                var type = reply.Request.Payload is ReactionCommandPayload reaction
+                    ? (reaction.ReactionKind == ReactionCommandKind.Block ? ActionType.Block : ActionType.Dodge) : ActionType.Guard;
+                diagnostics.Add(new AiDefenseEvaluation(reply.Key, reply.Defender.Value, reply.SubmittedAfterTick, type,
+                    evaluation.Score, evaluation.DamageDeltaQ10, evaluation.RejectionCode, evaluation.Coverage, evaluation.RequiredThroughTick));
+                if (evaluation.RejectionCode != null) continue;
+                required = Math.Max(required, evaluation.RequiredThroughTick);
+                if (evaluation.Coverage != AiForecastCoverage.Complete)
+                { uncovered = true; continue; }
+                if (evaluation.Score < worst.Score) { worst = evaluation; worstKey = reply.Key; }
+            }
+            return worst with { NoDefenseScore = original.Score, NoDefenseDamageDeltaQ10 = original.DamageDeltaQ10,
+                WorstDefenseKey = worstKey, DefenseResponses = diagnostics.AsReadOnly(),
+                Score = uncovered ? null : worst.Score, Coverage = uncovered ? AiForecastCoverage.Uncovered : worst.Coverage,
+                RequiredThroughTick = required, Reason = uncovered ? "DEFENSE_OUTCOME_NOT_COVERED" : worst.Reason };
         }
 
         public static AiCandidateEvaluation Evaluate(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate,

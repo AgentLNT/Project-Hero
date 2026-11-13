@@ -16,6 +16,21 @@ namespace ProjectHero.Tests.PlayMode
         protected override bool UseLegacyComparisonScene => false;
         [UnityTest]
         public IEnumerator FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent()
+            => RunScene(false);
+
+        [UnityTest]
+        public IEnumerator FormalEnemyDefenseAwareHybridUsesProductionClockAndReplaysFromSceneContent()
+            => RunScene(true);
+
+        [UnityTest]
+        public IEnumerator CautiousEnemyApproachesThroughProductionClockAndReplaysFromSceneContent()
+            => RunScene(true, true);
+
+        [UnityTest]
+        public IEnumerator MixedFormalPoliciesShareProductionClockAndReplayBothControllers()
+            => RunScene(true, true, true);
+
+        IEnumerator RunScene(bool defenses, bool approach = false, bool mixed = false)
         {
             yield return LoadMainScene();
             Bootstrap.StopBattle("hybrid-test-prepare"); Bootstrap.ReleaseBattle();
@@ -23,8 +38,11 @@ namespace ProjectHero.Tests.PlayMode
             var original = ((IBattleSimulationSource)field.GetValue(Bootstrap)).BuildSeed();
             var d = original.Definition;
             var encounters = d.Encounters.Select(e => e with { Controllers = e.Controllers.Select(c =>
-                c.SourceKind == CommandSourceKind.Ai ? c with { AiPolicy = AiPolicyKind.SustainedOffense,
-                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360) } : c).ToArray() }).ToArray();
+                mixed ? c with { SourceKind = CommandSourceKind.Ai,
+                    AiPolicy = c.ControlledSlots.Any(s => s.Value == "hero") ? AiPolicyKind.SustainedOffense : AiPolicyKind.CautiousDefense,
+                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360, true, true) }
+                : c.SourceKind == CommandSourceKind.Ai ? c with { AiPolicy = approach ? AiPolicyKind.CautiousDefense : AiPolicyKind.SustainedOffense,
+                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360, defenses, approach) } : c).ToArray() }).ToArray();
             // Explicit scene-test envelope; every action, unit, shape and rule comes from the real scene source.
             var hash = BattleDefinitionHash.Compute(d.RulesVersion, d.TicksPerSecond, 0, d.Rules, d.ConcurrentAction,
                 d.ReactionRules, d.AdrenalineRules, d.FactionModel, d.DamageChannels, d.ImpactProfiles, d.Units, d.Actions,
@@ -33,6 +51,10 @@ namespace ProjectHero.Tests.PlayMode
             var source = NewGameObject("FormalHybridTestSource").AddComponent<Task11SceneScenarioSource>();
             source.Seed = new BattleSimulationSeed(definition, original.EncounterId, original.RuntimeInputs, "formal hybrid scene test");
             field.SetValue(Bootstrap, source);
+            // A fully autonomous clock test has no Player entry to bind to the scene's player HUD.
+            // Player presentation remains covered by the other real-scene cases in this fixture.
+            if (mixed) Bootstrap.GetType().GetField("_viewConsumerSlot", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(Bootstrap, null);
             Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
             bool executed = false;
             for (int tick = 0; tick < 360; tick++)
@@ -41,6 +63,11 @@ namespace ProjectHero.Tests.PlayMode
                 executed |= Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Any(c => c.Behavior?.Ordinary.PlanId > 0);
             }
             Assert.That(executed, Is.True);
+            if (mixed)
+            {
+                Assert.That(Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Count, Is.EqualTo(2));
+                Assert.That(Bootstrap.NewDriver.CurrentSnapshot.AiControllers.All(c => c.DecisionCount > 0), Is.True);
+            }
             Assert.That(BattleRuntimeBootstrap.EnumerateLiveInstances().Count(b => b.OwnsTopLevelClock), Is.EqualTo(1));
             var replay = Bootstrap.NewDriver.RecordedReplay; Assert.That(replay.Submissions, Is.Empty);
             using var player = new ReplayPlayer(definition); player.Load(replay); player.Play();
