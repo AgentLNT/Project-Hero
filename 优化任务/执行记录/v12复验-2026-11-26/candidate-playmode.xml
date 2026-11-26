@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Failed(Child)" total="9" passed="5" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:18Z" duration="23.5556679">
+  <test-suite type="TestSuite" id="1122" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:18Z" duration="23.555668" total="9" passed="5" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1115" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Temp/Hero26-Retest-Matrix-20261126/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:18Z" duration="23.535706" total="9" passed="5" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="65148" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1116" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:18Z" duration="23.533354" total="9" passed="5" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1117" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:18Z" duration="23.531980" total="9" passed="5" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1118" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:18Z" duration="23.530495" total="9" passed="5" failed="4" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1001" name="FormalAiSceneTests" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:10Z" duration="15.430679" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1002" name="DefaultEnemyApproachesThroughProductionClockWithoutReplacingSceneSource" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.DefaultEnemyApproachesThroughProductionClockWithoutReplacingSceneSource" methodname="DefaultEnemyApproachesThroughProductionClockWithoutReplacingSceneSource" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="1827674781" result="Passed" start-time="2026-11-26 07:52:54Z" end-time="2026-11-26 07:53:10Z" duration="15.412936" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1013" name="M2HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-26 07:53:10Z" end-time="2026-11-26 07:53:13Z" duration="2.687265" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1016" name="DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests.DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause" methodname="DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" seed="1171783970" result="Passed" start-time="2026-11-26 07:53:10Z" end-time="2026-11-26 07:53:11Z" duration="1.145240" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests.MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot" methodname="MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" seed="1871240040" result="Passed" start-time="2026-11-26 07:53:11Z" end-time="2026-11-26 07:53:12Z" duration="0.708617" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1014" name="NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests.NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks" methodname="NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" seed="1423787529" result="Passed" start-time="2026-11-26 07:53:12Z" end-time="2026-11-26 07:53:13Z" duration="0.751364" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1025" name="M4HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-26 07:53:13Z" end-time="2026-11-26 07:53:17Z" duration="4.693157" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1026" name="CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting" methodname="CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="2135834750" result="Failed" start-time="2026-11-26 07:53:13Z" end-time="2026-11-26 07:53:13Z" duration="0.800058" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Exception] Exception: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEngine.TestTools.Utils.CoroutineRunner+<WrapEnumeratorForChecks>d__8.MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/Utils/CoroutineRunner.cs:68)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <0e80f59860fa45278948cc6ebb8e9196>:0)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Exception: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.
+UnityEngine.TestTools.Utils.CoroutineRunner+<WrapEnumeratorForChecks>d__8.MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/Utils/CoroutineRunner.cs:68)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <0e80f59860fa45278948cc6ebb8e9196>:0)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+CaptureScreenshotAsTexture() could not locate the play-mode view's render texture. Open a Game View, or call this from a coroutine that yields WaitForEndOfFrame.
+]]></output>
+              </test-case>
+              <test-case id="1028" name="KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands" methodname="KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="976545543" result="Failed" start-time="2026-11-26 07:53:13Z" end-time="2026-11-26 07:53:14Z" duration="0.664287" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: 6
+  But was:  0
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.M4HudPlayModeTests+<KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands>d__11.MoveNext () [0x00104] in C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\Assets\Tests\PlayMode\M4HudPlayModeTests.cs:128
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1029" name="OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection" methodname="OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="1048148980" result="Failed" start-time="2026-11-26 07:53:14Z" end-time="2026-11-26 07:53:17Z" duration="2.525215" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Exception] Exception: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEngine.TestTools.Utils.CoroutineRunner+<WrapEnumeratorForChecks>d__8.MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/Utils/CoroutineRunner.cs:68)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <0e80f59860fa45278948cc6ebb8e9196>:0)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Exception: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.
+UnityEngine.TestTools.Utils.CoroutineRunner+<WrapEnumeratorForChecks>d__8.MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/Utils/CoroutineRunner.cs:68)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <0e80f59860fa45278948cc6ebb8e9196>:0)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+CaptureScreenshotAsTexture() could not locate the play-mode view's render texture. Open a Game View, or call this from a coroutine that yields WaitForEndOfFrame.
+]]></output>
+              </test-case>
+              <test-case id="1027" name="VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands" methodname="VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="1713515580" result="Failed" start-time="2026-11-26 07:53:17Z" end-time="2026-11-26 07:53:17Z" duration="0.701479" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Exception] Exception: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEngine.TestTools.Utils.CoroutineRunner+<WrapEnumeratorForChecks>d__8.MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/Utils/CoroutineRunner.cs:68)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <0e80f59860fa45278948cc6ebb8e9196>:0)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Exception: UnityTest yielded WaitForEndOfFrame, which is not evoked in batchmode.
+UnityEngine.TestTools.Utils.CoroutineRunner+<WrapEnumeratorForChecks>d__8.MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/Utils/CoroutineRunner.cs:68)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <0e80f59860fa45278948cc6ebb8e9196>:0)
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1102" name="Task11ProductionSceneTests" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-26 07:53:17Z" end-time="2026-11-26 07:53:18Z" duration="0.711824" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1103" name="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests.ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" methodname="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" seed="1875592919" result="Passed" start-time="2026-11-26 07:53:17Z" end-time="2026-11-26 07:53:18Z" duration="0.700719" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

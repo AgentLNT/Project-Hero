@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="11" failed="5" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:28Z" duration="34.0832139">
+  <test-suite type="TestSuite" id="1122" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:28Z" duration="34.083214" total="16" passed="11" failed="5" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1115" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Temp/Hero26-Retest-Matrix-20261126/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:28Z" duration="34.070924" total="16" passed="11" failed="5" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="69528" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1116" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:28Z" duration="34.064611" total="16" passed="11" failed="5" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1117" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:28Z" duration="34.058908" total="16" passed="11" failed="5" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1118" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="94" result="Failed" site="Child" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:28Z" duration="34.053727" total="16" passed="11" failed="5" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1001" name="FormalAiSceneTests" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:08Z" duration="14.927736" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1002" name="DefaultEnemyApproachesThroughProductionClockWithoutReplacingSceneSource" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.DefaultEnemyApproachesThroughProductionClockWithoutReplacingSceneSource" methodname="DefaultEnemyApproachesThroughProductionClockWithoutReplacingSceneSource" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="178345756" result="Passed" start-time="2026-11-26 07:57:54Z" end-time="2026-11-26 07:58:08Z" duration="14.909484" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1013" name="M2HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-26 07:58:08Z" end-time="2026-11-26 07:58:11Z" duration="2.963876" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1016" name="DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests.DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause" methodname="DragSnapsInCanvasCoordinatesCancelsWithoutLosingOtherDraftAndClearsOnSystemPause" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" seed="1979724954" result="Passed" start-time="2026-11-26 07:58:09Z" end-time="2026-11-26 07:58:10Z" duration="1.125295" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests.MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot" methodname="MultiSelectionFocusEmptySelectionAndTargetingKeepDraftsAndSnapshot" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" seed="2109845496" result="Passed" start-time="2026-11-26 07:58:10Z" end-time="2026-11-26 07:58:11Z" duration="0.824074" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1014" name="NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks" fullname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests.NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks" methodname="NativeCtrlClickTabShiftTabAndFocusedInputUseActualHudCallbacks" classname="ProjectHero.Tests.PlayMode.M2HudPlayModeTests" runstate="Runnable" seed="1424416107" result="Passed" start-time="2026-11-26 07:58:11Z" end-time="2026-11-26 07:58:11Z" duration="0.918531" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1017" name="M3HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" testcasecount="7" result="Failed" site="Child" start-time="2026-11-26 07:58:11Z" end-time="2026-11-26 07:58:22Z" duration="10.078226" total="7" passed="2" failed="5" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1021" name="ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow" methodname="ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="747956614" result="Passed" start-time="2026-11-26 07:58:11Z" end-time="2026-11-26 07:58:15Z" duration="3.723455" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1024" name="DodgePreviewsFutureMoveCancellationAndUsesSelectedBattlefieldDestination" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.DodgePreviewsFutureMoveCancellationAndUsesSelectedBattlefieldDestination" methodname="DodgePreviewsFutureMoveCancellationAndUsesSelectedBattlefieldDestination" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="1856917553" result="Failed" start-time="2026-11-26 07:58:15Z" end-time="2026-11-26 07:58:18Z" duration="2.604091" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|AI_POLICY_INVALID: controller.enemy_ai
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.M3HudPlayModeTests+<ReactionFixture>d__18.MoveNext () [0x00123] in C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\Assets\Tests\PlayMode\M3HudPlayModeTests.cs:98
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Account API did not become accessible within 30 seconds. This may be due to network issues or editor focus.
+]]></output>
+              </test-case>
+              <test-case id="1023" name="FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance" methodname="FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="269676862" result="Failed" start-time="2026-11-26 07:58:18Z" end-time="2026-11-26 07:58:18Z" duration="0.727668" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|AI_POLICY_INVALID: controller.enemy_ai
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.M3HudPlayModeTests+<ReactionFixture>d__18.MoveNext () [0x00123] in C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\Assets\Tests\PlayMode\M3HudPlayModeTests.cs:98
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1022" name="InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause" methodname="InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="366530551" result="Failed" start-time="2026-11-26 07:58:18Z" end-time="2026-11-26 07:58:19Z" duration="0.741441" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|AI_POLICY_INVALID: controller.enemy_ai
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.M3HudPlayModeTests+<ReactionFixture>d__18.MoveNext () [0x00123] in C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\Assets\Tests\PlayMode\M3HudPlayModeTests.cs:98
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1020" name="QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning" methodname="QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="702460690" result="Failed" start-time="2026-11-26 07:58:19Z" end-time="2026-11-26 07:58:20Z" duration="0.740730" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|AI_POLICY_INVALID: controller.enemy_ai
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.M3HudPlayModeTests+<ReactionFixture>d__18.MoveNext () [0x00123] in C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\Assets\Tests\PlayMode\M3HudPlayModeTests.cs:98
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1018" name="ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands" methodname="ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="2135801580" result="Passed" start-time="2026-11-26 07:58:20Z" end-time="2026-11-26 07:58:21Z" duration="0.796319" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction" methodname="ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="1671024641" result="Failed" start-time="2026-11-26 07:58:21Z" end-time="2026-11-26 07:58:22Z" duration="0.733585" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|AI_POLICY_INVALID: controller.enemy_ai
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.M3HudPlayModeTests+<ReactionFixture>d__18.MoveNext () [0x00123] in C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\Assets\Tests\PlayMode\M3HudPlayModeTests.cs:98
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1025" name="M4HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-26 07:58:22Z" end-time="2026-11-26 07:58:27Z" duration="5.282836" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1026" name="CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting" methodname="CursorDragAndConfiguredAttackFollowDraftMovementWithoutSubmitting" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="2027058086" result="Passed" start-time="2026-11-26 07:58:22Z" end-time="2026-11-26 07:58:22Z" duration="0.935318" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1028" name="KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands" methodname="KeyboardCursorFocusPauseAndAccessibilityUseNativeHudWithoutCommands" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="41587633" result="Passed" start-time="2026-11-26 07:58:22Z" end-time="2026-11-26 07:58:23Z" duration="0.928436" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection" methodname="OneSecondCursorShowsPublishedEnemyRangeAndSharedContactSelection" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="1633723694" result="Passed" start-time="2026-11-26 07:58:23Z" end-time="2026-11-26 07:58:26Z" duration="2.623459" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1027" name="VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands" fullname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests.VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands" methodname="VisibleCursorHandleAndLineReceiveRaycastsAndScrubWithoutCommands" classname="ProjectHero.Tests.PlayMode.M4HudPlayModeTests" runstate="Runnable" seed="560084010" result="Passed" start-time="2026-11-26 07:58:26Z" end-time="2026-11-26 07:58:27Z" duration="0.787941" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1102" name="Task11ProductionSceneTests" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-26 07:58:27Z" end-time="2026-11-26 07:58:28Z" duration="0.792547" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1103" name="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests.ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" methodname="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" seed="960073550" result="Passed" start-time="2026-11-26 07:58:27Z" end-time="2026-11-26 07:58:28Z" duration="0.785596" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

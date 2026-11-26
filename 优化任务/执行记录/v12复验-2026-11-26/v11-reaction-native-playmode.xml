@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:04:10Z" duration="52.7203648">
+  <test-suite type="TestSuite" id="1122" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="94" result="Passed" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:04:10Z" duration="52.720365" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1115" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Temp/Hero26-Retest-Matrix-20261126/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="94" result="Passed" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:04:10Z" duration="52.705936" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="67820" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1116" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="94" result="Passed" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:04:10Z" duration="52.699086" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1117" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="94" result="Passed" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:04:10Z" duration="52.693401" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1118" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="94" result="Passed" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:04:10Z" duration="52.687905" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1017" name="M3HudPlayModeTests" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-26 08:03:17Z" end-time="2026-11-26 08:03:42Z" duration="24.232903" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1021" name="ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow" methodname="ConcurrentWaitsForAuthoritativeReceiptThenAllowsGuardInForeignWindow" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="1571632549" result="Passed" start-time="2026-11-26 08:03:18Z" end-time="2026-11-26 08:03:22Z" duration="4.432412" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1024" name="DodgePreviewsFutureMoveCancellationAndUsesSelectedBattlefieldDestination" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.DodgePreviewsFutureMoveCancellationAndUsesSelectedBattlefieldDestination" methodname="DodgePreviewsFutureMoveCancellationAndUsesSelectedBattlefieldDestination" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="2084591148" result="Passed" start-time="2026-11-26 08:03:22Z" end-time="2026-11-26 08:03:28Z" duration="5.906145" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1023" name="FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance" methodname="FundedHeavyAutoPausesDefaultsAtImpactAndEarlierSliderWarnsBeforeStagedAcceptance" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="610512040" result="Passed" start-time="2026-11-26 08:03:28Z" end-time="2026-11-26 08:03:32Z" duration="3.820020" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1022" name="InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause" methodname="InsufficientReactionShowsDisabledReasonsAndDoesNotAutoPause" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="1489084046" result="Passed" start-time="2026-11-26 08:03:32Z" end-time="2026-11-26 08:03:35Z" duration="2.920591" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning" methodname="QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="1800549784" result="Passed" start-time="2026-11-26 08:03:35Z" end-time="2026-11-26 08:03:38Z" duration="3.035679" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1018" name="ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands" methodname="ShortcutHelpExplainsUnavailableKeysWithoutCreatingReactionOrCommands" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="2116012326" result="Passed" start-time="2026-11-26 08:03:38Z" end-time="2026-11-26 08:03:38Z" duration="0.798761" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction" fullname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests.ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction" methodname="ShortcutPausesOnSelectedThreatAndSkipsAlreadyAcceptedReaction" classname="ProjectHero.Tests.PlayMode.M3HudPlayModeTests" runstate="Runnable" seed="1519078344" result="Passed" start-time="2026-11-26 08:03:38Z" end-time="2026-11-26 08:03:42Z" duration="3.301489" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Account API did not become accessible within 30 seconds. This may be due to network issues or editor focus.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1107" name="Task12BSceneEvidenceTests" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-26 08:03:42Z" end-time="2026-11-26 08:03:59Z" duration="17.234846" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1108" name="MainSceneBlockAtImpactCompletelyResistsHeavy" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneBlockAtImpactCompletelyResistsHeavy" methodname="MainSceneBlockAtImpactCompletelyResistsHeavy" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="1151719649" result="Passed" start-time="2026-11-26 08:03:42Z" end-time="2026-11-26 08:03:46Z" duration="4.366699" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\优化任务\执行记录\M1-regression\12C-main-defense-case-1.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+              <test-case id="1110" name="MainSceneCounterAttackStartsInsideReactionSoftSegment" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneCounterAttackStartsInsideReactionSoftSegment" methodname="MainSceneCounterAttackStartsInsideReactionSoftSegment" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="1632212796" result="Passed" start-time="2026-11-26 08:03:46Z" end-time="2026-11-26 08:03:51Z" duration="4.558165" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\优化任务\执行记录\M1-regression\12C-main-defense-case-3.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+              <test-case id="1109" name="MainSceneEarlierLightConsumesBlockBeforeHeavy" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneEarlierLightConsumesBlockBeforeHeavy" methodname="MainSceneEarlierLightConsumesBlockBeforeHeavy" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="546742247" result="Passed" start-time="2026-11-26 08:03:51Z" end-time="2026-11-26 08:03:55Z" duration="4.490024" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\优化任务\执行记录\M1-regression\12C-main-defense-case-2.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+              <test-case id="1111" name="MainSceneGuardResistsTwiceThenThirdHitIsFull" fullname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests.MainSceneGuardResistsTwiceThenThirdHitIsFull" methodname="MainSceneGuardResistsTwiceThenThirdHitIsFull" classname="ProjectHero.Tests.PlayMode.Task12BSceneEvidenceTests" runstate="Runnable" seed="27842028" result="Passed" start-time="2026-11-26 08:03:55Z" end-time="2026-11-26 08:03:59Z" duration="3.809380" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\优化任务\执行记录\M1-regression\12C-main-defense-case-4.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1112" name="Task12CSceneEvidenceTests" fullname="ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests" classname="ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-26 08:03:59Z" end-time="2026-11-26 08:04:10Z" duration="11.210787" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1114" name="MainSceneInsufficientAdrenalinePreviewMatchesHeavyResult" fullname="ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests.MainSceneInsufficientAdrenalinePreviewMatchesHeavyResult" methodname="MainSceneInsufficientAdrenalinePreviewMatchesHeavyResult" classname="ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests" runstate="Runnable" seed="1655535041" result="Passed" start-time="2026-11-26 08:03:59Z" end-time="2026-11-26 08:04:06Z" duration="7.171394" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\优化任务\执行记录\M1-regression\12C-main-opponent-cannot-react.png device=Intel(R) Arc(TM) B390 GPU
+]]></output>
+              </test-case>
+              <test-case id="1113" name="MainSceneShowsBothSidesAdrenaline" fullname="ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests.MainSceneShowsBothSidesAdrenaline" methodname="MainSceneShowsBothSidesAdrenaline" classname="ProjectHero.Tests.PlayMode.Task12CSceneEvidenceTests" runstate="Runnable" seed="731162066" result="Passed" start-time="2026-11-26 08:04:06Z" end-time="2026-11-26 08:04:10Z" duration="4.032300" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Actual URP presentation capture: C:\Users\1\repos\Project Hero\Temp\Hero26-Retest-Matrix-20261126\优化任务\执行记录\M1-regression\12C-main-all-adrenaline.png device=Intel(R) Arc(TM) B390 GPU
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
