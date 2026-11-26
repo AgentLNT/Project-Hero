@@ -1,0 +1,2816 @@
+{
+  "totals": {
+    "P": {
+      "cases": 54,
+      "ticks": 194260,
+      "ended": 2,
+      "timeouts": 52,
+      "unfinished": 52,
+      "effectiveHealthLossQ10": 10225152,
+      "overkillQ10": 25600,
+      "commands": 2863,
+      "rejections": 0,
+      "attackStarts": 1284,
+      "movesStarted": 817,
+      "hits": 455,
+      "uncoveredEvaluations": 1566,
+      "acceptedReactionPlans": 702,
+      "resourceConsumeEvents": 684,
+      "actualAccrued": 3793,
+      "consumed": 912,
+      "refunded": 0,
+      "expiredAtCycleReset": 2619,
+      "cycles": 1080,
+      "battleEndCleared": 14,
+      "discardedReservations": 2,
+      "unspentAtCutoff": 246,
+      "actionStarts:action.heavy_smash.radius_2": 105,
+      "actionContacts:action.heavy_smash.radius_2": 41,
+      "actionStarts:action.move.default": 817,
+      "actionContacts:action.move.default": 0,
+      "actionStarts:action.spear_thrust.radius_2": 151,
+      "actionContacts:action.spear_thrust.radius_2": 109,
+      "actionStarts:action.whirlwind.radius_2": 44,
+      "actionContacts:action.whirlwind.radius_2": 0,
+      "actionStarts:action.wide_cleave.radius_2": 106,
+      "actionContacts:action.wide_cleave.radius_2": 27,
+      "actionStarts:action.heavy_smash.radius_1": 80,
+      "actionContacts:action.heavy_smash.radius_1": 23,
+      "actionStarts:action.quick_slash.radius_1": 216,
+      "actionContacts:action.quick_slash.radius_1": 41,
+      "actionStarts:action.whirlwind.radius_1": 50,
+      "actionContacts:action.whirlwind.radius_1": 0,
+      "actionStarts:action.wide_cleave.radius_1": 129,
+      "actionContacts:action.wide_cleave.radius_1": 64,
+      "legalReactionOpportunities": 718,
+      "selectedReactionOpportunities": 702,
+      "triggeredReactionOpportunities": 684,
+      "successfulReactionPlans": 228,
+      "reactionSamplingBoundaries": 736,
+      "sampledNoResponses": 34,
+      "heldNoResponsesTicks": 1208,
+      "sampledAttacks": 1284,
+      "sampledZeroDamageAttacks": 0,
+      "legalReactionOpportunities:high": 514,
+      "selectedReactionOpportunities:high": 500,
+      "actionStarts:action.guard.default": 60,
+      "actionContacts:action.guard.default": 0,
+      "actionStarts:action.spear_thrust.radius_1": 174,
+      "actionContacts:action.spear_thrust.radius_1": 118,
+      "legalReactionOpportunities:middle": 173,
+      "selectedReactionOpportunities:middle": 171,
+      "actionStarts:action.quick_slash.radius_2": 229,
+      "actionContacts:action.quick_slash.radius_2": 32,
+      "legalReactionOpportunities:low": 31,
+      "selectedReactionOpportunities:low": 31,
+      "victory": 2,
+      "firstDamageWon": 0,
+      "endedWithDamage": 2
+    },
+    "B": {
+      "cases": 54,
+      "ticks": 191268,
+      "ended": 6,
+      "timeouts": 48,
+      "unfinished": 48,
+      "effectiveHealthLossQ10": 9914880,
+      "overkillQ10": 66560,
+      "commands": 2173,
+      "rejections": 0,
+      "attackStarts": 1055,
+      "movesStarted": 503,
+      "hits": 462,
+      "uncoveredEvaluations": 1610,
+      "acceptedReactionPlans": 535,
+      "resourceConsumeEvents": 517,
+      "actualAccrued": 3986,
+      "consumed": 702,
+      "refunded": 0,
+      "expiredAtCycleReset": 2977,
+      "cycles": 1066,
+      "battleEndCleared": 40,
+      "discardedReservations": 1,
+      "unspentAtCutoff": 266,
+      "actionStarts:action.guard.default": 80,
+      "actionContacts:action.guard.default": 0,
+      "actionStarts:action.heavy_smash.radius_2": 37,
+      "actionContacts:action.heavy_smash.radius_2": 26,
+      "actionStarts:action.move.default": 503,
+      "actionContacts:action.move.default": 0,
+      "actionStarts:action.quick_slash.radius_2": 142,
+      "actionContacts:action.quick_slash.radius_2": 40,
+      "actionStarts:action.spear_thrust.radius_2": 215,
+      "actionContacts:action.spear_thrust.radius_2": 145,
+      "actionStarts:action.whirlwind.radius_2": 25,
+      "actionContacts:action.whirlwind.radius_2": 0,
+      "actionStarts:action.wide_cleave.radius_2": 121,
+      "actionContacts:action.wide_cleave.radius_2": 46,
+      "actionStarts:action.heavy_smash.radius_1": 54,
+      "actionContacts:action.heavy_smash.radius_1": 17,
+      "actionStarts:action.quick_slash.radius_1": 120,
+      "actionContacts:action.quick_slash.radius_1": 43,
+      "actionStarts:action.spear_thrust.radius_1": 176,
+      "actionContacts:action.spear_thrust.radius_1": 111,
+      "actionStarts:action.whirlwind.radius_1": 46,
+      "actionContacts:action.whirlwind.radius_1": 0,
+      "actionStarts:action.wide_cleave.radius_1": 119,
+      "actionContacts:action.wide_cleave.radius_1": 34,
+      "legalReactionOpportunities": 560,
+      "selectedReactionOpportunities": 535,
+      "triggeredReactionOpportunities": 517,
+      "successfulReactionPlans": 185,
+      "reactionSamplingBoundaries": 567,
+      "sampledNoResponses": 32,
+      "heldNoResponsesTicks": 1498,
+      "sampledAttacks": 1055,
+      "sampledZeroDamageAttacks": 0,
+      "legalReactionOpportunities:high": 431,
+      "selectedReactionOpportunities:high": 408,
+      "legalReactionOpportunities:middle": 121,
+      "selectedReactionOpportunities:middle": 119,
+      "legalReactionOpportunities:low": 8,
+      "selectedReactionOpportunities:low": 8,
+      "defeat": 4,
+      "firstDamageWon": 6,
+      "endedWithDamage": 6,
+      "victory": 2
+    },
+    "M": {
+      "cases": 54,
+      "ticks": 194400,
+      "ended": 0,
+      "timeouts": 54,
+      "unfinished": 54,
+      "effectiveHealthLossQ10": 10367488,
+      "overkillQ10": 0,
+      "commands": 2892,
+      "rejections": 0,
+      "attackStarts": 1316,
+      "movesStarted": 672,
+      "hits": 482,
+      "uncoveredEvaluations": 1485,
+      "acceptedReactionPlans": 824,
+      "resourceConsumeEvents": 810,
+      "actualAccrued": 3546,
+      "consumed": 1065,
+      "refunded": 0,
+      "expiredAtCycleReset": 2342,
+      "cycles": 1080,
+      "battleEndCleared": 0,
+      "discardedReservations": 0,
+      "unspentAtCutoff": 139,
+      "actionStarts:action.guard.default": 80,
+      "actionContacts:action.guard.default": 0,
+      "actionStarts:action.move.default": 672,
+      "actionContacts:action.move.default": 0,
+      "actionStarts:action.quick_slash.radius_2": 269,
+      "actionContacts:action.quick_slash.radius_2": 37,
+      "actionStarts:action.spear_thrust.radius_2": 153,
+      "actionContacts:action.spear_thrust.radius_2": 94,
+      "actionStarts:action.whirlwind.radius_2": 32,
+      "actionContacts:action.whirlwind.radius_2": 0,
+      "actionStarts:action.wide_cleave.radius_2": 149,
+      "actionContacts:action.wide_cleave.radius_2": 49,
+      "actionStarts:action.heavy_smash.radius_1": 68,
+      "actionContacts:action.heavy_smash.radius_1": 35,
+      "actionStarts:action.spear_thrust.radius_1": 205,
+      "actionContacts:action.spear_thrust.radius_1": 137,
+      "actionStarts:action.wide_cleave.radius_1": 113,
+      "actionContacts:action.wide_cleave.radius_1": 45,
+      "legalReactionOpportunities": 853,
+      "selectedReactionOpportunities": 824,
+      "triggeredReactionOpportunities": 810,
+      "successfulReactionPlans": 255,
+      "reactionSamplingBoundaries": 876,
+      "sampledNoResponses": 52,
+      "heldNoResponsesTicks": 2228,
+      "sampledAttacks": 1316,
+      "sampledZeroDamageAttacks": 0,
+      "legalReactionOpportunities:high": 607,
+      "selectedReactionOpportunities:high": 585,
+      "actionStarts:action.heavy_smash.radius_2": 53,
+      "actionContacts:action.heavy_smash.radius_2": 27,
+      "actionStarts:action.quick_slash.radius_1": 265,
+      "actionContacts:action.quick_slash.radius_1": 58,
+      "legalReactionOpportunities:middle": 210,
+      "selectedReactionOpportunities:middle": 206,
+      "actionStarts:action.whirlwind.radius_1": 9,
+      "actionContacts:action.whirlwind.radius_1": 0,
+      "legalReactionOpportunities:low": 36,
+      "selectedReactionOpportunities:low": 33
+    },
+    "Z": {
+      "cases": 54,
+      "ticks": 192146,
+      "ended": 7,
+      "timeouts": 47,
+      "unfinished": 47,
+      "effectiveHealthLossQ10": 10253824,
+      "overkillQ10": 76800,
+      "commands": 2171,
+      "rejections": 0,
+      "attackStarts": 1055,
+      "movesStarted": 603,
+      "hits": 453,
+      "uncoveredEvaluations": 1684,
+      "acceptedReactionPlans": 475,
+      "resourceConsumeEvents": 462,
+      "actualAccrued": 3839,
+      "consumed": 627,
+      "refunded": 0,
+      "expiredAtCycleReset": 2862,
+      "cycles": 1071,
+      "battleEndCleared": 46,
+      "discardedReservations": 0,
+      "unspentAtCutoff": 304,
+      "actionStarts:action.move.default": 603,
+      "actionContacts:action.move.default": 0,
+      "actionStarts:action.quick_slash.radius_2": 120,
+      "actionContacts:action.quick_slash.radius_2": 25,
+      "actionStarts:action.spear_thrust.radius_2": 212,
+      "actionContacts:action.spear_thrust.radius_2": 150,
+      "actionStarts:action.whirlwind.radius_2": 32,
+      "actionContacts:action.whirlwind.radius_2": 0,
+      "actionStarts:action.wide_cleave.radius_2": 125,
+      "actionContacts:action.wide_cleave.radius_2": 50,
+      "actionStarts:action.heavy_smash.radius_1": 59,
+      "actionContacts:action.heavy_smash.radius_1": 13,
+      "actionStarts:action.quick_slash.radius_1": 104,
+      "actionContacts:action.quick_slash.radius_1": 39,
+      "actionStarts:action.whirlwind.radius_1": 55,
+      "actionContacts:action.whirlwind.radius_1": 0,
+      "actionStarts:action.wide_cleave.radius_1": 115,
+      "actionContacts:action.wide_cleave.radius_1": 33,
+      "legalReactionOpportunities": 499,
+      "selectedReactionOpportunities": 475,
+      "triggeredReactionOpportunities": 462,
+      "successfulReactionPlans": 165,
+      "reactionSamplingBoundaries": 504,
+      "sampledNoResponses": 29,
+      "heldNoResponsesTicks": 1259,
+      "sampledAttacks": 1055,
+      "sampledZeroDamageAttacks": 0,
+      "legalReactionOpportunities:high": 377,
+      "selectedReactionOpportunities:high": 356,
+      "legalReactionOpportunities:middle": 108,
+      "selectedReactionOpportunities:middle": 105,
+      "actionStarts:action.spear_thrust.radius_1": 176,
+      "actionContacts:action.spear_thrust.radius_1": 123,
+      "actionStarts:action.heavy_smash.radius_2": 57,
+      "actionContacts:action.heavy_smash.radius_2": 20,
+      "actionStarts:action.guard.default": 38,
+      "actionContacts:action.guard.default": 0,
+      "legalReactionOpportunities:low": 14,
+      "selectedReactionOpportunities:low": 14,
+      "victory": 2,
+      "firstDamageWon": 4,
+      "endedWithDamage": 7,
+      "defeat": 5
+    }
+  },
+  "paired": {
+    "PtoZ": {
+      "moreHP": 29,
+      "onlyAEnded": 1,
+      "onlyBEnded": 6,
+      "lessHP": 25
+    },
+    "PtoM": {
+      "moreHP": 30,
+      "onlyAEnded": 2,
+      "onlyBEnded": 0,
+      "lessHP": 23,
+      "equalHP": 1
+    },
+    "ZtoB": {
+      "moreHP": 16,
+      "onlyAEnded": 1,
+      "onlyBEnded": 0,
+      "lessHP": 31,
+      "equalHP": 7
+    },
+    "MtoB": {
+      "moreHP": 23,
+      "onlyAEnded": 0,
+      "onlyBEnded": 6,
+      "equalHP": 4,
+      "lessHP": 27
+    },
+    "PtoB": {
+      "moreHP": 23,
+      "onlyAEnded": 1,
+      "onlyBEnded": 5,
+      "lessHP": 31
+    }
+  },
+  "byLayout": {
+    "P/Far": {
+      "cases": 18,
+      "ended": 0,
+      "hits": 141,
+      "effectiveHealthLossQ10": 3200000,
+      "singleSidedDamageCases": 0
+    },
+    "B/Far": {
+      "cases": 18,
+      "ended": 2,
+      "hits": 143,
+      "effectiveHealthLossQ10": 3089408,
+      "singleSidedDamageCases": 2
+    },
+    "M/Far": {
+      "cases": 18,
+      "ended": 0,
+      "hits": 154,
+      "effectiveHealthLossQ10": 3341312,
+      "singleSidedDamageCases": 0
+    },
+    "Z/Far": {
+      "cases": 18,
+      "ended": 2,
+      "hits": 147,
+      "effectiveHealthLossQ10": 3337216,
+      "singleSidedDamageCases": 2
+    },
+    "P/Main": {
+      "cases": 18,
+      "ended": 1,
+      "hits": 152,
+      "effectiveHealthLossQ10": 3446272,
+      "singleSidedDamageCases": 1
+    },
+    "B/Main": {
+      "cases": 18,
+      "ended": 2,
+      "hits": 160,
+      "effectiveHealthLossQ10": 3436544,
+      "singleSidedDamageCases": 2
+    },
+    "M/Main": {
+      "cases": 18,
+      "ended": 0,
+      "hits": 162,
+      "effectiveHealthLossQ10": 3459072,
+      "singleSidedDamageCases": 1
+    },
+    "Z/Main": {
+      "cases": 18,
+      "ended": 2,
+      "hits": 145,
+      "effectiveHealthLossQ10": 3293184,
+      "singleSidedDamageCases": 1
+    },
+    "P/Near": {
+      "cases": 18,
+      "ended": 1,
+      "hits": 162,
+      "effectiveHealthLossQ10": 3578880,
+      "singleSidedDamageCases": 0
+    },
+    "B/Near": {
+      "cases": 18,
+      "ended": 2,
+      "hits": 159,
+      "effectiveHealthLossQ10": 3388928,
+      "singleSidedDamageCases": 2
+    },
+    "M/Near": {
+      "cases": 18,
+      "ended": 0,
+      "hits": 166,
+      "effectiveHealthLossQ10": 3567104,
+      "singleSidedDamageCases": 0
+    },
+    "Z/Near": {
+      "cases": 18,
+      "ended": 3,
+      "hits": 161,
+      "effectiveHealthLossQ10": 3623424,
+      "singleSidedDamageCases": 2
+    }
+  },
+  "naturalEndWinnerHpLoss": {
+    "P": {
+      "cases": 2,
+      "zeroLoss": 0,
+      "medianQ10": 61440.0,
+      "below25Hp": 0
+    },
+    "Z": {
+      "cases": 7,
+      "zeroLoss": 4,
+      "medianQ10": 0,
+      "below25Hp": 1
+    },
+    "B": {
+      "cases": 6,
+      "zeroLoss": 6,
+      "medianQ10": 0.0,
+      "below25Hp": 0
+    }
+  },
+  "timeoutDetails": {
+    "P": {
+      "cases": 52,
+      "medianLastHitTick": 3403.0,
+      "medianLastHitGap": 197.0,
+      "medianLowerRemainingHpQ10": 81920.0
+    },
+    "B": {
+      "cases": 48,
+      "medianLastHitTick": 3415.0,
+      "medianLastHitGap": 185.0,
+      "medianLowerRemainingHpQ10": 84480.0
+    },
+    "M": {
+      "cases": 54,
+      "medianLastHitTick": 3349.0,
+      "medianLastHitGap": 251.0,
+      "medianLowerRemainingHpQ10": 81920.0
+    },
+    "Z": {
+      "cases": 47,
+      "medianLastHitTick": 3481,
+      "medianLastHitGap": 119,
+      "medianLowerRemainingHpQ10": 76800
+    }
+  },
+  "diagnostics": {
+    "Z": {
+      "noPositiveDamageInFinalHalf": 0,
+      "started": 1696,
+      "plannedCrossing": 776,
+      "observedCrossing": 735,
+      "attacksPlannedCrossing": 573,
+      "movesImmediatelyFollowedByAttack": 356,
+      "moveAttackSelected": 420,
+      "approachSelected": 121,
+      "attackImpactAtOrAfterWindow": 450,
+      "positiveAttackWithImpactAtOrAfterWindow": 53,
+      "casesWithDifferentOrdinaryOrReactionChoice": 54,
+      "attack:hit": 453,
+      "attack:block": 165,
+      "attack:other-no-positive-damage": 114,
+      "attack:dodge": 294,
+      "attack:clash": 8,
+      "attack:censored": 18,
+      "ordinarySamplingBoundaries": 6400,
+      "sampledOrdinaryWait": 4704,
+      "waitWithControlHitAndNoPositiveOrdinaryScore": 4572,
+      "waitWithNegativeDamageForLegalReactionAndNoPositiveOrdinaryScore": 4572,
+      "waitWithoutControlHit": 79,
+      "firstDifferentChoiceOldPositiveNewNonpositive": 27,
+      "firstDifferentChoiceOldScoreReducedByEvasion": 0,
+      "attack:terminated-early": 3
+    },
+    "M": {
+      "noPositiveDamageInFinalHalf": 0,
+      "started": 2068,
+      "plannedCrossing": 1002,
+      "observedCrossing": 950,
+      "attacksPlannedCrossing": 679,
+      "movesImmediatelyFollowedByAttack": 463,
+      "moveAttackSelected": 635,
+      "approachSelected": 37,
+      "attackImpactAtOrAfterWindow": 479,
+      "positiveAttackWithImpactAtOrAfterWindow": 105,
+      "casesWithDifferentOrdinaryOrReactionChoice": 54,
+      "attack:hit": 482,
+      "attack:dodge": 552,
+      "attack:block": 255,
+      "attack:censored": 23,
+      "evasionEvaluations": 4994,
+      "evasionReplies": 9761,
+      "damageReducingEvasionEvaluations": 4877,
+      "evasionConsideredChosen": 121,
+      "damageReducingEvasionChosen": 121,
+      "evasionConsideredChosenFirstNotStarted": 0,
+      "evasionConsideredDirectSelected": 118,
+      "evasionConsideredDirectHit": 2,
+      "ordinarySamplingBoundaries": 2125,
+      "sampledOrdinaryWait": 57,
+      "waitWithControlHitAndNoPositiveOrdinaryScore": 14,
+      "waitWithNegativeDamageForLegalReactionAndNoPositiveOrdinaryScore": 14,
+      "waitWithoutControlHit": 36,
+      "firstDifferentChoiceOldPositiveNewNonpositive": 41,
+      "firstDifferentChoiceOldScoreReducedByEvasion": 41,
+      "attack:clash": 4
+    },
+    "B": {
+      "noPositiveDamageInFinalHalf": 0,
+      "started": 1638,
+      "plannedCrossing": 758,
+      "observedCrossing": 716,
+      "attacksPlannedCrossing": 559,
+      "movesImmediatelyFollowedByAttack": 315,
+      "moveAttackSelected": 366,
+      "approachSelected": 115,
+      "attackImpactAtOrAfterWindow": 469,
+      "positiveAttackWithImpactAtOrAfterWindow": 94,
+      "casesWithDifferentOrdinaryOrReactionChoice": 54,
+      "attack:hit": 462,
+      "attack:block": 185,
+      "attack:dodge": 328,
+      "attack:other-no-positive-damage": 39,
+      "attack:censored": 29,
+      "evasionEvaluations": 19880,
+      "evasionReplies": 39039,
+      "damageReducingEvasionEvaluations": 19708,
+      "evasionConsideredChosen": 357,
+      "damageReducingEvasionChosen": 357,
+      "evasionConsideredChosenFirstNotStarted": 0,
+      "evasionConsideredDirectSelected": 299,
+      "evasionConsideredDirectHit": 10,
+      "ordinarySamplingBoundaries": 6532,
+      "sampledOrdinaryWait": 4894,
+      "waitWithControlHitAndNoPositiveOrdinaryScore": 4775,
+      "waitWithNegativeDamageForLegalReactionAndNoPositiveOrdinaryScore": 4775,
+      "waitWithoutControlHit": 60,
+      "firstDifferentChoiceOldPositiveNewNonpositive": 46,
+      "firstDifferentChoiceOldScoreReducedByEvasion": 0,
+      "attack:terminated-early": 2,
+      "attack:clash": 10
+    },
+    "P": {
+      "started": 2161,
+      "plannedCrossing": 1022,
+      "observedCrossing": 968,
+      "attacksPlannedCrossing": 773,
+      "attackImpactAtOrAfterWindow": 597,
+      "positiveAttackWithImpactAtOrAfterWindow": 98,
+      "noPositiveDamageInFinalHalf": 0,
+      "ordinarySamplingBoundaries": 2292,
+      "sampledOrdinaryWait": 131
+    }
+  },
+  "cases": {
+    "-T1000-P1000-seed0-CautiousDefense-vs-CautiousDefense-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 3,
+        "effectiveHealthLossQ10": 59392,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 2455
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 153600,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 133120,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 5,
+        "effectiveHealthLossQ10": 110592,
+        "lowerSideDamageQ10": 18432,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 2773
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-CautiousDefense-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 138240,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3571
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 161280,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3241
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 161280,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3253
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3583
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-CautiousDefense-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 135680,
+        "lowerSideDamageQ10": 53760,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3061
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Main",
+        "firstDamageTick": 871,
+        "lastDamageTick": 3583
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 158720,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3379
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3571
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-CautiousDefense-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 135680,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3481
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 2941
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 174080,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 128000,
+        "lowerSideDamageQ10": 35840,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3157
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-CautiousDefense-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 135680,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3157
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 192000,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 207360,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Near",
+        "firstDamageTick": 127,
+        "lastDamageTick": 3583
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-CautiousDefense-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 125440,
+        "lowerSideDamageQ10": 35840,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3253
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 151040,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3157
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 174080,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3367
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 172032,
+        "lowerSideDamageQ10": 64512,
+        "layout": "Near",
+        "firstDamageTick": 127,
+        "lastDamageTick": 3481
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SeekInterrupt-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 168960,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3391
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 35840,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3289
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 192000,
+        "lowerSideDamageQ10": 89600,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3529
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 177152,
+        "lowerSideDamageQ10": 15360,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3217
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SeekInterrupt-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 148480,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 2965
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 161280,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3289
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 197120,
+        "lowerSideDamageQ10": 79360,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3217
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 153600,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SeekInterrupt-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 148480,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3187
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 156160,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3379
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 174080,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3253
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 4,
+        "effectiveHealthLossQ10": 72704,
+        "lowerSideDamageQ10": 0,
+        "layout": "Main",
+        "firstDamageTick": 931,
+        "lastDamageTick": 2971
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SeekInterrupt-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 120320,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Main",
+        "firstDamageTick": 1015,
+        "lastDamageTick": 3061
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 145920,
+        "lowerSideDamageQ10": 64000,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3415
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 174080,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3121
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 153600,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3217
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SeekInterrupt-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 168960,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3061
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 140800,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3415
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 131072,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3061
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 158720,
+        "lowerSideDamageQ10": 15360,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3481
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SeekInterrupt-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 168960,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3367
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 153600,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3061
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 148480,
+        "lowerSideDamageQ10": 20480,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3181
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3181
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SustainedOffense-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3241
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 174080,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3385
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 189440,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3301
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 256000,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3595
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SustainedOffense-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 240640,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3595
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 135680,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3415
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 215040,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 97280,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3595
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SustainedOffense-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Main",
+        "firstDamageTick": 379,
+        "lastDamageTick": 3061
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 171520,
+        "lowerSideDamageQ10": 48640,
+        "layout": "Main",
+        "firstDamageTick": 511,
+        "lastDamageTick": 3451
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 163840,
+        "lowerSideDamageQ10": 0,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3253
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 207360,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Main",
+        "firstDamageTick": 379,
+        "lastDamageTick": 3571
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SustainedOffense-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Main",
+        "firstDamageTick": 1015,
+        "lastDamageTick": 3571
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Main",
+        "firstDamageTick": 301,
+        "lastDamageTick": 3451
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 217600,
+        "lowerSideDamageQ10": 64000,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3433
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Main",
+        "firstDamageTick": 703,
+        "lastDamageTick": 3595
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SustainedOffense-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 240640,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3595
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 207360,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3415
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 181760,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3061
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3547
+      }
+    },
+    "-T1000-P1000-seed0-CautiousDefense-vs-SustainedOffense-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3481
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 186880,
+        "lowerSideDamageQ10": 38400,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3157
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3571
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-CautiousDefense-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 158720,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3541
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 153600,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 2881
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 156160,
+        "lowerSideDamageQ10": 69120,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 2821
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 172032,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3547
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-CautiousDefense-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 158720,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3421
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 148480,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3595
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 161280,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3253
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 122880,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3595
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-CautiousDefense-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 138240,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3391
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 174592,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3553
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3547
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 145920,
+        "lowerSideDamageQ10": 48640,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3421
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-CautiousDefense-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 187392,
+        "lowerSideDamageQ10": 54272,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3403
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3523
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 163840,
+        "lowerSideDamageQ10": 35840,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3001
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-CautiousDefense-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 166400,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3157
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 153600,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3181
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 181760,
+        "lowerSideDamageQ10": 84480,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3265
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 166912,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Near",
+        "firstDamageTick": 127,
+        "lastDamageTick": 3529
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-CautiousDefense-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 166400,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3547
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 135680,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3181
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 194560,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 174080,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Near",
+        "firstDamageTick": 127,
+        "lastDamageTick": 3583
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SeekInterrupt-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3595
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 181760,
+        "lowerSideDamageQ10": 58880,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3061
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 194560,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3571
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 189440,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3343
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SeekInterrupt-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 149504,
+        "lowerSideDamageQ10": 69632,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3391
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 138240,
+        "lowerSideDamageQ10": 20480,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3061
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 97280,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3529
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 35840,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3391
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SeekInterrupt-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 0,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3181
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 192000,
+        "lowerSideDamageQ10": 53760,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3481
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 168960,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 3157
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 143360,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 715,
+        "lastDamageTick": 3571
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SeekInterrupt-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 240640,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 3391
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3481
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3451
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3481
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SeekInterrupt-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 194560,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3403
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 181760,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3481
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 192000,
+        "lowerSideDamageQ10": 53760,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SeekInterrupt-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3301
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 174592,
+        "lowerSideDamageQ10": 69632,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3481
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 215040,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 230400,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3481
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SustainedOffense-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3211
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 158720,
+        "lowerSideDamageQ10": 53760,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3337
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3301
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3337
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SustainedOffense-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 97280,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3421
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 133120,
+        "lowerSideDamageQ10": 53760,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 2959
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 215040,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3181
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 186880,
+        "lowerSideDamageQ10": 84480,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3337
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SustainedOffense-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 6,
+        "effectiveHealthLossQ10": 138240,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 1021,
+        "lastDamageTick": 3157
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 168960,
+        "lowerSideDamageQ10": 69120,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 2959
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 187392,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Main",
+        "firstDamageTick": 295,
+        "lastDamageTick": 2977
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 176640,
+        "lowerSideDamageQ10": 84480,
+        "layout": "Main",
+        "firstDamageTick": 379,
+        "lastDamageTick": 3301
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SustainedOffense-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 220160,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 3529
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 230400,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3337
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 230400,
+        "lowerSideDamageQ10": 112640,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3337
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 215040,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Main",
+        "firstDamageTick": 433,
+        "lastDamageTick": 3337
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SustainedOffense-Near-mirror0": {
+      "P": {
+        "ended": true,
+        "ticks": 3530,
+        "hits": 11,
+        "effectiveHealthLossQ10": 230400,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3529
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 69120,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3337
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3157
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3391
+      }
+    },
+    "-T1000-P1000-seed0-SeekInterrupt-vs-SustainedOffense-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 271360,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3361
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 192512,
+        "lowerSideDamageQ10": 69120,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3331
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3061
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3343
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-CautiousDefense-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 56320,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3571
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 197632,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3553
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 140800,
+        "lowerSideDamageQ10": 38400,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3157
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 207360,
+        "lowerSideDamageQ10": 84480,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3517
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-CautiousDefense-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 163840,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3421
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 182272,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 202752,
+        "lowerSideDamageQ10": 84992,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3517
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 7,
+        "effectiveHealthLossQ10": 158720,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3379
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-CautiousDefense-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Main",
+        "firstDamageTick": 355,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 238080,
+        "lowerSideDamageQ10": 84480,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 202240,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 3517
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 220160,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Main",
+        "firstDamageTick": 355,
+        "lastDamageTick": 3553
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-CautiousDefense-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 220160,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 217600,
+        "lowerSideDamageQ10": 97280,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 194560,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 207360,
+        "lowerSideDamageQ10": 53760,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3517
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-CautiousDefense-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 225280,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 248320,
+        "lowerSideDamageQ10": 69120,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3553
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 200192,
+        "lowerSideDamageQ10": 94720,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3554,
+        "hits": 10,
+        "effectiveHealthLossQ10": 250880,
+        "lowerSideDamageQ10": 46080,
+        "layout": "Near",
+        "firstDamageTick": 127,
+        "lastDamageTick": 3553
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-CautiousDefense-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3391
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 176640,
+        "lowerSideDamageQ10": 38400,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3421
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 176640,
+        "lowerSideDamageQ10": 20480,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3271
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 227840,
+        "lowerSideDamageQ10": 99840,
+        "layout": "Near",
+        "firstDamageTick": 127,
+        "lastDamageTick": 3391
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SeekInterrupt-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 179200,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 192512,
+        "lowerSideDamageQ10": 69632,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3361
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 194560,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3373
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 102400,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3559
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SeekInterrupt-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 202752,
+        "lowerSideDamageQ10": 95232,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3559
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3271
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 102400,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3559
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SeekInterrupt-Main-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 71680,
+        "layout": "Main",
+        "firstDamageTick": 355,
+        "lastDamageTick": 3391
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 212480,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3559
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Main",
+        "firstDamageTick": 511,
+        "lastDamageTick": 3559
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SeekInterrupt-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 261120,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3535
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 197632,
+        "lowerSideDamageQ10": 69632,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3301
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 209920,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3361
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 76800,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SeekInterrupt-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 184320,
+        "lowerSideDamageQ10": 40960,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3181
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 228352,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3559
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3391
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 235520,
+        "lowerSideDamageQ10": 107520,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SeekInterrupt-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 215040,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 228352,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3559
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 225280,
+        "lowerSideDamageQ10": 61440,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3271
+      },
+      "Z": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 240640,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Near",
+        "firstDamageTick": 181,
+        "lastDamageTick": 3559
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SustainedOffense-Far-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 228352,
+        "lowerSideDamageQ10": 112640,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3577
+      },
+      "B": {
+        "ended": true,
+        "ticks": 3362,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3361
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 194560,
+        "lowerSideDamageQ10": 92160,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3337
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3362,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Far",
+        "firstDamageTick": 481,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SustainedOffense-Far-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 243712,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": true,
+        "ticks": 3362,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3361
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 8,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 51200,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3157
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3362,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Far",
+        "firstDamageTick": 457,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SustainedOffense-Main-mirror0": {
+      "P": {
+        "ended": true,
+        "ticks": 3530,
+        "hits": 13,
+        "effectiveHealthLossQ10": 302080,
+        "lowerSideDamageQ10": 97280,
+        "layout": "Main",
+        "firstDamageTick": 433,
+        "lastDamageTick": 3529
+      },
+      "B": {
+        "ended": true,
+        "ticks": 2798,
+        "hits": 8,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 2797
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 12,
+        "effectiveHealthLossQ10": 256000,
+        "lowerSideDamageQ10": 81920,
+        "layout": "Main",
+        "firstDamageTick": 331,
+        "lastDamageTick": 3487
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3158,
+        "hits": 9,
+        "effectiveHealthLossQ10": 220160,
+        "lowerSideDamageQ10": 15360,
+        "layout": "Main",
+        "firstDamageTick": 433,
+        "lastDamageTick": 3157
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SustainedOffense-Main-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 256000,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3517
+      },
+      "B": {
+        "ended": true,
+        "ticks": 2798,
+        "hits": 8,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 2797
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 9,
+        "effectiveHealthLossQ10": 199680,
+        "lowerSideDamageQ10": 66560,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 2989
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3362,
+        "hits": 10,
+        "effectiveHealthLossQ10": 230400,
+        "lowerSideDamageQ10": 25600,
+        "layout": "Main",
+        "firstDamageTick": 277,
+        "lastDamageTick": 3361
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SustainedOffense-Near-mirror0": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 256000,
+        "lowerSideDamageQ10": 128000,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3553
+      },
+      "B": {
+        "ended": true,
+        "ticks": 3074,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3073
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 13,
+        "effectiveHealthLossQ10": 276480,
+        "lowerSideDamageQ10": 122880,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3481
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3074,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3073
+      }
+    },
+    "-T1000-P1000-seed0-SustainedOffense-vs-SustainedOffense-Near-mirror1": {
+      "P": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 10,
+        "effectiveHealthLossQ10": 240640,
+        "lowerSideDamageQ10": 87040,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3571
+      },
+      "B": {
+        "ended": true,
+        "ticks": 3074,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3073
+      },
+      "M": {
+        "ended": false,
+        "ticks": 3600,
+        "hits": 11,
+        "effectiveHealthLossQ10": 245760,
+        "lowerSideDamageQ10": 107520,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3517
+      },
+      "Z": {
+        "ended": true,
+        "ticks": 3074,
+        "hits": 9,
+        "effectiveHealthLossQ10": 204800,
+        "lowerSideDamageQ10": 0,
+        "layout": "Near",
+        "firstDamageTick": 97,
+        "lastDamageTick": 3073
+      }
+    }
+  }
+}

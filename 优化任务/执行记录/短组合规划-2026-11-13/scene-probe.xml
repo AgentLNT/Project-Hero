@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.2852876">
+  <test-suite type="TestSuite" id="1121" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.285288" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1114" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.268692" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="25764" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1115" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.267732" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1116" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.267376" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1117" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.267041" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1001" name="FormalAiSceneTests" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.257234" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1006" name="ShortPlansUseProductionClockAndReplayBothControllers" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.ShortPlansUseProductionClockAndReplayBothControllers" methodname="ShortPlansUseProductionClockAndReplayBothControllers" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="561583373" result="Failed" start-time="2026-11-13 16:52:18Z" end-time="2026-11-13 16:52:27Z" duration="8.232449" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.FormalAiSceneTests+<RunScene>d__7.MoveNext () [0x005d0] in C:\Users\1\repos\Project Hero\Assets\Tests\PlayMode\FormalAiSceneTests.cs:92
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[SHORT_PLAN_SCENE observedTick=719 damageContacts=0
+SOURCE hash=84116d595d222a72 rng=20260922 meta=10
+UnitSnapshot { UnitId = 1, DefinitionId = unit.monster.radius_2, FactionId = monster, X = -7, Y = -1, Facing = 0, HealthQ10 = 184320, IsAlive = True, AvailableAdrenaline = 0, AdrenalineCycleId = 2, State = 0, StateStartTick = 667, StateEndTick = 9223372036854775807, CanReceiveDirectHit = True, StateValue = Idle }
+UnitSnapshot { UnitId = 2, DefinitionId = unit.hero.radius_1, FactionId = hero, X = -2, Y = -4, Facing = 0, HealthQ10 = 204800, IsAlive = True, AvailableAdrenaline = 0, AdrenalineCycleId = 2, State = 0, StateStartTick = 716, StateEndTick = 9223372036854775807, CanReceiveDirectHit = True, StateValue = Idle }
+AiControllerSnapshot { ControllerId = controller.enemy_ai, NextThinkTick = 720, DecisionCount = 720, LastDecisionTick = 719, Rng = 1:2656c59239c932cb, Behavior = AiBehaviorMemory { Ordinary = AiBehaviorTask { Cursor = 0, RequestTick = 457, ProducerOrdinal = 4, PlanId = 7, Status = Success, Reason = PLAN_COMPLETED, PredecessorPlanId = 0 }, Reaction = AiBehaviorTask { Cursor = 0, RequestTick = -1, ProducerOrdinal = 0, PlanId = 0, Status = Failure, Reason = IDLE, PredecessorPlanId = 0 } }, SamplingMemory =  }
+AiControllerSnapshot { ControllerId = controller.player, NextThinkTick = 720, DecisionCount = 720, LastDecisionTick = 719, Rng = 1:1a1daaf97978ecfe, Behavior = AiBehaviorMemory { Ordinary = AiBehaviorTask { Cursor = 0, RequestTick = 643, ProducerOrdinal = 5, PlanId = 9, Status = Success, Reason = PLAN_COMPLETED, PredecessorPlanId = 0 }, Reaction = AiBehaviorTask { Cursor = 0, RequestTick = 458, ProducerOrdinal = 4, PlanId = 8, Status = Success, Reason = PLAN_FULFILLED_15, PredecessorPlanId = 0 } }, SamplingMemory = AiSamplingMemory { OpportunityKey = 3, AdmissionKey = R/3/action.dodge.default/637/-10/-6;R/3/action.dodge.default/637/-11/-5;R/3/action.dodge.default/637/-12/-4;R/3/action.dodge.default/637/-12/-6;R/3/action.dodge.default/637/-6/-6;R/3/action.dodge.default/637/-7/-5;R/3/action.dodge.default/637/-8/-6;R/3/action.dodge.default/637/-9/-7;WAIT/REACTION/1:184320:0:2:-7:-1:1;2:204800:1:1:-9:-5:0, DrawCount = 1 } }
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,9 @@
+{
+  "matrixSource": "54cf7ccd5d3a298e51ad4930b9cc54e1e593facdb7be48223853cff1c54f2fff",
+  "finalSource": "d52f9a4372a33e2a63ada5555b1fcfc6e1d3c2d4210204f112a62152db5b69ba",
+  "differences": [
+    "Assets/Tests/PlayMode/FormalAiSceneTests.cs"
+  ],
+  "productionKernelAndAiSourceUnchanged": true,
+  "explanation": "Only the new PlayMode fixture is corrected to inspect canonical stored replay events and actual snapshot health loss, at the original 360 frames. Runtime, all EditMode tests and all matrix/native tool sources are identical."
+}

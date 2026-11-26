@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="22" result="Failed(Child)" total="22" passed="1" failed="21" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:06Z" duration="14.3938431">
+  <test-suite type="TestSuite" id="1121" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:06Z" duration="14.393843" total="22" passed="1" failed="21" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1114" name="ProjectHero.Compatibility.Runtime.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Temp/Hero25-20261124-Native/Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:06Z" duration="14.381486" total="22" passed="1" failed="21" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="29512" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1115" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:06Z" duration="14.380621" total="22" passed="1" failed="21" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1116" name="Tests" fullname="ProjectHero.Tests" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:06Z" duration="14.380388" total="22" passed="1" failed="21" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1117" name="PlayMode" fullname="ProjectHero.Tests.PlayMode" runstate="Runnable" testcasecount="93" result="Failed" site="Child" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:06Z" duration="14.380120" total="22" passed="1" failed="21" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1001" name="FormalAiSceneTests" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:21:05Z" duration="13.461370" total="5" passed="1" failed="4" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1004" name="CautiousEnemyApproachesThroughProductionClockAndReplaysFromSceneContent" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.CautiousEnemyApproachesThroughProductionClockAndReplaysFromSceneContent" methodname="CautiousEnemyApproachesThroughProductionClockAndReplaysFromSceneContent" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="1402859047" result="Failed" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:20:52Z" duration="0.378620" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.FormalAiSceneTests+<RunScene>d__7.MoveNext () [0x0020d] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\FormalAiSceneTests.cs:64
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1003" name="FormalEnemyDefenseAwareHybridUsesProductionClockAndReplaysFromSceneContent" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.FormalEnemyDefenseAwareHybridUsesProductionClockAndReplaysFromSceneContent" methodname="FormalEnemyDefenseAwareHybridUsesProductionClockAndReplaysFromSceneContent" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="1877477635" result="Failed" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:20:52Z" duration="0.075111" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.FormalAiSceneTests+<RunScene>d__7.MoveNext () [0x0020d] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\FormalAiSceneTests.cs:64
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1002" name="FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent" methodname="FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="214485314" result="Failed" start-time="2026-11-24 10:20:52Z" end-time="2026-11-24 10:20:53Z" duration="0.070839" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.FormalAiSceneTests+<RunScene>d__7.MoveNext () [0x0020d] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\FormalAiSceneTests.cs:64
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1005" name="MixedFormalPoliciesShareProductionClockAndReplayBothControllers" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.MixedFormalPoliciesShareProductionClockAndReplayBothControllers" methodname="MixedFormalPoliciesShareProductionClockAndReplayBothControllers" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="471185600" result="Failed" start-time="2026-11-24 10:20:53Z" end-time="2026-11-24 10:20:59Z" duration="6.071493" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[TearDown : Unhandled log message: '[Error] No graphic device is available to initialize the view.'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEditor.EditorWindow:GetWindow<TMPro.TMP_PackageResourceImporterWindow> ()
+TMPro.TMP_PackageResourceImporterWindow:ShowPackageImporterWindow () (at ./Library/PackageCache/com.unity.ugui@0f30cee369f3/Runtime/TMP/TMP_PackageResourceImporter.cs:243)
+TMPro.TMP_Settings/<DelayShowPackageImporterWindow>d__126:MoveNext () (at ./Library/PackageCache/com.unity.ugui@0f30cee369f3/Runtime/TMP/TMP_Settings.cs:497)
+UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[No graphic device is available to initialize the view.
+No graphic device is available to show the window.
+No graphic device is available to initialize the view.
+]]></output>
+              </test-case>
+              <test-case id="1006" name="ShortPlansUseProductionClockAndReplayBothControllers" fullname="ProjectHero.Tests.PlayMode.FormalAiSceneTests.ShortPlansUseProductionClockAndReplayBothControllers" methodname="ShortPlansUseProductionClockAndReplayBothControllers" classname="ProjectHero.Tests.PlayMode.FormalAiSceneTests" runstate="Runnable" seed="575899734" result="Passed" start-time="2026-11-24 10:20:59Z" end-time="2026-11-24 10:21:05Z" duration="6.850642" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[SHORT_PLAN_SCENE observedTick=359 healthLossQ10=20480
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1029" name="RuntimeOwnershipTests" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" testcasecount="38" result="Failed" site="Child" start-time="2026-11-24 10:21:05Z" end-time="2026-11-24 10:21:05Z" duration="0.024684" total="3" passed="0" failed="3" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1062" name="MainSceneBattleDefinitionMatchesTask02BFrozenHash" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash" methodname="MainSceneBattleDefinitionMatchesTask02BFrozenHash" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="1173016815" result="Failed" start-time="2026-11-24 10:21:05Z" end-time="2026-11-24 10:21:05Z" duration="0.006461" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Error] LoadSceneInPlayMode expects a valid full path. The provided path was 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'.'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEditor.SceneManagement.EditorSceneManager:LoadSceneInPlayMode (string,UnityEngine.SceneManagement.LoadSceneParameters)
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTestBase/<LoadLegacyComparisonScene>d__23:MoveNext () (at Assets/Tests/PlayMode/RuntimeOwnershipTestBase.cs:146)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[LoadSceneInPlayMode expects a valid full path. The provided path was 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'.
+]]></output>
+              </test-case>
+              <test-case id="1039" name="NewModeNeverCallsLegacyAdvanceTime" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime" methodname="NewModeNeverCallsLegacyAdvanceTime" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="364943702" result="Failed" start-time="2026-11-24 10:21:05Z" end-time="2026-11-24 10:21:05Z" duration="0.001820" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  隐藏验证场景资产必须存在：Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.RuntimeOwnershipTestBase+<LoadHiddenValidationScene>d__17.MoveNext () [0x0001e] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\RuntimeOwnershipTestBase.cs:104
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1040" name="ShadowModeKeepsLegacyAsOnlyAuthority" fullname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority" methodname="ShadowModeKeepsLegacyAsOnlyAuthority" classname="ProjectHero.Tests.PlayMode.RuntimeOwnershipTests" runstate="Runnable" seed="809425883" result="Failed" start-time="2026-11-24 10:21:05Z" end-time="2026-11-24 10:21:05Z" duration="0.002242" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  隐藏验证场景资产必须存在：Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.RuntimeOwnershipTestBase+<LoadHiddenValidationScene>d__17.MoveNext () [0x0001e] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\RuntimeOwnershipTestBase.cs:104
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1070" name="ShadowSplitLifecycleTests" fullname="ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests" classname="ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-24 10:21:05Z" end-time="2026-11-24 10:21:06Z" duration="0.138431" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1072" name="InactiveDiagnosticHostCannotCreateASecondProductionWorld" fullname="ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests.InactiveDiagnosticHostCannotCreateASecondProductionWorld" methodname="InactiveDiagnosticHostCannotCreateASecondProductionWorld" classname="ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests" runstate="Runnable" seed="53632295" result="Failed" start-time="2026-11-24 10:21:05Z" end-time="2026-11-24 10:21:06Z" duration="0.069606" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests+<InactiveDiagnosticHostCannotCreateASecondProductionWorld>d__3.MoveNext () [0x000e6] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\ShadowSplitLifecycleTests.cs:51
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1071" name="NewRunsWithoutObserverAndPreservesPauseReleaseAndRestart" fullname="ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests.NewRunsWithoutObserverAndPreservesPauseReleaseAndRestart" methodname="NewRunsWithoutObserverAndPreservesPauseReleaseAndRestart" classname="ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests" runstate="Runnable" seed="1754605390" result="Failed" label="Error" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.067867" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.NullReferenceException : Object reference not set to an instance of an object]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Tests.PlayMode.ShadowSplitLifecycleTests+<NewRunsWithoutObserverAndPreservesPauseReleaseAndRestart>d__2.MoveNext () [0x0009a] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\ShadowSplitLifecycleTests.cs:22 
+  at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52 ]]></stack-trace>
+                </failure>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1084" name="Task10WiredPresentationTests" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" testcasecount="9" result="Failed" site="Child" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.644700" total="9" passed="0" failed="9" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1092" name="DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease" methodname="DodgeMoveInvalidationClearsPathReservationsWithoutBudgetRelease" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="874647793" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.082848" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneReaction>d__17.MoveNext () [0x00124] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:530
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Canvas combination fixture definition=908bdd324c30b29b; uniform per-direction pattern union; forceMultiplier=0.000001; attack timing=60/30; reaction timing=1/30; move timing=1/1 so two future Moves fit R1; unchanged grid/body/180 Tick/hero; explicit fixture.
+]]></output>
+              </test-case>
+              <test-case id="1085" name="FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection" methodname="FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="1329127424" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.067741" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<FixedWindowHudRemovesEndTurnAndShowsOutOfRangeRejection>d__4.MoveNext () [0x00062] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1093" name="MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" methodname="MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="570036160" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.077092" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainCanvasPlayerAttackFundsAiReactionAndFeedbackThroughProductionPorts>d__16.MoveNext () [0x00106] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:471
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Explicit scene fixture: minimum momentum, configured timing, real damage accrual, 180 Tick / hero; aiReactionOnly=True
+]]></output>
+              </test-case>
+              <test-case id="1090" name="MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline" methodname="MainSceneBlockButtonUsesRealThreatAndDamageEarnedAdrenaline" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="614514729" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.069254" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneReaction>d__17.MoveNext () [0x00124] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:530
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1091" name="MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" methodname="MainSceneDodgeSelectionIsLocalUntilConfirmAndUsesRealThreat" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="1766852926" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.068414" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneReaction>d__17.MoveNext () [0x00124] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:530
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1086" name="MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback" methodname="MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="304402928" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.070067" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="Timeout" value="360000" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneNewCompletesThreeColdBattlesWithPlayerCommandsAndOneEndFeedback>d__9.MoveNext () [0x000e4] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:241
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1087" name="MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce" methodname="MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="26491791" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.068175" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneNewPresentationBindsRealPlayerInputAndConfirmsOnlyOnce>d__10.MoveNext () [0x00074] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:315
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1088" name="MainSceneTimelineDragDeleteAndRevisionRebaseUseRealPlayerPort" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneTimelineDragDeleteAndRevisionRebaseUseRealPlayerPort" methodname="MainSceneTimelineDragDeleteAndRevisionRebaseUseRealPlayerPort" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="81006375" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.069184" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  BATTLE_RUNTIME_BOOTSTRAP_ADAPTER_SLOT_INVALID|new|Object reference not set to an instance of an object
+  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneTimelineDragDeleteAndRevisionRebaseUseRealPlayerPort>d__11.MoveNext () [0x0006d] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:360
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1089" name="MainSceneTimelinePreservesDraftWhenPlanStartsWithoutRevisionChange" fullname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests.MainSceneTimelinePreservesDraftWhenPlanStartsWithoutRevisionChange" methodname="MainSceneTimelinePreservesDraftWhenPlanStartsWithoutRevisionChange" classname="ProjectHero.Tests.PlayMode.Task10WiredPresentationTests" runstate="Runnable" seed="623048145" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.068891" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task10WiredPresentationTests+<MainSceneTimelinePreservesDraftWhenPlanStartsWithoutRevisionChange>d__12.MoveNext () [0x0006d] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task10WiredPresentationTests.cs:433
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1101" name="Task11ProductionSceneTests" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" testcasecount="1" result="Failed" site="Child" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.073201" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1102" name="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" fullname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests.ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" methodname="ProductionSceneUsesOnlyNewAndRejectsLegacyStartup" classname="ProjectHero.Tests.PlayMode.Task11ProductionSceneTests" runstate="Runnable" seed="1212457873" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.072317" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: New
+  But was:  null
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Tests.PlayMode.Task11ProductionSceneTests+<ProductionSceneUsesOnlyNewAndRejectsLegacyStartup>d__2.MoveNext () [0x0003a] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task11ProductionSceneTests.cs:16
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__8.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@7a3849e09bd0\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:52
+]]></stack-trace>
+                </failure>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1103" name="Task11ShadowClassificationTests" fullname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" classname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.010082" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1104" name="EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence" fullname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence" methodname="EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence" classname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" runstate="Runnable" seed="913933117" result="Failed" label="Error" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.006353" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.IO.FileNotFoundException : Could not find file "C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\优化任务\执行记录\12C-shadow-classification.json"]]></message>
+                  <stack-trace><![CDATA[  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, System.Boolean detectEncodingFromByteOrderMarks, System.Int32 bufferSize) [0x00055] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.IO.StreamReader..ctor (System.String path, System.Text.Encoding encoding, System.Boolean detectEncodingFromByteOrderMarks) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamReader..ctor(string,System.Text.Encoding,bool)
+  at System.IO.File.InternalReadAllText (System.String path, System.Text.Encoding encoding) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.IO.File.ReadAllText (System.String path) [0x0002c] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.EveryFullShadowRegistrationHasExactClassificationAndExecutableEvidence () [0x0004a] in C:\Users\1\repos\Project Hero\Temp\Hero25-20261124-Native\Assets\Tests\PlayMode\Task11ShadowClassificationTests.cs:29 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1105" name="MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation" fullname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests.MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation" methodname="MainSceneShadowRetainsRealLegacyObservationsAndWritesNothingToPresentation" classname="ProjectHero.Tests.PlayMode.Task11ShadowClassificationTests" runstate="Runnable" seed="1627045083" result="Failed" start-time="2026-11-24 10:21:06Z" end-time="2026-11-24 10:21:06Z" duration="0.002305" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[Unhandled log message: '[Error] LoadSceneInPlayMode expects a valid full path. The provided path was 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'.'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+                  <stack-trace><![CDATA[UnityEditor.SceneManagement.EditorSceneManager:LoadSceneInPlayMode (string,UnityEngine.SceneManagement.LoadSceneParameters)
+ProjectHero.Tests.PlayMode.RuntimeOwnershipTestBase/<LoadLegacyComparisonScene>d__23:MoveNext () (at Assets/Tests/PlayMode/RuntimeOwnershipTestBase.cs:146)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[LoadSceneInPlayMode expects a valid full path. The provided path was 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'.
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

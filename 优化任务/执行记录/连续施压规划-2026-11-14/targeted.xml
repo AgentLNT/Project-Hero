@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Failed(Child)" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.3571854">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1222" result="Failed" site="Child" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.357185" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2400" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="753" result="Failed" site="Child" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.341610" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="23744" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2401" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="753" result="Failed" site="Child" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.336144" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2402" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="753" result="Failed" site="Child" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.335691" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2403" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="753" result="Failed" site="Child" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.335366" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1571" name="AiContinuationTests" fullname="ProjectHero.Logic.Tests.AiContinuationTests" classname="ProjectHero.Logic.Tests.AiContinuationTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:18Z" duration="1.326076" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1576" name="ContinuationSwitchesAreHashedAndRequireSignedShortPlanDefenseConfiguration" fullname="ProjectHero.Logic.Tests.AiContinuationTests.ContinuationSwitchesAreHashedAndRequireSignedShortPlanDefenseConfiguration" methodname="ContinuationSwitchesAreHashedAndRequireSignedShortPlanDefenseConfiguration" classname="ProjectHero.Logic.Tests.AiContinuationTests" runstate="Runnable" seed="186780605" result="Passed" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:16Z" duration="0.159191" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1573" name="DamageFromFirstAttackCanFundARealSecondAttackResponse" fullname="ProjectHero.Logic.Tests.AiContinuationTests.DamageFromFirstAttackCanFundARealSecondAttackResponse" methodname="DamageFromFirstAttackCanFundARealSecondAttackResponse" classname="ProjectHero.Logic.Tests.AiContinuationTests" runstate="Runnable" seed="1615321850" result="Failed" start-time="2026-11-13 18:29:16Z" end-time="2026-11-13 18:29:17Z" duration="0.421049" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: not <empty>
+  But was:  <empty>
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Logic.Tests.AiContinuationTests.DamageFromFirstAttackCanFundARealSecondAttackResponse () [0x000b6] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiContinuationTests.cs:68
+]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1574" name="DisabledTemplatesRejectAttackPrefixButKeepValuationExperimentValid" fullname="ProjectHero.Logic.Tests.AiContinuationTests.DisabledTemplatesRejectAttackPrefixButKeepValuationExperimentValid" methodname="DisabledTemplatesRejectAttackPrefixButKeepValuationExperimentValid" classname="ProjectHero.Logic.Tests.AiContinuationTests" runstate="Runnable" seed="82032438" result="Passed" start-time="2026-11-13 18:29:17Z" end-time="2026-11-13 18:29:17Z" duration="0.427406" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1572" name="SecondAttackUsesRealWindowCadenceAndDoesNotMutateAuthority" fullname="ProjectHero.Logic.Tests.AiContinuationTests.SecondAttackUsesRealWindowCadenceAndDoesNotMutateAuthority" methodname="SecondAttackUsesRealWindowCadenceAndDoesNotMutateAuthority" classname="ProjectHero.Logic.Tests.AiContinuationTests" runstate="Runnable" seed="2130578872" result="Passed" start-time="2026-11-13 18:29:17Z" end-time="2026-11-13 18:29:17Z" duration="0.072211" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1575" name="UnobservedSecondAttackCannotEnterSamplingPool" fullname="ProjectHero.Logic.Tests.AiContinuationTests.UnobservedSecondAttackCannotEnterSamplingPool" methodname="UnobservedSecondAttackCannotEnterSamplingPool" classname="ProjectHero.Logic.Tests.AiContinuationTests" runstate="Runnable" seed="375584417" result="Passed" start-time="2026-11-13 18:29:17Z" end-time="2026-11-13 18:29:18Z" duration="0.231194" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,11 @@
+{
+  "stage": "P",
+  "totals": {
+    "spentResponses": 684,
+    "sameTickGrossSpendExceedsAllLedgerGains": 675,
+    "sameAttackerReachedLaterImpactTickBeforeDefenderResetOrCutoff": 206,
+    "sameAttackerLandedLaterPositiveDamageBeforeDefenderResetOrCutoff": 116,
+    "noNextResetObservedBeforeCutoff": 59
+  },
+  "limits": "Observed follow-through only. The same later attack can occur after several reactions. Next reset, battle end or cutoff ends observation; no causal gain is attributed to spending. Same-Tick gain includes every accrual source."
+}

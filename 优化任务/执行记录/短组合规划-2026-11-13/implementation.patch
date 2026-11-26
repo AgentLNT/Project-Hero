@@ -1,0 +1,1326 @@
+--- a/Assets/Scripts/Logic/AI/AiForecast.cs
++++ b/Assets/Scripts/Logic/AI/AiForecast.cs
+@@ -30,6 +30,10 @@
+         long RequiredThroughTick = 0, int CandidateTerminalReason = 0)
+     {
+         public IReadOnlyList<AiResourceExpiry> ResourceExpiries { get; init; } = Array.Empty<AiResourceExpiry>();
++        public long FirstStepEndTick { get; init; }
++        public long FollowUpRequestTick { get; init; } = -1;
++        public long FollowUpStartTick { get; init; } = -1;
++        public bool SequenceCompleted { get; init; }
+     }
+     public sealed record AiResourceExpiry(long UnitId, long ResetTick);
+ }
+--- a/Assets/Scripts/Logic/AI/AiForecastSettings.cs
++++ b/Assets/Scripts/Logic/AI/AiForecastSettings.cs
+@@ -4,13 +4,13 @@
+ {
+     /// <summary>Opt-in complete-outcome scoring. Null settings retain the exact V2 policy and 120-Tick encoding.</summary>
+     public sealed record AiForecastSettings(int LookaheadTicks, bool ConsiderDefenses = false, bool ApproachWhenUnthreatened = false,
+-        AiSamplingSettings Sampling = null)
++        AiSamplingSettings Sampling = null,AiShortPlanSettings ShortPlans = null)
+     {
+         public const string Version = "public-kernel-complete-outcome-v3";
+         public const string DefenseVersion = "public-kernel-single-defense-v1";
+         public const int MaximumLookaheadTicks = 360;
+         public string Validate() => LookaheadTicks < 1 || LookaheadTicks > MaximumLookaheadTicks || (Sampling?.SignedDamage == true && !ConsiderDefenses)
+-            ? "AI_FORECAST_SETTINGS_INVALID" : Sampling?.Validate();
++            || (ShortPlans!=null && Sampling==null) ? "AI_FORECAST_SETTINGS_INVALID" : Sampling?.Validate() ?? ShortPlans?.Validate();
+         public void WriteHashComponents(CanonicalHashWriter writer)
+         {
+             writer.Write("controller_binding.ai_forecast_version", Version);
+@@ -19,6 +19,7 @@
+             if (ConsiderDefenses) writer.Write("controller_binding.ai_defense_version", DefenseVersion);
+             if (ApproachWhenUnthreatened) writer.Write("controller_binding.ai_approach_version", AiApproachPolicy.Version);
+             Sampling?.WriteHashComponents(writer);
++            ShortPlans?.WriteHashComponents(writer);
+         }
+     }
+     public enum AiForecastCoverage { Unspecified = 0, Complete = 1, Uncovered = 2, Rejected = 3 }
+--- a/Assets/Scripts/Logic/AI/AiPressurePolicy.cs
++++ b/Assets/Scripts/Logic/AI/AiPressurePolicy.cs
+@@ -34,7 +34,13 @@
+             if (choice != null) { selected = choice.Request; return Finish(null); }
+             if (!context.HasSubmissionWindow) return Finish(reactionWaitReason ?? "WAIT_NO_OWN_WINDOW");
+             if (context.Snapshot.Tick % AiTacticalPolicy.OrdinaryThinkInterval != 0) return Finish("WAIT_ORDINARY_CADENCE");
++            if(context.ForecastSettings.ShortPlans!=null && context.Snapshot.OwnPlans.Any(p=>p.Origin==(int)ActionPlanOrigin.Ordinary))
++                return Finish("WAIT_SHORT_PLAN_STEP_TERMINAL");
+             var ordinary = AiTacticalCandidateBuilder.Ordinary(context);
++            if(context.ForecastSettings.ShortPlans!=null && !context.Snapshot.VisiblePlans.Any(p=>p.ImpactTick>=context.NextTick
++                && context.Snapshot.FindAction(new ActionSpecId(p.ActionSpecId))?.Type==ActionType.Attack
++                && context.ControlledUnits.Any(id=>context.Snapshot.Classify(id,new UnitId(p.OwnerUnitId))==UnitRelation.Hostile)))
++                ordinary=ordinary.Where(c=>c.Type!=ActionType.Move).ToArray();
+             if (ordinary.Count == 0) return Finish("WAIT_LANE_COMMITTED");
+             var candidates = new List<AiTacticalCandidate>(ordinary);
+             var previews = new Dictionary<string, AiActionForecast>(StringComparer.Ordinal);
+@@ -43,6 +49,20 @@
+                 var value = forecast.Evaluate(c.Request, context.ForecastSettings); previews[c.Key] = value;
+                 candidates.AddRange(AiTacticalCandidateBuilder.Aligned(context, c, value));
+             }
++            if(context.ForecastSettings.ShortPlans!=null)
++            {
++                baseline ??= forecast.Evaluate(null,context.ForecastSettings);
++                foreach(var plan in AiShortPlanCandidateBuilder.Build(context,ordinary,previews,baseline))
++                {
++                    var outcome=EvaluateCandidate(plan);previews[plan.Key]=outcome;candidates.Add(plan);
++                    var value=AiTacticalPolicy.Evaluate(context,policy,plan,baseline,outcome);
++                    if(value.Score.HasValue && AiShortPlanCandidateBuilder.HasTacticalEffect(context,value,baseline,outcome))continue;
++                    // The complete two-step proposal remains logged, including uncovered outcomes.
++                    // A completed, useful first stage is a separately labelled approach proposal.
++                    var approach=plan with {Key=plan.Key+"/approach",FollowUp=null};
++                    candidates.Add(approach);previews[approach.Key]=forecast.Evaluate(approach.Request,context.ForecastSettings);
++                }
++            }
+             choice = Choose(candidates, false, previews);
+             selected = choice?.Request;
+             return Finish(selected == null ? "WAIT_SAMPLED_ORDINARY" : null);
+@@ -54,22 +74,48 @@
+                 var pool = new List<AiSampleItem>();
+                 foreach (var candidate in candidates.OrderBy(c => c.Key, StringComparer.Ordinal))
+                 {
+-                    var outcome = cached != null && cached.TryGetValue(candidate.Key, out var v) ? v : forecast.Evaluate(candidate.Request, context.ForecastSettings);
++                    var outcome = cached != null && cached.TryGetValue(candidate.Key, out var v) ? v : EvaluateCandidate(candidate);
+                     if (outcome.RejectionCode == null && baseline == null) baseline = forecast.Evaluate(null, context.ForecastSettings);
+                     var e = AiTacticalPolicy.Evaluate(context, policy, candidate, baseline ?? outcome, outcome);
+                     if (e.Score.HasValue && e.RejectionCode == null)
+                     {
+                         e = Score(context, policy, candidate, baseline, outcome, e, forecast);
++                        if(context.ForecastSettings.ShortPlans is AiShortPlanSettings plans && e.Score.HasValue && !candidate.IsReaction)
++                        {
++                            bool effective=AiShortPlanCandidateBuilder.HasTacticalEffect(context,e,baseline,outcome);
++                            bool approach=candidate.FollowUp==null && candidate.Approach!=null;
++                            bool intent=approach ? candidate.Approach.InitialPathWeight>candidate.Approach.RemainingPathWeight
++                                && outcome.CandidateTerminalReason==0 && e.PositionProgress>0
++                                : candidate.Type==ActionType.Move && candidate.FollowUp==null ? e.IncomingDeltaQ10<0 : effective;
++                            long pressure=0,progress=0;
++                            if(intent && (candidate.Type==ActionType.Attack || candidate.FollowUp!=null))
++                            {
++                                int targets=baseline.Units.Count(u=>context.ControlledUnits.Any(id=>context.Snapshot.Classify(id,new UnitId(u.UnitId))==UnitRelation.Hostile)
++                                    && Math.Max(0,u.HealthQ10)>Math.Max(0,outcome.Units.FirstOrDefault(a=>a.UnitId==u.UnitId)?.HealthQ10??0));
++                                pressure=(long)plans.PressureValueQ10*AiUtilityProfile.For(policy).Damage*targets;
++                            }
++                            if(intent && approach)progress=(long)plans.ApproachValue*(candidate.Approach.InitialPathWeight-candidate.Approach.RemainingPathWeight)
++                                /Math.Max(1,candidate.Approach.InitialPathWeight);
++                            e=e with {Score=e.Score+pressure+progress,PressureUtility=pressure,ApproachUtility=progress,
++                                IntentEligible=intent,Reason=intent?e.Reason:"NO_TACTICAL_EFFECT"};
++                        }
+                         if (e.Score.HasValue)
+                         {
+                             string group = Group(candidate);
+                             e = e with { SampleGroup = group };
+-                            pool.Add(new AiSampleItem(e.Key, group, e.Score.Value));
++                            if(e.IntentEligible)pool.Add(new AiSampleItem(e.Key, group, e.Score.Value));
+                         }
+                     }
++                    if(context.ForecastSettings.ShortPlans!=null)e=e with {PlanKind=candidate.IsReaction?"Reaction":candidate.FollowUp!=null?"MoveAttack"
++                        :candidate.Approach!=null?"Approach":candidate.Type==ActionType.Attack?"DirectAttack":candidate.Type.ToString(),
++                        FollowUpSpecId=(candidate.FollowUp?.ActionSpecId ?? candidate.Approach?.AttackSpecId)?.Value,
++                        FollowUpTargetId=candidate.FollowUp?.TargetUnitId.Value ?? candidate.Approach?.TargetUnitId.Value ?? 0,
++                        FirstStepEndTick=candidate.FollowUp==null?outcome.PlanEndTick:outcome.FirstStepEndTick,
++                        FollowUpRequestTick=outcome.FollowUpRequestTick,FollowUpStartTick=outcome.FollowUpStartTick};
+                     evaluations.Add(e);
+                 }
+-                if (pool.Count == 0) return null;
++                if (pool.Count == 0 && (reaction || context.ForecastSettings.ShortPlans==null)) return null;
++                baseline ??= forecast.Evaluate(null,context.ForecastSettings);
+                 string waitKey = reaction ? "WAIT/REACTION" : "WAIT/ORDINARY";
+                 // Fixed horizon baseline contains the same public threat and positional facts.
+                 // Wait commits no action and retains the next six-Tick ordinary thinking opportunity.
+@@ -102,6 +148,11 @@
+             AiDecision Finish(string reason) => new AiDecision(selected, Array.Empty<AiCandidate>(), Array.Empty<AiReactionOptionView>(),
+                 rng.CaptureSnapshot(), evaluations.Count(e => !e.IsReaction), evaluations.Count(e => e.IsReaction), reason, context.Snapshot.Tick)
+                 { Policy = policy, Evaluations = evaluations.AsReadOnly(), SamplingMemory = memory };
++
++            AiActionForecast EvaluateCandidate(AiTacticalCandidate c)=>c.FollowUp==null?forecast.Evaluate(c.Request,context.ForecastSettings)
++                :forecast is IAiSequenceForecast sequences?sequences.EvaluateSequence(c.Request,c.FollowUp,context.ForecastSettings)
++                :new AiActionForecast("AI_SEQUENCE_FORECAST_UNAVAILABLE",context.Snapshot.Tick+context.ForecastSettings.LookaheadTicks,
++                    Array.Empty<UnitSnapshot>(),-1,0,0,Coverage:AiForecastCoverage.Rejected);
+         }
+ 
+         static string Group(AiTacticalCandidate c)
+@@ -109,6 +160,8 @@
+             if (c.Request.Payload is ScheduleEditPayload edit)
+             {
+                 var add = edit.Operations.OfType<AddOrdinaryPlanOperation>().Single();
++                if(c.FollowUp!=null)return FormattableString.Invariant($"PLAN/{add.OwnerUnitId.Value}/MoveAttack/{c.FollowUp.ActionSpecId.Value}");
++                if(c.Approach!=null)return FormattableString.Invariant($"PLAN/{add.OwnerUnitId.Value}/Approach/{add.ActionSpecId.Value}");
+                 return FormattableString.Invariant($"N/{add.OwnerUnitId.Value}/{add.ActionSpecId.Value}");
+             }
+             var reaction = (ReactionCommandPayload)c.Request.Payload;
+@@ -158,10 +211,12 @@
+             }
+             long damageUtility = (original.DamageDeltaQ10 ?? 0) * weights.Damage, overkill = 0;
+             var targets = new List<AiTargetDefense>();
+-            if (candidate.Type == ActionType.Attack && context.ForecastSettings.ConsiderDefenses)
++            if ((candidate.Type == ActionType.Attack || candidate.FollowUp!=null) && context.ForecastSettings.ConsiderDefenses)
+             {
+                 if (!(forecast is IAiDefenseForecast defenses)) return original with { Score = null, Reason = "DEFENSE_FORECAST_UNAVAILABLE" };
+-                var replies = defenses.EvaluateDefenses(candidate.Request, context.ForecastSettings);
++                var replies = candidate.FollowUp!=null && forecast is IAiSequenceForecast sequences
++                    ?sequences.EvaluateSequenceDefenses(candidate.Request,candidate.FollowUp,context.ForecastSettings)
++                    :defenses.EvaluateDefenses(candidate.Request, context.ForecastSettings);
+                 var diagnostics = replies.Select(r => new AiDefenseEvaluation(r.Key, r.Defender.Value, r.SubmittedAfterTick,
+                     r.Request.Payload is ReactionCommandPayload p ? p.ReactionKind == ReactionCommandKind.Block ? ActionType.Block : ActionType.Dodge : ActionType.Guard,
+                     null, null, r.Outcome.RejectionCode, r.Outcome.Coverage, r.Outcome.RequiredThroughTick)).ToArray();
+--- a/Assets/Scripts/Logic/AI/AiTacticalCandidateBuilder.cs
++++ b/Assets/Scripts/Logic/AI/AiTacticalCandidateBuilder.cs
+@@ -10,7 +10,11 @@
+ 
+ namespace ProjectHero.Logic.AI
+ {
+-    public sealed record AiTacticalCandidate(string Key, ActionType Type, CommandRequest Request, bool IsReaction, int Cost);
++    public sealed record AiTacticalCandidate(string Key, ActionType Type, CommandRequest Request, bool IsReaction, int Cost)
++    {
++        public AiFollowUpAttack FollowUp { get; init; }
++        public AiApproachGoal Approach { get; init; }
++    }
+ 
+     /// <summary>Candidate generation has no policy weights. Every candidate still needs the authoritative preview.</summary>
+     public static class AiTacticalCandidateBuilder
+@@ -105,7 +109,7 @@
+             return result;
+         }
+ 
+-        private static GridDirection Aim(int dx, int dy)
++        internal static GridDirection Aim(int dx, int dy)
+         {
+             int best = 0; long bestDot = -1, bestLength = 1;
+             for (int d = 0; d < GridNeighborTable.DirectionCount; d++)
+--- a/Assets/Scripts/Logic/AI/AiTacticalPolicy.cs
++++ b/Assets/Scripts/Logic/AI/AiTacticalPolicy.cs
+@@ -35,6 +35,15 @@
+         public int AvailableResource { get; init; }
+         public long ResourceResetTick { get; init; }
+         public IReadOnlyList<AiTargetDefense> TargetDefenses { get; init; } = Array.Empty<AiTargetDefense>();
++        public string PlanKind { get; init; }
++        public string FollowUpSpecId { get; init; }
++        public long FollowUpTargetId { get; init; }
++        public long FirstStepEndTick { get; init; }
++        public long FollowUpRequestTick { get; init; } = -1;
++        public long FollowUpStartTick { get; init; } = -1;
++        public long PressureUtility { get; init; }
++        public long ApproachUtility { get; init; }
++        public bool IntentEligible { get; init; } = true;
+     }
+ 
+     public sealed record AiDefenseEvaluation(string Key, string Defender, long SubmittedAfterTick, ActionType Type,
+--- a/Assets/Scripts/Logic/Experiments/AiPolicyExperiment.cs
++++ b/Assets/Scripts/Logic/Experiments/AiPolicyExperiment.cs
+@@ -19,7 +19,8 @@
+ {
+     public enum AiPolicySituation { OpenAttack, VisibleThreat, Approach, GuardOnly, FundedReaction, UnfundedReaction, AlignedClash, EarlyInterrupt }
+     public sealed record AiPolicyExperimentInput(AiPolicyKind Policy, AiPolicySituation Situation,
+-        ulong Seed = 31, bool SwapSpawns = false, int MaxTicks = 160, AiSamplingSettings Sampling = null);
++        ulong Seed = 31, bool SwapSpawns = false, int MaxTicks = 160, AiSamplingSettings Sampling = null,AiShortPlanSettings ShortPlans = null,
++        int ApproachDistance=14);
+     public sealed record AiPolicyExperimentResult(AiPolicyExperimentInput Input, BattleDefinition Definition,
+         IReadOnlyList<AiDecision> Decisions, IReadOnlyList<LogicEvent> Events, BattleReplay Replay, IReadOnlyList<UnitSnapshot> FinalUnits);
+ 
+@@ -33,7 +34,7 @@
+             var encounter = d.Encounters[0];
+             var slots = encounter.Slots.ToArray();
+             if (input.Situation == AiPolicySituation.Approach)
+-                slots[1] = slots[1] with { InitialPosition = new GridPoint(14, 0) };
++                slots[1] = slots[1] with { InitialPosition = new GridPoint(input.ApproachDistance, 0) };
+             if (input.SwapSpawns)
+             {
+                 var position = slots[0].InitialPosition;
+@@ -42,7 +43,7 @@
+             }
+             var controllers = encounter.Controllers.Select(c => c.ControllerId == CombatExperimentDefinition.Controller(1)
+                 ? c with { SourceKind = CommandSourceKind.Ai, AiPolicy = input.Policy,
+-                    AiForecast = input.Sampling == null ? null : new AiForecastSettings(360, true, true, input.Sampling) } : c).ToArray();
++                    AiForecast = input.Sampling == null ? null : new AiForecastSettings(360, true, true, input.Sampling,input.ShortPlans) } : c).ToArray();
+             var permitted = input.Situation == AiPolicySituation.GuardOnly ? new[] { "guard" }
+                 : input.Situation == AiPolicySituation.FundedReaction || input.Situation == AiPolicySituation.UnfundedReaction ? new[] { "block", "dodge" }
+                 : new[] { "quick", "probe_blunt", "heavy", "guard", "move", "block", "dodge" };
+--- a/Assets/Scripts/Logic/Experiments/AiPressureEvidence.cs
++++ b/Assets/Scripts/Logic/Experiments/AiPressureEvidence.cs
+@@ -18,9 +18,13 @@
+             {
+                 yield return "D|" + F(d.DecisionTick) + "|" + d.Rng + "|" + d.NoSelectionReason + "|" + d.SamplingMemory;
+                 foreach (var e in d.Evaluations)
++                {
+                     yield return string.Join("|", new[] { "C", e.Key, F(e.Score), F(e.DamageDeltaQ10), F(e.IncomingDeltaQ10), F(e.Chosen),
+                         e.RejectionCode, F(e.ProbabilityBeforeQ32), F(e.ProbabilityAfterQ32), F(e.Sampled),
+                         F(e.DamageUtility), F(e.HealthUtility), F(e.ResourceUtility), F(e.SurvivalUtility) });
++                    if(result.Input.ShortPlans!=null)yield return string.Join("|",new[]{"P",e.Key,e.PlanKind,e.FollowUpSpecId,F(e.FollowUpTargetId),
++                        F(e.FirstStepEndTick),F(e.FollowUpRequestTick),F(e.FollowUpStartTick),F(e.PressureUtility),F(e.ApproachUtility),F(e.IntentEligible)});
++                }
+             }
+         }
+         static string F(object value) => Convert.ToString(value, CultureInfo.InvariantCulture);
+--- a/Assets/Scripts/Logic/Movement/LogicGridMovementPathCalculator.cs
++++ b/Assets/Scripts/Logic/Movement/LogicGridMovementPathCalculator.cs
+@@ -26,7 +26,7 @@
+     /// 因此"无路/越界/上限/溢出"都会令整批排程事务失败且零局部写入。</item>
+     /// </list>
+     /// </summary>
+-    public sealed class LogicGridMovementPathCalculator : IMovementPathCalculator
++    public sealed class LogicGridMovementPathCalculator : IMovementPathCalculator, ProjectHero.Logic.AI.IAiMovementPaths
+     {
+         private readonly LogicGrid _grid;
+         private readonly ActionScheduleAuthority _authority;
+@@ -49,6 +49,10 @@
+         public PathSearchRules SearchRules { get; }
+ 
+         public LogicPathfinder Pathfinder => _pathfinder;
++
++        public PathSearchResult FindAiPath(UnitId owner,GridPoint destination)
++            => _grid.TryGetAnchor(owner,out var from) ? _pathfinder.FindPath(from,destination,owner)
++                : PathSearchResult.FailedAtPreflight(PathSearchCodes.PATH_INVALID_START);
+ 
+         public MovementPathProjection Recompute(ActionPlan plan, long newStartTick, long deltaTicks)
+         {
+--- a/Assets/Scripts/Logic/Snapshots/AiForecastWorld.cs
++++ b/Assets/Scripts/Logic/Snapshots/AiForecastWorld.cs
+@@ -42,7 +42,7 @@
+ 
+ namespace ProjectHero.Logic.Snapshots
+ {
+-    internal sealed class AiForecastWorld : IAiDefenseForecast
++    internal sealed class AiForecastWorld : IAiSequenceForecast
+     {
+         internal const int LookaheadTicks = 120;
+         private readonly DecisionSnapshot _decision;
+@@ -55,21 +55,30 @@
+         public AiActionForecast Evaluate(CommandRequest request, AiForecastSettings settings = null)
+             => Run(request, settings);
+ 
++        public AiActionForecast EvaluateSequence(CommandRequest first,AiFollowUpAttack followUp,AiForecastSettings settings)
++            => Run(first,settings,followUp:followUp ?? throw new ArgumentNullException(nameof(followUp)));
++
+         private sealed record Reply(string Key, ControllerId Controller, long Boundary, CommandRequest Request, string RejectionCode, long DefenderUnitId);
+ 
+         public IReadOnlyList<AiDefenseForecast> EvaluateDefenses(CommandRequest attack, AiForecastSettings settings)
++            => EvaluateDefenseProtocol(attack,settings,null);
++
++        public IReadOnlyList<AiDefenseForecast> EvaluateSequenceDefenses(CommandRequest first,AiFollowUpAttack followUp,AiForecastSettings settings)
++            => EvaluateDefenseProtocol(first,settings,followUp);
++
++        private IReadOnlyList<AiDefenseForecast> EvaluateDefenseProtocol(CommandRequest attack,AiForecastSettings settings,AiFollowUpAttack followUp)
+         {
+             if (settings == null || settings.Validate() != null) throw new LogicDefinitionException("AI_FORECAST_SETTINGS_INVALID");
+             var replies = new List<Reply>();
+             var seen = new HashSet<string>(StringComparer.Ordinal);
+             var contexts = new HashSet<string>(StringComparer.Ordinal);
+-            var control = Run(attack, settings, observe: Collect);
++            var control = Run(attack, settings, observe: Collect,followUp:followUp);
+             if (control.RejectionCode != null || control.Coverage != AiForecastCoverage.Complete) return Array.Empty<AiDefenseForecast>();
+             return replies.OrderBy(r => r.Key, StringComparer.Ordinal).Select(r =>
+             {
+                 var outcome = r.RejectionCode != null ? new AiActionForecast(r.RejectionCode, control.HorizonTick,
+                     Array.Empty<UnitSnapshot>(), -1, 0, 0, Coverage: AiForecastCoverage.Rejected, ObservedThroughTick: r.Boundary + 1)
+-                    : Run(attack, settings, r);
++                    : Run(attack, settings, r,followUp:followUp);
+                 if (r.RejectionCode == null && outcome.RejectionCode != null) throw new LogicDefinitionException("AI_DEFENSE_ADMISSION_MISMATCH");
+                 return new AiDefenseForecast(r.Key, r.Controller, r.Boundary, r.Request, outcome) { DefenderUnitId = r.DefenderUnitId };
+             }).ToArray();
+@@ -136,7 +145,7 @@
+         }
+ 
+         private AiActionForecast Run(CommandRequest request, AiForecastSettings settings, Reply reply = null,
+-            Action<BattleSimulation, long> observe = null)
++            Action<BattleSimulation, long> observe = null,AiFollowUpAttack followUp=null)
+         {
+             if (settings?.Validate() is string invalid) throw new LogicDefinitionException(invalid);
+             using var world = _fork();
+@@ -146,12 +155,16 @@
+             long candidatePlanId = 0;
+             long coveragePlanId = 0;
+             long replyPlanId = 0;
++            long firstPlanId=0,firstEnd=0,followPlanId=0,followRequestTick=-1,followStart=-1;
+             var own = new HashSet<long>(_decision.ControlledUnitIds.Select(u => u.Value));
+             var hostile = new HashSet<long>(_decision.VisibleUnits.Where(u => own.Any(id =>
+                 _decision.Classify(new UnitId(id), new UnitId(u.UnitId)) == Factions.UnitRelation.Hostile)).Select(u => u.UnitId));
+             if (request != null)
+             {
+                 error = request.ValidateStaticStructure();
++                if(error==null && followUp!=null && (!(request.Payload is ScheduleEditPayload sequenceEdit)
++                    || sequenceEdit.Operations.Count!=1 || !(sequenceEdit.Operations[0] is AddOrdinaryPlanOperation firstAdd)
++                    || _decision.FindAction(firstAdd.ActionSpecId)?.Type!=ActionType.Move))error="AI_SEQUENCE_FIRST_STEP_NOT_MOVE";
+                 if (error == null && request.TargetTick != _decision.Tick + 1) error = "AI_FORECAST_TARGET_TICK";
+                 if (error == null && !(request.Payload is ScheduleEditPayload) && !(request.Payload is ReactionCommandPayload))
+                     error = CommandCodes.SCOPE_PAYLOAD_MISMATCH;
+@@ -197,15 +210,25 @@
+                         if (created != null)
+                         {
+                             candidatePlanId = created.ActionPlanId; start = created.StartTick; end = created.EndTick;
++                            if(followUp!=null){firstPlanId=created.ActionPlanId;firstEnd=created.EndTick;}
+                             var timing = world.Definition.FindAction(new ActionSpecId(created.ActionSpecId)).Timing as AttackTimingSpec;
+                             impact = timing == null ? 0 : end - timing.RecoveryTicks;
+                         }
+                     }
+                 }
++                if(followUp!=null && tick==followRequestTick)
++                {
++                    var rejected=result.Events.Events.OfType<CommandRejectedEvent>().FirstOrDefault();
++                    if(rejected!=null)return new AiActionForecast(rejected.ReasonCode,horizon,Array.Empty<UnitSnapshot>(),-1,0,0,
++                        Coverage:AiForecastCoverage.Rejected,ObservedThroughTick:world.Tick);
++                    var created=result.Events.Events.OfType<ActionPlanCreatedEvent>().LastOrDefault(e=>e.Origin==(int)ActionPlanOrigin.Ordinary);
++                    if(created==null)throw new LogicDefinitionException("AI_SEQUENCE_FOLLOW_UP_NOT_CREATED");
++                    followPlanId=coveragePlanId=candidatePlanId=created.ActionPlanId;followStart=created.StartTick;
++                }
+                 if (candidatePlanId != 0)
+                 {
+                     var plan = result.Snapshot.Plans.FirstOrDefault(p => p.ActionPlanId == candidatePlanId);
+-                    if (plan != null) { start = plan.StartTick; impact = plan.ImpactTick; end = plan.EndTick; }
++                    if (plan != null) { if(followPlanId==0)start = plan.StartTick;else followStart=plan.StartTick; impact = plan.ImpactTick; end = plan.EndTick; }
+                 }
+                 long after = result.Snapshot.Units.Where(u => hostile.Contains(u.UnitId)).Sum(u => (long)u.HealthQ10);
+                 if (firstHit < 0 && after < before) firstHit = tick;
+@@ -231,16 +254,46 @@
+                         return new AiActionForecast("AI_DEFENSE_INGRESS_REJECTED", horizon, Array.Empty<UnitSnapshot>(), -1, 0, 0,
+                             Coverage: AiForecastCoverage.Rejected, ObservedThroughTick: world.Tick);
+                 }
++                if(followUp!=null && firstPlanId!=0 && followRequestTick<0 && !world.IsEnded)
++                {
++                    var first=world.AiActionPlanLookup.FindPlan(new ActionPlanId(firstPlanId));
++                    firstEnd=first.EndTick;
++                    if(first.IsTerminal)
++                    {
++                        if(first.State!=ActionPlanState.Completed)return new AiActionForecast("AI_SEQUENCE_FIRST_STEP_TERMINATED",horizon,
++                            Array.Empty<UnitSnapshot>(),-1,0,0,Coverage:AiForecastCoverage.Rejected,ObservedThroughTick:world.Tick);
++                        var snapshot=world.DecisionSnapshotFor(_decision.ControllerId);
++                        var window=snapshot.OwnWindow;
++                        if(tick%AiTacticalPolicy.OrdinaryThinkInterval==0 && window!=null && window.IsOpen && window.IsAcceptingSubmissions && tick+1<window.EndTick)
++                        {
++                            var edit=((ScheduleEditPayload)request.Payload).Operations.OfType<AddOrdinaryPlanOperation>().Single();
++                            var actor=snapshot.VisibleUnits.FirstOrDefault(u=>u.UnitId==edit.OwnerUnitId.Value && u.IsAlive);
++                            var target=snapshot.VisibleUnits.FirstOrDefault(u=>u.UnitId==followUp.TargetUnitId.Value && u.IsAlive);
++                            if(actor==null || target==null)return new AiActionForecast("AI_SEQUENCE_TARGET_UNAVAILABLE",horizon,
++                                Array.Empty<UnitSnapshot>(),-1,0,0,Coverage:AiForecastCoverage.Rejected,ObservedThroughTick:world.Tick);
++                            var next=new CommandRequest(tick+1,new ScheduleEditScope(snapshot.ScheduleRevision,new WindowId(window.WindowId)),
++                                new ScheduleEditPayload(new ScheduleEditOperation[]{new AddOrdinaryPlanOperation(1,edit.OwnerUnitId,followUp.ActionSpecId,
++                                    PrimaryTargetUnitId:followUp.TargetUnitId,Facing:AiTacticalCandidateBuilder.Aim(target.X-actor.X,target.Y-actor.Y))}));
++                            var entry=world.CommandIngress.FindEntry(_decision.ControllerId);
++                            if(entry==null || entry.Submit(next)!=null)return new AiActionForecast("AI_SEQUENCE_INGRESS_REJECTED",horizon,
++                                Array.Empty<UnitSnapshot>(),-1,0,0,Coverage:AiForecastCoverage.Rejected,ObservedThroughTick:world.Tick);
++                            followRequestTick=tick+1;
++                        }
++                    }
++                }
+                 if (!world.IsEnded && candidatePlanId != 0) observe?.Invoke(world, candidatePlanId);
+             }
+             var candidatePlan = coveragePlanId == 0 ? null : world.AiActionPlanLookup.FindPlan(new ActionPlanId(coveragePlanId));
+             bool complete = request == null || world.IsEnded || candidatePlan?.IsTerminal == true;
++            if(followUp!=null)complete &= followPlanId!=0 && candidatePlan?.IsTerminal==true;
+             var replyPlan = replyPlanId == 0 ? null : world.AiActionPlanLookup.FindPlan(new ActionPlanId(replyPlanId));
+             if (reply != null && !world.IsEnded) complete &= replyPlan?.IsTerminal == true;
+             return new AiActionForecast(null, horizon, world.CurrentSnapshot.Units, firstHit, interrupted.Count, clashes.Count, start, impact, end,
+                 complete ? AiForecastCoverage.Complete : AiForecastCoverage.Uncovered, world.Tick,
+                 Math.Max(candidatePlan?.EndTick ?? 0, replyPlan?.EndTick ?? 0), candidatePlan == null ? 0 : (int)candidatePlan.TerminationReason)
+-                { ResourceExpiries = expiries.OrderBy(p => p.Key).Select(p => new AiResourceExpiry(p.Key, p.Value)).ToArray() };
++                { ResourceExpiries = expiries.OrderBy(p => p.Key).Select(p => new AiResourceExpiry(p.Key, p.Value)).ToArray(),
++                    FirstStepEndTick=firstEnd,FollowUpRequestTick=followRequestTick,FollowUpStartTick=followStart,
++                    SequenceCompleted=followUp!=null && complete };
+         }
+     }
+ }
+--- a/Assets/Tests/PlayMode/FormalAiSceneTests.cs
++++ b/Assets/Tests/PlayMode/FormalAiSceneTests.cs
+@@ -1,79 +1,97 @@
+-using System.Collections;
+-using System.Linq;
+-using System.Reflection;
+-using NUnit.Framework;
+-using ProjectHero.Logic.Combat;
+-using ProjectHero.Logic.Definitions;
+-using ProjectHero.Core.Compatibility.Runtime;
+-using ProjectHero.Logic.AI;
+-using ProjectHero.Logic.Replay;
+-using UnityEngine.TestTools;
+-
+-namespace ProjectHero.Tests.PlayMode
+-{
+-    public sealed class FormalAiSceneTests : ProductionRuntimeTestBase
+-    {
+-        protected override bool UseLegacyComparisonScene => false;
+-        [UnityTest]
+-        public IEnumerator FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent()
+-            => RunScene(false);
+-
+-        [UnityTest]
+-        public IEnumerator FormalEnemyDefenseAwareHybridUsesProductionClockAndReplaysFromSceneContent()
+-            => RunScene(true);
+-
+-        [UnityTest]
+-        public IEnumerator CautiousEnemyApproachesThroughProductionClockAndReplaysFromSceneContent()
+-            => RunScene(true, true);
+-
+-        [UnityTest]
+-        public IEnumerator MixedFormalPoliciesShareProductionClockAndReplayBothControllers()
+-            => RunScene(true, true, true);
+-
+-        IEnumerator RunScene(bool defenses, bool approach = false, bool mixed = false)
+-        {
+-            yield return LoadMainScene();
+-            Bootstrap.StopBattle("hybrid-test-prepare"); Bootstrap.ReleaseBattle();
+-            var field = Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic);
+-            var original = ((IBattleSimulationSource)field.GetValue(Bootstrap)).BuildSeed();
+-            var d = original.Definition;
+-            var encounters = d.Encounters.Select(e => e with { Controllers = e.Controllers.Select(c =>
+-                mixed ? c with { SourceKind = CommandSourceKind.Ai,
+-                    AiPolicy = c.ControlledSlots.Any(s => s.Value == "hero") ? AiPolicyKind.SustainedOffense : AiPolicyKind.CautiousDefense,
+-                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360, true, true) }
+-                : c.SourceKind == CommandSourceKind.Ai ? c with { AiPolicy = approach ? AiPolicyKind.CautiousDefense : AiPolicyKind.SustainedOffense,
+-                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360, defenses, approach) } : c).ToArray() }).ToArray();
+-            // Explicit scene-test envelope; every action, unit, shape and rule comes from the real scene source.
+-            var hash = BattleDefinitionHash.Compute(d.RulesVersion, d.TicksPerSecond, 0, d.Rules, d.ConcurrentAction,
+-                d.ReactionRules, d.AdrenalineRules, d.FactionModel, d.DamageChannels, d.ImpactProfiles, d.Units, d.Actions,
+-                d.AttackPatterns, d.Volumes, d.MovementPatterns, d.ActionSets, d.StatusEffects, encounters, d.DefaultDynamicSpawnPolicy);
+-            var definition = d with { Encounters = encounters, BattleDefinitionHashValue = hash };
+-            var source = NewGameObject("FormalHybridTestSource").AddComponent<Task11SceneScenarioSource>();
+-            source.Seed = new BattleSimulationSeed(definition, original.EncounterId, original.RuntimeInputs, "formal hybrid scene test");
+-            field.SetValue(Bootstrap, source);
+-            // A fully autonomous clock test has no Player entry to bind to the scene's player HUD.
+-            // Player presentation remains covered by the other real-scene cases in this fixture.
+-            if (mixed) Bootstrap.GetType().GetField("_viewConsumerSlot", BindingFlags.Instance | BindingFlags.NonPublic)
+-                .SetValue(Bootstrap, null);
+-            Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
+-            bool executed = false;
+-            for (int tick = 0; tick < 360; tick++)
+-            {
+-                Bootstrap.Clock.ResumeTactically(); Bootstrap.DriveFrameForTests(0, 1f / 60);
+-                executed |= Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Any(c => c.Behavior?.Ordinary.PlanId > 0);
+-            }
+-            Assert.That(executed, Is.True);
+-            if (mixed)
+-            {
+-                Assert.That(Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Count, Is.EqualTo(2));
+-                Assert.That(Bootstrap.NewDriver.CurrentSnapshot.AiControllers.All(c => c.DecisionCount > 0), Is.True);
+-            }
+-            Assert.That(BattleRuntimeBootstrap.EnumerateLiveInstances().Count(b => b.OwnsTopLevelClock), Is.EqualTo(1));
+-            var replay = Bootstrap.NewDriver.RecordedReplay; Assert.That(replay.Submissions, Is.Empty);
+-            using var player = new ReplayPlayer(definition); player.Load(replay); player.Play();
+-            while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
+-            Assert.That(player.Deviation, Is.Null);
+-            Bootstrap.StopBattle("hybrid-test-complete"); Bootstrap.ReleaseBattle();
+-        }
+-    }
+-}
++using System.Collections;
++using System.Linq;
++using System.Reflection;
++using NUnit.Framework;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Core.Compatibility.Runtime;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Replay;
++using UnityEngine.TestTools;
++
++namespace ProjectHero.Tests.PlayMode
++{
++    public sealed class FormalAiSceneTests : ProductionRuntimeTestBase
++    {
++        protected override bool UseLegacyComparisonScene => false;
++        [UnityTest]
++        public IEnumerator FormalEnemyHybridUsesProductionClockAndReplaysFromSceneContent()
++            => RunScene(false);
++
++        [UnityTest]
++        public IEnumerator FormalEnemyDefenseAwareHybridUsesProductionClockAndReplaysFromSceneContent()
++            => RunScene(true);
++
++        [UnityTest]
++        public IEnumerator CautiousEnemyApproachesThroughProductionClockAndReplaysFromSceneContent()
++            => RunScene(true, true);
++
++        [UnityTest]
++        public IEnumerator MixedFormalPoliciesShareProductionClockAndReplayBothControllers()
++            => RunScene(true, true, true);
++
++        [UnityTest]
++        public IEnumerator ShortPlansUseProductionClockAndReplayBothControllers()
++            => RunScene(true, true, true, true);
++
++        IEnumerator RunScene(bool defenses, bool approach = false, bool mixed = false, bool shortPlans = false)
++        {
++            yield return LoadMainScene();
++            Bootstrap.StopBattle("hybrid-test-prepare"); Bootstrap.ReleaseBattle();
++            var field = Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic);
++            var original = ((IBattleSimulationSource)field.GetValue(Bootstrap)).BuildSeed();
++            var d = original.Definition;
++            var encounters = d.Encounters.Select(e => e with { Controllers = e.Controllers.Select(c =>
++                mixed ? c with { SourceKind = CommandSourceKind.Ai,
++                    AiPolicy = c.ControlledSlots.Any(s => s.Value == "hero") ? AiPolicyKind.SustainedOffense : AiPolicyKind.CautiousDefense,
++                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360, true, true,
++                        shortPlans ? new AiSamplingSettings(SignedDamage:true,HealthDefense:true) : null,
++                        shortPlans ? new AiShortPlanSettings() : null) }
++                : c.SourceKind == CommandSourceKind.Ai ? c with { AiPolicy = approach ? AiPolicyKind.CautiousDefense : AiPolicyKind.SustainedOffense,
++                    AiExecution = AiExecutionKind.UtilityBehaviorTree, AiForecast = new AiForecastSettings(360, defenses, approach) } : c).ToArray() }).ToArray();
++            // Explicit scene-test envelope; every action, unit, shape and rule comes from the real scene source.
++            var hash = BattleDefinitionHash.Compute(d.RulesVersion, d.TicksPerSecond, 0, d.Rules, d.ConcurrentAction,
++                d.ReactionRules, d.AdrenalineRules, d.FactionModel, d.DamageChannels, d.ImpactProfiles, d.Units, d.Actions,
++                d.AttackPatterns, d.Volumes, d.MovementPatterns, d.ActionSets, d.StatusEffects, encounters, d.DefaultDynamicSpawnPolicy);
++            var definition = d with { Encounters = encounters, BattleDefinitionHashValue = hash };
++            var source = NewGameObject("FormalHybridTestSource").AddComponent<Task11SceneScenarioSource>();
++            source.Seed = new BattleSimulationSeed(definition, original.EncounterId, original.RuntimeInputs, "formal hybrid scene test");
++            field.SetValue(Bootstrap, source);
++            // A fully autonomous clock test has no Player entry to bind to the scene's player HUD.
++            // Player presentation remains covered by the other real-scene cases in this fixture.
++            if (mixed) Bootstrap.GetType().GetField("_viewConsumerSlot", BindingFlags.Instance | BindingFlags.NonPublic)
++                .SetValue(Bootstrap, null);
++            Assert.That(Bootstrap.StartBattle(BattleRuntimeMode.New), Is.True, Bootstrap.StartupRejection);
++            long initialHealth = Bootstrap.NewDriver.CurrentSnapshot.Units.Sum(u => (long)u.HealthQ10);
++            bool executed = false;
++            for (int tick = 0; tick < 360; tick++)
++            {
++                Bootstrap.Clock.ResumeTactically(); Bootstrap.DriveFrameForTests(0, 1f / 60);
++                executed |= Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Any(c => c.Behavior?.Ordinary.PlanId > 0);
++            }
++            Assert.That(executed, Is.True);
++            if (mixed)
++            {
++                Assert.That(Bootstrap.NewDriver.CurrentSnapshot.AiControllers.Count, Is.EqualTo(2));
++                Assert.That(Bootstrap.NewDriver.CurrentSnapshot.AiControllers.All(c => c.DecisionCount > 0), Is.True);
++            }
++            Assert.That(BattleRuntimeBootstrap.EnumerateLiveInstances().Count(b => b.OwnsTopLevelClock), Is.EqualTo(1));
++            var replay = Bootstrap.NewDriver.RecordedReplay; Assert.That(replay.Submissions, Is.Empty);
++            if (shortPlans)
++            {
++                long healthLoss = initialHealth - Bootstrap.NewDriver.CurrentSnapshot.Units.Sum(u => (long)u.HealthQ10);
++                TestContext.WriteLine("SHORT_PLAN_SCENE observedTick=" + Bootstrap.NewDriver.CurrentSnapshot.Tick
++                    + " healthLossQ10=" + healthLoss);
++                // Recorder stores canonical StoredReplayEvent values, not the original concrete event types.
++                var facts = replay.Records.SelectMany(r => r.Events).Select(ReplayEventComparison.Canonical).ToArray();
++                Assert.That(facts.Any(e => e.StartsWith(typeof(ProjectHero.Logic.Events.CommandRejectedEvent).FullName + "{", System.StringComparison.Ordinal)
++                    || e.StartsWith(typeof(ProjectHero.Logic.Events.CommandIngressRejectedEvent).FullName + "{", System.StringComparison.Ordinal)), Is.False);
++                Assert.That(healthLoss, Is.GreaterThan(0));
++            }
++            using var player = new ReplayPlayer(definition); player.Load(replay); player.Play();
++            while (!player.IsComplete && player.Deviation == null) player.AdvanceOneTick();
++            Assert.That(player.Deviation, Is.Null);
++            Bootstrap.StopBattle("hybrid-test-complete"); Bootstrap.ReleaseBattle();
++        }
++    }
++}
+--- /dev/null
++++ b/Assets/Scripts/Editor/ShortPlanMatchupTools.cs
+@@ -0,0 +1,318 @@
++using System;
++using System.Collections.Generic;
++using System.Diagnostics;
++using System.Globalization;
++using System.IO;
++using System.IO.Compression;
++using System.Linq;
++using System.Security.Cryptography;
++using System.Text;
++using System.Threading.Tasks;
++using ProjectHero.Authoring;
++using ProjectHero.Core.Compatibility.Authoring;
++using ProjectHero.Core.Compatibility.Runtime;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Events;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Initialization;
++using ProjectHero.Logic.Replay;
++using ProjectHero.Logic.Resources;
++using ProjectHero.Logic.Simulation;
++using ProjectHero.Logic.Snapshots;
++#if !PROJECT_HERO_STANDALONE
++using UnityEditor.SceneManagement;
++#endif
++using Debug = UnityEngine.Debug;
++using JsonUtility = UnityEngine.JsonUtility;
++
++namespace ProjectHero.Editor
++{
++    /// <summary>Task 21: formal-content ordered matchups, distance expansion and independent replay audit.</summary>
++    public static class ShortPlanMatchupTools
++    {
++        public static string Root => "优化任务/执行记录/短组合规划-2026-11-13/" + (Environment.GetEnvironmentVariable("HERO23_BATCH") ?? "formal");
++        [Serializable] public sealed class Input
++        {
++            public string protocol = "short-plan-matchup-v1", sourceHash, definitionHash, sourceFingerprint, contentFingerprint;
++            public int heroPolicy, enemyPolicy, layout, maxTicks = 3600, metaResource; public bool mirror; public long seed;
++            public string stage = "P"; public int temperature = 1000, topP = 1000, seedOffset;
++            public string Pair => ((AiPolicyKind)heroPolicy) + "-vs-" + ((AiPolicyKind)enemyPolicy);
++            public string Id => stage + "-T" + temperature + "-P" + topP + "-seed" + seedOffset + "-" + Pair + "-" + (FormalAiLayout)layout + "-mirror" + (mirror ? 1 : 0);
++        }
++        static readonly AiPolicyKind[] Policies = { AiPolicyKind.SustainedOffense, AiPolicyKind.SeekInterrupt, AiPolicyKind.CautiousDefense };
++        static IEnumerable<Input> Matrix() => from hero in Policies from enemy in Policies
++            from layout in new[] { FormalAiLayout.Near, FormalAiLayout.Main, FormalAiLayout.Far }
++            from mirror in new[] { false, true }
++            from stage in (Environment.GetEnvironmentVariable("HERO23_STAGES") ?? "P").Split(',')
++            select new Input { heroPolicy = (int)hero, enemyPolicy = (int)enemy, layout = (int)layout, mirror = mirror, stage = stage,
++                temperature = IntEnv("HERO23_TEMPERATURE", 1000), topP = IntEnv("HERO23_TOPP", 1000), seedOffset = IntEnv("HERO23_SEED_OFFSET", 0) };
++        static int IntEnv(string key, int fallback) => int.TryParse(Environment.GetEnvironmentVariable(key), out var value) ? value : fallback;
++        static BattleSimulationSeed Source()
++        {
++#if PROJECT_HERO_STANDALONE
++            return FormalAiSourceExport.Seed();
++#else
++            var scene = EditorSceneManager.OpenScene("Assets/Scenes/CombatSampleScene.unity", OpenSceneMode.Single);
++            var source = scene.GetRootGameObjects().SelectMany(g => g.GetComponentsInChildren<NewBattleSimulationSource>(true)).Single();
++            return source.BuildSeed() ?? throw new InvalidOperationException(source.LastConfigurationError);
++#endif
++        }
++        static BattleDefinition Build(BattleSimulationSeed source, Input i)
++            => FormalAiMatchup.Build(source.Definition, (AiPolicyKind)i.heroPolicy, (AiPolicyKind)i.enemyPolicy, (FormalAiLayout)i.layout, i.mirror,
++                new AiForecastSettings(360, true, true, new AiSamplingSettings(i.temperature, TopPMilli: i.topP,
++                    SignedDamage:true, HealthDefense:true),i.stage=="P"?new AiShortPlanSettings():null));
++        static BattleRuntimeInputs Runtime(BattleSimulationSeed source, Input input)
++            => new(unchecked(source.RuntimeInputs.InitialRngSeed + (ulong)input.seedOffset), source.RuntimeInputs.InitialMetaResource);
++        static void Stamp(Input input, BattleSimulationSeed source, BattleDefinition definition, string code, string content)
++        {
++            input.sourceHash = source.BattleDefinitionHash; input.definitionHash = definition.BattleDefinitionHashValue;
++            input.sourceFingerprint = code; input.contentFingerprint = content;
++            input.seed = unchecked((long)Runtime(source, input).InitialRngSeed); input.metaResource = source.RuntimeInputs.InitialMetaResource;
++        }
++        static void VerifyInput(Input expected, string path)
++        {
++            var saved = JsonUtility.FromJson<Input>(File.ReadAllText(path));
++            if (JsonUtility.ToJson(saved) != JsonUtility.ToJson(expected)) throw new InvalidOperationException("MATCHUP_INPUT_CHANGED: " + path);
++        }
++        static long Distance(LogicSnapshot snapshot)
++        {
++            var u = snapshot.Units.OrderBy(x => x.UnitId).ToArray();
++            return Math.Abs((long)u[0].X - u[1].X) + Math.Abs((long)u[0].Y - u[1].Y);
++        }
++        const string Header = "case,pair,layout,mirror,ticks,ended,result,heroHealthQ10,enemyHealthQ10,commands,rejections,attackStarts,movesStarted,hits,healthLossQ10,initialDistance,minimumDistance,finalDistance,firstDamageTick,lastDamageTick,lastCommandTick,lastProgressTick,goalMoves,uncoveredEvaluations,definitionHash";
++        const string CandidateHeader = "tick,controller,policy,key,type,chosen,score,reason,rejection,damageQ10,incomingQ10,progress,noDefenseScore,noDefenseDamageQ10,worstDefense,defenseCount,start,impact,end,coverage,group,probabilityBeforeQ32,probabilityAfterQ32,sampled,damageUtility,healthUtility,resourceUtility,survivalUtility,overkillQ10,targets,actorHealthQ10,actorMaximumHealthQ10,availableResource,resourceResetTick,planKind,followUpSpec,followUpTarget,firstStepEnd,followUpRequest,followUpStart,pressureUtility,approachUtility,intentEligible";
++        const string DecisionHeader = "tick,controller,policy,selected,reason,candidates,bestScore,ordinaryCursor,reactionCursor,opportunities,drawCount,sampledKeys,submittedKey";
++        const string CheckpointHeader = "tick,ended,heroHealthQ10,enemyHealthQ10,healthLossQ10,attackStarts,hits,commands,minimumDistance,finalDistance,lastDamageTick";
++
++        sealed class Metrics
++        {
++            public int Commands, Rejections, AttackStarts, MovesStarted, Hits, GoalMoves, Uncovered;
++            public long HealthLoss, FirstDamage = -1, LastDamage = -1, LastCommand = -1, LastProgress = -1, FirstWindowOwner;
++            public long InitialDistance, MinimumDistance, FinalDistance;
++            readonly long heroId, enemyId;
++            readonly SortedDictionary<string, int> waits = new(StringComparer.Ordinal);
++            readonly SortedDictionary<string, long[]> actions = new(StringComparer.Ordinal);
++            readonly SortedDictionary<long, long[]> resources = new();
++            public readonly List<string> Checkpoints = new() { CheckpointHeader };
++            public Metrics(BattleDefinition d, BattleSimulationSeed source, LogicSnapshot snapshot)
++            {
++                var initial = BattleInitializer.BuildInitialState(d, source.EncounterId, source.RuntimeInputs);
++                heroId = initial.SlotToUnitId[new EncounterSlotId("hero")].Value;
++                enemyId = initial.SlotToUnitId[new EncounterSlotId("enemy")].Value;
++                InitialDistance = MinimumDistance = FinalDistance = Distance(snapshot);
++                foreach (var u in snapshot.Units) resources.Add(u.UnitId, new long[5]);
++            }
++            long[] Action(long owner, string id)
++            {
++                string key = owner + ":" + id;
++                if (!actions.TryGetValue(key, out var values)) actions.Add(key, values = new long[3]);
++                return values;
++            }
++            public void Step(BattleSimulation sim, LogicSnapshot before, IReadOnlyList<LogicEvent> events)
++            {
++                long tick = sim.Tick; var snapshot = sim.CurrentSnapshot;
++                int commands = sim.LastCommandSet.Envelopes.Count; Commands += commands; if (commands > 0) LastCommand = tick;
++                foreach (var e in events)
++                {
++                    if (e is CommandRejectedEvent || e is CommandIngressRejectedEvent) Rejections++;
++                    if (e is TurnWindowOpenedEvent window && FirstWindowOwner == 0) FirstWindowOwner = window.OwnerUnitId.Value;
++                    if (e is ActionPlanLockedEvent started)
++                    {
++                        var plan = sim.AiActionPlanLookup.FindPlan(new ActionPlanId(started.ActionPlanId));
++                        Action(started.OwnerUnitId, plan.ActionSpecId.Value)[0]++;
++                        if (plan.ActionType == ActionType.Attack) AttackStarts++;
++                        if (plan.ActionType == ActionType.Move) MovesStarted++;
++                    }
++                    if (e is DamageChannelResolvedEvent damage && damage.AfterBlockDamageQ10 > 0)
++                    {
++                        Hits++; var plan = sim.AiActionPlanLookup.FindPlan(damage.AttackPlanId);
++                        var totals = Action(damage.AttackerUnitId.Value, plan.ActionSpecId.Value);
++                        totals[1]++; totals[2] += damage.AfterBlockDamageQ10;
++                    }
++                    if (e is AdrenalineLedgerChangedEvent resource)
++                    {
++                        var totals = resources[resource.UnitId.Value];
++                        if (resource.ChangeKind == AdrenalineChangeKind.Accrued) totals[0] += resource.AvailableAfter - resource.AvailableBefore;
++                        if (resource.ChangeKind == AdrenalineChangeKind.Consumed) totals[1] += resource.ReservationAmount;
++                        if (resource.ChangeKind == AdrenalineChangeKind.CycleReset) { totals[2] += resource.AvailableBefore; totals[3]++; }
++                        if (resource.ChangeKind == AdrenalineChangeKind.Refunded) totals[4] += resource.AvailableAfter - resource.AvailableBefore;
++                    }
++                }
++                long loss = snapshot.Units.Sum(u => Math.Max(0L, before.Units.Single(b => b.UnitId == u.UnitId).HealthQ10 - u.HealthQ10));
++                HealthLoss += loss;
++                bool moved = snapshot.Units.Any(u => before.Units.Any(b => b.UnitId == u.UnitId && (b.X != u.X || b.Y != u.Y)));
++                if (loss > 0) { if (FirstDamage < 0) FirstDamage = tick; LastDamage = tick; }
++                if (loss > 0 || moved) LastProgress = tick;
++                FinalDistance = Distance(snapshot); MinimumDistance = Math.Min(MinimumDistance, FinalDistance);
++                long elapsed = tick + 1;
++                if (elapsed == 240 || elapsed == 900 || elapsed == 1800 || elapsed == 3600 || sim.IsEnded)
++                    Checkpoints.Add(Csv(elapsed, sim.IsEnded, Health(snapshot, heroId), Health(snapshot, enemyId), HealthLoss,
++                        AttackStarts, Hits, Commands, MinimumDistance, FinalDistance, LastDamage));
++            }
++            public void Decisions(ProductionBattleComposition comp, long tick, Action<string> candidate, Action<string> decision)
++            {
++                foreach (var ai in comp.AiControllers)
++                {
++                    string controller = ai.RegisteredControllerIds[0]; var value = ai.LastDecisionOf(controller);
++                    if (value?.DecisionTick != tick) continue;
++                    var scores = value.Evaluations.Where(e => e.Score.HasValue).Select(e => e.Score.Value).ToArray();
++                    decision(Csv(tick, controller, value.Policy, value.HasSelection, value.NoSelectionReason,
++                        value.Evaluations.Count, scores.Length == 0 ? (long?)null : scores.Max(), value.Behavior?.Ordinary.Cursor, value.Behavior?.Reaction.Cursor,
++                        value.SamplingMemory?.OpportunityKey, value.SamplingMemory?.DrawCount,
++                        string.Join(";", value.Evaluations.Where(e => e.Sampled).Select(e => e.Key)), value.Evaluations.FirstOrDefault(e => e.Chosen)?.Key));
++                    if (!value.HasSelection)
++                    {
++                        string key = controller + ":" + (value.NoSelectionReason ?? "UNSPECIFIED");
++                        waits.TryGetValue(key, out int count); waits[key] = count + 1;
++                    }
++                    foreach (var e in value.Evaluations)
++                    {
++                        if (e.Chosen && e.Reason == AiApproachPolicy.SelectedReason) GoalMoves++;
++                        if (e.Coverage == AiForecastCoverage.Uncovered) Uncovered++;
++                        candidate(Csv(tick, controller, value.Policy, e.Key, e.Type, e.Chosen, e.Score, e.Reason,
++                            e.RejectionCode, e.DamageDeltaQ10, e.IncomingDeltaQ10, e.PositionProgress, e.NoDefenseScore,
++                            e.NoDefenseDamageDeltaQ10, e.WorstDefenseKey, e.DefenseResponses.Count, e.StartTick, e.ImpactTick, e.EndTick, e.Coverage,
++                            e.SampleGroup, e.ProbabilityBeforeQ32, e.ProbabilityAfterQ32, e.Sampled, e.DamageUtility, e.HealthUtility, e.ResourceUtility,
++                            e.SurvivalUtility, e.OverkillQ10, string.Join(";", e.TargetDefenses.Select(t => FormattableString.Invariant($"{t.UnitId}:{t.DamageQ10}:{t.LegalReaction}:{t.GuardDamageQ10}:{t.OverkillQ10}"))),
++                            e.ActorHealthQ10, e.ActorMaximumHealthQ10, e.AvailableResource, e.ResourceResetTick,e.PlanKind,e.FollowUpSpecId,e.FollowUpTargetId,
++                            e.FirstStepEndTick,e.FollowUpRequestTick,e.FollowUpStartTick,e.PressureUtility,e.ApproachUtility,e.IntentEligible));
++                    }
++                }
++            }
++            static long Health(LogicSnapshot s, long id) => s.Units.Single(u => u.UnitId == id).HealthQ10;
++            public string Row(Input i, BattleSimulation sim) => Csv(i.Id, i.Pair, (FormalAiLayout)i.layout, i.mirror, sim.Tick + 1,
++                sim.IsEnded, sim.CurrentSnapshot.BattleEnd.ResultCode, Health(sim.CurrentSnapshot, heroId), Health(sim.CurrentSnapshot, enemyId),
++                Commands, Rejections, AttackStarts, MovesStarted, Hits, HealthLoss, InitialDistance, MinimumDistance, FinalDistance,
++                FirstDamage, LastDamage, LastCommand, LastProgress, GoalMoves, Uncovered, i.definitionHash);
++            public string Waits() => "controller:reason,decisionTicks\n" + string.Join("\n", waits.Select(p => Csv(p.Key, p.Value))) + "\n";
++            public string Actions() => "unit:action,starts,positiveDamageContacts,resolvedDamageQ10\n" + string.Join("\n", actions.Select(p => Csv(p.Key, p.Value[0], p.Value[1], p.Value[2]))) + "\n";
++            public string Resources() => "unit,actualAccrued,consumed,expiredAtCycleReset,cycles,refunded\n" + string.Join("\n", resources.Select(p => Csv(p.Key, p.Value[0], p.Value[1], p.Value[2], p.Value[3], p.Value[4]))) + "\n";
++            public string Owners() => Csv(heroId, enemyId, FirstWindowOwner) + "\n";
++        }
++
++        public static void Pilot() => Generate(Matrix().Where(i=>!i.mirror && (i.heroPolicy==i.enemyPolicy && i.layout==(int)FormalAiLayout.Near
++            || i.heroPolicy==(int)AiPolicyKind.CautiousDefense && i.enemyPolicy==(int)AiPolicyKind.CautiousDefense && i.layout==(int)FormalAiLayout.Far))
++            .Select(i=>{i.maxTicks=600;return i;}));
++        public static void Scan() => Generate(Matrix().Where(i => !i.mirror && i.heroPolicy == i.enemyPolicy));
++        public static void Run() => Generate(Matrix());
++        static void Generate(IEnumerable<Input> matrix)
++        {
++            Directory.CreateDirectory(Root + "/cases"); var source = Source(); string code = SourceFingerprint(), content = FormalAiBaselineTools.ContentFingerprint();
++            Parallel.ForEach(matrix, new ParallelOptions { MaxDegreeOfParallelism = Workers }, input =>
++            {
++                var d = Build(source, input); Stamp(input, source, d, code, content); string path = Root + "/cases/" + input.Id;
++                if (File.Exists(path + ".input.json")) { VerifyInput(input, path + ".input.json"); Debug.Log("MATCHUP_REUSED " + input.Id); return; }
++                var stopwatch = Stopwatch.StartNew();
++                var runtime = Runtime(source, input);
++                var comp = new ProductionBattleComposition(d, source.EncounterId, runtime);
++                using var sim = BattleSimulation.Create(d, source.EncounterId, runtime, comp.Assembly); comp.Attach(sim);
++                var metrics = new Metrics(d, source, sim.CurrentSnapshot); var recorder = new ReplayRecorder(sim);
++                using (var candidates = Gzip(path + ".candidates.csv.gz"))
++                using (var decisions = Gzip(path + ".decisions.csv.gz"))
++                using (var events = Gzip(path + ".events.csv.gz"))
++                {
++                    candidates.WriteLine(CandidateHeader); decisions.WriteLine(DecisionHeader); events.WriteLine("tick,event");
++                    for (long tick = 0; tick < input.maxTicks && !sim.IsEnded; tick++)
++                    {
++                        var before = sim.CurrentSnapshot; recorder.CaptureBeforeStep();
++                        var step = sim.Step(tick, sim.CommandIngress.FreezeTick(tick)); recorder.RecordCommittedStep(step);
++                        metrics.Step(sim, before, step.Events.Events); metrics.Decisions(comp, tick, candidates.WriteLine, decisions.WriteLine);
++                        foreach (var e in step.Events.Events) events.WriteLine(Csv(tick, ReplayEventComparison.Canonical(e)));
++                        if ((tick + 1) % 300 == 0) Debug.Log("MATCHUP_PROGRESS " + input.Id + " ticks=" + (tick + 1));
++                    }
++                }
++                var replay = recorder.BuildReplay(); if (replay.Submissions.Count != 0) throw new InvalidOperationException("MATCHUP_EXTERNAL_INPUT");
++                using (var file = File.Create(path + ".heroReplay")) ReplayFile.Save(file, replay);
++                WriteMetrics(path, input, sim, metrics, false);
++                File.WriteAllText(path + ".timing.txt", "diagnosticWallSeconds=" + stopwatch.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture) + "\n", Encoding.UTF8);
++                File.WriteAllText(path + ".input.json", JsonUtility.ToJson(input, true), Encoding.UTF8);
++                Debug.Log("MATCHUP_COMPLETE " + input.Id + " ticks=" + replay.Records.Count + " lossQ10=" + metrics.HealthLoss + " rejections=" + metrics.Rejections);
++            });
++            var rows = Matrix().Select(i => Root + "/cases/" + i.Id + ".summary.csv").Where(File.Exists).OrderBy(p => p, StringComparer.Ordinal)
++                .Select(p => File.ReadAllLines(p)[1]);
++            File.WriteAllText(Root + "/summary.csv", Header + "\n" + string.Join("\n", rows) + "\n", Encoding.UTF8);
++        }
++        static void WriteMetrics(string path, Input input, BattleSimulation sim, Metrics metrics, bool compare)
++        {
++            CheckOrWrite(path + ".summary.csv", Header + "\n" + metrics.Row(input, sim) + "\n", compare);
++            CheckOrWrite(path + ".checkpoints.csv", string.Join("\n", metrics.Checkpoints) + "\n", compare);
++            CheckOrWrite(path + ".waits.csv", metrics.Waits(), compare); CheckOrWrite(path + ".actions.csv", metrics.Actions(), compare);
++            CheckOrWrite(path + ".resources.csv", metrics.Resources(), compare);
++            CheckOrWrite(path + ".owners.csv", "heroUnit,enemyUnit,firstWindowOwner\n" + metrics.Owners(), compare);
++        }
++        public static void Audit() => AuditMatrix(Root + "/cases", Directory.GetFiles(Root + "/cases", "*.input.json")
++            .OrderBy(p => p, StringComparer.Ordinal).Select(p => JsonUtility.FromJson<Input>(File.ReadAllText(p))), false);
++        public static void AuditUnityReference()
++            => AuditMatrix("优化任务/执行记录/短组合规划-2026-11-13/unity-reference/cases", Directory.GetFiles("优化任务/执行记录/短组合规划-2026-11-13/unity-reference/cases", "*.input.json")
++                .OrderBy(p => p, StringComparer.Ordinal).Select(p => JsonUtility.FromJson<Input>(File.ReadAllText(p))), true);
++        [Serializable] sealed class SourceSeal { public string fingerprint; }
++        static void AuditMatrix(string folder, IEnumerable<Input> matrix, bool reference)
++        {
++            var source = Source(); string code = SourceFingerprint(), content = FormalAiBaselineTools.ContentFingerprint();
++            int cases = 0; long ticks = 0;
++            Parallel.ForEach(matrix, new ParallelOptions { MaxDegreeOfParallelism = Workers }, input =>
++            {
++                var d = Build(source, input); Stamp(input, source, d, code, content); string path = folder + "/" + input.Id;
++                VerifyInput(input, path + ".input.json"); using var file = File.OpenRead(path + ".heroReplay"); var replay = ReplayFile.Load(file, d);
++                if (replay.Submissions.Count != 0) throw new InvalidOperationException("MATCHUP_REPLAY_HAS_EXTERNAL_INPUT");
++                string error = ReplayHeaderValidation.Validate(replay.Header, d);
++                if (error != null || replay.Records.Count > input.maxTicks) throw new InvalidOperationException("MATCHUP_REPLAY_HEADER: " + error);
++                var comp = new ProductionBattleComposition(d, replay.Header.EncounterId, replay.Header.RuntimeInputs);
++                using var sim = BattleSimulation.Create(d, replay.Header.EncounterId, replay.Header.RuntimeInputs, comp.Assembly); comp.Attach(sim);
++                var metrics = new Metrics(d, source, sim.CurrentSnapshot);
++                using var candidates = ReadGzip(path + ".candidates.csv.gz"); using var decisions = ReadGzip(path + ".decisions.csv.gz");
++                using var events = ReadGzip(path + ".events.csv.gz");
++                EqualLine(candidates, CandidateHeader); EqualLine(decisions, DecisionHeader); EqualLine(events, "tick,event");
++                foreach (var expected in replay.Records)
++                {
++                    if (expected.Tick != sim.Tick + 1 || sim.IsEnded) throw new InvalidOperationException("MATCHUP_REPLAY_TICK_SEQUENCE");
++                    var before = sim.CurrentSnapshot; var actual = sim.Step(expected.Tick, sim.CommandIngress.FreezeTick(expected.Tick));
++                    if (actual.Events.Count != expected.Events.Count || actual.Snapshot.ComputeHash() != expected.SnapshotHash)
++                        throw new InvalidOperationException("MATCHUP_REPLAY_DEVIATION: " + input.Id + " tick=" + expected.Tick);
++                    for (int e = 0; e < actual.Events.Count; e++)
++                        if (ReplayEventComparison.Canonical(actual.Events.Events[e]) != ReplayEventComparison.Canonical(expected.Events[e]))
++                            throw new InvalidOperationException("MATCHUP_EVENT_DEVIATION: " + input.Id + " tick=" + expected.Tick);
++                    // Disk events are StoredReplayEvent records. Metrics must use the newly committed typed events.
++                    metrics.Step(sim, before, actual.Events.Events); metrics.Decisions(comp, sim.Tick,
++                        line => EqualLine(candidates, line), line => EqualLine(decisions, line));
++                    foreach (var e in actual.Events.Events) EqualLine(events, Csv(sim.Tick, ReplayEventComparison.Canonical(e)));
++                }
++                if (candidates.ReadLine() != null || decisions.ReadLine() != null || events.ReadLine() != null)
++                    throw new InvalidOperationException("MATCHUP_DIAGNOSTIC_TRAILING_ROWS");
++                WriteMetrics(path, input, sim, metrics, true);
++                lock (source) { cases++; ticks += replay.Records.Count; }
++                Debug.Log("MATCHUP_AUDITED " + input.Id + " ticks=" + replay.Records.Count);
++            });
++            File.WriteAllText(Root + (reference ? "/unity-reference-audit.txt" : "/disk-audit.txt"),
++                $"cases={cases};ticks={ticks};eventsAndSnapshots=True;candidatesAndDecisions=True;metricsRebuilt=True\n", Encoding.UTF8);
++        }
++        static int Workers
++        {
++            get
++            {
++#if PROJECT_HERO_STANDALONE
++                return int.TryParse(Environment.GetEnvironmentVariable("HERO_MATCHUP_WORKERS"), out int value) ? Math.Max(1, Math.Min(16, value)) : 8;
++#else
++                return 4;
++#endif
++            }
++        }
++        static void EqualLine(StreamReader reader, string expected)
++        { if (reader.ReadLine() != expected) throw new InvalidOperationException("MATCHUP_DIAGNOSTIC_CHANGED"); }
++        static void CheckOrWrite(string path, string value, bool compare)
++        {
++            if (compare) { if (File.ReadAllText(path) != value) throw new InvalidOperationException("MATCHUP_METRICS_CHANGED: " + path); }
++            else File.WriteAllText(path, value, Encoding.UTF8);
++        }
++        static string SourceFingerprint() => Sha(Encoding.UTF8.GetBytes(string.Concat(new[] { "Assets/Scripts", "Assets/Tests", "Assets/Diagnostics" }
++            .SelectMany(root => Directory.GetFiles(root, "*.cs", SearchOption.AllDirectories)).Select(p => p.Replace('\\', '/')).OrderBy(p => p, StringComparer.Ordinal)
++            .Select(p => p + ":" + Sha(File.ReadAllBytes(p)) + "\n"))));
++        static string Sha(byte[] bytes) { using var hash = SHA256.Create(); return BitConverter.ToString(hash.ComputeHash(bytes)).Replace("-", "").ToLowerInvariant(); }
++        static StreamWriter Gzip(string path) => new(new GZipStream(File.Create(path), CompressionLevel.Optimal), Encoding.UTF8);
++        static StreamReader ReadGzip(string path) => new(new GZipStream(File.OpenRead(path), CompressionMode.Decompress), Encoding.UTF8);
++        static string Csv(params object[] values) => string.Join(",", values.Select(v => "\"" + Convert.ToString(v, CultureInfo.InvariantCulture)?.Replace("\"", "\"\"") + "\""));
++    }
++}
+--- /dev/null
++++ b/Assets/Scripts/Editor/ShortPlanNativeValidation.cs
+@@ -0,0 +1,28 @@
++using System;
++using System.IO;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Experiments;
++
++namespace ProjectHero.Editor
++{
++    public static class ShortPlanNativeValidation
++    {
++        public static void Run()
++        {
++            const string root="优化任务/执行记录/短组合规划-2026-11-13/native-mechanisms";Directory.CreateDirectory(root);
++            foreach(AiPolicySituation situation in Enum.GetValues(typeof(AiPolicySituation)))
++                foreach(var policy in new[]{AiPolicyKind.SustainedOffense,AiPolicyKind.SeekInterrupt,AiPolicyKind.CautiousDefense})
++                    foreach(int distance in situation==AiPolicySituation.Approach?new[]{14,18}:new[]{14})
++                    {
++                        var input=new AiPolicyExperimentInput(policy,situation,MaxTicks:480,ApproachDistance:distance,
++                            Sampling:new AiSamplingSettings(SignedDamage:true,HealthDefense:true),ShortPlans:new AiShortPlanSettings());
++                        var result=AiPolicyExperiment.Run(input);AiPolicyExperiment.VerifyReplay(result);
++                        File.WriteAllLines(root+"/"+situation+"-"+policy+"-d"+distance+".canonical.txt",AiPressureEvidence.Canonical(result));
++                    }
++            UnityEngine.Debug.Log("SHORT_PLAN_NATIVE_MECHANISMS_PASS cases=27");
++            string prior=Environment.GetEnvironmentVariable("HERO23_BATCH");
++            try{Environment.SetEnvironmentVariable("HERO23_BATCH","unity-reference");ShortPlanMatchupTools.Pilot();}
++            finally{Environment.SetEnvironmentVariable("HERO23_BATCH",prior);}
++        }
++    }
++}
+--- /dev/null
++++ b/Assets/Scripts/Logic/AI/AiShortPlan.cs
+@@ -0,0 +1,23 @@
++using System.Collections.Generic;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Grid;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Movement;
++
++namespace ProjectHero.Logic.AI
++{
++    public sealed record AiFollowUpAttack(ActionSpecId ActionSpecId,UnitId TargetUnitId);
++    public sealed record AiApproachGoal(UnitId TargetUnitId,ActionSpecId AttackSpecId,GridPoint AttackOrigin,
++        int InitialPathWeight,int RemainingPathWeight);
++
++    public interface IAiSequenceForecast : IAiDefenseForecast
++    {
++        AiActionForecast EvaluateSequence(CommandRequest first,AiFollowUpAttack followUp,AiForecastSettings settings);
++        IReadOnlyList<AiDefenseForecast> EvaluateSequenceDefenses(CommandRequest first,AiFollowUpAttack followUp,AiForecastSettings settings);
++    }
++    /// <summary>Read-only path query. Reuses the same production A* and occupancy rules as Move preview.</summary>
++    public interface IAiMovementPaths
++    {
++        PathSearchResult FindAiPath(UnitId owner,GridPoint destination);
++    }
++}
+--- /dev/null
++++ b/Assets/Scripts/Logic/AI/AiShortPlanCandidateBuilder.cs
+@@ -0,0 +1,94 @@
++using System;
++using System.Collections.Generic;
++using System.Linq;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Grid;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Snapshots;
++
++namespace ProjectHero.Logic.AI
++{
++    /// <summary>Three approach headings and three nearest target triangles define a bounded set of
++    /// exact contact origins. Production A* decides reachability. No runtime rotations or fake plans.</summary>
++    public static class AiShortPlanCandidateBuilder
++    {
++        public static IReadOnlyList<AiTacticalCandidate> Build(AiDecisionContext context,
++            IReadOnlyList<AiTacticalCandidate> ordinary,IReadOnlyDictionary<string,AiActionForecast> previews,AiActionForecast baseline)
++        {
++            var settings=context.ForecastSettings.ShortPlans;
++            if(settings==null || !(context.PathCalculator is IAiMovementPaths paths))return Array.Empty<AiTacticalCandidate>();
++            var result=new List<AiTacticalCandidate>();var seen=new HashSet<string>(StringComparer.Ordinal);
++            foreach(var attack in ordinary.Where(c=>c.Type==ActionType.Attack).OrderBy(c=>c.Key,StringComparer.Ordinal))
++            {
++                var add=((ScheduleEditPayload)attack.Request.Payload).Operations.OfType<AddOrdinaryPlanOperation>().Single();
++                if(!add.PrimaryTargetUnitId.HasValue || !previews.TryGetValue(attack.Key,out var direct) || direct.RejectionCode!=null)continue;
++                var directValue=AiTacticalPolicy.Evaluate(context,AiPolicyKind.CautiousDefense,attack,baseline,direct);
++                if(directValue.DamageDeltaQ10>0 || directValue.InterruptedThreats>0 || directValue.Clashes>0)continue;
++                var actor=context.Snapshot.VisibleUnits.First(u=>u.UnitId==add.OwnerUnitId.Value);
++                var target=context.Snapshot.VisibleUnits.FirstOrDefault(u=>u.UnitId==add.PrimaryTargetUnitId.Value.Value && u.IsAlive);
++                var spec=context.Snapshot.FindAction(add.ActionSpecId);
++                if(target==null || !(spec.Payload is AttackPayloadSpec payload))continue;
++                var footprints=context.Snapshot.Definition.VolumeDirectionsOf(new UnitDefinitionId(target.DefinitionId));
++                if(footprints==null)continue;
++                var targetTriangles=VolumeFootprint.ResolveTriangles(footprints,new GridPoint(target.X,target.Y),(GridDirection)target.Facing)
++                    .OrderBy(t=>Math.Abs((long)t.X-actor.X)+Math.Abs((long)t.Y-actor.Y)).ThenBy(t=>t.X).ThenBy(t=>t.Y).ThenBy(t=>t.T).Take(3).ToArray();
++                int aim=(int)AiTacticalCandidateBuilder.Aim(target.X-actor.X,target.Y-actor.Y);
++                var origins=new HashSet<GridPoint>();
++                foreach(int direction in new[]{aim,(aim+2)%12,(aim+10)%12}.Distinct())
++                    foreach(var tile in payload.Pattern.Directions[direction].Triangles)
++                        foreach(var targetTile in targetTriangles)
++                        {
++                            if(tile.T!=targetTile.T || !GridPoint.TryCreate(targetTile.X-tile.X,targetTile.Y-tile.Y,out var origin))continue;
++                            if(origin.X==actor.X && origin.Y==actor.Y)continue;
++                            if(AiTacticalCandidateBuilder.Aim(target.X-origin.X,target.Y-origin.Y)!=(GridDirection)direction)continue;
++                            if(!context.Snapshot.Definition.Encounters.Any(e=>e.GridBoundary.Contains(origin)))continue;
++                            origins.Add(origin);
++                        }
++                var from=new GridPoint(actor.X,actor.Y);var costs=context.Snapshot.Definition.Rules.PathCostRules;
++                var goalOrigins=origins.OrderBy(p=>costs.HeuristicWeightUnits(from,p)).ThenBy(p=>p.X).ThenBy(p=>p.Y)
++                    .Take(settings.MaxGoalPathProbes).ToArray();
++                foreach(var moveId in context.Snapshot.ActionSetOf(add.OwnerUnitId).OrderBy(x=>x.Value,StringComparer.Ordinal))
++                {
++                    var move=context.Snapshot.FindAction(moveId);if(move?.Type!=ActionType.Move)continue;
++                    int accepted=0;
++                    foreach(var origin in goalOrigins)
++                    {
++                        var path=paths.FindAiPath(add.OwnerUnitId,origin);
++                        if(!path.Succeeded || path.EdgeCount==0)continue;
++                        int edges=Math.Min(settings.MaxMoveEdges,path.EdgeCount),prefixWeight=0;
++                        for(int i=0;i<edges;i++)
++                        {
++                            var a=path.Path[i];var b=path.Path[i+1];
++                            int d=Enumerable.Range(0,12).First(n=>GridNeighborTable.OffsetX((GridDirection)n)==b.X-a.X
++                                && GridNeighborTable.OffsetY((GridDirection)n)==b.Y-a.Y);
++                            prefixWeight+=costs.StepWeightUnits((GridDirection)d);
++                        }
++                        var destination=path.Path[edges];
++                        string key=FormattableString.Invariant($"P/{add.OwnerUnitId.Value}/{moveId.Value}/{add.ActionSpecId.Value}/{target.UnitId}/{destination.X}/{destination.Y}/{origin.X}/{origin.Y}");
++                        if(!seen.Add(key))continue;
++                        var request=new CommandRequest(context.NextTick,new ScheduleEditScope(context.Snapshot.ScheduleRevision,context.ExpectedWindowId),
++                            new ScheduleEditPayload(new ScheduleEditOperation[]{new AddOrdinaryPlanOperation(1,add.OwnerUnitId,moveId,
++                                Facing:(GridDirection)actor.Facing,Destination:destination)}));
++                        if(context.NormalPreview!=null && context.NormalPreview(context.ControllerId,request)!=null)continue;
++                        result.Add(new AiTacticalCandidate(key,ActionType.Move,request,false,0) {
++                            FollowUp=new AiFollowUpAttack(add.ActionSpecId,new UnitId(target.UnitId)),
++                            Approach=new AiApproachGoal(new UnitId(target.UnitId),add.ActionSpecId,origin,path.PathWeightUnits,path.PathWeightUnits-prefixWeight) });
++                        if(++accepted>=settings.GoalPositionsPerAttack)break;
++                    }
++                }
++            }
++            return result.OrderBy(c=>c.Key,StringComparer.Ordinal).ToArray();
++        }
++
++        public static bool HasTacticalEffect(AiDecisionContext context,AiCandidateEvaluation value,AiActionForecast baseline,AiActionForecast outcome)
++        {
++            if(value.DamageDeltaQ10>0 || value.IncomingDeltaQ10<0 || value.InterruptedThreats>0 || value.Clashes>0)return true;
++            // A zero-health-damage attack may still relocate a hostile unit. It remains eligible;
++            // its signed positional value, rather than the predicate, determines preference.
++            return baseline.Units.Any(u=>context.ControlledUnits.Any(id=>context.Snapshot.Classify(id,new UnitId(u.UnitId))==Factions.UnitRelation.Hostile)
++                && outcome.Units.Any(a=>a.UnitId==u.UnitId && (a.X!=u.X || a.Y!=u.Y)));
++        }
++    }
++}
+--- /dev/null
++++ b/Assets/Scripts/Logic/AI/AiShortPlanSettings.cs
+@@ -0,0 +1,22 @@
++using ProjectHero.Logic.Combat;
++
++namespace ProjectHero.Logic.AI
++{
++    /// <summary>Bounded move-then-attack proposals. Only the first command is committed; the next
++    /// decision replans from public facts. Values are immutable replay/configuration inputs.</summary>
++    public sealed record AiShortPlanSettings(int MaxMoveEdges=4,int GoalPositionsPerAttack=2,
++        int MaxGoalPathProbes=24,int PressureValueQ10=65536,int ApproachValue=16384)
++    {
++        public const string Version="short-plan-public-kernel-v1";
++        public string Validate()=>MaxMoveEdges<1 || MaxMoveEdges>12 || GoalPositionsPerAttack<1 || GoalPositionsPerAttack>4
++            || MaxGoalPathProbes<GoalPositionsPerAttack || MaxGoalPathProbes>64 || PressureValueQ10<0 || PressureValueQ10>1048576
++            || ApproachValue<0 || ApproachValue>1048576 ? "AI_SHORT_PLAN_SETTINGS_INVALID" : null;
++        public void WriteHashComponents(CanonicalHashWriter w)
++        {
++            w.Write("ai.short_plan.version",Version);w.Write("ai.short_plan.move_edges",MaxMoveEdges);
++            w.Write("ai.short_plan.goal_positions",GoalPositionsPerAttack);w.Write("ai.short_plan.path_probes",MaxGoalPathProbes);
++            w.Write("ai.short_plan.pressure_q10",PressureValueQ10);w.Write("ai.short_plan.approach_value",ApproachValue);
++            w.Write("ai.short_plan.grouping","owner-template-attack-mean-exp-v1");
++        }
++    }
++}
+--- /dev/null
++++ b/Assets/Tests/EditMode/Logic/AiShortPlanTests.cs
+@@ -0,0 +1,225 @@
++using System;
++using System.Linq;
++using NUnit.Framework;
++using ProjectHero.Logic.AI;
++using ProjectHero.Logic.Actions;
++using ProjectHero.Logic.Combat;
++using ProjectHero.Logic.Commands;
++using ProjectHero.Logic.Experiments;
++using ProjectHero.Logic.Grid;
++using ProjectHero.Logic.Ids;
++using ProjectHero.Logic.Initialization;
++using ProjectHero.Logic.Simulation;
++using ProjectHero.Logic.Definitions;
++using ProjectHero.Logic.Events;
++using System.Collections.Generic;
++using ProjectHero.Logic.Damage;
++
++namespace ProjectHero.Logic.Tests
++{
++    public sealed class AiShortPlanTests
++    {
++        sealed class Rig : IDisposable
++        {
++            public readonly BattleSimulation Sim;
++            public readonly ProductionBattleComposition Composition;
++            public readonly AiDecisionContext Context;
++            public Rig(long at=60, int horizon=360,Func<BattleDefinition,BattleDefinition> transform=null,
++                Action<BattleSimulation,long> beforeStep=null,AiShortPlanSettings plans=null,AiPolicySituation situation=AiPolicySituation.Approach)
++            {
++                var input=new AiPolicyExperimentInput(AiPolicyKind.CautiousDefense,situation,
++                    Sampling:new AiSamplingSettings(SignedDamage:true,HealthDefense:true),ShortPlans:plans??new AiShortPlanSettings());
++                var d=AiPolicyExperiment.Build(input);
++                if(transform!=null){d=transform(d) with {BattleDefinitionHashValue=""};d=d with {BattleDefinitionHashValue=CombatExperimentDefinition.Hash(d)};}
++                var runtime=new BattleRuntimeInputs(31,4);
++                Composition=new ProductionBattleComposition(d,CombatExperimentDefinition.Encounter,runtime);
++                // Forecast unit tests suppress autonomous observers while retaining the production window schedule and ingress.
++                Sim=BattleSimulation.Create(d,CombatExperimentDefinition.Encounter,runtime,new BattleSimulationAssembly(turnWindowSchedule:Composition));
++                Composition.Attach(Sim);
++                for(long tick=0;tick<=at;tick++){beforeStep?.Invoke(Sim,tick);Sim.Step(tick,Sim.CommandIngress.FreezeTick(tick));}
++                var id=CombatExperimentDefinition.Controller(1);
++                Context=Composition.AiControllers.Single().BuildContext(Sim.DecisionSnapshotFor(id),id) with {
++                    ForecastSettings=new AiForecastSettings(horizon,true,true,input.Sampling,input.ShortPlans) };
++            }
++            public CommandRequest Move(GridPoint destination)=>new CommandRequest(Context.NextTick,
++                new ScheduleEditScope(Context.Snapshot.ScheduleRevision,Context.ExpectedWindowId),
++                new ScheduleEditPayload(new ScheduleEditOperation[]{new AddOrdinaryPlanOperation(1,new UnitId(1),
++                    CombatExperimentDefinition.Action("move"),Destination:destination,Facing:GridDirection.East)}));
++            public void Dispose()=>Sim.Dispose();
++        }
++
++        [Test]
++        public void NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable()
++        {
++            using(var far=new Rig())
++            {
++                var decision=AiTacticalPolicy.Decide(far.Context,31,AiPolicyKind.CautiousDefense);
++                var misses=decision.Evaluations.Where(e=>e.PlanKind=="DirectAttack" && e.Coverage==AiForecastCoverage.Complete && e.DamageDeltaQ10==0).ToArray();
++                Assert.That(misses,Is.Not.Empty);
++                Assert.That(misses.All(e=>e.RejectionCode==null && !e.IntentEligible && e.ProbabilityAfterQ32==0),Is.True);
++                Assert.That(decision.Evaluations.Any(e=>e.Key=="WAIT/ORDINARY"),Is.True);
++            }
++            using var near=new Rig(plans:new AiShortPlanSettings(PressureValueQ10:0),transform:d=>d with {
++                Encounters=d.Encounters.Select(e=>e with {Slots=e.Slots.Select(s=>s.SlotId.Value=="slot.experiment.2"?s with {InitialPosition=new GridPoint(6,0)}:s).ToArray()}).ToArray(),
++                Actions=d.Actions.Select(a=>a.ActionSpecId==CombatExperimentDefinition.Action("quick")?a with {
++                    Payload=((AttackPayloadSpec)a.Payload) with {Strength=new AttackStrengthV05(PhysicalRecipe.Slash,64,AttackGrowthAttribute.Agility)}}:a).ToArray() });
++            var weak=AiTacticalPolicy.Decide(near.Context,31,AiPolicyKind.CautiousDefense).Evaluations
++                .Single(e=>e.Key.StartsWith("N/1/action.experiment.quick/",StringComparison.Ordinal));
++            Assert.That(weak.DamageDeltaQ10,Is.GreaterThan(0));Assert.That(weak.Score,Is.LessThan(0));
++            Assert.That(weak.IntentEligible,Is.True);Assert.That(weak.ProbabilityAfterQ32,Is.GreaterThan(0));
++        }
++
++        [Test]
++        public void MissingTargetAndNonMovePrefixFailClosed()
++        {
++            using var r=new Rig();using var forecast=r.Context.ForecastFactory(r.Context.Snapshot);
++            var sequences=(IAiSequenceForecast)forecast;
++            var gone=sequences.EvaluateSequence(r.Move(new GridPoint(8,0)),new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(999)),r.Context.ForecastSettings);
++            Assert.That(gone.RejectionCode,Is.EqualTo("AI_SEQUENCE_TARGET_UNAVAILABLE"));
++            var invalid=r.Move(new GridPoint(8,0)) with {Payload=new ScheduleEditPayload(new ScheduleEditOperation[]{new AddOrdinaryPlanOperation(1,new UnitId(1),
++                CombatExperimentDefinition.Action("quick"),PrimaryTargetUnitId:new UnitId(2),Facing:GridDirection.East)})};
++            Assert.That(sequences.EvaluateSequence(invalid,new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(2)),r.Context.ForecastSettings)
++                .RejectionCode,Is.EqualTo("AI_SEQUENCE_FIRST_STEP_NOT_MOVE"));
++        }
++
++        [Test]
++        public void SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset()
++        {
++            var fundId=new ActionSpecId("action.experiment.fund");
++            using var r=new Rig(at:180,transform:d=>{
++                var pattern=CombatExperimentDefinition.Build(new CombatExperimentScenario("funding")).AttackPatterns.Single();
++                var quick=d.Actions.Single(a=>a.ActionSpecId==CombatExperimentDefinition.Action("quick"));
++                var fund=quick with {ActionSpecId=fundId,Payload=((AttackPayloadSpec)quick.Payload) with {Pattern=pattern,
++                    Strength=new AttackStrengthV05(PhysicalRecipe.Slash,2048,AttackGrowthAttribute.Agility)}};
++                return d with {Actions=d.Actions.Append(fund).OrderBy(a=>a.ActionSpecId.Value,StringComparer.Ordinal).ToArray(),
++                    AttackPatterns=d.AttackPatterns.Append(pattern).OrderBy(a=>a.AttackPatternId.Value,StringComparer.Ordinal).ToArray(),
++                    ActionSets=d.ActionSets.Select(s=>s with {ActionSpecIds=s.ActionSpecIds.Append(fundId).OrderBy(a=>a.Value,StringComparer.Ordinal).ToArray()}).ToArray()};
++            },beforeStep:(sim,tick)=>{
++                if(tick!=100)return;
++                var error=sim.CommandIngress.FindEntry(CombatExperimentDefinition.Controller(1)).SubmitAtDefaultTick(
++                    new ScheduleEditScope(sim.ScheduleRevision,sim.CurrentTurnWindow.WindowId),new ScheduleEditPayload(new ScheduleEditOperation[]{
++                        new AddOrdinaryPlanOperation(1,new UnitId(1),fundId,100,PrimaryTargetUnitId:new UnitId(2),Facing:GridDirection.East)}));
++                Assert.That(error,Is.Null);
++            });
++            Assert.That(r.Sim.AdrenalineLedgerOf(new UnitId(2)).AvailableAdrenaline,Is.EqualTo(CombatValuesV05.ResourceUnitsPerPoint));
++            using var forecast=r.Context.ForecastFactory(r.Context.Snapshot);
++            var first=r.Move(new GridPoint(8,0));var follow=new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(2));
++            var control=((IAiSequenceForecast)forecast).EvaluateSequence(first,follow,r.Context.ForecastSettings);
++            var replies=((IAiSequenceForecast)forecast).EvaluateSequenceDefenses(first,follow,r.Context.ForecastSettings);
++            Assert.That(control.FollowUpStartTick,Is.LessThan(240));Assert.That(control.PlanImpactTick,Is.GreaterThan(240));
++            Assert.That(replies.Any(p=>p.DefenderUnitId==2 && p.Request.Payload is ReactionCommandPayload payload && payload.ReactionKind==ReactionCommandKind.Block
++                && p.Outcome.RejectionCode==null && p.Outcome.Coverage==AiForecastCoverage.Complete
++                && p.Outcome.Units.Single(u=>u.UnitId==2).HealthQ10>control.Units.Single(u=>u.UnitId==2).HealthQ10),Is.True);
++        }
++
++        [Test]
++        public void ZeroDamageInterruptStillHasTacticalEffect()
++        {
++            // The legacy damage protocol permits passive full resistance and independent momentum.
++            // Keep this a valid definition: v0.5 deliberately forbids that combination.
++            using var r=new Rig(situation:AiPolicySituation.EarlyInterrupt,transform:d=>d with {
++                AdrenalineRules=d.AdrenalineRules with {UseCombatValuesV05=false},
++                Units=d.Units.Select(u=>u with {CombatAttributes=null,BaseDamageResistanceQ10=u.UnitDefinitionId.Value=="unit.experiment.2"
++                    ?new Dictionary<DamageChannelId,int> {{DamageChannels.PhysicalBlunt,1024},{DamageChannels.PhysicalSlash,1024},{DamageChannels.PhysicalPierce,1024}}
++                    :new Dictionary<DamageChannelId,int>()}).ToArray(),
++                Actions=d.Actions.Select(a=>a.Payload is AttackPayloadSpec attack?a with {Payload=attack with {
++                    Strength=null,ForceMultiplier=10f,DamageComponents=new[]{new DamageComponentSpec(DamageChannels.PhysicalBlunt,1f,DamageTagMask.Blockable|DamageTagMask.Guardable)}}}:a).ToArray()},
++                beforeStep:(sim,tick)=>{
++                    if(tick!=1)return;
++                    Assert.That(sim.CommandIngress.FindEntry(CombatExperimentDefinition.Controller(2)).SubmitAtDefaultTick(
++                        new ScheduleEditScope(sim.ScheduleRevision,sim.CurrentTurnWindow.WindowId),new ScheduleEditPayload(new ScheduleEditOperation[]{
++                            new AddOrdinaryPlanOperation(1,new UnitId(2),CombatExperimentDefinition.Action("heavy"),1,PrimaryTargetUnitId:new UnitId(1),Facing:GridDirection.West)})),Is.Null);
++                });
++            var decision=AiTacticalPolicy.Decide(r.Context,31,AiPolicyKind.SeekInterrupt);
++            Assert.That(decision.Evaluations.Any(e=>e.Type==ActionType.Attack && e.DamageDeltaQ10==0 && e.InterruptedThreats>0 && e.IntentEligible),Is.True);
++        }
++
++        [Test]
++        public void WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority()
++        {
++            using var r=new Rig();string before=r.Sim.CurrentSnapshot.ComputeHash().ToString();
++            using var forecast=r.Context.ForecastFactory(r.Context.Snapshot);
++            var request=r.Move(new GridPoint(8,0));
++            var move=forecast.Evaluate(request,r.Context.ForecastSettings);
++            var both=((IAiSequenceForecast)forecast).EvaluateSequence(request,
++                new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(2)),r.Context.ForecastSettings);
++            Assert.That(both.Coverage,Is.EqualTo(AiForecastCoverage.Complete));
++            Assert.That(both.SequenceCompleted,Is.True);
++            Assert.That(both.Units.Single(u=>u.UnitId==2).HealthQ10,Is.LessThan(move.Units.Single(u=>u.UnitId==2).HealthQ10));
++            Assert.That(both.PlanEndTick,Is.GreaterThan(both.FirstStepEndTick));
++            Assert.That(both.FollowUpRequestTick,Is.GreaterThan(both.FirstStepEndTick));
++            Assert.That(r.Sim.CurrentSnapshot.ComputeHash().ToString(),Is.EqualTo(before));
++        }
++
++        [Test]
++        public void MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp()
++        {
++            using var r=new Rig(110);using var forecast=r.Context.ForecastFactory(r.Context.Snapshot);
++            var value=((IAiSequenceForecast)forecast).EvaluateSequence(r.Move(new GridPoint(8,0)),
++                new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(2)),r.Context.ForecastSettings);
++            Assert.That(value.RejectionCode,Is.Null);
++            Assert.That(value.SequenceCompleted,Is.True);
++            Assert.That(value.FirstStepEndTick,Is.GreaterThan(120));
++            Assert.That(value.FollowUpRequestTick,Is.GreaterThanOrEqualTo(181));
++            Assert.That(value.FollowUpStartTick,Is.GreaterThan(value.FirstStepEndTick));
++        }
++
++        [Test]
++        public void UnfinishedFollowUpIsNotReportedAsComplete()
++        {
++            using var r=new Rig(horizon:50);using var forecast=r.Context.ForecastFactory(r.Context.Snapshot);
++            var value=((IAiSequenceForecast)forecast).EvaluateSequence(r.Move(new GridPoint(6,0)),
++                new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(2)),r.Context.ForecastSettings);
++            Assert.That(value.Coverage,Is.EqualTo(AiForecastCoverage.Uncovered));
++            Assert.That(value.SequenceCompleted,Is.False);
++            Assert.That(value.FollowUpRequestTick,Is.GreaterThan(0));
++        }
++
++        [Test]
++        public void InvalidDestinationStillUsesKernelRejection()
++        {
++            using var r=new Rig();using var forecast=r.Context.ForecastFactory(r.Context.Snapshot);
++            var value=((IAiSequenceForecast)forecast).EvaluateSequence(r.Move(new GridPoint(100,0)),
++                new AiFollowUpAttack(CombatExperimentDefinition.Action("quick"),new UnitId(2)),r.Context.ForecastSettings);
++            Assert.That(value.RejectionCode,Is.Not.Null);
++            Assert.That(value.Coverage,Is.EqualTo(AiForecastCoverage.Rejected));
++        }
++
++        [Test]
++        public void AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays()
++        {
++            var result=AiPolicyExperiment.Run(new AiPolicyExperimentInput(AiPolicyKind.CautiousDefense,AiPolicySituation.Approach,
++                MaxTicks:360,Sampling:new AiSamplingSettings(SignedDamage:true,HealthDefense:true),ShortPlans:new AiShortPlanSettings()));
++            Assert.That(result.Decisions.SelectMany(d=>d.Evaluations).Any(e=>e.Chosen && e.Type==ActionType.Move),Is.True);
++            Assert.That(result.Decisions.SelectMany(d=>d.Evaluations).Any(e=>e.Chosen && e.Type==ActionType.Attack && e.NoDefenseDamageDeltaQ10>0),Is.True);
++            Assert.That(result.Decisions.SelectMany(d=>d.Evaluations).Where(e=>e.Chosen && e.Type==ActionType.Attack)
++                .All(e=>e.IntentEligible),Is.True);
++            AiPolicyExperiment.VerifyReplay(result);
++        }
++
++        [Test]
++        public void FarTargetUsesCompletedApproachStageThenReplansAnAttack()
++        {
++            var result=AiPolicyExperiment.Run(new AiPolicyExperimentInput(AiPolicyKind.CautiousDefense,AiPolicySituation.Approach,
++                MaxTicks:480,ApproachDistance:18,Sampling:new AiSamplingSettings(SignedDamage:true,HealthDefense:true),ShortPlans:new AiShortPlanSettings()));
++            var moves=result.Decisions.SelectMany(d=>d.Evaluations).Where(e=>e.Chosen && e.PlanKind=="Approach").ToArray();
++            Assert.That(moves,Is.Not.Empty);
++            Assert.That(moves.All(e=>e.Coverage==AiForecastCoverage.Complete && e.ApproachUtility>0),Is.True);
++            Assert.That(result.Events.OfType<DamageChannelResolvedEvent>().Any(e=>e.AttackerUnitId.Value==1 && e.AfterBlockDamageQ10>0),Is.True);
++            Assert.That(result.Events.OfType<CommandRejectedEvent>(),Is.Empty);
++            AiPolicyExperiment.VerifyReplay(result);
++        }
++
++        [Test]
++        public void PlanningIdentityIsVersionedAndOptional()
++        {
++            var i=new AiPolicyExperimentInput(AiPolicyKind.CautiousDefense,AiPolicySituation.Approach,Sampling:new AiSamplingSettings());
++            string old=AiPolicyExperiment.Build(i).BattleDefinitionHashValue;
++            var settings=new AiShortPlanSettings();
++            string next=AiPolicyExperiment.Build(i with {ShortPlans=settings}).BattleDefinitionHashValue;
++            Assert.That(next,Is.Not.EqualTo(old));
++            Assert.That(AiPolicyExperiment.Build(i with {ShortPlans=settings with {MaxMoveEdges=2}}).BattleDefinitionHashValue,Is.Not.EqualTo(next));
++            Assert.That(AiPolicyExperiment.Build(i).BattleDefinitionHashValue,Is.EqualTo(old));
++        }
++    }
++}

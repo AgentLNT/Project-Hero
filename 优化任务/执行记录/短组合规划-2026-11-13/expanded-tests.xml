@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Failed(Child)" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.4565739">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1217" result="Failed" site="Child" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.456574" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2394" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="748" result="Failed" site="Child" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.434835" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="5400" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2395" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="748" result="Failed" site="Child" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.434251" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2396" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="748" result="Failed" site="Child" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.433882" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2397" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="748" result="Failed" site="Child" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.433477" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1589" name="AiShortPlanTests" fullname="ProjectHero.Logic.Tests.AiShortPlanTests" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" testcasecount="11" result="Failed" site="Child" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:24Z" duration="9.424963" total="11" passed="10" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1598" name="AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" methodname="AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="236691158" result="Passed" start-time="2026-11-13 16:11:15Z" end-time="2026-11-13 16:11:19Z" duration="4.186570" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1599" name="FarTargetUsesCompletedApproachStageThenReplansAnAttack" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.FarTargetUsesCompletedApproachStageThenReplansAnAttack" methodname="FarTargetUsesCompletedApproachStageThenReplansAnAttack" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1876869837" result="Passed" start-time="2026-11-13 16:11:19Z" end-time="2026-11-13 16:11:23Z" duration="3.969799" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1597" name="InvalidDestinationStillUsesKernelRejection" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.InvalidDestinationStillUsesKernelRejection" methodname="InvalidDestinationStillUsesKernelRejection" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="555261084" result="Passed" start-time="2026-11-13 16:11:23Z" end-time="2026-11-13 16:11:23Z" duration="0.011065" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1591" name="MissingTargetAndNonMovePrefixFailClosed" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.MissingTargetAndNonMovePrefixFailClosed" methodname="MissingTargetAndNonMovePrefixFailClosed" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1720068220" result="Passed" start-time="2026-11-13 16:11:23Z" end-time="2026-11-13 16:11:23Z" duration="0.013672" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1595" name="MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" methodname="MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="484889106" result="Passed" start-time="2026-11-13 16:11:23Z" end-time="2026-11-13 16:11:23Z" duration="0.023650" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1590" name="NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable" methodname="NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="125183596" result="Passed" start-time="2026-11-13 16:11:23Z" end-time="2026-11-13 16:11:24Z" duration="0.774248" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1600" name="PlanningIdentityIsVersionedAndOptional" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.PlanningIdentityIsVersionedAndOptional" methodname="PlanningIdentityIsVersionedAndOptional" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="75536190" result="Passed" start-time="2026-11-13 16:11:24Z" end-time="2026-11-13 16:11:24Z" duration="0.031024" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1592" name="SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset" methodname="SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="732525560" result="Passed" start-time="2026-11-13 16:11:24Z" end-time="2026-11-13 16:11:24Z" duration="0.317742" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1596" name="UnfinishedFollowUpIsNotReportedAsComplete" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.UnfinishedFollowUpIsNotReportedAsComplete" methodname="UnfinishedFollowUpIsNotReportedAsComplete" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="315664934" result="Passed" start-time="2026-11-13 16:11:24Z" end-time="2026-11-13 16:11:24Z" duration="0.016920" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1594" name="WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" methodname="WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1339569362" result="Passed" start-time="2026-11-13 16:11:24Z" end-time="2026-11-13 16:11:24Z" duration="0.032801" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1593" name="ZeroDamageInterruptStillHasTacticalEffect" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.ZeroDamageInterruptStillHasTacticalEffect" methodname="ZeroDamageInterruptStillHasTacticalEffect" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="542276649" result="Failed" label="Error" start-time="2026-11-13 16:11:24Z" end-time="2026-11-13 16:11:24Z" duration="0.032278" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[ProjectHero.Logic.LogicDefinitionException : COMBAT_VALUES_V05_INVALID]]></message>
+                  <stack-trace><![CDATA[  at ProjectHero.Logic.Initialization.BattleInitializer.BuildInitialState (ProjectHero.Logic.Definitions.BattleDefinition definition, ProjectHero.Logic.Ids.EncounterDefinitionId encounterId, ProjectHero.Logic.Initialization.BattleRuntimeInputs runtimeInputs) [0x00457] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Initialization\BattleInitializer.cs:148 
+  at ProjectHero.Logic.Simulation.ProductionBattleComposition..ctor (ProjectHero.Logic.Definitions.BattleDefinition definition, ProjectHero.Logic.Ids.EncounterDefinitionId encounterId, ProjectHero.Logic.Initialization.BattleRuntimeInputs inputs, ProjectHero.Logic.Simulation.StepPhaseTimingRecorder phaseTiming) [0x00070] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\ProductionBattleComposition.cs:31 
+  at ProjectHero.Logic.Tests.AiShortPlanTests+Rig..ctor (System.Int64 at, System.Int32 horizon, System.Func`2[T,TResult] transform, System.Action`2[T1,T2] beforeStep, ProjectHero.Logic.AI.AiShortPlanSettings plans, ProjectHero.Logic.Experiments.AiPolicySituation situation) [0x00097] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiShortPlanTests.cs:35 
+  at ProjectHero.Logic.Tests.AiShortPlanTests.ZeroDamageInterruptStillHasTacticalEffect () [0x00000] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiShortPlanTests.cs:118 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 ]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

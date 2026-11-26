@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Failed(Child)" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.3104567">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1212" result="Failed" site="Child" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.310457" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2389" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="743" result="Failed" site="Child" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.300169" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10116" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2390" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="743" result="Failed" site="Child" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.299402" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2391" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="743" result="Failed" site="Child" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.299005" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2392" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="743" result="Failed" site="Child" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.298607" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1589" name="AiShortPlanTests" fullname="ProjectHero.Logic.Tests.AiShortPlanTests" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:43Z" duration="4.281793" total="6" passed="5" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1594" name="AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" methodname="AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="263865411" result="Passed" start-time="2026-11-13 15:58:38Z" end-time="2026-11-13 15:58:42Z" duration="4.153087" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1593" name="InvalidDestinationStillUsesKernelRejection" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.InvalidDestinationStillUsesKernelRejection" methodname="InvalidDestinationStillUsesKernelRejection" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="447262482" result="Passed" start-time="2026-11-13 15:58:42Z" end-time="2026-11-13 15:58:42Z" duration="0.020330" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1591" name="MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" methodname="MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1128643711" result="Passed" start-time="2026-11-13 15:58:42Z" end-time="2026-11-13 15:58:42Z" duration="0.019959" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1595" name="PlanningIdentityIsVersionedAndOptional" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.PlanningIdentityIsVersionedAndOptional" methodname="PlanningIdentityIsVersionedAndOptional" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="703276554" result="Passed" start-time="2026-11-13 15:58:42Z" end-time="2026-11-13 15:58:42Z" duration="0.022315" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1592" name="UnfinishedFollowUpIsNotReportedAsComplete" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.UnfinishedFollowUpIsNotReportedAsComplete" methodname="UnfinishedFollowUpIsNotReportedAsComplete" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="570729625" result="Passed" start-time="2026-11-13 15:58:42Z" end-time="2026-11-13 15:58:42Z" duration="0.010279" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1590" name="WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" methodname="WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="851554234" result="Failed" start-time="2026-11-13 15:58:42Z" end-time="2026-11-13 15:58:43Z" duration="0.043803" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: less than 24576
+  But was:  24576
+]]></message>
+                  <stack-trace><![CDATA[at ProjectHero.Logic.Tests.AiShortPlanTests.WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority () [0x000bd] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiShortPlanTests.cs:55
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

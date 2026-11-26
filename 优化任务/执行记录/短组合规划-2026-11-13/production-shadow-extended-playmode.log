@@ -1,0 +1,2030 @@
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 9800)
+VBCSCompiler prewarm took 9.26 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Channel LicenseClient-1 doesn't exist
+Built from '6000.6/staging' branch; Version is '6000.6.2f1 (770e33f6875c) revision 7802419'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 11  (10.0.26200) CoreCountrySpecific' Language: 'zh' Physical Memory: 32272 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-13T16:43:26Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 23776)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Unity.exe
+-batchmode
+-runTests
+-projectPath
+C:\Users\1\repos\Project Hero
+-testResults
+C:\Users\1\repos\Project Hero\优化任务\执行记录\短组合规划-2026-11-13\production-shadow-playmode.xml
+-testPlatform
+PlayMode
+-testFilter
+FormalAiSceneTests;ShadowSplitLifecycleTests;Task10WiredPresentationTests;Task11ProductionSceneTests;Task11ShadowClassificationTests;RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime;RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority;RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash
+-nographics
+-logFile
+优化任务/执行记录/短组合规划-2026-11-13/production-shadow-playmode.log
+-hubSessionId
+[REDACTED]
+-accessToken
+[REDACTED]
+Successfully changed project path to: C:\Users\1\repos\Project Hero
+C:/Users/1/repos/Project Hero
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.
+Player connection [26596]  Target information:
+
+Player connection [26596]  * "[IP] 198.18.0.1 [Port] 55504 [Flags] 2 [Guid] 11378076 [EditorId] 11378076 [Version] 1048832 [Id] WindowsEditor(7,������Thinkbook-14p) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [26596]  * "[IP] 192.168.3.195 [Port] 55504 [Flags] 2 [Guid] 11378076 [EditorId] 11378076 [Version] 1048832 [Id] WindowsEditor(7,������Thinkbook-14p) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [26596] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [26596] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Starting IPC server.
+Waiting for clients to connect on \\.\pipe\Unity-LicenseClient-1, press Ctrl-C to exit.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-1" at "2026-11-13T16:43:26.8249194Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 23776, path: "C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-30992" after 0.2 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              50d7c958f9e54845b359f1ba946ecdb3
+  Correlation Id:          82853c1595018b9892feab8fbd847a17
+  External correlation Id: 3310784076893125946
+  Machine Id:              9MUmso02yMTsmDzM8/fKhCdGkEo=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-1" (connect: 0.37s, validation: 0.15s, handshake: 0.06s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-1-notifications" at "2026-11-13T16:43:27.0380711Z"
+[Licensing::Module] Connected to LicensingClient (PId: 23776, launch time: 0.01, total connection time: 0.59s)
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated the access token zN_wS8rZdz...
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: ewogICJzdWJzR3JvdXAiIDogInVuaXR5IGVkaXRvciIsCiAgIm5hbWVzcGFjZSIgOiAidW5pdHlfZWRpdG9yIiwKICAidHlwZSIgOiAiRURJVE9SIiwKICAidGFnIiA6ICJVbml0eVBlcnNvbmFsXXXX
+  Product: Unity Personal Version
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Module] Licensing Background thread has ended after 0.63s
+[Licensing::Module] Licensing is initialized (took 0.16s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Initialising UDS system complete:
+  - System type: Client
+  - Resource namespace: d57bf0b45604087b133d0bbdd1d78ada
+  - Shared memory size: 1073741824
+  - Command buffer id: 1052576
+  - Command buffer size: 8192
+  - Hashmap size: 4194304
+  - Service connected: false
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/Users/1/repos/Project Hero[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Unity Data Store running and initialised
+Refreshing native plugins compatible for Editor in 2.82 ms, found 0 plugins.
+Initialize engine version: 6000.6.2f1 (770e33f6875c)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/1/repos/Project Hero/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56992
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.2f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004451 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  0.678 seconds
+Domain Reload Profiling: 1248ms
+	BeginReloadAssembly (157ms)
+		CreateAndSetChildDomain (19ms)
+	RebuildCommonClasses (4ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (86ms)
+	LoadAllAssembliesAndSetupDomain (311ms)
+		LoadAssemblies (129ms)
+		TypeCache.Refresh (199ms)
+			TypeCache.ScanAssembly (184ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (679ms)
+		SetupLoadedEditorAssemblies (0ms)
+			InitializePlatformSupportModulesInManaged (3ms)
+			BeforeProcessingInitializeOnLoad (85ms)
+			ProcessInitializeOnLoadAttributes (102ms)
+			ProcessInitializeOnLoadMethodAttributes (250ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 67 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ai.assistant@2.20.0-pre.2 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ai.assistant@1b11b9bfd84a)
+    com.unity.ai.inference@2.6.1 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ai.inference@9a123aee5df7)
+    com.unity.ai.navigation@2.0.14 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ai.navigation@134dd6a3b97b)
+    com.unity.collab-proxy@2.13.6 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.collab-proxy@4628d2ba6ea4)
+    com.unity.ide.rider@3.0.38 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ide.rider@1f60b3138684)
+    com.unity.ide.visualstudio@2.0.26 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f)
+    com.unity.inputsystem@1.20.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.inputsystem@7a4e1a2a8194)
+    com.unity.pipeline@0.7.0-exp.1 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.pipeline@ab05e9cd7f74)
+    com.unity.visualscripting@1.9.12 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.visualscripting@4edfcc09512f)
+    com.unity.nuget.mono-cecil@1.11.6 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.dt.app-ui@2.1.11 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.dt.app-ui@cd5609b130ce)
+    com.unity.searcher@4.9.5 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.profiling.core@1.0.3 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.2d.sprite@947350d67f82)
+    com.unity.multiplayer.center@2.0.1 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.multiplayer.center@549886182930)
+    com.unity.render-pipelines.universal@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.render-pipelines.universal@1e1cf3dcbd40)
+    com.unity.test-framework@1.8.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.test-framework@7a3849e09bd0)
+    com.unity.timeline@6.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.timeline@c56d56b0070b)
+    com.unity.ugui@2.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ugui@0f30cee369f3)
+    com.unity.modules.accessibility@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.physicscore2d)
+    com.unity.modules.screencapture@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tetgen@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.tetgen)
+    com.unity.modules.tilemap@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.timelinefoundation@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.timelinefoundation)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.ext.nunit@2.1.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.ext.nunit@0198eae3b53e)
+    com.unity.render-pipelines.core@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.render-pipelines.core@a14850be21a6)
+    com.unity.shadergraph@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.shadergraph@96a7923f6bed)
+    com.unity.render-pipelines.universal-config@17.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.render-pipelines.universal-config@561422b74439)
+    com.unity.burst@2.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.burst@626e66ab421b)
+    com.unity.collections@6.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.collections@10fff0607388)
+    com.unity.mathematics@1.4.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.mathematics@8306a64d0cd6)
+    com.unity.graph-authoring@1.0.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.graph-authoring@cfd2588851ee)
+    com.unity.test-framework.performance@6.6.0 (location: C:\Users\1\repos\Project Hero\Library\PackageCache\com.unity.test-framework.performance@0a60b857a52e)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.05 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Refreshing native plugins compatible for Editor in 5.20 ms, found 5 plugins.
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/1/repos/Project Hero
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.runtime.interopservices.windowsruntime has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\System.Runtime.InteropServices.WindowsRuntime.dll"
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.componentmodel.composition has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\System.ComponentModel.Composition.dll"
+DisplayProgressbar: Compiling Scripts
+ExitCode: 0 Duration: 2s574ms
+[1342/1776  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[1772/1776  1s] Csc Library/Bee/artifacts/1900b0aE.dag/ProjectHero.Compatibility.Runtime.Tests.dll (+2 others)
+Assets\Tests\PlayMode\Task10WiredPresentationTests.cs(38,32): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M2HudPlayModeTests.cs(23,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M3HudPlayModeTests.cs(56,48): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(66,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M2HudPlayModeTests.cs(50,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M3HudPlayModeTests.cs(73,128): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task11DynamicSpawnSceneTests.cs(60,28): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task11DynamicSpawnSceneTests.cs(66,32): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task12CSceneEvidenceTests.cs(36,30): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task12CSceneEvidenceTests.cs(39,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M2HudPlayModeTests.cs(74,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(52,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(98,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(86,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(136,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M3HudPlayModeTests.cs(146,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(159,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(125,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(160,24): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(161,120): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task10WiredPresentationTests.cs(139,29): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs(100,38): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs(103,46): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs(113,30): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Tests\PlayMode\Task11SceneScenarioSource.cs(17,37): warning UAC1001: Field 'Seed' type 'ProjectHero.Core.Compatibility.Runtime.BattleSimulationSeed' is skipped by serialization (missing the [Serializable] attribute). Refer to the Serialization rules analyzer reference. (https://docs.unity3d.com/6000.6/Documentation/Manual/script-serialization-analyzer.html#uac1001)
+
+Assets\Tests\PlayMode\Task08SceneCoverageTests.cs(137,16): warning UAC0005: AppDomain.GetAssemblies() in Unity may return already unloaded assemblies and result in errors or leaks. Use Unity APIs instead, such as 'CurrentAssemblies.GetLoadedAssemblies()' or 'TypeCache.GetTypesDerivedFrom()'.
+
+Assets\Tests\PlayMode\RuntimeOwnershipTests.cs(2586,30): warning UAC0005: AppDomain.GetAssemblies() in Unity may return already unloaded assemblies and result in errors or leaks. Use Unity APIs instead, such as 'CurrentAssemblies.GetLoadedAssemblies()' or 'TypeCache.GetTypesDerivedFrom()'.
+[1773/1776  0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ProjectHero.Compatibility.Runtime.Tests.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/ProjectHero.Compatibility.Runtime.Tests.dll, with 150 defines and 295 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Pipeline.CodeGen.CodeReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running Unity.Pipeline.CodeGen.CodeReloadInPlaceILPostProcessor
+[1774/1776  0s] CopyFiles Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.pdb
+[1775/1776  0s] CopyFiles Library/ScriptAssemblies/ProjectHero.Compatibility.Runtime.Tests.dll
+*** Tundra build success (2.53 seconds), 5 items updated, 1776 evaluated
+Assets\Tests\PlayMode\Task10WiredPresentationTests.cs(38,32): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M2HudPlayModeTests.cs(23,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M3HudPlayModeTests.cs(56,48): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(66,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M2HudPlayModeTests.cs(50,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M3HudPlayModeTests.cs(73,128): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task11DynamicSpawnSceneTests.cs(60,28): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task11DynamicSpawnSceneTests.cs(66,32): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task12CSceneEvidenceTests.cs(36,30): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task12CSceneEvidenceTests.cs(39,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M2HudPlayModeTests.cs(74,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(52,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(98,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(86,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(136,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M3HudPlayModeTests.cs(146,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M1HudPlayModeTests.cs(159,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(125,54): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(160,24): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\M4HudPlayModeTests.cs(161,120): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task10WiredPresentationTests.cs(139,29): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs(100,38): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs(103,46): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task12BSceneEvidenceTests.cs(113,30): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Tests\PlayMode\Task11SceneScenarioSource.cs(17,37): warning UAC1001: Field 'Seed' type 'ProjectHero.Core.Compatibility.Runtime.BattleSimulationSeed' is skipped by serialization (missing the [Serializable] attribute). Refer to the Serialization rules analyzer reference. (https://docs.unity3d.com/6000.6/Documentation/Manual/script-serialization-analyzer.html#uac1001)
+Assets\Tests\PlayMode\Task08SceneCoverageTests.cs(137,16): warning UAC0005: AppDomain.GetAssemblies() in Unity may return already unloaded assemblies and result in errors or leaks. Use Unity APIs instead, such as 'CurrentAssemblies.GetLoadedAssemblies()' or 'TypeCache.GetTypesDerivedFrom()'.
+Assets\Tests\PlayMode\RuntimeOwnershipTests.cs(2586,30): warning UAC0005: AppDomain.GetAssemblies() in Unity may return already unloaded assemblies and result in errors or leaks. Use Unity APIs instead, such as 'CurrentAssemblies.GetLoadedAssemblies()' or 'TypeCache.GetTypesDerivedFrom()'.
+Total cache size 265533044
+Total cache size after purge 265533044, took 00:00:00.3780117
+AssetDatabase: script compilation time: 3.419437s
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory is not a mono symbol file
+Symbol file LoadedFromMemory is not a mono symbol file
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Refreshing native plugins compatible for Editor in 5.93 ms, found 5 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 7.35 ms, found 5 plugins.
+Start HTTP server: port:7800
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.009 seconds
+Domain Reload Profiling: 3724ms
+	BeginReloadAssembly (247ms)
+		DisableScriptedObjects (27ms)
+		CreateAndSetChildDomain (48ms)
+	RebuildCommonClasses (7ms)
+	RebuildNativeTypeToScriptingClass (11ms)
+	initialDomainReloadingComplete (125ms)
+	LoadAllAssembliesAndSetupDomain (1324ms)
+		LoadAssemblies (745ms)
+		TypeCache.Refresh (415ms)
+			TypeCache.ScanAssembly (395ms)
+		AnalyzeDomain (79ms)
+			BuildScriptInfoCaches (71ms)
+			ResolveRequiredComponents (7ms)
+	FinalizeReload (2009ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (114ms)
+			ProcessInitializeOnLoadAttributes (1296ms)
+			ProcessInitializeOnLoadMethodAttributes (254ms)
+			AfterProcessingInitializeOnLoad (22ms)
+		AwakeInstancesAfterBackupRestoration (25ms)
+Starting new worker id: 0 with log in C:/Users/1/repos/Project Hero/Logs/AssetImportWorkerHW0.log
+Refreshing native plugins compatible for Editor in 5.46 ms, found 5 plugins.
+
+Asset Pipeline Refresh (id=9d385767e776e1347984d79d54bf0e00): Total: 8.523 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2749 ms
+		Asset DB Callback time: managed=298 ms, native=62 ms
+		Scripting: domain reloads=1, domain reload time=1858 ms, compile time=3423 ms, other=130 ms
+		Project Asset Count: scripts=2353, non-scripts=5594
+		Asset File Changes: new=0, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 54.301ms
+	ApplyChangesToAssetFolders: 0.744ms
+	Scan: 205.165ms
+	Collect global state as custom dependencies: 18.694ms
+	OnSourceAssetsModified: 0.520ms
+	CategorizeScriptCompilationAssets: 57.035ms
+	ProcessAssetsWithTransientArtifactChanges: 99.803ms
+	CategorizeAssets: 73.598ms
+	CompileScripts: 3423.072ms
+	ImportOutOfDateAssets: 2044.547ms (2028.841ms without children)
+		UnloadImportedAssets: 0.539ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.893ms
+		ImportSchedulerStart: 14.226ms
+	PostProcessAllAssets: 302.408ms
+		XRBuildSystem.XRAssetImported 2.784ms
+		VCAutoAddAssetPostprocess 0.657ms
+		MonoPostProcessAllAssets: 298.413ms
+			AssetPostprocessor.OnPostprocessAllAssets 68.460ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 29.039ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 18.491ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 11.791ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 5.545ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 1.755ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.641ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.249ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.051ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.011ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 0.980ms
+			AssetChangedListener.OnPostprocessAllAssets 0.970ms
+			AssetChangeDetector.OnPostprocessAllAssets 0.894ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.864ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.811ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.716ms
+			MaterialPostprocessor.OnPostprocessAllAssets 0.521ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.492ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.451ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.415ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.363ms
+			AssetEvents.OnPostprocessAllAssets 0.337ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.307ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.281ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.270ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.261ms
+			ModelAssetProcessor.OnPostprocessAllAssets 0.258ms
+			PostProcessor.OnPostprocessAllAssets 0.231ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.228ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.212ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 0.198ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.150ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.138ms
+			SyncVS.PostprocessSyncProject 0.133ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.118ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.113ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.110ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.104ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.101ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.079ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.061ms
+	PostAssetChangesProfiler: 7.600ms
+	UnloadStreamsBegin: 1.674ms
+	PersistCurrentRevisions: 0.228ms
+	GenerateScriptTypeHashes: 2.016ms
+	GenerateScriptTypeSerializationHashes: 3.927ms
+	Untracked: 2200.892ms
+
+Application.AssetDatabase Initial Refresh End
+Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
+Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
+Scanning for USB devices : 1.265ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-Project Hero
+Unloading 71 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 11160 unused Assets / (6.0 MB). Loaded Objects now: 12197.
+Memory consumption went from 0.59 GB to 0.59 GB.
+Total: 15.028600 ms (FindLiveObjects: 0.835100 ms CreateObjectMapping: 0.571400 ms MarkObjects: 11.579600 ms  DeleteObjects: 1.705800 ms)
+
+Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported for hardware-accelerated video decoding.
+[Project] Loading completed in 11.595 seconds
+	Project init time: 				11.243 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		0.400 seconds
+		Asset Database init time: 		0.611 seconds
+		Global illumination init time: 	0.004 seconds
+		Assemblies load time: 			1.325 seconds
+		Unity extensions init time: 	0.023 seconds
+		Asset Database refresh time: 	8.523 seconds
+	Scene opening time: 			0.126 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1794588218019,"processId":30992,"projectLoad":11.5948065,"projectInit":11.2429062,"templateInit":0.0,"packageManagerInit":0.4003559,"assetDatabaseInit":0.6105317,"globalIlluminationInit":0.0037647,"assembliesLoad":1.3248368,"unityExtensionsInit":0.0226456,"assetDatabaseRefresh":8.5229142,"sceneOpening":0.1261439}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1794588218019,"processId":30992,"editorVersion":"6000.6.2f1 (770e33f6875c)","branch":"6000.6/staging","buildType":"Release","platform":"Windows"}
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Running tests for ExecutionSettings with details:
+targetPlatform = 
+playerHeartbeatTimeout = 600
+filters[0] = 
+   Filter with settings:
+   testMode = PlayMode
+   targetPlatform = 
+   testNames = null
+   groupNames = FormalAiSceneTests, ShadowSplitLifecycleTests, Task10WiredPresentationTests, Task11ProductionSceneTests, Task11ShadowClassificationTests, RuntimeOwnershipTests.NewModeNeverCallsLegacyAdvanceTime, RuntimeOwnershipTests.ShadowModeKeepsLegacyAsOnlyAuthority, RuntimeOwnershipTests.MainSceneBattleDefinitionMatchesTask02BFrozenHash
+   categoryNames = null
+   assemblyNames = null
+ignoreTests = {}
+featureFlags = null
+
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.CommandLineTest.Executer:InitializeAndExecuteRun (string[]) (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/CommandLineTest/Executer.cs:53)
+UnityEditor.TestTools.TestRunner.CommandLineTest.TestStarter:InitializeAndExecuteRun () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/CommandLineTest/TestStarter.cs:64)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 53)
+
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+[UnityConnectServicesConfig] config is NOT valid, switching to default
+Created GICache directory at C:/Users/1/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.014s, timestamps: [11.609 - 11.623]
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 1 unused Assets / (108.4 KB). Loaded Objects now: 12350.
+Memory consumption went from 0.59 GB to 0.59 GB.
+Total: 23.238300 ms (FindLiveObjects: 1.547000 ms CreateObjectMapping: 0.656500 ms MarkObjects: 20.481400 ms  DeleteObjects: 0.049200 ms)
+
+[INFO ] [relay] relay.startup port=9001 mcpClientPort=9002 editorPid=30992
+[INFO ] [relay] log === RELAY SERVER STARTED === (unity-ai-relay v1.0.12-build.99)
+[INFO ] [relay] log TLS trust: NODE_USE_SYSTEM_CA=on systemCAs=105 bundledCAs=145
+[INFO ] [relay] log Starting relay server...
+[INFO ] [relay] log Command line arguments: ["bun","B:/~BUN/root/relay_win.exe","--relay","--port","9001","--mcp-client-port","9002","--editor-pid","30992","--shutdown-delay","180","--log-dir","C:\\Users\\1\\repos\\Project Hero\\Logs"]
+[INFO ] [relay] log Parsed config: {"port":9001,"mcpClientPort":9002,"editorPid":"30992","shutdownDelaySeconds":180}
+[INFO ] [relay] log Initializing relay components...
+[INFO ] [relay] log Creating RelayEditor...
+[INFO ] [relay] log WebSocket server started
+[INFO ] [relay] log Relay server initialization completed
+[INFO ] [relay] log MCP Client initialized at port: 9002
+[WARN ] [relay] log [shell-env] Shell environment did not contain a PATH variable
+[INFO ] [relay] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: 'd93212e0d22e9173926618c330658fad') in 0.011 seconds [static dependencies only]. Details - ImportResultOutputID=0a89a5c5f492143e0fa186859e17ba6f DependenciesID=3f3899b4236c088ddd20c758af8ad9a6 StaticDependenciesID=c7b73f6aad4dccd21e8efaeccacbe99d 
+[INFO ] [relay] log Unity client connected with ID: editor-30992-ekl7gc (relay 1.0.12-build.99)
+[INFO ] [relay] connection.established clientId=editor-30992-ekl7gc port=9001
+Refreshing native plugins compatible for Editor in 13.73 ms, found 5 plugins.
+Asset Pipeline Refresh (id=08e38bbcd195d524191cc7a69a09545e): Total: 0.214 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Importing 'GUID: d415e0f1cf108b0418c84b6757c774f1 - Path: Assets/InitTestScenef7f5a07d-ace9-4557-82f9-07a2ba5755c3.unity' with importer (DefaultImporter)
+Imported 'GUID: d415e0f1cf108b0418c84b6757c774f1' -> (Import Result ID: 'c77a32fb251f7e0f0446ac2d57a60ae3') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=9b7fc80c8161f318ca7cf0abfa61821d DependenciesID=6350fe8969b1c76416477f5643a2b401 StaticDependenciesID=bd9f589c8c5d9c13e508095e2db1566f 
+Refreshing native plugins compatible for Editor in 12.13 ms, found 5 plugins.
+Asset Pipeline Refresh (id=3f72be75c84851a49ac0822b66c2f1bf): Total: 0.098 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+Executing IPrebuildSetup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<ExecuteMethods>d__8<UnityEngine.TestTools.IPrebuildSetup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<Execute>d__7<UnityEngine.TestTools.IPrebuildSetup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:34)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:194)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:129)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs Line: 48)
+
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+[INFO ] [relay] log Domain reload signal received from client editor-30992-ekl7gc
+[INFO ] [relay] log Client disconnected - blocking and caching for recovery
+[WARN ] [relay] connection.lost clientId=null
+[WARN ] [relay] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[INFO ] [relay] log Auto-shutdown timer started due to client disconnection
+Worker ready: AssetImportWorkerHW0 0
+Symbol file LoadedFromMemory is not a mono symbol file
+Symbol file LoadedFromMemory is not a mono symbol file
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+'Packages/com.unity.render-pipelines.core/Editor/Deprecated.cs' contains partial class of Unity.Object, exactly 1 of the partial classes needs to be in a file with the same filename. This is to know the one that can be referenced from ie. GameObjects
+Refreshing native plugins compatible for Editor in 5.23 ms, found 5 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 6.29 ms, found 5 plugins.
+Start HTTP server: port:7801
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.876 seconds
+Domain Reload Profiling: 3171ms
+	BeginReloadAssembly (742ms)
+		DisableScriptedObjects (27ms)
+		CreateAndSetChildDomain (202ms)
+	RebuildCommonClasses (8ms)
+	RebuildNativeTypeToScriptingClass (12ms)
+	initialDomainReloadingComplete (160ms)
+	LoadAllAssembliesAndSetupDomain (373ms)
+		LoadAssemblies (239ms)
+		TypeCache.Refresh (10ms)
+		AnalyzeDomain (12ms)
+			ResolveRequiredComponents (8ms)
+	FinalizeReload (1877ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (116ms)
+			ProcessInitializeOnLoadAttributes (1022ms)
+			ProcessInitializeOnLoadMethodAttributes (307ms)
+			AfterProcessingInitializeOnLoad (18ms)
+		AwakeInstancesAfterBackupRestoration (47ms)
+No restricted APIs configured; Validation skipped.
+Checking 38 assemblies for restricted APIs found 0 usage(s) in 5 ms
+Refreshing native plugins compatible for Editor in 5.18 ms, found 5 plugins.
+
+Asset Pipeline Refresh (id=86d2efa2a2e950e4999aafe5f5d5c932): Total: 5.370 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2250 ms
+		Asset DB Callback time: managed=759 ms, native=866 ms
+		Scripting: domain reloads=1, domain reload time=1490 ms, compile time=3 ms, other=0 ms
+		Project Asset Count: scripts=2353, non-scripts=5595
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 4.302ms
+	ApplyChangesToAssetFolders: 0.282ms
+	Collect global state as custom dependencies: 3.816ms
+	ProcessAssetsWithTransientArtifactChanges: 225.135ms
+	CategorizeAssets: 70.856ms
+	CompileScripts: 2.670ms
+	ImportOutOfDateAssets: 1890.602ms (1888.450ms without children)
+		CollectScriptTypesHashes: 1.290ms
+		ReloadNativeAssets: 0.759ms
+		UnloadImportedAssets: 0.175ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.912ms
+		ImportSchedulerStart: 0.283ms
+	PostProcessAllAssets: 1618.052ms
+		AssemblyValidation.PostprocessAllAssets 49.486ms
+		PostProcessCallbackCreateDeferredMaterials 16.147ms
+		ShaderAssetModifiedCallback 9.405ms
+		RaytracingShaderImportPostprocess 9.052ms
+		ComputeShaderImportPostprocess 8.483ms
+		SpeedTreeImporter.PostprocessAllAssets 7.873ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 3.561ms
+		BlockShaderImporter.PostprocessAllAssets 3.505ms
+		XRBuildSystem.XRAssetImported 2.673ms
+		MonoPostProcessAllAssets: 758.820ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 196.398ms
+			AssetPostprocessor.OnPostprocessAllAssets 40.154ms
+			PostProcessor.OnPostprocessAllAssets 38.788ms
+			MaterialPostprocessor.OnPostprocessAllAssets 36.700ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 36.330ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 36.302ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 35.664ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 20.971ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 19.247ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 16.177ms
+			AssetChangedListener.OnPostprocessAllAssets 15.408ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 12.232ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 6.399ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 5.979ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 4.869ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 4.649ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.879ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.869ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.190ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.791ms
+			AssetChangeDetector.OnPostprocessAllAssets 0.788ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.585ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.499ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.457ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.448ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.436ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.434ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.362ms
+			ModelAssetProcessor.OnPostprocessAllAssets 0.346ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.297ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.244ms
+			AssetEvents.OnPostprocessAllAssets 0.232ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.229ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.223ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.216ms
+			SyncVS.PostprocessSyncProject 0.205ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.130ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.114ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.094ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.089ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.064ms
+			TrackSelectedAssetsProcessor.OnPostprocessAllAssets 0.052ms
+	PostAssetChangesProfiler: 6.520ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.353ms
+	UnloadStreamsBegin: 0.113ms
+	PersistCurrentRevisions: 0.223ms
+	GenerateScriptTypeHashes: 3.371ms
+	GenerateScriptTypeSerializationHashes: 6.096ms
+	Untracked: 1525.776ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            1.067 ms
+	Integration:            2347.211 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.099 ms
+	Total Operation Time:   2348.379 ms
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[INFO ] [relay] log Unity client connected with ID: editor-30992-ubp73b (relay 1.0.12-build.99)
+[INFO ] [relay] connection.established clientId=editor-30992-ubp73b port=9001
+Unloading 8 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.842400 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            30.880 ms
+	Integration:            35.064 ms
+	Integration of assets:  8.254 ms
+	Thread Wait Time:       0.920 ms
+	Total Operation Time:   75.118 ms
+Unloading 9939 unused Assets / (4.2 MB). Loaded Objects now: 13464.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 28.836800 ms (FindLiveObjects: 2.920600 ms CreateObjectMapping: 0.747100 ms MarkObjects: 21.890800 ms  DeleteObjects: 2.845800 ms)
+
+Unloading 23 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 5.345700 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.231 ms
+	Integration:            31.178 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.374 ms
+	Total Operation Time:   35.784 ms
+Unloading 17 unused Assets / (26.3 KB). Loaded Objects now: 13464.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.404100 ms (FindLiveObjects: 1.802900 ms CreateObjectMapping: 0.162700 ms MarkObjects: 19.988400 ms  DeleteObjects: 0.068000 ms)
+
+Unloading 17 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.061900 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.422 ms
+	Integration:            27.715 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.335 ms
+	Total Operation Time:   32.473 ms
+Unloading 17 unused Assets / (26.3 KB). Loaded Objects now: 13464.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.896400 ms (FindLiveObjects: 1.662200 ms CreateObjectMapping: 0.176500 ms MarkObjects: 20.641100 ms  DeleteObjects: 0.055100 ms)
+
+Unloading 17 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.095500 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.133 ms
+	Integration:            26.358 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.476 ms
+	Total Operation Time:   30.969 ms
+TrimDiskCacheJob: Current cache size 0mb
+Unloading 17 unused Assets / (26.3 KB). Loaded Objects now: 13464.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.425300 ms (FindLiveObjects: 1.595400 ms CreateObjectMapping: 0.177700 ms MarkObjects: 20.246800 ms  DeleteObjects: 0.057800 ms)
+
+Unloading 17 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.872300 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.328 ms
+	Integration:            23.739 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.351 ms
+	Total Operation Time:   28.420 ms
+Unloading 17 unused Assets / (26.3 KB). Loaded Objects now: 13464.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.924100 ms (FindLiveObjects: 1.783300 ms CreateObjectMapping: 0.170400 ms MarkObjects: 20.550300 ms  DeleteObjects: 0.051100 ms)
+
+Unloading 26 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.754900 ms
+Loaded scene 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'
+	Deserialize:            12.342 ms
+	Integration:            37.571 ms
+	Integration of assets:  0.241 ms
+	Thread Wait Time:       0.275 ms
+	Total Operation Time:   50.430 ms
+Unloading 19 unused Assets / (111.6 KB). Loaded Objects now: 12833.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.655100 ms (FindLiveObjects: 1.595100 ms CreateObjectMapping: 0.187000 ms MarkObjects: 20.430700 ms  DeleteObjects: 0.090400 ms)
+
+--- Starting Combat Demo (Ticks) ---
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Demos.CombatDemo:Start () (at Assets/Scripts/Demos/CombatDemo.cs:184)
+
+(Filename: Assets/Scripts/Demos/CombatDemo.cs Line: 184)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 3.568900 ms
+Loaded scene 'Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity'
+	Deserialize:            0.812 ms
+	Integration:            27.661 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.218 ms
+	Total Operation Time:   28.693 ms
+Unloading 84 unused Assets / (0.9 MB). Loaded Objects now: 12457.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.343100 ms (FindLiveObjects: 1.667200 ms CreateObjectMapping: 0.221600 ms MarkObjects: 19.989000 ms  DeleteObjects: 0.126700 ms)
+
+--- Starting Combat Demo (Ticks) ---
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Demos.CombatDemo:Start () (at Assets/Scripts/Demos/CombatDemo.cs:184)
+
+(Filename: Assets/Scripts/Demos/CombatDemo.cs Line: 184)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.244700 ms
+Loaded scene 'Assets/Diagnostics/Editor/HiddenRuntimeValidation.unity'
+	Deserialize:            0.975 ms
+	Integration:            24.364 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.230 ms
+	Total Operation Time:   25.570 ms
+Unloading 16 unused Assets / (50.7 KB). Loaded Objects now: 12457.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.618600 ms (FindLiveObjects: 1.557000 ms CreateObjectMapping: 0.187000 ms MarkObjects: 20.465500 ms  DeleteObjects: 0.072400 ms)
+
+--- Starting Combat Demo (Ticks) ---
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Demos.CombatDemo:Start () (at Assets/Scripts/Demos/CombatDemo.cs:184)
+
+(Filename: Assets/Scripts/Demos/CombatDemo.cs Line: 184)
+
+Unloading 7 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.188900 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            5.788 ms
+	Integration:            23.793 ms
+	Integration of assets:  0.030 ms
+	Thread Wait Time:       0.550 ms
+	Total Operation Time:   30.161 ms
+Unloading 13 unused Assets / (44.3 KB). Loaded Objects now: 13496.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 22.453800 ms (FindLiveObjects: 1.778000 ms CreateObjectMapping: 0.170100 ms MarkObjects: 20.035300 ms  DeleteObjects: 0.061900 ms)
+
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.528600 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.234 ms
+	Integration:            25.841 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.432 ms
+	Total Operation Time:   30.509 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13496.
+Memory consumption went from 0.68 GB to 0.68 GB.
+Total: 23.583600 ms (FindLiveObjects: 1.872600 ms CreateObjectMapping: 0.205600 ms MarkObjects: 21.060200 ms  DeleteObjects: 0.049800 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 15.064000 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.882 ms
+	Integration:            39.914 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.593 ms
+	Total Operation Time:   45.391 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13496.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 22.600000 ms (FindLiveObjects: 1.734200 ms CreateObjectMapping: 0.170500 ms MarkObjects: 20.286600 ms  DeleteObjects: 0.042900 ms)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.560000 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.621 ms
+	Integration:            30.816 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.361 ms
+	Total Operation Time:   35.799 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.106000 ms (FindLiveObjects: 1.673200 ms CreateObjectMapping: 0.183000 ms MarkObjects: 21.678700 ms  DeleteObjects: 0.052900 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.059400 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.462 ms
+	Integration:            29.346 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       123.386 ms
+	Total Operation Time:   157.196 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13545.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 25.766200 ms (FindLiveObjects: 1.726100 ms CreateObjectMapping: 0.222600 ms MarkObjects: 23.420000 ms  DeleteObjects: 0.048500 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.152900 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.416 ms
+	Integration:            27.964 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.480 ms
+	Total Operation Time:   32.862 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.072100 ms (FindLiveObjects: 1.663600 ms CreateObjectMapping: 0.190500 ms MarkObjects: 21.817700 ms  DeleteObjects: 0.051900 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.444600 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.290 ms
+	Integration:            30.163 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.535 ms
+	Total Operation Time:   34.990 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.197300 ms (FindLiveObjects: 1.645900 ms CreateObjectMapping: 0.192900 ms MarkObjects: 21.967400 ms  DeleteObjects: 0.046600 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.437000 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.674 ms
+	Integration:            30.462 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.415 ms
+	Total Operation Time:   35.553 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.071700 ms (FindLiveObjects: 1.738900 ms CreateObjectMapping: 0.184000 ms MarkObjects: 21.715600 ms  DeleteObjects: 0.041600 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.046900 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            5.938 ms
+	Integration:            34.088 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.883 ms
+	Total Operation Time:   40.910 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.924900 ms (FindLiveObjects: 1.634100 ms CreateObjectMapping: 0.188100 ms MarkObjects: 22.698800 ms  DeleteObjects: 0.045000 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.350700 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            6.029 ms
+	Integration:            28.598 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       1.371 ms
+	Total Operation Time:   36.001 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.627900 ms (FindLiveObjects: 1.685700 ms CreateObjectMapping: 0.181100 ms MarkObjects: 22.367500 ms  DeleteObjects: 0.049200 ms)
+
+Unloading 10 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.432500 ms
+Loaded scene 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'
+	Deserialize:            23.659 ms
+	Integration:            31.604 ms
+	Integration of assets:  0.133 ms
+	Thread Wait Time:       4.494 ms
+	Total Operation Time:   59.890 ms
+Unloading 6 unused Assets / (34.2 KB). Loaded Objects now: 12848.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.554500 ms (FindLiveObjects: 1.570400 ms CreateObjectMapping: 0.182800 ms MarkObjects: 22.278800 ms  DeleteObjects: 0.059900 ms)
+
+--- Starting Combat Demo (Ticks) ---
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Demos.CombatDemo:Start () (at Assets/Scripts/Demos/CombatDemo.cs:184)
+
+(Filename: Assets/Scripts/Demos/CombatDemo.cs Line: 184)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 31.0 damage! HP: 169/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 31.0 damage! HP: 138/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 31.0 damage! HP: 107/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 31.0 damage! HP: 76/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 31.0 | ImpactV: 3.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 31.0 damage! HP: 45/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 28.0 | ImpactV: 1.5
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 28.0 damage! HP: 17/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Enemy hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Enemy hits Player | Damage: 31.0 | ImpactV: 3.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Player took 31.0 damage! HP: 169/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:137)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:DriveFrameForTests (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:791)
+ProjectHero.Tests.PlayMode.Task10WiredPresentationTests/<CompleteColdLegacyBattle>d__8:MoveNext () (at Assets/Tests/PlayMode/Task10WiredPresentationTests.cs:213)
+UnityEngine.TestTools.TestEnumerator/<Execute>d__8:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Attributes/TestEnumerator.cs:52)
+UnityEngine.TestTools.EnumerableTestMethodCommand/<ExecuteEnumerableAndRecordExceptions>d__4:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEngine.TestRunner/NUnitExtensions/Commands/EnumerableTestMethodCommand.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+[Combat] Player hits 1 targets with Spear Thrust!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:65)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 65)
+
+[Physics] Player hits Enemy | Damage: 28.0 | ImpactV: 1.5
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:108)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Physics/PhysicsEngine.cs Line: 108)
+
+Enemy took 28.0 damage! HP: -11/200
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:324)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 324)
+
+Enemy has been DEFEATED!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Entities.CombatUnit:OnImpact (ProjectHero.Core.Timeline.BattleTimeline,single,single,int,ProjectHero.Core.Grid.GridDirection) (at Assets/Scripts/Core/Entities/CombatUnit.cs:328)
+ProjectHero.Core.Physics.PhysicsEngine:ResolveCollision (ProjectHero.Core.Timeline.BattleTimeline,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Entities.CombatUnit,ProjectHero.Core.Actions.Action) (at Assets/Scripts/Core/Physics/PhysicsEngine.cs:141)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:92)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Entities/CombatUnit.cs Line: 328)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+[Combat] Player swung Spear Thrust but hit nothing.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Actions.Intents.AttackIntent:ExecuteSuccess () (at Assets/Scripts/Core/Actions/Intents/AttackIntent.cs:61)
+ProjectHero.Core.Timeline.BattleTimeline:ProcessTick (long) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:247)
+ProjectHero.Core.Timeline.BattleTimeline:AdvanceTime (single) (at Assets/Scripts/Core/Timeline/BattleTimeline.cs:218)
+ProjectHero.Demos.CombatDemo:AdvanceFrame (ProjectHero.Core.Compatibility.Runtime.BattleFrameDelta) (at Assets/Scripts/Demos/CombatDemo.cs:108)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:AdvanceOneFrame (single,single) (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:930)
+ProjectHero.Core.Compatibility.Runtime.MigrationBattleHost:Update () (at Assets/Diagnostics/Editor/Migration/MigrationBattleHost.cs:514)
+
+(Filename: Assets/Scripts/Core/Actions/Intents/AttackIntent.cs Line: 61)
+
+Battle Ended: VICTORY
+Press 'R' to Restart
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Core.Gameplay.BattleManager:EndBattle (string) (at Assets/Scripts/Core/Gameplay/BattleManager.cs:97)
+ProjectHero.Core.Gameplay.BattleManager:CheckWinCondition () (at Assets/Scripts/Core/Gameplay/BattleManager.cs:89)
+ProjectHero.Core.Gameplay.BattleManager:Update () (at Assets/Scripts/Core/Gameplay/BattleManager.cs:63)
+
+(Filename: Assets/Scripts/Core/Gameplay/BattleManager.cs Line: 97)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.704900 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            5.519 ms
+	Integration:            30.688 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       1.087 ms
+	Total Operation Time:   37.296 ms
+Unloading 67 unused Assets / (0.9 MB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.985400 ms (FindLiveObjects: 1.640200 ms CreateObjectMapping: 0.195300 ms MarkObjects: 22.672900 ms  DeleteObjects: 0.129800 ms)
+
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 2.072300 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.412 ms
+	Integration:            30.953 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.599 ms
+	Total Operation Time:   35.966 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 25.385700 ms (FindLiveObjects: 1.706200 ms CreateObjectMapping: 0.267400 ms MarkObjects: 23.022000 ms  DeleteObjects: 0.045300 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.158200 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.706 ms
+	Integration:            29.348 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.484 ms
+	Total Operation Time:   34.540 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.587500 ms (FindLiveObjects: 1.617700 ms CreateObjectMapping: 0.188600 ms MarkObjects: 22.277600 ms  DeleteObjects: 0.059000 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.184300 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            4.466 ms
+	Integration:            29.026 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.555 ms
+	Total Operation Time:   34.048 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 25.274500 ms (FindLiveObjects: 1.690400 ms CreateObjectMapping: 0.217600 ms MarkObjects: 22.906500 ms  DeleteObjects: 0.046300 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.111800 ms
+Loaded scene 'Assets/Scenes/CombatSampleScene.unity'
+	Deserialize:            5.007 ms
+	Integration:            29.180 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.591 ms
+	Total Operation Time:   34.779 ms
+Unloading 3 unused Assets / (5.8 KB). Loaded Objects now: 13497.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.980000 ms (FindLiveObjects: 1.802500 ms CreateObjectMapping: 0.178000 ms MarkObjects: 22.585600 ms  DeleteObjects: 0.046400 ms)
+
+Unloading 9 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.106800 ms
+Loaded scene 'Assets/Diagnostics/Editor/LegacyComparisonScene.unity'
+	Deserialize:            5.883 ms
+	Integration:            32.489 ms
+	Integration of assets:  0.120 ms
+	Thread Wait Time:       0.251 ms
+	Total Operation Time:   38.744 ms
+Unloading 19 unused Assets / (111.4 KB). Loaded Objects now: 12834.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 25.240700 ms (FindLiveObjects: 1.804100 ms CreateObjectMapping: 0.252900 ms MarkObjects: 22.719900 ms  DeleteObjects: 0.084900 ms)
+
+--- Starting Combat Demo (Ticks) ---
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ProjectHero.Demos.CombatDemo:Start () (at Assets/Scripts/Demos/CombatDemo.cs:184)
+
+(Filename: Assets/Scripts/Demos/CombatDemo.cs Line: 184)
+
+Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+Saving results to: C:\Users\1\repos\Project Hero\优化任务\执行记录\短组合规划-2026-11-13\production-shadow-playmode.xml
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.490 ms
+	Integration:            27.127 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   27.635 ms
+Unloading 78 unused Assets / (1.0 MB). Loaded Objects now: 12403.
+Memory consumption went from 0.69 GB to 0.69 GB.
+Total: 24.607800 ms (FindLiveObjects: 1.572100 ms CreateObjectMapping: 0.211100 ms MarkObjects: 22.204000 ms  DeleteObjects: 0.150300 ms)
+
+[ScriptCompilation] Requested script compilation because: Player settings modified
+[Licensing::Client] Successfully resolved entitlement details
+Executing IPostBuildCleanup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<ExecuteMethods>d__8<UnityEngine.TestTools.IPostBuildCleanup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.BuildActionTaskBase`1/<Execute>d__7<UnityEngine.TestTools.IPostBuildCleanup>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs:34)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:194)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:129)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs Line: 48)
+
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.2f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/1/repos/Project Hero
+ExitCode: 0 Duration: 0s603ms
+[1261/1776  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.56 seconds), 1 items updated, 1776 evaluated
+Total cache size 265533044
+Total cache size after purge 265533044, took 00:00:00.4160078
+Reloading assemblies after finishing script compilation.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+[INFO ] [relay] log Domain reload signal received from client editor-30992-ubp73b
+[INFO ] [relay] log Client disconnected - blocking and caching for recovery
+[WARN ] [relay] connection.lost clientId=null
+[WARN ] [relay] log Client disconnected - sessions will persist until auto-shutdown, reason: Client disconnected
+[INFO ] [relay] log Auto-shutdown timer started due to client disconnection
+Symbol file LoadedFromMemory is not a mono symbol file
+Symbol file LoadedFromMemory is not a mono symbol file
+Refreshing native plugins compatible for Editor in 5.79 ms, found 5 plugins.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Refreshing native plugins compatible for Editor in 5.35 ms, found 5 plugins.
+Start HTTP server: port:7801
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+[Licensing::Client] Error: Code 404 while processing request (status: Found 0 entitlement groups and 0 free entitlements matching requested entitlement ids)
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.092 seconds
+Domain Reload Profiling: 3146ms
+	BeginReloadAssembly (574ms)
+		DisableScriptedObjects (41ms)
+		CreateAndSetChildDomain (315ms)
+	RebuildCommonClasses (8ms)
+	RebuildNativeTypeToScriptingClass (12ms)
+	initialDomainReloadingComplete (128ms)
+	LoadAllAssembliesAndSetupDomain (331ms)
+		LoadAssemblies (203ms)
+		TypeCache.Refresh (9ms)
+		AnalyzeDomain (11ms)
+			ResolveRequiredComponents (8ms)
+	FinalizeReload (2093ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (4ms)
+			BeforeProcessingInitializeOnLoad (214ms)
+			ProcessInitializeOnLoadAttributes (962ms)
+			ProcessInitializeOnLoadMethodAttributes (347ms)
+			AfterProcessingInitializeOnLoad (19ms)
+		AwakeInstancesAfterBackupRestoration (53ms)
+
+Asset Pipeline Refresh (id=498276ba36395f249b174fc594927962): Total: 3.480 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2268 ms
+		Asset DB Callback time: managed=28 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1179 ms, compile time=3 ms, other=0 ms
+		Project Asset Count: scripts=2353, non-scripts=5595
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.656ms
+	ApplyChangesToAssetFolders: 0.234ms
+	Collect global state as custom dependencies: 4.104ms
+	ProcessAssetsWithTransientArtifactChanges: 0.224ms
+	CategorizeAssets: 74.627ms
+	CompileScripts: 2.853ms
+	ImportOutOfDateAssets: 2114.923ms (2112.327ms without children)
+		CollectScriptTypesHashes: 0.929ms
+		ReloadNativeAssets: 0.998ms
+		UnloadImportedAssets: 0.215ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.917ms
+		ImportSchedulerStart: 0.440ms
+	PostProcessAllAssets: 28.649ms
+		MonoPostProcessAllAssets: 28.644ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 196.398ms
+			AssetPostprocessor.OnPostprocessAllAssets 40.154ms
+			PostProcessor.OnPostprocessAllAssets 38.788ms
+			MaterialPostprocessor.OnPostprocessAllAssets 36.700ms
+			InputActionJsonNameModifierAssetProcessor.OnPostprocessAllAssets 36.330ms
+			AssetReferenceReimportMonitor.OnPostprocessAllAssets 35.664ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 20.971ms
+			SpriteSlicePostprocessor.OnPostprocessAllAssets 19.247ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 16.177ms
+			AssetChangedListener.OnPostprocessAllAssets 15.408ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 12.467ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 4.649ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.879ms
+			GraphRefreshPostprocessor.OnPostprocessAllAssets 1.563ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.405ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 1.115ms
+			SkillsProjectAssetPostprocessor.OnPostprocessAllAssets 0.791ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.782ms
+			AssetChangeDetector.OnPostprocessAllAssets 0.739ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.670ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.499ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.448ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.436ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.434ms
+			ShaderReflectionAssetPostProcessor.OnPostprocessAllAssets 0.430ms
+			UVCSAssetPostprocessor.OnPostprocessAllAssets 0.362ms
+			ModelAssetProcessor.OnPostprocessAllAssets 0.346ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.297ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.244ms
+			AssetEvents.OnPostprocessAllAssets 0.232ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.220ms
+			ProjectSettingsPostprocessor.OnPostprocessAllAssets 0.216ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.216ms
+			InputActionAssetPostprocessor.OnPostprocessAllAssets 0.209ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.154ms
+			SyncVS.PostprocessSyncProject 0.133ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.123ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.114ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.094ms
+			AssetReloadNotifier.OnPostprocessAllAssets 0.089ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.064ms
+			TrackSelectedAssetsProcessor.OnPostprocessAllAssets 0.052ms
+	GatherAllCurrentPrimaryImportResultRevisions: 0.262ms
+	PersistCurrentRevisions: 0.236ms
+	GenerateScriptTypeHashes: 3.033ms
+	GenerateScriptTypeSerializationHashes: 5.649ms
+	Untracked: 1222.359ms
+
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[INFO ] [relay] log Unity client connected with ID: editor-30992-onw3ox (relay 1.0.12-build.99)
+[INFO ] [relay] connection.established clientId=editor-30992-onw3ox port=9001
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 109 unused Assets / (1.5 MB). Loaded Objects now: 12369.
+Memory consumption went from 0.63 GB to 0.63 GB.
+Total: 16.527900 ms (FindLiveObjects: 2.016100 ms CreateObjectMapping: 0.649100 ms MarkObjects: 13.304500 ms  DeleteObjects: 0.164600 ms)
+
+Refreshing native plugins compatible for Editor in 8.58 ms, found 5 plugins.
+Asset Pipeline Refresh (id=81f355a1aae7e5146b90450fec673d5e): Total: 0.146 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+DisplayProgressbar: Undo
+Test run completed. Exiting with code 2 (Failed). One or more tests failed.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityEditor.TestTools.TestRunner.CommandLineTest.Executer:ExitApplication (UnityEditor.TestTools.TestRunner.CommandLineTest.Executer/ReturnCodes,string) (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/CommandLineTest/Executer.cs:81)
+UnityEditor.TestTools.TestRunner.CommandLineTest.Executer:ExitIfRunIsCompleted () (at ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/CommandLineTest/Executer.cs:74)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: ./Library/PackageCache/com.unity.test-framework@7a3849e09bd0/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 81)
+
+MonoPathRemapper: Attempts to remap: 142790; Successful remaps: 24336
+Serialized file version minimum: 22, current 23
+Pipeline Server stopped
+[INFO ] [relay] log Shutdown request received from client editor-30992-onw3ox
+[INFO ] [relay] log Unity client requested immediate shutdown - shutting down now, reason: Shutdown requested by client
+[INFO ] [relay] log Shutdown: Initiating graceful shutdown: Shutdown requested by client
+�ɹ�: ����ֹ PID 31124 (���� PID 2148 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 2148 (���� PID 30992 �ӽ���)�Ľ��̡�
+Importing 'GUID: 00000000000000004000000000000000 - Path: ProjectSettings/ProjectSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000004000000000000000' -> (Import Result ID: '3a395acd7ae734ab8746d4f078c4d246') in 0.005 seconds [static dependencies only]. Details - ImportResultOutputID=054c890a8f4b6dddbea933bc5e4b7df4 DependenciesID=7cb4ed142ef9676962c014891f591eb9 StaticDependenciesID=e600ffbe84499c38d504cdc77c6623b3 
+Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: 'd93212e0d22e9173926618c330658fad') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=0a89a5c5f492143e0fa186859e17ba6f DependenciesID=3f3899b4236c088ddd20c758af8ad9a6 StaticDependenciesID=c7b73f6aad4dccd21e8efaeccacbe99d 
+Refreshing native plugins compatible for Editor in 8.03 ms, found 5 plugins.
+Asset Pipeline Refresh (id=fd9f0350ac1d42a4aacc88a5e67627b2): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-1-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-1 channel disconnected successfully.
+Shut down.
+Lingering sessions upon destruction of worker manager
+Unity Data Store service was successfully shut down
+UDS shutting down local client system
+Shut down UDS service system complete
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+abort_threads: Failed aborting id: 0000000000001AC8, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 000000000000528C, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000001AC8, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 000000000000528C, mono_thread_manage will ignore it
+
+debugger-agent: Unable to listen on 3416
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1794588527332,"processId":30992,"allocatedMemory":21058524,"memoryLabels":[{"Default":214222},{"Permanent":15516},{"NewDelete":72895},{"Thread":4197944},{"Manager":38237},{"VertexData":8},{"Geometry":816},{"Texture":24},{"Shader":848975},{"Material":68},{"GfxDevice":55968},{"Animation":952},{"FreeType":8},{"FontEngine":736},{"Physics":1970},{"Physics2D":16},{"Serialization":67040},{"Input":42840},{"JobScheduler":256},{"TextLib":336},{"Mono":48},{"MonoCode":704},{"ScriptingNativeRuntime":1476184},{"BaseObject":49456},{"Resource":1252},{"Renderer":2376},{"Transform":4685},{"File":22274},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":1058938},{"StaticString":3808},{"Utility":2674806},{"Curl":2812},{"PoolAlloc":2840},{"AI":80},{"TypeTree":17165},{"ScriptManager":25312},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":576},{"WebRequest":552},{"VR":49650},{"SceneManager":608},{"Video":64},{"LazyScriptCache":32},{"Camera":729},{"Secure":2377},{"SerializationCache":9256},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":1188},{"UIElements":40},{"CoreStats":14456},{"Identifiers":7152},{"Gui":128},{"EditorUtility":128209},{"VersionControl":8},{"Undo":931},{"AssetDatabase":9540180},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":40513},{"Upm":1912},{"UpmDiagnostics":8},{"AssetCompliance":96},{"DrivenProperties":72},{"LocalIPC":176},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3218},{"Windowing":456},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

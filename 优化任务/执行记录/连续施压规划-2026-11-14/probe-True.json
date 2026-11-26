@@ -1,0 +1,853 @@
+{
+  "VisibleUnits": [
+    {
+      "UnitId": 1,
+      "DefinitionId": "unit.experiment.1",
+      "FactionId": "faction.experiment.a",
+      "X": 0,
+      "Y": 0,
+      "Facing": 0,
+      "HealthQ10": 24576,
+      "IsAlive": true,
+      "AvailableAdrenaline": 0,
+      "AdrenalineCycleId": 2,
+      "State": 0,
+      "StateStartTick": 136,
+      "StateEndTick": 9223372036854775807,
+      "CanReceiveDirectHit": true,
+      "StateValue": 0
+    },
+    {
+      "UnitId": 2,
+      "DefinitionId": "unit.experiment.2",
+      "FactionId": "faction.experiment.b",
+      "X": 6,
+      "Y": 0,
+      "Facing": 0,
+      "HealthQ10": 20480,
+      "IsAlive": true,
+      "AvailableAdrenaline": 12288,
+      "AdrenalineCycleId": 2,
+      "State": 0,
+      "StateStartTick": 0,
+      "StateEndTick": 9223372036854775807,
+      "CanReceiveDirectHit": true,
+      "StateValue": 0
+    }
+  ],
+  "control": {
+    "RejectionCode": null,
+    "HorizonTick": 540,
+    "Units": [
+      {
+        "UnitId": 1,
+        "DefinitionId": "unit.experiment.1",
+        "FactionId": "faction.experiment.a",
+        "X": 0,
+        "Y": 0,
+        "Facing": 0,
+        "HealthQ10": 24576,
+        "IsAlive": true,
+        "AvailableAdrenaline": 0,
+        "AdrenalineCycleId": 5,
+        "State": 0,
+        "StateStartTick": 259,
+        "StateEndTick": 9223372036854775807,
+        "CanReceiveDirectHit": true,
+        "StateValue": 0
+      },
+      {
+        "UnitId": 2,
+        "DefinitionId": "unit.experiment.2",
+        "FactionId": "faction.experiment.b",
+        "X": 6,
+        "Y": 0,
+        "Facing": 0,
+        "HealthQ10": 12288,
+        "IsAlive": true,
+        "AvailableAdrenaline": 0,
+        "AdrenalineCycleId": 5,
+        "State": 0,
+        "StateStartTick": 0,
+        "StateEndTick": 9223372036854775807,
+        "CanReceiveDirectHit": true,
+        "StateValue": 0
+      }
+    ],
+    "FirstHostileDamageTick": 216,
+    "InterruptedThreats": 0,
+    "Clashes": 0,
+    "PlanStartTick": 181,
+    "PlanImpactTick": 258,
+    "PlanEndTick": 259,
+    "Coverage": 1,
+    "ObservedThroughTick": 540,
+    "RequiredThroughTick": 259,
+    "CandidateTerminalReason": 0,
+    "ResourceExpiries": [
+      {
+        "UnitId": 1,
+        "ResetTick": 300
+      },
+      {
+        "UnitId": 2,
+        "ResetTick": 240
+      }
+    ],
+    "FirstStepEndTick": 217,
+    "FollowUpRequestTick": 223,
+    "FollowUpStartTick": 223,
+    "SequenceCompleted": true,
+    "FirstPlanId": 1,
+    "FollowUpPlanId": 2,
+    "BridgePlanId": 0,
+    "ResourceExchanges": [
+      {
+        "Tick": 216,
+        "UnitId": 1,
+        "ChangeKind": 0,
+        "AvailableBefore": 0,
+        "AvailableAfter": 8192,
+        "Amount": 8192
+      },
+      {
+        "Tick": 216,
+        "UnitId": 2,
+        "ChangeKind": 0,
+        "AvailableBefore": 12288,
+        "AvailableAfter": 24576,
+        "Amount": 12288
+      },
+      {
+        "Tick": 240,
+        "UnitId": 2,
+        "ChangeKind": 4,
+        "AvailableBefore": 24576,
+        "AvailableAfter": 0,
+        "Amount": 0
+      },
+      {
+        "Tick": 258,
+        "UnitId": 1,
+        "ChangeKind": 0,
+        "AvailableBefore": 8192,
+        "AvailableAfter": 16384,
+        "Amount": 8192
+      },
+      {
+        "Tick": 258,
+        "UnitId": 2,
+        "ChangeKind": 0,
+        "AvailableBefore": 0,
+        "AvailableAfter": 12288,
+        "Amount": 12288
+      },
+      {
+        "Tick": 300,
+        "UnitId": 1,
+        "ChangeKind": 4,
+        "AvailableBefore": 16384,
+        "AvailableAfter": 0,
+        "Amount": 0
+      },
+      {
+        "Tick": 360,
+        "UnitId": 2,
+        "ChangeKind": 4,
+        "AvailableBefore": 12288,
+        "AvailableAfter": 0,
+        "Amount": 0
+      },
+      {
+        "Tick": 420,
+        "UnitId": 1,
+        "ChangeKind": 4,
+        "AvailableBefore": 0,
+        "AvailableAfter": 0,
+        "Amount": 0
+      },
+      {
+        "Tick": 480,
+        "UnitId": 2,
+        "ChangeKind": 4,
+        "AvailableBefore": 0,
+        "AvailableAfter": 0,
+        "Amount": 0
+      },
+      {
+        "Tick": 540,
+        "UnitId": 1,
+        "ChangeKind": 4,
+        "AvailableBefore": 0,
+        "AvailableAfter": 0,
+        "Amount": 0
+      }
+    ]
+  },
+  "replies": [
+    {
+      "Key": "NO_FIRST_REPLY/THEN/controller.experiment.2/R/2/action.experiment.block/258///w/r3/2:0:9223372036854775807:6:0/resources/1:2:8192:0;2:2:24576:0",
+      "Defender": {},
+      "SubmittedAfterTick": 223,
+      "Request": {
+        "TargetTick": 224,
+        "Scope": {},
+        "Payload": {
+          "Kind": 2
+        }
+      },
+      "Outcome": {
+        "RejectionCode": null,
+        "HorizonTick": 540,
+        "Units": [
+          {
+            "UnitId": 1,
+            "DefinitionId": "unit.experiment.1",
+            "FactionId": "faction.experiment.a",
+            "X": 0,
+            "Y": 0,
+            "Facing": 0,
+            "HealthQ10": 24576,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 259,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          },
+          {
+            "UnitId": 2,
+            "DefinitionId": "unit.experiment.2",
+            "FactionId": "faction.experiment.b",
+            "X": 6,
+            "Y": 0,
+            "Facing": 0,
+            "HealthQ10": 16384,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 258,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          }
+        ],
+        "FirstHostileDamageTick": 216,
+        "InterruptedThreats": 0,
+        "Clashes": 0,
+        "PlanStartTick": 181,
+        "PlanImpactTick": 258,
+        "PlanEndTick": 259,
+        "Coverage": 1,
+        "ObservedThroughTick": 540,
+        "RequiredThroughTick": 318,
+        "CandidateTerminalReason": 0,
+        "ResourceExpiries": [
+          {
+            "UnitId": 1,
+            "ResetTick": 300
+          },
+          {
+            "UnitId": 2,
+            "ResetTick": 240
+          }
+        ],
+        "FirstStepEndTick": 217,
+        "FollowUpRequestTick": 223,
+        "FollowUpStartTick": 223,
+        "SequenceCompleted": true,
+        "FirstPlanId": 1,
+        "FollowUpPlanId": 2,
+        "BridgePlanId": 0,
+        "ResourceExchanges": [
+          {
+            "Tick": 216,
+            "UnitId": 1,
+            "ChangeKind": 0,
+            "AvailableBefore": 0,
+            "AvailableAfter": 8192,
+            "Amount": 8192
+          },
+          {
+            "Tick": 216,
+            "UnitId": 2,
+            "ChangeKind": 0,
+            "AvailableBefore": 12288,
+            "AvailableAfter": 24576,
+            "Amount": 12288
+          },
+          {
+            "Tick": 224,
+            "UnitId": 2,
+            "ChangeKind": 1,
+            "AvailableBefore": 24576,
+            "AvailableAfter": 0,
+            "Amount": 24576
+          },
+          {
+            "Tick": 240,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 258,
+            "UnitId": 2,
+            "ChangeKind": 2,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 24576
+          },
+          {
+            "Tick": 300,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 8192,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 360,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 420,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 480,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 540,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          }
+        ]
+      },
+      "DefenderUnitId": 2
+    },
+    {
+      "Key": "NO_FIRST_REPLY/THEN/controller.experiment.2/R/2/action.experiment.dodge/258/3/-1/w/r3/2:0:9223372036854775807:6:0/resources/1:2:8192:0;2:2:24576:0",
+      "Defender": {},
+      "SubmittedAfterTick": 223,
+      "Request": {
+        "TargetTick": 224,
+        "Scope": {},
+        "Payload": {
+          "Kind": 2
+        }
+      },
+      "Outcome": {
+        "RejectionCode": null,
+        "HorizonTick": 540,
+        "Units": [
+          {
+            "UnitId": 1,
+            "DefinitionId": "unit.experiment.1",
+            "FactionId": "faction.experiment.a",
+            "X": 0,
+            "Y": 0,
+            "Facing": 0,
+            "HealthQ10": 24576,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 259,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          },
+          {
+            "UnitId": 2,
+            "DefinitionId": "unit.experiment.2",
+            "FactionId": "faction.experiment.b",
+            "X": 3,
+            "Y": -1,
+            "Facing": 0,
+            "HealthQ10": 12288,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 258,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          }
+        ],
+        "FirstHostileDamageTick": 216,
+        "InterruptedThreats": 0,
+        "Clashes": 0,
+        "PlanStartTick": 181,
+        "PlanImpactTick": 258,
+        "PlanEndTick": 259,
+        "Coverage": 1,
+        "ObservedThroughTick": 540,
+        "RequiredThroughTick": 288,
+        "CandidateTerminalReason": 0,
+        "ResourceExpiries": [
+          {
+            "UnitId": 1,
+            "ResetTick": 300
+          },
+          {
+            "UnitId": 2,
+            "ResetTick": 240
+          }
+        ],
+        "FirstStepEndTick": 217,
+        "FollowUpRequestTick": 223,
+        "FollowUpStartTick": 223,
+        "SequenceCompleted": true,
+        "FirstPlanId": 1,
+        "FollowUpPlanId": 2,
+        "BridgePlanId": 0,
+        "ResourceExchanges": [
+          {
+            "Tick": 216,
+            "UnitId": 1,
+            "ChangeKind": 0,
+            "AvailableBefore": 0,
+            "AvailableAfter": 8192,
+            "Amount": 8192
+          },
+          {
+            "Tick": 216,
+            "UnitId": 2,
+            "ChangeKind": 0,
+            "AvailableBefore": 12288,
+            "AvailableAfter": 24576,
+            "Amount": 12288
+          },
+          {
+            "Tick": 224,
+            "UnitId": 2,
+            "ChangeKind": 1,
+            "AvailableBefore": 24576,
+            "AvailableAfter": 0,
+            "Amount": 24576
+          },
+          {
+            "Tick": 240,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 258,
+            "UnitId": 2,
+            "ChangeKind": 2,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 24576
+          },
+          {
+            "Tick": 258,
+            "UnitId": 1,
+            "ChangeKind": 0,
+            "AvailableBefore": 8192,
+            "AvailableAfter": 16384,
+            "Amount": 8192
+          },
+          {
+            "Tick": 258,
+            "UnitId": 2,
+            "ChangeKind": 0,
+            "AvailableBefore": 0,
+            "AvailableAfter": 12288,
+            "Amount": 12288
+          },
+          {
+            "Tick": 300,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 16384,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 360,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 12288,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 420,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 480,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 540,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          }
+        ]
+      },
+      "DefenderUnitId": 2
+    },
+    {
+      "Key": "NO_FIRST_REPLY/THEN/controller.experiment.2/R/2/action.experiment.dodge/258/9/1/w/r3/2:0:9223372036854775807:6:0/resources/1:2:8192:0;2:2:24576:0",
+      "Defender": {},
+      "SubmittedAfterTick": 223,
+      "Request": {
+        "TargetTick": 224,
+        "Scope": {},
+        "Payload": {
+          "Kind": 2
+        }
+      },
+      "Outcome": {
+        "RejectionCode": null,
+        "HorizonTick": 540,
+        "Units": [
+          {
+            "UnitId": 1,
+            "DefinitionId": "unit.experiment.1",
+            "FactionId": "faction.experiment.a",
+            "X": 0,
+            "Y": 0,
+            "Facing": 0,
+            "HealthQ10": 24576,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 259,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          },
+          {
+            "UnitId": 2,
+            "DefinitionId": "unit.experiment.2",
+            "FactionId": "faction.experiment.b",
+            "X": 9,
+            "Y": 1,
+            "Facing": 0,
+            "HealthQ10": 16384,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 258,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          }
+        ],
+        "FirstHostileDamageTick": 216,
+        "InterruptedThreats": 0,
+        "Clashes": 0,
+        "PlanStartTick": 181,
+        "PlanImpactTick": 258,
+        "PlanEndTick": 259,
+        "Coverage": 1,
+        "ObservedThroughTick": 540,
+        "RequiredThroughTick": 288,
+        "CandidateTerminalReason": 0,
+        "ResourceExpiries": [
+          {
+            "UnitId": 1,
+            "ResetTick": 300
+          },
+          {
+            "UnitId": 2,
+            "ResetTick": 240
+          }
+        ],
+        "FirstStepEndTick": 217,
+        "FollowUpRequestTick": 223,
+        "FollowUpStartTick": 223,
+        "SequenceCompleted": true,
+        "FirstPlanId": 1,
+        "FollowUpPlanId": 2,
+        "BridgePlanId": 0,
+        "ResourceExchanges": [
+          {
+            "Tick": 216,
+            "UnitId": 1,
+            "ChangeKind": 0,
+            "AvailableBefore": 0,
+            "AvailableAfter": 8192,
+            "Amount": 8192
+          },
+          {
+            "Tick": 216,
+            "UnitId": 2,
+            "ChangeKind": 0,
+            "AvailableBefore": 12288,
+            "AvailableAfter": 24576,
+            "Amount": 12288
+          },
+          {
+            "Tick": 224,
+            "UnitId": 2,
+            "ChangeKind": 1,
+            "AvailableBefore": 24576,
+            "AvailableAfter": 0,
+            "Amount": 24576
+          },
+          {
+            "Tick": 240,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 258,
+            "UnitId": 2,
+            "ChangeKind": 2,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 24576
+          },
+          {
+            "Tick": 300,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 8192,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 360,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 420,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 480,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 540,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          }
+        ]
+      },
+      "DefenderUnitId": 2
+    },
+    {
+      "Key": "NO_FIRST_REPLY/THEN/controller.experiment.2/N/2/action.experiment.guard//0///at/258/w5/r3/2:0:9223372036854775807:6:0/resources/1:2:8192:0;2:3:0:0",
+      "Defender": {},
+      "SubmittedAfterTick": 240,
+      "Request": {
+        "TargetTick": 241,
+        "Scope": {},
+        "Payload": {
+          "Kind": 0
+        }
+      },
+      "Outcome": {
+        "RejectionCode": null,
+        "HorizonTick": 540,
+        "Units": [
+          {
+            "UnitId": 1,
+            "DefinitionId": "unit.experiment.1",
+            "FactionId": "faction.experiment.a",
+            "X": 0,
+            "Y": 0,
+            "Facing": 0,
+            "HealthQ10": 24576,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 259,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          },
+          {
+            "UnitId": 2,
+            "DefinitionId": "unit.experiment.2",
+            "FactionId": "faction.experiment.b",
+            "X": 6,
+            "Y": 0,
+            "Facing": 0,
+            "HealthQ10": 14336,
+            "IsAlive": true,
+            "AvailableAdrenaline": 0,
+            "AdrenalineCycleId": 5,
+            "State": 0,
+            "StateStartTick": 318,
+            "StateEndTick": 9223372036854775807,
+            "CanReceiveDirectHit": true,
+            "StateValue": 0
+          }
+        ],
+        "FirstHostileDamageTick": 216,
+        "InterruptedThreats": 0,
+        "Clashes": 0,
+        "PlanStartTick": 181,
+        "PlanImpactTick": 258,
+        "PlanEndTick": 259,
+        "Coverage": 1,
+        "ObservedThroughTick": 540,
+        "RequiredThroughTick": 318,
+        "CandidateTerminalReason": 0,
+        "ResourceExpiries": [
+          {
+            "UnitId": 1,
+            "ResetTick": 300
+          },
+          {
+            "UnitId": 2,
+            "ResetTick": 240
+          }
+        ],
+        "FirstStepEndTick": 217,
+        "FollowUpRequestTick": 223,
+        "FollowUpStartTick": 223,
+        "SequenceCompleted": true,
+        "FirstPlanId": 1,
+        "FollowUpPlanId": 2,
+        "BridgePlanId": 0,
+        "ResourceExchanges": [
+          {
+            "Tick": 216,
+            "UnitId": 1,
+            "ChangeKind": 0,
+            "AvailableBefore": 0,
+            "AvailableAfter": 8192,
+            "Amount": 8192
+          },
+          {
+            "Tick": 216,
+            "UnitId": 2,
+            "ChangeKind": 0,
+            "AvailableBefore": 12288,
+            "AvailableAfter": 24576,
+            "Amount": 12288
+          },
+          {
+            "Tick": 240,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 24576,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 258,
+            "UnitId": 1,
+            "ChangeKind": 0,
+            "AvailableBefore": 8192,
+            "AvailableAfter": 12288,
+            "Amount": 4096
+          },
+          {
+            "Tick": 258,
+            "UnitId": 2,
+            "ChangeKind": 0,
+            "AvailableBefore": 0,
+            "AvailableAfter": 6144,
+            "Amount": 6144
+          },
+          {
+            "Tick": 300,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 12288,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 360,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 6144,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 420,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 480,
+            "UnitId": 2,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          },
+          {
+            "Tick": 540,
+            "UnitId": 1,
+            "ChangeKind": 4,
+            "AvailableBefore": 0,
+            "AvailableAfter": 0,
+            "Amount": 0
+          }
+        ]
+      },
+      "DefenderUnitId": 2
+    }
+  ]
+}

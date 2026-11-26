@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Passed" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 16:18:06Z" end-time="2026-11-13 16:18:17Z" duration="10.3160911">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1217" result="Passed" start-time="2026-11-13 16:18:06Z" end-time="2026-11-13 16:18:17Z" duration="10.316091" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2394" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="748" result="Passed" start-time="2026-11-13 16:18:07Z" end-time="2026-11-13 16:18:17Z" duration="10.301180" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="28312" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2395" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="748" result="Passed" start-time="2026-11-13 16:18:07Z" end-time="2026-11-13 16:18:17Z" duration="10.300344" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2396" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="748" result="Passed" start-time="2026-11-13 16:18:07Z" end-time="2026-11-13 16:18:17Z" duration="10.299808" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2397" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="748" result="Passed" start-time="2026-11-13 16:18:07Z" end-time="2026-11-13 16:18:17Z" duration="10.294171" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1589" name="AiShortPlanTests" fullname="ProjectHero.Logic.Tests.AiShortPlanTests" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-13 16:18:07Z" end-time="2026-11-13 16:18:17Z" duration="10.282746" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1598" name="AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" methodname="AutonomousShortPlanApproachesAndHitsThroughRealIngressAndReplays" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1044904805" result="Passed" start-time="2026-11-13 16:18:07Z" end-time="2026-11-13 16:18:11Z" duration="4.252150" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1599" name="FarTargetUsesCompletedApproachStageThenReplansAnAttack" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.FarTargetUsesCompletedApproachStageThenReplansAnAttack" methodname="FarTargetUsesCompletedApproachStageThenReplansAnAttack" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1800056272" result="Passed" start-time="2026-11-13 16:18:11Z" end-time="2026-11-13 16:18:15Z" duration="4.060776" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1597" name="InvalidDestinationStillUsesKernelRejection" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.InvalidDestinationStillUsesKernelRejection" methodname="InvalidDestinationStillUsesKernelRejection" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1867309135" result="Passed" start-time="2026-11-13 16:18:15Z" end-time="2026-11-13 16:18:15Z" duration="0.011352" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1591" name="MissingTargetAndNonMovePrefixFailClosed" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.MissingTargetAndNonMovePrefixFailClosed" methodname="MissingTargetAndNonMovePrefixFailClosed" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="880136456" result="Passed" start-time="2026-11-13 16:18:15Z" end-time="2026-11-13 16:18:15Z" duration="0.018766" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1595" name="MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" methodname="MoveCrossingWindowWaitsForNextOwnWindowBeforeFollowUp" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="803491573" result="Passed" start-time="2026-11-13 16:18:15Z" end-time="2026-11-13 16:18:15Z" duration="0.023634" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1590" name="NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable" methodname="NoEffectAttackIsPolicyIneligibleWhileLegalNegativeAttackRemainsSampleable" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1860900973" result="Passed" start-time="2026-11-13 16:18:15Z" end-time="2026-11-13 16:18:16Z" duration="0.838959" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1600" name="PlanningIdentityIsVersionedAndOptional" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.PlanningIdentityIsVersionedAndOptional" methodname="PlanningIdentityIsVersionedAndOptional" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="2132049811" result="Passed" start-time="2026-11-13 16:18:16Z" end-time="2026-11-13 16:18:16Z" duration="0.022151" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1592" name="SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset" methodname="SequenceDefenseUsesActualFundingAndPreservedReservationAcrossReset" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1681548288" result="Passed" start-time="2026-11-13 16:18:16Z" end-time="2026-11-13 16:18:16Z" duration="0.351347" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1596" name="UnfinishedFollowUpIsNotReportedAsComplete" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.UnfinishedFollowUpIsNotReportedAsComplete" methodname="UnfinishedFollowUpIsNotReportedAsComplete" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1874123296" result="Passed" start-time="2026-11-13 16:18:16Z" end-time="2026-11-13 16:18:16Z" duration="0.010107" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1594" name="WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" methodname="WholeMoveAttackForecastAddsFutureHitWithoutMutatingAuthority" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="202340639" result="Passed" start-time="2026-11-13 16:18:16Z" end-time="2026-11-13 16:18:16Z" duration="0.038502" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1593" name="ZeroDamageInterruptStillHasTacticalEffect" fullname="ProjectHero.Logic.Tests.AiShortPlanTests.ZeroDamageInterruptStillHasTacticalEffect" methodname="ZeroDamageInterruptStillHasTacticalEffect" classname="ProjectHero.Logic.Tests.AiShortPlanTests" runstate="Runnable" seed="1444071383" result="Passed" start-time="2026-11-13 16:18:16Z" end-time="2026-11-13 16:18:17Z" duration="0.642026" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
