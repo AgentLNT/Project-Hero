@@ -501,13 +501,15 @@ namespace ProjectHero.Authoring.Tests.Task05
         [Test]
         public void ActionPlanAutoDeferredEventContainsCanonicalRippleAndRevision()
         {
+            var observer = new RecordingDecisionObserver();
             var stagger = new ControlTransitionAtTick
             {
                 Tick = 3L,
                 UnitId = T03.HeroUnitId.Value,
                 Transition = UnitStateMachine.StaggerFor(10)
             };
-            BattleSimulation sim = NewSim(new BattleSimulationAssembly(unitStateAdvance: stagger));
+            BattleSimulation sim = NewSim(new BattleSimulationAssembly(unitStateAdvance: stagger,
+                decisionObservers: new IDecisionObserver[] { observer }));
 
             // 一个命令、两条 Add：A(起点 3，区间 [3,93)) 与 B(起点 100，区间 [100,190))。
             // 两条都不重叠 ⇒ 创建期不发生 ripple；A 被延期到 13 之后区间变为 [13,103)，
@@ -537,6 +539,7 @@ namespace ProjectHero.Authoring.Tests.Task05
             Assert.That(deferred.AutomaticDeferralCount, Is.EqualTo(1));
             Assert.That(deferred.ScheduleRevision, Is.EqualTo(sim.ScheduleRevision));
             Assert.That(deferred.ScheduleRevision, Is.EqualTo(2L), "必须是提交后的修订号");
+            Assert.That(observer.Captured.ScheduleRevision, Is.EqualTo(deferred.ScheduleRevision));
             Assert.That(deferred.RipplePlanIds, Is.Not.Null);
             Assert.That(deferred.RipplePlanIds, Is.EqualTo(new[] { b.ActionPlanId.Value }),
                 "依赖闭包内的 B 必须被向右 ripple 且出现在稳定列表里");

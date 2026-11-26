@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using ProjectHero.Logic.Actions;
+using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Definitions;
 using ProjectHero.Logic.Factions;
 using ProjectHero.Logic.Ids;
@@ -18,10 +19,22 @@ namespace ProjectHero.Authoring.Tests
                 : target.Value == 2 ? UnitRelation.Allied : target.Value == 3 ? UnitRelation.Neutral : UnitRelation.Hostile;
             public bool Allows(TargetRelationMask mask, UnitId source, UnitId target) => true;
         }
-        private static DecisionSnapshot Decision() => new DecisionSnapshot(0, "m2", "m2",
-            Enumerable.Range(1, 6).Reverse().Select(id => new UnitSnapshot(id, "unit", "faction", id * 2, 0, 0, 1024, true, 2, 0)).ToArray(),
+        private static DecisionSnapshot Decision(long environment = 0) => new DecisionSnapshot(0, "m2", "m2",
+            Enumerable.Range(1, 6).Reverse().Select(id => new UnitSnapshot(id, "unit", "faction", id * 2, 0, 0, 1024, true, 2, 0)
+            { Traits = id == environment ? new UnitTraits(UnitKind.Object, UnitControl.Passive) : default }).ToArray(),
             Array.Empty<ActionPlanSnapshot>(), 0, BattleEndSnapshot.Active(), new Relations())
             .ForController(new ControllerId("player"), new[] { new UnitId(1) }, null);
+        [Test] public void ObjectsDoNotEnterCombatRosterOrBecomeThePrimaryTrack()
+        {
+            var decision = Decision(environment: 3);
+            var selection = new TrackSelectionModel();
+            selection.Focus(1);
+            selection.Focus(3);
+            selection.Prune(decision);
+            Assert.That(selection.Primary, Is.EqualTo(1));
+            Assert.That(selection.Ordered(decision, false).Any(unit => unit.UnitId == 3), Is.False);
+            Assert.That(decision.VisibleUnits.Any(unit => unit.UnitId == 3), Is.True);
+        }
         [Test] public void SelectionUsesTrackOrderHistoryAndNeverMovesPrimaryToTop()
         {
             var s = new TrackSelectionModel(); var d = Decision();

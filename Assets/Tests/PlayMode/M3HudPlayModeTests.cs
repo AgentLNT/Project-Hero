@@ -21,18 +21,41 @@ namespace ProjectHero.Tests.PlayMode
     public sealed class M3HudPlayModeTests : ProductionRuntimeTestBase
     {
         private object _keyboard;
+        private object _inputSettings;
+        private object _previousBackgroundBehavior;
+        private object _previousEditorInputBehavior;
+        private bool _previousRunInBackground;
+
         [TearDown] public void RemoveKeyboard()
         {
             if (_keyboard == null) return;
             Type.GetType("UnityEngine.InputSystem.InputSystem, Unity.InputSystem", true).GetMethod("RemoveDevice").Invoke(null, new[] {_keyboard});
             _keyboard = null;
+            var settingsType = _inputSettings.GetType();
+            settingsType.GetProperty("backgroundBehavior").SetValue(_inputSettings, _previousBackgroundBehavior);
+            settingsType.GetProperty("editorInputBehaviorInPlayMode").SetValue(_inputSettings, _previousEditorInputBehavior);
+            Application.runInBackground = _previousRunInBackground;
+            _inputSettings = null;
         }
         private void QueueKey(params string[] names)
         {
             var input = Type.GetType("UnityEngine.InputSystem.InputSystem, Unity.InputSystem", true);
             var keyboard = Type.GetType("UnityEngine.InputSystem.Keyboard, Unity.InputSystem", true);
-            if (_keyboard == null) _keyboard = input.GetMethods().Single(m => m.Name == "AddDevice" && m.IsGenericMethodDefinition && m.GetParameters().Length == 1)
-                .MakeGenericMethod(keyboard).Invoke(null, new object[] {"M3TestKeyboard"});
+            if (_keyboard == null)
+            {
+                // The synthetic test keyboard should reach the game even in an unfocused batch editor.
+                _inputSettings = input.GetProperty("settings").GetValue(null);
+                var background = _inputSettings.GetType().GetProperty("backgroundBehavior");
+                var editor = _inputSettings.GetType().GetProperty("editorInputBehaviorInPlayMode");
+                _previousBackgroundBehavior = background.GetValue(_inputSettings);
+                _previousEditorInputBehavior = editor.GetValue(_inputSettings);
+                _previousRunInBackground = Application.runInBackground;
+                Application.runInBackground = true;
+                background.SetValue(_inputSettings, Enum.Parse(background.PropertyType, "IgnoreFocus"));
+                editor.SetValue(_inputSettings, Enum.Parse(editor.PropertyType, "AllDeviceInputAlwaysGoesToGameView"));
+                _keyboard = input.GetMethods().Single(m => m.Name == "AddDevice" && m.IsGenericMethodDefinition && m.GetParameters().Length == 1)
+                    .MakeGenericMethod(keyboard).Invoke(null, new object[] {"M3TestKeyboard"});
+            }
             var key = Type.GetType("UnityEngine.InputSystem.Key, Unity.InputSystem", true);
             var keys = Array.CreateInstance(key, names.Length);
             for (int i = 0; i < names.Length; i++) keys.SetValue(Enum.Parse(key, names[i]), i);
@@ -67,7 +90,7 @@ namespace ProjectHero.Tests.PlayMode
             yield return LoadMainScene(); Bootstrap.StopBattle("M3-fixture"); Bootstrap.ReleaseBattle();
             var original = ((IBattleSimulationSource)Field(Bootstrap, "_simulationSourceSlot")).BuildSeed();
             var source = NewGameObject("M3ExplicitSceneFixture").AddComponent<Task11SceneScenarioSource>();
-            source.Seed = Task12BSceneEvidenceTests.Configure(original);
+            source.Seed = Task12BSceneEvidenceTests.Configure(original, useHealthThresholds: true);
             Bootstrap.GetType().GetField("_simulationSourceSlot", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(Bootstrap, source);
             var view = View; var oldViews = (CombatUnitView[])Field(view.Registry, "_views");
             var thirdView = NewGameObject("M3ThirdAttacker").AddComponent<CombatUnitView>(); thirdView.Configure("t12b_third", UnityEngine.Object.FindFirstObjectByType<GridView>());
@@ -79,7 +102,9 @@ namespace ProjectHero.Tests.PlayMode
             if (funds) operations.Add(new AddOrdinaryPlanOperation(1, third, warm, 1, PrimaryTargetUnitId: hero));
             if (earlier) operations.Add(new AddOrdinaryPlanOperation(2, third, light, 179, PrimaryTargetUnitId: hero));
             if (operations.Count > 0) SubmitEnemy(third, operations.ToArray());
-            Drive(180); var enemy = Simulation.CurrentTurnWindow.OwnerUnitId;
+            Drive(180);
+            Assert.That(Simulation.AdrenalineLedgerOf(hero).AvailableAdrenaline, Is.EqualTo(funds ? 3 : 0));
+            var enemy = Simulation.CurrentTurnWindow.OwnerUnitId;
             SubmitEnemy(enemy, new AddOrdinaryPlanOperation(1, enemy, new ActionSpecId("action.t12b.scene.heavy"), 181, PrimaryTargetUnitId: hero));
             Drive(181); View.ReactionView.Refresh(true);
         }
@@ -112,8 +137,10 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(view.ReactionView.ShortcutHintText, Does.Contain("反应已暂存"));
             view.ResumePlanning(false); Bootstrap.DriveFrameForTests(0, 1f / 60); view.Clock.PauseTactically(); view.ReactionView.Refresh(true);
             Assert.That(view.Model.Reactions.First(r => r.ReactionOpportunityId == opportunities.First().ReactionOpportunityId).BoundActionPlanId, Is.Not.Zero);
-            QueueKey("B"); yield return null; QueueKey(); yield return null;
+            Assert.That(Simulation.AdrenalineLedgerOf(view.Model.Decision.ControlledUnitIds.Single()).AvailableAdrenaline, Is.EqualTo(1));
+            QueueKey("D"); yield return null; QueueKey(); yield return null;
             Assert.That(view.ReactionView.Candidate.OpportunityId, Is.EqualTo(later.ReactionOpportunityId));
+            Assert.That(view.ReactionView.AwaitingDestination, Is.True);
             Assert.That(view.Model.SubmittedCommands, Is.EqualTo(1));
         }
         [UnityTest] public IEnumerator QueuedKeyboardEventsSelectCancelAndConfirmOnlyWhilePlanning()
@@ -190,9 +217,13 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Texts(view), Does.Contain("先消耗")); Assert.That(Texts(view), Does.Contain("重击未被挡住"));
             Assert.That(root.Find("EarlierContactMarks").childCount, Is.GreaterThan(0));
             Assert.That(view.TimelineView.DisplayPlans.Any(p => p.ReactionOpportunityId == opportunity.ReactionOpportunityId && p.StartTick == 183), Is.True);
-            yield return new WaitForEndOfFrame();
-            var screenshot = ScreenCapture.CaptureScreenshotAsTexture();
-            System.IO.File.WriteAllBytes($"优化任务/执行记录/M3-reaction-{Screen.width}x{Screen.height}.png", screenshot.EncodeToPNG()); UnityEngine.Object.Destroy(screenshot);
+            if (!Application.isBatchMode)
+            {
+                yield return new WaitForEndOfFrame();
+                var screenshot = ScreenCapture.CaptureScreenshotAsTexture();
+                System.IO.File.WriteAllBytes($"Logs/M3-threshold-reaction-{Screen.width}x{Screen.height}.png", screenshot.EncodeToPNG());
+                UnityEngine.Object.Destroy(screenshot);
+            }
             string hash = Bootstrap.NewDriver.CurrentSnapshot.ComputeHashHex(); Click(root.Find("ConfirmReaction").GetComponent<UnityEngine.UI.Button>());
             Assert.That(model.StagedReactionCount, Is.EqualTo(1)); Assert.That(model.SubmittedCommands, Is.Zero);
             Assert.That(Bootstrap.NewDriver.CurrentSnapshot.ComputeHashHex(), Is.EqualTo(hash));
@@ -236,9 +267,13 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Texts(view), Does.Contain("未来移动失效"));
             Assert.That(view.ReactionView.DefensePreview.Defenses.Single(p => p.Plan.ReactionOpportunityId == opportunity.ReactionOpportunityId).ConditionalMovePlanIds, Is.EquivalentTo(moves));
             Assert.That(model.Decision.OwnPlans.Count(p => moves.Contains(p.ActionPlanId)), Is.EqualTo(2));
-            yield return new WaitForEndOfFrame();
-            var screenshot = ScreenCapture.CaptureScreenshotAsTexture();
-            System.IO.File.WriteAllBytes($"优化任务/执行记录/M3-dodge-{Screen.width}x{Screen.height}.png", screenshot.EncodeToPNG()); UnityEngine.Object.Destroy(screenshot);
+            if (!Application.isBatchMode)
+            {
+                yield return new WaitForEndOfFrame();
+                var screenshot = ScreenCapture.CaptureScreenshotAsTexture();
+                System.IO.File.WriteAllBytes($"Logs/M3-threshold-dodge-{Screen.width}x{Screen.height}.png", screenshot.EncodeToPNG());
+                UnityEngine.Object.Destroy(screenshot);
+            }
             Assert.That(view.ReactionView.CancelSelection(), Is.True); Assert.That(model.StagedReactionCount, Is.Zero);
             view.ReactionView.Select(opportunity.ReactionOpportunityId, dodge); Assert.That(view.ReactionView.SelectDestination(legal[0]), Is.True);
             view.ReactionView.Confirm(opportunity.ReactionOpportunityId); Assert.That(model.StagedReactionCount, Is.EqualTo(1));

@@ -140,6 +140,38 @@ namespace ProjectHero.Logic.Tests
                 "等待期间目的格不得被占位提交");
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DodgeCannotOccupyAnAlreadyReservedLaterMovementDestination(bool dodgeReservedFirst)
+        {
+            var h = NewHarness();
+            var origin = new GridPoint(0, 0);
+            var destination = new GridPoint(4, 0);
+            var movingOrigin = new GridPoint(6, 0);
+            Assert.That(h.Grid.RegisterUnitWithPointFootprint(U(1), origin, GridDirection.East), Is.Null);
+            Assert.That(h.Grid.RegisterUnitWithPointFootprint(U(2), movingOrigin, GridDirection.West), Is.Null);
+            var dodge = Request(7, 10, 1, 0, 0, 4, 0, 20);
+            if (dodgeReservedFirst)
+                Assert.That(h.Dodge.ReserveDestination(dodge, Rules(), 10), Is.Null);
+
+            var route = h.Movement.EstablishMovement(P(11), U(2), new[] { movingOrigin, destination }, 30, 5);
+            Assert.That(route.Succeeded, Is.True, route.FailureCode);
+            if (dodgeReservedFirst)
+            {
+                var result = h.Dodge.CommitRelocation(Opp(7), Array.Empty<ActionPlanId>(), 20);
+                Assert.That(result.Committed, Is.False);
+                Assert.That(result.Code, Does.StartWith(DodgeRelocationCodes.DODGE_DESTINATION_RESERVED_BY_OTHER));
+            }
+            else
+            {
+                Assert.That(h.Dodge.ReserveDestination(dodge, Rules(), 10),
+                    Does.StartWith(DodgeRelocationCodes.DODGE_DESTINATION_RESERVED_BY_OTHER));
+            }
+            AssertGridUntouched(h, U(1), origin);
+            Assert.That(h.Movement.ApplyPreCommandBoundary(35), Has.Count.EqualTo(1));
+            AssertGridUntouched(h, U(2), destination);
+        }
+
         // ————————————————————————————————————————————————————————————
         // 2. 提交前的统一只读快照 + 原子提交早于接触复核
         // ————————————————————————————————————————————————————————————

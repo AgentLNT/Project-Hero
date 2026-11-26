@@ -17,6 +17,40 @@ namespace ProjectHero.Logic.Tests
 {
     public sealed class AiTacticalPolicyTests
     {
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        public void OnlyAdmittedActionIsSubmittedWithANegativeScoreOrAnUncoveredOutcome(bool sampling, bool uncovered)
+        {
+            var definition = AiPolicyExperiment.Build(new AiPolicyExperimentInput(AiPolicyKind.CautiousDefense, AiPolicySituation.GuardOnly));
+            var runtime = new BattleRuntimeInputs(31, 4);
+            var composition = new ProductionBattleComposition(definition, CombatExperimentDefinition.Encounter, runtime);
+            using var sim = BattleSimulation.Create(definition, CombatExperimentDefinition.Encounter, runtime,
+                new BattleSimulationAssembly(turnWindowSchedule: composition));
+            composition.Attach(sim);
+            const long decisionTick = 60;
+            for (long tick = 0; tick <= decisionTick; tick++)
+                sim.Step(tick, sim.CommandIngress.FreezeTick(tick));
+            var controller = CombatExperimentDefinition.Controller(1);
+            var context = composition.AiControllers.Single().BuildContext(sim.DecisionSnapshotFor(controller), controller) with
+            {
+                ForecastSettings = new AiForecastSettings(uncovered ? 1 : 360,
+                    Sampling: sampling ? new AiSamplingSettings() : null, ShortPlans: sampling ? new AiShortPlanSettings() : null)
+            };
+            Assert.That(context.HasSubmissionWindow, Is.True);
+            var decision = AiTacticalPolicy.Decide(context, 31, AiPolicyKind.CautiousDefense);
+            Assert.That(decision.Evaluations.Select(e => e.Type), Is.All.EqualTo(ActionType.Guard));
+            var chosen = decision.Evaluations.Single(e => e.Chosen);
+            Assert.That(chosen.Coverage, Is.EqualTo(uncovered ? AiForecastCoverage.Uncovered : AiForecastCoverage.Complete));
+            if (uncovered) Assert.That(chosen.Score, Is.Null);
+            else Assert.That(chosen.Score, Is.LessThan(0));
+            Assert.That(sim.CommandIngress.FindEntry(controller).Submit(decision.Selected), Is.Null);
+            var step = sim.Step(context.NextTick, sim.CommandIngress.FreezeTick(context.NextTick));
+            Assert.That(step.Events.Events.OfType<ActionPlanCreatedEvent>().Any(e => e.OwnerUnitId == 1
+                && e.ActionType == (int)ActionType.Guard), Is.True);
+        }
+
         [TestCase(AiPolicyKind.SustainedOffense, ActionType.Attack, false)]
         [TestCase(AiPolicyKind.SeekInterrupt, ActionType.Attack, true)]
         [TestCase(AiPolicyKind.CautiousDefense, ActionType.Guard, false)]

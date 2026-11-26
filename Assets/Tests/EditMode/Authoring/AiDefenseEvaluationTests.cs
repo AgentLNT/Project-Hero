@@ -228,13 +228,14 @@ namespace ProjectHero.Authoring.Tests
         }
 
         [Test]
-        public void NonpositiveUnopposedUpperBoundCannotSelectAttackOrRequireDefenseExpansion()
+        public void NonpositiveAttacksStillHaveCoherentDefenseScores()
         {
             using var rig = new Rig(true, near: false);
             var decision = AiTacticalPolicy.Decide(rig.Context, 20260922, AiPolicyKind.SustainedOffense);
             var attacks = decision.Evaluations.Where(e => e.Type == ActionType.Attack).ToArray();
             Assert.That(attacks, Is.Not.Empty);
-            Assert.That(attacks.All(e => e.NoDefenseScore <= 0 && e.Score == e.NoDefenseScore && !e.Chosen && e.DefenseResponses.Count == 0), Is.True);
+            Assert.That(attacks.All(e => e.NoDefenseScore <= 0 && e.Score <= e.NoDefenseScore), Is.True);
+            Assert.That(decision.Selected, Is.Not.Null);
         }
 
         [Test]

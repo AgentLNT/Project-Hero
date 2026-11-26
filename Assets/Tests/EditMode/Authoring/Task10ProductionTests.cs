@@ -139,7 +139,7 @@ namespace ProjectHero.Authoring.Tests
                     definition.ActionSets, definition.StatusEffects, encounters, definition.DefaultDynamicSpawnPolicy);
             Assert.That(Compute("battle-def-v1", definition.Encounters.Select(e => e with { TurnSubmission = null }).ToArray(), AdrenalineRules.FrozenV1),
                 Is.EqualTo("cc32becd9f0f8ceb"), "R2 duration schema encoded with the characterization rules label; historical native anchor remains in task08 evidence.");
-            Assert.That(Compute(definition.RulesVersion, definition.Encounters), Is.EqualTo("84116d595d222a72"));
+            Assert.That(Compute(definition.RulesVersion, definition.Encounters), Is.EqualTo("7a6d4a20ba6ae244"));
         }
         [Test] public void EmptyShadowReportCannotAuthorizeNewCutover()
         {

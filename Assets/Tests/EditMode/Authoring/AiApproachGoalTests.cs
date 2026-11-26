@@ -47,9 +47,11 @@ namespace ProjectHero.Authoring.Tests
             var original = AiTacticalPolicy.Decide(old.Context, 20260922, AiPolicyKind.CautiousDefense);
             var ingress = revised.Sim.CommandIngress.CaptureSnapshot();
             var next = AiTacticalPolicy.Decide(revised.Context, 20260922, AiPolicyKind.CautiousDefense);
-            Assert.That(original.Selected, Is.Null);
+            Assert.That(original.Selected, Is.Not.Null);
+            Assert.That(original.Evaluations.Single(e => e.Chosen).Score, Is.LessThanOrEqualTo(0));
             Assert.That(next.Selected, Is.Not.Null);
             var chosen = next.Evaluations.Single(e => e.Chosen);
+            Assert.That(chosen.Reason, Is.EqualTo(AiApproachPolicy.SelectedReason));
             Assert.That(chosen.Type, Is.EqualTo(ActionType.Move)); Assert.That(chosen.Score, Is.LessThanOrEqualTo(0));
             Assert.That(chosen.PositionProgress, Is.GreaterThan(0)); Assert.That(chosen.IncomingDeltaQ10, Is.LessThanOrEqualTo(0));
             Assert.That(chosen.Score, Is.EqualTo(original.Evaluations.Single(e => e.Key == chosen.Key).Score));

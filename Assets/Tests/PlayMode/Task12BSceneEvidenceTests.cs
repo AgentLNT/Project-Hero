@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using ProjectHero.Core.Compatibility.Runtime;
+using ProjectHero.Logic.AI;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Commands;
@@ -45,9 +46,12 @@ namespace ProjectHero.Tests.PlayMode
         static readonly ActionSpecId Light = new ActionSpecId("action.t12b.scene.light");
         static readonly ActionSpecId Heavy = new ActionSpecId("action.t12b.scene.heavy");
         static object Field(object o,string name) => o.GetType().GetField(name,BindingFlags.Instance|BindingFlags.NonPublic).GetValue(o);
-        internal static BattleSimulationSeed Configure(BattleSimulationSeed original)
+        internal static BattleSimulationSeed Configure(BattleSimulationSeed original, bool useHealthThresholds = false)
         {
-            var d=original.Definition; var e=d.FindEncounter(original.EncounterId);
+            var d=original.Definition;
+            while (!useHealthThresholds && d.AdrenalineRules.UseHealthThresholds && d.PriorReplayDefinition != null)
+                d=d.PriorReplayDefinition;
+            var e=d.FindEncounter(original.EncounterId);
             var heroSlot=e.Slots.Single(s=>s.SlotId==e.TurnSubmission.ConcurrentHeroSlot);
             var enemySlot=e.Slots.First(s=>s.SlotId!=heroSlot.SlotId);
             var thirdId=new UnitDefinitionId("unit.t12b.scene.third"); var thirdSlot=new EncounterSlotId("t12b_third");
@@ -58,8 +62,14 @@ namespace ProjectHero.Tests.PlayMode
             var payload=new AttackPayloadSpec(new[] {new DamageComponentSpec(DamageChannels.PhysicalBlunt,20,
                 DamageTagMask.Blockable|DamageTagMask.Guardable)},ImpactProfiles.Blunt,.000001f,TargetPolicy.PrimaryTargetOnly,
                 TargetRelationMask.Hostile,0,pattern,AttackTagMask.Reactable|AttackTagMask.Blockable|AttackTagMask.Dodgeable);
+            // The warm-up takes the 2000 HP defender to 25%, funding a Block and a Dodge via real crossings.
+            var warmPayload = useHealthThresholds ? payload with
+            {
+                DamageComponents = new[] { new DamageComponentSpec(DamageChannels.PhysicalBlunt, 1500,
+                    DamageTagMask.Blockable | DamageTagMask.Guardable) }
+            } : payload;
             var actions=d.Actions.Where(a=>a.Type!=ActionType.Attack).Concat(new[] {
-                new ActionSpec(Warm,ActionType.Attack,new AttackTimingSpec(4,1),payload,0),
+                new ActionSpec(Warm,ActionType.Attack,new AttackTimingSpec(4,1),warmPayload,0),
                 new ActionSpec(Light,ActionType.Attack,new AttackTimingSpec(60,1),payload,0),
                 new ActionSpec(Heavy,ActionType.Attack,new AttackTimingSpec(80,1),payload,0)}).ToArray();
             var units=d.Units.Select(u=>u with {InitialHealth=2000,ActionSpeed=u.UnitDefinitionId==enemySlot.DefinitionId ? 40 : 20,
@@ -68,8 +78,16 @@ namespace ProjectHero.Tests.PlayMode
             var sets=d.ActionSets.Select(s=>s with {ActionSpecIds=actions.Select(a=>a.ActionSpecId).ToArray()}).ToArray();
             var slots=e.Slots.Select(s=>s with {InitialPosition=s.SlotId==heroSlot.SlotId ? new GridPoint(0,0) : new GridPoint(6,0),
                 InitialFacing=GridDirection.East}).Concat(new[] {new EncounterUnitSlot(thirdSlot,thirdId,enemySlot.FactionId,new GridPoint(12,0),GridDirection.East)}).ToArray();
-            var controllers=e.Controllers.Select(c=>c with {SourceKind=CommandSourceKind.Player,
-                ControlledSlots=c.ControlledSlots.Contains(enemySlot.SlotId) ? c.ControlledSlots.Concat(new[] {thirdSlot}).ToArray() : c.ControlledSlots}).ToArray();
+            var controllers = e.Controllers.Select(controller => controller with
+            {
+                SourceKind = CommandSourceKind.Player,
+                AiPolicy = AiPolicyKind.Legacy,
+                AiExecution = AiExecutionKind.SingleCommand,
+                AiForecast = null,
+                ControlledSlots = controller.ControlledSlots.Contains(enemySlot.SlotId)
+                    ? controller.ControlledSlots.Concat(new[] { thirdSlot }).ToArray()
+                    : controller.ControlledSlots
+            }).ToArray();
             e=e with {Slots=slots,Controllers=controllers,DynamicSpawns=null};
             var patterns=new[] {pattern}; var volumes=d.Volumes.Concat(new[] {volume}).ToArray(); var encounters=new[] {e};
             string hash=BattleDefinitionHash.Compute(d.RulesVersion,d.TicksPerSecond,0,d.Rules,d.ConcurrentAction,d.ReactionRules,d.AdrenalineRules,

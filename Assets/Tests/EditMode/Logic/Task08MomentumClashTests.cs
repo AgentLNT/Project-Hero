@@ -20,6 +20,26 @@ namespace ProjectHero.Logic.Tests
     public class Task08MomentumClashTests
     {
         [Test]
+        public void ScalarClashUsesFacingAndSubtractsEachDirectOpponentInFull()
+        {
+            var a = Unit(1, 11, GridDirection.East, 100) with { AttackFacing = GridDirection.East };
+            var b = Unit(2, 12, GridDirection.East, 20) with { AttackFacing = (GridDirection)4 };
+            var c = Unit(3, 13, GridDirection.NorthWest, 30) with { AttackFacing = GridDirection.West };
+            var pairs = new[] { new ClashPair(a.ActionPlanId, b.ActionPlanId), new ClashPair(c.ActionPlanId, a.ActionPlanId) };
+            var result = MomentumClashSolver.Solve(new MomentumClashInput(new[] { c, b, a }, pairs), null, scalarImpact: true);
+            Assert.That(Find(result, 11).RemainingMomentumUnits, Is.EqualTo(50));
+            Assert.That(Find(result, 12).RemainingMomentumUnits, Is.Zero);
+            Assert.That(Find(result, 13).RemainingMomentumUnits, Is.Zero);
+            Assert.That(Find(result, 11).Losses[0].OppositionFactorQ10, Is.EqualTo(1024));
+            Assert.That(result.TotalResidualAllocatedUnits, Is.EqualTo(50));
+            Assert.That(result.ResidualImpacts.Count, Is.EqualTo(2));
+            var redirected = a with { Momentum = MomentumPacket.Require(GridDirection.West, 100, a.Momentum.ImpactProfileId) };
+            var reversed = MomentumClashSolver.Solve(new MomentumClashInput(new[] { redirected, b, c }, pairs), null, scalarImpact: true);
+            Assert.That(Find(reversed, 11).RemainingMomentumUnits, Is.EqualTo(50));
+            Assert.That(reversed.ResidualImpacts[0].SourceDirection, Is.EqualTo(GridDirection.West));
+        }
+
+        [Test]
         public void LegacyHeadOnPairKeepsScalarSubtractionAndTerminatesBothPlans()
         {
             // 二体、180°、无第三方（任务包「工作步骤」1 的 characterization）：

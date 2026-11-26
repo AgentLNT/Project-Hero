@@ -21,6 +21,57 @@ namespace ProjectHero.Logic.Tests
     [TestFixture]
     public class Task08MomentumAggregationTests
     {
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ScalarControlDeduplicatesSourcesAndDisplacementChoosesOneRequest(bool sameDirection)
+        {
+            TargetContact Contact(long plan, int impact, GridDirection direction, AttackControlEffects effects,
+                TargetContactType kind = TargetContactType.DirectHit)
+                => new TargetContact(Key(kind, plan, plan, 9), direction, impact, 0, null,
+                    Array.Empty<DamageComponentSpec>()) { ControlEffects = effects };
+            var interrupt = AttackControlEffects.Interrupt;
+            var knockdown = AttackControlEffects.Knockdown;
+            var displacement = AttackControlEffects.Displacement;
+            var contacts = new[]
+            {
+                Contact(1, 12, GridDirection.East, interrupt | knockdown),
+                Contact(1, 12, GridDirection.East, interrupt | knockdown, TargetContactType.ClashResidualImpact),
+                Contact(2, 8, GridDirection.West, knockdown),
+                Contact(3, 40, GridDirection.East, displacement),
+                Contact(4, 40, sameDirection ? GridDirection.East : GridDirection.West, displacement),
+                Contact(5, 30, GridDirection.West, displacement)
+            };
+            var input = new TargetAggregationInput(new UnitId(9), null, 20, contacts) { UseScalarImpact = true };
+            var result = TargetAggregator.Aggregate(input);
+            Assert.That(result.KnockdownImpactUnits, Is.EqualTo(20));
+            Assert.That(result.IsKnockedDown, Is.True);
+            Assert.That(result.IsStaggered, Is.False);
+            Assert.That(result.KnockbackSteps, Is.EqualTo(sameDirection ? 2 : 0));
+            Assert.That(result.SelectedDisplacementSource.Value, Is.EqualTo(sameDirection ? 3 : 0));
+            var down = TargetAggregator.Aggregate(input with { CanReceiveControl = false });
+            Assert.That(down.IsKnockedDown, Is.False);
+            Assert.That(down.KnockbackSteps, Is.EqualTo(result.KnockbackSteps));
+        }
+
+        [Test]
+        public void OpposingContactsOnlyContributeToTheirDeclaredEffects()
+        {
+            var push = new TargetContact(Key(TargetContactType.DirectHit, 1, 11, 9), GridDirection.East, 1000, 0,
+                null, Array.Empty<DamageComponentSpec>()) { ControlEffects = AttackControlEffects.Displacement };
+            var interrupt = new TargetContact(Key(TargetContactType.DirectHit, 2, 22, 9), GridDirection.West, 1000, 0,
+                null, Array.Empty<DamageComponentSpec>()) { ControlEffects = AttackControlEffects.Interrupt };
+            var knockdown = new TargetContact(Key(TargetContactType.DirectHit, 3, 33, 9), GridDirection.West, 500, 0,
+                null, Array.Empty<DamageComponentSpec>()) { ControlEffects = AttackControlEffects.Knockdown };
+            var result = TargetAggregator.Aggregate(new TargetAggregationInput(new UnitId(9), null, 1000,
+                new[] { knockdown, push, interrupt }));
+
+            Assert.That(result.TotalImpactUnits, Is.EqualTo(2500));
+            Assert.That(result.ResultantDirection, Is.EqualTo(GridDirection.East));
+            Assert.That(result.KnockbackSteps, Is.EqualTo(1));
+            Assert.That(result.IsStaggered, Is.True);
+            Assert.That(result.IsKnockedDown, Is.False);
+        }
+
         [Test]
         public void PassiveAndActionResistanceMultiplyInDeclaredOrder()
         {

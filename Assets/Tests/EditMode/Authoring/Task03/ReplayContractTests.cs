@@ -29,11 +29,11 @@ namespace ProjectHero.Authoring.Tests.Task03
             Assert.That(header.ReplayFormatVersion, Is.EqualTo(ReplayFormat.Version));
             Assert.That(header.RulesVersion, Is.EqualTo(Task03.Definition.RulesVersion));
             Assert.That(header.RulesVersion, Is.Not.EqualTo(ReplayFormat.Version.ToString()));
-            Assert.That(Task03.Definition.RulesVersion, Is.EqualTo("battle-def-v6-adrenaline-q10"));
+            Assert.That(Task03.Definition.RulesVersion, Is.EqualTo("battle-def-v7-movement-reservations"));
 
             // 两个版本互不派生：只改玩法规则版本不改变格式版本，反之亦然。
-            // v7 adds the clash-recovery marker to canonical plans; the gameplay definition
-            // independently uses v6 to distinguish corrected adrenaline quantization.
+            // Replay v7 adds the clash-recovery marker. Gameplay v7 identifies the new
+            // relocation checks against the complete footprints of reserved movement steps.
             Assert.That(ReplayFormat.Version, Is.EqualTo(7));
             Assert.That(ReplayHeaderValidation.Validate(header with { ReplayFormatVersion = 3 }, Task03.Definition),
                 Is.EqualTo(ReplayCodes.REPLAY_FORMAT_VERSION_MISMATCH));

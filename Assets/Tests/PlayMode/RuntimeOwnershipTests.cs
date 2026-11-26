@@ -584,7 +584,7 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(Bootstrap.Ledger.AdvanceCalls(RuntimeAdvancePath.NewSimulationStep),
                 Is.GreaterThan(0), "New 模式必须真正调用新模拟 Step");
             Assert.That(Bootstrap.NewDriver.TicksAdvanced, Is.GreaterThan(0));
-            Assert.That(Bootstrap.NewDriver.BattleDefinitionHash, Is.EqualTo("84116d595d222a72"),
+            Assert.That(Bootstrap.NewDriver.BattleDefinitionHash, Is.EqualTo("7a6d4a20ba6ae244"),
                 "New 模拟必须来自真实 02B 定义");
 
             Bootstrap.StopBattle("new-never-legacy");
@@ -644,11 +644,11 @@ namespace ProjectHero.Tests.PlayMode
             Assert.That(reports.Count, Is.EqualTo(frames), "每个只读检查点必须产出一份比较报告");
             var last = reports[reports.Count - 1];
             Assert.That(last.Mode, Is.EqualTo(BattleRuntimeMode.Shadow));
-            Assert.That(last.BattleDefinitionHash, Is.EqualTo("84116d595d222a72"),
+            Assert.That(last.BattleDefinitionHash, Is.EqualTo("7a6d4a20ba6ae244"),
                 "报告必须记录 BattleDefinitionHash");
             Assert.That(last.Encounter, Is.EqualTo("encounter.combat_sample_scene"),
                 "报告必须记录 Encounter");
-            Assert.That(last.RulesVersion, Is.EqualTo("battle-def-v6-adrenaline-q10"));
+            Assert.That(last.RulesVersion, Is.EqualTo("battle-def-v7-movement-reservations"));
             Assert.That(last.ComparisonConfigVersion, Is.EqualTo(1),
                 "报告必须记录比较配置版本");
             Assert.That(last.InputSummary, Is.Not.Empty, "报告必须记录输入摘要");
@@ -2164,9 +2164,9 @@ namespace ProjectHero.Tests.PlayMode
 
             var seed = source.BuildSeed();
             Assert.That(seed.Validate(), Is.Null);
-            Assert.That(seed.BattleDefinitionHash, Is.EqualTo("84116d595d222a72"),
+            Assert.That(seed.BattleDefinitionHash, Is.EqualTo("7a6d4a20ba6ae244"),
                 "主战斗定义哈希必须与 02B 冻结锚点一致");
-            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v6-adrenaline-q10"));
+            Assert.That(seed.RulesVersion, Is.EqualTo("battle-def-v7-movement-reservations"));
             Assert.That(seed.EncounterId.Value, Is.EqualTo("encounter.combat_sample_scene"));
             Assert.That(seed.Definition.FindEncounter(seed.EncounterId), Is.Not.Null);
             Assert.That(seed.InputSummary, Is.Not.Empty);

@@ -108,6 +108,34 @@ namespace ProjectHero.Logic.Tests
             Assert.That(replay.Records.Select(r => r.Tick), Is.EqualTo(Enumerable.Range(0, 22).Select(i => (long)i)));
             using (var player = new ReplayPlayer(def, h => Create(def, h))) { player.Load(replay); PlayAll(player); }
         }
+
+        [Test] public void ReplayLoadSelectsTheMatchingHistoricalDefinition()
+        {
+            var prior = Task09A2Fixture.BuildDefinition();
+            var threshold = prior with
+            {
+                RulesVersion = "test-threshold-resource-rules",
+                AdrenalineRules = AdrenalineRules.HealthThresholds,
+                PriorReplayDefinition = prior
+            };
+            var current = threshold with
+            {
+                RulesVersion = "test-explicit-control",
+                Rules = threshold.Rules with { UseExplicitControlEffects = true },
+                PriorReplayDefinition = threshold
+            };
+            foreach (var source in new[] { prior, threshold, current })
+            {
+                using var stream = new MemoryStream();
+                ReplayFile.Save(stream, Record(source));
+                stream.Position = 0;
+                var replay = ReplayFile.Load(stream, current, out var matched);
+                Assert.That(matched, Is.SameAs(source));
+                using var player = new ReplayPlayer(matched, header => Create(matched, header));
+                player.Load(replay);
+                PlayAll(player);
+            }
+        }
         [Test] public void ReplayRepeatsOneHundredTimesWithFullEventPayloadAndHashes()
         {
             var def = Task09A2Fixture.BuildDefinition(); var replay = Record(def);

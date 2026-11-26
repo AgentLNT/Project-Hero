@@ -15,9 +15,11 @@ using ProjectHero.Logic.Grid;
 using ProjectHero.Logic.Ids;
 using ProjectHero.Logic.Initialization;
 using ProjectHero.Logic.Interactions;
+using ProjectHero.Logic.Replay;
 using ProjectHero.Logic.Simulation;
 using ProjectHero.Logic.Snapshots;
 using ProjectHero.Logic.Turns;
+using ProjectHero.Logic.Units;
 
 namespace ProjectHero.Logic.Tests
 {
@@ -252,19 +254,22 @@ namespace ProjectHero.Logic.Tests
             public ActionPlan AttackPlan;
             public StepResult ImpactStep;
             public int HealthAtImpactTickStart;
+            public ReplayRecorder Recorder;
         }
 
         /// <summary>Tick 0 开窗 → Tick 1 提交 hero→monster 攻击计划（ImpactTick = 11）→ 推进到该 Tick。</summary>
-        private static Rig Arrange(BattleSimulationAssembly assembly = null)
+        private static Rig Arrange(BattleSimulationAssembly assembly = null, BattleDefinition definition = null,
+            bool record = false, bool nextMonsterWindow = false)
         {
             BattleSimulation sim = BattleSimulation.Create(
-                BuildDefinition(), EncounterId, Inputs, assembly ?? BattleSimulationAssembly.Standard());
+                definition ?? BuildDefinition(), EncounterId, Inputs, assembly ?? BattleSimulationAssembly.Standard());
 
             CommandIngressEntry playerEntry = sim.CommandIngress.FindEntry(Player);
             Assert.That(playerEntry, Is.Not.Null, "夹具前提：ControllerBinding 必须注册出命令入口");
 
-            var rig = new Rig { Sim = sim, PlayerEntry = playerEntry };
+            var rig = new Rig { Sim = sim, PlayerEntry = playerEntry, Recorder = record ? new ReplayRecorder(sim) : null };
             sim.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowDuration);
+            if (nextMonsterWindow) sim.WindowManager.ScheduleWindow(WindowDuration, Monster, WindowDuration);
             StepOnce(rig, WindowOpenTick);
 
             var request = new CommandRequest(
@@ -304,8 +309,10 @@ namespace ProjectHero.Logic.Tests
                 CommandIngressRejection rejection = rig.PlayerEntry.Submit(requests[i]);
                 Assert.That(rejection, Is.Null, "夹具前提：命令入口必须接受请求");
             }
+            rig.Recorder?.CaptureBeforeStep();
             FrozenCommandBatch batch = rig.Sim.CommandIngress.FreezeTick(tick);
             StepResult result = rig.Sim.Step(tick, batch);
+            rig.Recorder?.RecordCommittedStep(result);
             for (int i = 0; i < result.Events.Count; i++)
             {
                 if (result.Events.Events[i] is CommandRejectedEvent rejected)
@@ -316,6 +323,488 @@ namespace ProjectHero.Logic.Tests
 
         private static int HealthQ10Of(BattleSimulation sim, UnitId unitId)
             => sim.CurrentSnapshot.Units.First(u => u.UnitId == unitId.Value).HealthQ10;
+
+        [TestCase(AttackControlEffects.Displacement, 5, false)]
+        [TestCase(AttackControlEffects.Displacement, 12, false)]
+        [TestCase(AttackControlEffects.Interrupt, 5, false)]
+        [TestCase(AttackControlEffects.Knockdown, 5, false)]
+        [TestCase(AttackControlEffects.None, 5, false)]
+        [TestCase(AttackControlEffects.Displacement, 5, true)]
+        [TestCase(AttackControlEffects.Interrupt, 5, true)]
+        [TestCase(AttackControlEffects.Knockdown, 5, true)]
+        public void AuthoredControlEffectsSeparatePositionAndAttackInterruption(AttackControlEffects effects, int responseStart,
+            bool useScalarRules)
+        {
+            const int responseImpact = 25;
+            var baseline = BuildDefinition();
+            var attack = baseline.Actions.Single();
+            var payload = (AttackPayloadSpec)attack.Payload;
+            var response = attack with
+            {
+                ActionSpecId = Spec("action.t08sr.response"),
+                Timing = new AttackTimingSpec(responseImpact - responseStart, AttackRecoveryTicks)
+            };
+            var definition = baseline with
+            {
+                RulesVersion = "test-explicit-control",
+                Rules = BattleRules.WalkingDisplacementV2 with
+                {
+                    UseExplicitControlEffects = true,
+                    ScalarImpact = useScalarRules ? new ScalarImpactRules() : null
+                },
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { Mass = 4, MoveSpeed = 30 } },
+                Actions = new[] { attack with { Payload = payload with { ControlEffects = effects } }, response },
+                ActionSets = new[] { baseline.ActionSets[0] with { ActionSpecIds = new[] { attack.ActionSpecId, response.ActionSpecId } } }
+            };
+
+            BattleSimulation Create(BattleRuntimeInputs inputs)
+            {
+                var world = BattleSimulation.Create(definition, EncounterId, inputs);
+                world.WindowManager.ScheduleWindow(0, Hero, 4);
+                world.WindowManager.ScheduleWindow(4, Monster, WindowDuration);
+                return world;
+            }
+
+            using var sim = Create(Inputs);
+            var rig = new Rig { Sim = sim, PlayerEntry = sim.CommandIngress.FindEntry(Player), Recorder = new ReplayRecorder(sim) };
+            for (int tick = 0; tick <= responseImpact; tick++)
+            {
+                StepResult step;
+                if (tick == SubmitTick || tick == responseStart)
+                {
+                    bool incoming = tick == SubmitTick;
+                    step = StepOnce(rig, tick, new CommandRequest(tick,
+                        new ScheduleEditScope(sim.ScheduleRevision, sim.CurrentTurnWindow.WindowId),
+                        new ScheduleEditPayload(new ScheduleEditOperation[]
+                        {
+                            new AddOrdinaryPlanOperation(1, incoming ? Hero : Monster, incoming ? attack.ActionSpecId : response.ActionSpecId,
+                                tick, default, incoming ? Monster : Hero, incoming ? GridDirection.East : GridDirection.West, null)
+                        })));
+                }
+                else step = StepOnce(rig, tick);
+
+                if (tick != ImpactTick) continue;
+                var resolved = step.Events.Events.OfType<TargetAggregateResolvedEvent>().Single();
+                Assert.That(resolved.IsStaggered, Is.EqualTo(effects == AttackControlEffects.Interrupt));
+                Assert.That(resolved.IsKnockedDown, Is.EqualTo(effects == AttackControlEffects.Knockdown));
+                Assert.That(resolved.KnockbackSteps, Is.EqualTo(effects == AttackControlEffects.Displacement ? 2 : 0));
+            }
+
+            var target = sim.CurrentSnapshot.Units.Single(unit => unit.UnitId == Monster.Value);
+            var counter = sim.IntentQueue.Intents.SingleOrDefault(intent => intent.OwnerUnitId == Monster);
+            if (effects == AttackControlEffects.Interrupt || effects == AttackControlEffects.Knockdown)
+            {
+                Assert.That(counter, Is.Null);
+                Assert.That(target.StateValue, Is.EqualTo(effects == AttackControlEffects.Knockdown
+                    ? UnitState.KnockedDown : useScalarRules ? UnitState.Idle : UnitState.Staggered));
+                Assert.That(target.X, Is.EqualTo(SingleMonsterAnchor.X));
+            }
+            else
+            {
+                int expectedX = effects == AttackControlEffects.Displacement ? 10 : SingleMonsterAnchor.X;
+                Assert.That(target.X, Is.EqualTo(expectedX));
+                Assert.That(counter, Is.Not.Null);
+                Assert.That(counter.AreaPoints, Is.EqualTo(CombatIntentFactory.TranslatePatternArea(payload.Pattern,
+                    GridDirection.West, new GridPoint(expectedX, SingleMonsterAnchor.Y))));
+            }
+
+            if (useScalarRules && effects == AttackControlEffects.Knockdown)
+            {
+                Assert.That(target.StateEndTick, Is.EqualTo(ImpactTick + 60));
+                var progress = target.Knockdown;
+                Assert.That(progress.NextSegmentTick, Is.EqualTo(ImpactTick + 30));
+                for (long tick = responseImpact + 1; tick <= target.StateEndTick; tick++)
+                {
+                    StepOnce(rig, tick);
+                    var unit = sim.CurrentSnapshot.Units.Single(u => u.UnitId == Monster.Value);
+                    if (tick == progress.NextSegmentTick)
+                        Assert.That(unit.Knockdown.RemainingImpactUnits, Is.EqualTo(progress.RemainingImpactUnits - progress.ResistanceUnits));
+                    if (tick == target.StateEndTick)
+                    {
+                        Assert.That(unit.Knockdown, Is.Null);
+                        Assert.That(unit.StateValue, Is.EqualTo(UnitState.Idle));
+                    }
+                }
+            }
+
+            using var replay = new ReplayPlayer(definition, header => Create(header.RuntimeInputs));
+            replay.Load(rig.Recorder.BuildReplay());
+            replay.Play();
+            while (replay.AdvanceOneTick()) { }
+            Assert.That(replay.IsComplete, Is.True, replay.Deviation?.ToString());
+        }
+
+        [Test]
+        public void ADefenderPushedIntoAnExistingThreatCanBlockTheFollowUp()
+        {
+            var baseline = Task09A2Fixture.BuildDefinition(aiSourceKind: CommandSourceKind.Player);
+            var attackId = Task09A2Fixture.Spec(Task09A2Fixture.AttackSpecId);
+            var attack = baseline.FindAction(attackId);
+            var payload = (AttackPayloadSpec)attack.Payload;
+            var followUpPattern = new AttackPatternSpec(new AttackPatternId("attack.pattern.t08sr.follow_up"),
+                Enumerable.Range(0, GridDirectionInfo.DirectionCount).Select(facing => new DirectionalTriangleSet(
+                    (GridDirection)facing, new[] { new TrianglePoint(11, 0, 1), new TrianglePoint(13, 0, 1) })).ToArray());
+            var followUp = attack with
+            {
+                ActionSpecId = Spec("action.t08sr.follow_up"),
+                Timing = new AttackTimingSpec(30, AttackRecoveryTicks),
+                Payload = payload with { Pattern = followUpPattern, TargetPolicy = TargetPolicy.AllTargetsInArea }
+            };
+            var targetSlot = baseline.Encounters[0].Slots.Single(slot => slot.FactionId == Task09A2Fixture.MonsterFaction);
+            var definition = baseline with
+            {
+                Rules = BattleRules.WalkingDisplacementV2 with { UseExplicitControlEffects = true },
+                AdrenalineRules = AdrenalineRules.HealthThresholds,
+                Units = baseline.Units.Select(unit => unit.UnitDefinitionId == targetSlot.DefinitionId
+                    ? unit with { InitialHealth = 20, Mass = 4 } : unit).ToArray(),
+                Actions = baseline.Actions.Select(action => action.ActionSpecId == attackId
+                    ? action with { Payload = payload with { ControlEffects = AttackControlEffects.Displacement } }
+                    : action).Append(followUp).ToArray(),
+                ActionSets = baseline.ActionSets.Select(set => set with
+                    { ActionSpecIds = set.ActionSpecIds.Append(followUp.ActionSpecId).ToArray() }).ToArray(),
+                AttackPatterns = baseline.AttackPatterns.Append(followUpPattern).ToArray()
+            };
+
+            using var sim = Task09A2Fixture.NewSim(definition);
+            var attacker = Task09A2Fixture.Hero;
+            var defender = Task09A2Fixture.Monster;
+            var first = Task09A2Fixture.ArrangeStartedAttackOnly(sim, defender);
+            while (sim.Tick < first.EndTick) Task09A2Fixture.StepNext(sim);
+            Assert.That(sim.CurrentSnapshot.Units.Single(unit => unit.UnitId == defender.Value).ForcedMotion, Is.Not.Null);
+            Assert.That(sim.AdrenalineLedgerOf(defender).AvailableAdrenaline, Is.EqualTo(2));
+
+            long followUpStart = sim.Tick + 1;
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.PlayerId, Task09A2Fixture.AddPlan(followUpStart, sim.ScheduleRevision,
+                sim.CurrentTurnWindow.WindowId, attacker, followUp.ActionSpecId, null, followUpStart));
+            Task09A2Fixture.StepNext(sim);
+            Assert.That(sim.LastCommandSet.RejectedCommands, Is.Empty);
+            Assert.That(sim.ReactionOpportunities.ActiveOpportunities.Any(o => o.IsOpen && o.DefenderUnitId == defender), Is.False);
+            long firstStep = sim.CurrentSnapshot.Units.Single(unit => unit.UnitId == defender.Value).ForcedMotion.NextStepTick;
+            while (sim.Tick < firstStep) Task09A2Fixture.StepNext(sim);
+            var opportunity = sim.ReactionOpportunities.ActiveOpportunities.Single(o => o.IsOpen && o.DefenderUnitId == defender);
+            Assert.That(opportunity.TelegraphTick, Is.EqualTo(firstStep));
+            var block = Task09A2Fixture.Spec(Task09A2Fixture.BlockSpecId);
+            Task09A2Fixture.Submit(sim, Task09A2Fixture.AiId, Task09A2Fixture.Reaction(sim.Tick + 1,
+                opportunity.Id, ReactionCommandKind.Block, block));
+            Task09A2Fixture.StepNext(sim);
+            Assert.That(sim.LastCommandSet.RejectedCommands, Is.Empty);
+            Assert.That(sim.AdrenalineLedgerOf(defender).ReservedAdrenaline, Is.EqualTo(2));
+
+            StepResult impact = null;
+            while (sim.Tick < opportunity.SourceImpactTick) impact = Task09A2Fixture.StepNext(sim);
+            Assert.That(impact.Events.Events.OfType<BlockResolvedEvent>().Single().AfterBlockDamageQ10, Is.Zero);
+            Assert.That(sim.AdrenalineLedgerOf(defender).ReservedAdrenaline, Is.Zero);
+            Assert.That(HealthQ10Of(sim, defender), Is.EqualTo(10 * 1024));
+        }
+
+        [TestCase(12.5f, 2560, 3, 7)]
+        [TestCase(20f, 10240, 2, 3)]
+        public void OneHitGrantsAllCrossedThresholdsAndKeepsThemAcrossTheOwnersWindow(
+            float initialHealth, int remainingHealth, int receivedPoints, int receivedClaims)
+        {
+            var baseline = BuildDefinition();
+            var definition = baseline with
+            {
+                RulesVersion = "test-health-thresholds",
+                AdrenalineRules = AdrenalineRules.HealthThresholds,
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { InitialHealth = initialHealth } }
+            };
+            var rig = Arrange(definition: definition, record: true, nextMonsterWindow: true);
+            using var simulation = rig.Sim;
+            Assert.That(HealthQ10Of(simulation, Monster), Is.EqualTo(remainingHealth));
+            Assert.That(simulation.AdrenalineLedgerOf(Hero).AvailableAdrenaline, Is.EqualTo(1));
+            Assert.That(simulation.AdrenalineLedgerOf(Monster).AvailableAdrenaline, Is.EqualTo(receivedPoints));
+            for (long tick = simulation.Tick + 1; tick <= WindowDuration; tick++) StepOnce(rig, tick);
+            var ledger = simulation.CurrentSnapshot.Resources.AdrenalineLedgers.Single(a => a.UnitId == Monster.Value);
+            Assert.That(simulation.CurrentTurnWindow.OwnerUnitId, Is.EqualTo(Monster));
+            Assert.That(ledger.AvailableAdrenaline, Is.EqualTo(receivedPoints));
+            Assert.That(ledger.ReceivedThresholdClaims, Is.EqualTo(receivedClaims));
+
+            using var stream = new System.IO.MemoryStream();
+            ReplayFile.Save(stream, rig.Recorder.BuildReplay());
+            stream.Position = 0;
+            using var replay = new ReplayPlayer(definition, header =>
+            {
+                var world = BattleSimulation.Create(definition, header.EncounterId, header.RuntimeInputs);
+                world.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowDuration);
+                world.WindowManager.ScheduleWindow(WindowDuration, Monster, WindowDuration);
+                return world;
+            });
+            replay.Load(ReplayFile.Load(stream, definition));
+            replay.Play();
+            while (replay.AdvanceOneTick()) { }
+            Assert.That(replay.IsComplete, Is.True, replay.Deviation?.ToString());
+            Assert.That(replay.CurrentSnapshot.Resources.AdrenalineLedgers.Single(a => a.UnitId == Monster.Value)
+                .ReceivedThresholdClaims, Is.EqualTo(receivedClaims));
+        }
+
+        [Test]
+        public void DelayedWallDamageGivesTheCrossingToTheOriginalAttacker()
+        {
+            var baseline = BuildDefinition();
+            var definition = baseline with
+            {
+                RulesVersion = "test-wall-health-thresholds",
+                Rules = BattleRules.WalkingDisplacementV2,
+                AdrenalineRules = AdrenalineRules.HealthThresholds,
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { Mass = 4, MoveSpeed = 30, InitialHealth = 160 } },
+                Encounters = new[] { baseline.Encounters[0] with { StaticWalls = new[] { new GridPoint(10, 0) } } }
+            };
+            var rig = Arrange(definition: definition);
+            using var simulation = rig.Sim;
+            Assert.That(simulation.AdrenalineLedgerOf(Hero).AvailableAdrenaline, Is.Zero);
+            Assert.That(simulation.AdrenalineLedgerOf(Monster).AvailableAdrenaline, Is.Zero);
+            for (long tick = ImpactTick + 1; tick <= ImpactTick + 8; tick++) StepOnce(rig, tick);
+            Assert.That(HealthQ10Of(simulation, Monster), Is.EqualTo(50 * 1024));
+            Assert.That(simulation.AdrenalineLedgerOf(Hero).AvailableAdrenaline, Is.EqualTo(1));
+            Assert.That(simulation.AdrenalineLedgerOf(Monster).AvailableAdrenaline, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void AFinishingHitCanClaimBothAttackThresholds()
+        {
+            var baseline = BuildDefinition();
+            var definition = baseline with
+            {
+                RulesVersion = "test-health-thresholds",
+                AdrenalineRules = AdrenalineRules.HealthThresholds,
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { InitialHealth = 8 } }
+            };
+            var rig = Arrange(definition: definition);
+            using var simulation = rig.Sim;
+            Assert.That(simulation.IsEnded, Is.True);
+            Assert.That(HealthQ10Of(simulation, Monster), Is.Zero);
+            var reward = rig.ImpactStep.Events.Events.OfType<AdrenalineThresholdRewardEvent>()
+                .Single(e => e.RecipientUnitId == Hero);
+            Assert.That(reward.Points, Is.EqualTo(2));
+            var attacker = simulation.CurrentSnapshot.Resources.AdrenalineLedgers.Single(a => a.UnitId == Hero.Value);
+            Assert.That(attacker.DealtThresholdClaims.Single().ClaimedThresholds, Is.EqualTo(3));
+            Assert.That(attacker.AvailableAdrenaline, Is.Zero);
+        }
+
+        private sealed class RestoreMonsterHealth : IUnitStateAdvanceSystem
+        {
+            public IReadOnlyList<UnitStateAdvanceRequest> AdvanceOrdered(IReadOnlyList<UnitSnapshot> units, long tick)
+                => tick == 20 ? new[] { new UnitStateAdvanceRequest(Monster.Value, 12800) }
+                    : Array.Empty<UnitStateAdvanceRequest>();
+        }
+
+        [Test]
+        public void HealingDoesNotReopenClaimsInBattleOrPreview()
+        {
+            var baseline = BuildDefinition();
+            var definition = baseline with
+            {
+                RulesVersion = "test-health-thresholds",
+                AdrenalineRules = AdrenalineRules.HealthThresholds,
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { InitialHealth = 12.5f, Mass = 20 } }
+            };
+            var rig = Arrange(new BattleSimulationAssembly(unitStateAdvance: new RestoreMonsterHealth()), definition);
+            using var simulation = rig.Sim;
+            for (long tick = ImpactTick + 1; tick <= 20; tick++) StepOnce(rig, tick);
+            Assert.That(HealthQ10Of(simulation, Monster), Is.EqualTo(12800));
+
+            var request = new CommandRequest(21,
+                new ScheduleEditScope(simulation.ScheduleAuthority.ScheduleRevision, simulation.CurrentTurnWindow.WindowId),
+                new ScheduleEditPayload(new ScheduleEditOperation[]
+                {
+                    new AddOrdinaryPlanOperation(2, Hero, Spec(AttackSpecId), 21, default, Monster, GridDirection.East, null)
+                }));
+            StepOnce(rig, 21, request);
+            var preview = simulation.HudPreviewFor(Player).PreviewSpatialResults();
+            Assert.That(preview.Damage.Single().DamageQ10, Is.EqualTo(10240));
+            Assert.That(preview.AdrenalineRewards, Is.Empty);
+            for (long tick = 22; tick <= 31; tick++) StepOnce(rig, tick);
+            Assert.That(HealthQ10Of(simulation, Monster), Is.EqualTo(2560));
+            Assert.That(simulation.AdrenalineLedgerOf(Hero).AvailableAdrenaline, Is.EqualTo(1));
+            Assert.That(simulation.AdrenalineLedgerOf(Monster).AvailableAdrenaline, Is.EqualTo(3));
+        }
+
+        [TestCase(10, 0, 100, 200, 0, false)]
+        [TestCase(12, 1, 60, 200, 0, false)]
+        [TestCase(14, 2, 0, 200, 0, false)]
+        [TestCase(12, 1, 60, 50, 0, false)]
+        [TestCase(0, 0, 100, 200, 0, false)]
+        [TestCase(12, 1, 60, 200, 1000, false)]
+        [TestCase(12, 1, 36, 200, 600, false)]
+        [TestCase(12, 1, 30, 200, 500, false)]
+        [TestCase(12, 1, 30, 200, 500, true)]
+        public void WalkingDisplacementChecksEachStepAndCommitsWallDamageOnce(
+            int wallX, int expectedMoves, int wallDamage, int initialHealth, int scalarWallPermille, bool wallUnit)
+        {
+            var baseline = BuildDefinition();
+            var encounter = wallUnit ? baseline.Encounters[0] : wallX == 0
+                ? baseline.Encounters[0] with { GridBoundary = new GridBoundaryDefinition(new GridPoint(-40, -40), new GridPoint(8, 40)) }
+                : baseline.Encounters[0] with { StaticWalls = new[] { new GridPoint(wallX, 0) } };
+            var definition = baseline with
+            {
+                Rules = BattleRules.WalkingDisplacementV2 with
+                {
+                    UseExplicitControlEffects = scalarWallPermille != 0,
+                    ScalarImpact = scalarWallPermille == 0 ? null : new ScalarImpactRules(WallDamagePermille: scalarWallPermille)
+                },
+                Actions = scalarWallPermille == 0 ? baseline.Actions : baseline.Actions.Select(action
+                    => action with { Payload = ((AttackPayloadSpec)action.Payload) with { ControlEffects = AttackControlEffects.Displacement } }).ToArray(),
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { Mass = 4, MoveSpeed = 30, InitialHealth = initialHealth } },
+                Encounters = new[] { encounter }
+            };
+            if (wallUnit)
+            {
+                var wall = WallDefinition(5000);
+                var slot = new EncounterUnitSlot(Slot("wall"), wall.UnitDefinitionId, MonsterFaction,
+                    new GridPoint(wallX, 0), GridDirection.East);
+                definition = definition with
+                {
+                    Units = definition.Units.Append(wall).ToArray(),
+                    Encounters = new[] { encounter with { Slots = encounter.Slots.Append(slot).ToArray() } }
+                };
+            }
+            var rig = Arrange(definition: definition, record: true);
+            using var simulation = rig.Sim;
+            var started = rig.ImpactStep.Events.Events.OfType<ForcedDisplacementStartedEvent>().Single();
+            Assert.That(started.Motion.RemainingMomentumUnits, Is.EqualTo(10000));
+            Assert.That(started.Motion.ControlResistanceUnits, Is.EqualTo(4000));
+            Assert.That(started.Motion.NextStepTick, Is.EqualTo(ImpactTick + 8));
+            Assert.That(simulation.CurrentSnapshot.Units.Single(u => u.UnitId == Monster.Value).X, Is.EqualTo(8));
+            int healthAfterHit = HealthQ10Of(simulation, Monster);
+            var forecast = simulation.HudPreviewFor(Player).PreviewSpatialResults();
+            Assert.That(forecast.Damage.Where(d => d.IsWallImpact).Sum(d => d.DamageQ10),
+                Is.EqualTo(Math.Min(wallDamage * 1024, healthAfterHit)));
+            var allFacts = new List<LogicEvent>();
+            for (long tick = ImpactTick + 1; tick <= ImpactTick + 25 && !simulation.IsEnded; tick++)
+                allFacts.AddRange(StepOnce(rig, tick).Events.Events);
+            var steps = allFacts.OfType<ForcedDisplacementResolvedEvent>().Where(e => e.AppliedSteps > 0).ToArray();
+            Assert.That(steps.Select(e => e.Tick), Is.EqualTo(Enumerable.Range(1, expectedMoves).Select(i => ImpactTick + 8 * i)));
+            var ended = allFacts.OfType<ForcedDisplacementEndedEvent>().Single();
+            Assert.That(ended.Position.X, Is.EqualTo(8 + expectedMoves * 2));
+            Assert.That(ended.Motion.RemainingMomentumUnits, Is.EqualTo(10000 - 4000 * expectedMoves));
+            Assert.That(simulation.CurrentSnapshot.Units.Single(u => u.UnitId == Monster.Value).ForcedMotion, Is.Null);
+            using var replay = new ReplayPlayer(definition, header =>
+            {
+                var world = BattleSimulation.Create(definition, header.EncounterId, header.RuntimeInputs);
+                world.WindowManager.ScheduleWindow(WindowOpenTick, Hero, WindowDuration);
+                return world;
+            });
+            replay.Load(rig.Recorder.BuildReplay());
+            replay.Play();
+            while (replay.AdvanceOneTick()) { }
+            Assert.That(replay.IsComplete, Is.True, replay.Deviation?.ToString());
+            if (wallDamage == 0)
+            {
+                Assert.That(ended.Reason, Is.EqualTo(ForcedDisplacementExitReason.MomentumExhausted));
+                Assert.That(allFacts.OfType<WallContactEvent>(), Is.Empty);
+                Assert.That(allFacts.OfType<WallImpactDamageEvent>(), Is.Empty);
+                Assert.That(HealthQ10Of(simulation, Monster), Is.EqualTo(healthAfterHit));
+                return;
+            }
+            Assert.That(ended.Reason, Is.EqualTo(ForcedDisplacementExitReason.Blocked));
+            var contact = allFacts.OfType<WallContactEvent>().Single();
+            var damage = allFacts.OfType<WallImpactDamageEvent>().Single();
+            Assert.That(contact.Tick, Is.EqualTo(ImpactTick + 8 * (expectedMoves + 1)));
+            var expectedReason = wallUnit ? ForcedDisplacementStopReason.WallUnit
+                : wallX == 0 ? ForcedDisplacementStopReason.Boundary : ForcedDisplacementStopReason.StaticObstacle;
+            Assert.That(contact.StopReason, Is.EqualTo(expectedReason));
+            Assert.That(damage.WallContactSequence, Is.EqualTo(contact.Sequence));
+            Assert.That(damage.Sequence, Is.GreaterThan(contact.Sequence));
+            Assert.That(damage.RawDamageQ10, Is.EqualTo(wallDamage * 1024L));
+            Assert.That(damage.AppliedDamageQ10, Is.EqualTo(Math.Min(wallDamage * 1024, healthAfterHit)));
+            Assert.That(HealthQ10Of(simulation, Monster), Is.EqualTo(Math.Max(0, healthAfterHit - wallDamage * 1024)));
+            if (wallUnit)
+            {
+                var wall = simulation.CurrentSnapshot.Units.Single(u => u.Traits.Kind == UnitKind.Wall);
+                Assert.That(wall.X, Is.EqualTo(wallX));
+                Assert.That(wall.IsAlive, Is.True);
+                Assert.That(wall.HealthQ10, Is.EqualTo(5000 * 1024));
+            }
+            if (initialHealth == 50)
+            {
+                Assert.That(allFacts.OfType<UnitDiedEvent>().Single().Sequence, Is.GreaterThan(damage.Sequence));
+                Assert.That(simulation.IsEnded, Is.True);
+            }
+        }
+
+        [Test]
+        public void ADirectHitDestroysABreakableWallAndReleasesItsFootprint()
+        {
+            var rig = ArrangeWallTarget(attackDamage: 6000, impactUnits: 10000);
+            using var simulation = rig.Sim;
+            Assert.That(rig.ImpactStep.Events.Events.OfType<UnitDiedEvent>().Single().UnitId, Is.EqualTo(Monster));
+            Assert.That(rig.ImpactStep.Events.Events.OfType<ForcedDisplacementStartedEvent>(), Is.Empty);
+            Assert.That(simulation.LogicGrid.TryGetAnchor(Monster, out _), Is.False);
+            Assert.That(simulation.IsEnded, Is.False);
+        }
+
+        [TestCase(499999, 8)]
+        [TestCase(500000, 10)]
+        public void StoneWallUsesTheSameImpactThresholdAsOtherUnits(int impactUnits, int expectedX)
+        {
+            var rig = ArrangeWallTarget(attackDamage: 10, impactUnits: impactUnits);
+            using var simulation = rig.Sim;
+            for (long tick = ImpactTick + 1; tick <= ImpactTick + 40; tick++) StepOnce(rig, tick);
+            var wall = simulation.CurrentSnapshot.Units.Single(unit => unit.UnitId == Monster.Value);
+            Assert.That(wall.IsAlive, Is.True);
+            Assert.That(wall.HealthQ10, Is.EqualTo(4990 * 1024));
+            Assert.That(wall.X, Is.EqualTo(expectedX));
+        }
+
+        private static Rig ArrangeWallTarget(float attackDamage, int impactUnits)
+        {
+            var baseline = BuildDefinition();
+            var encounter = baseline.Encounters[0];
+            var wall = WallDefinition(5000) with { VolumeSpecId = baseline.Units[1].VolumeSpecId };
+            var slots = new[]
+            {
+                encounter.Slots[0],
+                encounter.Slots[1] with { DefinitionId = wall.UnitDefinitionId },
+                encounter.Slots[1] with { SlotId = Slot("reserve"), InitialPosition = new GridPoint(26, 0) }
+            };
+            var attack = baseline.Actions.Single();
+            var payload = (AttackPayloadSpec)attack.Payload;
+            var baseDamage = payload.DamageComponents[0];
+            var definition = baseline with
+            {
+                Rules = BattleRules.WalkingDisplacementV2,
+                Units = baseline.Units.Append(wall).ToArray(),
+                Encounters = new[] { encounter with
+                {
+                    Slots = slots, Controllers = new[] { encounter.Controllers[0] with { ControlledSlots = new[] { Slot("hero") } } }
+                } },
+                Actions = new[] { attack with { Payload = payload with
+                    {
+                        AllowedTargetRelations = TargetRelationMask.Environment,
+                        DamageComponents = new[] { new DamageComponentSpec(baseDamage.ChannelId, attackDamage, baseDamage.Tags) },
+                        ScalarImpactUnits = impactUnits
+                    } } }
+            };
+            return Arrange(definition: definition);
+        }
+
+        private static UnitDefinition WallDefinition(float hitPoints)
+            => new UnitDefinition(new UnitDefinitionId("unit.t08sr.wall"), 1f, 1f, 20f, 20f, null, hitPoints)
+            {
+                Traits = new UnitTraits(UnitKind.Wall, UnitControl.Passive),
+                ScalarControlResistanceUnits = 500000
+            };
+
+        [TestCase(10f, true)]
+        [TestCase(11f, false)]
+        public void WalkingDisplacementRequiresEnoughMomentumForTheFirstStep(float targetMass, bool expectedContact)
+        {
+            var baseline = BuildDefinition();
+            var definition = baseline with
+            {
+                Rules = BattleRules.WalkingDisplacementV2,
+                Units = new[] { baseline.Units[0], baseline.Units[1] with { Mass = targetMass } },
+                Encounters = new[] { baseline.Encounters[0] with { StaticWalls = new[] { new GridPoint(10, 0) } } }
+            };
+            var rig = Arrange(definition: definition);
+            using var simulation = rig.Sim;
+            Assert.That(rig.ImpactStep.Events.Events.OfType<ForcedDisplacementStartedEvent>().Any(), Is.EqualTo(expectedContact));
+            var facts = new List<LogicEvent>();
+            for (long tick = ImpactTick + 1; tick <= ImpactTick + 12; tick++)
+                facts.AddRange(StepOnce(rig, tick).Events.Events);
+            Assert.That(facts.OfType<WallImpactDamageEvent>().Sum(e => e.RawDamageQ10), Is.EqualTo(expectedContact ? 102400 : 0));
+        }
 
         // =====================================================================
         // 用例 1：五个阶段都被真实执行，且伤害恰好提交一次

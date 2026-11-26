@@ -49,12 +49,17 @@ namespace ProjectHero.Logic.Tests
                 new ScheduleEditScope(Sim.ScheduleRevision, Sim.CurrentTurnWindow.WindowId),
                 new ScheduleEditPayload(new ScheduleEditOperation[] { new AddOrdinaryPlanOperation(1, new UnitId(2),
                     CombatExperimentDefinition.Action("quick"), start, PrimaryTargetUnitId: new UnitId(1), Facing: GridDirection.West) }));
-            public AiActionForecast Forecast(CommandRequest request)
+            public AiDecisionContext DecisionContext()
             {
                 var snapshot = Sim.DecisionSnapshotFor(Stage4RecoveryExperiment.OpponentController);
                 var ai = _composition.AiControllers.Single(c => c.IsRegistered(snapshot.ControllerId));
-                using var forecast = ai.BuildContext(snapshot, snapshot.ControllerId).ForecastFactory(snapshot);
-                return forecast.Evaluate(request);
+                return ai.BuildContext(snapshot, snapshot.ControllerId);
+            }
+            public AiActionForecast Forecast(CommandRequest request, AiForecastSettings settings = null)
+            {
+                var context = DecisionContext();
+                using var forecast = context.ForecastFactory(context.Snapshot);
+                return forecast.Evaluate(request, settings);
             }
             public void Submit(CommandRequest request)
                 => Assert.That(Sim.CommandIngress.FindEntry(Stage4RecoveryExperiment.OpponentController).Submit(request), Is.Null);
@@ -94,14 +99,51 @@ namespace ProjectHero.Logic.Tests
         }
 
         [Test]
-        public void NextTickWindowResetMustHappenBeforeReactionResourceAdmission()
+        public void CandidatePreflightRejectsUnaffordableReactionBeforeSteppingForecast()
+        {
+            using var r = new Rig(); r.AddHeavies(1); r.Advance(1);
+            var defender = new UnitId(2);
+            Assert.That(r.Sim.AdrenalineLedgerOf(defender).AvailableAdrenaline, Is.Zero);
+            var opportunity = r.Sim.ReactionOpportunities.ActiveOpportunities.Single(o => o.DefenderUnitId == defender);
+            var request = new CommandRequest(r.Sim.Tick + 1, new ReactionCommandScope(opportunity.Id),
+                new ReactionCommandPayload(ReactionCommandKind.Block, CombatExperimentDefinition.Action("block"),
+                    StartTick: opportunity.SourceImpactTick));
+
+            var settings = new AiForecastSettings(360, RequireSubmissionPreflight: true);
+            Assert.That(AiTacticalCandidateBuilder.Reactions(r.DecisionContext() with { ForecastSettings = settings }), Is.Empty);
+            var prediction = r.Forecast(request, settings);
+            Assert.That(prediction.RejectionCode, Is.EqualTo("ADRENALINE_INSUFFICIENT"));
+            Assert.That(prediction.ObservedThroughTick, Is.EqualTo(r.Sim.Tick));
+        }
+
+        [Test]
+        public void CandidatePreflightChecksTheWholeDodgeFootprintAtAnInBoundsAnchor()
+        {
+            using var r = new Rig(); r.AddHeavies(1); r.Advance(1);
+            var defender = new UnitId(2);
+            var spec = CombatExperimentDefinition.Action("dodge");
+            Task09A2Fixture.SeedAdrenaline(r.Sim, defender, r.Sim.Definition.FindAction(spec).AdrenalineCost);
+            var opportunity = r.Sim.ReactionOpportunities.ActiveOpportunities.Single(o => o.DefenderUnitId == defender);
+            var destination = new GridPoint(8, 0);
+            Assert.That(r.Sim.LogicGrid.Boundary.Contains(destination), Is.True);
+            var request = new CommandRequest(r.Sim.Tick + 1, new ReactionCommandScope(opportunity.Id),
+                new ReactionCommandPayload(ReactionCommandKind.Dodge, spec, destination, opportunity.SourceImpactTick));
+
+            var prediction = r.Forecast(request, new AiForecastSettings(360, RequireSubmissionPreflight: true));
+            Assert.That(prediction.RejectionCode, Is.EqualTo(LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS));
+            Assert.That(prediction.ObservedThroughTick, Is.EqualTo(r.Sim.Tick));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void NextTickWindowResetMustHappenBeforeReactionResourceAdmission(bool preflight)
         {
             using var r = new Rig(fastHeavy: true); r.AddHeavies(1, 63, 151); r.Advance(179);
             Assert.That(r.Sim.AdrenalineLedgerOf(new UnitId(2)).AvailableAdrenaline, Is.GreaterThanOrEqualTo(CombatValuesV05.ResourceUnitsPerPoint));
             var opportunity = r.Sim.ReactionOpportunities.ActiveOpportunities.Single(o => o.DefenderUnitId.Value == 2 && o.SourceImpactTick == 181);
             var request = new CommandRequest(180, new ReactionCommandScope(opportunity.Id),
                 new ReactionCommandPayload(ReactionCommandKind.Block, CombatExperimentDefinition.Action("block"), StartTick: 181));
-            var prediction = r.Forecast(request);
+            var prediction = r.Forecast(request, new AiForecastSettings(120, RequireSubmissionPreflight: preflight));
             r.Submit(request); r.Advance(180);
             Assert.That(r.Sim.AdrenalineLedgerOf(new UnitId(2)).AvailableAdrenaline, Is.EqualTo(0));
             Assert.That(prediction.RejectionCode, Is.EqualTo("ADRENALINE_INSUFFICIENT"));

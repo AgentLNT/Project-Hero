@@ -82,6 +82,23 @@ namespace ProjectHero.Logic.Tests
             return anchor;
         }
 
+        [TestCase(false, ForcedDisplacementStopReason.WallUnit, 0)]
+        [TestCase(true, ForcedDisplacementStopReason.Completed, 2)]
+        public void AWallBlocksOnlyWhenItsOwnDisplacementDoesNotClearTheSpace(
+            bool movesWall, ForcedDisplacementStopReason expectedStop, int expectedX)
+        {
+            var grid = new LogicGrid(Wide);
+            Place(grid, 1, 0, 0);
+            Place(grid, 2, 2, 0);
+            var snapshots = Snapshot(grid);
+            snapshots[1] = snapshots[1] with { Traits = new UnitTraits(UnitKind.Wall, UnitControl.Passive) };
+            var requests = new List<ForcedDisplacementRequest> { Request(1, GridDirection.East, 1) };
+            if (movesWall) requests.Add(Request(2, GridDirection.East, 1));
+            var result = Solver(grid).ResolveAll(requests, snapshots, Wide, 0);
+            Assert.That(Of(result, 1).StopReason, Is.EqualTo(expectedStop));
+            Assert.That(Of(result, 1).To.X, Is.EqualTo(expectedX));
+        }
+
         // ================= 基本步进 =================
 
         /// <summary>
@@ -529,6 +546,24 @@ namespace ProjectHero.Logic.Tests
             ForcedDisplacementBatch batch = Solve(Solver(grid), grid, Wide, Request(1L, GridDirection.East, 1));
             Assert.That(Of(batch, 1L).AppliedSteps, Is.EqualTo(1), "预留不是位移的物理墙");
             Assert.That(Of(batch, 1L).StopReason, Is.EqualTo(ForcedDisplacementStopReason.Completed));
+        }
+
+        [Test]
+        public void ForcedDisplacementInvalidatesFutureBodyEvenWhenItMissesTheReservedAnchor()
+        {
+            var grid = new LogicGrid(Wide);
+            Place(grid, 1L, 0, 0);
+            Assert.That(grid.RegisterUnit(U(2), new GridPoint(10, 10), GridDirection.East, MultiCellDirections()), Is.Null);
+            var offCenter = MultiCellBases().First(p => p != new GridPoint(0, 0));
+            var direction = offCenter == new GridPoint(2, 0) ? GridDirection.West : GridDirection.East;
+            var target = GridNeighborTable.OffsetPoint(direction);
+            var futureAnchor = new GridPoint(target.X - offCenter.X, target.Y - offCenter.Y);
+            Assert.That(futureAnchor, Is.Not.EqualTo(target));
+            Assert.That(grid.TryReserve(new Reservation(new ReservationKey(P(7), 0), U(2), futureAnchor, 12, 24)), Is.Null);
+
+            var moved = Of(Solve(Solver(grid), grid, Wide, Request(1, direction, 1)), 1);
+            Assert.That(moved.To, Is.EqualTo(target));
+            Assert.That(moved.InvalidatedPlanIds, Is.EqualTo(new[] { P(7) }));
         }
 
         /// <summary>

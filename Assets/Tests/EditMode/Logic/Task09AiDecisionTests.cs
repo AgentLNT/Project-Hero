@@ -246,6 +246,23 @@ namespace ProjectHero.Logic.Tests
                 "AI 的攻击派生**恰好一条**机会；AI 不得凭空多造或销毁机会");
         }
 
+        [Test]
+        public void AiNextTickEditUsesRevisionCommittedBeforeSnapshotDelivery()
+        {
+            using var sim = NewAiSim(Task09A2Fixture.BuildDefinition(Player, Ai), out _,
+                out List<DecisionSnapshot> delivered, out _);
+            sim.WindowManager.ScheduleWindow(0L, Task09A2Fixture.Monster, Task09A2Fixture.WindowDuration);
+            Task09A2Fixture.Step(sim, 0L);
+
+            StepResult firstEdit = Task09A2Fixture.Step(sim, 1L);
+            Assert.That(firstEdit.Snapshot.ScheduleRevision, Is.EqualTo(1L));
+            Assert.That(delivered.Last().ScheduleRevision, Is.EqualTo(firstEdit.Snapshot.ScheduleRevision));
+
+            StepResult nextEdit = Task09A2Fixture.Step(sim, 2L);
+            Assert.That(Task09A2Fixture.RejectionCodes(nextEdit), Is.Empty);
+            Assert.That(nextEdit.Snapshot.ScheduleRevision, Is.EqualTo(2L));
+        }
+
         // =====================================================================
         // 必需测试 32：AiCannotCreateOpportunityOrReactionPlanDirectly
         // =====================================================================

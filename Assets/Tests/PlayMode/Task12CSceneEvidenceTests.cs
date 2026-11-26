@@ -29,8 +29,7 @@ namespace ProjectHero.Tests.PlayMode
         {
             yield return LoadMainScene(); Bootstrap.StopBattle("12C-prepare"); Bootstrap.ReleaseBattle();
             var original=((IBattleSimulationSource)Field(Bootstrap,"_simulationSourceSlot")).BuildSeed();
-            var seed=(BattleSimulationSeed)typeof(Task12BSceneEvidenceTests).GetMethod("Configure",BindingFlags.Static|BindingFlags.NonPublic)
-                .Invoke(null,new object[] {original});
+            var seed = Task12BSceneEvidenceTests.Configure(original);
             var source=NewGameObject("Task12CSceneSource").AddComponent<Task11SceneScenarioSource>(); source.Seed=seed;
             Bootstrap.GetType().GetField("_simulationSourceSlot",BindingFlags.Instance|BindingFlags.NonPublic).SetValue(Bootstrap,source);
             var presentation=UnityEngine.Object.FindFirstObjectByType<BattlePresentationView>();

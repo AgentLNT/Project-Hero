@@ -96,7 +96,8 @@ namespace ProjectHero.Logic.Tests
             Assert.That(TargetRelationMasks.IsValid(TargetRelationMask.None), Is.False, "空掩码非法");
             Assert.That(TargetRelationMasks.IsValid(TargetRelationMask.Hostile), Is.True);
             Assert.That(TargetRelationMasks.IsValid(TargetRelationMask.Hostile | TargetRelationMask.Allied), Is.True);
-            Assert.That(TargetRelationMasks.IsValid((TargetRelationMask)(1 << 4)), Is.False, "未定义位非法");
+            Assert.That(TargetRelationMasks.IsValid(TargetRelationMask.Environment), Is.True);
+            Assert.That(TargetRelationMasks.IsValid((TargetRelationMask)(1 << 5)), Is.False, "未定义位非法");
         }
 
         [Test]
