@@ -131,7 +131,9 @@ namespace ProjectHero.Logic.Resources
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT,
                     "initial available=" + initialAvailable.ToString(CultureInfo.InvariantCulture) +
                     " cycle=" + initialCycleId.ToString(CultureInfo.InvariantCulture));
-            if (_rules.UseCombatValuesV05 && initialAvailable > _rules.MaxAvailablePerCycle)
+            if (_rules.UseHealthThresholds && initialAvailable != 0)
+                throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT, "threshold battles start with zero adrenaline");
+            if (!_rules.UseHealthThresholds && _rules.UseCombatValuesV05 && initialAvailable > _rules.MaxAvailablePerCycle)
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT, "initial stock exceeds cap");
             if (AvailableAdrenaline != 0 || CycleId != 0L || _reservations.Count != 0)
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT,
@@ -254,6 +256,7 @@ namespace ProjectHero.Logic.Resources
 
         public void BeginOwnWindow()
         {
+            if (_rules.UseHealthThresholds) return;
             int before = AvailableAdrenaline;
             CycleId = checked(CycleId + 1L);
             AvailableAdrenaline = 0;
@@ -267,7 +270,7 @@ namespace ProjectHero.Logic.Resources
         /// </summary>
         public void ApplyAccrualFacts(AdrenalineAccrualFacts facts)
         {
-            if (facts == null) return;
+            if (facts == null || _rules.UseHealthThresholds) return;
             if (facts.UnitId != UnitId)
                 throw new LogicDefinitionException(AdrenalineLedgerCodes.LEDGER_INVARIANT,
                     "unit mismatch: " + facts.UnitId.Value.ToString(CultureInfo.InvariantCulture));
@@ -400,7 +403,11 @@ namespace ProjectHero.Logic.Resources
                 }
                 result.Add(new AdrenalineLedgerSnapshot(
                     ledger.UnitId.Value, ledger.AvailableAdrenaline, ledger.CycleId,
-                    projected, ledger.ReservedAdrenaline));
+                    projected, ledger.ReservedAdrenaline)
+                {
+                    ReceivedThresholdClaims = ledger.ReceivedThresholdClaims,
+                    DealtThresholdClaims = ledger.BuildDealtThresholdClaims()
+                });
             }
             return result;
         }

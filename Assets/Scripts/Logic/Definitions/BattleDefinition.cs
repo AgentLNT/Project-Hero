@@ -58,6 +58,9 @@ namespace ProjectHero.Logic.Definitions
         DynamicSpawnFactionPolicy DefaultDynamicSpawnPolicy,
         string BattleDefinitionHashValue)
     {
+        /// <summary>Previous authored rules for loading matching replay files.</summary>
+        public BattleDefinition PriorReplayDefinition { get; init; }
+
         /// <summary>按 ID 查找单位定义；不存在返回 null（调用方决定错误码）。</summary>
         public UnitDefinition FindUnit(Ids.UnitDefinitionId id)
         {

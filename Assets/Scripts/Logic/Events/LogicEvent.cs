@@ -42,6 +42,7 @@ namespace ProjectHero.Logic.Events
     {
         private readonly List<LogicEvent> _current = new List<LogicEvent>();
         private readonly LogicSequenceGenerator _sequences;
+        private readonly Dictionary<Type, Action<LogicEvent>> _simulationSubscribers = new();
 
         public LogicEventOutbox(LogicSequenceGenerator sequences)
         {
@@ -52,6 +53,13 @@ namespace ProjectHero.Logic.Events
         public long NextEventSequence => _sequences.NextEventSequence;
 
         public int PendingCount => _current.Count;
+
+        // Internal subscribers run during the committing phase. External consumers still receive only the flushed batch.
+        internal void Subscribe<T>(Action<T> handler) where T : LogicEvent
+        {
+            _simulationSubscribers.TryGetValue(typeof(T), out var subscribers);
+            _simulationSubscribers[typeof(T)] = subscribers + (fact => handler((T)fact));
+        }
 
         /// <summary>
         /// 发射一个事件；工厂收到<strong>本场唯一</strong>的事件序号。
@@ -66,6 +74,8 @@ namespace ProjectHero.Logic.Events
                 throw new ProjectHero.Logic.LogicDefinitionException(
                     "LOGIC_EVENT_FACTORY_RETURNED_NULL", "sequence=" + sequence);
             _current.Add(logicEvent);
+            if (_simulationSubscribers.TryGetValue(logicEvent.GetType(), out var subscribers))
+                subscribers(logicEvent);
         }
 
         /// <summary>Tick 末一次性对外可见；返回后缓冲清空，事件序号不回卷。</summary>

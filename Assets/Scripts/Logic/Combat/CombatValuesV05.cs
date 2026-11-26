@@ -82,7 +82,8 @@ namespace ProjectHero.Logic.Combat
             bool enabled = definition.AdrenalineRules?.UseCombatValuesV05 == true;
             if (enabled && (definition.RulesVersion != Version || definition.AdrenalineRules.Validate() != null)) return Invalid;
             foreach (var unit in definition.Units)
-                if (enabled != (unit.CombatAttributes != null) || UnitDefinitionValidation.Validate(unit) != null) return Invalid;
+                if ((enabled && unit.Traits.IsCombatant) != (unit.CombatAttributes != null)
+                    || UnitDefinitionValidation.Validate(unit) != null) return Invalid;
             foreach (var action in definition.Actions)
             {
                 if (action.Payload is AttackPayloadSpec attack && enabled != (attack.Strength != null)) return Invalid;

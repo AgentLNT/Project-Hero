@@ -52,7 +52,21 @@ namespace ProjectHero.Logic.Actions
         int MomentumDirectionOffsetSteps,
         AttackPatternSpec Pattern,
         AttackTagMask Tags,
-        Combat.AttackStrengthV05 Strength = null) : ActionPayloadSpec;
+        Combat.AttackStrengthV05 Strength = null) : ActionPayloadSpec
+    {
+        public AttackControlEffects ControlEffects { get; init; }
+        public int? ScalarImpactUnits { get; init; }
+    }
+
+    [Flags]
+    public enum AttackControlEffects
+    {
+        None = 0,
+        Displacement = 1,
+        Interrupt = 2,
+        Knockdown = 4,
+        All = Displacement | Interrupt | Knockdown
+    }
 
     /// <summary>
     /// Guard 载荷：分通道部分伤害抵抗 + 部分动量抵抗（各严格位于 [1,1023]），

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Commands;
+using ProjectHero.Logic.Factions;
 using ProjectHero.Logic.Ids;
+using ProjectHero.Logic.Resources;
 using ProjectHero.Logic.Snapshots;
 using TMPro;
 using UnityEngine;
@@ -16,7 +18,7 @@ namespace ProjectHero.UnityView
     {
         private sealed class Track
         {
-            public RectTransform Root, Chart, Draft, Allowed, Unknown, Divider;
+            public RectTransform Root, Chart, Draft, Allowed, Unknown, Divider, Knockdown;
             public TMP_Text Title;
             public UnityEngine.UI.LayoutElement Size;
         }
@@ -203,6 +205,10 @@ namespace ProjectHero.UnityView
                 long? horizon = model.HudPreviews?.KnownHorizonTick;
                 track.Unknown.gameObject.SetActive(group != 0 && horizon.HasValue);
                 if (horizon.HasValue) Interval(track.Unknown, horizon.Value, _startTick + (long)SpanTicks, 0, primary ? 64 : 32);
+                bool showKnockdown = unit.Knockdown != null && unit.StateEndTick > _startTick;
+                track.Knockdown.gameObject.SetActive(showKnockdown);
+                if (showKnockdown)
+                    Interval(track.Knockdown, Math.Max(unit.StateStartTick, _startTick), unit.StateEndTick, 0, primary ? 64 : 32);
                 track.Draft.gameObject.SetActive(primary);
                 foreach (var plan in _plans.Where(p => p.OwnerUnitId == unit.UnitId))
                 {
@@ -259,6 +265,10 @@ namespace ProjectHero.UnityView
             track.Chart.gameObject.AddComponent<UnityEngine.UI.RectMask2D>();
             track.Allowed = Rect(track.Chart, "StartAllowed"); Image(track.Allowed, new Color(.1f, .45f, .4f, .18f));
             track.Unknown = Rect(track.Chart, "Unknown"); Image(track.Unknown, new Color(.04f, .05f, .08f, .7f)); Text(Rect(track.Unknown, "Question"), "？未知", 14);
+            track.Knockdown = Rect(track.Chart, "Knockdown");
+            Image(track.Knockdown, new Color(.65f, .3f, .16f, .32f));
+            Text(Rect(track.Knockdown, "Label"), "倒地 · 右端起身", 12);
+            track.Knockdown.gameObject.SetActive(false);
             track.Draft = Rect(root, "DraftStrip"); Pixels(track.Draft, TitleWidth, 64, 0, 24); track.Draft.anchorMax = new Vector2(1, 1); track.Draft.offsetMax = new Vector2(0, -64); track.Draft.offsetMin = new Vector2(TitleWidth, -88);
             track.Draft.gameObject.AddComponent<UnityEngine.UI.RectMask2D>();
             return track;
@@ -283,20 +293,74 @@ namespace ProjectHero.UnityView
         }
         private void RefreshRoster()
         {
-            var ordered = _view.TrackSelection.Ordered(_view.Model.Decision, false);
+            var decision = _view.Model.Decision;
+            var ordered = _view.TrackSelection.Ordered(decision, false);
+            bool showThresholds = decision.Definition.AdrenalineRules.UseHealthThresholds;
             string key = string.Join(";", ordered.Select(u => u.UnitId + ":" + u.HealthQ10 + ":" + u.AvailableAdrenaline)) + ":" + _view.TrackSelection.Revision;
+            if (showThresholds) key += ":" + string.Join(";", _view.Model.Adrenaline.Select(ledger =>
+                ledger.UnitId + ":" + ledger.ReceivedThresholdClaims + ":" + string.Join(",",
+                    (ledger.DealtThresholdClaims ?? Array.Empty<AdrenalineTargetThresholdSnapshot>())
+                    .Select(claim => claim.TargetUnitId + ":" + claim.ClaimedThresholds))));
             if (key == _rosterKey) return; _rosterKey = key; Clear(_rosterButtons);
             TextEntry("单位 · 单击选择 / Ctrl 多选", 0, false, 0);
             int row = 1;
-            foreach (var unit in ordered) TextEntry((_view.TrackSelection.Contains(unit.UnitId) ? "[已选] " : "") + _view.UnitLabel(unit.UnitId)
-                + $"\nHP {unit.HealthQ10 / 1024d:0.#} · 肾上 {unit.AvailableAdrenaline}", row++, true, unit.UnitId);
+            foreach (var unit in ordered)
+            {
+                int points = unit.AvailableAdrenaline / decision.Definition.AdrenalineRules.UnitsPerPoint;
+                var entry = TextEntry((_view.TrackSelection.Contains(unit.UnitId) ? "[已选] " : "") + _view.UnitLabel(unit.UnitId)
+                    + $"\nHP {unit.HealthQ10 / 1024d:0.#} · 肾上 {points}", row++, true, unit.UnitId);
+                if (showThresholds) DrawThresholdBar(entry, unit, decision);
+            }
         }
-        private void TextEntry(string label, int index, bool button, long id)
+
+        private void DrawThresholdBar(RectTransform entry, UnitSnapshot unit, DecisionSnapshot decision)
+        {
+            float maximum = decision.Definition.FindUnit(new UnitDefinitionId(unit.DefinitionId))?.InitialHealth ?? 0;
+            if (maximum <= 0) return;
+            entry.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 56;
+            var label = (RectTransform)entry.Find("Label");
+            label.offsetMin = new Vector2(label.offsetMin.x, 12);
+            var bar = Rect(entry, "HealthBar");
+            Place(bar, 0, 0, 1, 0);
+            bar.offsetMin = new Vector2(6, 5);
+            bar.offsetMax = new Vector2(-6, 13);
+            Image(bar, new Color(.09f, .11f, .14f));
+            var fill = Rect(bar, "HealthFill");
+            Place(fill, 0, 0, Mathf.Clamp01(unit.HealthQ10 / (1024f * maximum)), 1);
+            Image(fill, new Color(.3f, .64f, .53f));
+
+            var ledgers = _view.Model.Adrenaline;
+            int received = ledgers.FirstOrDefault(ledger => ledger.UnitId == unit.UnitId)?.ReceivedThresholdClaims ?? 0;
+            DrawThresholdMarks(bar, AdrenalineThresholds.ReceivedPercentages, received, 0, .65f, Color.white, "Received");
+            var primary = new UnitId(_view.TrackSelection.Primary);
+            if (!decision.ControlledUnitIds.Contains(primary)
+                || decision.Classify(primary, new UnitId(unit.UnitId)) != UnitRelation.Hostile) return;
+            var attacker = ledgers.FirstOrDefault(ledger => ledger.UnitId == primary.Value);
+            int dealt = attacker?.DealtThresholdClaims?.FirstOrDefault(claim => claim.TargetUnitId == unit.UnitId)?.ClaimedThresholds ?? 0;
+            DrawThresholdMarks(bar, AdrenalineThresholds.DealtPercentages, dealt, .65f, 1, new Color(1, .68f, .3f), "Dealt");
+        }
+
+        private static void DrawThresholdMarks(RectTransform bar, IReadOnlyList<int> thresholds, int claims,
+            float bottom, float top, Color unclaimed, string kind)
+        {
+            for (int i = 0; i < thresholds.Count; i++)
+            {
+                var marker = Rect(bar, kind + "Threshold-" + thresholds[i]);
+                float position = thresholds[i] / 100f;
+                Place(marker, position, bottom, position, top);
+                marker.offsetMax = new Vector2(2, 0);
+                var color = (claims & (1 << i)) == 0 ? unclaimed : new Color(.32f, .38f, .43f);
+                Image(marker, color);
+            }
+        }
+
+        private RectTransform TextEntry(string label, int index, bool button, long id)
         {
             var rect = Rect(_roster, "Unit-" + id);
             rect.gameObject.AddComponent<UnityEngine.UI.LayoutElement>().preferredHeight = index == 0 ? 28 : 44;
             if (button) Button(rect, label, () => _view.SelectTrack(id, ControlPressed())); else Text(rect, label, 14);
             _rosterButtons.Add(rect.gameObject);
+            return rect;
         }
         public static bool ControlPressed() => UnityEngine.InputSystem.Keyboard.current?.ctrlKey.isPressed == true;
         private void ScrollPrimaryIntoView()
@@ -353,7 +417,10 @@ namespace ProjectHero.UnityView
                 else
                 {
                     var tag = Pixels(_overlay, "ContactTarget", x, -sy, 140, 22);
-                    long id = contact.TargetUnitId; Button(tag, "◆ " + _view.UnitLabel(id) + " +", () => _view.AddContactTrack(id)); _links.Add(tag.gameObject);
+                    long id = contact.TargetUnitId;
+                    if (_view.CanShowCombatTrack(id)) Button(tag, "◆ " + _view.UnitLabel(id) + " +", () => _view.AddContactTrack(id));
+                    else Button(tag, "◆ " + _view.UnitLabel(id), () => _view.SpatialView?.SelectContact(contact));
+                    _links.Add(tag.gameObject);
                 }
             }
             Line(_cursor, CursorTick, new Color(.3f, 1, .85f));

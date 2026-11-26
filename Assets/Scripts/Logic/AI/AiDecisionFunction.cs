@@ -164,9 +164,8 @@ namespace ProjectHero.Logic.AI
                 return null;
             }
 
-            // AI 对每个机会可以选择不响应 / Block / Dodge；首版评分只用稳定键顺序，
-            // 不做"完美命中时机"（时机恒由机会从来源 ImpactTick 统一推导）。
-            // 选中的**只会**是一条标准 ReactionCommand，经处理器 → ReactionPlanner。
+            // 从按稳定键排序的 Block / Dodge 中选择一条标准 ReactionCommand。
+            // 反应时机由机会从来源 ImpactTick 推导，提交后由 ReactionPlanner 校验。
             reason = null;
             return SelectReactionFromOrdered(ordered, rng, context.NextTick);
         }

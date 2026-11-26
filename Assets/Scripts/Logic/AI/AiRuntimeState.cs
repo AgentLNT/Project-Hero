@@ -141,7 +141,7 @@ namespace ProjectHero.Logic.AI
         long DecisionCount,
         long LastDecisionTick,
         long NextThinkTick,
-        RngSnapshot Rng, AiBehaviorMemory Behavior = null)
+        RngSnapshot Rng, AiBehaviorMemory Behavior = null, AiSamplingMemory SamplingMemory = null)
     {
         public override string ToString()
             => (ControllerId ?? "<null>") +

@@ -6,6 +6,9 @@ namespace ProjectHero.Logic.Combat
         RoundHalfUp = 0
     }
 
+    public sealed record ScalarImpactRules(int KnockdownSegmentTicks = 30, int MaxKnockdownSegments = 2,
+        int WallDamagePermille = 1000);
+
     public sealed record BattleRules(
         int TicksPerSecond,
         int ReferenceActionSpeed,
@@ -20,6 +23,9 @@ namespace ProjectHero.Logic.Combat
         int MaxAutomaticDeferralsPerPlan = BattleRules.FrozenMaxAutomaticDeferralsPerPlan,
         ForcedDisplacementRules ForcedDisplacementRules = null)
     {
+        public bool UseExplicitControlEffects { get; init; }
+        public ScalarImpactRules ScalarImpact { get; init; }
+
         public const string TICKS_PER_SECOND_INVALID = "TICKS_PER_SECOND_INVALID";
         public const string REFERENCE_ACTION_SPEED_INVALID = "REFERENCE_ACTION_SPEED_INVALID";
         public const string REFERENCE_MOVE_SPEED_INVALID = "REFERENCE_MOVE_SPEED_INVALID";
@@ -38,6 +44,7 @@ namespace ProjectHero.Logic.Combat
 
         public const int FrozenReferenceActionSpeed = 20;
         public const int FrozenReferenceMoveSpeed = 20;
+        public const int DefaultWalkBaseStepTicks = 12;
         public const int FrozenDefaultAttackRecoveryTicks = 30;
         public const int FrozenStaggerAutoRecoveryTicks = 30;
         public const int FrozenKnockdownAutoRecoveryTicks = 60;
@@ -71,6 +78,12 @@ namespace ProjectHero.Logic.Combat
                 ForcedDisplacementProtocolVersion.SimultaneousStepV1),
             ForcedDisplacementRules: ForcedDisplacementRules.FrozenV1);
 
+        public static readonly BattleRules WalkingDisplacementV2 = FrozenV1 with
+        {
+            ForcedDisplacementProtocolVersion = new ForcedDisplacementProtocolVersion(
+                ForcedDisplacementProtocolVersion.WalkingMomentumV2)
+        };
+
         /// <summary>
         /// 强制位移规则面（任务 08「必须产出」22）。<strong>null</strong> ⇒ 哈希与校验按
         /// <see cref="Combat.ForcedDisplacementRules.FrozenV1"/> 处理（保持既有
@@ -90,6 +103,13 @@ namespace ProjectHero.Logic.Combat
             if (KnockdownAutoRecoveryTicks < 0) return KNOCKDOWN_AUTO_RECOVERY_INVALID;
             if (MaxAutomaticDeferralsPerPlan < 0) return MAX_AUTOMATIC_DEFERRALS_INVALID;
             if (!ForcedDisplacementProtocolVersion.IsValid) return FORCED_DISPLACEMENT_PROTOCOL_INVALID;
+            if (ScalarImpact is { } impact
+                && (!UseExplicitControlEffects
+                    || ForcedDisplacementProtocolVersion.Value != Combat.ForcedDisplacementProtocolVersion.WalkingMomentumV2
+                    || impact.KnockdownSegmentTicks < 1
+                    || impact.MaxKnockdownSegments < 0
+                    || impact.WallDamagePermille < 0 || impact.WallDamagePermille > 1000))
+                return "SCALAR_IMPACT_RULES_INVALID";
             string displacementRulesError = EffectiveForcedDisplacementRules.Validate();
             if (displacementRulesError != null) return displacementRulesError;
             string pathCostError = PathCostRules == null ? PathCostRules.PATH_COST_WEIGHT_INVALID : PathCostRules.Validate();
@@ -106,6 +126,15 @@ namespace ProjectHero.Logic.Combat
             writer.Write("rules.tick_rounding_mode", TickRoundingMode.ToString() + ":" + (int)TickRoundingMode);
             writer.Write("rules.stagger_auto_recovery_ticks", StaggerAutoRecoveryTicks);
             writer.Write("rules.knockdown_auto_recovery_ticks", KnockdownAutoRecoveryTicks);
+            if (UseExplicitControlEffects)
+                writer.Write("rules.explicit_control_effects_version", 1);
+            if (ScalarImpact is { } impact)
+            {
+                writer.Write("rules.scalar_impact_version", 1);
+                writer.Write("rules.knockdown_segment_ticks", impact.KnockdownSegmentTicks);
+                writer.Write("rules.max_knockdown_segments", impact.MaxKnockdownSegments);
+                writer.Write("rules.wall_damage_permille", impact.WallDamagePermille);
+            }
             writer.Write("rules.full_block_resistance_q10", FullBlockResistanceQ10);
             writer.Write("rules.guard_initial_quota_q10", GuardInitialQuotaQ10);
             writer.Write("rules.guard_resistance_rounding", "FloorResistedQ10");

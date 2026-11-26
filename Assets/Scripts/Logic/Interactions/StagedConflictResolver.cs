@@ -355,14 +355,14 @@ namespace ProjectHero.Logic.Interactions
                     EmptyResistance(),
                     neutralControlResistance,
                     new[] { TargetAggregator.BuildDefendedContact(targetKey, intent.Momentum.Direction,
-                        intent.Momentum.MomentumUnits, components, intent.Tags, null, null) }));
+                        intent.Momentum.MomentumUnits, components, intent.Tags, null, null, intent.ControlEffects) }));
 
                 TargetAggregateResolution defended = TargetAggregator.Aggregate(new TargetAggregationInput(
                     defenderUnitId,
                     EmptyResistance(),
                     neutralControlResistance,
                     new[] { TargetAggregator.BuildDefendedContact(targetKey, intent.Momentum.Direction,
-                        intent.Momentum.MomentumUnits, components, intent.Tags, null, block) }));
+                        intent.Momentum.MomentumUnits, components, intent.Tags, null, block, intent.ControlEffects) }));
 
                 long raw = undefended.TotalDamageQ10;
                 long after = defended.TotalDamageQ10;
@@ -485,7 +485,10 @@ namespace ProjectHero.Logic.Interactions
                     CombatIntent intent = graph.Nodes[group.NodeIndices[n]].Intent;
                     if (intentsByPlan.ContainsKey(intent.ActionPlanId.Value))
                     {
-                        participants.Add(new ClashParticipant(intent.OwnerUnitId, intent.ActionPlanId, intent.Momentum));
+                        participants.Add(new ClashParticipant(intent.OwnerUnitId, intent.ActionPlanId, intent.Momentum)
+                        {
+                            AttackFacing = intent.Facing
+                        });
                         planIds.Add(intent.ActionPlanId.Value);
                     }
                 }
@@ -501,9 +504,10 @@ namespace ProjectHero.Logic.Interactions
 
                     CombatIntent left = intentsByPlan[key.FirstPlanId.Value];
                     CombatIntent right = intentsByPlan[key.SecondPlanId.Value];
-                    int distance = MomentumRuleTable.MinimalRingDistance(
-                        left.Momentum.Direction, right.Momentum.Direction);
-                    if (MomentumRuleTable.OppositionFactorQ10(distance) <= 0) continue;   // d ≤ 3 ⇒ 非有效
+                    bool scalarImpact = context.ScalarImpact != null;
+                    if (!MomentumRuleTable.IsEffectiveClashPair(
+                        scalarImpact ? left.Facing : left.Momentum.Direction,
+                        scalarImpact ? right.Facing : right.Momentum.Direction)) continue;
 
                     pairs.Add(new ClashPair(key.FirstPlanId, key.SecondPlanId));
                 }
@@ -562,7 +566,8 @@ namespace ProjectHero.Logic.Interactions
                     }
 
                     MomentumClashResolution clash = MomentumClashSolver.Solve(
-                        new MomentumClashInput(componentParticipants, componentPairs), context.ClashQuota);
+                        new MomentumClashInput(componentParticipants, componentPairs), context.ClashQuota,
+                        context.ScalarImpact != null);
                     results.Add(new ClashComponentResolution(group.GroupKey, clash));
                 }
             }
@@ -762,19 +767,28 @@ namespace ProjectHero.Logic.Interactions
                         : RequireBlockPayload(new Dictionary<string, BlockPayloadSpec>(StringComparer.Ordinal), context, hit.BlockPlanId);
                     if (guardPayload != null && factsByPlan.TryGetValue(hit.GuardPlanId.Value, out var quotaFacts))
                         guardPayload = GuardQuota.EffectivePayload(guardPayload, quotaFacts.DefenseQuotaRemainingQ10);
+                    var control = intentsByPlan[hit.AttackPlanId.Value].ControlEffects;
+                    if (!targetSnapshot.Traits.IsCombatant) control &= AttackControlEffects.Displacement;
                     inputs.Add(TargetAggregator.BuildDefendedContact(
                         new TargetContactKey(hit.ContactKind, hit.AttackerUnitId,
                             hit.AttackPlanId, targetUnitId, hit.RecipientPlanId.IsValid ? hit.RecipientPlanId
                                 : hit.BlockPlanId.IsValid ? hit.BlockPlanId : hit.GuardPlanId),
                         hit.IncomingDirection, hit.IncomingMomentumUnits,
-                        hit.DamageComponents, hit.AttackTags, guardPayload, blockPayload));
+                        hit.DamageComponents, hit.AttackTags, guardPayload, blockPayload,
+                        control));
                 }
 
                 TargetAggregateResolution aggregate = TargetAggregator.Aggregate(new TargetAggregationInput(
                     targetUnitId,
                     PassiveResistanceOf(definitionById, targetSnapshot),
                     ControlResistanceOf(definitionById, targetSnapshot),
-                    inputs));
+                    inputs)
+                {
+                    UseScalarImpact = context.ScalarImpact != null,
+                    CanReceiveControl = context.ScalarImpact == null
+                        || (targetSnapshot.StateValue != ProjectHero.Logic.Units.UnitState.KnockedDown
+                            && targetSnapshot.StateValue != ProjectHero.Logic.Units.UnitState.Staggered)
+                });
 
                 for (int i = 0; i < own.Count; i++)
                 {
@@ -842,7 +856,7 @@ namespace ProjectHero.Logic.Interactions
                     "unit definition missing for unit=" + snapshot.UnitId.ToString(CultureInfo.InvariantCulture)
                     + " definition=" + (snapshot.DefinitionId ?? string.Empty));
             }
-            return definition.CombatAttributes?.StabilityQ10
+            return definition.ScalarControlResistanceUnits ?? definition.CombatAttributes?.StabilityQ10
                 ?? MomentumQuantizer.QuantizeControlResistanceUnits(definition.Mass, definition.MomentumSpeed);
         }
 

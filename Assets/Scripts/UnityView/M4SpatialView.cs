@@ -39,7 +39,8 @@ namespace ProjectHero.UnityView
         {
             if (_view.Clock.State != BattleClockState.TacticalPlanning || _view.ResumeChoiceVisible) return;
             SelectedContact = contact; _key = null;
-            _view.TrackSelection.AddTemporary(contact.OwnerUnitId); _view.TrackSelection.AddTemporary(contact.TargetUnitId);
+            if (_view.CanShowCombatTrack(contact.OwnerUnitId)) _view.TrackSelection.AddTemporary(contact.OwnerUnitId);
+            if (_view.CanShowCombatTrack(contact.TargetUnitId)) _view.TrackSelection.AddTemporary(contact.TargetUnitId);
             _view.TimelineView.FocusTick(contact.Tick); SetCursor(contact.Tick);
         }
 
@@ -150,7 +151,8 @@ namespace ProjectHero.UnityView
                     path.Add(from); path.Add(to); path.Add(to); path.Add(to - direction * .3f + side); path.Add(to); path.Add(to - direction * .3f - side);
                 }
                 if (own) for (int i = 1; i < unit.Path.Count; i++) { path.Add(Vertex(unit.Path[i - 1])); path.Add(Vertex(unit.Path[i])); }
-                if (!Following) WorldLabel(unit.Position, _view.UnitLabel(unit.UnitId) + (unit.IsUnknown ? " · ？未知" : " · 计划位置"));
+                if (!Following && _view.CanShowCombatTrack(unit.UnitId))
+                    WorldLabel(unit.Position, _view.UnitLabel(unit.UnitId) + (unit.IsUnknown ? " · ？未知" : " · 计划位置"));
             }
             foreach (var attack in Preview.Attacks)
             {

@@ -61,7 +61,8 @@ namespace ProjectHero.Logic.Interactions
         IReadOnlyList<DamageComponentSpec> DamageComponents,
         MomentumPacket Momentum,
         int MomentumDirectionOffsetSteps,
-        WindowId? SubmittedWindowId);
+        WindowId? SubmittedWindowId,
+        AttackControlEffects ControlEffects = AttackControlEffects.All);
 
     /// <summary>
     /// 不含 Unity 引用的<strong>攻击 Intent 值数据</strong>（任务 08「必须产出」1）。
@@ -100,7 +101,8 @@ namespace ProjectHero.Logic.Interactions
             DamageComponentSpec[] damageComponents,
             MomentumPacket momentum,
             int momentumDirectionOffsetSteps,
-            WindowId? submittedWindowId)
+            WindowId? submittedWindowId,
+            AttackControlEffects controlEffects)
         {
             ActionPlanId = actionPlanId;
             ActionSpecId = actionSpecId;
@@ -118,6 +120,7 @@ namespace ProjectHero.Logic.Interactions
             Momentum = momentum;
             MomentumDirectionOffsetSteps = momentumDirectionOffsetSteps;
             SubmittedWindowId = submittedWindowId;
+            ControlEffects = controlEffects;
         }
 
         /// <summary>产生该 Intent 的计划（唯一性契约的键之一）。</summary>
@@ -170,6 +173,7 @@ namespace ProjectHero.Logic.Interactions
 
         /// <summary>动量方向偏移步数（审计与哈希用；已体现在 <see cref="Momentum"/> 的方向里）。</summary>
         public int MomentumDirectionOffsetSteps { get; }
+        internal AttackControlEffects ControlEffects { get; }
 
         /// <summary>
         /// 提交窗口（<strong>审计字段</strong>）。
@@ -347,7 +351,8 @@ namespace ProjectHero.Logic.Interactions
                 damage,
                 request.Momentum,
                 request.MomentumDirectionOffsetSteps,
-                request.SubmittedWindowId);
+                request.SubmittedWindowId,
+                request.ControlEffects);
         }
 
         /// <summary>
@@ -368,7 +373,8 @@ namespace ProjectHero.Logic.Interactions
             long intentSequence,
             MomentumPacket momentum,
             int momentumDirectionOffsetSteps,
-            WindowId? submittedWindowId)
+            WindowId? submittedWindowId,
+            bool useExplicitControlEffects = false)
         {
             if (facts == null) throw new ArgumentNullException(nameof(facts));
             if (payload == null) throw new ArgumentNullException(nameof(payload));
@@ -392,7 +398,8 @@ namespace ProjectHero.Logic.Interactions
                 payload.DamageComponents,
                 momentum,
                 momentumDirectionOffsetSteps,
-                submittedWindowId));
+                submittedWindowId,
+                useExplicitControlEffects ? payload.ControlEffects : AttackControlEffects.All));
         }
 
         /// <summary>

@@ -100,7 +100,7 @@ namespace ProjectHero.Logic.Snapshots
                     intent.Momentum.ImpactProfileId.Value),
                 // 区域点集来自唯一规范化助手（查表 + 整数平移 + 升序去重），这里只是再冻结一份只读拷贝。
                 Freeze(InteractionCollections.CanonicalTriangles(intent.AreaPoints)),
-                Freeze(damage));
+                Freeze(damage)) { ControlEffects = intent.ControlEffects };
         }
 
         /// <summary>

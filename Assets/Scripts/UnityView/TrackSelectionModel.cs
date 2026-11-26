@@ -42,7 +42,7 @@ namespace ProjectHero.UnityView
         public void SyncTemporary(IEnumerable<long> active)
         { var keep = new HashSet<long>(active); foreach (long id in _temporary.ToArray()) if (!keep.Contains(id)) Remove(id); }
         public void Prune(DecisionSnapshot decision)
-        { var alive = new HashSet<long>(decision.VisibleUnits.Where(u => u.IsAlive).Select(u => u.UnitId)); foreach (long id in _selected.ToArray()) if (!alive.Contains(id)) Remove(id); }
+        { var alive = new HashSet<long>(decision.VisibleUnits.Where(u => u.IsAlive && u.Traits.IsCombatant).Select(u => u.UnitId)); foreach (long id in _selected.ToArray()) if (!alive.Contains(id)) Remove(id); }
         public IReadOnlyList<UnitSnapshot> Ordered(DecisionSnapshot decision, bool selectedOnly = true)
             => Layout.Order(decision, id => !selectedOnly || Contains(id));
         public void Cycle(DecisionSnapshot decision, bool reverse)

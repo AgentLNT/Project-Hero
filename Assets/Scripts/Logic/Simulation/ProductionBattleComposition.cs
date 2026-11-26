@@ -40,8 +40,11 @@ namespace ProjectHero.Logic.Simulation
             var speed = _speed;
             foreach (var slot in _encounter.Slots)
             {
-                UnitId id = initial.SlotToUnitId[slot.SlotId]; _order.Add(id);
-                speed.Add(id.Value, definition.FindUnit(slot.DefinitionId).ActionSpeed);
+                var unit = definition.FindUnit(slot.DefinitionId);
+                if (unit.Traits.Control == UnitControl.Passive) continue;
+                UnitId id = initial.SlotToUnitId[slot.SlotId];
+                _order.Add(id);
+                speed.Add(id.Value, unit.ActionSpeed);
             }
             _order.Sort((a, b) =>
             {
@@ -67,6 +70,7 @@ namespace ProjectHero.Logic.Simulation
 
         internal void RegisterCreatedUnit(UnitId id, UnitDefinition definition, ControllerId controller)
         {
+            if (definition.Traits.Control == UnitControl.Passive) return;
             _order.Add(id); _speed.Add(id.Value, definition.ActionSpeed);
             foreach (var binding in _encounter.Controllers)
                 if (binding.ControllerId == controller && binding.SourceKind == CommandSourceKind.Player)

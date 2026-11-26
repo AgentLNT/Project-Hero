@@ -19,7 +19,8 @@ namespace ProjectHero.Logic.Experiments
 {
     public enum AiPolicySituation { OpenAttack, VisibleThreat, Approach, GuardOnly, FundedReaction, UnfundedReaction, AlignedClash, EarlyInterrupt }
     public sealed record AiPolicyExperimentInput(AiPolicyKind Policy, AiPolicySituation Situation,
-        ulong Seed = 31, bool SwapSpawns = false, int MaxTicks = 160);
+        ulong Seed = 31, bool SwapSpawns = false, int MaxTicks = 160, AiSamplingSettings Sampling = null,AiShortPlanSettings ShortPlans = null,
+        int ApproachDistance=14,AiContinuationSettings Continuations=null);
     public sealed record AiPolicyExperimentResult(AiPolicyExperimentInput Input, BattleDefinition Definition,
         IReadOnlyList<AiDecision> Decisions, IReadOnlyList<LogicEvent> Events, BattleReplay Replay, IReadOnlyList<UnitSnapshot> FinalUnits);
 
@@ -33,7 +34,7 @@ namespace ProjectHero.Logic.Experiments
             var encounter = d.Encounters[0];
             var slots = encounter.Slots.ToArray();
             if (input.Situation == AiPolicySituation.Approach)
-                slots[1] = slots[1] with { InitialPosition = new GridPoint(14, 0) };
+                slots[1] = slots[1] with { InitialPosition = new GridPoint(input.ApproachDistance, 0) };
             if (input.SwapSpawns)
             {
                 var position = slots[0].InitialPosition;
@@ -41,7 +42,8 @@ namespace ProjectHero.Logic.Experiments
                 slots[1] = slots[1] with { InitialPosition = position };
             }
             var controllers = encounter.Controllers.Select(c => c.ControllerId == CombatExperimentDefinition.Controller(1)
-                ? c with { SourceKind = CommandSourceKind.Ai, AiPolicy = input.Policy } : c).ToArray();
+                ? c with { SourceKind = CommandSourceKind.Ai, AiPolicy = input.Policy,
+                    AiForecast = input.Sampling == null ? null : new AiForecastSettings(360, true, true, input.Sampling,input.ShortPlans,input.Continuations) } : c).ToArray();
             var permitted = input.Situation == AiPolicySituation.GuardOnly ? new[] { "guard" }
                 : input.Situation == AiPolicySituation.FundedReaction || input.Situation == AiPolicySituation.UnfundedReaction ? new[] { "block", "dodge" }
                 : new[] { "quick", "probe_blunt", "heavy", "guard", "move", "block", "dodge" };

@@ -24,6 +24,7 @@ namespace ProjectHero.Logic.Actions
         public const string ATTACK_TARGET_RELATION_MASK_EMPTY = "ATTACK_TARGET_RELATION_MASK_EMPTY";
         public const string ATTACK_TARGET_RELATION_MASK_INVALID = "ATTACK_TARGET_RELATION_MASK_INVALID";
         public const string ATTACK_TAGS_INVALID = "ATTACK_TAGS_INVALID";
+        public const string ATTACK_CONTROL_EFFECTS_INVALID = "ATTACK_CONTROL_EFFECTS_INVALID";
         public const string ATTACK_PATTERN_INVALID = "ATTACK_PATTERN_INVALID";
         public const string GUARD_TIMING_INVALID = "GUARD_TIMING_INVALID";
         public const string GUARD_RESISTANCE_MUST_BE_PARTIAL = "GUARD_RESISTANCE_MUST_BE_PARTIAL";
@@ -106,6 +107,13 @@ namespace ProjectHero.Logic.Actions
 
             var timing = (AttackTimingSpec)spec.Timing;
             var payload = (AttackPayloadSpec)spec.Payload;
+
+            if ((payload.ControlEffects & ~AttackControlEffects.All) != 0)
+                return ActionDefinitionCodes.ATTACK_CONTROL_EFFECTS_INVALID;
+            if (payload.ScalarImpactUnits is int impact
+                && (payload.Strength != null || impact <= 0
+                    || impact > Combat.MomentumLimits.MaxMomentumUnitsPerIntent))
+                return Combat.MomentumCodes.MOMENTUM_OUT_OF_RANGE;
 
             if (timing.BaseWindupTicks <= 0 || timing.RecoveryTicks <= 0)
                 return ActionDefinitionCodes.ATTACK_TIMING_OUT_OF_RANGE;
@@ -266,10 +274,12 @@ namespace ProjectHero.Logic.Actions
 
             string costError = ValidateAdrenalineCost(spec);
             if (costError != null) return costError;
-
             switch (spec.Type)
             {
                 case ActionType.Attack:
+                    if (rules != null && !rules.UseExplicitControlEffects
+                        && ((AttackPayloadSpec)spec.Payload).ControlEffects != AttackControlEffects.None)
+                        return ActionDefinitionCodes.ATTACK_CONTROL_EFFECTS_INVALID;
                     if (actionSpeed.HasValue)
                     {
                         string speedError = ValidateAttackSpeed(actionSpeed.Value);

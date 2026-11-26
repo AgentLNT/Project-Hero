@@ -52,7 +52,8 @@ namespace ProjectHero.UnityView
         {
             if (cue.Kind == "BattleEnded")
             { if (EndFeedbackCount++ == 0 && _audio != null) _audio.PlayOneShot(_end); return; }
-            bool impact = cue.Fact is DamageChannelResolvedEvent damage && damage.AfterBlockDamageQ10 > 0;
+            bool impact = cue.Fact is DamageChannelResolvedEvent damage && damage.AfterBlockDamageQ10 > 0
+                || cue.Fact is WallImpactDamageEvent wall && wall.AppliedDamageQ10 > 0;
             bool defense = cue.Kind == "DodgeSuccess" || cue.Kind == "BlockResolved" || cue.Kind == "Guard" || cue.Kind == "Clash";
             if (_registry.TryGetView(cue.UnitId, out var view)) view.PlayFeedback(cue.Kind);
             if (_audio != null && (impact || defense)) _audio.PlayOneShot(impact ? _hit : _defense);

@@ -36,6 +36,8 @@ namespace ProjectHero.UnityView
                 cue = new CombatFeedbackCue("DodgeSuccess", dodge.DefenderUnitId.Value, dodge.DodgePlanId.Value, fact);
             else if (fact is DamageChannelResolvedEvent damage)
                 cue = new CombatFeedbackCue("Damage", damage.TargetUnitId.Value, damage.AttackPlanId.Value, fact);
+            else if (fact is WallImpactDamageEvent impact)
+                cue = new CombatFeedbackCue("WallImpact", impact.TargetUnitId.Value, impact.SourcePlanId.Value, fact);
             else if (fact is BlockResolvedEvent block)
                 cue = new CombatFeedbackCue("BlockResolved", block.DefenderUnitId.Value, block.BlockPlanId.Value, fact);
             else if (fact is GuardPartiallyResistedEvent guard)
@@ -47,6 +49,8 @@ namespace ProjectHero.UnityView
                     displacement.TargetUnitId.Value, 0, fact);
             else if (fact is UnitStateChangedEvent state)
                 cue = new CombatFeedbackCue("StateChanged", state.UnitId.Value, 0, fact);
+            else if (fact is ActionPlanTerminatedEvent terminated && terminated.Reason == (int)ActionTerminationReason.InterruptedByControl)
+                cue = new CombatFeedbackCue("Interrupted", terminated.OwnerUnitId, terminated.ActionPlanId, fact);
             else if (fact is BattleEndedEvent && BattleEndFeedbackCount++ == 0)
                 cue = new CombatFeedbackCue("BattleEnded", 0, 0, fact);
             if (cue != null) FeedbackRequested?.Invoke(cue);

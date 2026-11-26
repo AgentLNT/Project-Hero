@@ -229,6 +229,7 @@ namespace ProjectHero.Logic.AI
                 state.NextThinkTick = nextTick;
                 state.LastDecision = decision;
                 state.Behavior = decision.Behavior;
+                state.SamplingMemory = decision.SamplingMemory;
                 _decisions.Add(decision);
                 if (_decisions.Count > MaximumDiagnosticDecisions) _decisions.RemoveAt(0);
             }
@@ -290,6 +291,7 @@ namespace ProjectHero.Logic.AI
             => AiDecisionContextFactory.Build(
                 snapshot, controllerId, _opportunities, _planLookup, _pathCalculator) with
                 { NormalPreview = _normalPreview, ForecastFactory = _forecastFactory,
+                    SamplingMemory = _states.TryGetValue(controllerId.Value ?? "", out var state) ? state.SamplingMemory : null,
                     ForecastSettings = _forecastSettings.TryGetValue(controllerId.Value ?? "", out var settings) ? settings : null };
 
         /// <summary>诊断文本（不参与逻辑与哈希）。</summary>

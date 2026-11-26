@@ -55,7 +55,7 @@ namespace ProjectHero.UnityView
         public void ConfigureBody(Transform body, Animator animator) { _bodyVisual = body; _animator = animator; }
         public void PlayFeedback(string kind)
         {
-            if (kind == "Damage" || kind == "Clash") _bounceRemaining = .12f;
+            if (kind == "Damage" || kind == "Clash" || kind == "WallImpact" || kind == "Interrupted") _bounceRemaining = .12f;
             if (_animator != null && _animationTriggers.Contains(kind)) _animator.SetTrigger(kind);
         }
 

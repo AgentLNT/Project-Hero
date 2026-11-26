@@ -10,7 +10,7 @@ namespace ProjectHero.Logic.AI
 {
     public sealed record AiApproachChoice(AiTacticalCandidate Candidate, string Reason);
 
-    /// <summary>Stateless, opt-in engagement goal after ordinary utility chooses Wait.</summary>
+    /// <summary>Stateless, opt-in engagement goal for ordinary candidates with low utility.</summary>
     public static class AiApproachPolicy
     {
         public const string Version = "public-unthreatened-approach-v1";

@@ -384,7 +384,8 @@ namespace ProjectHero.Authoring
                 string unitError = UnitDefinitionValidation.Validate(unit);
                 if (unitError != null) errors.Add(unitError, origin, "unit");
 
-                if (actionSets == null || !actionSets.ContainsKey(unit.ActionSetId.Value ?? string.Empty))
+                if (unit.Traits.Control != UnitControl.Passive
+                    && (actionSets == null || !actionSets.ContainsKey(unit.ActionSetId.Value ?? string.Empty)))
                     errors.Add(DefinitionCodes.DEFINITION_REFERENCE_DANGLING,
                         "action_set:" + (unit.ActionSetId.Value ?? "<null>"), origin);
 

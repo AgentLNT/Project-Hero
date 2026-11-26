@@ -138,6 +138,7 @@ namespace ProjectHero.Logic.Simulation
             for (int i = 0; i < units.Count; i++)
             {
                 UnitSnapshot unit = units[i];
+                if (!unit.Traits.IsCombatant) continue;
                 if (Contains(victory.AlliedFactionIds, unit.FactionId))
                 {
                     sawAllied = true;
@@ -217,7 +218,11 @@ namespace ProjectHero.Logic.Simulation
         GridDirection Direction,
         int RequestedSteps,
         long MomentumUnits,
-        long ConflictGroupKey);
+        long ConflictGroupKey)
+    {
+        public int ControlResistanceUnits { get; init; }
+        public ActionPlanId SourcePlanId { get; init; }
+    }
 
     /// <summary>
     /// 阶段 12 同时求解出的单个单位结果（只读值，含零步结果）。

@@ -50,6 +50,13 @@ namespace ProjectHero.Logic.Replay
         }
 
         public static BattleReplay Load(Stream stream, BattleDefinition definition)
+            => LoadCore(stream, definition, allowPriorRules: false, out _);
+
+        public static BattleReplay Load(Stream stream, BattleDefinition definition, out BattleDefinition matchedDefinition)
+            => LoadCore(stream, definition, allowPriorRules: true, out matchedDefinition);
+
+        private static BattleReplay LoadCore(Stream stream, BattleDefinition definition, bool allowPriorRules,
+            out BattleDefinition matchedDefinition)
         {
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
             {
@@ -60,6 +67,14 @@ namespace ProjectHero.Logic.Replay
                 var header = new ReplayHeader(version, reader.ReadString(), reader.ReadString(), reader.ReadInt32(),
                     new EncounterDefinitionId(reader.ReadString()), new BattleRuntimeInputs(reader.ReadUInt64(), reader.ReadInt32()), reader.ReadUInt64());
                 string error = ReplayHeaderValidation.Validate(header, definition);
+                matchedDefinition = definition;
+                for (var prior = definition?.PriorReplayDefinition; error != null && allowPriorRules && prior != null;
+                    prior = prior.PriorReplayDefinition)
+                {
+                    if (ReplayHeaderValidation.Validate(header, prior) != null) continue;
+                    matchedDefinition = prior;
+                    error = null;
+                }
                 if (error != null) throw new LogicDefinitionException(error, "");
                 int count = ReadCount(reader);
                 var submissions = new ReplaySubmission[count];

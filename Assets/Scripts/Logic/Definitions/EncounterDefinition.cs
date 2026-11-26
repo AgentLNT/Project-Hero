@@ -113,9 +113,21 @@ namespace ProjectHero.Logic.Definitions
         TurnSubmissionDefinition TurnSubmission = null,
         IReadOnlyList<DynamicUnitSpawnDefinition> DynamicSpawns = null)
     {
+        public IReadOnlyList<GridPoint> StaticWalls { get; init; }
+
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
             writer.Write("encounter.id", EncounterId.Value ?? string.Empty);
+            if (StaticWalls != null && StaticWalls.Count > 0)
+            {
+                var cells = new List<GridPoint>(new HashSet<GridPoint>(StaticWalls));
+                cells.Sort();
+                foreach (var cell in cells)
+                {
+                    writer.Write("encounter.wall.x", cell.X);
+                    writer.Write("encounter.wall.y", cell.Y);
+                }
+            }
             if (DynamicSpawns != null && DynamicSpawns.Count > 0)
             {
                 var spawns = new List<DynamicUnitSpawnDefinition>(DynamicSpawns);

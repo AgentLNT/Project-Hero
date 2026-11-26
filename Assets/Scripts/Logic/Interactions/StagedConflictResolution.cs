@@ -374,5 +374,6 @@ namespace ProjectHero.Logic.Interactions
 
         /// <summary>Clash 配额（数值与错误码由构图侧持有）。</summary>
         public MomentumClashQuota ClashQuota { get; }
+        public ScalarImpactRules ScalarImpact { get; init; }
     }
 }

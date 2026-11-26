@@ -18,12 +18,21 @@ namespace ProjectHero.Logic.Snapshots
         GridPoint Origin, GridDirection Facing, IReadOnlyList<TrianglePoint> Area, bool IsDraft);
     public sealed record SpatialPreview(long Tick, long? KnownHorizonTick, string RejectionCode,
         IReadOnlyList<SpatialUnitPreview> Units, IReadOnlyList<SpatialAttackPreview> Attacks);
-    public sealed record AttackDamagePreview(long PlanId, long TemporaryPlanKey, long TargetUnitId, long Tick, long DamageQ10);
+    public sealed record AttackDamagePreview(long PlanId, long TemporaryPlanKey, long TargetUnitId, long Tick, long DamageQ10)
+    {
+        public bool IsWallImpact { get; init; }
+    }
     public sealed record KnockbackPreview(long Tick, long TargetUnitId, GridPoint From, GridPoint To,
         GridDirection Direction, int RequestedSteps, int AppliedSteps, ForcedDisplacementStopReason StopReason,
         IReadOnlyList<long> SourcePlanIds, IReadOnlyList<long> TemporaryPlanKeys);
+    public sealed record ControlPreview(long Tick, long TargetUnitId, long ImpactUnits, long? RiseTick,
+        IReadOnlyList<long> TemporaryPlanKeys);
     public sealed record SpatialResultsPreview(string RejectionCode, long? KnownHorizonTick,
-        IReadOnlyList<AttackDamagePreview> Damage, IReadOnlyList<KnockbackPreview> Knockbacks, IReadOnlyList<TimelineContactPreview> Contacts);
+        IReadOnlyList<AttackDamagePreview> Damage, IReadOnlyList<KnockbackPreview> Knockbacks, IReadOnlyList<TimelineContactPreview> Contacts)
+    {
+        public IReadOnlyList<AdrenalineThresholdRewardEvent> AdrenalineRewards { get; init; } = Array.Empty<AdrenalineThresholdRewardEvent>();
+        public IReadOnlyList<ControlPreview> Controls { get; init; } = Array.Empty<ControlPreview>();
+    }
 
     public sealed partial class HudPreviewService
     {
@@ -121,19 +130,49 @@ namespace ProjectHero.Logic.Snapshots
             using var world = _fork(); var temporary = new Dictionary<long, long>();
             string error = ApplyPlacements(world, operations, reactions, temporary);
             var damage = new List<AttackDamagePreview>(); var knockbacks = new List<KnockbackPreview>();
+            var rewards = new List<AdrenalineThresholdRewardEvent>();
+            var controls = new List<ControlPreview>();
             if (error != null) return _spatialResults = new SpatialResultsPreview(error, KnownHorizonTick, damage.AsReadOnly(), knockbacks.AsReadOnly(), Array.Empty<TimelineContactPreview>());
             long last = world.ScheduleAuthority.Registry.ActivePlans.Where(p => p.ActionType == ActionType.Attack).Select(p => p.ImpactTick).DefaultIfEmpty(Decision.Tick).Max();
-            long end = Math.Min(last, Math.Min(KnownHorizonTick.HasValue ? KnownHorizonTick.Value - 1 : Decision.Tick + 3600, Decision.Tick + 3600));
-            while (!world.IsEnded && world.Tick < end)
+            long limit = Math.Min(KnownHorizonTick.HasValue ? KnownHorizonTick.Value - 1 : Decision.Tick + 3600, Decision.Tick + 3600);
+            var motions = world.CurrentSnapshot.Units.Where(u => u.ForcedMotion != null)
+                .ToDictionary(u => u.UnitId, u => u.ForcedMotion);
+            while (!world.IsEnded && world.Tick < limit && (world.Tick < last || motions.Count > 0))
             {
                 var result = Step(world);
+                if (Decision.Definition.Rules.ScalarImpact != null && world.StagedResolution is { Failed: false } resolution)
+                {
+                    foreach (var aggregate in resolution.Aggregations)
+                    {
+                        long target = aggregate.TargetUnitId.Value;
+                        var unit = result.Snapshot.Units.First(u => u.UnitId == target);
+                        bool down = aggregate.IsKnockedDown && unit.Knockdown != null;
+                        bool interrupted = aggregate.IsStaggered && result.Events.EventsInSequenceOrder
+                            .OfType<ActionPlanTerminatedEvent>().Any(e => e.OwnerUnitId == target
+                                && e.Reason == (int)ActionTerminationReason.InterruptedByControl);
+                        if (!down && !interrupted) continue;
+                        var controlType = down ? AttackControlEffects.Knockdown : AttackControlEffects.Interrupt;
+                        var keys = aggregate.Contacts.Where(c => c.AfterMomentumResistanceUnits > 0
+                                && (c.ScalarControls & controlType) != 0)
+                            .Select(c => c.Key.SourceActionPlanId).Distinct().Where(temporary.ContainsKey)
+                            .Select(id => temporary[id]).ToArray();
+                        controls.Add(new ControlPreview(result.Snapshot.Tick, target,
+                            down ? aggregate.KnockdownImpactUnits : aggregate.InterruptImpactUnits,
+                            down ? (long?)unit.StateEndTick : null, keys));
+                    }
+                }
                 var hits = result.Events.EventsInSequenceOrder.OfType<DamageChannelResolvedEvent>().ToArray();
                 foreach (var hit in hits)
                     damage.Add(new AttackDamagePreview(hit.AttackPlanId.Value, temporary.TryGetValue(hit.AttackPlanId.Value, out long key) ? key : 0,
                         hit.TargetUnitId.Value, hit.Tick, hit.AfterBlockDamageQ10));
+                foreach (var impact in result.Events.EventsInSequenceOrder.OfType<WallImpactDamageEvent>())
+                    damage.Add(new AttackDamagePreview(impact.SourcePlanId.Value, temporary.GetValueOrDefault(impact.SourcePlanId.Value),
+                        impact.TargetUnitId.Value, impact.Tick, impact.AppliedDamageQ10) { IsWallImpact = true });
                 foreach (var displacement in result.Events.EventsInSequenceOrder.OfType<ForcedDisplacementResolvedEvent>())
                 {
-                    var sources = hits.Where(h => h.TargetUnitId == displacement.TargetUnitId && h.AfterMomentumResistanceUnits > 0).Select(h => h.AttackPlanId.Value)
+                    var sources = motions.TryGetValue(displacement.TargetUnitId.Value, out var motion) && motion.SourcePlanId.IsValid
+                        ? new[] { motion.SourcePlanId.Value }
+                        : hits.Where(h => h.TargetUnitId == displacement.TargetUnitId && h.AfterMomentumResistanceUnits > 0).Select(h => h.AttackPlanId.Value)
                         .Concat(result.Events.EventsInSequenceOrder.OfType<ClashResidualImpactResolvedEvent>()
                             .Where(c => c.RecipientUnitId == displacement.TargetUnitId && c.ResidualMomentumUnits > 0).Select(c => c.SourceActionPlanId.Value))
                         .Distinct().OrderBy(id => id).ToArray();
@@ -141,9 +180,19 @@ namespace ProjectHero.Logic.Snapshots
                         displacement.Direction, displacement.RequestedSteps, displacement.AppliedSteps, displacement.StopReason, sources,
                         sources.Where(temporary.ContainsKey).Select(id => temporary[id]).ToArray()));
                 }
+                foreach (var fact in result.Events.EventsInSequenceOrder)
+                {
+                    if (fact is ForcedDisplacementEndedEvent ended) motions.Remove(ended.TargetUnitId.Value);
+                    if (fact is ForcedDisplacementStartedEvent started) motions[started.TargetUnitId.Value] = started.Motion;
+                    if (fact is AdrenalineThresholdRewardEvent reward) rewards.Add(reward);
+                }
             }
             return _spatialResults = new SpatialResultsPreview(null, KnownHorizonTick, damage.AsReadOnly(), knockbacks.AsReadOnly(),
-                PreviewTimelineContacts(operations, reactions).Contacts);
+                PreviewTimelineContacts(operations, reactions).Contacts)
+            {
+                AdrenalineRewards = rewards.AsReadOnly(),
+                Controls = controls.AsReadOnly()
+            };
         }
     }
 }

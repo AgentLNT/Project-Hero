@@ -74,7 +74,11 @@ namespace ProjectHero.Logic.Snapshots
             var ledgers = new List<AdrenalineLedgerSnapshot>();
             if (adrenalineLedgers != null)
                 foreach (var ledger in adrenalineLedgers)
-                    ledgers.Add(ledger with { Reservations = Freeze(ledger.Reservations) });
+                    ledgers.Add(ledger with
+                    {
+                        Reservations = Freeze(ledger.Reservations),
+                        DealtThresholdClaims = ledger.DealtThresholdClaims == null ? null : Freeze(ledger.DealtThresholdClaims)
+                    });
             else
                 foreach (var unit in VisibleUnits)
                     ledgers.Add(new AdrenalineLedgerSnapshot(unit.UnitId, unit.AvailableAdrenaline,

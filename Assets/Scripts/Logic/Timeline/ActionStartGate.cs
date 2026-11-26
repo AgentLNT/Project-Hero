@@ -123,7 +123,8 @@ namespace ProjectHero.Logic.Timeline
             ActionPlanFactory factory,
             int maxAutomaticDeferralsPerPlan,
             Func<UnitId, bool> isActorAvailable = null,
-            Func<UnitId, long?> spaceBlockUntilTickOf = null)
+            Func<UnitId, long?> spaceBlockUntilTickOf = null,
+            Func<UnitId, long?> forcedMovementBlockUntilTickOf = null)
         {
             Tick = tick;
             BlockingUntilTickOf = blockingUntilTickOf ?? (_ => null);
@@ -132,6 +133,7 @@ namespace ProjectHero.Logic.Timeline
             MaxAutomaticDeferralsPerPlan = maxAutomaticDeferralsPerPlan;
             IsActorAvailable = isActorAvailable ?? (_ => true);
             SpaceBlockUntilTickOf = spaceBlockUntilTickOf ?? (_ => null);
+            ForcedMovementBlockUntilTickOf = forcedMovementBlockUntilTickOf ?? (_ => null);
         }
 
         /// <summary>本 Tick（命令目标 Tick）。门禁只评估 <c>StartTick == Tick</c> 的到期计划。</summary>
@@ -147,6 +149,7 @@ namespace ProjectHero.Logic.Timeline
 
         /// <summary>任务 06 的限时空间阻塞（返回 null = 无空间阻塞）。</summary>
         public Func<UnitId, long?> SpaceBlockUntilTickOf { get; }
+        public Func<UnitId, long?> ForcedMovementBlockUntilTickOf { get; }
 
         public Func<UnitId, bool> IsActorAvailable { get; }
 
@@ -221,6 +224,9 @@ namespace ProjectHero.Logic.Timeline
             // —— 临时阻塞：只有带有限结束 Tick 的阻塞才可延期 ——
             long? controlBlock = context.BlockingUntilTickOf(plan.OwnerUnitId);
             long? spaceBlock = context.SpaceBlockUntilTickOf(plan.OwnerUnitId);
+            if (plan.ActionType == ActionType.Move && context.ForcedMovementBlockUntilTickOf(plan.OwnerUnitId) is long movementBlock
+                && (!spaceBlock.HasValue || movementBlock > spaceBlock.Value))
+                spaceBlock = movementBlock;
             bool actorAvailable = context.IsActorAvailable(plan.OwnerUnitId);
 
             ActionStartBlockerReason blocker = ActionStartBlockerReason.None;

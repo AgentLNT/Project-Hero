@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ProjectHero.Authoring.Compatibility;
 using ProjectHero.Authoring.Legacy;
 using ProjectHero.Logic;
+using ProjectHero.Logic.AI;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Damage;
@@ -32,10 +34,49 @@ namespace ProjectHero.Authoring
     /// 改变输入枚举顺序不会改变定义、错误列表或哈希。</item>
     /// </list>
     /// </summary>
-    public static class BattleDefinitionBuilder
+    public static partial class BattleDefinitionBuilder
     {
         public const string RulesVersionV1 = "battle-def-v1";
-        public const string MainRulesVersion = "battle-def-v6-adrenaline-q10";
+        public const string MainRulesVersion = "battle-def-v7-movement-reservations";
+        public const string WallImpactRulesVersion = "battle-def-v8-wall-impact";
+        public const string ThresholdAdrenalineRulesVersion = "battle-def-v9-threshold-adrenaline";
+        public const string ExplicitControlRulesVersion = "battle-def-v10-explicit-control";
+        public const string CalibratedTempoRulesVersion = "battle-def-v11-calibrated-tempo";
+        public const string ScalarImpactRulesVersion = "battle-def-v12-scalar-impact";
+
+        public static BattleDefinition WithProductionEnemyAi(BattleDefinition source)
+        {
+            var enemy = new ControllerId(LegacyIdMigrationManifest.ControllerEnemyAi);
+            var settings = new AiForecastSettings(AiForecastSettings.MaximumLookaheadTicks,
+                ConsiderDefenses: true, ApproachWhenUnthreatened: true, RequireSubmissionPreflight: true);
+            var encounters = Array.AsReadOnly(source.Encounters.Select(encounter => encounter with
+            {
+                Controllers = Array.AsReadOnly(encounter.Controllers.Select(controller => controller.ControllerId == enemy
+                    && controller.SourceKind == CommandSourceKind.Ai
+                    ? controller with { AiPolicy = AiPolicyKind.SustainedOffense, AiExecution = AiExecutionKind.UtilityBehaviorTree,
+                        AiForecast = settings }
+                    : controller).ToArray())
+            }).ToArray());
+            string version = source.RulesVersion + "-utility-ai";
+            return source with
+            {
+                RulesVersion = version,
+                Encounters = encounters,
+                PriorReplayDefinition = source,
+                BattleDefinitionHashValue = BattleDefinitionHash.Compute(version, source.TicksPerSecond,
+                    LegacyIdMigrationManifest.LibraryVolumes.Count, source.Rules, source.ConcurrentAction, source.ReactionRules,
+                    source.AdrenalineRules, source.FactionModel, source.DamageChannels, source.ImpactProfiles, source.Units,
+                    source.Actions, source.AttackPatterns, source.Volumes, source.MovementPatterns, source.ActionSets,
+                    source.StatusEffects, encounters, source.DefaultDynamicSpawnPolicy)
+            };
+        }
+
+        public enum MainBattleTempo
+        {
+            Historical = 0,
+            Action20Move30 = 1,
+            Action24Move20 = 2
+        }
 
         /// <summary>
         /// 主战斗场景的设计网格边界（顶点包围盒，偶数坐标，包含两个初始站位）。
@@ -53,7 +94,7 @@ namespace ProjectHero.Authoring
         public const int DefaultGuardDurationTicks = FrozenDesignValues.GuardDurationTicks;
         public const int DefaultGuardPartialResistanceQ10 = 512;
         public const int DefaultGuardMomentumResistanceQ10 = 512;
-        public const int DefaultMoveBaseStepTicks = 12;
+        public const int DefaultMoveBaseStepTicks = BattleRules.DefaultWalkBaseStepTicks;
         public const int DefaultMoveRecoveryTicks = 1;
         public const int DefaultMoveMaxPathWeightUnits = 64;
         public const int DefaultDodgeMaxDistanceSteps = 2;
@@ -74,6 +115,25 @@ namespace ProjectHero.Authoring
         public static BattleDefinitionBuildResult BuildMainBattleDefinition(LegacyBattleUnitSource unitsSource)
             => BuildMainBattleDefinition(LegacyAssetResolver.LoadAllFromResources(), unitsSource);
 
+        public static BattleDefinitionBuildResult BuildWallImpactBattleDefinition(
+            LegacyBattleUnitSource unitsSource, IReadOnlyList<GridPoint> staticWalls)
+            => BuildMainBattleDefinition(LegacyAssetResolver.LoadAllFromResources(), unitsSource, true, staticWalls);
+
+        public static BattleDefinitionBuildResult BuildThresholdAdrenalineBattleDefinition(
+            LegacyBattleUnitSource unitsSource, bool wallImpact, IReadOnlyList<GridPoint> staticWalls,
+            bool explicitControlEffects = false, MainBattleTempo tempo = MainBattleTempo.Historical)
+            => BuildMainBattleDefinition(LegacyAssetResolver.LoadAllFromResources(), unitsSource, wallImpact, staticWalls,
+                thresholdAdrenaline: true, explicitControlEffects: explicitControlEffects, tempo: tempo);
+
+        public static BattleDefinitionBuildResult BuildScalarImpactBattleDefinition(LegacyBattleUnitSource unitsSource,
+            IReadOnlyList<GridPoint> staticWalls, MainBattleTempo tempo, ScalarImpactRules impact,
+            WeaponBattleProfile heroWeapon = null, WeaponBattleProfile enemyWeapon = null,
+            CombatAttributesV05 growth = null)
+            => BuildMainBattleDefinition(LegacyAssetResolver.LoadAllFromResources(), unitsSource, true, staticWalls,
+                thresholdAdrenaline: true, explicitControlEffects: true, tempo: tempo,
+                scalarImpact: impact ?? throw new ArgumentNullException(nameof(impact)),
+                heroWeapon: heroWeapon, enemyWeapon: enemyWeapon, growth: growth);
+
         /// <summary>
         /// 从显式资产集合与显式单位来源构建主战斗定义。
         /// 这是测试与 Editor 工具的唯一入口；<paramref name="assets"/> 的枚举顺序会被归一化，
@@ -82,6 +142,14 @@ namespace ProjectHero.Authoring
         public static BattleDefinitionBuildResult BuildMainBattleDefinition(
             LegacyAssetSet assets,
             LegacyBattleUnitSource unitsSource)
+            => BuildMainBattleDefinition(assets, unitsSource, false, null);
+
+        private static BattleDefinitionBuildResult BuildMainBattleDefinition(
+            LegacyAssetSet assets, LegacyBattleUnitSource unitsSource, bool wallImpact, IReadOnlyList<GridPoint> staticWalls,
+            bool thresholdAdrenaline = false, bool explicitControlEffects = false,
+            MainBattleTempo tempo = MainBattleTempo.Historical, ScalarImpactRules scalarImpact = null,
+            WeaponBattleProfile heroWeapon = null, WeaponBattleProfile enemyWeapon = null,
+            CombatAttributesV05 growth = null)
         {
             if (assets == null) throw new ArgumentNullException(nameof(assets));
 
@@ -90,8 +158,10 @@ namespace ProjectHero.Authoring
             var report = new DefinitionBuildReport();
 
             // —— ① 版本化规则常量 ——
-            var rules = BattleRules.FrozenV1;
-            AddIfError(errors, rules.Validate(), nameof(BattleRules.FrozenV1));
+            var rules = wallImpact ? BattleRules.WalkingDisplacementV2 : BattleRules.FrozenV1;
+            string rulesVersion = thresholdAdrenaline ? ThresholdAdrenalineRulesVersion
+                : wallImpact ? WallImpactRulesVersion : MainRulesVersion;
+            AddIfError(errors, rules.Validate(), nameof(BattleRules));
             AddIfError(errors, rules.PathCostRules.ValidateFrozenRules(), "PathCostRules");
             AddIfError(errors, rules.PathSearchRules.Validate(), "PathSearchRules");
             AddIfError(errors, rules.ForcedDisplacementProtocolVersion.IsValid
@@ -104,7 +174,7 @@ namespace ProjectHero.Authoring
                 DefaultReactionCommandIngressLeadTicks, DefaultReactionMinimumLeadTicks);
             AddIfError(errors, reactionRules.Validate(), nameof(ReactionRules));
 
-            var adrenalineRules = AdrenalineRules.BinaryQ10V3;
+            var adrenalineRules = thresholdAdrenaline ? AdrenalineRules.HealthThresholds : AdrenalineRules.BinaryQ10V3;
             AddIfError(errors, adrenalineRules.Validate(), nameof(AdrenalineRules));
 
             // —— ② 目录 ——
@@ -191,6 +261,22 @@ namespace ProjectHero.Authoring
 
             // —— ⑧ Encounter ——
             var encounter = BuildMainEncounter(errors);
+            if (staticWalls != null && staticWalls.Count > 0)
+            {
+                var walls = new HashSet<GridPoint>(staticWalls);
+                foreach (var wall in walls)
+                    if (!encounter.GridBoundary.Contains(wall))
+                        AddIfError(errors, LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS, "static wall " + wall);
+                foreach (var slot in encounter.Slots)
+                {
+                    if (!units.TryGetValue(slot.DefinitionId.Value, out var unit)
+                        || !volumeSpecs.TryGetValue(unit.VolumeSpecId.Value, out var volume)) continue;
+                    var cells = VolumeFootprint.ResolveCells(volume.Directions, slot.InitialPosition, slot.InitialFacing);
+                    if (walls.Contains(slot.InitialPosition) || walls.Overlaps(cells))
+                        AddIfError(errors, LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER, "static wall at slot " + slot.SlotId);
+                }
+                encounter = encounter with { StaticWalls = new List<GridPoint>(walls).AsReadOnly() };
+            }
 
             // —— ⑨ 交叉校验 ——
             BattleDefinitionValidator.ValidateFactionModel(factionModel.Factions, factionModel.Relations, errors);
@@ -214,29 +300,31 @@ namespace ProjectHero.Authoring
             if (errors.HasErrors)
                 return BattleDefinitionBuildResult.Failed(errors, warnings);
 
-            string hash = BattleDefinitionHash.Compute(
-                MainRulesVersion,
-                rules.TicksPerSecond,
+            string ComputeHash(string version, AdrenalineRules resourceRules, BattleRules combatRules,
+                IReadOnlyList<ActionSpec> attackAndActionSpecs, IReadOnlyList<UnitDefinition> unitDefinitions = null,
+                IReadOnlyList<ActionSetDefinition> loadouts = null) => BattleDefinitionHash.Compute(
+                version,
+                combatRules.TicksPerSecond,
                 LegacyIdMigrationManifest.LibraryVolumes.Count,
-                rules,
+                combatRules,
                 concurrentAction,
                 reactionRules,
-                adrenalineRules,
+                resourceRules,
                 factionModel,
                 damageChannels,
                 impactProfiles,
-                orderedUnits,
-                orderedActions,
+                unitDefinitions ?? orderedUnits,
+                attackAndActionSpecs,
                 orderedPatterns,
                 orderedVolumes,
                 movementPatterns,
-                orderedActionSets,
+                loadouts ?? orderedActionSets,
                 statusEffects,
                 orderedEncounters,
                 dynamicSpawnPolicy);
 
             var definition = new BattleDefinition(
-                MainRulesVersion,
+                rulesVersion,
                 rules.TicksPerSecond,
                 rules,
                 concurrentAction,
@@ -254,10 +342,162 @@ namespace ProjectHero.Authoring
                 statusEffects,
                 orderedEncounters,
                 dynamicSpawnPolicy,
-                hash);
+                ComputeHash(rulesVersion, adrenalineRules, rules, orderedActions));
+
+            if (thresholdAdrenaline)
+            {
+                string previousVersion = wallImpact ? WallImpactRulesVersion : MainRulesVersion;
+                definition = definition with
+                {
+                    PriorReplayDefinition = definition with
+                    {
+                        RulesVersion = previousVersion,
+                        AdrenalineRules = AdrenalineRules.BinaryQ10V3,
+                        BattleDefinitionHashValue = ComputeHash(previousVersion, AdrenalineRules.BinaryQ10V3, rules, orderedActions)
+                    }
+                };
+            }
+
+            if (explicitControlEffects)
+            {
+                var explicitRules = rules with { UseExplicitControlEffects = true };
+                var authoredActions = new List<ActionSpec>(orderedActions.Count);
+                foreach (var action in orderedActions)
+                {
+                    authoredActions.Add(action.Payload is AttackPayloadSpec attack
+                        ? action with { Payload = attack with { ControlEffects = MainAttackControlEffects(action.ActionSpecId) } }
+                        : action);
+                }
+                var authored = authoredActions.AsReadOnly();
+                definition = definition with
+                {
+                    RulesVersion = ExplicitControlRulesVersion,
+                    Rules = explicitRules,
+                    Actions = authored,
+                    BattleDefinitionHashValue = ComputeHash(ExplicitControlRulesVersion, adrenalineRules, explicitRules, authored),
+                    PriorReplayDefinition = definition
+                };
+            }
+
+            if (tempo != MainBattleTempo.Historical)
+            {
+                var (actionSpeed, moveSpeed) = tempo switch
+                {
+                    MainBattleTempo.Action20Move30 => (20, 30),
+                    MainBattleTempo.Action24Move20 => (24, 20),
+                    _ => throw new ArgumentOutOfRangeException(nameof(tempo))
+                };
+                var calibratedUnits = new List<UnitDefinition>(orderedUnits.Count);
+                foreach (var unit in orderedUnits)
+                    calibratedUnits.Add(unit with { InitialHealth = 50, ActionSpeed = actionSpeed, MoveSpeed = moveSpeed });
+                var calibrated = calibratedUnits.AsReadOnly();
+                definition = definition with
+                {
+                    RulesVersion = CalibratedTempoRulesVersion,
+                    Units = calibrated,
+                    BattleDefinitionHashValue = ComputeHash(CalibratedTempoRulesVersion, definition.AdrenalineRules,
+                        definition.Rules, definition.Actions, calibrated),
+                    PriorReplayDefinition = definition
+                };
+            }
+
+            if (scalarImpact != null)
+            {
+                var scalarRules = definition.Rules with { ScalarImpact = scalarImpact };
+                AddIfError(errors, scalarRules.Validate(), nameof(ScalarImpactRules));
+                var scalarActions = new List<ActionSpec>(definition.Actions);
+                var scalarLoadouts = new List<ActionSetDefinition>(definition.ActionSets);
+                var scalarUnits = new List<UnitDefinition>(definition.Units);
+                ApplyWeaponProfile(heroWeapon, LegacyIdMigrationManifest.ActionSetRadius1,
+                    growth, scalarRules, scalarActions, scalarLoadouts, scalarUnits, errors);
+                ApplyWeaponProfile(enemyWeapon, LegacyIdMigrationManifest.ActionSetRadius2,
+                    growth, scalarRules, scalarActions, scalarLoadouts, scalarUnits, errors);
+                if (errors.HasErrors) return BattleDefinitionBuildResult.Failed(errors, warnings);
+                definition = definition with
+                {
+                    RulesVersion = ScalarImpactRulesVersion,
+                    Rules = scalarRules,
+                    Actions = scalarActions.AsReadOnly(),
+                    ActionSets = scalarLoadouts.AsReadOnly(),
+                    Units = scalarUnits.AsReadOnly(),
+                    BattleDefinitionHashValue = ComputeHash(ScalarImpactRulesVersion, definition.AdrenalineRules,
+                        scalarRules, scalarActions, scalarUnits, scalarLoadouts),
+                    PriorReplayDefinition = definition
+                };
+            }
 
             return BattleDefinitionBuildResult.Success(definition, warnings);
         }
+
+        private static void ApplyWeaponProfile(WeaponBattleProfile weapon, string actionSetId,
+            CombatAttributesV05 growth, BattleRules rules, List<ActionSpec> actions,
+            List<ActionSetDefinition> loadouts, List<UnitDefinition> units, DefinitionErrorCollector errors)
+        {
+            if (weapon == null) return;
+            int setIndex = loadouts.FindIndex(set => set.ActionSetId.Value == actionSetId);
+            var set = loadouts[setIndex];
+            var available = new HashSet<ActionSpecId>(set.ActionSpecIds);
+            var selected = new HashSet<ActionSpecId>();
+            bool usesGrowth = false;
+            if (weapon.Techniques == null || weapon.Techniques.Length == 0)
+            {
+                errors.Add(CombatValuesV05.Invalid, "weapon has no techniques", actionSetId);
+                return;
+            }
+            foreach (var technique in weapon.Techniques)
+            {
+                var id = new ActionSpecId(technique?.ActionId);
+                int index = actions.FindIndex(action => action.ActionSpecId == id && action.Type == ActionType.Attack);
+                if (index < 0 || !available.Contains(id) || !selected.Add(id))
+                {
+                    errors.Add(CombatValuesV05.Invalid, "invalid or repeated weapon technique " + id.Value, actionSetId);
+                    continue;
+                }
+                if (technique.BaseStrengthQ10 == 0) continue;
+                var strength = new AttackStrengthV05(technique.Recipe, technique.BaseStrengthQ10, weapon.GrowthAttribute);
+                if (growth == null || growth.Validate() != null || strength.Validate() != null
+                    || (technique.DisplacementDirectionOffset < -11 || technique.DisplacementDirectionOffset > 11))
+                {
+                    errors.Add(CombatValuesV05.Invalid, "invalid weapon technique " + id.Value, actionSetId);
+                    continue;
+                }
+                var attack = (AttackPayloadSpec)actions[index].Payload;
+                var damage = CombatValuesV05.Damage(growth, strength);
+                attack = attack with
+                {
+                    DamageComponents = Array.AsReadOnly(new[] { damage }),
+                    ScalarImpactUnits = LegacyImpactUnits(CombatValuesV05.MomentumUnits(growth, strength)),
+                    ControlEffects = technique.Controls,
+                    MomentumDirectionOffsetSteps = (technique.Controls & AttackControlEffects.Displacement) != 0
+                        ? technique.DisplacementDirectionOffset : 0
+                };
+                var action = actions[index] with { Payload = attack };
+                AddIfError(errors, ActionDefinitionValidation.ValidateActionSpec(action, rules, null, null), id.Value);
+                actions[index] = action;
+                usesGrowth = true;
+            }
+            var weaponActions = new List<ActionSpecId>();
+            foreach (var id in set.ActionSpecIds)
+                if (selected.Contains(id) || actions.Find(action => action.ActionSpecId == id).Type != ActionType.Attack)
+                    weaponActions.Add(id);
+            loadouts[setIndex] = set with { ActionSpecIds = weaponActions.AsReadOnly() };
+            if (usesGrowth)
+                for (int i = 0; i < units.Count; i++)
+                    if (units[i].ActionSetId == set.ActionSetId)
+                        units[i] = units[i] with { ScalarControlResistanceUnits = LegacyImpactUnits(growth.StabilityQ10) };
+        }
+
+        private static int LegacyImpactUnits(int impactQ10)
+            => checked((int)TickQuantization.RoundHalfUpDivide((long)impactQ10 * MomentumQuantizer.MomentumUnitsPerLegacyMomentum,
+                CombatValuesV05.MomentumUnitsPerPoint));
+
+        private static AttackControlEffects MainAttackControlEffects(ActionSpecId attack) => attack.Value switch
+        {
+            LegacyIdMigrationManifest.ActionHeavySmashR1 or LegacyIdMigrationManifest.ActionHeavySmashR2 => AttackControlEffects.All,
+            LegacyIdMigrationManifest.ActionWideCleaveR1 or LegacyIdMigrationManifest.ActionWideCleaveR2 => AttackControlEffects.Interrupt,
+            LegacyIdMigrationManifest.ActionWhirlwindR1 or LegacyIdMigrationManifest.ActionWhirlwindR2 => AttackControlEffects.Displacement,
+            _ => AttackControlEffects.None
+        };
 
         // ================= 装配步骤 =================
 

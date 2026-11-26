@@ -55,6 +55,9 @@ namespace ProjectHero.Logic.Snapshots
     {
         /// <summary>强类型状态视图（与 <see cref="State"/> 同值）。</summary>
         public UnitState StateValue => (UnitState)State;
+        public ForcedDisplacementMotion ForcedMotion { get; init; }
+        public KnockdownProgress Knockdown { get; init; }
+        public UnitTraits Traits { get; init; }
     }
 
     /// <summary>
@@ -114,7 +117,13 @@ namespace ProjectHero.Logic.Snapshots
         int AvailableAdrenaline,
         long CycleId,
         IReadOnlyList<AdrenalineReservationSnapshot> Reservations,
-        int ReservedTotal);
+        int ReservedTotal)
+    {
+        public int ReceivedThresholdClaims { get; init; }
+        public IReadOnlyList<AdrenalineTargetThresholdSnapshot> DealtThresholdClaims { get; init; }
+    }
+
+    public sealed record AdrenalineTargetThresholdSnapshot(long TargetUnitId, int ClaimedThresholds);
 
     /// <summary>一条反应肾上腺素预留快照（按 <see cref="ActionPlanId"/> 与个人周期归属）。</summary>
     public sealed record AdrenalineReservationSnapshot(long ActionPlanId, int ReservedAmount, long ReservationCycleId);
@@ -337,7 +346,10 @@ namespace ProjectHero.Logic.Snapshots
         long SubmittedWindowId,
         IntentMomentumSnapshot Momentum,
         IReadOnlyList<TrianglePoint> AreaPoints,
-        IReadOnlyList<DamageComponentSnapshot> DamageComponents);
+        IReadOnlyList<DamageComponentSnapshot> DamageComponents)
+    {
+        internal Actions.AttackControlEffects ControlEffects { get; init; } = Actions.AttackControlEffects.All;
+    }
 
     /// <summary>
     /// 规范化接触键的快照（<c>ContactKey</c> 的六个分量；
@@ -432,7 +444,8 @@ namespace ProjectHero.Logic.Snapshots
         long NextThinkTick,
         long DecisionCount = 0L,
         long LastDecisionTick = -1L,
-        RngSnapshot Rng = null, ProjectHero.Logic.AI.AiBehaviorMemory Behavior = null);
+        RngSnapshot Rng = null, ProjectHero.Logic.AI.AiBehaviorMemory Behavior = null,
+        ProjectHero.Logic.AI.AiSamplingMemory SamplingMemory = null);
 
     /// <summary>
     /// 规范化 <see cref="LogicSnapshot"/>（主方案 3.11.1 + 3.11.2）：覆盖<strong>全部会影响未来结果</strong>
@@ -690,6 +703,37 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt64(unit.StateEndTick);
             }
 
+            foreach (var unit in units)
+            {
+                if (unit.Knockdown is not { } progress) continue;
+                encoder.WriteString("scalar_knockdown");
+                encoder.WriteInt64(unit.UnitId);
+                encoder.WriteInt64(progress.RemainingImpactUnits);
+                encoder.WriteInt32(progress.ResistanceUnits);
+                encoder.WriteInt64(progress.NextSegmentTick);
+                encoder.WriteInt32(progress.SegmentTicks);
+            }
+
+            // Leave the historical snapshot encoding intact when there is no in-flight motion.
+            foreach (var unit in units)
+            {
+                if (unit.ForcedMotion is not { } motion) continue;
+                encoder.WriteString("forced_displacement_motion");
+                encoder.WriteInt64(unit.UnitId);
+                encoder.WriteInt32((int)motion.Direction);
+                encoder.WriteInt64(motion.RemainingMomentumUnits);
+                encoder.WriteInt32(motion.ControlResistanceUnits);
+                encoder.WriteInt64(motion.NextStepTick);
+                encoder.WriteInt64(motion.StepTicks);
+                encoder.WriteInt64(motion.ConflictGroupKey);
+                encoder.WriteInt64(motion.SourcePlanId.Value);
+                if (motion.AdrenalineSourceUnitId.IsValid)
+                {
+                    encoder.WriteString("adrenaline_wall_source_v1");
+                    encoder.WriteInt64(motion.AdrenalineSourceUnitId.Value);
+                }
+            }
+
             var effects = new List<StatusEffectSnapshot>(Effects);
             effects.Sort((a, b) =>
             {
@@ -764,6 +808,27 @@ namespace ProjectHero.Logic.Snapshots
                     encoder.WriteInt64(adrenalineReservations[r].ActionPlanId);
                     encoder.WriteInt32(adrenalineReservations[r].ReservedAmount);
                     encoder.WriteInt64(adrenalineReservations[r].ReservationCycleId);
+                }
+            }
+
+            // Omit the extension from historical snapshots so their hashes remain replayable.
+            bool hasThresholdClaims = ledgers.Exists(ledger => ledger.ReceivedThresholdClaims != 0
+                || ledger.DealtThresholdClaims?.Count > 0);
+            if (hasThresholdClaims)
+            {
+                encoder.WriteString("adrenaline_threshold_claims_v1");
+                foreach (var ledger in ledgers)
+                {
+                    encoder.WriteInt32(ledger.ReceivedThresholdClaims);
+                    var targets = new List<AdrenalineTargetThresholdSnapshot>(
+                        ledger.DealtThresholdClaims ?? Array.Empty<AdrenalineTargetThresholdSnapshot>());
+                    targets.Sort((a, b) => a.TargetUnitId.CompareTo(b.TargetUnitId));
+                    encoder.WriteCount(targets.Count);
+                    foreach (var target in targets)
+                    {
+                        encoder.WriteInt64(target.TargetUnitId);
+                        encoder.WriteInt32(target.ClaimedThresholds);
+                    }
                 }
             }
 
@@ -886,6 +951,11 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteInt32(intent.InteractionPriority);
                 encoder.WriteInt32(intent.MomentumDirectionOffsetSteps);
                 encoder.WriteInt64(intent.SubmittedWindowId);
+                if (intent.ControlEffects != Actions.AttackControlEffects.All)
+                {
+                    encoder.WriteString("intent.control_effects");
+                    encoder.WriteInt32((int)intent.ControlEffects);
+                }
 
                 // 动量载荷：方向 + 已量化整数动量 + 冲击 Profile 审计引用（无浮点）。
                 IntentMomentumSnapshot momentum = intent.Momentum;
@@ -1009,6 +1079,7 @@ namespace ProjectHero.Logic.Snapshots
                 encoder.WriteUInt64(controller.Rng?.State ?? 0UL);
                 // Opt-in versioned extension; legacy and V2 bytes remain unchanged.
                 controller.Behavior?.Encode(encoder);
+                controller.SamplingMemory?.Encode(encoder);
             }
 
             // —— 命令入口（注册、每入口下一个/已冻结 ProducerOrdinal、未来 Tick 桶）——

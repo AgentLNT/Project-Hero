@@ -89,6 +89,7 @@ namespace ProjectHero.Logic.Initialization
             var slotToUnitId = new Dictionary<EncounterSlotId, UnitId>();
             var slotToFaction = new Dictionary<EncounterSlotId, FactionId>();
             var unitToFaction = new Dictionary<UnitId, FactionId>();
+            var unitDefinitions = new Dictionary<UnitId, UnitDefinition>();
 
             foreach (var slot in orderedSlots)
             {
@@ -96,6 +97,8 @@ namespace ProjectHero.Logic.Initialization
                 if (unitDefinition == null)
                     throw new LogicDefinitionException(DefinitionCodes.DEFINITION_REFERENCE_DANGLING,
                         "unit:" + slot.DefinitionId.Value);
+                if (unitDefinition.Traits != default && UnitDefinitionValidation.Validate(unitDefinition) is string unitError)
+                    throw new LogicDefinitionException(unitError, slot.DefinitionId.Value);
 
                 if (!definition.FactionModel.ContainsFaction(slot.FactionId))
                     throw new LogicDefinitionException(DefinitionCodes.ENCOUNTER_SLOT_FACTION_UNKNOWN,
@@ -118,10 +121,13 @@ namespace ProjectHero.Logic.Initialization
                 slotToUnitId[slot.SlotId] = unitId;
                 slotToFaction[slot.SlotId] = slot.FactionId;
                 unitToFaction[unitId] = slot.FactionId;
+                unitDefinitions[unitId] = unitDefinition;
             }
 
             // 2. 不可变关系解析器（唯一关系查询入口）。
             var resolver = new FactionRelationResolver(definition.FactionModel, unitToFaction);
+            foreach (var unit in unitDefinitions)
+                resolver.RegisterUnitTraits(unit.Key, unit.Value.Traits);
 
             // 3. ControllerId → UnitId 集合：来自已验证定义，独立于阵营与胜负。
             var controllerToUnitIds = new Dictionary<ControllerId, IReadOnlyList<UnitId>>();
@@ -136,6 +142,10 @@ namespace ProjectHero.Logic.Initialization
                         {
                             if (!slotToUnitId.TryGetValue(slotId, out var unitId))
                                 throw new LogicDefinitionException(DefinitionCodes.CONTROLLER_SLOT_DANGLING,
+                                    binding.ControllerId.Value + "|" + slotId.Value);
+                            if (unitDefinitions[unitId].Traits != default
+                                && !unitDefinitions[unitId].Traits.AllowsController(binding.SourceKind))
+                                throw new LogicDefinitionException(UnitDefinitionCodes.UNIT_CONTROLLER_NOT_ALLOWED,
                                     binding.ControllerId.Value + "|" + slotId.Value);
                             units.Add(unitId);
                         }

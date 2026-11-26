@@ -128,7 +128,7 @@ namespace ProjectHero.Logic.Interactions
 
             // ——— 1. 私有临时占位空间（读只读网格一次；此后不再依赖网格的可变状态）———
             var space = new TempSpace();
-            space.Load(_grid);
+            space.Load(_grid, immutableUnitSnapshot);
 
             var proposals = new Proposal[ordered.Count];
             int maxSteps = 0;
@@ -278,7 +278,9 @@ namespace ProjectHero.Logic.Interactions
 
         private bool TouchesStaticObstacle(Proposal proposal)
         {
+            if (_grid.TouchesStaticWall(proposal.TargetAnchor, proposal.TargetCells)) return true;
             if (_staticObstacles.Count == 0) return false;
+            if (_staticObstacles.Contains(proposal.TargetAnchor)) return true;
             IReadOnlyList<GridPoint> cells = proposal.TargetCells;
             for (int i = 0; i < cells.Count; i++)
             {
@@ -378,27 +380,23 @@ namespace ProjectHero.Logic.Interactions
                 Proposal proposal = proposals[nodes[n]];
                 var deps = new List<int>();
                 bool external = false;
+
+                // Some footprints omit their anchor. The destination anchor still needs to vacate.
+                if (space.TryGetAnchorOwner(proposal.TargetAnchor, out long anchorOwner)) AddDependency(anchorOwner);
+                if (space.HasWalls && space.TryGetOwner(proposal.TargetAnchor, out long pointOwner) && space.IsWall(pointOwner))
+                    AddDependency(pointOwner);
+
                 IReadOnlyList<GridPoint> cells = proposal.TargetCells;
                 for (int c = 0; c < cells.Count; c++)
                 {
                     if (_stats != null) _stats.FootprintPointCheckCount++;
-                    if (!space.TryGetOwner(cells[c], out long owner)) continue;
-                    if (owner == proposal.UnitId.Value) continue;      // 忽略自身旧 footprint
-                    int index = IndexOfUnit(proposals, nodes, owner);
-                    // 占据者不在本步提案集合里 ⇒ 静止单位 / 已走完单位 / 本步失败的提案。
-                    // 它是<strong>硬阻挡</strong>，必须显式记录：静默忽略会让位移单位直接穿进它。
-                    if (index < 0) { external = true; continue; }
-                    if (!Contains(deps, index)) deps.Add(index);
+                    if (space.TryGetOwner(cells[c], out long owner)) AddDependency(owner);
                 }
                 IReadOnlyList<TrianglePoint> triangles = proposal.TargetTriangles;
                 for (int c = 0; c < triangles.Count; c++)
                 {
                     if (_stats != null) _stats.FootprintPointCheckCount++;
-                    if (!space.TryGetTriangleOwner(triangles[c], out long owner)) continue;
-                    if (owner == proposal.UnitId.Value) continue;
-                    int index = IndexOfUnit(proposals, nodes, owner);
-                    if (index < 0) { external = true; continue; }
-                    if (!Contains(deps, index)) deps.Add(index);
+                    if (space.TryGetTriangleOwner(triangles[c], out long owner)) AddDependency(owner);
                 }
                 deps.Sort();
                 proposal.Dependencies = deps.ToArray();
@@ -407,6 +405,14 @@ namespace ProjectHero.Logic.Interactions
                 {
                     _stats.DependencyNodeCount++;
                     _stats.DependencyEdgeCount += proposal.Dependencies.Length + (external ? 1 : 0);
+                }
+
+                void AddDependency(long owner)
+                {
+                    if (owner == proposal.UnitId.Value) return;
+                    int index = IndexOfUnit(proposals, nodes, owner);
+                    if (index < 0) external = true;
+                    else if (!Contains(deps, index)) deps.Add(index);
                 }
             }
 
@@ -458,6 +464,18 @@ namespace ProjectHero.Logic.Interactions
                 Proposal proposal = proposals[nodes[n]];
                 if (proposal.State == ProposalState.Unknown)
                     Fail(proposal, ForcedDisplacementStopReason.OccupiedUnit);
+            }
+
+            if (!space.HasWalls) return;
+            var vacating = new HashSet<long>();
+            foreach (int node in nodes)
+                if (proposals[node].State == ProposalState.Succeeded) vacating.Add(proposals[node].UnitId.Value);
+            foreach (int node in nodes)
+            {
+                Proposal proposal = proposals[node];
+                if (proposal.StopReason == ForcedDisplacementStopReason.OccupiedUnit
+                    && space.TouchesBlockingWall(proposal, vacating))
+                    proposal.StopReason = ForcedDisplacementStopReason.WallUnit;
             }
         }
 
@@ -536,6 +554,10 @@ namespace ProjectHero.Logic.Interactions
                 if (!ContainsPoint(cells, reservation.Cell)) continue;
                 if (!ids.Contains(reservation.ActionPlanId.Value)) ids.Add(reservation.ActionPlanId.Value);
             }
+            // A committed displacement can preempt an earlier route. Compare the same complete
+            // footprints that will be used when that reserved movement step reaches its boundary.
+            foreach (var reservation in _grid.EnumerateReservedBodiesOverlapping(proposal.UnitId, proposal.Anchor, proposal.Facing))
+                if (!ids.Contains(reservation.ActionPlanId.Value)) ids.Add(reservation.ActionPlanId.Value);
 
             if (_dodgeReservations != null)
             {
@@ -650,6 +672,7 @@ namespace ProjectHero.Logic.Interactions
         private sealed class TempUnit
         {
             public UnitId UnitId;
+            public UnitKind Kind;
             public GridDirection Facing;
             public GridPoint Anchor;
             public IReadOnlyList<GridPoint> Cells = Array.Empty<GridPoint>();
@@ -664,12 +687,15 @@ namespace ProjectHero.Logic.Interactions
         private sealed class TempSpace
         {
             private readonly Dictionary<long, TempUnit> _units = new Dictionary<long, TempUnit>();
+            private readonly Dictionary<GridPoint, long> _anchorOwner = new Dictionary<GridPoint, long>();
             private readonly Dictionary<GridPoint, long> _cellOwner = new Dictionary<GridPoint, long>();
             private readonly Dictionary<TrianglePoint, long> _triangleOwner = new Dictionary<TrianglePoint, long>();
+            public bool HasWalls { get; private set; }
 
-            public void Load(LogicGrid grid)
+            public void Load(LogicGrid grid, IReadOnlyList<UnitSnapshot> snapshots)
             {
                 _units.Clear();
+                _anchorOwner.Clear();
                 _cellOwner.Clear();
                 _triangleOwner.Clear();
 
@@ -690,13 +716,40 @@ namespace ProjectHero.Logic.Interactions
                     _units[unitId.Value] = unit;
                     Index(unit);
                 }
+                if (snapshots == null) return;
+                foreach (var snapshot in snapshots)
+                {
+                    if (snapshot == null || snapshot.Traits.Kind != UnitKind.Wall || !_units.TryGetValue(snapshot.UnitId, out var unit))
+                        continue;
+                    unit.Kind = UnitKind.Wall;
+                    HasWalls = true;
+                }
             }
+
+            public bool TouchesBlockingWall(Proposal proposal, HashSet<long> vacating)
+            {
+                if (TryGetAnchorOwner(proposal.TargetAnchor, out long anchorOwner) && Blocks(anchorOwner)) return true;
+                if (TryGetOwner(proposal.TargetAnchor, out long pointOwner) && Blocks(pointOwner)) return true;
+                foreach (var cell in proposal.TargetCells)
+                    if (TryGetOwner(cell, out long cellOwner) && Blocks(cellOwner)) return true;
+                foreach (var triangle in proposal.TargetTriangles)
+                    if (TryGetTriangleOwner(triangle, out long triangleOwner) && Blocks(triangleOwner)) return true;
+                return false;
+
+                bool Blocks(long owner) => owner != proposal.UnitId.Value && IsWall(owner)
+                    && !vacating.Contains(owner);
+            }
+
+            public bool IsWall(long owner) => _units[owner].Kind == UnitKind.Wall;
 
             public bool TryGetUnit(UnitId unitId, out TempUnit unit)
                 => _units.TryGetValue(unitId.Value, out unit);
 
             public bool TryGetOwner(GridPoint cell, out long owner)
                 => _cellOwner.TryGetValue(cell, out owner);
+
+            public bool TryGetAnchorOwner(GridPoint anchor, out long owner)
+                => _anchorOwner.TryGetValue(anchor, out owner);
 
             public bool TryGetTriangleOwner(TrianglePoint triangle, out long owner)
                 => _triangleOwner.TryGetValue(triangle, out owner);
@@ -715,6 +768,7 @@ namespace ProjectHero.Logic.Interactions
 
             private void Index(TempUnit unit)
             {
+                _anchorOwner[unit.Anchor] = unit.UnitId.Value;
                 for (int i = 0; i < unit.Cells.Count; i++) _cellOwner[unit.Cells[i]] = unit.UnitId.Value;
                 for (int i = 0; i < unit.Triangles.Count; i++)
                     _triangleOwner[unit.Triangles[i]] = unit.UnitId.Value;
@@ -722,6 +776,8 @@ namespace ProjectHero.Logic.Interactions
 
             private void Deindex(TempUnit unit)
             {
+                if (_anchorOwner.TryGetValue(unit.Anchor, out long anchorOwner) && anchorOwner == unit.UnitId.Value)
+                    _anchorOwner.Remove(unit.Anchor);
                 for (int i = 0; i < unit.Cells.Count; i++)
                 {
                     if (_cellOwner.TryGetValue(unit.Cells[i], out long owner) && owner == unit.UnitId.Value)

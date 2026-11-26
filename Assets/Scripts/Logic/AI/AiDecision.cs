@@ -28,6 +28,7 @@ namespace ProjectHero.Logic.AI
         public AiPolicyKind Policy { get; init; }
         public AiExecutionKind Execution { get; init; }
         public AiBehaviorMemory Behavior { get; init; }
+        public AiSamplingMemory SamplingMemory { get; init; }
         public IReadOnlyList<string> UnsupportedActionIds { get; init; } = Array.Empty<string>();
         public IReadOnlyList<AiCandidateEvaluation> Evaluations { get; init; } = Array.Empty<AiCandidateEvaluation>();
         public static AiDecision None(RngSnapshot rng, string reason)

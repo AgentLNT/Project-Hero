@@ -32,7 +32,12 @@ namespace ProjectHero.Logic.Simulation
         int KnockbackSteps,
         GridDirection? ResultantDirection,
         ActionPlanId RequestedDisplacementPlanId,
-        long ConflictGroupKey = 0L);
+        long ConflictGroupKey = 0L)
+    {
+        public long ResultantMomentumUnits { get; init; }
+        public int ControlResistanceUnits { get; init; }
+        public ActionPlanId MomentumSourcePlanId { get; init; }
+    }
 
     /// <summary>
     /// An attack effect ended by Clash. The phase-14 consumer retains the original
@@ -130,7 +135,12 @@ namespace ProjectHero.Logic.Simulation
                     aggregate.KnockbackSteps,
                     aggregate.ResultantDirection,
                     FindDisplacementPlanId(resolution, aggregate),
-                    ResolveConflictGroupKey(resolution, aggregate)));
+                    ResolveConflictGroupKey(resolution, aggregate))
+                {
+                    ResultantMomentumUnits = aggregate.ResultantMomentumUnits,
+                    ControlResistanceUnits = aggregate.ControlResistanceUnits,
+                    MomentumSourcePlanId = aggregate.KnockbackSteps > 0 ? FindMomentumSourcePlan(aggregate) : default
+                });
             }
 
             var terminals = new List<ClashTerminalRequest>();
@@ -142,6 +152,24 @@ namespace ProjectHero.Logic.Simulation
 
             LastDamageCommitReport = new DamageCommitReport(tick, "COMMITTED", commits.AsReadOnly(),
                 terminals.AsReadOnly());
+        }
+
+        private static ActionPlanId FindMomentumSourcePlan(TargetAggregateResolution aggregate)
+        {
+            if (aggregate.SelectedDisplacementSource.IsValid) return aggregate.SelectedDisplacementSource;
+            // Retain a single representative attacker for the combined impulse.
+            int largest = 0;
+            long planId = 0;
+            foreach (var contact in aggregate.Contacts)
+            {
+                int momentum = contact.AfterMomentumResistanceUnits;
+                long source = contact.Key.SourceActionPlanId;
+                if (!contact.ContributesToDisplacement || source <= 0 || momentum <= 0) continue;
+                if (momentum < largest || (momentum == largest && source >= planId)) continue;
+                largest = momentum;
+                planId = source;
+            }
+            return new ActionPlanId(planId);
         }
 
         public void CommitStateControlAndRemainingTerminalsOrdered(

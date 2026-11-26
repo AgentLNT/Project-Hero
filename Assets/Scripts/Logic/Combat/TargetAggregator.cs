@@ -90,14 +90,21 @@ namespace ProjectHero.Logic.Combat
         int ActionMomentumResistanceQ10,
         IReadOnlyDictionary<DamageChannelId, int> ActionDamageResistanceQ10,
         IReadOnlyList<DamageComponentSpec> DamageComponents,
-        DamageTagMask RequiredActionTag = DamageTagMask.None, bool ConservativeGuardRounding = false);
+        DamageTagMask RequiredActionTag = DamageTagMask.None, bool ConservativeGuardRounding = false)
+    {
+        public AttackControlEffects ControlEffects { get; init; } = AttackControlEffects.All;
+    }
 
     /// <summary>目标侧聚合输入（被动抵抗来自目标定义；控制阻力已量化一次）。</summary>
     public sealed record TargetAggregationInput(
         UnitId TargetUnitId,
         IReadOnlyDictionary<DamageChannelId, int> PassiveDamageResistanceQ10,
         int ControlResistanceUnits,
-        IReadOnlyList<TargetContact> Contacts);
+        IReadOnlyList<TargetContact> Contacts)
+    {
+        public bool UseScalarImpact { get; init; }
+        public bool CanReceiveControl { get; init; } = true;
+    }
 
     /// <summary>单个伤害分量的三段数值（事件条目 107/112 需要的 Raw / 被动后 / 动作后）。</summary>
     public sealed record AggregatedContactComponent(
@@ -122,7 +129,11 @@ namespace ProjectHero.Logic.Combat
         GridDirection IncomingDirection,
         int IncomingMomentumUnits,
         int AfterMomentumResistanceUnits,
-        IReadOnlyList<AggregatedContactComponent> Components);
+        IReadOnlyList<AggregatedContactComponent> Components)
+    {
+        internal bool ContributesToDisplacement { get; init; } = true;
+        internal AttackControlEffects ScalarControls { get; init; }
+    }
 
     /// <summary>
     /// 任务包「必须产出」11 的目标聚合结果（主方案 0.4.2.1 五步 + 0.4.5 步骤 7-9）。
@@ -150,7 +161,12 @@ namespace ProjectHero.Logic.Combat
         long KnockdownThresholdUnits,
         bool IsStaggered,
         bool IsKnockedDown,
-        int KnockbackSteps);
+        int KnockbackSteps)
+    {
+        public long KnockdownImpactUnits { get; init; }
+        public long InterruptImpactUnits { get; init; }
+        public ActionPlanId SelectedDisplacementSource { get; init; }
+    }
 
     /// <summary>
     /// 任务包「必须产出」11：<strong>分通道目标聚合器</strong>（主方案 <c>0.4.2.1</c> 五步）。
@@ -175,11 +191,11 @@ namespace ProjectHero.Logic.Combat
     /// <strong>步骤 3/4（控制与合力）</strong>
     /// <code>
     /// TotalImpactUnits  = Σ 抵抗后入射动量绝对值
-    /// ResultantVector   = Σ DirectionVectorQ10(direction) × 抵抗后动量
+    /// ResultantVector   = 仅合计声明位移的接触向量
     /// 合力方向 = 与合力点积最大的 GridDirection，并列取枚举值较小者；最大点积 ≤ 0 ⇒ 无方向
     /// 合力强度 = maxDot / 1024² 向下取整（= Σ 动量·cosθ，与动量/CRU 同域；裁定 5 · 读法 B）；
     /// KnockbackSteps = floor(强度 / ControlResistanceUnits)
-    /// 硬直阈值 = ControlResistanceUnits；击倒阈值 = ceil(ControlResistanceUnits × 3 / 2)
+    /// 各控制只合计声明对应效果的抵抗后动量。硬直阈值 = ControlResistanceUnits；击倒阈值 = ceil(ControlResistanceUnits × 3 / 2)
     /// </code>
     /// </summary>
     public static class TargetAggregator
@@ -234,9 +250,17 @@ namespace ProjectHero.Logic.Combat
             // —— 步骤 1：逐分量（一次量化 → 被动抵抗 → 动作抵抗）——
             var resolutions = new List<TargetContactResolution>(contacts.Count);
             long totalImpactUnits = 0L;
+            long interruptImpactUnits = 0L;
+            long knockdownImpactUnits = 0L;
             long incomingMomentum = 0L;
             long resultantX = 0L;
             long resultantY = 0L;
+            var interruptByAttack = input.UseScalarImpact ? new Dictionary<long, long>() : null;
+            var knockdownByAttack = input.UseScalarImpact ? new Dictionary<long, long>() : null;
+            long largestDisplacement = 0;
+            GridDirection displacementDirection = default;
+            long displacementPlanId = 0;
+            bool conflictingDirections = false;
 
             for (int c = 0; c < contacts.Count; c++)
             {
@@ -286,13 +310,43 @@ namespace ProjectHero.Logic.Combat
                 }
 
                 DirectionVectorQ10 vector = MomentumRuleTable.DirectionVectorQ10(contact.IncomingDirection);
-                resultantX = checked(resultantX + vector.X * afterMomentum);
-                resultantY = checked(resultantY + vector.Y * afterMomentum);
+                bool movesTarget = (contact.ControlEffects & AttackControlEffects.Displacement) != 0;
+                if (movesTarget && input.UseScalarImpact && afterMomentum > 0)
+                {
+                    if (afterMomentum > largestDisplacement)
+                    {
+                        largestDisplacement = afterMomentum;
+                        displacementDirection = contact.IncomingDirection;
+                        displacementPlanId = contact.Key.SourceActionPlanId;
+                        conflictingDirections = false;
+                    }
+                    else if (afterMomentum == largestDisplacement)
+                    {
+                        conflictingDirections |= displacementDirection != contact.IncomingDirection;
+                        displacementPlanId = Math.Min(displacementPlanId, contact.Key.SourceActionPlanId);
+                    }
+                }
+                else if (movesTarget && !input.UseScalarImpact)
+                {
+                    resultantX = checked(resultantX + vector.X * afterMomentum);
+                    resultantY = checked(resultantY + vector.Y * afterMomentum);
+                }
+                if (input.CanReceiveControl)
+                {
+                    if ((contact.ControlEffects & AttackControlEffects.Interrupt) != 0)
+                        RecordControlImpact(interruptByAttack, contact.Key.SourceActionPlanId, afterMomentum, ref interruptImpactUnits);
+                    if ((contact.ControlEffects & AttackControlEffects.Knockdown) != 0)
+                        RecordControlImpact(knockdownByAttack, contact.Key.SourceActionPlanId, afterMomentum, ref knockdownImpactUnits);
+                }
                 totalImpactUnits = checked(totalImpactUnits + afterMomentum);
                 incomingMomentum = checked(incomingMomentum + contact.IncomingMomentumUnits);
 
                 resolutions.Add(new TargetContactResolution(contact.Key, contact.IncomingDirection,
-                    contact.IncomingMomentumUnits, (int)afterMomentum, components.AsReadOnly()));
+                    contact.IncomingMomentumUnits, (int)afterMomentum, components.AsReadOnly())
+                {
+                    ContributesToDisplacement = movesTarget,
+                    ScalarControls = input.UseScalarImpact ? contact.ControlEffects : AttackControlEffects.None
+                });
             }
 
             // —— 步骤 2：按通道求和（规范排序；check ed long，最后只转换一次到逻辑血量域）——
@@ -329,14 +383,26 @@ namespace ProjectHero.Logic.Combat
                     "totalDamageQ10=" + totalDamageQ10.ToString(CultureInfo.InvariantCulture));
 
             // —— 步骤 3/4：控制阈值、有向合力、击退 ——
-            bool hasDirection = MomentumRuleTable.TrySelectResultantDirection(resultantX, resultantY,
-                out GridDirection direction, out long maxDot);
-            // 裁定 5（读法 B）：方向向量是 1024 标度、动量是**已量化的** MomentumUnits，
-            // 因此 maxDot = 1024² × Σ(m·cosθ)；必须除两次 1024 才回到动量域（强度 = Σm·cosθ）。
-            // 只除一次会得到 1024× 偏大的强度（单个 1000 动量对齐攻击 ⇒ 1024×1000 ⇒ 荒谬步数）。
-            long resultantMomentumUnits = hasDirection
-                ? maxDot / (MomentumRuleTable.Q10One * MomentumRuleTable.Q10One)
-                : 0L;
+            bool hasDirection;
+            GridDirection direction;
+            long resultantMomentumUnits;
+            if (input.UseScalarImpact)
+            {
+                direction = displacementDirection;
+                hasDirection = largestDisplacement > 0 && !conflictingDirections;
+                resultantMomentumUnits = hasDirection ? largestDisplacement : 0;
+                DirectionVectorQ10 vector = MomentumRuleTable.DirectionVectorQ10(direction);
+                resultantX = checked(vector.X * resultantMomentumUnits);
+                resultantY = checked(vector.Y * resultantMomentumUnits);
+            }
+            else
+            {
+                hasDirection = MomentumRuleTable.TrySelectResultantDirection(resultantX, resultantY,
+                    out direction, out long maxDot);
+                // Both direction vectors have Q10 scale, so remove that scale twice.
+                resultantMomentumUnits = hasDirection
+                    ? maxDot / (MomentumRuleTable.Q10One * MomentumRuleTable.Q10One) : 0L;
+            }
             long knockbackSteps = hasDirection
                 ? resultantMomentumUnits / input.ControlResistanceUnits
                 : 0L;
@@ -345,7 +411,7 @@ namespace ProjectHero.Logic.Combat
                     "knockbackSteps=" + knockbackSteps.ToString(CultureInfo.InvariantCulture));
 
             long staggerThreshold = input.ControlResistanceUnits;
-            long knockdownThreshold = ((long)input.ControlResistanceUnits * 3L + 1L) / 2L;   // ceil(3n/2)
+            long knockdownThreshold = input.UseScalarImpact ? staggerThreshold : (staggerThreshold * 3L + 1L) / 2L;
 
             return new TargetAggregateResolution(
                 input.TargetUnitId,
@@ -361,9 +427,28 @@ namespace ProjectHero.Logic.Combat
                 input.ControlResistanceUnits,
                 staggerThreshold,
                 knockdownThreshold,
-                totalImpactUnits >= staggerThreshold,
-                totalImpactUnits >= knockdownThreshold,
-                (int)knockbackSteps);
+                interruptImpactUnits >= staggerThreshold,
+                knockdownImpactUnits >= knockdownThreshold,
+                (int)knockbackSteps)
+            {
+                KnockdownImpactUnits = input.UseScalarImpact ? knockdownImpactUnits : 0,
+                InterruptImpactUnits = input.UseScalarImpact ? interruptImpactUnits : 0,
+                SelectedDisplacementSource = input.UseScalarImpact && knockbackSteps > 0
+                    ? new ActionPlanId(displacementPlanId) : default
+            };
+        }
+
+        private static void RecordControlImpact(Dictionary<long, long> byAttack, long planId, long impact, ref long total)
+        {
+            if (byAttack == null)
+            {
+                total = checked(total + impact);
+                return;
+            }
+            byAttack.TryGetValue(planId, out long previous);
+            if (impact <= previous) return;
+            byAttack[planId] = impact;
+            total = checked(total + impact - previous);
         }
 
         /// <summary>
@@ -379,7 +464,8 @@ namespace ProjectHero.Logic.Combat
             IReadOnlyList<DamageComponentSpec> components,
             AttackTagMask attackTags,
             GuardPayloadSpec guard,
-            BlockPayloadSpec block)
+            BlockPayloadSpec block,
+            AttackControlEffects controlEffects = AttackControlEffects.All)
         {
             var channelResistance = new Dictionary<DamageChannelId, int>();
             if (components != null)
@@ -425,7 +511,8 @@ namespace ProjectHero.Logic.Combat
 
             var requiredTag = block != null ? DamageTagMask.Blockable : guard != null ? DamageTagMask.Guardable : DamageTagMask.None;
             return new TargetContact(key, incomingDirection, incomingMomentumUnits, momentumResistance,
-                channelResistance, components, requiredTag, guard != null && block == null);
+                channelResistance, components, requiredTag, guard != null && block == null)
+            { ControlEffects = controlEffects };
         }
 
         private const int TickQuantizationQ10 = MomentumQuantizer.HealthQ10PerLifePoint;

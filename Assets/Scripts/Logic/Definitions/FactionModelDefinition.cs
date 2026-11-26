@@ -121,6 +121,7 @@ namespace ProjectHero.Logic.Definitions
     {
         private readonly FactionModelDefinition _model;
         private readonly Dictionary<UnitId, FactionId> _unitFactions;
+        private readonly HashSet<UnitId> _environmentUnits = new();
 
         public FactionRelationResolver(FactionModelDefinition model, IReadOnlyDictionary<UnitId, FactionId> unitFactions)
         {
@@ -146,11 +147,17 @@ namespace ProjectHero.Logic.Definitions
 
         public bool HasUnit(UnitId unitId) => _unitFactions.ContainsKey(unitId);
 
-        internal void RegisterCreatedUnit(UnitId unitId, FactionId factionId)
+        internal void RegisterCreatedUnit(UnitId unitId, FactionId factionId, UnitTraits traits)
         {
             if (!unitId.IsValid || _unitFactions.ContainsKey(unitId) || !_model.ContainsFaction(factionId))
                 throw new LogicDefinitionException("DYNAMIC_SPAWN_FACTION_REGISTRATION_INVALID", unitId.ToString());
             _unitFactions.Add(unitId, factionId);
+            RegisterUnitTraits(unitId, traits);
+        }
+
+        internal void RegisterUnitTraits(UnitId unitId, UnitTraits traits)
+        {
+            if (!traits.IsCombatant) _environmentUnits.Add(unitId);
         }
 
         public UnitRelation Classify(UnitId sourceUnitId, UnitId targetUnitId)
@@ -179,6 +186,8 @@ namespace ProjectHero.Logic.Definitions
         public bool Allows(TargetRelationMask allowedRelations, UnitId sourceUnitId, UnitId targetUnitId)
         {
             UnitRelation relation = Classify(sourceUnitId, targetUnitId);
+            if (_environmentUnits.Contains(targetUnitId))
+                return (allowedRelations & TargetRelationMask.Environment) != 0;
             return (allowedRelations & ToMask(relation)) != 0;
         }
 

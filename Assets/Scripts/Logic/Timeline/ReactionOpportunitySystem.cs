@@ -251,6 +251,8 @@ namespace ProjectHero.Logic.Timeline
 
         /// <summary>事件发射端口（装配方接到 <c>LogicEventOutbox.Emit</c>）。未注入时事件只进内部缓冲。</summary>
         public Action<Func<long, LogicEvent>> EventSink { get; set; }
+        internal Func<UnitId, bool> IsDefenderInForcedDisplacement { get; set; }
+        public const string DefenderInForcedDisplacement = "REACTION_DEFENDER_IN_FORCED_DISPLACEMENT";
 
         /// <summary>预留释放通知接收方（任务 07）。</summary>
         public IReactionReservationReleaseSink ReservationReleaseSink { get; set; }
@@ -377,6 +379,14 @@ namespace ProjectHero.Logic.Timeline
         /// 否则返回稳定拒绝码，且<strong>不写任何状态</strong>。
         /// </summary>
         public string TryOpenForTelegraph(ActionPlan sourcePlan, long tick, List<ReactionOpportunityRuntime> opened)
+            => TryOpenForThreat(sourcePlan, tick, opened, null);
+
+        internal void OpenForForcedRelocation(ActionPlan sourcePlan, long tick, List<ReactionOpportunityRuntime> opened,
+            ISet<long> relocatedUnits)
+            => TryOpenForThreat(sourcePlan, tick, opened, relocatedUnits);
+
+        private string TryOpenForThreat(ActionPlan sourcePlan, long tick, List<ReactionOpportunityRuntime> opened,
+            ISet<long> relocatedUnits)
         {
             if (sourcePlan == null || !sourcePlan.IsOrdinary) return ReactionOpportunityCodes.SOURCE_NOT_ATTACK;
             if (sourcePlan.ActionType != ActionType.Attack) return ReactionOpportunityCodes.SOURCE_NOT_ATTACK;
@@ -387,9 +397,11 @@ namespace ProjectHero.Logic.Timeline
             var attack = spec.Payload as AttackPayloadSpec;
             if (attack == null) return ReactionOpportunityCodes.SOURCE_NOT_ATTACK;
 
-            // 首版 TelegraphTick = StartTick。
-            long telegraphTick = sourcePlan.StartTick;
-            if (tick < telegraphTick) return ReactionOpportunityCodes.SOURCE_NOT_TELEGRAPHED;
+            bool afterRelocation = relocatedUnits != null;
+            if (afterRelocation && attack.TargetPolicy != TargetPolicy.AllTargetsInArea)
+                return ReactionOpportunityCodes.NO_REACHABLE_OPTION;
+            if (tick < sourcePlan.StartTick) return ReactionOpportunityCodes.SOURCE_NOT_TELEGRAPHED;
+            long telegraphTick = afterRelocation ? tick : sourcePlan.StartTick;
 
             if ((attack.Tags & AttackTagMask.Reactable) == 0)
                 return ReactionOpportunityCodes.ATTACK_NOT_REACTABLE;
@@ -398,7 +410,7 @@ namespace ProjectHero.Logic.Timeline
             if (lead < _definition.ReactionRules.MinimumReactionLeadTicks)
                 return ReactionOpportunityCodes.LEAD_TOO_SHORT;
 
-            if (FindBySource(sourcePlan.ActionPlanId) != null)
+            if (!afterRelocation && FindBySource(sourcePlan.ActionPlanId) != null)
                 return ReactionOpportunityCodes.SOURCE_ALREADY_OPEN;
 
             List<UnitId> candidates = CollectDefenders(sourcePlan, attack, telegraphTick);
@@ -406,10 +418,14 @@ namespace ProjectHero.Logic.Timeline
 
             long ingressLead = _definition.ReactionRules.CommandIngressLeadTicks;
             bool anyCreated = false;
+            bool attackerRelocated = afterRelocation && relocatedUnits.Contains(sourcePlan.OwnerUnitId.Value);
 
             for (int c = 0; c < candidates.Count; c++)
             {
                 UnitId defender = candidates[c];
+                if (afterRelocation && ((!attackerRelocated && !relocatedUnits.Contains(defender.Value))
+                    || _active.Exists(entry => entry.SourceAttackPlanId == sourcePlan.ActionPlanId && entry.DefenderUnitId == defender)))
+                    continue;
                 List<ReactionOptionRuntime> options = BuildOptions(sourcePlan, attack, defender, telegraphTick, ingressLead);
                 if (options.Count == 0) continue;
 
@@ -470,6 +486,8 @@ namespace ProjectHero.Logic.Timeline
             var opportunity = FindById(opportunityId);
             if (opportunity == null || !opportunity.IsOpen)
                 return new ReactionStartPreview(0,0,0,0,null,ReactionCodes.OPPORTUNITY_NOT_OPEN);
+            if (IsDefenderInForcedDisplacement?.Invoke(opportunity.DefenderUnitId) == true)
+                return new ReactionStartPreview(0, 0, opportunity.SourceImpactTick, 0, null, DefenderInForcedDisplacement);
             ReactionOptionRuntime selected = null;
             foreach (var option in opportunity.Options)
                 if (option.ReactionActionSpecId == optionSpecId) selected = option;
@@ -554,6 +572,8 @@ namespace ProjectHero.Logic.Timeline
             if (opportunity.DefenderUnitId != defenderUnitId)
                 return ReactionCodes.OPPORTUNITY_DEFENDER_MISMATCH;
             if (!opportunity.IsOpen) return ReactionOpportunityCodes.OPPORTUNITY_NOT_OPEN;
+            if (IsDefenderInForcedDisplacement?.Invoke(defenderUnitId) == true)
+                return DefenderInForcedDisplacement;
 
             ReactionOptionRuntime option = null;
             for (int i = 0; i < opportunity.Options.Count; i++)
@@ -940,6 +960,7 @@ namespace ProjectHero.Logic.Timeline
             if (!hasBlockable && !hasDodgeable) return options;
 
             _factory.TryGetOwnerFacts(defender, out ActionPlanOwnerFacts defenderFacts);
+            if (defenderFacts.Traits.Control == UnitControl.Passive) return options;
             ActionSetDefinition actionSet = string.IsNullOrEmpty(defenderFacts.ActionSetId.Value)
                 ? null
                 : _definition.FindActionSet(defenderFacts.ActionSetId);

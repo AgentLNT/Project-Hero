@@ -6,6 +6,7 @@ using System.Linq;
 using ProjectHero.Core.Compatibility.Runtime;
 using ProjectHero.Core.Compatibility.Runtime.Input;
 using ProjectHero.Logic.Actions;
+using ProjectHero.Logic.Combat;
 using ProjectHero.Logic.Commands;
 using ProjectHero.Logic.Events;
 using ProjectHero.Logic.Grid;
@@ -119,22 +120,28 @@ namespace ProjectHero.UnityView
         public string PlayerControllerId => _controllerId;
         public BattleViewRegistry Registry => _registry;
         public UnitId SelectedActingUnit => _owner;
+        internal bool CanShowCombatTrack(long id)
+            => Model.Decision?.VisibleUnits.Any(unit => unit.UnitId == id && unit.IsAlive && unit.Traits.IsCombatant) == true;
+
         public string UnitLabel(long id)
         {
             if (Model.Decision == null) return "单位 " + id;
-            if (!Model.Decision.VisibleUnits.Any(u => u.UnitId == id)) return "预计单位 " + id;
+            var unit = Model.Decision.VisibleUnits.FirstOrDefault(u => u.UnitId == id);
+            if (unit == null) return "预计单位 " + id;
+            if (unit.Traits.Kind == UnitKind.Wall) return "墙 " + id;
+            if (unit.Traits.Kind == UnitKind.Object) return "物件 " + id;
             string group = TrackSelectionModel.Group(Model.Decision, id) switch { 0 => "我方", 1 => "友方", 3 => "敌方", _ => "中立" };
             return group + " · 单位 " + id;
         }
         public void SelectTrack(long id, bool control)
         {
             if (IsAwaitingWorldSelection || Clock.State == BattleClockState.SystemPaused || Clock.State == BattleClockState.Ended) return;
-            if (!Model.Decision.VisibleUnits.Any(u => u.UnitId == id && u.IsAlive)) return;
+            if (!CanShowCombatTrack(id)) return;
             TrackSelection.Click(id, control); SyncPrimary();
         }
         public void FocusTrack(long id)
         {
-            if (IsAwaitingWorldSelection || Clock.State == BattleClockState.SystemPaused) return;
+            if (IsAwaitingWorldSelection || Clock.State == BattleClockState.SystemPaused || !CanShowCombatTrack(id)) return;
             TrackSelection.Focus(id); SyncPrimary();
         }
         public void AddContactTrack(long id)
@@ -326,7 +333,7 @@ namespace ProjectHero.UnityView
         {
             _registry.SetPresentationPaused(Clock.IsPaused); _feedbackPlayer?.SetPresentationPaused(Clock.IsPaused);
             string focus = Model.Decision?.Tick + ":" + Clock.FocusUnitId + ":" + Clock.PauseReason;
-            if (Clock.FocusUnitId > 0 && Clock.State == BattleClockState.TacticalPlanning && Model.Decision != null && focus != _autoFocusSignature)
+            if (Clock.State == BattleClockState.TacticalPlanning && CanShowCombatTrack(Clock.FocusUnitId) && focus != _autoFocusSignature)
             {
                 _autoFocusSignature = focus; TrackSelection.Focus(Clock.FocusUnitId, false);
                 if (Clock.PauseReason == "发现可响应的公开威胁")
@@ -460,7 +467,7 @@ namespace ProjectHero.UnityView
                 && _camera.pixelRect.Contains(Mouse.current.position.ReadValue()) && !(EventSystem.current?.IsPointerOverGameObject() ?? false)
                 && _grid.TryPick(_camera.ScreenPointToRay(Mouse.current.position.ReadValue()), out var selectedCell))
             {
-                foreach (var unit in Model.Decision.VisibleUnits.Where(u => u.IsAlive).OrderBy(u => u.UnitId))
+                foreach (var unit in Model.Decision.VisibleUnits.Where(u => u.IsAlive && u.Traits.IsCombatant).OrderBy(u => u.UnitId))
                     if (VolumeFootprint.ResolveCells(Model.Decision.Definition.VolumeDirectionsOf(new UnitDefinitionId(unit.DefinitionId)),
                         new GridPoint(unit.X, unit.Y), (GridDirection)unit.Facing).Contains(selectedCell))
                     { SelectTrack(unit.UnitId, M2TimelineView.ControlPressed()); break; }
@@ -540,7 +547,9 @@ namespace ProjectHero.UnityView
             var text = new StringBuilder();
             foreach (var unit in Model.Decision.VisibleUnits)
             {
-                text.Append("单位 ").Append(unit.UnitId).Append("  生命 ").Append(unit.HealthQ10 / 1024f).Append("  ").Append(unit.StateValue);
+                if (!unit.Traits.IsCombatant) continue;
+                text.Append("单位 ").Append(unit.UnitId).Append("  生命 ").Append(unit.HealthQ10 / 1024f)
+                    .Append("  ").Append(unit.StateValue);
                 foreach (var ledger in Model.Adrenaline)
                     if (ledger.UnitId == unit.UnitId)
                         text.Append("  肾上腺素 ").Append(ledger.AvailableAdrenaline).Append("  预留 ").Append(ledger.ReservedTotal);
@@ -597,6 +606,9 @@ namespace ProjectHero.UnityView
                 text.Append($"{M1HudView.ActionName(plan.ActionSpecId)}  {plan.StartTick / 60d:0.000}s → {plan.EndTick / 60d:0.000}s\n");
             }
             if (Model.LastRejection != null) text.Append("\n").Append(M1HudView.Explain(Model.LastRejection));
+            if (_target.IsValid && Model.Decision.VisibleUnits.FirstOrDefault(unit => unit.UnitId == _target.Value)
+                is { IsAlive: true } target && !target.Traits.IsCombatant)
+                text.Append($"\n{UnitLabel(target.UnitId)} · 耐久 {target.HealthQ10 / 1024d:0.##}");
             if (_candidate != null && CandidatePreview?.Succeeded == true && Clock.State == BattleClockState.TacticalPlanning
                 && Model.Decision.FindAction(_selectedAction)?.Type == ActionType.Attack)
             {
@@ -611,14 +623,25 @@ namespace ProjectHero.UnityView
                     if (outcomes.Length == 0) text.Append(ConfiguredAttack != null && result.KnownHorizonTick.HasValue && ConfiguredAttack.ImpactTick >= result.KnownHorizonTick
                         ? "\n命中时刻超出已知视界 · 结果未知" : "\n视界内无预计接触");
                     foreach (var outcome in outcomes) text.Append($"\n◆ {outcome.Outcome} · {UnitLabel(outcome.TargetUnitId)}");
-                    foreach (var hit in hits) text.Append($"\n{UnitLabel(hit.TargetUnitId)} · 伤害 {hit.DamageQ10 / 1024d:0.##}");
+                    foreach (var hit in hits)
+                        text.Append($"\n{UnitLabel(hit.TargetUnitId)} · {(hit.IsWallImpact ? "撞墙伤害" : "伤害")} {hit.DamageQ10 / 1024d:0.##}");
+                    var rewards = result.AdrenalineRewards.Where(reward => hits.Any(hit =>
+                        hit.Tick == reward.Tick && hit.TargetUnitId == reward.DamagedUnitId.Value));
+                    foreach (var group in rewards.GroupBy(reward => reward.RecipientUnitId))
+                        text.Append($"\n{UnitLabel(group.Key.Value)} · 同刻预计肾上腺素 +{group.Sum(reward => reward.Points)}");
                     foreach (var stop in result.Knockbacks.Where(k => k.TemporaryPlanKeys.Contains(key)))
                         text.Append($"\n击退 → ({stop.To.X},{stop.To.Y}) · {M4StopReason(stop.StopReason)} {stop.AppliedSteps}/{stop.RequestedSteps}格");
+                    foreach (var control in result.Controls.Where(c => c.TemporaryPlanKeys.Contains(key)))
+                    {
+                        double impact = control.ImpactUnits / (double)ProjectHero.Logic.Combat.MomentumQuantizer.MomentumUnitsPerLegacyMomentum;
+                        text.Append($"\n{UnitLabel(control.TargetUnitId)} · 合击冲击 {impact:0.##}");
+                        text.Append(control.RiseTick is long riseTick ? $" · {riseTick / 60d:0.000}s 起身" : " · 打断");
+                    }
                 }
             }
             foreach (var capability in Model.HudPreviews?.OpponentCapabilities ?? Array.Empty<OpponentReactionCapability>())
             {
-                if (!capability.IsWithinKnownHorizon) continue;
+                if (!capability.IsWithinKnownHorizon || !CanShowCombatTrack(capability.TargetUnitId)) continue;
                 text.Append("\nAttack ").Append(capability.AttackPlanId).Append(" -> Unit ").Append(capability.TargetUnitId).Append(": ");
                 if (!capability.CanBlock && !capability.CanDodge) text.Append("Opponent cannot react");
                 else text.Append(capability.CanBlock ? "Can Block " : "").Append(capability.CanDodge ? "Can Dodge " : "");
@@ -631,6 +654,7 @@ namespace ProjectHero.UnityView
             ProjectHero.Logic.Combat.ForcedDisplacementStopReason.Completed => "完整距离",
             ProjectHero.Logic.Combat.ForcedDisplacementStopReason.Boundary => "边界阻挡",
             ProjectHero.Logic.Combat.ForcedDisplacementStopReason.StaticObstacle => "障碍阻挡",
+            ProjectHero.Logic.Combat.ForcedDisplacementStopReason.WallUnit => "墙体阻挡",
             ProjectHero.Logic.Combat.ForcedDisplacementStopReason.OccupiedUnit => "单位阻挡",
             _ => "同批位移冲突"
         };
@@ -700,6 +724,8 @@ namespace ProjectHero.UnityView
                     .Append("; final damage: ").Append(damage.AfterBlockDamageQ10);
                 _lastDamageDebug = text.ToString();
             }
+            else if (cue.Fact is WallImpactDamageEvent impact)
+                _lastDamageDebug = $"\nWall impact Q10: {impact.AppliedDamageQ10} / {impact.RawDamageQ10}";
         }
         private GameObject CreateButton(RectTransform parent, string label, UnityEngine.Events.UnityAction click)
         {

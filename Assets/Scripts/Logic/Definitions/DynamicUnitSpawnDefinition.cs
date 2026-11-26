@@ -24,8 +24,11 @@ namespace ProjectHero.Logic.Definitions
                 bool sourceExists = false;
                 foreach (var slot in encounter.Slots)
                     if (slot.SlotId == spawn.SourceSlotId) sourceExists = true;
-                if (!sourceExists || definition.FindUnit(spawn.DefinitionId) == null)
+                var unit = definition.FindUnit(spawn.DefinitionId);
+                if (!sourceExists || unit == null)
                     return "DYNAMIC_SPAWN_REFERENCE_UNKNOWN";
+                if (unit.Traits != default && UnitDefinitionValidation.Validate(unit) is string unitError)
+                    return unitError;
                 if (encounter.GridBoundary == null || !encounter.GridBoundary.Contains(spawn.Position)
                     || !GridDirectionInfo.IsValidIndex((int)spawn.Facing))
                     return "DYNAMIC_SPAWN_GEOMETRY_INVALID";
@@ -34,7 +37,7 @@ namespace ProjectHero.Logic.Definitions
                     || (policy.InheritSourceFaction && !string.IsNullOrEmpty(policy.FixedFactionId.Value))
                     || (!policy.InheritSourceFaction && !definition.FactionModel.ContainsFaction(policy.FixedFactionId)))
                     return DynamicSpawnFactionPolicy.DYNAMIC_SPAWN_POLICY_INVALID;
-                float health = definition.FindUnit(spawn.DefinitionId).InitialHealth;
+                float health = unit.InitialHealth;
                 double healthQ10 = Math.Round(health * 1024d, MidpointRounding.AwayFromZero);
                 if (float.IsNaN(health) || float.IsInfinity(health) || healthQ10 < 1 || healthQ10 > int.MaxValue)
                     return "DYNAMIC_SPAWN_HEALTH_INVALID";

@@ -46,6 +46,7 @@ namespace ProjectHero.Logic.Grid
         }
 
         private readonly GridBoundaryDefinition _boundary;
+        private readonly HashSet<GridPoint> _staticWalls;
         private readonly Dictionary<long, UnitRow> _rows = new Dictionary<long, UnitRow>();
         private readonly List<long> _unitIds = new List<long>();
 
@@ -65,9 +66,25 @@ namespace ProjectHero.Logic.Grid
         private readonly Dictionary<GridPoint, List<ReservationKey>> _reservationHolders =
             new Dictionary<GridPoint, List<ReservationKey>>();
 
-        public LogicGrid(GridBoundaryDefinition boundary)
+        public LogicGrid(GridBoundaryDefinition boundary, IReadOnlyList<GridPoint> staticWalls = null)
         {
             _boundary = boundary ?? throw new ArgumentNullException(nameof(boundary));
+            if (staticWalls == null || staticWalls.Count == 0) return;
+            _staticWalls = new HashSet<GridPoint>(staticWalls);
+            foreach (var cell in staticWalls)
+                if (!_boundary.Contains(cell))
+                    throw new LogicDefinitionException(LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS, "static wall " + cell);
+        }
+
+        internal bool HasStaticWall(GridPoint point) => _staticWalls?.Contains(point) == true;
+
+        internal bool TouchesStaticWall(GridPoint anchor, IReadOnlyList<GridPoint> cells)
+        {
+            if (_staticWalls == null) return false;
+            if (HasStaticWall(anchor)) return true;
+            foreach (var cell in cells)
+                if (HasStaticWall(cell)) return true;
+            return false;
         }
 
         /// <summary>Encounter 的合法网格边界（唯一的空间搜索边界）。</summary>
@@ -76,7 +93,7 @@ namespace ProjectHero.Logic.Grid
         /// <summary>Detached candidate workspace. Immutable geometry/records are shared; every writable index and row is copied.</summary>
         internal LogicGrid CopyForPreview()
         {
-            var copy = new LogicGrid(_boundary);
+            var copy = new LogicGrid(_boundary, _staticWalls == null ? null : new List<GridPoint>(_staticWalls));
             foreach (var pair in _rows)
             {
                 var row = pair.Value;
@@ -116,14 +133,14 @@ namespace ProjectHero.Logic.Grid
                 int iy = (int)y;
                 if (!GridPoint.IsValidParity(ix, iy)) continue;
                 var candidate = new GridPoint(ix, iy);
-                if (!_boundary.Contains(candidate)) continue;
+                if (!IsLegalGridPoint(candidate)) continue;
                 result.Add(candidate);
             }
             return result;
         }
 
         /// <summary>候选点是否同时满足奇偶与 Encounter 边界。</summary>
-        public bool IsLegalGridPoint(GridPoint point) => _boundary.Contains(point);
+        public bool IsLegalGridPoint(GridPoint point) => _boundary.Contains(point) && !HasStaticWall(point);
 
         // ————————————————————————————————————————————————————————————
         // 单位注册 / 注销
@@ -155,6 +172,7 @@ namespace ProjectHero.Logic.Grid
 
             if (!_boundary.Contains(origin))
                 return LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS;
+            if (HasStaticWall(origin)) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
 
             if (!GridDirectionInfo.IsValidIndex((int)facing))
                 return LogicGridCodes.LOGIC_GRID_VOLUME_TABLE_NOT_CANONICAL;
@@ -168,6 +186,7 @@ namespace ProjectHero.Logic.Grid
             // footprint 与现有权威占位相交 ⇒ 整体拒绝（不是"后写覆盖"）。
             for (int i = 0; i < cells.Count; i++)
             {
+                if (HasStaticWall(cells[i])) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
                 if (_cellOwner.TryGetValue(cells[i], out long owner) && owner != unitId.Value)
                     return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
             }
@@ -220,6 +239,7 @@ namespace ProjectHero.Logic.Grid
                 return LogicGridCodes.LOGIC_GRID_UNIT_ALREADY_REGISTERED;
             if (!_boundary.Contains(origin))
                 return LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS;
+            if (HasStaticWall(origin)) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
             if (!GridDirectionInfo.IsValidIndex((int)facing))
                 return LogicGridCodes.LOGIC_GRID_VOLUME_TABLE_NOT_CANONICAL;
             if (_cellOwner.TryGetValue(origin, out long owner) && owner != unitId.Value)
@@ -323,7 +343,7 @@ namespace ProjectHero.Logic.Grid
 
         /// <summary>该格是否被 <paramref name="ignore"/> 之外的单位占用（自身重叠不算阻塞）。</summary>
         public bool IsCellBlockedFor(GridPoint cell, UnitId ignore)
-            => _cellOwner.TryGetValue(cell, out long owner) && owner != ignore.Value;
+            => HasStaticWall(cell) || (_cellOwner.TryGetValue(cell, out long owner) && owner != ignore.Value);
 
         /// <summary>
         /// <strong>稳定区域查询</strong>：返回占用了任一给定格的全部单位（按 <c>UnitId</c> 升序）。
@@ -403,6 +423,7 @@ namespace ProjectHero.Logic.Grid
             if (reservation == null) return LogicGridCodes.LOGIC_GRID_RESERVATION_INTERVAL_INVALID;
             if (reservation.StepIndex < 0 || reservation.EndTick <= reservation.StartTick)
                 return LogicGridCodes.LOGIC_GRID_RESERVATION_INTERVAL_INVALID;
+            if (HasStaticWall(reservation.Cell)) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
             if (_reservations.ContainsKey(reservation.Key))
                 return LogicGridCodes.LOGIC_GRID_RESERVATION_DUPLICATE_KEY;
 
@@ -555,6 +576,7 @@ namespace ProjectHero.Logic.Grid
 
             IReadOnlyList<TrianglePoint> triangles = ResolveTriangles(row, to, facing);
             IReadOnlyList<GridPoint> cells = ResolveCells(row, to, facing);
+            if (TouchesStaticWall(to, cells)) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
             DeindexRow(row);
             for (int i = 0; i < cells.Count; i++)
             {
@@ -636,6 +658,7 @@ namespace ProjectHero.Logic.Grid
                 return LogicGridCodes.LOGIC_GRID_VOLUME_TABLE_NOT_CANONICAL;
             }
 
+            if (TouchesStaticWall(to, cells)) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
             for (int i = 0; i < cells.Count; i++)
             {
                 if (!_boundary.Contains(cells[i])) return LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS;
@@ -655,18 +678,22 @@ namespace ProjectHero.Logic.Grid
         /// the whole path query; this does not introduce time-dependent pathfinding.</summary>
         internal bool DestinationOverlapsReservedBody(UnitId unitId, GridPoint to, GridDirection facing)
         {
-            if (!_rows.TryGetValue(unitId.Value, out UnitRow mover)) return false;
+            using var intersecting = EnumerateReservedBodiesOverlapping(unitId, to, facing).GetEnumerator();
+            return intersecting.MoveNext();
+        }
+
+        internal IEnumerable<Reservation> EnumerateReservedBodiesOverlapping(UnitId unitId, GridPoint to, GridDirection facing)
+        {
+            if (!_rows.TryGetValue(unitId.Value, out UnitRow mover)) yield break;
             var cells = new HashSet<GridPoint>(ResolveCells(mover, to, facing));
             var triangles = new HashSet<TrianglePoint>(ResolveTriangles(mover, to, facing));
             foreach (var reservation in _reservations.Values)
             {
                 if (reservation.UnitId == unitId || !_rows.TryGetValue(reservation.UnitId.Value, out UnitRow other)) continue;
-                foreach (var cell in ResolveCells(other, reservation.Cell, other.Facing))
-                    if (cells.Contains(cell)) return true;
-                foreach (var triangle in ResolveTriangles(other, reservation.Cell, other.Facing))
-                    if (triangles.Contains(triangle)) return true;
+                if (cells.Overlaps(ResolveCells(other, reservation.Cell, other.Facing))
+                    || triangles.Overlaps(ResolveTriangles(other, reservation.Cell, other.Facing)))
+                    yield return reservation;
             }
-            return false;
         }
 
         /// <summary>登记/清除该单位下一次移动的目的格（启动门禁空间查询的只读输入）。</summary>
@@ -719,6 +746,8 @@ namespace ProjectHero.Logic.Grid
         {
             if (!_boundary.Contains(destination))
                 return SpaceBlockQueryResult.Terminal("destination-out-of-bounds:" + destination);
+            if (HasStaticWall(destination))
+                return SpaceBlockQueryResult.Terminal("destination-static-wall:" + destination);
 
             bool retryable = false;
             long releaseTick = long.MinValue;
@@ -892,6 +921,7 @@ namespace ProjectHero.Logic.Grid
                     return LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS;
                 }
 
+                if (TouchesStaticWall(to, cells)) return LogicGridCodes.LOGIC_GRID_OCCUPIED_BY_OTHER;
                 for (int c = 0; c < cells.Count; c++)
                 {
                     if (!_boundary.Contains(cells[c])) return LogicGridCodes.LOGIC_GRID_OUT_OF_BOUNDS;

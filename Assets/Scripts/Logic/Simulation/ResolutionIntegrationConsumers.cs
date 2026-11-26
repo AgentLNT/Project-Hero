@@ -63,14 +63,17 @@ namespace ProjectHero.Logic.Simulation
         private readonly Func<StagedConflictResolution> _resolutionSource;
         private readonly Func<DamageCommitReport> _commitReportSource;
         private readonly bool _attributeActualLoss;
+        private readonly Func<UnitId, bool> _countsForDamageAccrual;
 
         public AdrenalineAccrualFactSource(
             Func<StagedConflictResolution> resolutionSource,
-            Func<DamageCommitReport> commitReportSource, bool attributeActualLoss = false)
+            Func<DamageCommitReport> commitReportSource, bool attributeActualLoss = false,
+            Func<UnitId, bool> countsForDamageAccrual = null)
         {
             _resolutionSource = resolutionSource ?? throw new ArgumentNullException(nameof(resolutionSource));
             _commitReportSource = commitReportSource ?? throw new ArgumentNullException(nameof(commitReportSource));
             _attributeActualLoss = attributeActualLoss;
+            _countsForDamageAccrual = countsForDamageAccrual;
         }
 
         /// <summary>最近一次构建出的规范事实（只读观察面；未构建时为空）。</summary>
@@ -93,7 +96,7 @@ namespace ProjectHero.Logic.Simulation
                 for (int i = 0; i < report.Units.Count; i++)
                 {
                     UnitDamageCommit commit = report.Units[i];
-                    if (commit == null) continue;
+                    if (commit == null || _countsForDamageAccrual?.Invoke(commit.UnitId) == false) continue;
                     Require(accumulators, commit.UnitId).ReceivedDamageQ10 += commit.DamageQ10;
                 }
             }
@@ -146,50 +149,61 @@ namespace ProjectHero.Logic.Simulation
         /// "被 Dodge 回避 / 被 Block 完全抵抗 / 因参战 Clash 而失效"的攻击<strong>不会</strong>
         /// 出现在这里——它们的最终伤害本来就是 0，而不是"先加再减"。
         /// </summary>
-        private static void AccumulateDealtDamage(List<Accumulator> accumulators,
+        private void AccumulateDealtDamage(List<Accumulator> accumulators,
             StagedConflictResolution resolution)
         {
             for (int i = 0; i < resolution.RemainingHits.Count; i++)
             {
                 RemainingHitResolution hit = resolution.RemainingHits[i];
-                if (hit == null || hit.Aggregate == null) continue;
+                if (hit == null || hit.Aggregate == null || _countsForDamageAccrual?.Invoke(hit.Aggregate.TargetUnitId) == false)
+                    continue;
                 Require(accumulators, hit.AttackerUnitId).DealtDamageQ10 += hit.Aggregate.TotalDamageQ10;
             }
         }
 
-        private static void AccumulateActualDealtDamage(List<Accumulator> accumulators,
+        private void AccumulateActualDealtDamage(List<Accumulator> accumulators,
             StagedConflictResolution resolution, DamageCommitReport report)
         {
             if (report == null) return;
             foreach (var commit in report.Units)
             {
+                if (_countsForDamageAccrual?.Invoke(commit.UnitId) == false) continue;
                 TargetAggregateResolution aggregate = null;
                 foreach (var candidate in resolution.Aggregations)
                     if (candidate.TargetUnitId == commit.UnitId) { aggregate = candidate; break; }
                 if (aggregate == null || aggregate.TotalDamageQ10 == 0) continue;
-                var contacts = new List<TargetContactResolution>(aggregate.Contacts);
-                contacts.Sort((a, b) => a.Key.CompareTo(b.Key));
-                var shares = new long[contacts.Count];
-                long allocated = 0;
-                for (int i = 0; i < contacts.Count; i++)
-                {
-                    long damage = 0;
-                    foreach (var component in contacts[i].Components) damage = checked(damage + component.AfterActionResistanceQ10);
-                    shares[i] = checked(commit.DamageQ10 * damage) / aggregate.TotalDamageQ10;
-                    allocated = checked(allocated + shares[i]);
-                }
-                // Sum of floor shares leaves fewer than contact count quanta. Zero contributors never receive one.
-                long remainder = commit.DamageQ10 - allocated;
-                for (int i = 0; i < contacts.Count && remainder > 0; i++)
-                {
-                    bool positive = false;
-                    foreach (var component in contacts[i].Components) positive |= component.AfterActionResistanceQ10 > 0;
-                    if (positive) { shares[i]++; remainder--; }
-                }
-                if (remainder != 0) throw new LogicDefinitionException(CombatValuesV05.Invalid, "damage attribution mismatch");
-                for (int i = 0; i < contacts.Count; i++)
-                    Require(accumulators, new UnitId(contacts[i].Key.SourceUnitId)).DealtDamageQ10 += shares[i];
+                foreach (var share in AllocateActualContactDamage(aggregate, commit.DamageQ10))
+                    Require(accumulators, share.Source).DealtDamageQ10 += share.DamageQ10;
             }
+        }
+
+        internal static IEnumerable<(UnitId Source, long DamageQ10)> AllocateActualContactDamage(
+            TargetAggregateResolution aggregate, long actualDamageQ10)
+        {
+            var contacts = new List<TargetContactResolution>(aggregate.Contacts);
+            contacts.Sort((a, b) => a.Key.CompareTo(b.Key));
+            var shares = new long[contacts.Count];
+            long allocated = 0;
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                long damage = 0;
+                foreach (var component in contacts[i].Components)
+                    damage = checked(damage + component.AfterActionResistanceQ10);
+                shares[i] = checked(actualDamageQ10 * damage) / aggregate.TotalDamageQ10;
+                allocated = checked(allocated + shares[i]);
+            }
+
+            // The remaining quanta go to positive contributors in canonical contact order.
+            long remainder = actualDamageQ10 - allocated;
+            for (int i = 0; i < contacts.Count && remainder > 0; i++)
+            {
+                bool positive = false;
+                foreach (var component in contacts[i].Components) positive |= component.AfterActionResistanceQ10 > 0;
+                if (positive) { shares[i]++; remainder--; }
+            }
+            if (remainder != 0) throw new LogicDefinitionException(CombatValuesV05.Invalid, "damage attribution mismatch");
+            for (int i = 0; i < contacts.Count; i++)
+                yield return (new UnitId(contacts[i].Key.SourceUnitId), shares[i]);
         }
 
         /// <summary>「每单位每 ConflictGroup 至多一个 Clash 成功键」。</summary>
@@ -294,10 +308,12 @@ namespace ProjectHero.Logic.Simulation
     public sealed class DisplacementRequestBuilder : IForcedDisplacementRequestBuilder
     {
         private readonly Func<DamageCommitReport> _commitReportSource;
+        private readonly bool _useResultantMomentum;
 
-        public DisplacementRequestBuilder(Func<DamageCommitReport> commitReportSource)
+        public DisplacementRequestBuilder(Func<DamageCommitReport> commitReportSource, bool useResultantMomentum = false)
         {
             _commitReportSource = commitReportSource ?? throw new ArgumentNullException(nameof(commitReportSource));
+            _useResultantMomentum = useResultantMomentum;
         }
 
         /// <summary>最近一次构建出的请求（只读观察面；未构建时为空）。</summary>
@@ -330,8 +346,12 @@ namespace ProjectHero.Logic.Simulation
                     commit.UnitId,
                     commit.ResultantDirection.Value,
                     commit.KnockbackSteps,
-                    commit.TotalImpactUnits,
-                    commit.ConflictGroupKey));
+                    _useResultantMomentum ? commit.ResultantMomentumUnits : commit.TotalImpactUnits,
+                    commit.ConflictGroupKey)
+                {
+                    ControlResistanceUnits = _useResultantMomentum ? commit.ControlResistanceUnits : 0,
+                    SourcePlanId = _useResultantMomentum ? commit.MomentumSourcePlanId : default
+                });
             }
 
             requests.Sort((a, b) => a.TargetUnitId.Value.CompareTo(b.TargetUnitId.Value));

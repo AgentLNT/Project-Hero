@@ -21,6 +21,31 @@ namespace ProjectHero.Logic.AI
         public long? NoDefenseDamageDeltaQ10 { get; init; }
         public string WorstDefenseKey { get; init; }
         public IReadOnlyList<AiDefenseEvaluation> DefenseResponses { get; init; } = Array.Empty<AiDefenseEvaluation>();
+        public string SampleGroup { get; init; }
+        public long ProbabilityBeforeQ32 { get; init; }
+        public long ProbabilityAfterQ32 { get; init; }
+        public bool Sampled { get; init; }
+        public long DamageUtility { get; init; }
+        public long HealthUtility { get; init; }
+        public long ResourceUtility { get; init; }
+        public long SurvivalUtility { get; init; }
+        public long OverkillQ10 { get; init; }
+        public int ActorHealthQ10 { get; init; }
+        public long ActorMaximumHealthQ10 { get; init; }
+        public int AvailableResource { get; init; }
+        public long ResourceResetTick { get; init; }
+        public IReadOnlyList<AiTargetDefense> TargetDefenses { get; init; } = Array.Empty<AiTargetDefense>();
+        public string PlanKind { get; init; }
+        public string FollowUpSpecId { get; init; }
+        public long FollowUpTargetId { get; init; }
+        public long FirstStepEndTick { get; init; }
+        public long FollowUpRequestTick { get; init; } = -1;
+        public long FollowUpStartTick { get; init; } = -1;
+        public long PressureUtility { get; init; }
+        public long ApproachUtility { get; init; }
+        public bool IntentEligible { get; init; } = true;
+        public long BridgePlanId { get; init; }
+        public long? OrdinaryEvasionScoreCap { get; init; }
     }
 
     public sealed record AiDefenseEvaluation(string Key, string Defender, long SubmittedAfterTick, ActionType Type,
@@ -29,11 +54,12 @@ namespace ProjectHero.Logic.AI
     /// <summary>Versioned public-world utility; opt-in attacks also compare bounded single-defense replies.</summary>
     public static class AiTacticalPolicy
     {
-        public const string Version = "tactical-public-kernel-v2";
+        public const string Version = "tactical-public-kernel-v4";
         public const int OrdinaryThinkInterval = 6;
 
         public static AiDecision Decide(AiDecisionContext context, ulong seed, AiPolicyKind policy)
         {
+            if (context.ForecastSettings?.Sampling != null) return AiPressurePolicy.Decide(context, seed, policy);
             if (policy == AiPolicyKind.Legacy) return AiDecisionFunction.Decide(context, seed);
             if (!Enum.IsDefined(typeof(AiPolicyKind), policy)) throw new ArgumentOutOfRangeException(nameof(policy));
             var rng = new DeterministicRng(AiDecisionFunction.DeriveSeed(seed, context.ControllerId.Value, context.Snapshot.Tick));
@@ -47,12 +73,12 @@ namespace ProjectHero.Logic.AI
             if (context.ForecastFactory == null) return Finish("FORECAST_UNAVAILABLE");
             using var forecast = context.ForecastFactory(context.Snapshot);
             AiActionForecast baseline = null;
-            // Reactions and ordinary actions never compete. A legal but unhelpful reaction can choose Wait.
             var choice = Choose(reactions);
-            if (choice != null) { selected = choice.Request; return Finish(null); }
-            if (evaluations.Any(e => e.IsReaction && e.RejectionCode == null))
-                return Finish(context.ForecastSettings != null && evaluations.Any(e => e.IsReaction && e.Coverage == AiForecastCoverage.Uncovered)
-                    ? "WAIT_REACTION_OUTCOME_UNCOVERED" : "WAIT_REACTION_NOT_BENEFICIAL");
+            if (choice.candidate != null && (context.ForecastSettings?.RequireSubmissionPreflight != true || choice.score > 0))
+            {
+                Select(choice.candidate, choice.score.HasValue ? "SELECTED_MAX_SCORE_STABLE_KEY" : "SELECTED_ADMITTED_WITHOUT_SCORE");
+                return Finish(null);
+            }
             if (!context.HasSubmissionWindow) return Finish("WAIT_NO_OWN_WINDOW");
             if (context.Snapshot.Tick % OrdinaryThinkInterval != 0) return Finish("WAIT_ORDINARY_CADENCE");
             var candidates = new List<AiTacticalCandidate>(ordinary);
@@ -63,24 +89,24 @@ namespace ProjectHero.Logic.AI
                 candidates.AddRange(AiTacticalCandidateBuilder.Aligned(context, candidate, preview));
             }
             choice = Choose(candidates, previews);
-            string approachWait = null;
-            if (choice == null && context.ForecastSettings?.ApproachWhenUnthreatened == true)
+            string selectionReason = choice.score.HasValue ? "SELECTED_MAX_SCORE_STABLE_KEY" : "SELECTED_ADMITTED_WITHOUT_SCORE";
+            if (!(choice.score > 0) && context.ForecastSettings?.ApproachWhenUnthreatened == true)
             {
                 var approach = AiApproachPolicy.Choose(context, candidates, evaluations, previews);
-                choice = approach.Candidate; approachWait = approach.Reason;
-                if (choice != null)
-                    for (int i = 0; i < evaluations.Count; i++)
-                        if (evaluations[i].Key == choice.Key)
-                            evaluations[i] = evaluations[i] with { Chosen = true, Reason = AiApproachPolicy.SelectedReason };
+                if (approach.Candidate != null)
+                {
+                    Select(approach.Candidate, AiApproachPolicy.SelectedReason);
+                    return Finish(null);
+                }
             }
-            if (choice != null) selected = choice.Request;
-            return Finish(selected == null ? approachWait ?? (ordinary.Count == 0 ? "WAIT_LANE_COMMITTED"
-                : context.ForecastSettings != null && evaluations.Any(e => e.Coverage == AiForecastCoverage.Uncovered)
-                    ? "WAIT_NO_POSITIVE_COVERED_CANDIDATE" : "WAIT_NO_POSITIVE_CANDIDATE") : null);
+            if (choice.candidate != null) Select(choice.candidate, selectionReason);
+            return Finish(selected == null ? "WAIT_NO_ADMITTED_ACTION" : null);
 
-            AiTacticalCandidate Choose(IReadOnlyList<AiTacticalCandidate> candidates, Dictionary<string, AiActionForecast> cached = null)
+            (AiTacticalCandidate candidate, long? score) Choose(IReadOnlyList<AiTacticalCandidate> candidates,
+                Dictionary<string, AiActionForecast> cached = null)
             {
-                AiTacticalCandidate best = null; long bestScore = 0;
+                AiTacticalCandidate best = null, admitted = null;
+                long? bestScore = null;
                 foreach (var candidate in candidates.OrderBy(c => c.Key, StringComparer.Ordinal))
                 {
                     var preview = cached != null && cached.TryGetValue(candidate.Key, out var value) ? value : forecast.Evaluate(candidate.Request, context.ForecastSettings);
@@ -89,17 +115,25 @@ namespace ProjectHero.Logic.AI
                     if (context.ForecastSettings?.ConsiderDefenses == true && candidate.Type == ActionType.Attack && evaluation.Score.HasValue)
                     {
                         evaluation = evaluation with { NoDefenseScore = evaluation.Score, NoDefenseDamageDeltaQ10 = evaluation.DamageDeltaQ10 };
-                        // The conservative minimum cannot exceed its no-reply upper bound or beat Wait at <= 0.
-                        if (evaluation.Score > 0) evaluation = WithDefenses(context, policy, candidate, baseline, evaluation, forecast);
+                        evaluation = WithDefenses(context, policy, candidate, baseline, evaluation, forecast);
                     }
                     evaluations.Add(evaluation);
-                    if (evaluation.RejectionCode == null && evaluation.Score is long score && score > bestScore)
-                    { best = candidate; bestScore = score; }
+                    if (evaluation.RejectionCode != null) continue;
+                    if (evaluation.Score is long score && (!bestScore.HasValue || score > bestScore.Value))
+                    {
+                        best = candidate;
+                        bestScore = score;
+                    }
+                    if (preview.HasAdmittedPlan) admitted ??= candidate;
                 }
-                if (best != null)
-                    for (int i = 0; i < evaluations.Count; i++)
-                        if (evaluations[i].Key == best.Key) evaluations[i] = evaluations[i] with { Chosen = true, Reason = "SELECTED_MAX_SCORE_STABLE_KEY" };
-                return best;
+                return (best ?? admitted, bestScore);
+            }
+
+            void Select(AiTacticalCandidate candidate, string reason)
+            {
+                selected = candidate.Request;
+                int i = evaluations.FindIndex(e => e.Key == candidate.Key);
+                evaluations[i] = evaluations[i] with { Chosen = true, Reason = reason };
             }
 
             AiDecision Finish(string waitReason) => new AiDecision(selected, Array.Empty<AiCandidate>(), Array.Empty<AiReactionOptionView>(),
@@ -155,7 +189,9 @@ namespace ProjectHero.Logic.AI
                 foreach (var unit in baseline.Units)
                 {
                     var after = outcome.Units.FirstOrDefault(u => u.UnitId == unit.UnitId);
-                    long difference = unit.HealthQ10 - (after?.HealthQ10 ?? 0);
+                    long difference = context.ForecastSettings?.Sampling != null
+                        ? Math.Max(0, unit.HealthQ10) - Math.Max(0, after?.HealthQ10 ?? 0)
+                        : unit.HealthQ10 - (after?.HealthQ10 ?? 0);
                     if (context.ControlledUnits.Any(id => context.Snapshot.Classify(id, new UnitId(unit.UnitId)) == UnitRelation.Hostile)) damage += difference;
                     else if (context.ControlledUnits.Any(id => context.Snapshot.Classify(id, new UnitId(unit.UnitId)) == UnitRelation.Self
                         || context.Snapshot.Classify(id, new UnitId(unit.UnitId)) == UnitRelation.Allied)) incoming += difference;
@@ -167,10 +203,13 @@ namespace ProjectHero.Logic.AI
             var weights = AiUtilityProfile.For(policy);
             long score = damage * weights.Damage - incoming * weights.Incoming + progress * weights.Position
                 + interrupts * weights.Interrupt + clashes * weights.Clash;
+            if (context.ForecastSettings?.ValueScalarControl == true && context.Snapshot.Definition.Rules.ScalarImpact != null)
+                score += (long)(outcome.ScalarInterruptions - baseline.ScalarInterruptions - interrupts) * weights.Interrupt
+                    + (long)(outcome.KnockdownWindowTicks - baseline.KnockdownWindowTicks) * weights.Duration;
             int resourceScale = context.Snapshot.Definition.AdrenalineRules.UseCombatValuesV05 ? CombatValuesV05.ResourceUnitsPerPoint : 1;
             score -= duration * weights.Duration + (long)candidate.Cost * weights.Resource / resourceScale + (damage > 0 ? latency : 0);
             return new AiCandidateEvaluation(candidate.Key, candidate.Type, candidate.IsReaction, score, outcome.RejectionCode,
-                outcome.RejectionCode != null ? "REJECTED_BY_LOGIC_PREVIEW" : score <= 0 ? "WAIT_HAS_HIGHER_OR_EQUAL_SCORE" : "LOWER_SCORE_OR_STABLE_TIE",
+                outcome.RejectionCode != null ? "REJECTED_BY_LOGIC_PREVIEW" : "LOWER_SCORE_OR_STABLE_TIE",
                 damage, incoming, progress, interrupts, clashes, candidate.Cost, outcome.PlanStartTick, outcome.PlanImpactTick, outcome.PlanEndTick, outcome.HorizonTick,
                 Coverage: outcome.Coverage, ObservedThroughTick: outcome.ObservedThroughTick, RequiredThroughTick: outcome.RequiredThroughTick);
 

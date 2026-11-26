@@ -26,7 +26,7 @@ namespace ProjectHero.Logic.Movement
     /// 因此"无路/越界/上限/溢出"都会令整批排程事务失败且零局部写入。</item>
     /// </list>
     /// </summary>
-    public sealed class LogicGridMovementPathCalculator : IMovementPathCalculator
+    public sealed class LogicGridMovementPathCalculator : IMovementPathCalculator, ProjectHero.Logic.AI.IAiMovementPaths
     {
         private readonly LogicGrid _grid;
         private readonly ActionScheduleAuthority _authority;
@@ -49,6 +49,10 @@ namespace ProjectHero.Logic.Movement
         public PathSearchRules SearchRules { get; }
 
         public LogicPathfinder Pathfinder => _pathfinder;
+
+        public PathSearchResult FindAiPath(UnitId owner,GridPoint destination)
+            => _grid.TryGetAnchor(owner,out var from) ? _pathfinder.FindPath(from,destination,owner)
+                : PathSearchResult.FailedAtPreflight(PathSearchCodes.PATH_INVALID_START);
 
         public MovementPathProjection Recompute(ActionPlan plan, long newStartTick, long deltaTicks)
         {

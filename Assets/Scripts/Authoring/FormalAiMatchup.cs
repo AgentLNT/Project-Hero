@@ -15,12 +15,12 @@ namespace ProjectHero.Authoring
     public static class FormalAiMatchup
     {
         public static BattleDefinition Build(BattleDefinition source, AiPolicyKind hero, AiPolicyKind enemy,
-            FormalAiLayout layout, bool mirror)
+            FormalAiLayout layout, bool mirror, AiForecastSettings forecastSettings = null)
         {
             if (!Valid(hero) || !Valid(enemy) || !Enum.IsDefined(typeof(FormalAiLayout), layout))
                 throw new LogicDefinitionException("FORMAL_MATCHUP_INPUT_INVALID");
             var d = FormalAiBaseline.Build(source, hero, AiExecutionKind.UtilityBehaviorTree, layout == FormalAiLayout.Near,
-                false, new AiForecastSettings(360, true, true));
+                false, forecastSettings ?? new AiForecastSettings(360, true, true));
             var original = d.Encounters[0];
             if (original.Slots.Count != 2 || original.Controllers.Count != 2
                 || !original.Slots.Any(s => s.SlotId.Value == "hero") || !original.Slots.Any(s => s.SlotId.Value == "enemy")

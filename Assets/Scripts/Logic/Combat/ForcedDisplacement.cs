@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ProjectHero.Logic.Actions;
 using ProjectHero.Logic.Grid;
+using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Logic.Combat
 {
@@ -16,12 +17,13 @@ namespace ProjectHero.Logic.Combat
     public readonly struct ForcedDisplacementProtocolVersion
     {
         public const int SimultaneousStepV1 = 1;
+        public const int WalkingMomentumV2 = 2;
 
         public readonly int Value;
 
         public ForcedDisplacementProtocolVersion(int value) { Value = value; }
 
-        public bool IsValid => Value > 0;
+        public bool IsValid => Value == SimultaneousStepV1 || Value == WalkingMomentumV2;
 
         public bool Equals(ForcedDisplacementProtocolVersion other) => Value == other.Value;
 
@@ -41,6 +43,27 @@ namespace ProjectHero.Logic.Combat
         }
     }
 
+    public sealed record ForcedDisplacementMotion(
+        GridDirection Direction,
+        long RemainingMomentumUnits,
+        int ControlResistanceUnits,
+        long NextStepTick,
+        long StepTicks,
+        long ConflictGroupKey,
+        ActionPlanId SourcePlanId)
+    {
+        internal UnitId AdrenalineSourceUnitId { get; init; }
+    }
+
+    public enum ForcedDisplacementExitReason
+    {
+        MomentumExhausted,
+        Blocked,
+        ReplacedByImpact,
+        UnitDied,
+        BattleEnded
+    }
+
     /// <summary>
     /// 强制位移停止原因稳定数值编码（主方案 0.4.6 冻结；数值不得更改）。
     /// </summary>
@@ -52,7 +75,8 @@ namespace ProjectHero.Logic.Combat
         OccupiedUnit = 3,
         DestinationContention = 4,
         DependencyCycle = 5,
-        VolumeOverlap = 6
+        VolumeOverlap = 6,
+        WallUnit = 7
     }
 
     /// <summary>
@@ -66,6 +90,8 @@ namespace ProjectHero.Logic.Combat
             var values = (ForcedDisplacementStopReason[])Enum.GetValues(typeof(ForcedDisplacementStopReason));
             foreach (var reason in values)
             {
+                // Typed blockers are opt-in and encoded by the unit traits in the definition.
+                if (reason > ForcedDisplacementStopReason.VolumeOverlap) continue;
                 writer.Write("forced_displacement.stop_reason." + reason, (int)reason);
             }
         }

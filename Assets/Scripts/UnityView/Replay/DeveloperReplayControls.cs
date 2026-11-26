@@ -10,11 +10,21 @@ namespace ProjectHero.UnityView.Replay
     public sealed class DeveloperReplayControls : IDisposable
     {
         private readonly BattleDefinition _definition;
+        private readonly Func<ReplayHeader, BattleSimulation> _create;
         private double _accumulator;
-        public ReplayPlayer Player { get; }
+        public ReplayPlayer Player { get; private set; }
         public DeveloperReplayControls(BattleDefinition definition, Func<ReplayHeader, BattleSimulation> create = null)
-        { _definition = definition; Player = new ReplayPlayer(definition, create); }
-        public void Load(Stream stream) { Player.Load(ReplayFile.Load(stream, _definition)); _accumulator = 0; }
+        { _definition = definition; _create = create; Player = new ReplayPlayer(definition, create); }
+        public void Load(Stream stream)
+        {
+            var replay = ReplayFile.Load(stream, _definition, out var matchedDefinition);
+            var next = new ReplayPlayer(matchedDefinition, ReferenceEquals(matchedDefinition, _definition) ? _create : null);
+            try { next.Load(replay); }
+            catch { next.Dispose(); throw; }
+            Player.Dispose();
+            Player = next;
+            _accumulator = 0;
+        }
         public void Play() => Player.Play();
         public void Pause() => Player.Pause();
         public void SetSpeed(double speed) => Player.SetSpeed(speed);

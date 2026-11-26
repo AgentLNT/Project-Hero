@@ -10,7 +10,11 @@ using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Logic.AI
 {
-    public sealed record AiTacticalCandidate(string Key, ActionType Type, CommandRequest Request, bool IsReaction, int Cost);
+    public sealed record AiTacticalCandidate(string Key, ActionType Type, CommandRequest Request, bool IsReaction, int Cost)
+    {
+        public AiFollowUpAttack FollowUp { get; init; }
+        public AiApproachGoal Approach { get; init; }
+    }
 
     /// <summary>Candidate generation has no policy weights. Every candidate still needs the authoritative preview.</summary>
     public static class AiTacticalCandidateBuilder
@@ -20,6 +24,14 @@ namespace ProjectHero.Logic.AI
             var result = new List<AiTacticalCandidate>();
             foreach (var option in AiReactionCandidateBuilder.BuildReactionCandidatesOrdered(context, context.Snapshot.Tick))
             {
+                var action = context.Snapshot.FindAction(option.ActionSpecId);
+                if (context.ForecastSettings?.RequireSubmissionPreflight == true)
+                {
+                    var defender = context.Opportunities.First(opportunity =>
+                        opportunity.ReactionOpportunityId == option.ReactionOpportunityId).DefenderUnitId;
+                    var ledger = context.AdrenalineLedgers.FirstOrDefault(entry => entry.UnitId == defender.Value);
+                    if ((ledger?.AvailableAdrenaline ?? 0) < action.AdrenalineCost) continue;
+                }
                 var destinations = option.ReactionKind == ReactionCommandKind.Dodge
                     ? option.PublishedDodgeDestinations.Select(p => (GridPoint?)p).Distinct().ToArray()
                     : new GridPoint?[] { null };
@@ -29,7 +41,6 @@ namespace ProjectHero.Logic.AI
                         option.ReactionOpportunityId.Value, option.ActionSpecId.Value, option.StartTick, destination?.X, destination?.Y);
                     var request = new CommandRequest(context.NextTick, new ReactionCommandScope(option.ReactionOpportunityId),
                         new ReactionCommandPayload(option.ReactionKind, option.ActionSpecId, destination, option.StartTick));
-                    var action = context.Snapshot.FindAction(option.ActionSpecId);
                     result.Add(new AiTacticalCandidate(key, action.Type, request, true, action.AdrenalineCost));
                 }
             }
@@ -105,7 +116,7 @@ namespace ProjectHero.Logic.AI
             return result;
         }
 
-        private static GridDirection Aim(int dx, int dy)
+        internal static GridDirection Aim(int dx, int dy)
         {
             int best = 0; long bestDot = -1, bestLength = 1;
             for (int d = 0; d < GridNeighborTable.DirectionCount; d++)

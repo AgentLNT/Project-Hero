@@ -100,6 +100,7 @@ namespace ProjectHero.Logic.Simulation
         {
             public UnitId UnitId;
             public UnitDefinitionId DefinitionId;
+            public UnitTraits Traits;
             public FactionId FactionId;
             public GridPoint Position;
             public GridDirection Facing;
@@ -146,6 +147,7 @@ namespace ProjectHero.Logic.Simulation
             /// 旧 <c>CombatUnit</c> 的兼容 bool 只能从这里派生读取。
             /// </summary>
             public UnitStateMachine StateMachine;
+            public ForcedDisplacementMotion ForcedMotion;
 
             /// <summary>本 Tick 内被持续效果写入的生命是否需要重新判定存活（阶段 2/15 统一处理）。</summary>
             public bool HealthDirty;
@@ -165,6 +167,7 @@ namespace ProjectHero.Logic.Simulation
 
             /// <summary>存活视图：<c>IsAlive</c> 由死亡系统唯一改写；生命 &lt;= 0 只是"待处理致死"。</summary>
             public bool IsKillable => IsAlive && !DeathProcessed && HealthQ10 <= 0;
+            public bool CanReceiveDirectHit => UnitStateMachine.CanReceiveDirectHitIn(StateMachine.CurrentState);
 
             /// <summary>
             /// <strong>战斗有效</strong>：本 Tick 是否还能被算作存活参与胜负判定。
@@ -481,6 +484,7 @@ namespace ProjectHero.Logic.Simulation
             _rng = new DeterministicRng(runtimeInputs.InitialRngSeed);
             _gateway = new CommandGateway(_sequences, assembly.PayloadAuthorizer);
             _outbox = new LogicEventOutbox(_sequences);
+            if (UsesWalkingDisplacement) _outbox.Subscribe<WallContactEvent>(ApplyWallImpactDamage);
             _buffSystem = new BuffSystem(_idGenerator, _sequences, _outbox);
 
             // 任务 05：唯一一套全局排程权威 + 计划工厂 + 排程编辑器 + 统一终态协调器。
@@ -518,7 +522,7 @@ namespace ProjectHero.Logic.Simulation
                 }
             }
 
-            _logicGrid = new LogicGrid(_encounter.GridBoundary);
+            _logicGrid = new LogicGrid(_encounter.GridBoundary, _encounter.StaticWalls);
             _movementAuthority = new LogicGridMovementAuthority(
                 _logicGrid, _scheduleAuthority, definition.Rules.PathCostRules, definition.Rules.PathSearchRules);
             _movementPathCalculator = assembly.MovementPathCalculator
@@ -671,7 +675,8 @@ namespace ProjectHero.Logic.Simulation
             if (_resolutionCommit == null)
             {
                 _resolutionCommitSystem =
-                    new ConflictGroupResolutionCommitSystem(() => _stagedResolution, this, _definition.AdrenalineRules.UseCombatValuesV05);
+                    new ConflictGroupResolutionCommitSystem(() => _stagedResolution, this,
+                        _definition.AdrenalineRules.UseCombatValuesV05 || _definition.AdrenalineRules.UseHealthThresholds);
                 _resolutionCommit = _resolutionCommitSystem;
             }
 
@@ -682,9 +687,11 @@ namespace ProjectHero.Logic.Simulation
             //   按 UnitId 升序给出每单位至多一条的规范事实（唯一入账入口仍在任务 07 的账本）。
             // 未注入 ⇒ 绑本场真实现；显式注入优先（任务 03/04/07 夹具、负控制）。
             _displacementRequestBuilder = assembly.DisplacementRequestBuilder
-                ?? new DisplacementRequestBuilder(() => LastDamageCommitReport);
+                ?? new DisplacementRequestBuilder(() => LastDamageCommitReport, UsesWalkingDisplacement);
             _adrenalineAccrualSource = assembly.AdrenalineAccrualFactSource
-                ?? new AdrenalineAccrualFactSource(() => _stagedResolution, () => LastDamageCommitReport, _definition.AdrenalineRules.UseCombatValuesV05);
+                ?? new AdrenalineAccrualFactSource(() => _stagedResolution, () => LastDamageCommitReport,
+                    _definition.AdrenalineRules.UseCombatValuesV05,
+                    id => !_unitsById.TryGetValue(id.Value, out var unit) || unit.Traits.IsCombatant);
 
             // 任务 05：唯一的反应机会系统 + 唯一的终态/生命周期事件发射路径（经 Outbox）。
             //
@@ -712,6 +719,7 @@ namespace ProjectHero.Logic.Simulation
                 EventSink = sink => _outbox.Emit(sink),
                 PreparationPort = assembly.ReactionPreparationPort,
                 ReservationReleaseSink = assembly.ReactionReservationReleaseSink,
+                IsDefenderInForcedDisplacement = definition.Rules.UseExplicitControlEffects ? null : IsInForcedDisplacement,
                 // 任务 07：反应接受把费用从 Available 原子转入带个人周期的计划预留，
                 // SourceImpactTick 消费、来源威胁取消按周期返还。唯一的肾上腺素权威是 _adrenaline。
                 AdrenalinePort = _adrenaline
@@ -825,10 +833,12 @@ namespace ProjectHero.Logic.Simulation
             for (int i = 0; i < initialization.InitialUnits.Count; i++)
             {
                 UnitInitialSnapshot initial = initialization.InitialUnits[i];
+                UnitTraits traits = definition.FindUnit(initial.DefinitionId).Traits;
                 var unit = new UnitRuntimeState
                 {
                     UnitId = new UnitId(i + 1L),
                     DefinitionId = initial.DefinitionId,
+                    Traits = traits,
                     FactionId = initial.FactionId,
                     Position = initial.InitialPosition,
                     Facing = initial.InitialFacing,
@@ -983,7 +993,15 @@ namespace ProjectHero.Logic.Simulation
             for (int i = 0; i < existing.Count; i++) union.Add(existing[i]);
             if (unitIds != null)
             {
-                for (int i = 0; i < unitIds.Count; i++) union.Add(unitIds[i]);
+                for (int i = 0; i < unitIds.Count; i++)
+                {
+                    UnitId unitId = unitIds[i];
+                    if (_unitsById.TryGetValue(unitId.Value, out var unit) && unit.Traits != default
+                        && (_ingress.FindEntry(controllerId) is not { } entry || !unit.Traits.AllowsController(entry.SourceKind)))
+                        throw new LogicDefinitionException(UnitDefinitionCodes.UNIT_CONTROLLER_NOT_ALLOWED,
+                            controllerId.Value + "|" + unitId.Value);
+                    union.Add(unitId);
+                }
             }
             union.Sort((a, b) => a.Value.CompareTo(b.Value));
 
@@ -1399,6 +1417,7 @@ namespace ProjectHero.Logic.Simulation
             _trace.Enter(StepPhase.StateAndEffectAdvance);
             AdvanceStateAndEffects(tick);
             ApplyEncounterUnitCreations(tick);
+            AdvanceForcedDisplacement(tick);
 
             // 2. 命令前的死亡与胜负检查（任务包「必须产出」6 的第一段）。
             //
@@ -1430,7 +1449,7 @@ namespace ProjectHero.Logic.Simulation
                 return FinalizeBattleEnd(tick, StepStatus.BattleEnded);
             }
 
-            // 3. 战斗未结束时打开到期窗口（先递增拥有者周期并清零 Available）
+            // 3. 战斗未结束时打开到期窗口。历史规则在这里清零拥有者的可用肾上腺素。
             _trace.Enter(StepPhase.WindowOpen);
             OpenDueWindows(tick);
 
@@ -1495,6 +1514,8 @@ namespace ProjectHero.Logic.Simulation
 
             // 18. 决策快照投递（AI 与玩家看到同一只读快照，只经注册入口投递下一 Tick）
             _trace.Enter(StepPhase.DecisionSnapshotDelivery);
+            // 排程编辑和自动延期已经提交。先同步修订号，让计划与版本来自同一状态。
+            SyncScheduleRevision();
             DeliverDecisionSnapshot(tick);
 
             // 19. 只读不变量检查 → 归档 → 增量摘要 → EventBatch 与规范化 Snapshot
@@ -1504,9 +1525,6 @@ namespace ProjectHero.Logic.Simulation
             // 因此设备输入/AI 的默认投递目标（CurrentTick + CommandIngressLeadTicks）
             // 不可能落到一个已经被冻结过的 Tick 上。
             _ingress.AdvanceCurrentTick(tick);
-            // 排程修订号的镜像只在 Step 收尾同步：阶段 5 的基线断言要求阶段 0–4
-            // 观察到的是本 Tick 冻结时的值，而阶段 6/7 的提交必须对快照可见。
-            SyncScheduleRevision();
             return BuildStepResult(tick, StepStatus.Advanced);
         }
 
@@ -1615,7 +1633,14 @@ namespace ProjectHero.Logic.Simulation
             {
                 if (_units[i].IsAlive) _effectHosts.Add(_units[i]);
             }
+            if (_definition.AdrenalineRules.UseHealthThresholds)
+            {
+                _healthBeforeEffects.Clear();
+                foreach (var host in _effectHosts) _healthBeforeEffects.Add(host.HealthQ10);
+            }
             _buffSystem.AdvanceOrdered(_effectHosts, tick);
+            for (int i = 0; i < _healthBeforeEffects.Count; i++)
+                ClaimAdrenalineThresholds((UnitRuntimeState)_effectHosts[i], _healthBeforeEffects[i]);
 
             // —— 3. 扩展点声明的显式转换 / 生命写入 / 新效果 ——
             IReadOnlyList<UnitStateAdvanceRequest> requests = _assembly.UnitStateAdvance.AdvanceOrdered(view, tick);
@@ -1637,8 +1662,11 @@ namespace ProjectHero.Logic.Simulation
 
                 if (request.SetHealthQ10.HasValue)
                 {
+                    int before = unit.HealthQ10;
                     unit.HealthQ10 = request.SetHealthQ10.Value;
                     unit.HealthDirty = true;
+                    if (_definition.AdrenalineRules.UseHealthThresholds)
+                        ClaimAdrenalineThresholds(unit, before);
                 }
 
                 if (request.Transition != null)
@@ -1701,6 +1729,7 @@ namespace ProjectHero.Logic.Simulation
             for (int i = 0; i < _units.Count; i++)
             {
                 UnitRuntimeState unit = _units[i];
+                if (!unit.Traits.IsCombatant) continue;
                 string factionId = unit.FactionId.Value ?? string.Empty;
                 if (ContainsFaction(rule.AlliedFactionIds, factionId))
                 {
@@ -1752,6 +1781,7 @@ namespace ProjectHero.Logic.Simulation
 
                 UnitId unitId = unit.UnitId;
                 int remaining = unit.HealthQ10;
+                EndForcedDisplacement(unit, tick, ForcedDisplacementExitReason.UnitDied);
 
                 // 存活视图：死亡系统是唯一改写点。
                 unit.IsAlive = false;
@@ -2010,6 +2040,7 @@ namespace ProjectHero.Logic.Simulation
             _openedOpportunitiesThisTick.Clear();
             InterruptControlledRunningPlans(tick);
             AdvanceFixedReactions(tick);
+            OpenThreatsAfterForcedRelocation(tick);
             List<ActionPlan> due = CollectDueEditablePlans(tick);
 
             // 任务 06：把本 Tick 到期 Move 的声明的目的格登记为"待进入格"，
@@ -2031,7 +2062,8 @@ namespace ProjectHero.Logic.Simulation
                 // 任务 06 的限时空间阻塞：只有来自权威占位/Reservation 区间且 ReleaseTick 有限、
                 // 严格晚于当前 Tick 的阻塞才返回有限值；无界占位/非法格返回 long.MaxValue，
                 // 门禁据此返回 Terminal(ActorUnavailableAtStart) 而不是每 Tick 盲重试。
-                spaceBlockUntilTickOf: _movementAuthority.SpaceBlockUntilTickOf(tick));
+                spaceBlockUntilTickOf: _movementAuthority.SpaceBlockUntilTickOf(tick),
+                forcedMovementBlockUntilTickOf: _definition.Rules.UseExplicitControlEffects ? ForcedMovementBlockUntilTickOf : null);
 
             for (int i = 0; i < due.Count; i++)
             {
@@ -2355,6 +2387,8 @@ namespace ProjectHero.Logic.Simulation
         private long? BlockingUntilTickOf(UnitId unitId)
         {
             UnitStateMachine machine = FindUnitStateMachine(unitId);
+            if (!_definition.Rules.UseExplicitControlEffects && ForcedMovementBlockUntilTickOf(unitId) is long step)
+                return Math.Max(machine?.BlockingUntilTick ?? 0, step);
             if (machine != null && !IsControlState(machine.CurrentState))
                 foreach (ActionPlan reaction in _scheduleAuthority.FindLane(unitId)?.Plans ?? Array.Empty<ActionPlan>())
                     if (reaction.IsReaction && reaction.StartTick <= _eventTick && _eventTick < reaction.HardEndTick
@@ -2362,6 +2396,9 @@ namespace ProjectHero.Logic.Simulation
                         return reaction.HardEndTick;
             return machine == null ? (long?)null : machine.BlockingUntilTick;
         }
+
+        private long? ForcedMovementBlockUntilTickOf(UnitId unitId)
+            => _unitsById.TryGetValue(unitId.Value, out var unit) ? unit.ForcedMotion?.NextStepTick : null;
 
         private bool IsUnitAlive(UnitId unitId)
             => _unitsById.TryGetValue(unitId.Value, out UnitRuntimeState unit) && unit.IsAlive;
@@ -2457,7 +2494,10 @@ namespace ProjectHero.Logic.Simulation
             }
 
             // 唯一一次量化（Mass / MomentumSpeed / ForceMultiplier 在此之后不再被读取）。
-            MomentumPacket momentum = payload.Strength != null
+            MomentumPacket momentum = payload.ScalarImpactUnits is int scalarImpact
+                ? MomentumPacket.Require(MomentumRuleTable.ResolveMomentumDirection(plan.Facing, payload.MomentumDirectionOffsetSteps),
+                    scalarImpact, payload.ImpactProfileId)
+                : payload.Strength != null
                 ? MomentumPacket.Require(MomentumRuleTable.ResolveMomentumDirection(plan.Facing, payload.MomentumDirectionOffsetSteps),
                     CombatValuesV05.MomentumUnits(unitDefinition.CombatAttributes, payload.Strength), payload.ImpactProfileId)
                 : MomentumQuantizer.QuantizePacket(
@@ -2493,7 +2533,8 @@ namespace ProjectHero.Logic.Simulation
                 _sequences.TakeIntentSequence(),
                 momentum,
                 payload.MomentumDirectionOffsetSteps,
-                plan.SubmittedWindowId);
+                plan.SubmittedWindowId,
+                _definition.Rules.UseExplicitControlEffects);
         }
 
         /// <summary>
@@ -2657,7 +2698,10 @@ namespace ProjectHero.Logic.Simulation
                 graph, null, 0L,
                 planFacts, unitsBefore, unitsAfter, _dodgeCommitReport,
                 BuildUnitSnapshots(), _definition.Units, BuildPlanSpecEntries(),
-                BuildBlockPayloadEntries(), BuildGuardPayloadEntries(), BuildClashQuota()));
+                BuildBlockPayloadEntries(), BuildGuardPayloadEntries(), BuildClashQuota())
+            {
+                ScalarImpact = _definition.Rules.ScalarImpact
+            });
 
             // 计划 → 冲突组键的只读投影：图在构图后**不再变更**，因此这份投影在本 Tick
             // 剩余阶段（11/13/14）里恒等于构图结果；语义事件与位移请求都取它。
@@ -3098,10 +3142,8 @@ namespace ProjectHero.Logic.Simulation
                     "unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture)
                     + " damageQ10=" + damageQ10.ToString(CultureInfo.InvariantCulture));
             }
-            if (!_unitsById.TryGetValue(unitId.Value, out UnitRuntimeState unit)) return;
-
-            unit.HealthQ10 -= (int)damageQ10;
-            unit.HealthDirty = true;
+            if (_unitsById.TryGetValue(unitId.Value, out UnitRuntimeState unit))
+                ((IStatusEffectHost)unit).ApplyDamageQ10((int)damageQ10);
         }
 
         /// <summary>
@@ -3236,6 +3278,7 @@ namespace ProjectHero.Logic.Simulation
 
             _resolutionCommit.CommitDamageAndAggregationOrdered(tick,
                 _assembly.UseEmptyInteractionFastPath && !_definition.AdrenalineRules.UseCombatValuesV05
+                    && !_definition.AdrenalineRules.UseHealthThresholds
                     && _resolutionCommit is ConflictGroupResolutionCommitSystem ? Array.Empty<UnitSnapshot>() : BuildUnitSnapshots());
 
             IReadOnlyList<ForcedDisplacementRequest> requests =
@@ -3268,6 +3311,10 @@ namespace ProjectHero.Logic.Simulation
 
         private void SolveForcedDisplacementBatch(long tick)
         {
+            if (UsesWalkingDisplacement)
+            {
+                return;
+            }
             if (_displacementRequests.Count == 0)
             {
                 _displacementBatch = ForcedDisplacementBatch.Empty;
@@ -3282,12 +3329,22 @@ namespace ProjectHero.Logic.Simulation
 
         private void CleanupAndCommitRelocationBatch(long tick)
         {
-            ForcedDisplacementBatch batch = _displacementBatch;
+            if (UsesWalkingDisplacement)
+            {
+                BeginForcedDisplacements(tick);
+                return;
+            }
+            CommitDisplacementBatch(tick, _displacementBatch, _displacementRequests);
+        }
+
+        private void CommitDisplacementBatch(long tick, ForcedDisplacementBatch batch,
+            IReadOnlyList<ForcedDisplacementRequest> requests)
+        {
             if (batch == null || batch.IsEmpty) return;
 
             // 先经统一终态协调器终止被破坏的移动计划与 Reservation。
-            _invalidatedPlanIds = _displacementCommitter
-                .TerminateInvalidatedMovementPlansOrdered(batch, tick) ?? Array.Empty<ActionPlanId>();
+            _invalidatedPlanIds = _displacementCommitter.TerminateInvalidatedMovementPlansOrdered(batch, tick)
+                ?? Array.Empty<ActionPlanId>();
 
             // 再一次批量验证 + 一次批量换位（只收 From != To 的条目）：任一批量验证失败都是
             // InvariantViolation，禁止退化为逐单位提交。
@@ -3300,7 +3357,7 @@ namespace ProjectHero.Logic.Simulation
             for (int i = 0; i < batch.Resolutions.Count; i++)
             {
                 ForcedDisplacementResolution resolution = batch.Resolutions[i];
-                ForcedDisplacementRequest request = FindDisplacementRequest(resolution.TargetUnitId);
+                ForcedDisplacementRequest request = FindDisplacementRequest(requests, resolution.TargetUnitId);
                 _outbox.Emit(sequence => new ForcedDisplacementResolvedEvent(
                     tick, sequence, resolution.TargetUnitId,
                     resolution.From, resolution.To,
@@ -3316,11 +3373,12 @@ namespace ProjectHero.Logic.Simulation
         /// 关联点。找不到请求说明求解器违反了"结果必须来自本 Tick 请求"的契约 ⇒ InvariantViolation。
         /// 关联按 <see cref="UnitId"/> 精确匹配，与容器枚举顺序无关。
         /// </summary>
-        private ForcedDisplacementRequest FindDisplacementRequest(UnitId unitId)
+        private static ForcedDisplacementRequest FindDisplacementRequest(
+            IReadOnlyList<ForcedDisplacementRequest> requests, UnitId unitId)
         {
-            for (int i = 0; i < _displacementRequests.Count; i++)
+            for (int i = 0; i < requests.Count; i++)
             {
-                if (_displacementRequests[i].TargetUnitId == unitId) return _displacementRequests[i];
+                if (requests[i].TargetUnitId == unitId) return requests[i];
             }
             throw new LogicDefinitionException(SimulationCodes.STEP_RELOCATION_BATCH_INVALID,
                 "resolution without request unit=" + unitId.Value.ToString(CultureInfo.InvariantCulture));
@@ -3457,13 +3515,15 @@ namespace ProjectHero.Logic.Simulation
                 else if (plan.ActionType == ActionType.Guard && plan.DefenseQuotaRemainingQ10 == 0)
                     _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.GuardQuotaExhausted, tick);
             CommitResolvedControlsAndIntercepts(tick);
+            InterruptForcedDisplacementPlans(tick);
 
             // 任务 07：肾上腺素 Available 的唯一入账入口。它只接受任务 08 在全部 Resolution
             // 提交后提供的规范聚合事实（每单位每 Tick 至多一条、按 UnitId 严格升序）；
             // 其他系统一律不得逐接触直接加 Available（不变量 27）。
             // 默认装配即**本场真实现**（AdrenalineAccrualFactSource，只读 _stagedResolution 与
             // LastDamageCommitReport）；显式注入优先（负控制 NoAdrenalineAccrualFacts）。
-            _adrenaline.ApplyTickEndAccrual(_adrenalineAccrualSource.BuildAccrualFactsOrdered(tick));
+            if (_definition.AdrenalineRules.UseHealthThresholds) ClaimDirectDamageThresholds(tick);
+            else _adrenaline.ApplyTickEndAccrual(_adrenalineAccrualSource.BuildAccrualFactsOrdered(tick));
             CompleteDuePlans(tick, beforeResolution: false);
         }
 
@@ -3489,20 +3549,31 @@ namespace ProjectHero.Logic.Simulation
                 UnitStateMachine machine = FindUnitStateMachine(aggregate.TargetUnitId);
                 if (machine == null || machine.IsTerminal) continue;
                 UnitState control = aggregate.IsKnockedDown ? UnitState.KnockedDown : UnitState.Staggered;
-                int duration = aggregate.IsKnockedDown ? _definition.Rules.KnockdownAutoRecoveryTicks
-                    : _definition.Rules.StaggerAutoRecoveryTicks;
-                if (duration > 0 && machine.CurrentState != control
-                    && !(machine.CurrentState == UnitState.KnockedDown && control == UnitState.Staggered))
+                if (_definition.Rules.ScalarImpact is { } impact)
                 {
-                    var outcome = machine.TryTransition(StateTransitionSpec.Timed(control, duration, UnitState.Idle),
-                        tick, UnitStateTransitionReasons.Explicit);
-                    if (!outcome.Applied) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION,
-                        "resolved-control|" + aggregate.TargetUnitId + "|" + outcome.RejectionCode);
+                    if (aggregate.IsKnockedDown)
+                        RequireResolvedControl(machine.StartScalarKnockdown(aggregate.KnockdownImpactUnits,
+                            aggregate.ControlResistanceUnits, impact, tick), aggregate.TargetUnitId);
+                }
+                else
+                {
+                    int duration = aggregate.IsKnockedDown ? _definition.Rules.KnockdownAutoRecoveryTicks
+                        : _definition.Rules.StaggerAutoRecoveryTicks;
+                    if (duration > 0 && machine.CurrentState != control
+                        && !(machine.CurrentState == UnitState.KnockedDown && control == UnitState.Staggered))
+                        RequireResolvedControl(machine.TryTransition(StateTransitionSpec.Timed(control, duration, UnitState.Idle),
+                            tick, UnitStateTransitionReasons.Explicit), aggregate.TargetUnitId);
                 }
                 foreach (ActionPlan plan in _scheduleAuthority.Registry.ActivePlans)
                     if (plan.OwnerUnitId == aggregate.TargetUnitId && plan.IsRunning && plan.ClashResolvedAtTick < 0)
                         _terminalCoordinator.EnterTerminal(plan, ActionTerminationReason.InterruptedByControl, tick);
             }
+        }
+
+        private static void RequireResolvedControl(UnitStateMachine.TransitionOutcome outcome, UnitId unitId)
+        {
+            if (!outcome.Applied) throw new LogicDefinitionException(SimulationCodes.STEP_INVARIANT_VIOLATION,
+                "resolved-control|" + unitId + "|" + outcome.RejectionCode);
         }
 
         /// <summary>
@@ -3639,6 +3710,8 @@ namespace ProjectHero.Logic.Simulation
             // 战斗结束也关闭全部仍未关闭的机会（<strong>同一个</strong> Finalizer，
             // 不另写一套机会清理）；已接受但未触发的绑定反应已随上面统一终止。
             _reactionSystem.CloseAllForBattleEnd(tick);
+            foreach (var unit in _units)
+                EndForcedDisplacement(unit, tick, ForcedDisplacementExitReason.BattleEnded);
             SyncScheduleRevision();
 
             _pendingStopResultCode = null;
@@ -3768,8 +3841,13 @@ namespace ProjectHero.Logic.Simulation
                 if (spawn.Tick != tick) continue;
                 UnitId sourceId = _initialSlotUnits[spawn.SourceSlotId];
                 var source = _unitsById[sourceId.Value];
-                string rejection = source.IsCombatEffective ? null : "DYNAMIC_SPAWN_SOURCE_UNAVAILABLE";
                 var unitDefinition = _definition.FindUnit(spawn.DefinitionId);
+                string rejection = source.IsCombatEffective && source.Traits.IsCombatant
+                    ? null : "DYNAMIC_SPAWN_SOURCE_UNAVAILABLE";
+                ControllerId controller = unitDefinition.Traits.Control == UnitControl.Passive ? default : ControllerOf(sourceId);
+                if (unitDefinition.Traits != default && unitDefinition.Traits.Control != UnitControl.Passive
+                    && (_ingress.FindEntry(controller) is not { } entry || !unitDefinition.Traits.AllowsController(entry.SourceKind)))
+                    rejection ??= UnitDefinitionCodes.UNIT_CONTROLLER_NOT_ALLOWED;
                 var directions = _unitVolumeTables.VolumeDirectionsOf(spawn.DefinitionId);
                 // Creations do not preempt committed future Move or Dodge reservations.
                 var cells = directions == null ? new[] { spawn.Position }
@@ -3793,14 +3871,14 @@ namespace ProjectHero.Logic.Simulation
                 var faction = spawn.FactionPolicy.InheritSourceFaction ? source.FactionId : spawn.FactionPolicy.FixedFactionId;
                 var unit = new UnitRuntimeState {
                     UnitId = id, DefinitionId = spawn.DefinitionId, FactionId = faction,
+                    Traits = unitDefinition.Traits,
                     Position = spawn.Position, Facing = spawn.Facing,
                     HealthQ10 = QuantizeHealth(unitDefinition.InitialHealth),
                     StateMachine = new UnitStateMachine(id, _outbox, tick)
                 };
                 _units.Add(unit); _unitsById.Add(id.Value, unit);
-                ((FactionRelationResolver)_factionResolver).RegisterCreatedUnit(id, faction);
+                ((FactionRelationResolver)_factionResolver).RegisterCreatedUnit(id, faction, unit.Traits);
                 _adrenaline.Register(id, 0, 0);
-                ControllerId controller = ControllerOf(sourceId);
                 if (!string.IsNullOrEmpty(controller.Value)) RegisterControllerBinding(controller, new[] { id });
                 if (_assembly.TurnWindowSchedule is ProductionBattleComposition production)
                     production.RegisterCreatedUnit(id, unitDefinition, controller);
@@ -3823,7 +3901,8 @@ namespace ProjectHero.Logic.Simulation
                     && previous.AvailableAdrenaline == unit.AvailableAdrenaline && previous.AdrenalineCycleId == unit.AdrenalineCycleId
                     && previous.State == (int)state && previous.StateStartTick == (unit.StateMachine?.StateStartTick ?? 0)
                     && previous.StateEndTick == (unit.StateMachine?.StateEndTick ?? long.MaxValue)
-                    && previous.CanReceiveDirectHit == UnitStateMachine.CanReceiveDirectHitIn(state);
+                    && previous.CanReceiveDirectHit == unit.CanReceiveDirectHit
+                    && previous.ForcedMotion == unit.ForcedMotion && previous.Knockdown == unit.StateMachine?.Knockdown;
                 if (same)
                 { if (snapshots != null) snapshots[i] = previous; continue; }
                 if (snapshots == null)
@@ -3845,7 +3924,8 @@ namespace ProjectHero.Logic.Simulation
                     (int)state,
                     unit.StateMachine != null ? unit.StateMachine.StateStartTick : 0L,
                     unit.StateMachine != null ? unit.StateMachine.StateEndTick : long.MaxValue,
-                    UnitStateMachine.CanReceiveDirectHitIn(state));
+                    unit.CanReceiveDirectHit)
+                { ForcedMotion = unit.ForcedMotion, Knockdown = unit.StateMachine?.Knockdown, Traits = unit.Traits };
             }
             if (snapshots != null) _unitProjection = Array.AsReadOnly(snapshots);
             return _unitProjection;
@@ -3961,7 +4041,7 @@ namespace ProjectHero.Logic.Simulation
                     state.NextThinkTick,
                     state.DecisionCount,
                     state.LastDecisionTick,
-                    state.Rng, state.Behavior));
+                    state.Rng, state.Behavior, state.SamplingMemory));
             }
             projected.Sort((a, b) => string.CompareOrdinal(a.ControllerId, b.ControllerId));
             return projected;
@@ -4124,7 +4204,7 @@ namespace ProjectHero.Logic.Simulation
                     unitDefinition.ActionSpeed,
                     unitDefinition.MoveSpeed,
                     unitDefinition.ActionSetId,
-                    state.IsAlive);
+                    state.IsAlive) { Traits = state.Traits };
                 return true;
             }
         }

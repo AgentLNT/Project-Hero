@@ -6,6 +6,9 @@ using ProjectHero.Logic.Ids;
 
 namespace ProjectHero.Logic.Units
 {
+    public sealed record KnockdownProgress(long RemainingImpactUnits, int ResistanceUnits, long NextSegmentTick,
+        int SegmentTicks);
+
     /// <summary>
     /// 单位状态机（主方案 3.5 / 任务 04「必须产出」1–3）。
     ///
@@ -91,6 +94,7 @@ namespace ProjectHero.Logic.Units
 
         /// <summary>有限持续状态到期后的显式目标（无限持续时为 null）。</summary>
         public StateTransitionSpec NextOnExpire { get; private set; }
+        public KnockdownProgress Knockdown { get; private set; }
 
         /// <summary>当前状态是否有权威的有限结束 Tick。</summary>
         public bool HasFiniteEndTick => StateEndTick != long.MaxValue;
@@ -187,6 +191,7 @@ namespace ProjectHero.Logic.Units
             StateStartTick = currentTick;
             StateEndTick = transition.IsTimed ? checked(currentTick + transition.DurationTicks) : long.MaxValue;
             NextOnExpire = transition.IsTimed ? transition.NextOnExpire : null;
+            Knockdown = null;
 
             string reason = string.IsNullOrEmpty(reasonCode) ? UnitStateTransitionReasons.Explicit : reasonCode;
             long sequenceTick = currentTick;
@@ -214,6 +219,15 @@ namespace ProjectHero.Logic.Units
         /// </summary>
         public bool Advance(long currentTick)
         {
+            if (Knockdown is { } progress && currentTick >= progress.NextSegmentTick && currentTick < StateEndTick)
+            {
+                long completedSegments = (currentTick - progress.NextSegmentTick) / progress.SegmentTicks + 1;
+                Knockdown = progress with
+                {
+                    RemainingImpactUnits = progress.RemainingImpactUnits - completedSegments * progress.ResistanceUnits,
+                    NextSegmentTick = progress.NextSegmentTick + completedSegments * progress.SegmentTicks
+                };
+            }
             if (!HasFiniteEndTick) return false;
             if (currentTick < StateEndTick) return false;
 
@@ -231,6 +245,20 @@ namespace ProjectHero.Logic.Units
 
             AutomaticExpiryCount++;
             return true;
+        }
+
+        internal TransitionOutcome StartScalarKnockdown(long impact, int resistance, ScalarImpactRules rules, long tick)
+        {
+            long segments = impact / resistance;
+            if (rules.MaxKnockdownSegments > 0)
+                segments = Math.Min(segments, rules.MaxKnockdownSegments);
+            int duration = checked((int)(segments * rules.KnockdownSegmentTicks));
+            var result = TryTransition(StateTransitionSpec.Timed(UnitState.KnockedDown, duration, UnitState.Idle),
+                tick, UnitStateTransitionReasons.Explicit);
+            if (result.Applied)
+                Knockdown = new KnockdownProgress(impact, resistance, checked(tick + rules.KnockdownSegmentTicks),
+                    rules.KnockdownSegmentTicks);
+            return result;
         }
 
         /// <summary>

@@ -189,4 +189,28 @@ namespace ProjectHero.Logic.Events
         long ConflictGroupKey,
         ForcedDisplacementStopReason StopReason,
         IReadOnlyList<ActionPlanId> InvalidatedPlanIds) : LogicEvent(Tick, Sequence);
+
+    public sealed record ForcedDisplacementStartedEvent(
+        long Tick, long Sequence, UnitId TargetUnitId, GridPoint From,
+        ForcedDisplacementMotion Motion) : LogicEvent(Tick, Sequence);
+
+    public sealed record ForcedDisplacementEndedEvent(
+        long Tick, long Sequence, UnitId TargetUnitId, GridPoint Position,
+        ForcedDisplacementMotion Motion, ForcedDisplacementExitReason Reason) : LogicEvent(Tick, Sequence);
+
+    public sealed record WallContactEvent(
+        long Tick, long Sequence, UnitId TargetUnitId, GridPoint From,
+        GridDirection Direction, ForcedDisplacementStopReason StopReason,
+        long RemainingMomentumUnits, long ConflictGroupKey, ActionPlanId SourcePlanId) : LogicEvent(Tick, Sequence)
+    {
+        internal UnitId AdrenalineSourceUnitId { get; init; }
+    }
+
+    public sealed record WallImpactDamageEvent(
+        long Tick, long Sequence, UnitId TargetUnitId, long WallContactSequence,
+        long RawDamageQ10, int AppliedDamageQ10, int RemainingHealthQ10,
+        long ConflictGroupKey, ActionPlanId SourcePlanId) : LogicEvent(Tick, Sequence);
+
+    public sealed record AdrenalineThresholdRewardEvent(long Tick, long Sequence,
+        UnitId RecipientUnitId, UnitId DamagedUnitId, int Points) : LogicEvent(Tick, Sequence);
 }

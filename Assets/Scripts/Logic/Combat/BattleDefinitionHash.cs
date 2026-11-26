@@ -290,6 +290,10 @@ namespace ProjectHero.Logic.Combat
             {
                 case Actions.AttackPayloadSpec attack:
                     attack.Strength?.WriteHashComponents(writer);
+                    if (attack.ControlEffects != Actions.AttackControlEffects.None)
+                        writer.Write("action.control_effects", (int)attack.ControlEffects);
+                    if (attack.ScalarImpactUnits is int impact)
+                        writer.Write("action.scalar_impact_units", impact);
                     if (attack.DamageComponents != null)
                     {
                         foreach (var component in attack.DamageComponents)

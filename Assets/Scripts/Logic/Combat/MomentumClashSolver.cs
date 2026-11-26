@@ -26,7 +26,10 @@ namespace ProjectHero.Logic.Combat
     }
 
     /// <summary>Clash 参与者：某攻击计划及其<strong>原始</strong>整数动量（不随求解变化）。</summary>
-    public sealed record ClashParticipant(UnitId OwnerUnitId, ActionPlanId ActionPlanId, MomentumPacket Momentum);
+    public sealed record ClashParticipant(UnitId OwnerUnitId, ActionPlanId ActionPlanId, MomentumPacket Momentum)
+    {
+        public GridDirection? AttackFacing { get; init; }
+    }
 
     /// <summary>一条 Attack-Attack 冲突边（无序；必须已由构图侧按空间/交互规则连边）。</summary>
     public sealed record ClashPair(ActionPlanId A, ActionPlanId B);
@@ -116,7 +119,8 @@ namespace ProjectHero.Logic.Combat
             => Solve(input, null);
 
         /// <summary>求解（可选冲突组配额：超限时整组以调用方给出的错误码失败）。</summary>
-        public static MomentumClashResolution Solve(MomentumClashInput input, MomentumClashQuota quota)
+        public static MomentumClashResolution Solve(MomentumClashInput input, MomentumClashQuota quota,
+            bool scalarImpact = false)
         {
             if (input == null || input.Participants == null || input.Pairs == null)
                 throw new LogicDefinitionException(MomentumCodes.CLASH_INPUT_INVALID, "input");
@@ -175,12 +179,15 @@ namespace ProjectHero.Logic.Combat
                 if (!seenPairs.Add(lo * 1000000007L + hi))
                     throw new LogicDefinitionException(MomentumCodes.CLASH_INPUT_INVALID, "duplicatePair");
 
-                int d = MomentumRuleTable.MinimalRingDistance(ordered[ia].Momentum.Direction, ordered[ib].Momentum.Direction);
+                int d = MomentumRuleTable.MinimalRingDistance(
+                    scalarImpact ? ordered[ia].AttackFacing ?? ordered[ia].Momentum.Direction : ordered[ia].Momentum.Direction,
+                    scalarImpact ? ordered[ib].AttackFacing ?? ordered[ib].Momentum.Direction : ordered[ib].Momentum.Direction);
                 int factor = MomentumRuleTable.OppositionFactorQ10(d);
                 // 只有方向损耗系数 > 0 的 Attack-Attack 接触才是有效 Clash（d ≤ 3 不是）。
                 if (factor <= 0)
                     throw new LogicDefinitionException(MomentumCodes.CLASH_INPUT_INVALID,
                         "ineffectiveClashDistance=" + d.ToString(CultureInfo.InvariantCulture));
+                if (scalarImpact) factor = MomentumRuleTable.Q10One;
 
                 adjacency[ia].Add(new OppositionEdge(ib, d, factor));
                 adjacency[ib].Add(new OppositionEdge(ia, d, factor));
@@ -206,8 +213,7 @@ namespace ProjectHero.Logic.Combat
                 for (int k = 0; k < adjacency[i].Count; k++)
                 {
                     OppositionEdge edge = adjacency[i][k];
-                    long suffered = MomentumRuleTable.LossFromBToA(
-                        ordered[edge.OpponentIndex].Momentum.MomentumUnits, edge.RingDistance);
+                    long suffered = Loss(ordered[edge.OpponentIndex].Momentum.MomentumUnits, edge);
                     CheckedAdd(ref total, suffered);
                 }
                 losses[i] = total;
@@ -231,10 +237,8 @@ namespace ProjectHero.Logic.Combat
                     OppositionEdge edge = adjacency[i][k];
                     ClashParticipant opponent = ordered[edge.OpponentIndex];
                     // 同一个方向差与同一对原始动量决定两个方向的损耗：对手打我的、我打对手的。
-                    int suffered = (int)MomentumRuleTable.LossFromBToA(
-                        opponent.Momentum.MomentumUnits, edge.RingDistance);
-                    int imposed = (int)MomentumRuleTable.LossFromBToA(
-                        self.Momentum.MomentumUnits, edge.RingDistance);
+                    int suffered = Loss(opponent.Momentum.MomentumUnits, edge);
+                    int imposed = Loss(self.Momentum.MomentumUnits, edge);
                     weightSum = checked(weightSum + imposed);   // Weight(A→B) = LossFromAToB
                     lossDetails.Add(new ClashOppositionLoss(opponent.OwnerUnitId, opponent.ActionPlanId,
                         edge.RingDistance, edge.OppositionFactorQ10, suffered, imposed));
@@ -303,6 +307,9 @@ namespace ProjectHero.Logic.Combat
             return new MomentumClashResolution(resolutions.AsReadOnly(), allResiduals.AsReadOnly(),
                 terminated.AsReadOnly(), totalRemaining, totalAllocated);
         }
+
+        private static int Loss(int momentum, OppositionEdge edge)
+            => (int)TickQuantization.RoundHalfUpDivide((long)momentum * edge.OppositionFactorQ10, MomentumRuleTable.Q10One);
 
         /// <summary>稳定键：对手 (UnitId, ActionPlanId) 升序（分配余数补齐顺序）。</summary>
         public static int CompareOpponents(ClashParticipant x, ClashParticipant y)

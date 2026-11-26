@@ -600,6 +600,8 @@ namespace ProjectHero.Logic.Movement
             string space = _grid.ValidateDestinationFor(
                 provisional.UnitId, provisional.Destination, provisional.Facing);
             if (space != null) return space;
+            if (!sameSpot && _grid.DestinationOverlapsReservedBody(provisional.UnitId, provisional.Destination, provisional.Facing))
+                return DodgeRelocationCodes.DODGE_DESTINATION_RESERVED_BY_OTHER;
 
             IReadOnlyList<GridPoint> cells = _grid.ResolveDestinationCells(
                 provisional.UnitId, provisional.Destination, provisional.Facing);
@@ -740,6 +742,13 @@ namespace ProjectHero.Logic.Movement
                     "目标格在触发时刻已不可用；该计划随本结果进入终态，其自有预留同批释放（幂等）。", tick));
             }
 
+            bool moves = from.X != destination.X || from.Y != destination.Y;
+            // The relocated unit stays on this footprint after the reaction ends.
+            if (moves && _grid.DestinationOverlapsReservedBody(unitId, destination, reservation.Facing))
+                return Record(FailTerminal(reservation, from, destination,
+                    DodgeRelocationCodes.DODGE_DESTINATION_RESERVED_BY_OTHER,
+                    "目标占位与其他单位已预留的移动占位冲突。", tick));
+
             IReadOnlyList<GridPoint> cells =
                 _grid.ResolveDestinationCells(unitId, destination, reservation.Facing);
             for (int i = 0; i < cells.Count; i++)
@@ -755,7 +764,6 @@ namespace ProjectHero.Logic.Movement
                     tick));
             }
 
-            bool moves = from.X != destination.X || from.Y != destination.Y;
             IReadOnlyList<ActionPlanId> affected = moves ? Canonical(dependentMoves) : Array.Empty<ActionPlanId>();
 
             // —— 阶段 B：原子提交（阶段 A 已把全部可失败条件排除，因此本阶段不可能失败）——

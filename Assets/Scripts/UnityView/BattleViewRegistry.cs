@@ -39,9 +39,12 @@ namespace ProjectHero.UnityView
                 if (pending.ContainsKey(unit.Value)) throw new LogicDefinitionException("VIEW_SLOT_DUPLICATE", view.EncounterSlotId);
                 pending.Add(unit.Value, view);
             }
-            if (pending.Count != mapping.SlotToUnitId.Count) throw new LogicDefinitionException("VIEW_SLOT_SET_INCOMPLETE", "");
+            foreach (var unit in snapshot.Units)
+                if (unit.Traits.IsCombatant && !pending.ContainsKey(unit.UnitId))
+                    throw new LogicDefinitionException("VIEW_SLOT_SET_INCOMPLETE", unit.DefinitionId);
             // All identity checks pass before any view is bound.
-            foreach (var unit in snapshot.Units) pending[unit.UnitId].Bind(mapping, unit);
+            foreach (var unit in snapshot.Units)
+                if (pending.TryGetValue(unit.UnitId, out var view)) view.Bind(mapping, unit);
             _byUnit.Clear();
             foreach (var item in pending) _byUnit.Add(item.Key, item.Value);
             Feedback.Reset();

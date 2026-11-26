@@ -20,7 +20,10 @@ namespace ProjectHero.Logic.Timeline
         float ActionSpeed,
         float MoveSpeed,
         ActionSetId ActionSetId,
-        bool IsAlive);
+        bool IsAlive)
+    {
+        public UnitTraits Traits { get; init; }
+    }
 
     /// <summary>
     /// 计划所有者事实来源。实现方只回答只读事实，<strong>不得</strong>写状态、不得改计划。
@@ -288,6 +291,8 @@ namespace ProjectHero.Logic.Timeline
         /// </summary>
         private string ValidateActionSetMembership(ActionSpec spec, ActionPlanOwnerFacts facts)
         {
+            if (facts.Traits.Control == UnitControl.Passive)
+                return ScheduleCodes.SCHEDULE_ACTION_NOT_IN_ACTION_SET;
             string setId = facts.ActionSetId.Value;
             if (string.IsNullOrEmpty(setId)) return null;
 

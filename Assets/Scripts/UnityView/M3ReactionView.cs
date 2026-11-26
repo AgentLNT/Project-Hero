@@ -251,7 +251,9 @@ namespace ProjectHero.UnityView
                 }
                 card.Warning.color = defense?.Contact.HasEarlierPreemptingContact == true ? new Color(1, .68f, .3f) : Color.white;
                 var next = model.HudPreviews.WindowSequence.FirstOrDefault(w => w.IsEstimated && w.OwnerUnitId == opportunity.DefenderUnitId);
-                card.Reset.text = "下次自身窗口打开时，可用肾上腺素清零" + (next == null ? " · 时间未知" : $" · {Math.Max(0, next.OpenedAtTick - model.Decision.Tick) / (double)tps:0.00}s 后（预计）");
+                card.Reset.text = model.Decision.Definition.AdrenalineRules.UseHealthThresholds
+                    ? "肾上腺素在本场战斗内跨窗口保留"
+                    : "下次自身窗口打开时，可用肾上腺素清零" + (next == null ? " · 时间未知" : $" · {Math.Max(0, next.OpenedAtTick - model.Decision.Tick) / (double)tps:0.00}s 后（预计）");
                 bool staged = model.StagedReactions.Any(r => r.OpportunityId == id);
                 card.Status.text = card.Error != null ? M1HudView.Explain(card.Error) : card.Ignored ? "不响应 · 可点此卡重新选择" : opportunity.BoundActionPlanId != 0 ? "权威已接受 · 反应已锁定"
                     : staged ? "待恢复提交 · 继续时间后送达权威" : !selected.IsFeasible ? Explain(selected) : "本地预览 · 尚未提交";

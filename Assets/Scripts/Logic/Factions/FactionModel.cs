@@ -35,17 +35,19 @@ namespace ProjectHero.Logic.Factions
         Self = 1 << 0,
         Allied = 1 << 1,
         Neutral = 1 << 2,
-        Hostile = 1 << 3
+        Hostile = 1 << 3,
+        Environment = 1 << 4
     }
 
     public static class TargetRelationMasks
     {
+        // All faction relationships. Attacks opt into environmental targets separately.
         public const TargetRelationMask All = TargetRelationMask.Self | TargetRelationMask.Allied |
                                               TargetRelationMask.Neutral | TargetRelationMask.Hostile;
 
         /// <summary>非空且不含未定义位。</summary>
         public static bool IsValid(TargetRelationMask mask)
-            => mask != TargetRelationMask.None && (((int)mask & ~(int)All) == 0);
+            => mask != TargetRelationMask.None && (mask & ~(All | TargetRelationMask.Environment)) == 0;
     }
 
     /// <summary>

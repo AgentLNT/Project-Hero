@@ -76,7 +76,6 @@ namespace ProjectHero.Logic.AI
             CommandRequest selected = null;
             string reason = proposed.NoSelectionReason;
             bool reactionChosen = selectedEvaluation?.IsReaction == true;
-            bool reactionWait = proposed.Evaluations.Any(e => e.IsReaction && e.RejectionCode == null) && !reactionChosen;
             // Consume both channels' receipts before priority arbitration: an urgent response must
             // not leave an ordinary acknowledgement unread until its per-Tick receipt has expired.
             BindReceipt(ref ordinary); BindReceipt(ref reaction);
@@ -97,9 +96,7 @@ namespace ProjectHero.Logic.AI
                     return AiBehaviorStatus.Failure;
                 if (reaction.Cursor > 0 || reactionChosen)
                     return Run(ref reaction);
-                if (!reactionWait) return AiBehaviorStatus.Failure;
-                reason = proposed.NoSelectionReason ?? "WAIT_REACTION_NOT_BENEFICIAL";
-                return AiBehaviorStatus.Running;
+                return AiBehaviorStatus.Failure;
             }
             AiBehaviorStatus Ordinary()
             {
@@ -133,6 +130,9 @@ namespace ProjectHero.Logic.AI
             AiBehaviorStatus Submit(ref AiBehaviorTask task)
             {
                 if (proposed.Selected == null) return AiBehaviorStatus.Failure;
+                if (context.ForecastSettings?.RequireSubmissionPreflight == true
+                    && (selectedEvaluation == null || selectedEvaluation.RejectionCode != null))
+                    return AiBehaviorStatus.Failure;
                 selected = proposed.Selected;
                 task = new AiBehaviorTask(RequestTick: context.NextTick, ProducerOrdinal: nextProducerOrdinal,
                     Status: AiBehaviorStatus.Running, Reason: "REQUEST_QUEUED", PredecessorPlanId: task.PredecessorPlanId);

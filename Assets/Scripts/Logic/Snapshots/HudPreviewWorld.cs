@@ -23,7 +23,7 @@ namespace ProjectHero.Logic.Units
     {
         internal UnitStateMachine CopyForHud(LogicEventOutbox outbox) => new UnitStateMachine(_unitId, outbox)
         { CurrentState = CurrentState, PreviousState = PreviousState, StateStartTick = StateStartTick,
-            StateEndTick = StateEndTick, NextOnExpire = NextOnExpire };
+            StateEndTick = StateEndTick, NextOnExpire = NextOnExpire, Knockdown = Knockdown };
     }
 }
 namespace ProjectHero.Logic.Resources
@@ -33,7 +33,15 @@ namespace ProjectHero.Logic.Resources
         internal void CopyPublicFactsTo(AdrenalineLedger target)
         {
             target.AvailableAdrenaline = AvailableAdrenaline; target.CycleId = CycleId;
-            foreach (var r in _reservations) target._reservations.Add(r.Key, new ReactionReservation(r.Value.Amount, r.Value.CycleId));
+            foreach (var planId in _orderedPlanIds)
+            {
+                var reservation = _reservations[planId.Value];
+                target._reservations.Add(planId.Value, new ReactionReservation(reservation.Amount, reservation.CycleId));
+                target._orderedPlanIds.Add(planId);
+            }
+            target.ReceivedThresholdClaims = ReceivedThresholdClaims;
+            foreach (var claim in _dealtThresholdClaims)
+                target._dealtThresholdClaims.Add(claim.Key, claim.Value);
         }
     }
 }
@@ -169,16 +177,18 @@ namespace ProjectHero.Logic.Simulation
             foreach (var source in _units)
             {
                 var unit = new UnitRuntimeState { UnitId = source.UnitId, DefinitionId = source.DefinitionId,
-                    FactionId = source.FactionId, Position = source.Position, Facing = source.Facing,
+                    FactionId = source.FactionId, Traits = source.Traits, Position = source.Position, Facing = source.Facing,
                     HealthQ10 = source.HealthQ10, IsAlive = source.IsAlive, DeathProcessed = !source.IsAlive,
+                    AvailableAdrenaline = source.AvailableAdrenaline, AdrenalineCycleId = source.AdrenalineCycleId,
+                    ForcedMotion = source.ForcedMotion,
                     StateMachine = source.StateMachine.CopyForHud(copy._outbox) };
                 copy._units.Add(unit); copy._unitsById.Add(unit.UnitId.Value, unit);
                 if (copy._adrenaline.Find(unit.UnitId) == null)
                 {
-                    ((FactionRelationResolver)copy._factionResolver).RegisterCreatedUnit(unit.UnitId, unit.FactionId);
+                    ((FactionRelationResolver)copy._factionResolver).RegisterCreatedUnit(unit.UnitId, unit.FactionId, unit.Traits);
                     copy._adrenaline.Register(unit.UnitId, 0, 0);
                     var controller = ControllerOf(unit.UnitId);
-                    copy.RegisterControllerBinding(controller, new[] { unit.UnitId });
+                    if (!string.IsNullOrEmpty(controller.Value)) copy.RegisterControllerBinding(controller, new[] { unit.UnitId });
                     composition?.RegisterCreatedUnit(unit.UnitId, _definition.FindUnit(unit.DefinitionId), controller);
                 }
                 _adrenaline.Find(unit.UnitId).CopyPublicFactsTo(copy._adrenaline.Find(unit.UnitId));
@@ -190,6 +200,9 @@ namespace ProjectHero.Logic.Simulation
             }
             foreach (var source in _scheduleAuthority.Registry.ActivePlans)
                 if (visible.Contains(source.ActionPlanId.Value)) copy._scheduleAuthority.RegisterPlan(source.CopyForPreview());
+            foreach (var lane in _scheduleAuthority.Lanes)
+                if (lane.IsSubmissionLocked)
+                    copy._scheduleAuthority.LockLaneSubmissions(lane.UnitId, lane.SubmissionLockReason);
             _movementAuthority.CopyVisiblePathsTo(copy._movementAuthority, visible);
             _dodgeRelocation.CopyVisibleDestinationsTo(copy._dodgeRelocation, visible);
             _reactionSystem.CopyVisibleOpportunitiesTo(copy._reactionSystem, visible);
@@ -198,7 +211,9 @@ namespace ProjectHero.Logic.Simulation
             _buffSystem.CopyPublicEffectsTo(copy._buffSystem);
             // Independent counters are derived solely from visible identifiers; never copy live ID/RNG/AI state.
             while (copy._idGenerator.NextUnitIdValue <= _units.Max(u => u.UnitId.Value)) copy._idGenerator.NextUnitId();
-            while (visible.Count > 0 && copy._idGenerator.NextActionPlanIdValue <= visible.Max()) copy._idGenerator.NextActionPlanId();
+            long latestPlanId = Math.Max(visible.DefaultIfEmpty().Max(),
+                copy._units.Max(u => u.ForcedMotion?.SourcePlanId.Value ?? 0));
+            while (copy._idGenerator.NextActionPlanIdValue <= latestPlanId) copy._idGenerator.NextActionPlanId();
             long opportunityMax = copy._reactionSystem.ActiveOpportunities.Select(o => o.Id.Value).DefaultIfEmpty().Max();
             while (copy._idGenerator.NextReactionOpportunityIdValue <= opportunityMax) copy._idGenerator.NextReactionOpportunityId();
             long windowMax = Math.Max(_windowManager.LastClosedWindowId, _windowManager.CurrentWindow?.WindowId.Value ?? 0);

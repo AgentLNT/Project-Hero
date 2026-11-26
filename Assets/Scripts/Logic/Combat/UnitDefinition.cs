@@ -5,7 +5,8 @@ using ProjectHero.Logic.Ids;
 namespace ProjectHero.Logic.Combat
 {
     /// <summary>
-    /// 单位定义（主方案 3.1.1）。Mass × MomentumSpeed 只服务动量/硬直/击倒/击退量化；
+    /// 单位定义（主方案 3.1.1）。Mass 和 MomentumSpeed 服务旧定义与历史回放的兼容量化。
+    /// 新单位配置直接提供抗冲击，攻击冲击由动作配置提供。
     /// ActionSpeed 只修正攻击前摇；MoveSpeed 只修正普通 Move 每权重单位 Tick，不参与选路。
     /// 被动抵抗按 DamageChannelId 索引，范围 [0, 1024]（Q10），缺失通道视为 0；
     /// 不存在通用 DamageReduction。
@@ -40,9 +41,19 @@ namespace ProjectHero.Logic.Combat
         Ids.VolumeSpecId VolumeSpecId = default,
         CombatAttributesV05 CombatAttributes = null)
     {
+        public int? ScalarControlResistanceUnits { get; init; }
+        public UnitTraits Traits { get; init; }
+
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
+            if (Traits != default)
+            {
+                writer.Write("unit.kind", (int)Traits.Kind);
+                writer.Write("unit.control", (int)Traits.Control);
+            }
             CombatAttributes?.WriteHashComponents(writer);
+            if (ScalarControlResistanceUnits is int resistance)
+                writer.Write("unit.scalar_control_resistance", resistance);
             writer.Write("unit.definition_id", UnitDefinitionId.Value ?? string.Empty);
             writer.Write("unit.mass", (double)Mass);
             writer.Write("unit.momentum_speed", (double)MomentumSpeed);
@@ -93,6 +104,8 @@ namespace ProjectHero.Logic.Combat
         public const string UNIT_RESISTANCE_CHANNEL_INVALID = "UNIT_RESISTANCE_CHANNEL_INVALID";
         public const string UNIT_INITIAL_HEALTH_INVALID = "UNIT_INITIAL_HEALTH_INVALID";
         public const string UNIT_ACTION_SET_ID_INVALID = "UNIT_ACTION_SET_ID_INVALID";
+        public const string UNIT_TRAITS_INVALID = "UNIT_TRAITS_INVALID";
+        public const string UNIT_CONTROLLER_NOT_ALLOWED = "UNIT_CONTROLLER_NOT_ALLOWED";
 
         /// <summary>任务 06：体积规范表引用格式非法（空表示"未绑定"，由悬空引用校验负责）。</summary>
         public const string UNIT_VOLUME_SPEC_ID_INVALID = "UNIT_VOLUME_SPEC_ID_INVALID";
@@ -106,6 +119,12 @@ namespace ProjectHero.Logic.Combat
         /// </summary>
         public static string Validate(UnitDefinition definition)
         {
+            if (!definition.Traits.IsValid
+                || (definition.Traits.Control == UnitControl.Passive && !string.IsNullOrEmpty(definition.ActionSetId.Value)))
+                return UnitDefinitionCodes.UNIT_TRAITS_INVALID;
+            if (definition.ScalarControlResistanceUnits is int resistance
+                && (resistance <= 0 || resistance > MomentumLimits.MaxMomentumUnitsPerIntent))
+                return MomentumCodes.MOMENTUM_OUT_OF_RANGE;
             if (definition.CombatAttributes != null)
             {
                 var attributes = definition.CombatAttributes;
@@ -136,7 +155,9 @@ namespace ProjectHero.Logic.Combat
                 }
             }
 
-            if (!IsFinitePositive(definition.InitialHealth)) return UnitDefinitionCodes.UNIT_INITIAL_HEALTH_INVALID;
+            double healthQ10 = (double)definition.InitialHealth * MomentumQuantizer.HealthQ10PerLifePoint;
+            if (!IsFinitePositive(definition.InitialHealth) || healthQ10 < 0.5 || healthQ10 >= int.MaxValue + 0.5)
+                return UnitDefinitionCodes.UNIT_INITIAL_HEALTH_INVALID;
 
             // ActionSetId 在本任务引入；为空表示"该定义未绑定动作集合"，
             // 该情形由 Builder 的跨定义引用校验（DEFINITION_REFERENCE_DANGLING）负责拒绝，

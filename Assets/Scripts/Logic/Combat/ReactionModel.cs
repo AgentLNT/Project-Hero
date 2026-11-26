@@ -48,7 +48,8 @@ namespace ProjectHero.Logic.Combat
         int SuccessfulDodgeReward,
         int ClashReward,
         bool UseCombatValuesV05 = false,
-        AdrenalineDamageGainQuantization DamageGainQuantization = AdrenalineDamageGainQuantization.LegacyDecimalV1)
+        AdrenalineDamageGainQuantization DamageGainQuantization = AdrenalineDamageGainQuantization.LegacyDecimalV1,
+        bool UseHealthThresholds = false)
     {
         public const string ADRENALINE_MAX_AVAILABLE_INVALID = "ADRENALINE_MAX_AVAILABLE_INVALID";
         public const string ADRENALINE_GAIN_NEGATIVE = "ADRENALINE_GAIN_NEGATIVE";
@@ -66,10 +67,18 @@ namespace ProjectHero.Logic.Combat
         public static readonly AdrenalineRules BinaryQ10V3 = FrozenV1 with { DamageGainQuantization = AdrenalineDamageGainQuantization.BinaryRoundHalfUpV3 };
         public static readonly AdrenalineRules CombatValuesV05Candidate = new(
             2 * CombatValuesV05.ResourceUnitsPerPoint, 0, 0, 0, 0, 0, true);
+        public static readonly AdrenalineRules HealthThresholds = new(0, 0, 0, 0, 0, 0, UseHealthThresholds: true);
+
+        public int UnitsPerPoint => UseCombatValuesV05 ? CombatValuesV05.ResourceUnitsPerPoint : 1;
 
         /// <summary>基础校验：上限为正、获得率与奖励非负。</summary>
         public string Validate()
         {
+            if (UseHealthThresholds)
+                return MaxAvailablePerCycle == 0 && DamageDealtGainQ10 == 0 && DamageReceivedGainQ10 == 0
+                    && SuccessfulBlockReward == 0 && SuccessfulDodgeReward == 0 && ClashReward == 0
+                    && DamageGainQuantization == AdrenalineDamageGainQuantization.LegacyDecimalV1
+                    ? null : ADRENALINE_MAX_AVAILABLE_INVALID;
             if (DamageGainQuantization != AdrenalineDamageGainQuantization.LegacyDecimalV1
                 && DamageGainQuantization != AdrenalineDamageGainQuantization.BinaryFloorV2
                 && DamageGainQuantization != AdrenalineDamageGainQuantization.BinaryRoundHalfUpV3)
@@ -90,7 +99,7 @@ namespace ProjectHero.Logic.Combat
         /// </summary>
         public string ValidateReactionCost(ActionType reactionType, int cost)
         {
-            if (cost > MaxAvailablePerCycle) return ADRENALINE_COST_EXCEEDS_CYCLE_MAXIMUM;
+            if (!UseHealthThresholds && cost > MaxAvailablePerCycle) return ADRENALINE_COST_EXCEEDS_CYCLE_MAXIMUM;
             switch (reactionType)
             {
                 case ActionType.Block:
@@ -119,6 +128,8 @@ namespace ProjectHero.Logic.Combat
         public void WriteHashComponents(CanonicalHashWriter writer)
         {
             if (UseCombatValuesV05) CombatValuesV05.WriteProtocol(writer);
+            if (UseHealthThresholds)
+                writer.Write("adrenaline_rules.health_threshold_version", "1:received=75,50,25;dealt=50,0;carry-battle;largest-hostile-source");
             // Absence retains the exact V1 hash encoding, including its historical quantization.
             if (DamageGainQuantization != AdrenalineDamageGainQuantization.LegacyDecimalV1)
                 writer.Write("adrenaline_rules.damage_gain_quantization_version", (int)DamageGainQuantization);
