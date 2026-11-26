@@ -1,0 +1,164 @@
+[
+  {
+    "type": "DamageChannelResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "AttackPlanId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "AttackerUnitId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "GuardPlanId": {
+        "Value": 0,
+        "IsValid": false
+      },
+      "IncomingDirection": 0,
+      "IncomingMomentumUnits": 10240,
+      "AfterMomentumResistanceUnits": 10240,
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.blunt"
+          },
+          "RawQ10": 6144,
+          "AfterPassiveResistanceQ10": 6144,
+          "AfterActionResistanceQ10": 6144,
+          "PassiveResistanceQ10": 0,
+          "ActionResistanceQ10": 0,
+          "Tags": 3
+        }
+      ],
+      "TotalDamageQ10": 6144,
+      "AfterBlockDamageQ10": 6144,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "ParticipatingPlanIds": [
+        {
+          "Value": 1,
+          "IsValid": true
+        }
+      ],
+      "Tick": 211,
+      "Sequence": 19
+    }
+  },
+  {
+    "type": "TargetAggregateResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.blunt"
+          },
+          "RawQ10": 6144,
+          "AfterPassiveResistanceQ10": 6144,
+          "AfterActionResistanceQ10": 6144
+        }
+      ],
+      "TotalDamageQ10": 6144,
+      "TotalImpactUnits": 10240,
+      "IncomingMomentumUnits": 10240,
+      "ResultantMomentumUnits": 10240,
+      "ResultantDirection": 0,
+      "ControlResistanceUnits": 10752,
+      "IsStaggered": false,
+      "IsKnockedDown": false,
+      "KnockbackSteps": 0,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "Tick": 211,
+      "Sequence": 20
+    }
+  },
+  {
+    "type": "DamageChannelResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 2,
+      "TargetUnitId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "AttackPlanId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "AttackerUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "GuardPlanId": {
+        "Value": 0,
+        "IsValid": false
+      },
+      "IncomingDirection": 6,
+      "IncomingMomentumUnits": 3072,
+      "AfterMomentumResistanceUnits": 3072,
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.slash"
+          },
+          "RawQ10": 4096,
+          "AfterPassiveResistanceQ10": 4096,
+          "AfterActionResistanceQ10": 4096,
+          "PassiveResistanceQ10": 0,
+          "ActionResistanceQ10": 0,
+          "Tags": 3
+        }
+      ],
+      "TotalDamageQ10": 4096,
+      "AfterBlockDamageQ10": 4096,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "ParticipatingPlanIds": [
+        {
+          "Value": 2,
+          "IsValid": true
+        }
+      ],
+      "Tick": 212,
+      "Sequence": 28
+    }
+  },
+  {
+    "type": "TargetAggregateResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 2,
+      "TargetUnitId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.slash"
+          },
+          "RawQ10": 4096,
+          "AfterPassiveResistanceQ10": 4096,
+          "AfterActionResistanceQ10": 4096
+        }
+      ],
+      "TotalDamageQ10": 4096,
+      "TotalImpactUnits": 3072,
+      "IncomingMomentumUnits": 3072,
+      "ResultantMomentumUnits": 3072,
+      "ResultantDirection": 6,
+      "ControlResistanceUnits": 10240,
+      "IsStaggered": false,
+      "IsKnockedDown": false,
+      "KnockbackSteps": 0,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "Tick": 212,
+      "Sequence": 29
+    }
+  }
+]

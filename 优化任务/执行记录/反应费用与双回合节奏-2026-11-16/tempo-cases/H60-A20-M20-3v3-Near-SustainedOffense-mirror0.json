@@ -1,0 +1,16 @@
+{
+  "Scenario": {
+    "Model": {
+      "Health": 60,
+      "ActionSpeed": 20,
+      "MoveSpeed": 20
+    },
+    "TeamSize": 3,
+    "Layout": 0,
+    "Mirror": false,
+    "Policy": 1,
+    "Opponent": null
+  },
+  "Failed": true,
+  "Error": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)-\u003E(-1, -9)[751,775)w2\r\n   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)\r\n   at TempoProbes.\u003C\u003Ec__DisplayClass5_0.\u003CMain\u003Eb__20(Scenario scenario)"
+}

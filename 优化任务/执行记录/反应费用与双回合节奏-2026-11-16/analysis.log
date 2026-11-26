@@ -1,0 +1,136 @@
+{
+  "stages": {
+    "D": {
+      "cases": 54,
+      "ended": 6,
+      "timeouts": 48,
+      "ticks": 193194,
+      "hits": 513,
+      "effectiveLossQ10": 11660288,
+      "attackStarts": 1398,
+      "moveStarts": 635,
+      "rejected": 0,
+      "endedBothDealtDamage": 6,
+      "reactionConsumed": 634,
+      "triggered:3": 217,
+      "triggered:2": 417,
+      "reserved:3": 230,
+      "reserved:2": 424,
+      "unitsLethalByOwnDeadline": 0,
+      "casesWithLethalByOwnDeadline": 0,
+      "firstDeathBeforeBothDeadlines": 0,
+      "fallbackUnavailableAtStart": 144
+    },
+    "G": {
+      "cases": 54,
+      "ended": 1,
+      "timeouts": 53,
+      "ticks": 192902,
+      "hits": 461,
+      "effectiveLossQ10": 10388480,
+      "attackStarts": 1242,
+      "moveStarts": 839,
+      "rejected": 0,
+      "endedBothDealtDamage": 1,
+      "reactionConsumed": 637,
+      "triggered:3": 558,
+      "triggered:2": 79,
+      "reserved:3": 568,
+      "reserved:2": 85,
+      "unitsLethalByOwnDeadline": 0,
+      "casesWithLethalByOwnDeadline": 0,
+      "firstDeathBeforeBothDeadlines": 0,
+      "fallbackUnavailableAtStart": 72
+    },
+    "J": {
+      "cases": 54,
+      "ended": 3,
+      "timeouts": 51,
+      "ticks": 193374,
+      "hits": 520,
+      "effectiveLossQ10": 11945472,
+      "attackStarts": 1310,
+      "moveStarts": 785,
+      "rejected": 0,
+      "endedBothDealtDamage": 3,
+      "reactionConsumed": 577,
+      "triggered:3": 431,
+      "triggered:2": 146,
+      "reserved:3": 445,
+      "reserved:2": 149,
+      "unitsLethalByOwnDeadline": 0,
+      "casesWithLethalByOwnDeadline": 0,
+      "firstDeathBeforeBothDeadlines": 0,
+      "fallbackUnavailableAtStart": 198
+    },
+    "Z": {
+      "cases": 54,
+      "ended": 2,
+      "timeouts": 52,
+      "ticks": 193942,
+      "hits": 428,
+      "effectiveLossQ10": 9719808,
+      "attackStarts": 1278,
+      "moveStarts": 809,
+      "rejected": 0,
+      "endedBothDealtDamage": 2,
+      "reactionConsumed": 672,
+      "triggered:3": 449,
+      "triggered:2": 223,
+      "reserved:3": 459,
+      "reserved:2": 227,
+      "unitsLethalByOwnDeadline": 0,
+      "casesWithLethalByOwnDeadline": 0,
+      "firstDeathBeforeBothDeadlines": 0,
+      "fallbackUnavailableAtStart": 99
+    }
+  },
+  "paired": {
+    "D": {
+      "moreLoss": 43,
+      "onlyRevisedEnded": 6,
+      "onlyControlEnded": 2,
+      "lessLoss": 9,
+      "equalLoss": 2
+    },
+    "G": {
+      "lessLoss": 16,
+      "onlyRevisedEnded": 1,
+      "onlyControlEnded": 2,
+      "equalLoss": 5,
+      "moreLoss": 33
+    },
+    "J": {
+      "moreLoss": 48,
+      "onlyRevisedEnded": 3,
+      "onlyControlEnded": 2,
+      "lessLoss": 6
+    }
+  },
+  "tempo": {
+    "D": {
+      "units": 108,
+      "medianDamageHp": 18.0,
+      "maxDamageHp": 60.0,
+      "noDamage": 38
+    },
+    "G": {
+      "units": 108,
+      "medianDamageHp": 15.0,
+      "maxDamageHp": 50.0,
+      "noDamage": 47
+    },
+    "J": {
+      "units": 108,
+      "medianDamageHp": 20.0,
+      "maxDamageHp": 60.0,
+      "noDamage": 40
+    },
+    "Z": {
+      "units": 108,
+      "medianDamageHp": 15.0,
+      "maxDamageHp": 50.0,
+      "noDamage": 51
+    }
+  }
+}

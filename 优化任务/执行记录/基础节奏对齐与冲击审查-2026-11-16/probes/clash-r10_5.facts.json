@@ -1,0 +1,205 @@
+[
+  {
+    "type": "ClashParticipantResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "ActionPlanId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "OwnerUnitId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "Direction": 0,
+      "OriginalMomentumUnits": 10240,
+      "TotalOppositionLossUnits": 3072,
+      "RemainingMomentumUnits": 7168,
+      "Losses": [
+        {
+          "OpponentUnitId": {
+            "Value": 2,
+            "IsValid": true
+          },
+          "OpponentActionPlanId": {
+            "Value": 2,
+            "IsValid": true
+          },
+          "RingDistance": 6,
+          "OppositionFactorQ10": 1024,
+          "SufferedLossUnits": 3072,
+          "ImposedLossUnits": 10240
+        }
+      ],
+      "ParticipatingPlanIds": [
+        {
+          "Value": 1,
+          "IsValid": true
+        },
+        {
+          "Value": 2,
+          "IsValid": true
+        }
+      ],
+      "Tick": 212,
+      "Sequence": 24
+    }
+  },
+  {
+    "type": "ClashParticipantResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "ActionPlanId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "OwnerUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "Direction": 6,
+      "OriginalMomentumUnits": 3072,
+      "TotalOppositionLossUnits": 10240,
+      "RemainingMomentumUnits": 0,
+      "Losses": [
+        {
+          "OpponentUnitId": {
+            "Value": 1,
+            "IsValid": true
+          },
+          "OpponentActionPlanId": {
+            "Value": 1,
+            "IsValid": true
+          },
+          "RingDistance": 6,
+          "OppositionFactorQ10": 1024,
+          "SufferedLossUnits": 10240,
+          "ImposedLossUnits": 3072
+        }
+      ],
+      "ParticipatingPlanIds": [
+        {
+          "Value": 1,
+          "IsValid": true
+        },
+        {
+          "Value": 2,
+          "IsValid": true
+        }
+      ],
+      "Tick": 212,
+      "Sequence": 25
+    }
+  },
+  {
+    "type": "DamageChannelResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "AttackPlanId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "AttackerUnitId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "GuardPlanId": {
+        "Value": 0,
+        "IsValid": false
+      },
+      "IncomingDirection": 0,
+      "IncomingMomentumUnits": 7168,
+      "AfterMomentumResistanceUnits": 7168,
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.blunt"
+          },
+          "RawQ10": 4300,
+          "AfterPassiveResistanceQ10": 4300,
+          "AfterActionResistanceQ10": 4300,
+          "PassiveResistanceQ10": 0,
+          "ActionResistanceQ10": 0,
+          "Tags": 3
+        }
+      ],
+      "TotalDamageQ10": 4300,
+      "AfterBlockDamageQ10": 4300,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "ParticipatingPlanIds": [
+        {
+          "Value": 1,
+          "IsValid": true
+        },
+        {
+          "Value": 2,
+          "IsValid": true
+        }
+      ],
+      "Tick": 212,
+      "Sequence": 27
+    }
+  },
+  {
+    "type": "TargetAggregateResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.blunt"
+          },
+          "RawQ10": 4300,
+          "AfterPassiveResistanceQ10": 4300,
+          "AfterActionResistanceQ10": 4300
+        }
+      ],
+      "TotalDamageQ10": 4300,
+      "TotalImpactUnits": 7168,
+      "IncomingMomentumUnits": 7168,
+      "ResultantMomentumUnits": 7168,
+      "ResultantDirection": 0,
+      "ControlResistanceUnits": 10752,
+      "IsStaggered": false,
+      "IsKnockedDown": false,
+      "KnockbackSteps": 0,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "Tick": 212,
+      "Sequence": 28
+    }
+  },
+  {
+    "type": "ActionPlanTerminatedEvent",
+    "fact": {
+      "ActionPlanId": 1,
+      "OwnerUnitId": 1,
+      "Reason": 6,
+      "ReasonCode": "ACTION_TERMINATION_INTERRUPTED_BY_CLASH",
+      "TerminalTick": 242,
+      "ScheduleRevision": 2,
+      "Tick": 242,
+      "Sequence": 34
+    }
+  },
+  {
+    "type": "ActionPlanTerminatedEvent",
+    "fact": {
+      "ActionPlanId": 2,
+      "OwnerUnitId": 2,
+      "Reason": 6,
+      "ReasonCode": "ACTION_TERMINATION_INTERRUPTED_BY_CLASH",
+      "TerminalTick": 242,
+      "ScheduleRevision": 2,
+      "Tick": 242,
+      "Sequence": 36
+    }
+  }
+]

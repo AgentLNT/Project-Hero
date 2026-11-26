@@ -1,0 +1,109 @@
+[
+  {
+    "type": "DamageChannelResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "AttackPlanId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "AttackerUnitId": {
+        "Value": 1,
+        "IsValid": true
+      },
+      "GuardPlanId": {
+        "Value": 0,
+        "IsValid": false
+      },
+      "IncomingDirection": 0,
+      "IncomingMomentumUnits": 10240,
+      "AfterMomentumResistanceUnits": 10240,
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.blunt"
+          },
+          "RawQ10": 6144,
+          "AfterPassiveResistanceQ10": 6144,
+          "AfterActionResistanceQ10": 6144,
+          "PassiveResistanceQ10": 0,
+          "ActionResistanceQ10": 0,
+          "Tags": 3
+        }
+      ],
+      "TotalDamageQ10": 6144,
+      "AfterBlockDamageQ10": 6144,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "ParticipatingPlanIds": [
+        {
+          "Value": 1,
+          "IsValid": true
+        }
+      ],
+      "Tick": 91,
+      "Sequence": 12
+    }
+  },
+  {
+    "type": "TargetAggregateResolvedEvent",
+    "fact": {
+      "ConflictGroupKey": 1,
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "Channels": [
+        {
+          "ChannelId": {
+            "Value": "physical.blunt"
+          },
+          "RawQ10": 6144,
+          "AfterPassiveResistanceQ10": 6144,
+          "AfterActionResistanceQ10": 6144
+        }
+      ],
+      "TotalDamageQ10": 6144,
+      "TotalImpactUnits": 10240,
+      "IncomingMomentumUnits": 10240,
+      "ResultantMomentumUnits": 10240,
+      "ResultantDirection": 0,
+      "ControlResistanceUnits": 10240,
+      "IsStaggered": true,
+      "IsKnockedDown": false,
+      "KnockbackSteps": 1,
+      "StopReasonCode": "INTERACTION_CONTACT_UNRESISTED",
+      "Tick": 91,
+      "Sequence": 13
+    }
+  },
+  {
+    "type": "ForcedDisplacementResolvedEvent",
+    "fact": {
+      "TargetUnitId": {
+        "Value": 2,
+        "IsValid": true
+      },
+      "From": {
+        "X": 6,
+        "Y": 0
+      },
+      "To": {
+        "X": 8,
+        "Y": 0
+      },
+      "Direction": 0,
+      "RequestedSteps": 1,
+      "AppliedSteps": 1,
+      "MomentumUnits": 10240,
+      "ConflictGroupKey": 1,
+      "StopReason": 0,
+      "InvalidatedPlanIds": [],
+      "Tick": 91,
+      "Sequence": 14
+    }
+  }
+]

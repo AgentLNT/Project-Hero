@@ -1,0 +1,39 @@
+{
+  "Scenario": {
+    "Model": {
+      "Health": 50,
+      "ActionSpeed": 24,
+      "MoveSpeed": 30
+    },
+    "TeamSize": 1,
+    "Layout": 1,
+    "Mirror": false,
+    "Policy": 1,
+    "Opponent": 3
+  },
+  "DefinitionHash": "8bba11f3e5f84bd2",
+  "Cap": 720,
+  "Ticks": 504,
+  "Ended": true,
+  "FirstDeath": 503,
+  "DeathsBeforeAnyWindow": 0,
+  "Rejections": 0,
+  "Actors": [
+    {
+      "Id": 1,
+      "Deadline": 540,
+      "Death": null,
+      "WindowsOpened": 2,
+      "BestSingleTargetDamageQ10": 51200,
+      "Lethal": true
+    },
+    {
+      "Id": 2,
+      "Deadline": null,
+      "Death": 503,
+      "WindowsOpened": 1,
+      "BestSingleTargetDamageQ10": 25600,
+      "Lethal": false
+    }
+  ]
+}

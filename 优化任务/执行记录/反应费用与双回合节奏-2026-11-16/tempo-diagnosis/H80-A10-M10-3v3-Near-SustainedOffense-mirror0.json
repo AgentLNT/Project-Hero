@@ -1,0 +1,16 @@
+{
+  "Scenario": {
+    "Model": {
+      "Health": 80,
+      "ActionSpeed": 10,
+      "MoveSpeed": 10
+    },
+    "TeamSize": 3,
+    "Layout": 0,
+    "Mirror": false,
+    "Policy": 1,
+    "Opponent": null
+  },
+  "Failed": true,
+  "Error": "ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH\r\nProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH\r\n   at ProjectHero.Logic.Snapshots.AiForecastWorld.\u003C\u003Ec__DisplayClass11_0.\u003CEvaluateDefenseProtocol\u003Eb__4(Reply r)\r\n   at System.Linq.Enumerable.ArraySelectIterator\u00602.ToArray()\r\n   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)\r\n   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)\r\n   at ProjectHero.Logic.AI.AiPressurePolicy.\u003C\u003Ec__DisplayClass0_2.\u003CDecide\u003Eg__Collect|10(IReadOnlyList\u00601 source)\r\n   at ProjectHero.Logic.AI.AiPressurePolicy.\u003C\u003Ec__DisplayClass0_0.\u003CDecide\u003Eg__Choose|4(IReadOnlyList\u00601 candidates, Boolean reaction, Dictionary\u00602 cached, IReadOnlyList\u00601 deferred)\r\n   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)\r\n   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)\r\n   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)\r\n   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)\r\n   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)\r\n   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)\r\n   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)\r\n   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)\r\n   at TempoProbes.\u003C\u003Ec__DisplayClass5_0.\u003CMain\u003Eb__27(Scenario scenario)"
+}

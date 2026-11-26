@@ -1,0 +1,766 @@
+{
+  "tempo-cases": {
+    "cases": 80,
+    "groups": {
+      "40HP/10A/10M/1v1": {
+        "cases": 12,
+        "failed": 0,
+        "valid": 12,
+        "battleEnded": 4,
+        "anyDeath": 4,
+        "anySingleActorLethal": 3,
+        "actorsLethal": 3,
+        "actors": 24,
+        "survivorsWithTwoWindows": 17,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "40HP/10A/10M/2v2": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 3,
+        "actors": 8,
+        "survivorsWithTwoWindows": 2,
+        "deathsWithoutOwnWindow": 2,
+        "rejections": 0
+      },
+      "40HP/10A/10M/3v3": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 4,
+        "actors": 12,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 4,
+        "rejections": 0
+      },
+      "60HP/10A/10M/1v1": {
+        "cases": 12,
+        "failed": 0,
+        "valid": 12,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 24,
+        "survivorsWithTwoWindows": 24,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/10A/10M/2v2": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 2,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/10A/10M/3v3": {
+        "cases": 2,
+        "failed": 2
+      },
+      "60HP/20A/20M/1v1": {
+        "cases": 12,
+        "failed": 0,
+        "valid": 12,
+        "battleEnded": 9,
+        "anyDeath": 9,
+        "anySingleActorLethal": 9,
+        "actorsLethal": 9,
+        "actors": 24,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/2v2": {
+        "cases": 2,
+        "failed": 1,
+        "valid": 1,
+        "battleEnded": 0,
+        "anyDeath": 1,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 4,
+        "survivorsWithTwoWindows": 3,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/3v3": {
+        "cases": 2,
+        "failed": 2
+      },
+      "80HP/10A/10M/1v1": {
+        "cases": 12,
+        "failed": 0,
+        "valid": 12,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 24,
+        "survivorsWithTwoWindows": 24,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/10A/10M/2v2": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 0,
+        "anyDeath": 2,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/10A/10M/3v3": {
+        "cases": 2,
+        "failed": 2
+      },
+      "80HP/20A/20M/1v1": {
+        "cases": 12,
+        "failed": 0,
+        "valid": 12,
+        "battleEnded": 4,
+        "anyDeath": 4,
+        "anySingleActorLethal": 4,
+        "actorsLethal": 4,
+        "actors": 24,
+        "survivorsWithTwoWindows": 16,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/20A/20M/2v2": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 1,
+        "anyDeath": 2,
+        "anySingleActorLethal": 1,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/20A/20M/3v3": {
+        "cases": 2,
+        "failed": 2
+      }
+    },
+    "byLayout": {
+      "40HP/10A/10M/1v1/Far": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 1,
+        "anyDeath": 1,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 7,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "40HP/10A/10M/1v1/Main": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 1,
+        "anyDeath": 1,
+        "anySingleActorLethal": 1,
+        "actorsLethal": 1,
+        "actors": 8,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "40HP/10A/10M/1v1/Near": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "40HP/10A/10M/2v2/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 3,
+        "actors": 8,
+        "survivorsWithTwoWindows": 2,
+        "deathsWithoutOwnWindow": 2,
+        "rejections": 0
+      },
+      "40HP/10A/10M/3v3/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 4,
+        "actors": 12,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 4,
+        "rejections": 0
+      },
+      "60HP/10A/10M/1v1/Far": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/10A/10M/1v1/Main": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/10A/10M/1v1/Near": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/10A/10M/2v2/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 2,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/10A/10M/3v3/Near": {
+        "cases": 2,
+        "failed": 2
+      },
+      "60HP/20A/20M/1v1/Far": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 3,
+        "anyDeath": 3,
+        "anySingleActorLethal": 3,
+        "actorsLethal": 3,
+        "actors": 8,
+        "survivorsWithTwoWindows": 2,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/1v1/Main": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/1v1/Near": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 4,
+        "anyDeath": 4,
+        "anySingleActorLethal": 4,
+        "actorsLethal": 4,
+        "actors": 8,
+        "survivorsWithTwoWindows": 0,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/2v2/Near": {
+        "cases": 2,
+        "failed": 1,
+        "valid": 1,
+        "battleEnded": 0,
+        "anyDeath": 1,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 4,
+        "survivorsWithTwoWindows": 3,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/3v3/Near": {
+        "cases": 2,
+        "failed": 2
+      },
+      "80HP/10A/10M/1v1/Far": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/10A/10M/1v1/Main": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/10A/10M/1v1/Near": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/10A/10M/2v2/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 0,
+        "anyDeath": 2,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/10A/10M/3v3/Near": {
+        "cases": 2,
+        "failed": 2
+      },
+      "80HP/20A/20M/1v1/Far": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/20A/20M/1v1/Main": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/20A/20M/1v1/Near": {
+        "cases": 4,
+        "failed": 0,
+        "valid": 4,
+        "battleEnded": 0,
+        "anyDeath": 0,
+        "anySingleActorLethal": 0,
+        "actorsLethal": 0,
+        "actors": 8,
+        "survivorsWithTwoWindows": 8,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/20A/20M/2v2/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 1,
+        "anyDeath": 2,
+        "anySingleActorLethal": 1,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "80HP/20A/20M/3v3/Near": {
+        "cases": 2,
+        "failed": 2
+      }
+    },
+    "errors": [
+      {
+        "case": "H60-A10-M10-3v3-Near-SustainedOffense-mirror0",
+        "message": "ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH"
+      },
+      {
+        "case": "H60-A10-M10-3v3-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH"
+      },
+      {
+        "case": "H60-A20-M20-2v2-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 900: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#23/2 (3, 1)->(2, 0)[949,961)w1"
+      },
+      {
+        "case": "H60-A20-M20-3v3-Near-SustainedOffense-mirror0",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)->(-1, -9)[751,775)w2"
+      },
+      {
+        "case": "H60-A20-M20-3v3-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 360: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2"
+      },
+      {
+        "case": "H80-A10-M10-3v3-Near-SustainedOffense-mirror0",
+        "message": "ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH"
+      },
+      {
+        "case": "H80-A10-M10-3v3-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH"
+      },
+      {
+        "case": "H80-A20-M20-3v3-Near-SustainedOffense-mirror0",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)->(-1, -9)[751,775)w2"
+      },
+      {
+        "case": "H80-A20-M20-3v3-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 360: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2"
+      }
+    ]
+  },
+  "tempo-confirm": {
+    "cases": 54,
+    "groups": {
+      "60HP/20A/20M/1v1": {
+        "cases": 54,
+        "failed": 0,
+        "valid": 54,
+        "battleEnded": 40,
+        "anyDeath": 40,
+        "anySingleActorLethal": 40,
+        "actorsLethal": 40,
+        "actors": 108,
+        "survivorsWithTwoWindows": 28,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      }
+    },
+    "byLayout": {
+      "60HP/20A/20M/1v1/Far": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 12,
+        "anyDeath": 12,
+        "anySingleActorLethal": 12,
+        "actorsLethal": 12,
+        "actors": 36,
+        "survivorsWithTwoWindows": 12,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/1v1/Main": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 15,
+        "anyDeath": 15,
+        "anySingleActorLethal": 15,
+        "actorsLethal": 15,
+        "actors": 36,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "60HP/20A/20M/1v1/Near": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 13,
+        "anyDeath": 13,
+        "anySingleActorLethal": 13,
+        "actorsLethal": 13,
+        "actors": 36,
+        "survivorsWithTwoWindows": 10,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      }
+    },
+    "errors": []
+  },
+  "tempo-expanded": {
+    "cases": 116,
+    "groups": {
+      "40HP/20A/20M/1v1": {
+        "cases": 54,
+        "failed": 0,
+        "valid": 54,
+        "battleEnded": 51,
+        "anyDeath": 51,
+        "anySingleActorLethal": 51,
+        "actorsLethal": 51,
+        "actors": 108,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 15,
+        "rejections": 0
+      },
+      "40HP/20A/20M/2v2": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 4,
+        "actors": 8,
+        "survivorsWithTwoWindows": 0,
+        "deathsWithoutOwnWindow": 4,
+        "rejections": 0
+      },
+      "40HP/20A/20M/3v3": {
+        "cases": 2,
+        "failed": 1,
+        "valid": 1,
+        "battleEnded": 1,
+        "anyDeath": 1,
+        "anySingleActorLethal": 1,
+        "actorsLethal": 3,
+        "actors": 6,
+        "survivorsWithTwoWindows": 1,
+        "deathsWithoutOwnWindow": 2,
+        "rejections": 0
+      },
+      "50HP/20A/20M/1v1": {
+        "cases": 54,
+        "failed": 0,
+        "valid": 54,
+        "battleEnded": 41,
+        "anyDeath": 41,
+        "anySingleActorLethal": 41,
+        "actorsLethal": 41,
+        "actors": 108,
+        "survivorsWithTwoWindows": 26,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "50HP/20A/20M/2v2": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 1,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 3,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "50HP/20A/20M/3v3": {
+        "cases": 2,
+        "failed": 2
+      }
+    },
+    "byLayout": {
+      "40HP/20A/20M/1v1/Far": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 15,
+        "anyDeath": 15,
+        "anySingleActorLethal": 15,
+        "actorsLethal": 15,
+        "actors": 36,
+        "survivorsWithTwoWindows": 6,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "40HP/20A/20M/1v1/Main": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 18,
+        "anyDeath": 18,
+        "anySingleActorLethal": 18,
+        "actorsLethal": 18,
+        "actors": 36,
+        "survivorsWithTwoWindows": 0,
+        "deathsWithoutOwnWindow": 9,
+        "rejections": 0
+      },
+      "40HP/20A/20M/1v1/Near": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 18,
+        "anyDeath": 18,
+        "anySingleActorLethal": 18,
+        "actorsLethal": 18,
+        "actors": 36,
+        "survivorsWithTwoWindows": 0,
+        "deathsWithoutOwnWindow": 6,
+        "rejections": 0
+      },
+      "40HP/20A/20M/2v2/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 2,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 4,
+        "actors": 8,
+        "survivorsWithTwoWindows": 0,
+        "deathsWithoutOwnWindow": 4,
+        "rejections": 0
+      },
+      "40HP/20A/20M/3v3/Near": {
+        "cases": 2,
+        "failed": 1,
+        "valid": 1,
+        "battleEnded": 1,
+        "anyDeath": 1,
+        "anySingleActorLethal": 1,
+        "actorsLethal": 3,
+        "actors": 6,
+        "survivorsWithTwoWindows": 1,
+        "deathsWithoutOwnWindow": 2,
+        "rejections": 0
+      },
+      "50HP/20A/20M/1v1/Far": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 12,
+        "anyDeath": 12,
+        "anySingleActorLethal": 12,
+        "actorsLethal": 12,
+        "actors": 36,
+        "survivorsWithTwoWindows": 12,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "50HP/20A/20M/1v1/Main": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 16,
+        "anyDeath": 16,
+        "anySingleActorLethal": 16,
+        "actorsLethal": 16,
+        "actors": 36,
+        "survivorsWithTwoWindows": 4,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "50HP/20A/20M/1v1/Near": {
+        "cases": 18,
+        "failed": 0,
+        "valid": 18,
+        "battleEnded": 13,
+        "anyDeath": 13,
+        "anySingleActorLethal": 13,
+        "actorsLethal": 13,
+        "actors": 36,
+        "survivorsWithTwoWindows": 10,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "50HP/20A/20M/2v2/Near": {
+        "cases": 2,
+        "failed": 0,
+        "valid": 2,
+        "battleEnded": 1,
+        "anyDeath": 2,
+        "anySingleActorLethal": 2,
+        "actorsLethal": 2,
+        "actors": 8,
+        "survivorsWithTwoWindows": 3,
+        "deathsWithoutOwnWindow": 0,
+        "rejections": 0
+      },
+      "50HP/20A/20M/3v3/Near": {
+        "cases": 2,
+        "failed": 2
+      }
+    },
+    "errors": [
+      {
+        "case": "H40-A20-M20-3v3-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: Tick 360: AI_DEFENSE_ADMISSION_MISMATCH"
+      },
+      {
+        "case": "H50-A20-M20-3v3-Near-SustainedOffense-mirror0",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#16/3 (-4, -8)->(-1, -9)[751,775)w2"
+      },
+      {
+        "case": "H50-A20-M20-3v3-Near-SustainedOffense-mirror1",
+        "message": "ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 360: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2"
+      }
+    ]
+  }
+}

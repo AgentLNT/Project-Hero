@@ -1,0 +1,80 @@
+TEMPO_COMPLETE H60-A10-M10-1v1-Far-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A20-M20-1v1-Main-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A10-M10-1v1-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H60-A10-M10-1v1-Far-CautiousDefense-mirror0
+TEMPO_COMPLETE H80-A10-M10-1v1-Near-CautiousDefense-mirror0
+TEMPO_COMPLETE H80-A20-M20-1v1-Main-CautiousDefense-mirror0
+TEMPO_COMPLETE H60-A10-M10-1v1-Far-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A20-M20-1v1-Main-SustainedOffense-mirror1
+TEMPO_COMPLETE H60-A10-M10-1v1-Far-CautiousDefense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Near-CautiousDefense-mirror1
+TEMPO_COMPLETE H40-A10-M10-1v1-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A20-M20-1v1-Main-CautiousDefense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Main-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Near-CautiousDefense-mirror0
+TEMPO_COMPLETE H80-A10-M10-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A10-M10-1v1-Main-CautiousDefense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A20-M20-1v1-Far-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Near-CautiousDefense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Main-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A20-M20-1v1-Far-CautiousDefense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Main-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A10-M10-1v1-Main-CautiousDefense-mirror1
+TEMPO_COMPLETE H40-A10-M10-1v1-Main-CautiousDefense-mirror0
+TEMPO_COMPLETE H80-A20-M20-1v1-Far-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Far-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Main-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Far-CautiousDefense-mirror0
+TEMPO_COMPLETE H80-A10-M10-2v2-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A20-M20-1v1-Far-CautiousDefense-mirror1
+TEMPO_COMPLETE H40-A10-M10-1v1-Main-CautiousDefense-mirror1
+TEMPO_COMPLETE H80-A10-M10-1v1-Far-SustainedOffense-mirror1
+TEMPO_COMPLETE H60-A20-M20-1v1-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Far-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Far-CautiousDefense-mirror0
+TEMPO_COMPLETE H80-A10-M10-1v1-Far-CautiousDefense-mirror1
+TEMPO_COMPLETE H60-A20-M20-1v1-Near-CautiousDefense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Far-SustainedOffense-mirror1
+TEMPO_COMPLETE H60-A20-M20-1v1-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H60-A10-M10-1v1-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A10-M10-1v1-Far-CautiousDefense-mirror1
+TEMPO_COMPLETE H60-A20-M20-1v1-Near-CautiousDefense-mirror1
+TEMPO_COMPLETE H60-A10-M10-1v1-Near-CautiousDefense-mirror0
+TEMPO_COMPLETE H60-A10-M10-1v1-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H60-A20-M20-1v1-Main-SustainedOffense-mirror0
+TEMPO_COMPLETE H60-A10-M10-1v1-Near-CautiousDefense-mirror1
+TEMPO_COMPLETE H80-A20-M20-1v1-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H60-A20-M20-1v1-Main-CautiousDefense-mirror0
+TEMPO_COMPLETE H60-A10-M10-1v1-Main-SustainedOffense-mirror0
+TEMPO_COMPLETE H60-A20-M20-1v1-Main-SustainedOffense-mirror1
+TEMPO_COMPLETE H80-A20-M20-1v1-Near-CautiousDefense-mirror0
+Unhandled exception. System.AggregateException: One or more errors occurred. (AI_DEFENSE_ADMISSION_MISMATCH)
+ ---> ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+   at TempoProbes.<>c__DisplayClass5_0.<Main>b__14(Scenario scenario)
+   at System.Threading.Tasks.Parallel.<>c__DisplayClass19_0`2.<ForWorker>b__1(RangeWorker& currentWorker, Int64 timeout, Boolean& replicationDelegateYieldedBeforeCompletion)
+--- End of stack trace from previous location ---
+   at System.Threading.Tasks.Parallel.<>c__DisplayClass19_0`2.<ForWorker>b__1(RangeWorker& currentWorker, Int64 timeout, Boolean& replicationDelegateYieldedBeforeCompletion)
+   at System.Threading.Tasks.TaskReplicator.Replica.Execute()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.TaskReplicator.Run[TState](ReplicatableUserAction`1 action, ParallelOptions options, Boolean stopOnFirstFailure)
+   at System.Threading.Tasks.Parallel.ForWorker[TLocal,TInt](TInt fromInclusive, TInt toExclusive, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Func`4 bodyWithLocal, Func`1 localInit, Action`1 localFinally)
+--- End of stack trace from previous location ---
+   at System.Threading.Tasks.Parallel.ForWorker[TLocal,TInt](TInt fromInclusive, TInt toExclusive, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Func`4 bodyWithLocal, Func`1 localInit, Action`1 localFinally)
+   at System.Threading.Tasks.Parallel.ForEachWorker[TSource,TLocal](IEnumerable`1 source, ParallelOptions parallelOptions, Action`1 body, Action`2 bodyWithState, Action`3 bodyWithStateAndIndex, Func`4 bodyWithStateAndLocal, Func`5 bodyWithEverything, Func`1 localInit, Action`1 localFinally)
+   at System.Threading.Tasks.Parallel.ForEach[TSource](IEnumerable`1 source, ParallelOptions parallelOptions, Action`1 body)
+   at TempoProbes.Main()

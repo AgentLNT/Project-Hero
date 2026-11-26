@@ -1,0 +1,564 @@
+{
+  "scope": "Read-only reference alignment and fixed-script stability probes; no balance migration or AI win-rate claim.",
+  "verifiedSourceFiles": 193,
+  "assemblySha256": "b33ce04ea41f7f9eebac1fe542204b2e86ed08eeb18f71f185125acdac449b1f",
+  "sourceDefinitionHash": "84116d595d222a72",
+  "reference": [
+    {
+      "health": 50,
+      "moveSpeed": 30,
+      "actionSpeed": 20
+    },
+    {
+      "health": 50,
+      "moveSpeed": 20,
+      "actionSpeed": 24
+    }
+  ],
+  "referenceBlockCost": 3,
+  "referenceDodgeCost": 2,
+  "moveTicksPerWeightM30": 8,
+  "moveTicksPerWeightM20": 12,
+  "moveRecoveryTicks": 1,
+  "referenceActions": [
+    {
+      "action": "action.heavy_smash.radius_1",
+      "directDamage": 40.0,
+      "fractionOf50Hp": 0.8,
+      "windupA20": 90,
+      "windupA24": 75,
+      "recoveryTicks": 30,
+      "momentumUnits": 160000,
+      "resistanceUnits": 100000,
+      "singleHitImpactRatio": 1.6,
+      "matchedDamageAt24Hp": 19.2,
+      "unquantizedV05RecipeMomentumAt24Hp": 32.0,
+      "stabilityRequiredToAlsoMatchImpactRatio": 20.0
+    },
+    {
+      "action": "action.quick_slash.radius_1",
+      "directDamage": 15.0,
+      "fractionOf50Hp": 0.3,
+      "windupA20": 30,
+      "windupA24": 25,
+      "recoveryTicks": 30,
+      "momentumUnits": 48000,
+      "resistanceUnits": 100000,
+      "singleHitImpactRatio": 0.48,
+      "matchedDamageAt24Hp": 7.2,
+      "unquantizedV05RecipeMomentumAt24Hp": 5.4,
+      "stabilityRequiredToAlsoMatchImpactRatio": 11.250000000000002
+    },
+    {
+      "action": "action.spear_thrust.radius_1",
+      "directDamage": 25.0,
+      "fractionOf50Hp": 0.5,
+      "windupA20": 48,
+      "windupA24": 40,
+      "recoveryTicks": 30,
+      "momentumUnits": 30000,
+      "resistanceUnits": 100000,
+      "singleHitImpactRatio": 0.3,
+      "matchedDamageAt24Hp": 12.0,
+      "unquantizedV05RecipeMomentumAt24Hp": 2.4,
+      "stabilityRequiredToAlsoMatchImpactRatio": 8.0
+    },
+    {
+      "action": "action.whirlwind.radius_1",
+      "directDamage": 30.0,
+      "fractionOf50Hp": 0.6,
+      "windupA20": 120,
+      "windupA24": 100,
+      "recoveryTicks": 30,
+      "momentumUnits": 150000,
+      "resistanceUnits": 100000,
+      "singleHitImpactRatio": 1.5,
+      "matchedDamageAt24Hp": 14.4,
+      "unquantizedV05RecipeMomentumAt24Hp": 10.8,
+      "stabilityRequiredToAlsoMatchImpactRatio": 7.2
+    },
+    {
+      "action": "action.wide_cleave.radius_1",
+      "directDamage": 20.0,
+      "fractionOf50Hp": 0.4,
+      "windupA20": 60,
+      "windupA24": 50,
+      "recoveryTicks": 30,
+      "momentumUnits": 72000,
+      "resistanceUnits": 100000,
+      "singleHitImpactRatio": 0.72,
+      "matchedDamageAt24Hp": 9.6,
+      "unquantizedV05RecipeMomentumAt24Hp": 7.199999999999999,
+      "stabilityRequiredToAlsoMatchImpactRatio": 10.0
+    }
+  ],
+  "v05Actions": [
+    {
+      "action": "action.experiment.heavy",
+      "damage": 6,
+      "fractionOf24Hp": 0.25,
+      "momentum": 10,
+      "windup": 90,
+      "recovery": 30
+    },
+    {
+      "action": "action.experiment.quick",
+      "damage": 4,
+      "fractionOf24Hp": 0.16666666666666666,
+      "momentum": 3,
+      "windup": 30,
+      "recovery": 30
+    },
+    {
+      "action": "action.experiment.sweep",
+      "damage": 3,
+      "fractionOf24Hp": 0.125,
+      "momentum": 2.25,
+      "windup": 60,
+      "recovery": 30
+    }
+  ],
+  "v05SimultaneousGrowth": [
+    {
+      "allAttributes": 1,
+      "health": 24,
+      "moveSpeed": 20.0,
+      "quickDamage": 4,
+      "quickHitsToKill": 6.0,
+      "damageReceivedIncomePerQuickHit": 0.5,
+      "heavyImpactToStabilityRatio": 1
+    },
+    {
+      "allAttributes": 2,
+      "health": 27,
+      "moveSpeed": 20.625,
+      "quickDamage": 4.5,
+      "quickHitsToKill": 6.0,
+      "damageReceivedIncomePerQuickHit": 0.5625,
+      "heavyImpactToStabilityRatio": 1.0714285714285714
+    },
+    {
+      "allAttributes": 3,
+      "health": 30,
+      "moveSpeed": 21.25,
+      "quickDamage": 5,
+      "quickHitsToKill": 6.0,
+      "damageReceivedIncomePerQuickHit": 0.625,
+      "heavyImpactToStabilityRatio": 1.1363636363636365
+    },
+    {
+      "allAttributes": 4,
+      "health": 33,
+      "moveSpeed": 21.875,
+      "quickDamage": 5.5,
+      "quickHitsToKill": 6.0,
+      "damageReceivedIncomePerQuickHit": 0.6875,
+      "heavyImpactToStabilityRatio": 1.1956521739130435
+    },
+    {
+      "allAttributes": 5,
+      "health": 36,
+      "moveSpeed": 22.5,
+      "quickDamage": 6,
+      "quickHitsToKill": 6.0,
+      "damageReceivedIncomePerQuickHit": 0.75,
+      "heavyImpactToStabilityRatio": 1.25
+    }
+  ],
+  "probes": [
+    {
+      "id": "early-r10",
+      "scenario": {
+        "Id": "early-r10",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10240,
+        "Script": 4,
+        "ShortRange": false,
+        "Wall": false,
+        "MaxTicks": 300,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "e00b4dc2e5d43bb7",
+      "outcome": "timeout",
+      "finalTick": 299,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 18432,
+          "X": 8,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [
+        {
+          "Tick": 211,
+          "OwnerUnitId": 2,
+          "ActionPlanId": 2,
+          "ReasonCode": "ACTION_TERMINATION_INTERRUPTED_BY_CONTROL"
+        }
+      ],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "early-r10_5",
+      "scenario": {
+        "Id": "early-r10_5",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10752,
+        "Script": 4,
+        "ShortRange": false,
+        "Wall": false,
+        "MaxTicks": 300,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "ebfcc99972831dc3",
+      "outcome": "timeout",
+      "finalTick": 299,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 20480,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 18432,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "late-r10",
+      "scenario": {
+        "Id": "late-r10",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10240,
+        "Script": 5,
+        "ShortRange": false,
+        "Wall": false,
+        "MaxTicks": 300,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "e00b4dc2e5d43bb7",
+      "outcome": "timeout",
+      "finalTick": 299,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 20480,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 18432,
+          "X": 8,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [
+        {
+          "Tick": 213,
+          "OwnerUnitId": 2,
+          "ActionPlanId": 2,
+          "ReasonCode": "ACTION_TERMINATION_INTERRUPTED_BY_CONTROL"
+        }
+      ],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "late-r10_5",
+      "scenario": {
+        "Id": "late-r10_5",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10752,
+        "Script": 5,
+        "ShortRange": false,
+        "Wall": false,
+        "MaxTicks": 300,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "ebfcc99972831dc3",
+      "outcome": "timeout",
+      "finalTick": 299,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 20480,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 18432,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "clash-r10",
+      "scenario": {
+        "Id": "clash-r10",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10240,
+        "Script": 3,
+        "ShortRange": false,
+        "Wall": false,
+        "MaxTicks": 300,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "e00b4dc2e5d43bb7",
+      "outcome": "timeout",
+      "finalTick": 299,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 20276,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "clash-r10_5",
+      "scenario": {
+        "Id": "clash-r10_5",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10752,
+        "Script": 3,
+        "ShortRange": false,
+        "Wall": false,
+        "MaxTicks": 300,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "ebfcc99972831dc3",
+      "outcome": "timeout",
+      "finalTick": 299,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 20276,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "open-r10",
+      "scenario": {
+        "Id": "open-r10",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10240,
+        "Script": 0,
+        "ShortRange": true,
+        "Wall": false,
+        "MaxTicks": 800,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "4228947848d40067",
+      "outcome": "timeout",
+      "finalTick": 799,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 18432,
+          "X": 8,
+          "Y": 0,
+          "IsAlive": true
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "open-r10_5",
+      "scenario": {
+        "Id": "open-r10_5",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10752,
+        "Script": 0,
+        "ShortRange": true,
+        "Wall": false,
+        "MaxTicks": 800,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "8d4d7372c2256d83",
+      "outcome": "victory",
+      "finalTick": 571,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 0,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": false
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "wall-r10",
+      "scenario": {
+        "Id": "wall-r10",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10240,
+        "Script": 0,
+        "ShortRange": true,
+        "Wall": true,
+        "MaxTicks": 800,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "dc143a7f7ef5fe9d",
+      "outcome": "victory",
+      "finalTick": 571,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 0,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": false
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    },
+    {
+      "id": "wall-r10_5",
+      "scenario": {
+        "Id": "wall-r10_5",
+        "Attack": "heavy",
+        "Growth": 0,
+        "TargetHealth": 24,
+        "StabilityQ10": 10752,
+        "Script": 0,
+        "ShortRange": true,
+        "Wall": true,
+        "MaxTicks": 800,
+        "Seed": 31,
+        "BluntRecoveryDelta": 0
+      },
+      "definitionHash": "c85ab57214131ea1",
+      "outcome": "victory",
+      "finalTick": 571,
+      "units": [
+        {
+          "UnitId": 1,
+          "HealthQ10": 24576,
+          "X": 0,
+          "Y": 0,
+          "IsAlive": true
+        },
+        {
+          "UnitId": 2,
+          "HealthQ10": 0,
+          "X": 6,
+          "Y": 0,
+          "IsAlive": false
+        }
+      ],
+      "controlTerminations": [],
+      "replayVerified": true,
+      "rejectedInputs": 0
+    }
+  ]
+}

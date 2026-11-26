@@ -1,0 +1,81 @@
+{
+  "Scenario": {
+    "Model": {
+      "Health": 50,
+      "ActionSpeed": 24,
+      "MoveSpeed": 20
+    },
+    "TeamSize": 1,
+    "Layout": 2,
+    "Mirror": false,
+    "Policy": 3,
+    "Opponent": 3
+  },
+  "DefinitionHash": "ce52ff97c5eeb010",
+  "Cap": 720,
+  "Ticks": 720,
+  "Ended": false,
+  "FirstDeath": null,
+  "DeathsBeforeAnyWindow": 0,
+  "Rejections": 0,
+  "Actors": [
+    {
+      "Id": 1,
+      "Deadline": 540,
+      "Death": null,
+      "WindowsOpened": 2,
+      "BestSingleTargetDamageQ10": 25600,
+      "Lethal": false
+    },
+    {
+      "Id": 2,
+      "Deadline": 720,
+      "Death": null,
+      "WindowsOpened": 2,
+      "BestSingleTargetDamageQ10": 30720,
+      "Lethal": false
+    }
+  ],
+  "Events": [
+    "ProjectHero.Logic.Events.TurnWindowOpenedEvent{DurationTicks=180;OwnerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}Sequence=2;Tick=0;WindowId=ProjectHero.Logic.Ids.WindowId{IsValid=True;Value=1;}}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=1;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=1;EndTick=86;LastRequestedStartTick=1;Origin=0;OwnerUnitId=1;ScheduleRevision=1;Sequence=3;StartTick=1;Tick=1;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=1;LockedAtTick=1;OwnerUnitId=1;ScheduleRevision=1;Sequence=4;StartTick=1;Tick=1;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=2;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=91;EndTick=164;LastRequestedStartTick=91;Origin=0;OwnerUnitId=1;ScheduleRevision=2;Sequence=10;StartTick=91;Tick=91;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=2;LockedAtTick=91;OwnerUnitId=1;ScheduleRevision=2;Sequence=11;StartTick=91;Tick=91;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=3;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=169;EndTick=254;LastRequestedStartTick=169;Origin=0;OwnerUnitId=1;ScheduleRevision=3;Sequence=17;StartTick=169;Tick=169;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=3;LockedAtTick=169;OwnerUnitId=1;ScheduleRevision=3;Sequence=18;StartTick=169;Tick=169;}",
+    "ProjectHero.Logic.Events.TurnWindowOpenedEvent{DurationTicks=180;OwnerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=2;}Sequence=22;Tick=180;WindowId=ProjectHero.Logic.Ids.WindowId{IsValid=True;Value=2;}}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=4;ActionSpecId=25:action.whirlwind.radius_1;ActionType=1;CreatedAtTick=181;EndTick=311;LastRequestedStartTick=181;Origin=0;OwnerUnitId=2;ScheduleRevision=4;Sequence=23;StartTick=181;Tick=181;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=4;LockedAtTick=181;OwnerUnitId=2;ScheduleRevision=4;Sequence=24;StartTick=181;Tick=181;}",
+    "ProjectHero.Logic.Events.DamageChannelResolvedEvent{AfterBlockDamageQ10=30720;AfterMomentumResistanceUnits=150000;AttackPlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=4;}AttackerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=2;}Channels=[ProjectHero.Logic.Events.DamageChannelEntry{ActionResistanceQ10=0;AfterActionResistanceQ10=30720;AfterPassiveResistanceQ10=30720;ChannelId=ProjectHero.Logic.Ids.DamageChannelId{Value=14:physical.slash;}PassiveResistanceQ10=0;RawQ10=30720;Tags=ProjectHero.Logic.Damage.DamageTagMask:3;}]ConflictGroupKey=1;GuardPlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=False;Value=0;}IncomingDirection=ProjectHero.Logic.Grid.GridDirection:2;IncomingMomentumUnits=150000;ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=4;}]Sequence=32;StopReasonCode=30:INTERACTION_CONTACT_UNRESISTED;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}Tick=281;TotalDamageQ10=30720;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=5;ActionSpecId=27:action.heavy_smash.radius_1;ActionType=1;CreatedAtTick=313;EndTick=418;LastRequestedStartTick=313;Origin=0;OwnerUnitId=2;ScheduleRevision=5;Sequence=40;StartTick=313;Tick=313;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=5;LockedAtTick=313;OwnerUnitId=2;ScheduleRevision=5;Sequence=41;StartTick=313;Tick=313;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=6;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=314;EndTick=418;LastRequestedStartTick=388;Origin=1;OwnerUnitId=1;ScheduleRevision=5;Sequence=45;StartTick=388;Tick=314;}",
+    "ProjectHero.Logic.Events.TurnWindowOpenedEvent{DurationTicks=180;OwnerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}Sequence=49;Tick=360;WindowId=ProjectHero.Logic.Ids.WindowId{IsValid=True;Value=3;}}",
+    "ProjectHero.Logic.Events.ReactionTriggeredEvent{DefenderUnitId=1;ReactionActionPlanId=6;ReactionOpportunityId=1;ReactionType=3;Sequence=54;SourceAttackPlanId=5;SourceImpactTick=388;Tick=388;}",
+    "ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=2;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=6;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=-4;Y=-6;}InvalidatedAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=5;}]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=5;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=6;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=True;Sequence=55;StillHitAttackPlanIds=[]Tick=388;To=ProjectHero.Logic.Grid.GridPoint{X=-1;Y=-5;}}",
+    "ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=6;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=5;Sequence=57;TerminalTick=388;Tick=388;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=28:action.spear_thrust.radius_2;ActionType=1;CreatedAtTick=391;EndTick=461;LastRequestedStartTick=391;Origin=0;OwnerUnitId=1;ScheduleRevision=6;Sequence=58;StartTick=391;Tick=391;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=7;LockedAtTick=391;OwnerUnitId=1;ScheduleRevision=6;Sequence=59;StartTick=391;Tick=391;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=8;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=392;EndTick=461;LastRequestedStartTick=431;Origin=1;OwnerUnitId=2;ScheduleRevision=6;Sequence=63;StartTick=431;Tick=392;}",
+    "ProjectHero.Logic.Events.ReactionTriggeredEvent{DefenderUnitId=2;ReactionActionPlanId=8;ReactionOpportunityId=2;ReactionType=3;Sequence=70;SourceAttackPlanId=7;SourceImpactTick=431;Tick=431;}",
+    "ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=3;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=2;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=8;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=-12;Y=-8;}InvalidatedAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=7;}]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=7;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=8;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=True;Sequence=71;StillHitAttackPlanIds=[]Tick=431;To=ProjectHero.Logic.Grid.GridPoint{X=-14;Y=-8;}}",
+    "ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=8;OwnerUnitId=2;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=6;Sequence=73;TerminalTick=431;Tick=431;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=9;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=463;EndTick=488;LastRequestedStartTick=463;Origin=0;OwnerUnitId=1;ScheduleRevision=7;Sequence=76;StartTick=463;Tick=463;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=9;LockedAtTick=463;OwnerUnitId=1;ScheduleRevision=7;Sequence=77;StartTick=463;Tick=463;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=10;ActionSpecId=28:action.spear_thrust.radius_2;ActionType=1;CreatedAtTick=493;EndTick=563;LastRequestedStartTick=493;Origin=0;OwnerUnitId=1;ScheduleRevision=8;Sequence=83;StartTick=493;Tick=493;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=10;LockedAtTick=493;OwnerUnitId=1;ScheduleRevision=8;Sequence=84;StartTick=493;Tick=493;}",
+    "ProjectHero.Logic.Events.DamageChannelResolvedEvent{AfterBlockDamageQ10=25600;AfterMomentumResistanceUnits=30000;AttackPlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=10;}AttackerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}Channels=[ProjectHero.Logic.Events.DamageChannelEntry{ActionResistanceQ10=0;AfterActionResistanceQ10=25600;AfterPassiveResistanceQ10=25600;ChannelId=ProjectHero.Logic.Ids.DamageChannelId{Value=15:physical.pierce;}PassiveResistanceQ10=0;RawQ10=25600;Tags=ProjectHero.Logic.Damage.DamageTagMask:3;}]ConflictGroupKey=4;GuardPlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=False;Value=0;}IncomingDirection=ProjectHero.Logic.Grid.GridDirection:7;IncomingMomentumUnits=30000;ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=10;}]Sequence=92;StopReasonCode=30:INTERACTION_CONTACT_UNRESISTED;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=2;}Tick=533;TotalDamageQ10=25600;}",
+    "ProjectHero.Logic.Events.TurnWindowOpenedEvent{DurationTicks=180;OwnerUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=2;}Sequence=98;Tick=540;WindowId=ProjectHero.Logic.Ids.WindowId{IsValid=True;Value=4;}}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=11;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=541;EndTick=566;LastRequestedStartTick=541;Origin=0;OwnerUnitId=2;ScheduleRevision=9;Sequence=99;StartTick=541;Tick=541;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=11;LockedAtTick=541;OwnerUnitId=2;ScheduleRevision=9;Sequence=100;StartTick=541;Tick=541;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=12;ActionSpecId=25:action.whirlwind.radius_1;ActionType=1;CreatedAtTick=571;EndTick=701;LastRequestedStartTick=571;Origin=0;OwnerUnitId=2;ScheduleRevision=10;Sequence=108;StartTick=571;Tick=571;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=12;LockedAtTick=571;OwnerUnitId=2;ScheduleRevision=10;Sequence=109;StartTick=571;Tick=571;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=13;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=572;EndTick=701;LastRequestedStartTick=671;Origin=1;OwnerUnitId=1;ScheduleRevision=10;Sequence=113;StartTick=671;Tick=572;}",
+    "ProjectHero.Logic.Events.ReactionTriggeredEvent{DefenderUnitId=1;ReactionActionPlanId=13;ReactionOpportunityId=4;ReactionType=3;Sequence=118;SourceAttackPlanId=12;SourceImpactTick=671;Tick=671;}",
+    "ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=5;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=13;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=-5;Y=-5;}InvalidatedAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=12;}]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=12;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=13;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=True;Sequence=119;StillHitAttackPlanIds=[]Tick=671;To=ProjectHero.Logic.Grid.GridPoint{X=-3;Y=-5;}}",
+    "ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=13;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=10;Sequence=121;TerminalTick=671;Tick=671;}",
+    "ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=14;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=703;EndTick=773;LastRequestedStartTick=703;Origin=0;OwnerUnitId=2;ScheduleRevision=11;Sequence=124;StartTick=703;Tick=703;}",
+    "ProjectHero.Logic.Events.ActionPlanLockedEvent{ActionPlanId=14;LockedAtTick=703;OwnerUnitId=2;ScheduleRevision=11;Sequence=125;StartTick=703;Tick=703;}"
+  ]
+}

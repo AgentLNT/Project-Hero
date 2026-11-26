@@ -1,0 +1,225 @@
+TEMPO_COMPLETE H40-A20-M20-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A20-M20-2v2-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H60-A10-M10-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A10-M10-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H40-A20-M20-3v3-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H60-A20-M20-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A20-M20-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H50-A20-M20-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H60-A10-M10-2v2-Near-SustainedOffense-mirror1
+TEMPO_FAILED H40-A20-M20-3v3-Near-SustainedOffense-mirror1 AI_DEFENSE_ADMISSION_MISMATCH: Tick 360: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player.2/R/4/action.block.default/451///w/r7/6:10:9223372036854775807:5:-11/resources/1:1:6:0;2:1:4:0;3:1:0:0;4:0:8:0;5:0:5:0;6:0:8:0; after=367; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=368; decision=360; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 451, Kind = Reaction }
+ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player.2/R/4/action.block.default/451///w/r7/6:10:9223372036854775807:5:-11/resources/1:1:6:0;2:1:4:0;3:1:0:0;4:0:8:0;5:0:5:0;6:0:8:0; after=367; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=368; decision=360; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 451, Kind = Reaction }
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_COMPLETE H80-A10-M10-2v2-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H40-A10-M10-2v2-Near-SustainedOffense-mirror0
+TEMPO_COMPLETE H80-A20-M20-2v2-Near-SustainedOffense-mirror1
+TEMPO_FAILED H60-A20-M20-2v2-Near-SustainedOffense-mirror1 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 900: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#23/2 (3, 1)->(2, 0)[949,961)w1; decision=900; branch=; simulated=961
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=23;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=901;EndTick=974;LastRequestedStartTick=901;Origin=0;OwnerUnitId=3;ScheduleRevision=17;Sequence=1;StartTick=901;Tick=901;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=4;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=22;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-4;}InvalidatedAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=21;}]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=21;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=22;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=True;Sequence=9;StillHitAttackPlanIds=[]Tick=919;To=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-2;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=22;OwnerUnitId=4;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=17;Sequence=11;TerminalTick=919;Tick=919;}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#23/2 (3, 1)->(2, 0)[949,961)w1; decision=900; branch=; simulated=961
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=23;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=901;EndTick=974;LastRequestedStartTick=901;Origin=0;OwnerUnitId=3;ScheduleRevision=17;Sequence=1;StartTick=901;Tick=901;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=4;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=22;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-4;}InvalidatedAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=21;}]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=21;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=22;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=True;Sequence=9;StillHitAttackPlanIds=[]Tick=919;To=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-2;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=22;OwnerUnitId=4;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=17;Sequence=11;TerminalTick=919;Tick=919;}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateSequence(CommandRequest first, AiFollowUpAttack followUp, AiForecastSettings settings)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_COMPLETE H40-A10-M10-2v2-Near-SustainedOffense-mirror1
+TEMPO_COMPLETE H50-A20-M20-2v2-Near-SustainedOffense-mirror1
+TEMPO_FAILED H60-A10-M10-3v3-Near-SustainedOffense-mirror0 AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r13/4:10:9223372036854775807:-1:-3/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1339; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1340; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r13/4:10:9223372036854775807:-1:-3/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1339; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1340; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_COMPLETE H40-A10-M10-3v3-Near-SustainedOffense-mirror0
+TEMPO_FAILED H80-A10-M10-3v3-Near-SustainedOffense-mirror0 AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r13/4:10:9223372036854775807:2:-4/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1291; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1292; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r13/4:10:9223372036854775807:2:-4/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1291; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1292; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_COMPLETE H40-A10-M10-3v3-Near-SustainedOffense-mirror1
+TEMPO_FAILED H80-A20-M20-3v3-Near-SustainedOffense-mirror0 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)->(-1, -9)[751,775)w2; decision=720; branch=controller.enemy_ai/R/1/action.dodge.default/769/2/-6/w/r15/1:0:9223372036854775807:1:-5/resources/1:1:4:0;2:1:4:0;3:1:0:0;4:1:0:0;5:1:0:0;6:0:4:0; simulated=775
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=18;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=721;EndTick=799;LastRequestedStartTick=721;Origin=0;OwnerUnitId=5;ScheduleRevision=15;Sequence=1;StartTick=721;Tick=721;}
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=19;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=722;EndTick=799;LastRequestedStartTick=769;Origin=1;OwnerUnitId=1;ScheduleRevision=15;Sequence=6;StartTick=769;Tick=722;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=1;Y=-5;}InvalidatedAttackPlanIds=[]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=False;Sequence=12;StillHitAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}]Tick=769;To=ProjectHero.Logic.Grid.GridPoint{X=2;Y=-6;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=19;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=15;Sequence=16;TerminalTick=769;Tick=769;}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)->(-1, -9)[751,775)w2; decision=720; branch=controller.enemy_ai/R/1/action.dodge.default/769/2/-6/w/r15/1:0:9223372036854775807:1:-5/resources/1:1:4:0;2:1:4:0;3:1:0:0;4:1:0:0;5:1:0:0;6:0:4:0; simulated=775
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=18;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=721;EndTick=799;LastRequestedStartTick=721;Origin=0;OwnerUnitId=5;ScheduleRevision=15;Sequence=1;StartTick=721;Tick=721;}
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=19;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=722;EndTick=799;LastRequestedStartTick=769;Origin=1;OwnerUnitId=1;ScheduleRevision=15;Sequence=6;StartTick=769;Tick=722;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=1;Y=-5;}InvalidatedAttackPlanIds=[]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=False;Sequence=12;StillHitAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}]Tick=769;To=ProjectHero.Logic.Grid.GridPoint{X=2;Y=-6;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=19;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=15;Sequence=16;TerminalTick=769;Tick=769;}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H60-A20-M20-3v3-Near-SustainedOffense-mirror0 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)->(-1, -9)[751,775)w2; decision=720; branch=controller.enemy_ai/R/1/action.dodge.default/769/2/-6/w/r15/1:0:9223372036854775807:1:-5/resources/1:1:4:0;2:1:4:0;3:1:0:0;4:1:0:0;5:1:0:0;6:0:4:0; simulated=775
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=18;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=721;EndTick=799;LastRequestedStartTick=721;Origin=0;OwnerUnitId=5;ScheduleRevision=15;Sequence=1;StartTick=721;Tick=721;}
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=19;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=722;EndTick=799;LastRequestedStartTick=769;Origin=1;OwnerUnitId=1;ScheduleRevision=15;Sequence=6;StartTick=769;Tick=722;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=1;Y=-5;}InvalidatedAttackPlanIds=[]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=False;Sequence=12;StillHitAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}]Tick=769;To=ProjectHero.Logic.Grid.GridPoint{X=2;Y=-6;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=19;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=15;Sequence=16;TerminalTick=769;Tick=769;}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#17/3 (-4, -8)->(-1, -9)[751,775)w2; decision=720; branch=controller.enemy_ai/R/1/action.dodge.default/769/2/-6/w/r15/1:0:9223372036854775807:1:-5/resources/1:1:4:0;2:1:4:0;3:1:0:0;4:1:0:0;5:1:0:0;6:0:4:0; simulated=775
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=18;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=721;EndTick=799;LastRequestedStartTick=721;Origin=0;OwnerUnitId=5;ScheduleRevision=15;Sequence=1;StartTick=721;Tick=721;}
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=19;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=722;EndTick=799;LastRequestedStartTick=769;Origin=1;OwnerUnitId=1;ScheduleRevision=15;Sequence=6;StartTick=769;Tick=722;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=1;Y=-5;}InvalidatedAttackPlanIds=[]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=19;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=False;Sequence=12;StillHitAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}]Tick=769;To=ProjectHero.Logic.Grid.GridPoint{X=2;Y=-6;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=19;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=15;Sequence=16;TerminalTick=769;Tick=769;}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H50-A20-M20-3v3-Near-SustainedOffense-mirror0 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 720: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#16/3 (-4, -8)->(-1, -9)[751,775)w2; decision=720; branch=controller.enemy_ai/R/1/action.dodge.default/769/2/-6/w/r14/1:0:9223372036854775807:1:-5/resources/1:1:4:0;2:1:4:0;3:1:0:0;4:1:0:0;5:1:0:0;6:0:4:0; simulated=775
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=17;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=721;EndTick=799;LastRequestedStartTick=721;Origin=0;OwnerUnitId=5;ScheduleRevision=14;Sequence=1;StartTick=721;Tick=721;}
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=18;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=722;EndTick=799;LastRequestedStartTick=769;Origin=1;OwnerUnitId=1;ScheduleRevision=14;Sequence=6;StartTick=769;Tick=722;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=1;Y=-5;}InvalidatedAttackPlanIds=[]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=17;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=False;Sequence=12;StillHitAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=17;}]Tick=769;To=ProjectHero.Logic.Grid.GridPoint{X=2;Y=-6;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=18;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=14;Sequence=16;TerminalTick=769;Tick=769;}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#16/3 (-4, -8)->(-1, -9)[751,775)w2; decision=720; branch=controller.enemy_ai/R/1/action.dodge.default/769/2/-6/w/r14/1:0:9223372036854775807:1:-5/resources/1:1:4:0;2:1:4:0;3:1:0:0;4:1:0:0;5:1:0:0;6:0:4:0; simulated=775
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=17;ActionSpecId=28:action.spear_thrust.radius_1;ActionType=1;CreatedAtTick=721;EndTick=799;LastRequestedStartTick=721;Origin=0;OwnerUnitId=5;ScheduleRevision=14;Sequence=1;StartTick=721;Tick=721;}
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=18;ActionSpecId=20:action.dodge.default;ActionType=3;CreatedAtTick=722;EndTick=799;LastRequestedStartTick=769;Origin=1;OwnerUnitId=1;ScheduleRevision=14;Sequence=6;StartTick=769;Tick=722;}
+ProjectHero.Logic.Events.DodgeResolvedEvent{ConflictGroupKey=1;DefenderUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=1;}DestinationCommitted=True;DodgePlanId=ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}FailureCode=null;From=ProjectHero.Logic.Grid.GridPoint{X=1;Y=-5;}InvalidatedAttackPlanIds=[]ParticipatingPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=17;}ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=18;}]RetainedUndodgeablePlanIds=[]RewardedSuccess=False;Sequence=12;StillHitAttackPlanIds=[ProjectHero.Logic.Ids.ActionPlanId{IsValid=True;Value=17;}]Tick=769;To=ProjectHero.Logic.Grid.GridPoint{X=2;Y=-6;}}
+ProjectHero.Logic.Events.ActionPlanTerminatedEvent{ActionPlanId=18;OwnerUnitId=1;Reason=15;ReasonCode=37:ACTION_TERMINATION_REACTION_TRIGGERED;ScheduleRevision=14;Sequence=16;TerminalTick=769;Tick=769;}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H60-A10-M10-3v3-Near-SustainedOffense-mirror1 AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r12/4:10:9223372036854775807:1:3/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1339; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1340; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r12/4:10:9223372036854775807:1:3/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1339; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1340; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H80-A20-M20-3v3-Near-SustainedOffense-mirror1 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 360: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2; decision=360; branch=; simulated=421
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=361;EndTick=422;LastRequestedStartTick=361;Origin=0;OwnerUnitId=3;ScheduleRevision=7;Sequence=1;StartTick=361;Tick=361;}
+ProjectHero.Logic.Events.ForcedDisplacementResolvedEvent{AppliedSteps=1;ConflictGroupKey=1;Direction=ProjectHero.Logic.Grid.GridDirection:10;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-10;}InvalidatedPlanIds=[]MomentumUnits=160000;RequestedSteps=1;Sequence=11;StopReason=ProjectHero.Logic.Combat.ForcedDisplacementStopReason:0;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=6;}Tick=367;To=ProjectHero.Logic.Grid.GridPoint{X=5;Y=-11;}}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2; decision=360; branch=; simulated=421
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=361;EndTick=422;LastRequestedStartTick=361;Origin=0;OwnerUnitId=3;ScheduleRevision=7;Sequence=1;StartTick=361;Tick=361;}
+ProjectHero.Logic.Events.ForcedDisplacementResolvedEvent{AppliedSteps=1;ConflictGroupKey=1;Direction=ProjectHero.Logic.Grid.GridDirection:10;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-10;}InvalidatedPlanIds=[]MomentumUnits=160000;RequestedSteps=1;Sequence=11;StopReason=ProjectHero.Logic.Combat.ForcedDisplacementStopReason:0;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=6;}Tick=367;To=ProjectHero.Logic.Grid.GridPoint{X=5;Y=-11;}}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateSequence(CommandRequest first, AiFollowUpAttack followUp, AiForecastSettings settings)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H80-A10-M10-3v3-Near-SustainedOffense-mirror1 AI_DEFENSE_ADMISSION_MISMATCH: Tick 1260: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r12/4:10:9223372036854775807:-2:4/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1291; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1292; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+ProjectHero.Logic.LogicDefinitionException: AI_DEFENSE_ADMISSION_MISMATCH: reply=controller.player/R/6/action.block.default/1441///w/r12/4:10:9223372036854775807:-2:4/resources/1:2:4:0;2:2:0:0;3:1:2:0;4:1:8:0;5:1:0:0;6:1:0:0; after=1291; rejected=REACTION_LANE_SUBMISSION_LOCKED; step=1292; decision=1260; playback=ReactionCommandPayload { ReactionKind = Block, ReactionActionSpecId = action.block.default, DodgeDestination = , StartTick = 1441, Kind = Reaction }
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.<>c__DisplayClass11_0.<EvaluateDefenseProtocol>b__4(Reply r)
+   at System.Linq.Enumerable.ArraySelectIterator`2.ToArray()
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateDefenseProtocol(CommandRequest attack, AiForecastSettings settings, AiFollowUpAttack followUp)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Score(AiDecisionContext context, AiPolicyKind policy, AiTacticalCandidate candidate, AiActionForecast baseline, AiActionForecast outcome, AiCandidateEvaluation original, IAiForecast forecast, Boolean evaluateReplies)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_2.<Decide>g__Collect|10(IReadOnlyList`1 source)
+   at ProjectHero.Logic.AI.AiPressurePolicy.<>c__DisplayClass0_0.<Decide>g__Choose|4(IReadOnlyList`1 candidates, Boolean reaction, Dictionary`2 cached, IReadOnlyList`1 deferred)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H60-A20-M20-3v3-Near-SustainedOffense-mirror1 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 360: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2; decision=360; branch=; simulated=421
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=361;EndTick=422;LastRequestedStartTick=361;Origin=0;OwnerUnitId=3;ScheduleRevision=7;Sequence=1;StartTick=361;Tick=361;}
+ProjectHero.Logic.Events.ForcedDisplacementResolvedEvent{AppliedSteps=1;ConflictGroupKey=1;Direction=ProjectHero.Logic.Grid.GridDirection:10;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-10;}InvalidatedPlanIds=[]MomentumUnits=160000;RequestedSteps=1;Sequence=11;StopReason=ProjectHero.Logic.Combat.ForcedDisplacementStopReason:0;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=6;}Tick=367;To=ProjectHero.Logic.Grid.GridPoint{X=5;Y=-11;}}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2; decision=360; branch=; simulated=421
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=361;EndTick=422;LastRequestedStartTick=361;Origin=0;OwnerUnitId=3;ScheduleRevision=7;Sequence=1;StartTick=361;Tick=361;}
+ProjectHero.Logic.Events.ForcedDisplacementResolvedEvent{AppliedSteps=1;ConflictGroupKey=1;Direction=ProjectHero.Logic.Grid.GridDirection:10;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-10;}InvalidatedPlanIds=[]MomentumUnits=160000;RequestedSteps=1;Sequence=11;StopReason=ProjectHero.Logic.Combat.ForcedDisplacementStopReason:0;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=6;}Tick=367;To=ProjectHero.Logic.Grid.GridPoint{X=5;Y=-11;}}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateSequence(CommandRequest first, AiFollowUpAttack followUp, AiForecastSettings settings)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)
+TEMPO_FAILED H50-A20-M20-3v3-Near-SustainedOffense-mirror1 LOGIC_GRID_OWNERSHIP_CONTRADICTION: Tick 360: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2; decision=360; branch=; simulated=421
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=361;EndTick=422;LastRequestedStartTick=361;Origin=0;OwnerUnitId=3;ScheduleRevision=7;Sequence=1;StartTick=361;Tick=361;}
+ProjectHero.Logic.Events.ForcedDisplacementResolvedEvent{AppliedSteps=1;ConflictGroupKey=1;Direction=ProjectHero.Logic.Grid.GridDirection:10;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-10;}InvalidatedPlanIds=[]MomentumUnits=160000;RequestedSteps=1;Sequence=11;StopReason=ProjectHero.Logic.Combat.ForcedDisplacementStopReason:0;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=6;}Tick=367;To=ProjectHero.Logic.Grid.GridPoint{X=5;Y=-11;}}
+ProjectHero.Logic.LogicDefinitionException: LOGIC_GRID_OWNERSHIP_CONTRADICTION: LOGIC_GRID_OWNERSHIP_CONTRADICTION: seg#7/3 (-1, -13)->(2, -14)[397,421)w2; decision=360; branch=; simulated=421
+ProjectHero.Logic.Events.ActionPlanCreatedEvent{ActionPlanId=7;ActionSpecId=19:action.move.default;ActionType=4;CreatedAtTick=361;EndTick=422;LastRequestedStartTick=361;Origin=0;OwnerUnitId=3;ScheduleRevision=7;Sequence=1;StartTick=361;Tick=361;}
+ProjectHero.Logic.Events.ForcedDisplacementResolvedEvent{AppliedSteps=1;ConflictGroupKey=1;Direction=ProjectHero.Logic.Grid.GridDirection:10;From=ProjectHero.Logic.Grid.GridPoint{X=4;Y=-10;}InvalidatedPlanIds=[]MomentumUnits=160000;RequestedSteps=1;Sequence=11;StopReason=ProjectHero.Logic.Combat.ForcedDisplacementStopReason:0;TargetUnitId=ProjectHero.Logic.Ids.UnitId{IsValid=True;Value=6;}Tick=367;To=ProjectHero.Logic.Grid.GridPoint{X=5;Y=-11;}}
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.Run(CommandRequest request, AiForecastSettings settings, Reply reply, Action`2 observe, AiFollowUpAttack followUp, Reply secondReply)
+   at ProjectHero.Logic.Snapshots.AiForecastWorld.EvaluateSequence(CommandRequest first, AiFollowUpAttack followUp, AiForecastSettings settings)
+   at ProjectHero.Logic.AI.AiPressurePolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiTacticalPolicy.Decide(AiDecisionContext context, UInt64 seed, AiPolicyKind policy)
+   at ProjectHero.Logic.AI.AiBehaviorTree.Tick(AiDecisionContext context, UInt64 seed, AiPolicyKind policy, AiBehaviorMemory memory, IAiExecutionFeedback feedback, Int64 nextProducerOrdinal)
+   at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered(DecisionSnapshot snapshot, CommandIngressRegistry ingress, Int64 nextTick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot(Int64 tick)
+   at ProjectHero.Logic.Simulation.BattleSimulation.Step(Int64 tick, FrozenCommandBatch externalBatch)
+   at TempoProbes.Run(BattleSimulationSeed source, Scenario scenario)

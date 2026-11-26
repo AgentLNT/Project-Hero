@@ -1,0 +1,71 @@
+{
+  "Scenario": {
+    "Model": {
+      "Health": 40,
+      "ActionSpeed": 20,
+      "MoveSpeed": 20
+    },
+    "TeamSize": 3,
+    "Layout": 0,
+    "Mirror": false,
+    "Policy": 1,
+    "Opponent": null
+  },
+  "DefinitionHash": "df1dd0fd9f7eaffd",
+  "Cap": 2160,
+  "Ticks": 962,
+  "Ended": true,
+  "FirstDeath": 91,
+  "DeathsBeforeAnyWindow": 2,
+  "Rejections": 0,
+  "Actors": [
+    {
+      "Id": 1,
+      "Deadline": 900,
+      "Death": null,
+      "WindowsOpened": 2,
+      "BestSingleTargetDamageQ10": 40960,
+      "Lethal": true
+    },
+    {
+      "Id": 2,
+      "Deadline": 1080,
+      "Death": null,
+      "WindowsOpened": 2,
+      "BestSingleTargetDamageQ10": 40960,
+      "Lethal": true
+    },
+    {
+      "Id": 3,
+      "Deadline": null,
+      "Death": 631,
+      "WindowsOpened": 1,
+      "BestSingleTargetDamageQ10": 0,
+      "Lethal": false
+    },
+    {
+      "Id": 4,
+      "Deadline": null,
+      "Death": 91,
+      "WindowsOpened": 0,
+      "BestSingleTargetDamageQ10": 0,
+      "Lethal": false
+    },
+    {
+      "Id": 5,
+      "Deadline": null,
+      "Death": 961,
+      "WindowsOpened": 1,
+      "BestSingleTargetDamageQ10": 40960,
+      "Lethal": true
+    },
+    {
+      "Id": 6,
+      "Deadline": null,
+      "Death": 343,
+      "WindowsOpened": 0,
+      "BestSingleTargetDamageQ10": 0,
+      "Lethal": false
+    }
+  ]
+}
