@@ -1,0 +1,30 @@
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 28832)
+VBCSCompiler prewarm took 7.47 ms
+
+Aborting batchmode due to failure:
+Scripts have compiler errors.
+
+编辑器日志报告了以下错误：
+  [许可证] [Licensing::Module] LicensingClient has failed validation; ignoring
+  CS0122 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(35,21): 'AiDecisionContextFactory' is inaccessible due to its protection level
+  CS0246 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(39,53): The type or namespace name 'ScheduleEditScope' could not be found (are you missing a using directive or an assembly reference?)
+  CS0246 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(45,47): The type or namespace name 'ReactionCommandScope' could not be found (are you missing a using directive or an assembly reference?)
+  CS0122 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(35,21): 'AiDecisionContextFactory' is inaccessible due to its protection level
+  CS0246 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(39,53): The type or namespace name 'ScheduleEditScope' could not be found (are you missing a using directive or an assembly reference?)
+  CS0246 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(45,47): The type or namespace name 'ReactionCommandScope' could not be found (are you missing a using directive or an assembly reference?)
+  CS0122 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(35,21): 'AiDecisionContextFactory' is inaccessible due to its protection level
+  CS0246 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(39,53): The type or namespace name 'ScheduleEditScope' could not be found (are you missing a using directive or an assembly reference?)
+  CS0246 Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs(45,47): The type or namespace name 'ReactionCommandScope' could not be found (are you missing a using directive or an assembly reference?)
+  [崩溃] Scripts have compiler errors.
+{
+  "success": false,
+  "command": "test",
+  "data": null,
+  "errors": [
+    {
+      "code": "TEST_RUN_ERROR",
+      "message": "测试运行未完成。Unity 在报告结果前以代码 1 退出。"
+    }
+  ],
+  "warnings": []
+}

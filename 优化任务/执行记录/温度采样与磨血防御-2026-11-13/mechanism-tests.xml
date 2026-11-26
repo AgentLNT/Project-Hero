@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Passed" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.3757546">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1203" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.375755" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2379" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="734" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.363241" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="7216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="2380" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="734" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.362521" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="2381" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="734" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.362082" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="2382" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="734" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.361689" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1575" name="AiPressurePolicyTests" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:49Z" duration="5.344107" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1585" name="AllSamplingParametersChangeDefinitionHashButNullRetainsOldHash" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.AllSamplingParametersChangeDefinitionHashButNullRetainsOldHash" methodname="AllSamplingParametersChangeDefinitionHashButNullRetainsOldHash" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="1898022511" result="Passed" start-time="2026-11-13 07:15:43Z" end-time="2026-11-13 07:15:44Z" duration="0.401051" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1577" name="DuplicatingEquivalentDestinationsDoesNotChangeActionMass" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.DuplicatingEquivalentDestinationsDoesNotChangeActionMass" methodname="DuplicatingEquivalentDestinationsDoesNotChangeActionMass" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="723561722" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:44Z" duration="0.016588" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1578" name="GreedyAndNucleusAreStableAndInputOrderIndependent" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.GreedyAndNucleusAreStableAndInputOrderIndependent" methodname="GreedyAndNucleusAreStableAndInputOrderIndependent" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="1892345209" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:44Z" duration="0.002377" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1579" name="HealthValueIsFiniteMonotoneAndAvoidingEqualDamageMattersMoreAtLowHealth" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.HealthValueIsFiniteMonotoneAndAvoidingEqualDamageMattersMoreAtLowHealth" methodname="HealthValueIsFiniteMonotoneAndAvoidingEqualDamageMattersMoreAtLowHealth" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="412853138" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:44Z" duration="0.003882" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1576" name="NegativeScoresAreSampledAndTemperatureFlattensProbabilities" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.NegativeScoresAreSampledAndTemperatureFlattensProbabilities" methodname="NegativeScoresAreSampledAndTemperatureFlattensProbabilities" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="1611112938" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:44Z" duration="0.001008" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1580" name="ResourceRetentionFallsBeforeResetAndWhenBalanceIsAbundant" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.ResourceRetentionFallsBeforeResetAndWhenBalanceIsAbundant" methodname="ResourceRetentionFallsBeforeResetAndWhenBalanceIsAbundant" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="1039635561" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:44Z" duration="0.000384" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1584" name="SampledFundedReactionUsesProductionDamageAndReplays" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:49Z" duration="4.904393" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1581" name="SampledFundedReactionUsesProductionDamageAndReplays(0,1000)" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays(0,1000)" methodname="SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="211997387" result="Passed" start-time="2026-11-13 07:15:44Z" end-time="2026-11-13 07:15:46Z" duration="1.931643" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1582" name="SampledFundedReactionUsesProductionDamageAndReplays(1000,950)" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays(1000,950)" methodname="SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="245410451" result="Passed" start-time="2026-11-13 07:15:46Z" end-time="2026-11-13 07:15:47Z" duration="1.481518" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1583" name="SampledFundedReactionUsesProductionDamageAndReplays(2000,900)" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays(2000,900)" methodname="SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="145624845" result="Passed" start-time="2026-11-13 07:15:47Z" end-time="2026-11-13 07:15:49Z" duration="1.488613" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

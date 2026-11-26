@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Failed(Child)" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="3.0046901">
+  <test-suite type="TestSuite" id="1000" name="Project Hero" fullname="Project Hero" runstate="Runnable" testcasecount="1203" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="3.004690" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2379" name="ProjectHero.Logic.Tests.dll" fullname="C:/Users/1/repos/Project Hero/Library/ScriptAssemblies/ProjectHero.Logic.Tests.dll" runstate="Runnable" testcasecount="734" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="2.994948" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="5460" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="2380" name="ProjectHero" fullname="ProjectHero" runstate="Runnable" testcasecount="734" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="2.994347" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="2381" name="Logic" fullname="ProjectHero.Logic" runstate="Runnable" testcasecount="734" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="2.993999" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="2382" name="Tests" fullname="ProjectHero.Logic.Tests" runstate="Runnable" testcasecount="734" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="2.993685" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1575" name="AiPressurePolicyTests" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" testcasecount="9" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="2.986061" total="9" passed="4" failed="5" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1585" name="AllSamplingParametersChangeDefinitionHashButNullRetainsOldHash" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.AllSamplingParametersChangeDefinitionHashButNullRetainsOldHash" methodname="AllSamplingParametersChangeDefinitionHashButNullRetainsOldHash" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="2113869094" result="Passed" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:34Z" duration="0.368828" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1577" name="DuplicatingEquivalentDestinationsDoesNotChangeActionMass" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.DuplicatingEquivalentDestinationsDoesNotChangeActionMass" methodname="DuplicatingEquivalentDestinationsDoesNotChangeActionMass" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="374141519" result="Failed" label="Error" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:34Z" duration="0.018160" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.OverflowException : Value was either too large or too small for a Decimal.]]></message>
+                  <stack-trace><![CDATA[  at System.Decimal+DecCalc.ScaleResult (System.Decimal+DecCalc+Buf24* bufRes, System.UInt32 hiRes, System.Int32 scale) [0x001cc] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal+DecCalc.VarDecMul (System.Decimal+DecCalc& d1, System.Decimal+DecCalc& d2) [0x0038a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal.op_Multiply (System.Decimal d1, System.Decimal d2) [0x0000e] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at ProjectHero.Logic.AI.AiSoftmax.Sample (System.Collections.Generic.IReadOnlyList`1[T] items, ProjectHero.Logic.AI.AiSamplingSettings settings, ProjectHero.Logic.Determinism.DeterministicRng rng) [0x002f2] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiSoftmax.cs:42 
+  at ProjectHero.Logic.Tests.AiPressurePolicyTests.DuplicatingEquivalentDestinationsDoesNotChangeActionMass () [0x00030] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs:29 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0007c] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at NUnit.Framework.Internal.Reflect.InvokeMethod (System.Reflection.MethodInfo method, System.Object fixture, System.Object[] args) [0x00053] in <8b63e8ac0a4746599ed207982825ae6c>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1578" name="GreedyAndNucleusAreStableAndInputOrderIndependent" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.GreedyAndNucleusAreStableAndInputOrderIndependent" methodname="GreedyAndNucleusAreStableAndInputOrderIndependent" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="1811518198" result="Failed" label="Error" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:34Z" duration="0.001709" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.OverflowException : Value was either too large or too small for a Decimal.]]></message>
+                  <stack-trace><![CDATA[  at System.Decimal+DecCalc.ScaleResult (System.Decimal+DecCalc+Buf24* bufRes, System.UInt32 hiRes, System.Int32 scale) [0x001cc] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal+DecCalc.VarDecMul (System.Decimal+DecCalc& d1, System.Decimal+DecCalc& d2) [0x0038a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal.op_Multiply (System.Decimal d1, System.Decimal d2) [0x0000e] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at ProjectHero.Logic.AI.AiSoftmax.Sample (System.Collections.Generic.IReadOnlyList`1[T] items, ProjectHero.Logic.AI.AiSamplingSettings settings, ProjectHero.Logic.Determinism.DeterministicRng rng) [0x002f2] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiSoftmax.cs:42 
+  at ProjectHero.Logic.Tests.AiPressurePolicyTests.GreedyAndNucleusAreStableAndInputOrderIndependent () [0x000b2] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs:41 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0007c] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at NUnit.Framework.Internal.Reflect.InvokeMethod (System.Reflection.MethodInfo method, System.Object fixture, System.Object[] args) [0x00053] in <8b63e8ac0a4746599ed207982825ae6c>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1579" name="HealthValueIsFiniteMonotoneAndAvoidingEqualDamageMattersMoreAtLowHealth" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.HealthValueIsFiniteMonotoneAndAvoidingEqualDamageMattersMoreAtLowHealth" methodname="HealthValueIsFiniteMonotoneAndAvoidingEqualDamageMattersMoreAtLowHealth" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="761038390" result="Passed" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:34Z" duration="0.004777" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1576" name="NegativeScoresAreSampledAndTemperatureFlattensProbabilities" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.NegativeScoresAreSampledAndTemperatureFlattensProbabilities" methodname="NegativeScoresAreSampledAndTemperatureFlattensProbabilities" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="243133429" result="Failed" label="Error" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:34Z" duration="0.000665" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.OverflowException : Value was either too large or too small for a Decimal.]]></message>
+                  <stack-trace><![CDATA[  at System.Decimal+DecCalc.ScaleResult (System.Decimal+DecCalc+Buf24* bufRes, System.UInt32 hiRes, System.Int32 scale) [0x001cc] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal+DecCalc.VarDecMul (System.Decimal+DecCalc& d1, System.Decimal+DecCalc& d2) [0x0038a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal.op_Multiply (System.Decimal d1, System.Decimal d2) [0x0000e] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at ProjectHero.Logic.AI.AiSoftmax.Sample (System.Collections.Generic.IReadOnlyList`1[T] items, ProjectHero.Logic.AI.AiSamplingSettings settings, ProjectHero.Logic.Determinism.DeterministicRng rng) [0x002f2] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiSoftmax.cs:42 
+  at ProjectHero.Logic.Tests.AiPressurePolicyTests.NegativeScoresAreSampledAndTemperatureFlattensProbabilities () [0x0003e] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs:18 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0007c] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at NUnit.Framework.Internal.Reflect.InvokeMethod (System.Reflection.MethodInfo method, System.Object fixture, System.Object[] args) [0x00053] in <8b63e8ac0a4746599ed207982825ae6c>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1580" name="ResourceRetentionFallsBeforeResetAndWhenBalanceIsAbundant" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.ResourceRetentionFallsBeforeResetAndWhenBalanceIsAbundant" methodname="ResourceRetentionFallsBeforeResetAndWhenBalanceIsAbundant" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="987706718" result="Passed" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:34Z" duration="0.000821" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1584" name="SampledFundedReactionUsesProductionDamageAndReplays" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:37Z" duration="2.578892" total="3" passed="1" failed="2" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1581" name="SampledFundedReactionUsesProductionDamageAndReplays(0,1000)" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays(0,1000)" methodname="SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="294985444" result="Passed" start-time="2026-11-13 07:14:34Z" end-time="2026-11-13 07:14:36Z" duration="1.808506" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1582" name="SampledFundedReactionUsesProductionDamageAndReplays(1000,950)" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays(1000,950)" methodname="SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="770721701" result="Failed" label="Error" start-time="2026-11-13 07:14:36Z" end-time="2026-11-13 07:14:36Z" duration="0.366028" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.OverflowException : Value was either too large or too small for a Decimal.]]></message>
+                    <stack-trace><![CDATA[  at System.Decimal+DecCalc.ScaleResult (System.Decimal+DecCalc+Buf24* bufRes, System.UInt32 hiRes, System.Int32 scale) [0x001cc] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal+DecCalc.VarDecMul (System.Decimal+DecCalc& d1, System.Decimal+DecCalc& d2) [0x0038a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal.op_Multiply (System.Decimal d1, System.Decimal d2) [0x0000e] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at ProjectHero.Logic.AI.AiSoftmax.Sample (System.Collections.Generic.IReadOnlyList`1[T] items, ProjectHero.Logic.AI.AiSamplingSettings settings, ProjectHero.Logic.Determinism.DeterministicRng rng) [0x002f2] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiSoftmax.cs:42 
+  at ProjectHero.Logic.AI.AiPressurePolicy+<>c__DisplayClass0_0.<Decide>g__Choose|0 (System.Collections.Generic.IReadOnlyList`1[T] candidates, System.Boolean reaction, System.Collections.Generic.Dictionary`2[TKey,TValue] cached) [0x003ad] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiPressurePolicy.cs:89 
+  at ProjectHero.Logic.AI.AiPressurePolicy.Decide (ProjectHero.Logic.AI.AiDecisionContext context, System.UInt64 seed, ProjectHero.Logic.AI.AiPolicyKind policy) [0x000cb] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiPressurePolicy.cs:32 
+  at ProjectHero.Logic.AI.AiTacticalPolicy.Decide (ProjectHero.Logic.AI.AiDecisionContext context, System.UInt64 seed, ProjectHero.Logic.AI.AiPolicyKind policy) [0x0002f] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiTacticalPolicy.cs:47 
+  at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered (ProjectHero.Logic.Snapshots.DecisionSnapshot snapshot, ProjectHero.Logic.Commands.CommandIngressRegistry ingress, System.Int64 nextTick) [0x0007b] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiControllerLogic.cs:202 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot (System.Int64 tick) [0x00051] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:3577 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x002b7] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1498 
+  at ProjectHero.Logic.Experiments.AiPolicyExperiment.Run (ProjectHero.Logic.Experiments.AiPolicyExperimentInput input) [0x0013d] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Experiments\AiPolicyExperiment.cs:90 
+  at ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays (System.Int32 temperature, System.Int32 topP) [0x0002d] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs:77 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0007c] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at NUnit.Framework.Internal.Reflect.InvokeMethod (System.Reflection.MethodInfo method, System.Object fixture, System.Object[] args) [0x00053] in <8b63e8ac0a4746599ed207982825ae6c>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1583" name="SampledFundedReactionUsesProductionDamageAndReplays(2000,900)" fullname="ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays(2000,900)" methodname="SampledFundedReactionUsesProductionDamageAndReplays" classname="ProjectHero.Logic.Tests.AiPressurePolicyTests" runstate="Runnable" seed="1830348859" result="Failed" label="Error" start-time="2026-11-13 07:14:36Z" end-time="2026-11-13 07:14:37Z" duration="0.399338" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.OverflowException : Value was either too large or too small for a Decimal.]]></message>
+                    <stack-trace><![CDATA[  at System.Decimal+DecCalc.ScaleResult (System.Decimal+DecCalc+Buf24* bufRes, System.UInt32 hiRes, System.Int32 scale) [0x001cc] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal+DecCalc.VarDecMul (System.Decimal+DecCalc& d1, System.Decimal+DecCalc& d2) [0x0038a] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Decimal.op_Multiply (System.Decimal d1, System.Decimal d2) [0x0000e] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at ProjectHero.Logic.AI.AiSoftmax.Sample (System.Collections.Generic.IReadOnlyList`1[T] items, ProjectHero.Logic.AI.AiSamplingSettings settings, ProjectHero.Logic.Determinism.DeterministicRng rng) [0x002f2] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiSoftmax.cs:42 
+  at ProjectHero.Logic.AI.AiPressurePolicy+<>c__DisplayClass0_0.<Decide>g__Choose|0 (System.Collections.Generic.IReadOnlyList`1[T] candidates, System.Boolean reaction, System.Collections.Generic.Dictionary`2[TKey,TValue] cached) [0x003ad] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiPressurePolicy.cs:89 
+  at ProjectHero.Logic.AI.AiPressurePolicy.Decide (ProjectHero.Logic.AI.AiDecisionContext context, System.UInt64 seed, ProjectHero.Logic.AI.AiPolicyKind policy) [0x000cb] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiPressurePolicy.cs:32 
+  at ProjectHero.Logic.AI.AiTacticalPolicy.Decide (ProjectHero.Logic.AI.AiDecisionContext context, System.UInt64 seed, ProjectHero.Logic.AI.AiPolicyKind policy) [0x0002f] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiTacticalPolicy.cs:47 
+  at ProjectHero.Logic.AI.AiControllerLogic.ObserveOrdered (ProjectHero.Logic.Snapshots.DecisionSnapshot snapshot, ProjectHero.Logic.Commands.CommandIngressRegistry ingress, System.Int64 nextTick) [0x0007b] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\AI\AiControllerLogic.cs:202 
+  at ProjectHero.Logic.Simulation.BattleSimulation.DeliverDecisionSnapshot (System.Int64 tick) [0x00051] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:3577 
+  at ProjectHero.Logic.Simulation.BattleSimulation.Step (System.Int64 tick, ProjectHero.Logic.Commands.FrozenCommandBatch externalBatch) [0x002b7] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Simulation\BattleSimulation.cs:1498 
+  at ProjectHero.Logic.Experiments.AiPolicyExperiment.Run (ProjectHero.Logic.Experiments.AiPolicyExperimentInput input) [0x0013d] in C:\Users\1\repos\Project Hero\Assets\Scripts\Logic\Experiments\AiPolicyExperiment.cs:90 
+  at ProjectHero.Logic.Tests.AiPressurePolicyTests.SampledFundedReactionUsesProductionDamageAndReplays (System.Int32 temperature, System.Int32 topP) [0x0002d] in C:\Users\1\repos\Project Hero\Assets\Tests\EditMode\Logic\AiPressurePolicyTests.cs:77 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0007c] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at System.Reflection.MethodBase.Invoke (System.Object obj, System.Object[] parameters) [0x00000] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at NUnit.Framework.Internal.Reflect.InvokeMethod (System.Reflection.MethodInfo method, System.Object fixture, System.Object[] args) [0x00053] in <8b63e8ac0a4746599ed207982825ae6c>:0 ]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: C:/Users/1/AppData/LocalLow/DefaultCompany/Project Hero\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
